@@ -11,6 +11,8 @@ import os
 import wave
 import subprocess
 import tempfile
+import re
+import shutil
 import signal
 import sys
 from pathlib import Path
@@ -244,6 +246,136 @@ FIRST_CONTACT_INTRO = ("This workshop can read its steps aloud with Piper, "
 FIRST_CONTACT_LINE = ("This is Piper, reading a script. If you can hear this, "
                       "press Enter. Type n to keep it quiet.")
 
+# THE DOOR SPEAKS (2026-10-02, half two; half one is install.sh's door_row,
+# which writes .door into every install made through a door). first_contact()
+# reads .door and says that door's words. With no .door, as in a git clone,
+# nothing below is used and the card is the one above, unchanged. The
+# operator's five rulings of 2026-10-02, and where each one lives:
+#   1. the 60 MB line stays, printed only when a download happens: that is
+#      setup_voice_model's own line already, so nothing here repeats it;
+#   2. the welcome lines print either way and are spoken only when the
+#      voice is on: _show_welcome;
+#   3. the welcome shows once per install, even on a computer that answered
+#      the voice question in an earlier install: _mark_door_welcomed writes
+#      welcomed= into .door, and flake.nix's gate opens until it is there;
+#   4. "No local AI found yet." rather than "installed", because found is
+#      what a lookup knows: local_ai_line;
+#   5. the folder spelled a letter at a time in the spoken install message:
+#      flake.nix, TTS_DIR_SPELLED.
+DOOR_FILE = Path(__file__).resolve().parent.parent / ".door"
+DOOR_ASK_LINE = "If you can hear this, press Enter. Type n to keep it quiet."
+
+
+def read_door(path=None) -> Dict[str, Any]:
+    """The .door at the repo root as a dict, or {} when there is none.
+
+    One key=value per line, the way install.sh writes it. Lines starting
+    with # are skipped and an empty value counts as absent. welcome repeats,
+    so it is a list in file order; any other key keeps its last value.
+    """
+    door: Dict[str, Any] = {}
+    try:
+        text = Path(path or DOOR_FILE).read_text(encoding="utf-8")
+    except OSError:
+        return door
+    for line in text.splitlines():
+        if line.lstrip().startswith("#") or "=" not in line:
+            continue
+        key, value = (part.strip() for part in line.split("=", 1))
+        if not key or not value:
+            continue
+        if key == "welcome":
+            door.setdefault("welcome", []).append(value)
+        else:
+            door[key] = value
+    return door
+
+
+def local_ai_line() -> str:
+    """One sentence about local AI that claims only what this lookup found.
+
+    ATTRIBUTED-VOICE: detected names an act, so the act is here, and it is
+    only a lookup: an ollama on PATH, or the Ollama app in /Applications.
+    Nothing is started, asked or sent.
+    """
+    if shutil.which("ollama") or Path("/Applications/Ollama.app").exists():
+        return "Local AI detected but not used."
+    return "No local AI found yet."
+
+
+def door_card(door: Dict[str, Any], local_ai: str = "") -> tuple:
+    """(intro, ask lines, welcome lines) for first contact. Pure: no file, no sound.
+
+    A door with no workshop line, or no door at all, gets today's intro and
+    line exactly and no welcome. The ask lines print one per line and are
+    spoken as one.
+    """
+    workshop = door.get("workshop", "")
+    if not workshop:
+        return FIRST_CONTACT_INTRO, [FIRST_CONTACT_LINE], []
+    first = f"This is only text-to-speech. {local_ai}".strip()
+    return workshop, [first, DOOR_ASK_LINE], list(door.get("welcome", []))
+
+
+def _spoken(lines) -> str:
+    """A door's welcome lines as one spoken sentence; the screen keeps them as printed.
+
+    A line that ends with no punctuation gets a comma, so the voice pauses
+    where the screen breaks, and Q/A loses its slash. Read 2026-10-02 in a
+    sandbox through the espeak phonemizer inside piper-tts 1.6.0, the version
+    requirements.txt pins, and not heard on any computer here: Q/A comes out
+    as "queue slash uh", and QA as Q, A.
+    """
+    last = len(lines) - 1
+    text = " ".join(line if i == last or line[-1:] in ".!?,;:" else line + ","
+                    for i, line in enumerate(lines))
+    return re.sub(r"\b([A-Z])/([A-Z])\b", r"\1\2", text)
+
+
+def _mark_door_welcomed(path=None):
+    """Append welcomed=<date> to .door. Returns None, or the OSError."""
+    import datetime
+    target = Path(path or DOOR_FILE)
+    try:
+        text = target.read_text(encoding="utf-8")
+        lead = "" if not text or text.endswith("\n") else "\n"
+        with target.open("a", encoding="utf-8") as handle:
+            handle.write(lead + "# Written by first_contact() the day this door's welcome was shown. "
+                         "Delete the welcomed line to see it again.\n"
+                         "welcomed=" + datetime.date.today().isoformat() + "\n")
+    except OSError as exc:
+        return exc
+    return None
+
+
+def _show_welcome(door: Dict[str, Any], speak: bool) -> None:
+    """Print the door's welcome lines, speak them only if speak, then mark .door.
+
+    Nothing happens without a .door, or once welcomed= is in it. The voice
+    loads before the lines print, so a 60 MB line, when there is one, comes
+    first, and the words on screen arrive with the words spoken. A door with
+    no welcome lines is marked all the same, so the flake's gate shuts for it.
+    """
+    if not door or door.get("welcomed"):
+        return
+    lines = list(door.get("welcome", []))
+    voice = chip_voice_system if (speak and lines) else None
+    unheard = None
+    if voice is not None and not voice.ensure_voice():
+        unheard = voice.last_error or "the voice did not load"
+        voice = None
+    for line in lines:
+        print(line, flush=True)
+    if voice is not None:
+        result = voice.speak_text(_spoken(lines))
+        if not result.get("success") and not result.get("declined"):
+            unheard = result.get("error") or "nothing was heard"
+    if unheard:
+        print(f"(the welcome was printed but not heard: {str(unheard).splitlines()[0][:120]})")
+    error = _mark_door_welcomed()
+    if error is not None:
+        print(f"(could not mark the welcome as shown, so it shows again next time: {error})")
+
 
 def first_contact() -> str:
     """Ask by voice, once per machine, right before the first menu.
@@ -259,22 +391,42 @@ def first_contact() -> str:
     nothing, so the question returns next time. The one line spoken before any
     answer exists is the question itself, which is why synthesize_and_play
     takes ceremony=True from here and from nowhere else. Returns env,
-    recorded, unavailable, silent, interrupted, yes or no.
+    recorded, unavailable, silent, interrupted, yes, no or welcomed.
+
+    AMENDED 2026-10-02 (THE DOOR SPEAKS): an install made through a door has
+    a .door, and the card says that door's words (door_card, above): its
+    workshop line where the intro was, then "This is only text-to-speech."
+    with what a lookup found about local AI, then the same question. The
+    door's welcome lines follow the answer, printed always and spoken only
+    on yes. Where this computer answered the question in an earlier install,
+    flake.nix's gate still opens once for a .door with no welcomed= line:
+    nothing is asked, the workshop line and the welcome print, the welcome
+    is spoken if the recorded answer is yes, welcomed= is written, and the
+    return is welcomed.
     """
     if os.environ.get("PIPULATE_VOICE", "").strip():
         return "env"
-    if voice_consent() != "unset":
+    door = read_door()
+    recorded = voice_consent()
+    if recorded != "unset" and (not door or door.get("welcomed")):
         return "recorded"
     if not (sys.stdin.isatty() and sys.stdout.isatty()):
         return "unavailable"
     logger.setLevel(logging.CRITICAL)
+    if recorded != "unset":
+        if door.get("workshop"):
+            print(door["workshop"], flush=True)
+        _show_welcome(door, speak=recorded == "yes")
+        return "welcomed"
     voice = chip_voice_system
+    intro, ask_lines, _ = door_card(door, local_ai_line() if door.get("workshop") else "")
     try:
-        print(FIRST_CONTACT_INTRO, flush=True)
+        print(intro, flush=True)
         played = False
         if voice is not None and voice.ensure_voice():
-            print(FIRST_CONTACT_LINE, flush=True)
-            played = voice.synthesize_and_play(FIRST_CONTACT_LINE, ceremony=True)
+            for line in ask_lines:
+                print(line, flush=True)
+            played = voice.synthesize_and_play(" ".join(ask_lines), ceremony=True)
         if not played:
             reason = (voice.last_error if voice is not None else None) or "the voice did not load"
             reason = reason.splitlines()[0][:120]
@@ -282,6 +434,7 @@ def first_contact() -> str:
             print(f"The voice could not play here ({reason}), so it stays off. Type talk to try again.")
             if error is not None:
                 print(f"(could not record that, so this runs again next time: {error})")
+            _show_welcome(door, speak=False)
             return "silent"
         with open("/dev/tty", "r", encoding="utf-8") as tty:
             print("Enter or n: ", end="", flush=True)
@@ -303,6 +456,7 @@ def first_contact() -> str:
         print("Voice on. Type talk any time to turn it off.")
     else:
         print("Staying quiet. Type talk any time to turn the voice on.")
+    _show_welcome(door, speak=decision == "yes")
     return decision
 
 
@@ -850,7 +1004,8 @@ if __name__ == "__main__" and sys.argv[1:2] == ["talk"]:
     raise SystemExit(talk_command(sys.argv[2:]))
 if __name__ == "__main__" and sys.argv[1:2] == ["first"]:
     # flake.nix's runScript calls this once per machine, right before the first
-    # menu; it exits 0 whatever happened, so the menu always prints after it.
+    # menu, and once more in an install made through a door, for its welcome;
+    # it exits 0 whatever happened, so the menu always prints after it.
     try:
         first_contact()
     except Exception as _exc:
