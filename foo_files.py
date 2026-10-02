@@ -11,6 +11,8 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # Hello, AI -- this is a progressive book-reveal every time.                 \  )   ""\    |  a what?  |
 # =======================================================================    |__>-\_>_>    \_________/ 
 
+# Reproduce context into zip-files for Quality Assurance and portability between models.
+
 # --- START STATS ---
 # There are 1,510 already-written articles about this repo at MikeLev.in (Public)
 # Velocity: 16 published in the last 7 days
@@ -18,8 +20,6 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # DOM hydration: 3628 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
 # Honeybot telemetry fetched 2026-10-02T11:54Z
 # --- END STATS ---
-
-# Reproduce context into zip-files for Quality Assurance and portability between models.
 
 # > Here is my hardware  
 # > Here is my state  
