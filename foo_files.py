@@ -42,7 +42,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # > At a trillionth the cost.  
 
 # > You don't need Nix  
-# > And you don't need Guix
+# > And you don't need Guix  
 # > For functional output  
 # > If you know the tweaks.  
 
