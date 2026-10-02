@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "name": "public_walk",
-  "description": "Three pages open in a browser, one at a time. There is nothing to click.\nWhen a page has loaded, type CAPTURE here and press Enter.",
+  "description": "Three pages open in a browser, one at a time. There is nothing to click.",
   "defaults": {
     "take_screenshot": false,
     "headless": false,
