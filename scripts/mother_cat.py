@@ -47,7 +47,18 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 
-def _narrate(text, disclosed):
+_VOICE_TROUBLE = {"said": False}
+
+
+def _voice_trouble(reason):
+    """Say once per walk that the voice failed; the screen already has the words."""
+    if not _VOICE_TROUBLE["said"]:
+        _VOICE_TROUBLE["said"] = True
+        reason = str(reason).splitlines()[0][:120] if str(reason) else "unknown error"
+        print(f"The voice could not speak ({reason}); the screen shows the same words.")
+
+
+def _narrate(text, disclosed=True):
     """Speak scripted guidance if Piper is available; never gate the ride.
 
     The visible channel always lands first, before importing or invoking Piper.
@@ -60,11 +71,10 @@ def _narrate(text, disclosed):
     try:
         from imports.voice_synthesis import chip_voice_system
     except Exception as exc:
-        print(f"(voice import unavailable: {exc})")
+        _voice_trouble(exc)
         return disclosed
 
     if chip_voice_system is None:
-        print("(voice unavailable)")
         return disclosed
 
     # THE NARRATION VANISHED WITH ITS OWN ERROR (convicted 2026-08-02, ride
@@ -75,38 +85,18 @@ def _narrate(text, disclosed):
     # kata became a silent no-op that reported success. Print first, then
     # speak, so the visible channel never depends on the audible one failing.
     try:
-        if not disclosed:
-            result = chip_voice_system.speak_text(
-                "This is Piper, a small program reading written instructions "
-                "aloud. It does not listen or answer questions."
-            )
-            if isinstance(result, dict) and result.get("declined"):
-                # A human said no, or nobody has been asked: not a failure,
-                # so no failure line. The printed text above is the channel.
-                return True
-            if isinstance(result, dict) and not result.get("success"):
-                print(
-                    "  (voice disclosure failed: "
-                    f"{result.get('error', 'unknown error')})"
-                )
-            elif isinstance(result, dict):
-                # THE VOLUME LINE (2026-09-20, operator's ask). "Voice ready."
-                # is printed by the speaker during this first sentence, and
-                # the ear is the only instrument that tells a muted output
-                # from a working one. Conditional on the ear; claims nothing.
-                print("  (If you did not hear that, turn your volume up.)")
-            disclosed = True
+        # NOTHING IS SPOKEN THAT IS NOT PRINTED (2026-10-02, the operator's
+        # ruling): the spoken-only disclosure and the volume line are gone. The
+        # voice introduced itself when it was switched on (first_contact, or
+        # the card _ask_voice prints); disclosed stays only as a default.
 
         result = chip_voice_system.speak_text(text)
         if isinstance(result, dict) and result.get("declined"):
             return disclosed
         if isinstance(result, dict) and not result.get("success"):
-            print(
-                "  (voice guidance failed: "
-                f"{result.get('error', 'unknown error')})"
-            )
+            _voice_trouble(result.get("error", "unknown error"))
     except Exception as exc:
-        print(f"(voice error, continuing: {exc})")
+        _voice_trouble(exc)
 
     return disclosed
 
@@ -151,8 +141,9 @@ def _capture_compatible(trail):
 # file and clipboard attempt receive the same checked string. The fixed
 # filename denotes the last successful save, not the last attempted ride.
 # INTRODUCTORY COMPLETION: --intro authorizes the checked handoff only for
-# the resolved bundled three-page route. The launcher prints INTRO_NOTICE
-# before the choice; direct callers must pass --intro explicitly. Other
+# the resolved bundled three-page route. The rider says INTRO_NOTICE after
+# the trail's description, before the first page, so every CAPTURE comes
+# after the terms; direct callers must pass --intro explicitly. Other
 # calls retain DECANT. Practice never captures, saves a preview or copies.
 DECANT_INLINE_KEYS = (
     "seo_md",
@@ -164,13 +155,15 @@ DECANT_INLINE_KEYS = (
 )
 DECANT_INLINE_CAP = 20000  # chars per inlined lens; the rest lives on disk
 DECANT_PREVIEW_PATH = REPO_ROOT / "data" / "decant-preview.md"
-INTRO_URLS = tuple(f"https://npvg.org/walk/{i}/" for i in (1, 2, 3))
+# THE PIN FOLLOWS THE PAGES (2026-10-02): c7faeb2 moved public_walk.json to
+# qamy.ai and left this at npvg.org, so --intro-contract printed nothing and
+# the walk asked DECANT again. The pin stays a constant on purpose: a trail
+# edited to point anywhere else must lose the introduction's shortcut.
+INTRO_URLS = tuple(f"https://qamy.ai/walk/{i}/" for i in (1, 2, 3))
+# The handoff clause, said after the trail's description and only under --intro.
 INTRO_NOTICE = (
-    "This walk opens three public pages. Nothing to sign in to.\n"
-    "Return here and type CAPTURE when prompted at each page.\n"
-    "After all three captures and successful checks, it saves a private summary\n"
-    "and replaces your clipboard. Over SSH it uses a bridge file.\n"
-    "Nothing is sent to a chatbot. Review the summary before sharing it."
+    "At the end a checked summary is saved on this computer and copied to your "
+    "clipboard. Nothing is sent anywhere."
 )
 
 
@@ -294,7 +287,6 @@ def _bank_capture(archive, trail, index, stop, params, result):
             "started_at": datetime.now(timezone.utc).isoformat(),
             "trail": trail,
         })
-        print(f"  LOCAL ARCHIVE  {path}  (directory 0700, file 0600)")
     files, preview, problems = {}, {}, []
     for key, source in sorted(result.get("looking_at_files", {}).items()):
         entry = {"source_path": str(source), "status": "unavailable"}
@@ -508,19 +500,16 @@ def _finish_capture_archive(archive, status, skipped=()):
         "finished_at": datetime.now(timezone.utc).isoformat(),
     })
     archive["finished"] = True
-    print(f"  ARCHIVE STATUS  {status}")
-    _print_next_compile(archive["path"])
+    # QUIET WHEN IT WORKED (2026-10-02): each page already said Saved, and
+    # context.txt names this archive. A partial run names it here, once,
+    # with the word that starts over; a router failure says so in one line.
     if status == "complete" and archive["previews"]:
         try:
-            target, receipt = _write_walk_router(archive["path"])
+            _write_walk_router(archive["path"])
         except Exception as exc:
-            print(f"  CONTEXT FILE NOT UPDATED ({type(exc).__name__}): {exc}")
-            print("  Archive preserved; the context file on disk is unchanged.")
-        else:
-            print(f"  CONTEXT FILE  {target}  ({receipt})")
+            print(f"context.txt was not updated ({type(exc).__name__}: {exc}); the pages are saved in {_shown(archive['path'])}.")
     else:
-        print("  CONTEXT FILE unchanged: this run did not complete with captures.")
-        print("  An existing context.txt still lists an earlier completed run.")
+        print(f"Pages saved so far: {_shown(archive['path'])}. Type walk to start again.")
 
 
 def _decant(captured, previews, skipped=()):
@@ -656,10 +645,8 @@ def _complete_preview(payload, captured, intro=False, archive_path=None):
     if not intro:
         return _decant_checkpoint(payload, captured, archive_path=archive_path)
     if tuple(final_url for _, final_url, _ in captured) != INTRO_URLS:
-        print("   BLOCKED: the walk left its three public pages. Summary not sent.")
-        print("   The local captures remain; any older summary is unchanged.")
+        print("\nSummary withheld: a page ended somewhere other than the walk's three pages, so nothing was copied.")
         return False
-    print("\nChecking the summary before saving it and trying the clipboard.")
     return _decant_to_clipboard(payload, archive_path=archive_path)
 
 
@@ -698,29 +685,24 @@ def _decant_to_clipboard(payload, archive_path=None):
     # Reuse the existing baseline; DECANT has no disclosure-relaxation flags.
     scrubbed, substitutions, leaks = scrub_compile_payload(payload)
     secrets = scan_secrets(scrubbed)
-    print(f"   Preview checks: substitutions={substitutions} "
-          f"denylist={sum(n for _, n in leaks)} secrets={len(secrets)}")
     if leaks or secrets:
-        print("   BLOCKED: preview withheld; local evidence is unchanged.")
+        print(f"\nSummary withheld: the checks found {sum(n for _, n in leaks)} "
+              f"private name(s) and {len(secrets)} secret(s), so nothing was copied.")
         return False
     # AFTER authorization and baseline checks: one string, two destinations.
     try:
         target = _write_decant_preview(scrubbed)
     except OSError as exc:
-        print(f"   LOCAL PREVIEW NOT UPDATED ({type(exc).__name__}): {DECANT_PREVIEW_PATH}")
-        print("   Any older preview is unchanged; the clipboard attempt continues.")
+        print(f"\nSummary not saved ({type(exc).__name__}: {exc}); the clipboard copy still runs.")
     else:
-        digest = hashlib.sha256(scrubbed.encode("utf-8")).hexdigest()
-        print(f"   LOCAL PREVIEW {target} (0600; sha256={digest})")
+        print(f"\nSummary saved: {_shown(target)}")
         # The router names the preview only once the preview exists on disk:
         # written here, after the file, never inferred from a handoff boolean.
         if archive_path is not None:
             try:
-                router, receipt = _write_walk_router(archive_path, preview_path=target)
+                _write_walk_router(archive_path, preview_path=target)
             except Exception as exc:
-                print(f"   CONTEXT FILE NOT UPDATED ({type(exc).__name__}): {exc}")
-            else:
-                print(f"   CONTEXT FILE  {router}  ({receipt})")
+                print(f"context.txt was not updated ({type(exc).__name__}: {exc}).")
     copy_to_clipboard(scrubbed)
     return True
 
@@ -799,12 +781,12 @@ def _missing_url_envs(stops):
     return required, optional
 
 
-def _announce_consent(trail_path, intro=False):
+def _announce_consent(trail_path):
     """Describe capture and handoff, never grant authorization here.
 
     Custom walks use the same trail projection as walk_cartridge.
-    The launcher owns the bundled plain-language INTRO_NOTICE; --intro avoids
-    printing it a second time and adds only the local summary/check lines.
+    The introduction never reaches here: its terms are the trail's description
+    with INTRO_NOTICE after it, said once by _ride_steps.
     """
     try:
         surface = walk_cartridge._derive_consent_surface(trail_path.read_bytes())
@@ -815,11 +797,7 @@ def _announce_consent(trail_path, intro=False):
         # printing, not a reason to abort a ride the planner already blessed.
         print(f"  (consent surface unavailable: {exc})")
         return
-    if intro:
-        print()
-        print(f"Summary file: {DECANT_PREVIEW_PATH.relative_to(REPO_ROOT)} (private; replaced on save).")
-        print("Checks can miss private details. A blocked check leaves the older file alone.\n")
-        return
+
     browser = surface["browser"]
     rule = "=" * 66
     print(rule)
@@ -854,12 +832,13 @@ def _announce_consent(trail_path, intro=False):
     print(" Review before sharing; checks can miss sensitive data.")
     print(rule)
     print("")
-# The router receives a stable capture file, never an @URL cache lookup.
-def _print_next_compile(archive_path):
-    """Print one self-contained file line, never mutable @URL cache selectors."""
-    print("\nLocal archive file line for context.txt:")
-    print(archive_path)
-    print("Review locally before compiling; raw bytes are not a safe disclosure.")
+def _shown(path):
+    """A path as the walk prints it: relative to the workshop when it is inside."""
+    path = Path(path)
+    try:
+        return str(path.relative_to(REPO_ROOT))
+    except ValueError:
+        return str(path)
 
 async def _ride_async(trail_path, dry_narrate=False, exports_path=None, intro=False):
     archive = {"path": None, "finished": False, "previews": []}
@@ -983,16 +962,14 @@ async def _ride_steps(trail_path, archive, dry_narrate=False, exports_path=None,
             pass
 
     stops = trail["stops"]
-    print(f"Riding trail '{trail['name']}' -- {len(stops)} stop(s).\n")
-    # The launcher discloses INTRO_NOTICE before its real-walk choice and
-    # passes --intro only for the bundled route. Direct callers without
-    # that flag retain DECANT. Practice describes terms but authorizes no
-    # capture or handoff; it returns before either can occur.
+    # The rider says the terms: the trail's description, with INTRO_NOTICE
+    # after it when --intro pre-authorizes the handoff. Direct callers
+    # without that flag retain DECANT. Practice says the same words and
+    # authorizes no capture or handoff; it returns before either can occur.
 
     # THE VOICE ASKS FIRST (2026-09-17), before the description, before the
     # practice notice below says nothing needs typing, and in practice mode
     # too, because the rehearsal is the first thing a newcomer hears.
-    print("Make sure your audio is turned on.\n")
     _ask_voice()
     # THE DESCRIPTION SPEAKS FIRST (2026-09-05). walk.py has validated
     # trail.description as non-empty since Car A, and nothing read it at
@@ -1000,34 +977,28 @@ async def _ride_steps(trail_path, archive, dry_narrate=False, exports_path=None,
     # sealed surface. A required field nothing collected. It is the walk's
     # opening sentence, spoken once before the card in the same voice the
     # stops use, and under --dry-narrate too, so the rehearsal opens the
-    # way the ride does. The return value carries the one-time disclosure
-    # forward, so the guide introduces itself exactly once.
-    rehearsal = "Practice only. In the real walk: " if dry_narrate else ""
+    # way the ride does, with INTRO_NOTICE after it under --intro.
     if dry_narrate:
-        print("Practice only. No pages will open. You do not need to type anything.\n")
-    disclosed = _narrate(rehearsal + trail["description"], False)
-    _announce_consent(trail_path, intro=intro)
+        print("\nPractice: these are the real walk's steps. Nothing opens, nothing is saved, and there is nothing to type.")
+    _narrate(trail["description"] + ("\n" + INTRO_NOTICE if intro else ""))
+    if not intro:
+        _announce_consent(trail_path)
     captured = []
     skipped = archive.setdefault("skipped", [])
     for index, stop in enumerate(stops, 1):
-        print(f"--- Stop {index}/{len(stops)}: {stop['name']} ---")
 
         # SKIP BEFORE NARRATE. Speaking the guidance for a stop that will not
         # open is the Mac conviction in miniature: voice spent on nothing.
         # Printed under --dry-narrate too, so the rehearsal has the shape of
         # the ride it rehearses.
         if stop["name"] in skip_vars:
-            print(
-                f"  SKIPPED -- optional stop; {skip_vars[stop['name']]} is unset. "
-                "Nothing opened.\n"
-            )
+            print(f"\nSkipped: {stop['label']}. {skip_vars[stop['name']]} is not set, so nothing opened.")
             skipped.append((stop["name"], skip_vars[stop["name"]]))
             continue
 
-        disclosed = _narrate(rehearsal + stop["guidance"], disclosed)
+        _narrate(stop["guidance"])
 
         if dry_narrate:
-            print("  (dry-narrate: browser and capture skipped)\n")
             continue
 
         # A stop carries exactly one of `url` or `url_env`. The PRE-FLIGHT
@@ -1045,102 +1016,64 @@ async def _ride_steps(trail_path, archive, dry_narrate=False, exports_path=None,
                 ) from exc
 
         params = walk._browser_params(url, trail["defaults"])
-        def checkpoint_narration():
-            nonlocal disclosed
-            disclosed = _narrate(
-                "The page has loaded. Come back to the terminal and type CAPTURE.",
-                disclosed,
-            )
+        # THE PROMPT IS THE CUE (2026-10-02): CAPTURE> appears only once the
+        # page has loaded, with the ding, so nothing is said before it. The
+        # empty hook below also keeps the checkpoint's default sentences off.
 
         result = await guided_browser_capture(
             params,
             stdin=sys.stdin,
             stdout=sys.stdout,
-            before_prompt=checkpoint_narration,
+            before_prompt=lambda: None,
         )
 
         if not result.get("success"):
-            print(
-                f"  CAPTURE failed at {stop['name']!r}: "
-                f"{result.get('error', 'no receipt')}"
-            )
-            print("  Halting -- no ADVANCE without a capture receipt.\n")
-            if captured:
-                # Work already banked is EVIDENCE, and evidence is not
-                # discarded because a later stop failed. The bundle is
-                # still withheld -- a partial ride must never be mistaken
-                # for a complete one -- but the human is told what exists
-                # and where, rather than being left to assume it vanished.
-                print("  Stops banked BEFORE this failure (full bytes in captures.md):")
-                for banked_name, banked_url, banked_artifacts in captured:
-                    print(
-                        f"    - {banked_name}: {banked_url} "
-                        f"({len(banked_artifacts)} artifacts)"
-                    )
-                print("  No preview released. The partial archive is preserved locally.\n")
+            reason = str(result.get("error") or "no receipt").rstrip(".")
+            if reason == "interactive checkpoint was not confirmed":
+                reason = "the answer was not CAPTURE"
+            # Work already banked is EVIDENCE: when pages were saved, the
+            # archive's own partial line follows this one and names them.
+            tail = "" if captured else " Nothing was saved. Type walk to start again."
+            print(f"\nStopped at page {index} of {len(stops)}: {reason}.{tail}")
             return 1
 
         artifacts = result.get("looking_at_files", {})
         problems = _bank_capture(archive, trail, index, stop, params, result)
         captured.append((stop["name"], result.get("final_url"), artifacts))
         if problems:
-            print("  ARCHIVE INCOMPLETE: " + ", ".join(problems))
-            print("  Saved details remain on this computer. Stopping without a summary handoff.")
+            print(f"\nStopped at page {index} of {len(stops)}: some files from this page could not be read ({', '.join(problems)}).")
             return 1
-        print(
-            f"  Captured. final_url={result.get('final_url')} "
-            f"artifacts={len(artifacts)}"
-        )
+        print("Saved.")
 
-        if index < len(stops):
-            print("  ADVANCE -> next stop.\n")
+        # No ADVANCE line: the next page's own line says where the walk is.
 
     if dry_narrate:
-        print("\nDry narration complete; no captures were attempted.")
+        print("\nPractice done.")
         return 0
 
     _finish_capture_archive(archive, "complete", skipped)
-    # ATTRIBUTED-VOICE: "every stop produced a capture receipt" is only true
-    # when nothing was skipped, so the line says which world it is in.
-    if skipped:
-        print(
-            f"\nRide complete. {len(captured)} of {len(stops)} stop(s) captured; "
-            f"{len(skipped)} optional stop(s) skipped for an unset URL."
-        )
-    else:
-        print("\nRide complete. Every stop produced a capture receipt.")
+    # No "ride complete" line: each page said Saved, and a skipped page said
+    # so when it was skipped (2026-10-02, say a thing once).
+    if not captured:
+        print("\nNothing was saved: every page was skipped.")
     if captured:
         payload = _decant(captured, archive["previews"], skipped)
-        decanted = _complete_preview(payload, captured, intro=intro, archive_path=archive["path"])
-        # ATTRIBUTED-VOICE, fixed in passing because these are the exact lines
-        # being rewritten: the old text asserted "copied to your clipboard"
-        # UNCONDITIONALLY, one statement after calling a function that swallows
-        # every clipboard failure and returns None -- a verb naming an act no
-        # code in this file performed. copy_to_clipboard prints its own success
-        # or warning line; this reports only what IT witnessed, which is the
-        # checked handoff attempt, not success at either destination.
-        if decanted:
-            print("   Read the save and copy messages above; either step can fail.")
-            print("   Review the summary before sharing it. You choose what to send.")
-        # The archive file line was printed when its status was banked.
-        if intro:
-            # THE GOODBYE SETS EXPECTATIONS (2026-09-20, operator's ruling,
-            # reversing 2026-09-15's "no command, no lesson"): what was
-            # captured and where, the next word, what it opens, how to leave.
-            # It points at the save and copy lines rather than asserting a
-            # copy, because copy_to_clipboard swallows its own failures.
-            closing = (
-                "The three-page walk is finished. Everything it captured is saved on this "
-                "computer, and the lines above say whether the summary was saved and copied. "
-                "Next, type context. That opens a text editor called vim, "
-                "showing the list of files an AI will read. The keys j and k move the cursor. "
-                "To leave, press Escape, then type colon q, then Enter. "
-                "The notes at the top of that file say what to type after that. Goodbye."
-                if decanted else
-                "The capture run is finished, but the summary was withheld. "
-                "Read the results in your terminal. Goodbye."
-            )
-            _narrate(closing, disclosed)
+        _complete_preview(payload, captured, intro=intro, archive_path=archive["path"])
+        # THE LAST LINE IS THE NEXT WORD (2026-10-02, the operator's ruling:
+        # a what-to-do-next may repeat, shorter). Printed and spoken after
+        # every finished walk, saved or withheld, since the line above it
+        # said which; mck.sh prints nothing after the rider. The vim keys are
+        # the first lines of context.txt itself. Outside the workshop shell
+        # the word does not exist yet: mck.sh says so through
+        # PIPULATE_WALK_OUTSIDE, and the line names the way in, printed only,
+        # because a command line read aloud is noise.
+        if os.environ.get("PIPULATE_WALK_OUTSIDE") == "1":
+            root, home = str(REPO_ROOT), str(Path.home())
+            if root.startswith(home + os.sep):
+                root = "~" + root[len(home):]
+            print(f"\nNext: cd {root} && nix develop, then type context.")
+        else:
+            _narrate("Next: type context.")
     return 0
 
 
