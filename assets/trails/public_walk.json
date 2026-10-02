@@ -15,7 +15,7 @@
   "stops": [
     {
       "name": "the_word",
-      "label": "The capture word",
+      "label": "Page one",
       "guidance": "Page 1 of 3. The first browser takes a few seconds to open.",
       "url": "https://qamy.ai/walk/1/",
       "target_slot": "slot_one",
