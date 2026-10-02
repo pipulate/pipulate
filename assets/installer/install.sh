@@ -16,14 +16,22 @@
 #   5. hands off to nix develop, which builds the environment and turns
 #      the folder into a git repository that keeps itself updated.
 #
-# What it touches: that folder; ~/.ssh/id_rsa only if no key is there
-# (the flake decodes the deploy key into it on first entry); and, only
-# if Nix is missing, the Determinate Systems Nix installer, which is a
-# system-level change and says so when it runs.
+# What it touches: that folder, and outside it /nix/store and ~/.cache/nix
+# (Nix's own), ~/.cache/uv (the Python packages) and ~/.config/pipulate
+# (answers such as whether the voice may speak); on a Mac, also
+# ~/.local/share/pipulate. If there is no ~/.ssh/id_rsa, the flake decodes
+# the deploy key into it on first entry and, where none is there, sets ssh
+# to use it for github.com in ~/.ssh/config and adds github.com to
+# ~/.ssh/known_hosts; a key already there is never replaced. A walk's
+# browser adds ~/.local/share/undetected_chromedriver, or on a Mac
+# ~/Library/Application Support/undetected_chromedriver. Only if Nix is
+# missing: the Determinate Systems Nix installer, a system-level change
+# that says so when it runs. rm -rf on the folder removes the folder and
+# leaves the rest. mck.sh's install offer says the same.
 #
 # What it reaches: github.com for the zip, pipulate.com for the key, the
-# Nix binary cache for the environment, and install.determinate.systems
-# only if Nix is missing.
+# Nix binary cache for the environment, pypi.org for the Python packages,
+# and install.determinate.systems only if Nix is missing.
 #
 # The deploy key is scoped to one repository and read-only. Its ROT13
 # wrapper is packaging, not secrecy.
@@ -406,8 +414,7 @@ if [ "${PIPULATE_INSTALL_ONLY:-0}" = "1" ]; then
   # spelling costs nothing and the undefended spelling costs an entire lane.
   ( cd "${TARGET_DIR}" && LD_LIBRARY_PATH="" ${NIX_DEVELOP_CMD} ${IMPURE_FLAG} .#quiet --command bash -c 'uv pip install -r requirements.txt --quiet && uv pip install -e . --no-deps --quiet' )
   echo "Environment hydrated at ${TARGET_DIR}."
-  echo "Note: this folder becomes a git repo (and starts auto-updating) the"
-  echo "      first time you run: cd ${TARGET_DIR} && ${NIX_DEVELOP_CMD}"
+  echo "It becomes a git repository that keeps itself updated the first time you run nix develop in it."
   exit 0
 fi
 
