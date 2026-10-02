@@ -99,9 +99,17 @@ Entries are alphabetical, numbers spelled as spoken.
 - **Coachman's Veto** -- *refusing an emitted patch train.* Costs nothing before
   `app` runs; the human has been down the road, the Horse has instincts.
 - **The Commons / the Invisible Wall** -- *the easy region left of an API's
-  resistance.* From Glinda of Oz: the unclimbable barrier ringing the
-  Flatheads' mountain. Auth friction, rate limits, and format pedantry push
-  casual visitors back into the crowded free zone; push through and it snaps.
+  resistance.* From Glinda of Oz, chapter 5: the Flatheads built an
+  invisible wall a short way in front of the stairway into their mountain,
+  so anyone who sees the entrance walks straight at it and stops. Auth
+  friction, rate limits, and format pedantry are that wall; they push
+  casual visitors back into the crowded free zone. The book's way past is
+  not force: Ozma feels her way along the wall for nearly a quarter mile
+  until it curves in and ends at the mountainside, in a gap the Flatheads
+  left for their own trips up and down. CORRECTED 2026-10-02 (this entry
+  said "push through and it snaps"; and the wall guards the Flatheads, not
+  the Skeezers): the builders' own traffic marks the gap, so read what the
+  vendor's own client sends (wire truth) before pushing on the front door.
 - **Compostable** -- *deliberately never-finished tooling, named by its
   disposal story.* Born a dictation slip for "composable" and kept because
   the slip says more: composable says tools SNAP TOGETHER; compostable says
@@ -264,6 +272,24 @@ Entries are alphabetical, numbers spelled as spoken.
   name.* Spoken text equals the newest assistant record (model attached, this
   turn) AND the keychain holds at least one key. Both true, the staff-top may
   say Chip O'Theseus; either false, it is narration and says so.
+- **Myelination (the four stages)** -- *practice turning a tool into
+  reflex.* Learning a new motor skill makes the brain build new myelin, the
+  insulation that speeds signals along nerve fibers; mice blocked from
+  making new myelin-forming cells were impaired at learning a complex
+  running wheel (McKenzie et al., Science, 2014). The operator's ladder:
+  literate (can do it while thinking about it), automatic (without
+  thinking), prosodic (with expression, at speed, in combination), fluent
+  (for life). Reading research uses the same words, and there fluency is not
+  a fourth step but the three together: speed, accuracy and expression
+  (National Reading Panel, 2000). RENT THIS PAYS: it predicts that a rename
+  costs relearning even when the new name is better, so a rename keeps the
+  old word working; THE LADDERS in flake.nix added p, x and c and took
+  nothing away, down to the kept typo promt. It also prices vendor churn:
+  each forced rewrite sends the user back to literate. The reversed-steering
+  bicycle took Destin Sandlin eight months to learn and about twenty minutes
+  to unlearn (Smarter Every Day 133, 2015): the old path was outcompeted,
+  not erased. Sibling of Compostable and of Ratchet / backslide. Banked
+  2026-10-02, articulation-banked.
 - **OWES** -- *a rule's open debt.* A clause naming the receipt that would
   discharge it; deleted the day the receipt exists. Debts are features: they
   keep the constitution falsifiable.
@@ -977,6 +1003,15 @@ Entries are alphabetical, numbers spelled as spoken.
   and an nginx restart. A body-only change to a served file is one rsync;
   nixops.sh prints the rebuild line as an offer, and publish pairs the two
   because a publish may carry config.
+  AMENDED 2026-10-02, THE DOOR NAMES THE ROW (PENDING a witness at a
+  door): the stamp now picks a row in install.sh's door_row, and the row
+  names the folder, so a door's folder can differ from its stamp: qamy.ai
+  stamps qamy and installs into ~/qamyai, which said aloud is "QA my AI".
+  The row also carries the door's words, which install.sh writes to .door
+  in the new folder: a dotfile, so the first-entry sweep keeps it, and
+  gitignored. The stamped line did not change. tests/test_install_doors.sh
+  runs every row with stubs; a real install from qamy.ai landing in
+  ~/qamyai drops PENDING.
 - **The Dotfile-Blind Probe** -- *ripgrep's hidden-file default.* Banked
   2026-08-05, self-convicted. ripgrep skips hidden files by default, so any rg
   probe hunting a name that lives in .gitignore, .gitattributes, or any other
