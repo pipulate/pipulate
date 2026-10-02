@@ -2758,24 +2758,7 @@ MATCHBOOK_CHOP = r"""
 # - TODO (2026-09-06; the 2026-08-28 NOTARIZE debt is discharged by cartridge_deed_footer, which names THIS compile's snapshot on the envelope under the Prompt, read by the model as a deed on 2026-09-06): init.lua's \k NOTARIZE beat still tells the model the deed's name is not in its context and must not be guessed. Reword it to read Deed: off the footer and keep the fingerprint as the cross-check. init.lua is not in this context; own car.
 
 # - TODO (orphaned 2026-09-04; the url-widening plan that carried it was discharged by THE DUAL-LANE WALK SCHEMA, so only the debt survives): _ignored_or_outside returns safe on the FIRST check-ignore hit and never consults a nested repo; it gates the public catalog repo and nothing else. Own ride; gate: a nested-repo fixture whose ignore rules disagree with the outer repo's, and a receipt naming which repo answered.
-# - EARMARK: THE DECLARED-FIXTURE RELIEF VALVE (banked 2026-08-28,
-#   hand-edit-convicted): a guard that fires on the ONE activity this repo
-#   performs constantly -- writing about credentials -- is a guard on its way
-#   to being deleted. CONVICTION: four copies of one Slack probe fixture in a
-#   published article blocked every compile that included it, and the operator
-#   reached past the gate and hand-edited a live disarm into the working tree
-#   TWICE to get a payload out. That is precisely how SECRET_TRIPWIRES became
-#   [] the first time. THE VALVE: a marker word (TRIPWIRE_FIXTURE_MARKERS)
-#   riding INSIDE the matched value exempts it. A vendor-issued body is base62
-#   noise and cannot contain the literal word "synthetic", so the exemption is
-#   structurally incapable of clearing a live secret; a LINE-level check WOULD
-#   be capable of it, which is why one is not offered. THE VALVE IS LOUD:
-#   scan_secrets prints one line per exemption, so armed-and-exempting and
-#   armed-and-silent never print the same thing -- THE SILENT-PASS PROBLEM does
-#   not return through the valve built to prevent it. WHERE TO TUNE, because
-#   the refusal now says so itself: patterns in SECRET_TRIPWIRES, exemptions in
-#   TRIPWIRE_FIXTURE_MARKERS, both module-level in prompt_foo.py; scan_secrets
-#   is the CONSUMER and is edited only to change matching logic.
+# § THE DECLARED-FIXTURE RELIEF VALVE (banked 2026-08-28) -- Exempt a synthetic secret-scan fixture only when its marker occurs inside the matched credential value, never in the variable name or elsewhere on the line, and print every exemption so a live secret cannot pass silently.
 # - EARMARK: THE NAME IS NOT THE VALUE (banked 2026-08-28, hole found the same
 #   morning the valve landed): the first spelling searched the whole match, and
 #   ten of eleven tripwires match the credential ITSELF -- but the generic
