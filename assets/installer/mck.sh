@@ -547,8 +547,10 @@ if [ -z "${IN_NIX_SHELL:-}" ]; then
     else
       NIXWRAP=(nix develop .#quiet --command)
     fi
-    echo "Not inside the workshop yet; entering nix develop .#quiet for the ride."
-    echo "   (First entry can take several seconds.)"
+    echo "Entering the workshop for this walk; the first time takes a few seconds."
+    # The walk ends outside the workshop shell, where context is not a word
+    # yet, so the rider's last line names the way in (2026-10-02).
+    export PIPULATE_WALK_OUTSIDE=1
   else
     echo "Not inside the workshop, and 'nix' is not on PATH." >&2
     echo "   Enter the workshop first:" >&2
@@ -614,7 +616,6 @@ else
     fi
     case "$ANSWER" in
       1)
-        echo "Practice walk: no browser or page capture."
         PRACTICE_RC=0
         run_rider --dry-narrate </dev/null 3<&- || PRACTICE_RC=$?
         if [ "$PRACTICE_RC" -ne 0 ]; then
@@ -683,12 +684,9 @@ else
   done
   exec 3<&-
 fi
-# THE TERMS PRINT ONCE, AFTER THE CHOICE (2026-10-02): before the menu they
-# described a walk nobody had picked. A trail without the intro contract
-# prints nothing here; the rider's own card names CAPTURE and DECANT.
-if [ -n "$INTRO_CONTRACT" ]; then
-  printf '\n%s\n' "$INTRO_CONTRACT"
-fi
+# THE RIDER SAYS THE TERMS (2026-10-02): mother_cat.py prints and speaks the
+# trail's description with INTRO_NOTICE after it, one string for screen and
+# voice, before the first page. INTRO_CONTRACT only decides --intro here.
 # THE STDIN REDIRECT IS LOAD-BEARING, NOT DECORATION. Under curl|bash this
 # script's stdin is the PIPE, and guided_browser_capture's PRE-LAUNCH gate
 # tests isatty() on the INHERITED descriptor before it opens anything. The
@@ -697,19 +695,7 @@ fi
 # even after the gate is taught the same trick.
 RIDE_RC=0
 run_rider </dev/tty || RIDE_RC=$?
-if [ "$RIDE_RC" -eq 0 ]; then
-  # ONE NEXT WORD (2026-10-02, the operator's ruling: say a thing once; a
-  # what-to-do-next may repeat, shorter). The card here repeated the rider's
-  # save, copy and review lines, and the list recall took nine lines to name
-  # one word. The 2026-09-18 Mac receipt needed the next word on screen; this
-  # line keeps it, last, where the eye lands. Outside the shell the words do
-  # not exist yet, so the line names the way in first.
-  if [ -n "${IN_NIX_SHELL:-}" ]; then
-    printf '\nNext: type context.\n'
-  else
-    printf '\nNext: cd %s && nix develop, then type context.\n' "$ROOT"
-  fi
-else
-  printf '\nThe walk stopped early (exit %s). Pages already captured are saved; the lines above name the file.\n' "$RIDE_RC"
-fi
+# THE RIDER OWNS THE LAST LINE (2026-10-02): it prints and speaks the next
+# word after a finished walk, or says where it stopped and what to type, so
+# nothing prints here after it.
 exit "$RIDE_RC"
