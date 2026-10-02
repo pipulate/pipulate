@@ -115,11 +115,11 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # This is a real-time book that's already done and always being written.
 
 # --- START STATS ---
-# There are 1,508 already-written articles about this repo at MikeLev.in (Public)
+# There are 1,510 already-written articles about this repo at MikeLev.in (Public)
 # Velocity: 16 published in the last 7 days
-# Markdown negotiated: 2,826 reads (0.22% of all responses)
-# DOM hydration: 3622 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
-# Honeybot telemetry fetched 2026-10-01T23:01Z
+# Markdown negotiated: 2,836 reads (0.22% of all responses)
+# DOM hydration: 3628 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
+# Honeybot telemetry fetched 2026-10-02T11:54Z
 # --- END STATS ---
 
 # --- START RECEIPTS (newest first; cap 20 lines; a line pushed past the cap is deleted, never moved -- git and the rolling pin are the archive) ---
@@ -3257,13 +3257,18 @@ MATCHBOOK_CHOP = r"""
 # ============================================================================
 # Files tracked by git but not yet mixed into the palette above.
 # Move these into the active chapters to paint them onto the context canvas.
-# Coverage: 212/280 tracked files claimed. The compiler reads this line back on the next compile and prints the delta beside the live count, so an unclaimed file rings once.
+# Coverage: 202/280 tracked files claimed. The compiler reads this line back on the next compile and prints the delta beside the live count, so an unclaimed file rings once.
 
 # AGENTS.md  # [1,039 tokens | 4,223 bytes]
 # AUDIT.md  # [2,993 tokens | 13,897 bytes]
 # MANIFEST.in  # [204 tokens | 806 bytes]
+# apps/010_introduction.py  # [2,606 tokens | 12,194 bytes]
+# apps/025_aspect.py  # [1,437 tokens | 6,233 bytes]
+# apps/050_documentation.py  # [30,795 tokens | 143,127 bytes]
 # apps/130_gap_analysis.py  # [9,624 tokens | 48,289 bytes]
 # apps/220_roadmap.py  # [1,338 tokens | 6,238 bytes]
+# apps/230_dev_assistant.py  # [25,805 tokens | 124,894 bytes]
+# apps/240_simon_mcp.py  # [8,883 tokens | 44,546 bytes]
 # apps/440_browser_automation.py  # [10,795 tokens | 47,151 bytes]
 # apps/450_stream_simulator.py  # [1,829 tokens | 9,491 bytes]
 # apps/580_upload.py  # [5,622 tokens | 26,462 bytes]
@@ -3317,6 +3322,11 @@ MATCHBOOK_CHOP = r"""
 # scripts/ferry.py  # [2,580 tokens | 9,725 bytes]
 # scripts/flippers.py  # [350 tokens | 1,309 bytes]
 # scripts/gsc/facet_allowlist.py  # [2,538 tokens | 10,600 bytes]
+# scripts/gsc/generate_categories.py  # [1,477 tokens | 6,880 bytes]
+# scripts/gsc/gsc_category_analysis.py  # [6,947 tokens | 29,085 bytes]
+# scripts/gsc/gsc_keyworder.py  # [3,649 tokens | 15,360 bytes]
+# scripts/gsc/gsc_page_query.ipynb  # [7,842 tokens | 28,465 bytes]
+# scripts/gsc/gsc_top_movers.py  # [8,250 tokens | 35,695 bytes]
 # scripts/map_sheet.py  # [3,613 tokens | 15,605 bytes]
 # scripts/playground/prompt_feeder.py  # [746 tokens | 3,154 bytes]
 # scripts/refactor_cards.py  # [381 tokens | 1,483 bytes]
