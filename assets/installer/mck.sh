@@ -42,11 +42,14 @@
 #   /usr/local/bin ahead of /usr/bin. A stranger who fetched this launcher
 #   has only the last lane, so public adventures resolve unchanged.
 # THE COMMAND:  curl -fsSL https://pipulate.com/mck.sh | bash
-#           or  curl -fsSL https://npvg.org/mck/<trail> | bash
 #
-# The path is the flag: the npvg.org route serves THIS file with the trail
-# name stamped into the __MCK_TRAIL__ placeholder (nginx sub_filter), and a
-# whitelabel may ride the same way through __MCK_WHITELABEL__. Local forms:
+# THE TWO PLACEHOLDERS (2026-10-02, read off configuration.nix and a 404):
+# __MCK_TRAIL__ and __MCK_WHITELABEL__ below are where a door would stamp a
+# trail name and an install name into this file as it serves it (nginx
+# sub_filter), the way npvg.org and qamy.ai stamp install.sh's
+# __INSTALL_DEFAULT_NAME__. No door does it yet: configuration.nix has no
+# /mck/ location, and https://npvg.org/mck/public_walk answers 404.
+# Unstamped, the trail is public_walk and the name is pipulate. Local forms:
 #
 #   bash mck.sh public_walk
 #   MCK_TRAIL=public_walk bash mck.sh
@@ -98,8 +101,7 @@
 #
 # EXIT CODES: 0 rode or explicit stop; nonzero usage, refusal, input or rider failure.
 if [ -z "${BASH_VERSION:-}" ]; then
-  echo "Error: this script requires bash. Re-run with:"
-  echo "   curl -fsSL https://pipulate.com/mck.sh | bash"
+  echo "This script needs bash. Run it again with bash, not sh."
   exit 1
 fi
 set -euo pipefail
@@ -175,6 +177,14 @@ fi
 # carries no information. tr, never the bash-4 lowercase expansion -- macOS
 # ships bash 3.2.
 WHITELABEL_LC="$(printf '%s' "$WHITELABEL" | tr '[:upper:]' '[:lower:]')"
+# A PATH AS A PERSON READS IT (2026-10-02): ~ for the home folder, which also
+# keeps a narrow window from wrapping it. Display only, never parsed.
+_shown() {
+  case "$1" in
+    "$HOME"/*) printf '~%s' "${1#"$HOME"}" ;;
+    *) printf '%s' "$1" ;;
+  esac
+}
 # --- MARKER DISCOVERY --------------------------------------------------
 # A workshop is identified by three TRACKED files, so a plain git clone
 # qualifies. whitelabel.txt is deliberately NOT the marker: it is gitignored
@@ -252,46 +262,28 @@ if [ "$WHERE_ONLY" -eq 1 ]; then
   OTHERS="$(printf '%s\n' "$ALL_CHECKOUTS" | grep -vxF "$ROOT" || true)"
   if [ -n "$OTHERS" ]; then
     echo "other workshops found (select one with PIPULATE_WHITELABEL):"
-    printf '%s\n' "$OTHERS" | sed 's/^/  /'
+    printf '%s\n' "$OTHERS"
   fi
   exit 0
 fi
 # --- No workshop: OFFER, install, resume -------------------------------
-DID_INSTALL=0
 offer_install() {
   INSTALL_URL="${PIPULATE_INSTALL_URL:-https://pipulate.com/install.sh}"
   TARGET="$HOME/$WHITELABEL"
-  cat <<CARD
---------------------------------------------------------------
-   NO WORKSHOP FOUND -- and that is fixable right here
---------------------------------------------------------------
- Nothing is installed on this machine yet, so there is nothing
- to ride. Here is exactly what happens if you say yes:
-   1. the installer is fetched TO DISK from
-        $INSTALL_URL
-      You may read it before you answer. It is a shell script,
-      not a binary, and the path is printed below.
-   2. it unpacks Pipulate into
-        $TARGET
-   3. Nix builds the environment there. Nothing else on your
-      machine is modified, and 'rm -rf' on that one folder is a
-      complete uninstall.
-   4. this launcher resumes and the walk begins.
---------------------------------------------------------------
-CARD
-  if ! command -v nix >/dev/null 2>&1; then
-    echo " Note: Nix is not installed yet. The installer bootstraps it, and"
-    echo "       Nix requires a NEW window afterward. If that happens, just"
-    echo "       re-run this same command in the new window."
-    echo ""
-  fi
+  # THE OFFER COMES LAST (2026-10-02, the operator's ruling): a refusal or a
+  # failed download ends the run before any of it prints, so the screen ends
+  # on the question and the file it is about. No box, no indent. OUTSIDE is
+  # every place beyond the folder that the install and the walk write: Nix's
+  # store and cache, uv's cache, the voice answer and the Mac's shadow posts
+  # (flake.nix), and the folder undetected-chromedriver makes each time it
+  # starts a browser. The deploy key has its own line. rm -rf on the folder
+  # leaves all of these; until today this card called it a complete uninstall.
   if [ -e "$TARGET" ]; then
-    echo "Refusing to install: $TARGET already exists but is not a workshop." >&2
-    echo "   Move it aside, or set PIPULATE_WHITELABEL to a different name." >&2
+    echo "Not installing: $(_shown "$TARGET") is already there and is not a workshop. Move it aside, or set PIPULATE_WHITELABEL to another name." >&2
     return 1
   fi
   if ! command -v curl >/dev/null 2>&1; then
-    echo "Refusing to install: curl is not on PATH." >&2
+    echo "Not installing: curl is not on PATH." >&2
     return 1
   fi
   TMP_INSTALLER="$(mktemp "${TMPDIR:-/tmp}/pipulate-install.XXXXXX")"
@@ -307,30 +299,38 @@ CARD
   elif command -v shasum >/dev/null 2>&1; then
     INSTALLER_SUM="$(shasum -a 256 "$TMP_INSTALLER" | cut -d' ' -f1)"
   fi
-  echo " installer : $TMP_INSTALLER"
-  echo " lines     : $INSTALLER_LINES"
-  if [ -n "$INSTALLER_SUM" ]; then
-    echo " sha256    : $INSTALLER_SUM"
-  fi
-  echo ""
-  echo " To read it first, open another window and run:"
-  echo "   less $TMP_INSTALLER"
-  echo ""
-  if [ "$YOLO" -eq 1 ] || [ "${PIPULATE_MCK_ASSUME_YES:-0}" = "1" ]; then
-    echo "Confirmation skipped. Installing to $TARGET."
+  OUTSIDE="/nix/store, ~/.cache/nix, ~/.cache/uv, ~/.config/pipulate"
+  if [ "$(uname -s)" = "Darwin" ]; then
+    OUTSIDE="$OUTSIDE, ~/.local/share/pipulate and ~/Library/Application Support/undetected_chromedriver"
   else
-    printf 'Type INSTALL and press Enter to proceed (anything else stops here).\nINSTALL> '
+    OUTSIDE="$OUTSIDE and ~/.local/share/undetected_chromedriver"
+  fi
+  printf '\nThere is no workshop on this computer yet, so the walk can install one first.\n'
+  printf '\nThe installer is saved on this computer. To read it before you answer, open another window and type:\nless %s\n' "$(_shown "$TMP_INSTALLER")"
+  printf 'It is %s lines%s.\n' "$INSTALLER_LINES" "${INSTALLER_SUM:+; sha256 $INSTALLER_SUM}"
+  printf '\nIt unpacks Pipulate into %s.\n' "$(_shown "$TARGET")"
+  if ! command -v nix >/dev/null 2>&1; then
+    echo "Nix is not installed yet: the installer adds it first, a change to the whole system that says so when it runs, and then you run this same command again in a new window."
+  fi
+  echo "Outside that folder it writes $OUTSIDE."
+  echo "If there is no ~/.ssh/id_rsa, it saves a read-only deploy key there, sets ssh to use it for github.com in ~/.ssh/config, and adds github.com to ~/.ssh/known_hosts."
+  echo "rm -rf $(_shown "$TARGET") removes the folder; the files outside it stay until you remove them."
+  if [ "$YOLO" -eq 1 ] || [ "${PIPULATE_MCK_ASSUME_YES:-0}" = "1" ]; then
+    printf '\nInstalling now; the question is skipped.\n'
+  else
+    printf '\nType INSTALL and press Enter to install. Anything else stops here.\nINSTALL> '
     ANSWER=""
-    if ! IFS= read -r ANSWER </dev/tty; then
-      echo "" >&2
-      echo "No keyboard to confirm on (/dev/tty is unavailable)." >&2
-      echo "   Nothing was installed. Run the installer yourself:" >&2
-      echo "     bash $TMP_INSTALLER $WHITELABEL" >&2
+    # 2>/dev/null comes BEFORE </dev/tty, so a terminal that cannot be
+    # opened is this branch's to report and not bash's (a receipt of
+    # 2026-10-02 printed "line 324: /dev/tty: No such device or address").
+    if ! IFS= read -r ANSWER 2>/dev/null </dev/tty; then
+      printf '\nThere is no keyboard here to answer on, so nothing was installed. To install by hand, type:\nbash %s %s\n' "$(_shown "$TMP_INSTALLER")" "$WHITELABEL" >&2
       return 1
     fi
-    if [ "$ANSWER" != "INSTALL" ]; then
-      echo "Stopped by human. Nothing was installed."
-      echo "   The installer is still at $TMP_INSTALLER if you want to read it."
+    # INSTALL IN ANY CASE (2026-10-02, the operator's ruling): the word asks
+    # for a deliberate act, and its capitals were never the safety.
+    if [ "$(printf '%s' "$ANSWER" | tr -d '[:space:]' | tr '[:lower:]' '[:upper:]')" != "INSTALL" ]; then
+      echo "Nothing was installed. The installer is still at $(_shown "$TMP_INSTALLER")."
       return 1
     fi
   fi
@@ -350,7 +350,6 @@ CARD
     echo "The installer exited $INSTALL_RC. Nothing further attempted." >&2
     return 1
   fi
-  DID_INSTALL=1
   return 0
 }
 if [ -z "$ROOT" ]; then
@@ -359,35 +358,16 @@ if [ -z "$ROOT" ]; then
   fi
   resolve_checkout
   if [ -z "$ROOT" ]; then
-    cat <<'CARD'
---------------------------------------------------------------
-   INSTALL FINISHED, BUT NO WORKSHOP IS VISIBLE YET
---------------------------------------------------------------
- The most common reason is that Nix was just bootstrapped and
- needs a fresh window before it is on your PATH.
- Close this window, open a NEW one, and run the same command
- again. Nothing needs to be undone first.
---------------------------------------------------------------
-CARD
+    # The usual reason: the installer has just added Nix, and this window
+    # opened before it did; the installer's own lines above say so.
+    printf '\nNext: open a new window and run the same command again.\n'
     exit 1
   fi
 fi
 cd "$ROOT"
 PY="$ROOT/.venv/bin/python"
 if [ ! -x "$PY" ]; then
-  cat <<CARD
---------------------------------------------------------------
-   WORKSHOP FOUND, BUT NOT HYDRATED YET
---------------------------------------------------------------
- $ROOT
- The Python environment has not been built there yet. Build it
- once, the normal way, then re-run this launcher:
-   cd $ROOT
-   nix develop
- (That first entry is also what turns the folder into a git
- repository and starts the auto-updates.)
---------------------------------------------------------------
-CARD
+  printf 'The workshop at %s is not built yet.\nNext: cd %s && nix develop, then type walk.\n' "$(_shown "$ROOT")" "$(_shown "$ROOT")" >&2
   exit 1
 fi
 # --- THE WALK ROUTER (v0.6.0): a word routes; a flag does not ---------------
@@ -445,23 +425,33 @@ for TRAIL_DIR in $TRAIL_SEARCH_DIRS; do
   fi
 done
 if [ -z "$TRAIL_PATH" ]; then
-  echo "Error: no trail named '${TRAIL_NAME}' in any search lane." >&2
-  echo "   Searched, in order:" >&2
-  for TRAIL_DIR in $TRAIL_SEARCH_DIRS; do
-    echo "     $ROOT/$TRAIL_DIR/" >&2
+  # EVERY WORD THAT WORKS, ONCE (2026-10-02, the operator's ruling): routed
+  # walks first, the way the router looks, then trails lane by lane; a name
+  # two lanes share is listed once, and only names the check above accepts
+  # are listed. No ls in a pipe: a glob that matches nothing fails the -f
+  # test and is skipped, so a missing lane cannot stop the list (the
+  # 2026-08-05 conviction, answered without ls).
+  WORDS=""
+  for LIST_DIR in $WALK_SEARCH_DIRS $TRAIL_SEARCH_DIRS; do
+    [ -d "$LIST_DIR" ] || continue
+    for LIST_FILE in "$LIST_DIR"/*; do
+      [ -f "$LIST_FILE" ] || continue
+      LIST_WORD="$(basename "$LIST_FILE")"
+      case "$LIST_DIR" in
+        */walks) [ -x "$LIST_FILE" ] || continue ;;
+        *)
+          case "$LIST_WORD" in
+            *.json|*.yaml) LIST_WORD="${LIST_WORD%.*}" ;;
+            *) continue ;;
+          esac
+          ;;
+      esac
+      printf '%s' "$LIST_WORD" | grep -qE '^[a-z][a-z0-9_]*$' || continue
+      case " $WORDS " in *" $LIST_WORD "*) continue ;; esac
+      WORDS="${WORDS:+$WORDS }$LIST_WORD"
+    done
   done
-  echo "   Available:" >&2
-  for TRAIL_DIR in $TRAIL_SEARCH_DIRS; do
-    # set -euo pipefail + a missing lane = the script DIES HERE. An
-    # unmatched glob makes bash hand ls the literal pattern, ls exits 2,
-    # pipefail propagates it, set -e kills the run -- so the FIRST absent
-    # lane suppressed the listing for every lane after it. Convicted
-    # 2026-08-05 by the AFTER receipt: "Available:" printed with nothing
-    # under it while four YAMLs sat in assets/trails. Guard the directory
-    # AND neutralize the pipeline; either alone is enough, both is cheap.
-    [ -d "$TRAIL_DIR" ] || continue
-    ls "$TRAIL_DIR"/*.json "$TRAIL_DIR"/*.yaml 2>/dev/null | sed 's#^#     #' >&2 || true
-  done
+  echo "No walk is named $TRAIL_NAME. Type walk and one of these: $WORDS" >&2
   exit 1
 fi
 # Which lane won is a receipt only when it is a surprise: a private trail
@@ -482,7 +472,7 @@ esac
 # file that holds addresses -- so the ring below can treat a declared name as
 # satisfied. The rider loads the VALUES, environment over file, and is the
 # verdict; this ring stays a SUBSET of it, names and never verdicts, exactly
-# as the url_env ring already is. The line prints only when a file resolved.
+# as the url_env ring already is. The rider says which file it read.
 TRAIL_STEM="${TRAIL_PATH%.json}"
 TRAIL_STEM="${TRAIL_STEM%.yaml}"
 EXPORTS_PATH="$EXPORTS_OVERRIDE"
@@ -492,13 +482,10 @@ fi
 EXPORTS_DECLARED=""
 if [ -n "$EXPORTS_PATH" ]; then
   if [ ! -f "$EXPORTS_PATH" ]; then
-    echo "Error: --exports names a file that is not there: $EXPORTS_PATH" >&2
-    echo "   Relative paths resolve from the workshop root: $ROOT" >&2
+    echo "This walk cannot run: --exports names $EXPORTS_PATH, which is not there. A relative path starts at the workshop folder." >&2
     exit 2
   fi
   EXPORTS_DECLARED="$(grep -oE '^[[:space:]]*(export[[:space:]]+)?[A-Z][A-Z0-9_]*=' "$EXPORTS_PATH" | sed -E 's/^[[:space:]]*(export[[:space:]]+)?//; s/=$//' || true)"
-  EXPORTS_COUNT="$(printf '%s\n' "$EXPORTS_DECLARED" | grep -c . || true)"
-  echo "Exports resolved: $EXPORTS_PATH ($EXPORTS_COUNT name(s) declared; the rider loads them, environment wins)"
 fi
 # The trail declares its own url_env names; read them from the trail. Trails
 # are JSON, so json.load is the exact parser for the authoring format.
@@ -521,15 +508,17 @@ MISSING=""
 for VAR in $URL_ENVS; do
   printenv "$VAR" >/dev/null 2>&1 && continue
   printf '%s\n' "$EXPORTS_DECLARED" | grep -qx "$VAR" && continue
+  case "$MISSING " in *" $VAR "*) continue ;; esac
   MISSING="$MISSING $VAR"
 done
 if [ -n "$MISSING" ]; then
-  echo "This trail needs URL(s) you have not set:" >&2
+  # THE RIDER'S WORDS (2026-10-02): this ring refuses first, so the menu
+  # never opens for a walk that cannot run, and it says exactly what the
+  # rider would, so one situation has one wording.
+  printf '\nThis walk needs addresses that are not set. Type these lines with the real addresses, or put them in %s.exports.sh, then start the walk again:\n' "$TRAIL_STEM" >&2
   for VAR in $MISSING; do
-    echo "     export $VAR=\"https://...\"" >&2
+    printf "export %s='https://...'\n" "$VAR" >&2
   done
-  echo "   Set them and re-run. The trail names them; this script does not guess." >&2
-  echo "   Or put them in $TRAIL_STEM.exports.sh (the shape bookmark_import.py writes), or name a file with --exports=PATH." >&2
   exit 2
 fi
 # --- The ride needs the pinned chromium and the shell's LD_LIBRARY_PATH.
@@ -548,9 +537,7 @@ if [ -z "${IN_NIX_SHELL:-}" ]; then
     # yet, so the rider's last line names the way in (2026-10-02).
     export PIPULATE_WALK_OUTSIDE=1
   else
-    echo "Not inside the workshop, and 'nix' is not on PATH." >&2
-    echo "   Enter the workshop first:" >&2
-    echo "     cd $ROOT && nix develop .#quiet" >&2
+    echo "This window cannot find nix. Open a new window, type cd $(_shown "$ROOT") && nix develop, then type walk." >&2
     exit 1
   fi
 fi
