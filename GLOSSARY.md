@@ -2511,10 +2511,11 @@ Entries are alphabetical, numbers spelled as spoken.
     mothercat assets/trails/first_context.yaml      # you, expert, authenticated
     mothercat <trail> --dry-narrate                 # the rehearsal; nothing moves
     RIDE                                            # mck.sh's one-shot go-ahead
-    CAPTURE                                         # the fence token, at every stop
-    DECANT                                          # the egress fence, once, at the end
+    CAPTURE                                         # RETIRED 2026-10-02: Enter, after the bell, at every page
+    DECANT                                          # RETIRED 2026-10-02: every walk hands off with nothing to type
 
 ### The four moves (plus the fifth nobody names)
+**RULED 2026-10-02:** the CAPTURE token and the DECANT word are retired. A page waits for Enter after the bell: keys typed early are dropped, any line is the signal, EOF refuses, and Ctrl+C stops the walk. Every walk then saves its checked summary and tries the clipboard with nothing to type; the secret and private-name checks still withhold it on a hit. CAPTURE stays the name of the machine's move. The paragraphs below record both fences as they were.
 **SETTLE** -- *human-only, non-deterministic.* Look at the page; clear the auth,
 the CAPTCHA, the 2FA if the stop has one. The machine never synthesizes a
 session; it INHERITS one. Passive antibody transfer.
