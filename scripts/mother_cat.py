@@ -164,7 +164,7 @@ WALK_RULES = (
     "When you hear the bell, the page has loaded: look it over, come back to the "
     "command line and press Enter. Leave the browser open; Enter saves the page "
     "and closes it. "
-    "Ctrl+C stops the walk.\n"
+    "Ctrl+C can stop the walk.\n"
     "At the end a checked summary is saved on this computer and copied to your "
     "clipboard. Nothing is sent anywhere."
 )
