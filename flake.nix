@@ -968,7 +968,13 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # bare dollar followed by a letter is literal and safe, which is why
           # $PWD and $HOME below reach bash intact. Two adjacent single quotes
           # are the other structural hazard and appear nowhere here.
-          NIX_READING=$(LD_LIBRARY_PATH="" nix --version 2>/dev/null | tail -1 | sed 's/^nix //')
+          # THE VERSION LINE UNDER LIX (2026-10-02): Lix answers nix --version
+          # with several lines, its version first and a Features line last, so
+          # tail -1 would print the features there. The version is the line
+          # that starts with nix and a space under Nix, Determinate Nix and
+          # Lix alike, so that line is kept and the rest dropped. Read off a
+          # published comparison, not yet witnessed on a Lix machine.
+          NIX_READING=$(LD_LIBRARY_PATH="" nix --version 2>/dev/null | sed -n 's/^nix //p' | head -1)
           if [ -z "$NIX_READING" ]; then NIX_READING="nix: no reading"; fi
           PY_READING=$(python -V 2>&1)
           if [ -z "$PY_READING" ]; then PY_READING="python: no reading"; fi
@@ -1044,7 +1050,17 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # later entry. The file test spares later entries an import; the
           # module rereads the answer and decides, so a drift between the two
           # costs a second, never a second question.
-          if [ ! -f "$HOME/.config/pipulate/voice" ] && [ -z "''${PIPULATE_VOICE:-}" ] && [ -t 0 ] && [ -t 1 ]; then
+          # AMENDED 2026-10-02 (THE DOOR SPEAKS, the operator's ruling 3: the
+          # welcome shows once per install, even on a computer that answered
+          # the question in an earlier install): an install made through a
+          # door carries .door, and until first_contact() writes welcomed=
+          # into it, this gate opens there too. The question is not asked
+          # again; the door's welcome prints, and is spoken if the recorded
+          # answer is yes. A git clone has no .door, so nothing changes there.
+          VOICE_GATE=shut
+          if [ ! -f "$HOME/.config/pipulate/voice" ]; then VOICE_GATE=open; fi
+          if [ -f .door ] && ! grep -q '^welcomed=' .door; then VOICE_GATE=open; fi
+          if [ "$VOICE_GATE" = open ] && [ -z "''${PIPULATE_VOICE:-}" ] && [ -t 0 ] && [ -t 1 ]; then
             case "''${PIPULATE_BOOT_MENU:-1}" in
               0|no|off|false) ;;
               *) python imports/voice_synthesis.py first || true ;;
@@ -1117,7 +1133,15 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
               CLOSE_CMD="clicking the X"
             fi
             TTS_DIR_NAME=$(basename "$PWD")
-            TTS_MSG="Pipulate is installed. Starting JupyterLab and the server. To quit when you are done, forcibly close this window using $CLOSE_CMD. To run it again later, open a new one, type C, D, space, $TTS_DIR_NAME, hit enter, then type nix develop, then J, N. JupyterLab will appear first. Completing the onboarding will unlock the main application tab. Get ready to hit Shift Enter all the way down."
+            # THE FOLDER SAID ALOUD (2026-10-02, the operator's ruling 5): Piper
+            # reads a folder name as one word, and qamyai comes out sounding
+            # like cam-ee-eye, so the message spells it a letter at a time with
+            # commas between, the way it already says C, D. A dash, an
+            # underscore and a dot are said as words, because spelled alone
+            # they make no sound. Read through the phonemizer inside
+            # piper-tts 1.6.0 in a sandbox, not heard on a computer here.
+            TTS_DIR_SPELLED=$(printf '%s' "$TTS_DIR_NAME" | sed 's/./&, /g; s/, $//; s/-/dash/g; s/_/underscore/g; s/[.]/dot/g')
+            TTS_MSG="Pipulate is installed. Starting JupyterLab and the server. To quit when you are done, forcibly close this window using $CLOSE_CMD. To run it again later, open a new one, type C, D, space, $TTS_DIR_SPELLED, hit enter, then type nix develop, then J, N. JupyterLab will appear first. Completing the onboarding will unlock the main application tab. Get ready to hit Shift Enter all the way down."
             python -c "import logging; logging.getLogger('piper').setLevel(logging.ERROR); from imports.voice_synthesis import chip_voice_system as cvs; cvs.speak_text('$TTS_MSG')" > /dev/null 2>&1 &
           fi
 
@@ -1607,6 +1631,20 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
             fi
           }
           reseal() { "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/imports/ascii_displays.py" --reseal; }
+          # OPERATION STICK BUG (2026-10-02, the operator's ask: the letters
+          # osb on a menu, a dull name over a loud screen). The one word that
+          # is a blank stare on purpose, THE BLANK STARE RULE's single
+          # exception, because looking like a twig is the camouflage. Typed by
+          # a human, so a function. scripts/stick_bug.py takes its readings
+          # at the moment it prints them, then tells a story that says it is
+          # one.
+          osb() {
+            if [ -f "$PIPULATE_ROOT/scripts/stick_bug.py" ]; then
+              "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/stick_bug.py" "$@"
+            else
+              echo "osb: scripts/stick_bug.py has not landed in this checkout."
+            fi
+          }
           tools() {
             if [ "$#" -eq 0 ]; then
               (cd "$PIPULATE_ROOT" && .venv/bin/python cli.py mcp-discover)
