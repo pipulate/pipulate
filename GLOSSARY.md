@@ -417,12 +417,17 @@ Entries are alphabetical, numbers spelled as spoken.
 - **Stick Bug (Operation)** -- *the disappearing instrument.* Inert and
   unnoticed until summoned; the human sees a browser and a voice, and the
   machinery under them wins by vanishing.
-  AMENDED 2026-10-02 (PENDING its menu line and a witness): osb is its
-  word, the one abbreviation the workshop prints on purpose, THE BLANK
-  STARE RULE's single exception, because looking like a twig is the
-  camouflage. Typed, it runs scripts/stick_bug.py, the one loud screen in
-  a quiet workshop: readings taken at the moment they print, then six
-  transmissions that say they are a story.
+  AMENDED 2026-10-02 (WITNESSED at deed 1779): osb is its word, the one
+  abbreviation the workshop prints on purpose, THE BLANK STARE RULE's
+  single exception, because looking like a twig is the camouflage. Typed,
+  it runs scripts/stick_bug.py, the one loud screen in a quiet workshop:
+  readings taken at the moment they print, then six transmissions that
+  say they are a story. THE WITNESS: typed by hand on Prime, it printed
+  the moving twig, the banner, nine readings (clock 1,790,910,458) and
+  all six transmissions, ending on Type menu to go back to being a
+  twig.; in the compile lane, scripts/stick_bug.py --readings printed the
+  same nine rows ten minutes later, rc=0. Its menu line, the last row of
+  all, rode the dismount's car; the next all is its witness.
 - **Straddle** -- *before/after measurement bracketing execution.* One probe,
   two receipts, patch (and ignition) between; the binary-search causal
   boundary that removes ordering ambiguity.
@@ -587,7 +592,7 @@ Entries are alphabetical, numbers spelled as spoken.
   fourth was a logger line. The mechanical test found five offenders that
   GENERATED-NOT-AUTHORED could not see, which is the evidence that this rule
   is load-bearing rather than that rule with a microphone.
-- **The Blank Stare Rule** -- (banked 2026-09-28, the operator's words): every word a newcomer types is the plain name of the thing it does (walk, connect, context, prompt, compile, about, menu), and an abbreviation is an alias behind it, never the word the menu prints. The answer to "your system is unusual" is the objector's own word, typed into a text file, and a blank stare: which part is difficult, the word connect, or that a word can be written down where a hand-motion in a browser cannot? Operation Stick Bug's rule for names: the instrument vanishes when it is called what it is. Sibling of THE NEXT ACTION, NOT THE MACHINERY.
+- **The Blank Stare Rule** -- (banked 2026-09-28, the operator's words): every word a newcomer types is the plain name of the thing it does (walk, connect, context, prompt, compile, about, menu), and an abbreviation is an alias behind it, never the word the menu prints. The answer to "your system is unusual" is the objector's own word, typed into a text file, and a blank stare: which part is difficult, the word connect, or that a word can be written down where a hand-motion in a browser cannot? Operation Stick Bug's rule for names: the instrument vanishes when it is called what it is. Sibling of THE NEXT ACTION, NOT THE MACHINERY. ONE EXCEPTION, on purpose (2026-10-02): osb, Operation Stick Bug's own word, printed last by all and never by the short menu, because a name like a twig is its camouflage.
 - **The Caboose-Verdict Corollary** -- (banked 2026-08-01, self-convicted one turn
   later): a prompt written for the NEXT turn may name what to CHECK; it may
   not pre-commit what a printout MEANS, because the caboose is written before

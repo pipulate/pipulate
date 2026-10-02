@@ -64,6 +64,10 @@ ALL_WORDS = (
     ("jn", "start JupyterLab and Pipulate, JupyterLab first."),
     ("pu", "start the Pipulate server."),
     ("reseal", "fix the ASCII art checksums after you edit the art."),
+    # OPERATION STICK BUG (2026-10-02): osb is THE BLANK STARE RULE's one
+    # exception, a twig of a name over the one loud screen, so it rides
+    # this list, last, and the short list never prints it.
+    ("osb", "operation stick bug."),
 )
 
 ABOUT_LINES = (
