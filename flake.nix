@@ -2108,7 +2108,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
             echo "   \"A friend who runs Pipulate compiled this for me. Please open it and follow the instructions inside.\""
           }
           alias pine='(cd "$PIPULATE_ROOT" && nvim +/"THE PINBOARD" foo_files.py)'
-          alias chop='(cd "$PIPULATE_ROOT" && nvim foo_files.py)'
+          alias router='(cd "$PIPULATE_ROOT" && nvim foo_files.py)'
           alias flake='(cd "$PIPULATE_ROOT" && nvim flake.nix)'
           alias webclip='(cd "$PIPULATE_ROOT" && python scripts/webclip_2_markdown.py)'
           alias forest='(cd "$PIPULATE_ROOT" && vim remotes/honeybot/scripts/forest.py)'
