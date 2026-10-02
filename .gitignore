@@ -80,6 +80,10 @@ foo.txt
 service_account.txt
 service-account-key.json
 whitelabel.txt
+# THE DOOR'S ROW (2026-10-02): install.sh writes .door into each install.
+# Per-install state, like whitelabel.txt: git status never lists it and
+# git add -A never stages it.
+.door
 
 # Mac & vendor crap
 .cursor/
