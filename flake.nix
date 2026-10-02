@@ -1756,8 +1756,8 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # AN ALIAS, per THE ALIAS-DISPATCH RULE and the mothercat precedent
           # directly above: pure prefix dispatch, no branch, typed only by a
           # human. Nothing invokes it on anyone's behalf, and it is never echoed
-          # as a probe -- a bare walk runs a ninety-second spoken rehearsal and
-          # then blocks on a terminal, which is an actuator, not a reading.
+          # as a probe -- a bare walk prints a menu and waits on
+          # the keyboard, and a walk opens a browser: an actuator, not a reading.
           # THE ROOT WRAPPER IS THE ONE DELEGATOR. This points at the repo-root
           # walk file rather than at the launcher directly, so rungs 4 and 5 run
           # byte-identical code to rungs 2 and 3 and the launcher path lives in
