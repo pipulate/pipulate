@@ -651,6 +651,18 @@ async def _selenium_capture(params: dict, checkpoint=None) -> dict:
             else:
                 raise
 
+        # THE PAGE THE SERVER SENDS NOW (2026-10-02, read off a walk whose
+        # headers.json carried the Date and ETag of a fetch three hours older
+        # than the walk): a persistent profile keeps an HTTP cache, and a page
+        # sent without Cache-Control is reused from it, without asking the
+        # server, for a tenth of its age since Last-Modified. The walk saved
+        # that copy and called it the wire. The cache is off for every capture;
+        # cookies and sign-ins are kept elsewhere and are untouched.
+        try:
+            driver.execute_cdp_cmd("Network.enable", {})
+            driver.execute_cdp_cmd("Network.setCacheDisabled", {"cacheDisabled": True})
+        except Exception as exc:
+            logger.warning(f"⚠️ Could not turn off the browser cache; this page may come from it: {exc}")
         logger.info(f"Navigating to: {url}")
         driver.get(url)
 
