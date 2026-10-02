@@ -1,9 +1,9 @@
-#  ____                            _     _____       
-# |  _ \ _ __ ___  _ __ ___  _ __ | |_  |  ___|   _  Copyright 2026 by Mike Levin https://MikeLev.in/
-# | |_) | '__/ _ \| '_ ` _ \| '_ \| __| | |_ | | | | Pipulate's Prompt Fu Context Compiler is under
-# |  __/| | | (_) | | | | | | |_) | |_  |  _|| |_| | Creative Commons Attribution (CC BY) license.
-# |_|   |_|  \___/|_| |_| |_| .__/ \__| |_|   \__,_| Pin-up recursive self-improvement loops 🔎🔎
-#                           |_|
+#   ____            _            _      ____                      _ _           
+#  / ___|___  _ __ | |_ _____  _| |_   / ___|___  _ __ ___  _ __ (_) | ___ _ __    Copyright 2026 by Mike Levin https://MikeLev.in/ 
+# | |   / _ \| '_ \| __/ _ \ \/ / __| | |   / _ \| '_ ` _ \| '_ \| | |/ _ \ '__|   Pipulate's Prompt Fu Context Compiler is under   
+# | |__| (_) | | | | ||  __/>  <| |_  | |__| (_) | | | | | | |_) | | |  __/ |      Creative Commons Attribution (CC BY) license.    
+#  \____\___/|_| |_|\__\___/_/\_\\__|  \____\___/|_| |_| |_| .__/|_|_|\___|_|      Pin-up recursive self-improvement loops 🔎🔎     
+#                                                          |_|                  
 AI_PHOOEY_CHOP = r"""#                                                                /)    _________  
 # =======================================================================       /)\__//    /         \   
 # WELCOME TO THE BOOK OF FUTURE-PROOFING (Curriculum & Router)              ___(/_ 0 0    |  Chase a  |
@@ -11,12 +11,7 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # Hello, AI -- this is a progressive book-reveal every time.                 \  )   ""\    |  a what?  |
 # =======================================================================    |__>-\_>_>    \_________/ 
 
-> The reason for the AI chat discussion interface is to eliminate the need for
-> discussions by compiling the perfect context to solve whatever puzzle in that
-> one magical shot that gives the LLM everything it needs to know to do it. You
-> perfectly package reproducible perfection. Output may vary based on the model
-> you choose, but the AI will never struggle with anything it doesn't have but
-> needs. Everything it needs is there in the 1-shot prompt and that's the point.
+# Reproduce context into zip-files for Quality Assurance and portability between models.
 
 # > Here is my hardware  
 # > Here is my state  
@@ -1966,30 +1961,6 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # -c), a few hundred tokens that show the corpus's shape, and one project's
 # whole set (botify --rules org/project) shows its depth; the whole word
 # rides a compile of its own, context.txt carrying that one line and bjj -n.
-#  _____ _           _           _   _                      
-# |  ___(_)_ __   __| |   __ _  | | | | ___  _ __ ___   ___ 
-# | |_  | | '_ \ / _` |  / _` | | |_| |/ _ \| '_ ` _ \ / _ \
-# |  _| | | | | | (_| | | (_| | |  _  | (_) | | | | | |  __/
-# |_|   |_|_| |_|\__,_|  \__,_| |_| |_|\___/|_| |_| |_|\___|
-                                                          
-# I NEED TO CONTINUE RESEARCHING AGENTIC COMMERCE ON THE MAJOR PLATFORMS
-# !https://support.botify.com/en/articles/9108593-creating-segments
-# !https://help.shopify.com/en/manual/online-sales-channels/agentic-storefronts/products
-# !https://www.salesforce.com/products/what-is-agentforce-360/
-# !https://www.salesforce.com/blog/playbook/agentic-ai/
-
-# apps/240_simon_mcp.py  # [8,886 tokens | 44,543 bytes]
-# apps/010_introduction.py  # [2,327 tokens | 10,320 bytes]
-# apps/025_aspect.py  # [1,437 tokens | 6,233 bytes]
-# apps/050_documentation.py  # [30,795 tokens | 143,127 bytes]
-# apps/230_dev_assistant.py  # [25,808 tokens | 124,873 bytes]
-
-# GOOGLE SEARCH CONSOLE STUFF
-# scripts/gsc/generate_categories.py  # [1,477 tokens | 6,880 bytes]
-# scripts/gsc/gsc_category_analysis.py  # [6,947 tokens | 29,085 bytes]
-# scripts/gsc/gsc_keyworder.py  # [3,410 tokens | 14,355 bytes]
-# scripts/gsc/gsc_page_query.ipynb  # [7,842 tokens | 28,465 bytes]
-# scripts/gsc/gsc_top_movers.py  # [8,003 tokens | 34,690 bytes]
 
 """
 #   ____          _                     ____ _   _  ___  ____      
@@ -2717,8 +2688,6 @@ MATCHBOOK_CHOP = r"""
 # copy-if-absent, imports/ refresh when the asset is newer -- with a probe
 # proving a deliberately staled working copy is actually replaced, and
 # `exit` then `nix develop` named as the ignition.
-
-
 
 
 # NO PLACEHOLDERS IN PASTE-READY LINES (convicted 2026-08-30, both lanes): <NAME> in a shell line is a redirection from a file called NAME -- "No such file or directory" -- silent in the compile lane, loud in the operator lane, dead in both. Write "$NAME" and put `export NAME=...` once on the line above; a variable runs verbatim, a placeholder needs an edit the human will not make.
