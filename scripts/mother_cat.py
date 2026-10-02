@@ -371,7 +371,7 @@ def _router_line(path, what):
     return text
 
 
-def _write_walk_router(archive_path, preview_path=None, first=None):
+def _write_walk_router(archive_path, preview_path=None, first=None, withheld=False):
     """Write one local selection; never read, disclose or compile its evidence.
 
     THE ROUTER IS THE NEWCOMER'S FILE (2026-09-16): `context` opens it, so it is
@@ -434,6 +434,19 @@ def _write_walk_router(archive_path, preview_path=None, first=None):
             "# Leave the # in front of it until an AI says it needs it, then read it first.",
         ]
         listing = [line for line in (intro, preview, f"# {source}") if line]
+    elif withheld:
+        # THE ARCHIVE STAYS COMMENTED WHEN THE CHECKS SAY NO (2026-10-02, read
+        # off the code before the first PocketRender walk; not yet witnessed).
+        # A ride's first write lists captures.md before any summary exists.
+        # When the checks withheld the summary, nothing rewrote that line, so
+        # the next compile would reach for the raw archive the checks had just
+        # refused. _decant_to_clipboard rewrites the block through here.
+        legend += [
+            "# The checks withheld this walk's summary, so nothing from it is listed.",
+            "# captures.md is the raw UNSANITIZED archive and holds what they found.",
+            "# Leave the # in front of it.",
+        ]
+        listing = [line for line in (intro, f"# {source}") if line]
     else:
         legend.append(
             "# No checked preview was saved, so this is the whole UNSANITIZED archive. Review before compiling."
@@ -581,6 +594,11 @@ def _decant_to_clipboard(payload, archive_path=None):
     if leaks or secrets:
         print(f"\nSummary withheld: the checks found {sum(n for _, n in leaks)} "
               f"private name(s) and {len(secrets)} secret(s), so nothing was copied.")
+        if archive_path is not None:
+            try:
+                _write_walk_router(archive_path, withheld=True)
+            except Exception as exc:
+                print(f"context.txt was not updated ({type(exc).__name__}: {exc}).")
         return False
     # AFTER the baseline checks: one string, two destinations.
     target = None
