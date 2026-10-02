@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "name": "public_walk",
-  "description": "This walk opens three pages. You do not need to click anything. At each page, return here and wait for the CAPTURE prompt. Type CAPTURE and press Enter.",
+  "description": "Three pages open in a browser, one at a time. There is nothing to click.\nWhen a page has loaded, type CAPTURE here and press Enter.",
   "defaults": {
     "take_screenshot": false,
     "headless": false,
@@ -16,7 +16,7 @@
     {
       "name": "the_word",
       "label": "The capture word",
-      "guidance": "Opening page one in the browser. Leave the browser open; it closes on its own after capture. When the page has settled, return here and type CAPTURE.",
+      "guidance": "Page 1 of 3. The first browser takes a few seconds to open.",
       "url": "https://qamy.ai/walk/1/",
       "target_slot": "slot_one",
       "harvest_regex": ".+",
@@ -29,7 +29,7 @@
     {
       "name": "the_receipt",
       "label": "Page two",
-      "guidance": "Opening page two in the browser. Leave the browser open; it closes on its own after capture. When the page has settled, return here and type CAPTURE.",
+      "guidance": "Page 2 of 3.",
       "url": "https://qamy.ai/walk/2/",
       "target_slot": "slot_two",
       "harvest_regex": ".+",
@@ -42,7 +42,7 @@
     {
       "name": "the_two_pages",
       "label": "Two versions of one page",
-      "guidance": "Opening the last page in the browser. Leave the browser open; it closes on its own after capture. When the page has settled, return here, type CAPTURE, and read the result.",
+      "guidance": "Page 3 of 3.",
       "url": "https://qamy.ai/walk/3/",
       "target_slot": "slot_three",
       "harvest_regex": ".+",
