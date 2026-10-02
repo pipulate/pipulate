@@ -317,11 +317,12 @@ def _capture_checkpoint(stdin=None, stdout=None, before_prompt=None) -> dict:
             else:
                 output_stream.write(
                     "\nWhen the page you want is ready, type CAPTURE and press Enter.\n"
+                    "Any other response aborts without capturing artifacts.\n"
                 )
-            output_stream.write(
-                "Any other response aborts without capturing artifacts.\n"
-                "CAPTURE> "
-            )
+            # A CALLER'S HOOK OWNS EVERYTHING BEFORE THE PROMPT (2026-10-02):
+            # the default sentences print only when no hook was given, so the
+            # bytes on that path are unchanged and the walk shows just the prompt.
+            output_stream.write("CAPTURE> ")
             output_stream.flush()
             response = input_stream.readline()
         except KeyboardInterrupt:
@@ -604,7 +605,9 @@ async def _selenium_capture(params: dict, checkpoint=None) -> dict:
             temp_profile = True
             logger.info(f"👻 Using temporary profile: {profile_path}")
         
-        if verbose:
+        # A guided walk's own step line says the browser is opening, so this
+        # prints only for unattended captures (2026-10-02, say a thing once).
+        if verbose and not interactive:
             print("Opening the browser; waiting for the page...", flush=True)
         music_proc = _start_scrape_music(verbose=verbose)
         logger.info(f"🚀 Initializing undetected-chromedriver (Headless: {headless})...")
