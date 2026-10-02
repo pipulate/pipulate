@@ -810,6 +810,24 @@ Entries are alphabetical, numbers spelled as spoken.
   check can be READ there, because the receipt is a recording and a
   recording does not expire. The credential is the perishable thing; the
   artifact is not.
+- **The Declared-Fixture Relief Valve** -- (banked 2026-08-28,
+  hand-edit-convicted): a guard that fires on the ONE activity this repo
+  performs constantly -- writing about credentials -- is a guard on its way
+  to being deleted. CONVICTION: four copies of one Slack probe fixture in a
+  published article blocked every compile that included it, and the operator
+  reached past the gate and hand-edited a live disarm into the working tree
+  TWICE to get a payload out. That is precisely how SECRET_TRIPWIRES became
+  [] the first time. THE VALVE: a marker word (TRIPWIRE_FIXTURE_MARKERS)
+  riding INSIDE the matched value exempts it. A vendor-issued body is base62
+  noise and cannot contain the literal word "synthetic", so the exemption is
+  structurally incapable of clearing a live secret; a LINE-level check WOULD
+  be capable of it, which is why one is not offered. THE VALVE IS LOUD:
+  scan_secrets prints one line per exemption, so armed-and-exempting and
+  armed-and-silent never print the same thing -- THE SILENT-PASS PROBLEM does
+  not return through the valve built to prevent it. WHERE TO TUNE, because
+  the refusal now says so itself: patterns in SECRET_TRIPWIRES, exemptions in
+  TRIPWIRE_FIXTURE_MARKERS, both module-level in prompt_foo.py; scan_secrets
+  is the CONSUMER and is edited only to change matching logic.
 - **Delta-Not-Absolute Counter Rule** -- *predict a count as a delta, never as
   an absolute.* Banked 2026-07-20. A grep -c probe predicts reliably only as a
   DELTA straddling the patch; its absolute value requires a hand-run baseline
