@@ -330,6 +330,17 @@ def _capture_checkpoint(stdin=None, stdout=None, before_prompt=None) -> dict:
             # the prompt itself says what Enter does.
             output_stream.write("Press Enter to save the page. ")
             output_stream.flush()
+            # TYPE-AHEAD IS NOT THE SIGNAL (2026-10-02, read off a walk whose
+            # third page printed "Press Enter to save the page. Saved." on one
+            # line): an Enter pressed while the page was still loading waited
+            # in the terminal and answered this prompt the moment it appeared.
+            # Keys typed before the prompt are dropped, so only an Enter after
+            # the bell counts. A stream that is not a terminal is left alone.
+            try:
+                import termios
+                termios.tcflush(input_stream.fileno(), termios.TCIFLUSH)
+            except Exception:
+                pass
             response = input_stream.readline()
         except KeyboardInterrupt:
             return {
@@ -643,7 +654,7 @@ async def _selenium_capture(params: dict, checkpoint=None) -> dict:
         logger.info(f"Navigating to: {url}")
         driver.get(url)
 
-        # A human-guided ride already has the CAPTURE fence as its settle
+        # A human-guided ride already has the Enter fence as its settle
         # detector. The 20-second staleness wait exists for unattended sigil
         # scrapes, where a security interstitial may reload underneath us.
         if not interactive:
