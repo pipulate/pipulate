@@ -83,7 +83,7 @@
 #   PIPULATE_TRAIL_*_URL      pre-set any stop URL; built-in defaults use :=
 #                             and therefore never override you
 #
-# Plain invocation offers Practice walk, Walk the walk, or Exit before narration.
+# Plain invocation offers Practice, Sample walk, Select a walk, or Exit before narration.
 # FLAGS:
 #   --exports=PATH  the exports file for this ride when it is NOT the
 #            <trail>.exports.sh sibling bookmark_import.py writes. This
@@ -468,9 +468,13 @@ if [ -z "$TRAIL_PATH" ]; then
   done
   exit 1
 fi
-# Which lane won is a receipt, not chatter: a Playground trail silently
-# shadowing a tracked one is exactly the surprise this line prevents.
-echo "Trail resolved: $TRAIL_PATH"
+# Which lane won is a receipt only when it is a surprise: a private trail
+# shadowing a tracked one. The bundled lane is the expected answer and says
+# nothing (2026-10-02, the operator's ruling: the ordinary case is silent).
+case "$TRAIL_PATH" in
+  assets/trails/*) ;;
+  *) echo "Trail resolved: $TRAIL_PATH" ;;
+esac
 # --- EXPORTS FILE (2026-09-05): the same derivation the rider runs ---------
 # bookmark_import.py writes <name>.exports.sh beside <name>.walk.md and
 # walk_compile.py puts <name>.json beside both, so the file a trail needs is
@@ -579,11 +583,6 @@ run_rider() {
 # player left inherited stdin nonblocking. Both rehearsals get /dev/null,
 # not the menu or caller input; fd 3 is closed in the child as well. This
 # does not change shared voice callers or the real ride's /dev/tty input.
-if [ -n "$INTRO_CONTRACT" ]; then
-  printf '\n%s\n' "$INTRO_CONTRACT"
-else
-  printf '\nCAPTURE saves each page. DECANT asks before saving a summary or copying it.\n'
-fi
 if [ "$YOLO" -eq 1 ]; then
   echo "Starting the real walk. CAPTURE is still required at each page."
 elif [ "${PIPULATE_MCK_ASSUME_YES:-0}" = "1" ]; then
@@ -594,12 +593,14 @@ else
     echo "No keyboard to read here; type walk at the command line." >&2
     exit 1
   fi
+  # NO INDENT IN WHAT A PERSON READS (2026-10-02, the operator's ruling): a
+  # narrow window wraps a long line back to column 0, so an indent only looks
+  # right on a wide one. Blank lines separate; nothing on screen is indented.
   while :; do
-    printf '\nChoose a walk:\n'
-    printf '  1  Practice - read the steps; no pages open.\n'
-    printf '  2  Sample walk - pops pages open.\n'
-    printf '  3  Select a walk.\n'
-    printf '  q  Exit (Enter also exits).\nChoice: '
+    printf '\n1  Practice - read the steps; no pages open.\n'
+    printf '2  Sample walk - pops pages open.\n'
+    printf '3  Select a walk.\n'
+    printf 'q  Exit (Enter also exits).\nChoice: '
     ANSWER=""
     # Preserve failure instead of converting it into a successful stop.
     # Bash read does not expose errno here: EOF and read errors both stop
@@ -642,13 +643,13 @@ else
           done
         done
         printf '\nInstalled walks:\n'
-        printf '  1  Sample walk - pops pages open.\n'
+        printf '1  Sample walk - pops pages open.\n'
         WALK_I=0
         while [ "$WALK_I" -lt "${#WALK_NAMES[@]}" ]; do
-          printf '  %s  %s\n' "$((WALK_I + 2))" "${WALK_NAMES[$WALK_I]}"
+          printf '%s  %s\n' "$((WALK_I + 2))" "${WALK_NAMES[$WALK_I]}"
           WALK_I=$((WALK_I + 1))
         done
-        printf '  q  Back (Enter also goes back).\nChoice: '
+        printf 'q  Back (Enter also goes back).\nChoice: '
         PICK=""
         READ_RC=0
         IFS= read -r PICK <&3 || READ_RC=$?
@@ -682,6 +683,12 @@ else
   done
   exec 3<&-
 fi
+# THE TERMS PRINT ONCE, AFTER THE CHOICE (2026-10-02): before the menu they
+# described a walk nobody had picked. A trail without the intro contract
+# prints nothing here; the rider's own card names CAPTURE and DECANT.
+if [ -n "$INTRO_CONTRACT" ]; then
+  printf '\n%s\n' "$INTRO_CONTRACT"
+fi
 # THE STDIN REDIRECT IS LOAD-BEARING, NOT DECORATION. Under curl|bash this
 # script's stdin is the PIPE, and guided_browser_capture's PRE-LAUNCH gate
 # tests isatty() on the INHERITED descriptor before it opens anything. The
@@ -691,34 +698,18 @@ fi
 RIDE_RC=0
 run_rider </dev/tty || RIDE_RC=$?
 if [ "$RIDE_RC" -eq 0 ]; then
-  cat <<'CARD'
---------------------------------------------------------------
-   CAPTURE RUN FINISHED
---------------------------------------------------------------
- Read the save and copy messages above. Either step can fail.
- Review the summary before sharing it.
- Nothing was sent to a chatbot.
---------------------------------------------------------------
-CARD
-  # THE NEXT WORD IS THE LIST (2026-09-18, Mac receipt): the walk ended and
-  # nothing on the screen named what to type next; door 2's list had scrolled
-  # away ten minutes earlier. Print that same list from the same tuple, so
-  # the card can never drift from the menu. Shell lane only: the words are
-  # functions of the nix shell and do not exist at a plain prompt.
-  if [ -n "${IN_NIX_SHELL:-}" ] && [ -f scripts/boot_menu.py ]; then
-    "$PY" scripts/boot_menu.py --recall
-    echo ""
-  fi
-  if [ "$DID_INSTALL" -eq 1 ]; then
-    echo " One more thing, since this machine was installed just now:"
-    echo "   cd $ROOT && nix develop"
-    echo " That first plain entry turns the folder into a git repository and"
-    echo " starts the auto-updates. The ride did not need it; the future does."
-    echo ""
+  # ONE NEXT WORD (2026-10-02, the operator's ruling: say a thing once; a
+  # what-to-do-next may repeat, shorter). The card here repeated the rider's
+  # save, copy and review lines, and the list recall took nine lines to name
+  # one word. The 2026-09-18 Mac receipt needed the next word on screen; this
+  # line keeps it, last, where the eye lands. Outside the shell the words do
+  # not exist yet, so the line names the way in first.
+  if [ -n "${IN_NIX_SHELL:-}" ]; then
+    printf '\nNext: type context.\n'
+  else
+    printf '\nNext: cd %s && nix develop, then type context.\n' "$ROOT"
   fi
 else
-  echo "The ride stopped early (exit $RIDE_RC)."
-  echo "   Cache files are under browser_cache/. Successfully banked bytes"
-  echo "   are in data/captures/; the rider names the partial archive above."
+  printf '\nThe walk stopped early (exit %s). Pages already captured are saved; the lines above name the file.\n' "$RIDE_RC"
 fi
 exit "$RIDE_RC"
