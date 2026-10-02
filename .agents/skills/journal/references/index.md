@@ -1,8 +1,8 @@
 # The Pipulate journal, indexed
 
-> Auto-generated on 2026-10-01 by `scripts/articles/generate_ai_context.py` and
+> Auto-generated on 2026-10-02 by `scripts/articles/generate_ai_context.py` and
 > rewritten from scratch on every release. If this date looks stale, assume
-> the rest of the repo is newer than this map. 1508 entries indexed.
+> the rest of the repo is newer than this map. 1510 entries indexed.
 
 This repository holds the *machinery*. The *reasoning*, the running journal
 that explains why every piece exists, lives on a separate website and not in
@@ -27,6 +27,8 @@ The first 20 entries include full `index.md` URLs to establish
 the link pattern. All remaining entries are bare slugs. Reconstruct any full
 URL as: `https://mikelev.in/futureproof/{slug}/index.md`
 
+- [2026-10-02] [The Clear Cups Protocol: Auditing MCP Calls with Replayable Receipts](https://mikelev.in/futureproof/clear-cups-protocol-auditing-mcp-calls/index.md)
+- [2026-10-02] [The Door Table and the Moving Twig: Replayable Installs and the Stick Bug Secret](https://mikelev.in/futureproof/the-door-table-and-the-moving-twig/index.md)
 - [2026-10-01] [The Scrollback Rule: Engineering Full-Width Terminal Dividers for Replayable Logs](https://mikelev.in/futureproof/scrollback-rule-clear-x-receipts/index.md)
 - [2026-10-01] [The Prefix Ladder and the Unalias Guard: Replayable Shell Ergonomics in the Age of AI](https://mikelev.in/futureproof/prefix-ladders-and-the-unalias-guard/index.md)
 - [2026-09-30] [Forever-Commands and the Talk Toggle: Replayable CLI Habits in the Age of AI](https://mikelev.in/futureproof/forever-commands-and-the-talk-toggle/index.md)
@@ -45,13 +47,13 @@ URL as: `https://mikelev.in/futureproof/{slug}/index.md`
 - [2026-09-24] [Local Chrome Profile Inventory and Typed Matrix Resolution](https://mikelev.in/futureproof/local-chrome-profile-inventory-and-typed-matrix-resolution/index.md)
 - [2026-09-21] [Local-First Development and Resilience in the Age of AI](https://mikelev.in/futureproof/local-first-resilience-age-of-ai/index.md)
 - [2026-09-20] [The Letting-Go Moment: Building Vim Training Wheels for the Age of AI](https://mikelev.in/futureproof/vim-training-wheels-and-the-letting-go-moment/index.md)
-- [2026-09-20] [Disciplined Forgetting: Scaling AI Context Through a Two-Tier Memory Hierarchy](https://mikelev.in/futureproof/disciplined-forgetting-and-the-memory-hierarchy/index.md)
-- [2026-09-19] [Four Models, One Matchbook: Multi-Model Consensus in the Age of AI](https://mikelev.in/futureproof/four-models-one-matchbook-prompt-fanout/index.md)
 
 ## Compact slug index -- pattern: https://mikelev.in/futureproof/{slug}/index.md
 
 Format: `[date] [size] slug` -- fetch any entry as `https://mikelev.in/futureproof/{slug}/index.md`
 
+- [2026-09-20] [327k] disciplined-forgetting-and-the-memory-hierarchy
+- [2026-09-19] [175k] four-models-one-matchbook-prompt-fanout
 - [2026-09-19] [48k] dual-model-failover-independent-backoff
 - [2026-09-19] [193k] playing-pinball-in-the-age-of-ai-replayable-workflow-guide
 - [2026-09-19] [72k] color-blue-pipe-inspecting-code
