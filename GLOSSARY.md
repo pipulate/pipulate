@@ -417,6 +417,12 @@ Entries are alphabetical, numbers spelled as spoken.
 - **Stick Bug (Operation)** -- *the disappearing instrument.* Inert and
   unnoticed until summoned; the human sees a browser and a voice, and the
   machinery under them wins by vanishing.
+  AMENDED 2026-10-02 (PENDING its menu line and a witness): osb is its
+  word, the one abbreviation the workshop prints on purpose, THE BLANK
+  STARE RULE's single exception, because looking like a twig is the
+  camouflage. Typed, it runs scripts/stick_bug.py, the one loud screen in
+  a quiet workshop: readings taken at the moment they print, then six
+  transmissions that say they are a story.
 - **Straddle** -- *before/after measurement bracketing execution.* One probe,
   two receipts, patch (and ignition) between; the binary-search causal
   boundary that removes ordering ambiguity.
@@ -1003,15 +1009,21 @@ Entries are alphabetical, numbers spelled as spoken.
   and an nginx restart. A body-only change to a served file is one rsync;
   nixops.sh prints the rebuild line as an offer, and publish pairs the two
   because a publish may carry config.
-  AMENDED 2026-10-02, THE DOOR NAMES THE ROW (PENDING a witness at a
-  door): the stamp now picks a row in install.sh's door_row, and the row
-  names the folder, so a door's folder can differ from its stamp: qamy.ai
-  stamps qamy and installs into ~/qamyai, which said aloud is "QA my AI".
-  The row also carries the door's words, which install.sh writes to .door
-  in the new folder: a dotfile, so the first-entry sweep keeps it, and
-  gitignored. The stamped line did not change. tests/test_install_doors.sh
-  runs every row with stubs; a real install from qamy.ai landing in
-  ~/qamyai drops PENDING.
+  AMENDED 2026-10-02, THE DOOR NAMES THE ROW (WITNESSED at deed 1778,
+  release 2.74 and a Mac install from the door): the stamp now picks a row
+  in install.sh's door_row, and the row names the folder, so a door's
+  folder can differ from its stamp: qamy.ai stamps qamy and installs into
+  ~/qamyai, which said aloud is "QA my AI". The row also carries the door's
+  words, which install.sh writes to .door in the new folder: a dotfile, so
+  the first-entry sweep keeps it, and gitignored. The stamped line did not
+  change. tests/test_install_doors.sh runs every row with stubs. THE
+  WITNESS: release 2.74's Step 3.1 printed Synced install.sh to npvg.org
+  and qamy.ai (nixops.sh --installer); the Mac's curl -fsSL
+  https://qamy.ai | bash then printed Qamyai -> ~/qamyai (to remove it
+  later: rm -rf ~/qamyai), and the flake's entry line read (Determinate
+  Nix 3.19.1) 2.34.6 · Python 3.12.13 · v2.74 · ~/qamyai. The words rode
+  along unread at 2.74, so the old card played; THE DOOR SPEAKS is their
+  reader.
 - **The Dotfile-Blind Probe** -- *ripgrep's hidden-file default.* Banked
   2026-08-05, self-convicted. ripgrep skips hidden files by default, so any rg
   probe hunting a name that lives in .gitignore, .gitattributes, or any other
