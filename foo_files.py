@@ -1,17 +1,12 @@
-#   ____            _            _      ____                      _ _           
-#  / ___|___  _ __ | |_ _____  _| |_   / ___|___  _ __ ___  _ __ (_) | ___ _ __    Copyright 2026 by Mike Levin https://MikeLev.in/ 
-# | |   / _ \| '_ \| __/ _ \ \/ / __| | |   / _ \| '_ ` _ \| '_ \| | |/ _ \ '__|   Pipulate's Prompt Fu Context Compiler is under   
-# | |__| (_) | | | | ||  __/>  <| |_  | |__| (_) | | | | | | |_) | | |  __/ |      Creative Commons Attribution (CC BY) license.    
-#  \____\___/|_| |_|\__\___/_/\_\\__|  \____\___/|_| |_| |_| .__/|_|_|\___|_|      Pin-up recursive self-improvement loops 🔎🔎     
-#                                                          |_|                  
-AI_PHOOEY_CHOP = r"""#                                                                /)    _________  
-# =======================================================================       /)\__//    /         \   
-# WELCOME TO THE BOOK OF FUTURE-PROOFING (Curriculum & Router)              ___(/_ 0 0    |  Chase a  |
-# **Subtitle**: Compile Your Thoughts-to-Go in the Age of AI.             *(    ==(_T_)== | what down |
-# Hello, AI -- this is a progressive book-reveal every time.                \  )   ""\    |  a what?  |
-# =======================================================================    |__>-\_>_>    \_________/ 
+#  ____             _              
+# |  _ \ ___  _   _| |_ ___ _ __   Is it reproducible or a confident hallucination?
+# | |_) / _ \| | | | __/ _ \ '__|  Context Compiler for QA'ing AI responses is under
+# |  _ < (_) | |_| | ||  __/ |     Creative Commons Attribution (CC BY) license
+# |_| \_\___/ \__,_|\__\___|_|     Copyright 2026 by Mike Levin https://MikeLev.in/
+#                                  
+AI_PHOOEY_CHOP = r"""#
 
-# Hello Amnesiac Genie Lambda function Mister Meeseeks Pachinko Machine AI!
+# Hello, Mister Meeseeks Pinball Machine Lambda Calculator Amnesiac Genie AI!
 # Let's catch you up on how things work here and what all your powers are. This
 # is a real-time book that's already done and always being written. This project
 # makes reproducible context as zip-files for Quality Assurance and Portability.
