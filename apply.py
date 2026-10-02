@@ -1,12 +1,10 @@
 #!/usr/bin/env python3
 """
-apply_patch.py
+patch.py
 
-The Deterministic Actuator.
+The Human Actuated AI Editor, or "How AI tool-calls the Human."
 Reads a raw LLM response from stdin, extracts the SEARCH/REPLACE blocks,
 and performs a deterministic string replacement patch on the target file.
-
-Usage: cat ai_response.md | python scripts/apply_patch.py
 """
 
 import sys
