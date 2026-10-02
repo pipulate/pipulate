@@ -3,7 +3,7 @@
 # =============================================================
 #
 # WHAT CHANGED IN v0.6.0 -- A WORD ROUTES (2026-09-29)
-#   walk svb SVB-133: the first word is looked up as an executable under a
+#   walk <name> args: the first word is looked up as an executable under a
 #   private tier's walks/ folder (personal, then corporate) and run with
 #   everything after the word, untouched; no tier holds it, the word is a
 #   trail, as before. Options before the word are the launcher's; options
@@ -371,7 +371,7 @@ if [ ! -x "$PY" ]; then
   exit 1
 fi
 # --- THE WALK ROUTER (v0.6.0): a word routes; a flag does not ---------------
-# `walk svb SVB-133`: the first word is looked up as an executable under the
+# `walk <name> args`: the first word is looked up as an executable under the
 # private tiers' walks/ folders, local overriding canon the way the trail lanes
 # below do, and when one is found it runs with everything held back after the
 # word; a walk writes context.txt itself, the way the rider does, and its exit
