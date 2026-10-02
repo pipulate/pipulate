@@ -15,8 +15,8 @@ actuating side of the Mother Cat Kata:
                               SKIPS that stop and says so.
   NARRATE                  -- Piper reads the stop guidance, best-effort.
   SETTLE + FENCE + CAPTURE -- guided_browser_capture opens the persistent,
-                              visible browser and requires the human CAPTURE
-                              token before writing artifacts.
+                              visible browser and waits for the human's Enter
+                              before writing artifacts.
   ADVANCE                  -- continue only after a successful capture receipt.
 
 Connector execution is deliberately out of scope. This car captures context;
@@ -29,6 +29,7 @@ import base64
 import hashlib
 import json
 import os
+import signal
 import sys
 import tempfile
 from datetime import datetime, timezone
@@ -90,7 +91,9 @@ def _narrate(text, disclosed=True):
         # voice introduced itself when it was switched on (first_contact, or
         # the card _ask_voice prints); disclosed stays only as a default.
 
-        result = chip_voice_system.speak_text(text)
+        # Keys are printed the way keyboards label them and said the way
+        # people say them: Ctrl+C on screen, Control C aloud.
+        result = chip_voice_system.speak_text(text.replace("Ctrl+C", "Control C"))
         if isinstance(result, dict) and result.get("declined"):
             return disclosed
         if isinstance(result, dict) and not result.get("success"):
@@ -133,18 +136,17 @@ def _capture_compatible(trail):
     ]
 
 
-# --- DECANT: pour captured artifacts into one clipboard-ready payload --------
+# --- THE SUMMARY: pour captured artifacts into one clipboard-ready payload ---
 # Preview only: these lenses are frozen from the banked bytes, then capped.
 # The full local captures.md is independent of these presentation limits.
 # BANKED 2026-09-15 -- HANDOFF COVERAGE: name a requested lens that did not
 # arrive; returned empty text is present, not missing. The private preview
 # file and clipboard attempt receive the same checked string. The fixed
 # filename denotes the last successful save, not the last attempted ride.
-# INTRODUCTORY COMPLETION: --intro authorizes the checked handoff only for
-# the resolved bundled three-page route. The rider says INTRO_NOTICE after
-# the trail's description, before the first page, so every CAPTURE comes
-# after the terms; direct callers must pass --intro explicitly. Other
-# calls retain DECANT. Practice never captures, saves a preview or copies.
+# EVERY WALK HANDS OFF THE SAME WAY (2026-10-02, the operator's ruling: no
+# second word to type at the end): the checks run, the summary is saved, the
+# copy is tried, and each says what it did. Practice never captures, saves
+# or copies.
 DECANT_INLINE_KEYS = (
     "seo_md",
     "headers",
@@ -155,13 +157,13 @@ DECANT_INLINE_KEYS = (
 )
 DECANT_INLINE_CAP = 20000  # chars per inlined lens; the rest lives on disk
 DECANT_PREVIEW_PATH = REPO_ROOT / "data" / "decant-preview.md"
-# THE PIN FOLLOWS THE PAGES (2026-10-02): c7faeb2 moved public_walk.json to
-# qamy.ai and left this at npvg.org, so --intro-contract printed nothing and
-# the walk asked DECANT again. The pin stays a constant on purpose: a trail
-# edited to point anywhere else must lose the introduction's shortcut.
-INTRO_URLS = tuple(f"https://qamy.ai/walk/{i}/" for i in (1, 2, 3))
-# The handoff clause, said after the trail's description and only under --intro.
-INTRO_NOTICE = (
+# HOW EVERY WALK GOES, said once after the trail's own description
+# (2026-10-02, the operator's ruling): the bell, Enter, Ctrl+C, the browser
+# is the walk's to close, and the handoff at the end.
+WALK_RULES = (
+    "When you hear the bell, the page has loaded: look it over, come back here, "
+    "and press Enter. Leave the browser open; Enter saves the page and closes it. "
+    "Ctrl+C stops the walk.\n"
     "At the end a checked summary is saved on this computer and copied to your "
     "clipboard. Nothing is sent anywhere."
 )
@@ -230,21 +232,7 @@ def _edit_private_plan():
         return result.returncode
     walk.load_trail(_private_plan_path())
     print("Plan valid. Type walk plan to try it; type plan to edit it again.")
-    print("Custom walks keep CAPTURE at each stop and DECANT before the summary handoff.")
     return 0
-
-
-def _intro_eligible(trail_path, trail=None):
-    """One authority for launcher disclosure and rider authorization scope."""
-    path = Path(trail_path)
-    if not path.is_absolute():
-        path = REPO_ROOT / path
-    if path.resolve() != REPO_ROOT / "assets" / "trails" / "public_walk.json":
-        return False
-    trail = walk.load_trail(path) if trail is None else trail
-    return (tuple(stop.get("url") for stop in trail["stops"]) == INTRO_URLS
-            and trail["defaults"].get("profile_name") == "default"
-            and not _capture_compatible(trail))
 
 
 def _capture_append(archive, record):
@@ -553,103 +541,6 @@ def _decant(captured, previews, skipped=()):
     return "\n".join(parts)
 
 
-# --- MANUAL HANDOFF --------------------------------------------------------
-# Custom walks and direct calls without --intro still ask for DECANT.
-# The bundled introduction may authorize its handoff before the first page;
-# _complete_preview checks the captured destinations before using that path.
-# Neither mode submits anything to a chatbot or relaxes the disclosure checks.
-DECANT_TOKEN = "DECANT"
-def _print_artifact_homes(captured):
-    """Name WHERE the captured material sits, not merely that it exists.
-
-    CARGO, NOT BIBLIOGRAPHY. A refusal that says "your artifacts are safe" and
-    does not say where is a refusal the human cannot act on.
-    """
-    print("   Full bytes are in the local archive printed above. Original cache homes:")
-    for stop_name, _final_url, artifacts in captured:
-        homes = sorted({os.path.dirname(p) for p in artifacts.values() if p})
-        if not homes:
-            print(f"     {stop_name}: (no artifact paths recorded)")
-        for home in homes:
-            print(f"     {stop_name}: {home}")
-def _decant_checkpoint(payload, captured, archive_path=None):
-    """Refuse to release the bundle until a human types DECANT. Returns bool.
-
-    THE ARMED LINE IS UNCONDITIONAL AND IT IS THE POINT. An armed gate that
-    passes silently and a DISARMED gate both print nothing, so this announces
-    its own state and the payload size on each manual handoff before asking --
-    the same shape prompt_foo's secrets tripwire uses for the same reason.
-
-    THREE OUTCOMES, THREE STRINGS THAT ARE NEVER INTERCHANGEABLE, so a fence
-    stuck shut is distinguishable from a fence correctly refusing:
-      AUTHORIZED   the human typed the word       -> released
-      DECLINED     the human typed anything else  -> withheld, paths printed
-      REFUSED      nowhere to ask                 -> withheld, paths printed
-
-    /dev/tty FIRST, the trick the CAPTURE prompt already learned: under
-    `curl | bash` this process's stdin is the PIPE, so isatty(0) is the wrong
-    question. mck.sh already hands the ride </dev/tty; this works either way.
-
-    FAILS CLOSED ON NO TTY, and that is not a collision with THE FAIL-OPEN
-    THRESHOLD RULE. That rule protects an ENTRY path where blocking would
-    STRAND an unattended caller. This is an EXIT path: refusing does not block,
-    it degrades, the artifacts are already durable, and the process still exits
-    0 -- and a world with no terminal to ask on is by definition a world with
-    no human waiting to paste a clipboard. Blocking on readline() is safe here
-    for a stronger reason than the boot menu's isatty gate: three CAPTURE
-    fences have already proved a human present.
-    """
-    payload_bytes = len(payload.encode("utf-8"))
-    print(
-        f"\n🔒 DECANT gate: ARMED -- {len(captured)} stop(s), "
-        f"{payload_bytes:,} bytes assembled, still ON THIS MACHINE ONLY."
-    )
-    stream = None
-    close_after = False
-    try:
-        stream = open("/dev/tty", "r", encoding="utf-8")
-        close_after = True
-    except OSError:
-        if sys.stdin is not None and sys.stdin.isatty():
-            stream = sys.stdin
-    if stream is None:
-        print("   REFUSED: nowhere to ask -- /dev/tty is unavailable and stdin")
-        print("   is not a terminal. Nothing was copied.")
-        _print_artifact_homes(captured)
-        print("   Re-ride from a terminal to decant.")
-        return False
-    answer = ""
-    try:
-        print(
-            f"   Type {DECANT_TOKEN} to save the checked preview and attempt its clipboard copy "
-            "(anything else leaves any older preview unchanged)."
-        )
-        print(f"   {DECANT_TOKEN}> ", end="", flush=True)
-        answer = stream.readline()
-    except (OSError, KeyboardInterrupt):
-        answer = ""
-    finally:
-        if close_after:
-            stream.close()
-    if answer.strip() != DECANT_TOKEN:
-        print(f"\n   DECLINED by human (read {answer.strip()!r}). Nothing was copied.")
-        _print_artifact_homes(captured)
-        return False
-    print(
-        f"\n   AUTHORIZED by human: checking {payload_bytes:,} assembled bytes "
-        "before the preview-file and clipboard attempts."
-    )
-    return _decant_to_clipboard(payload, archive_path=archive_path)
-def _complete_preview(payload, captured, intro=False, archive_path=None):
-    """Use explicit introductory authorization, or the existing manual gate."""
-    if not intro:
-        return _decant_checkpoint(payload, captured, archive_path=archive_path)
-    if tuple(final_url for _, final_url, _ in captured) != INTRO_URLS:
-        print("\nSummary withheld: a page ended somewhere other than the walk's three pages, so nothing was copied.")
-        return False
-    return _decant_to_clipboard(payload, archive_path=archive_path)
-
-
 def _write_decant_preview(payload):
     """Atomically replace the private preview; never append or follow its old inode."""
     target = DECANT_PREVIEW_PATH
@@ -682,14 +573,14 @@ def _decant_to_clipboard(payload, archive_path=None):
     SSH-bridge and the pbcopy/xclip fallbacks.
     """
     from prompt_foo import copy_to_clipboard, scrub_compile_payload, scan_secrets
-    # Reuse the existing baseline; DECANT has no disclosure-relaxation flags.
+    # Reuse the existing baseline; a walk has no disclosure-relaxation flags.
     scrubbed, substitutions, leaks = scrub_compile_payload(payload)
     secrets = scan_secrets(scrubbed)
     if leaks or secrets:
         print(f"\nSummary withheld: the checks found {sum(n for _, n in leaks)} "
               f"private name(s) and {len(secrets)} secret(s), so nothing was copied.")
         return False
-    # AFTER authorization and baseline checks: one string, two destinations.
+    # AFTER the baseline checks: one string, two destinations.
     try:
         target = _write_decant_preview(scrubbed)
     except OSError as exc:
@@ -781,57 +672,26 @@ def _missing_url_envs(stops):
     return required, optional
 
 
-def _announce_consent(trail_path):
-    """Describe capture and handoff, never grant authorization here.
+def _stopped():
+    """Ctrl+C ends a walk with one line and the shell's usual exit code."""
+    print("\nStopped.")
+    return 130
 
-    Custom walks use the same trail projection as walk_cartridge.
-    The introduction never reaches here: its terms are the trail's description
-    with INTRO_NOTICE after it, said once by _ride_steps.
-    """
-    try:
-        surface = walk_cartridge._derive_consent_surface(trail_path.read_bytes())
-    except (OSError, ValueError) as exc:
-        # FAIL SOFT AND LOUD. walk.load_trail has already validated this file
-        # far more strictly than this projection does, so a refusal HERE means
-        # two authorities disagree about one file. That is information worth
-        # printing, not a reason to abort a ride the planner already blessed.
-        print(f"  (consent surface unavailable: {exc})")
-        return
 
-    browser = surface["browser"]
-    rule = "=" * 66
-    print(rule)
-    print(f" THIS WALK: {surface['name']} -- {len(surface['stop_names'])} stop(s)")
-    print(rule)
-    print(f" stops, in order    {', '.join(surface['stop_names'])}")
-    # SHOW the direct URLs rather than hide them. A card that will not say
-    # where it is taking you is worse than one that does, and these are the
-    # public case by construction: a trail carrying a client address never
-    # gets past walk_compile.py, which refuses any compiled trail containing
-    # a scheme separator. Each line prints only when it has content, so a
-    # single-lane trail never shows an empty row.
-    if surface.get("direct_urls"):
-        print(f" it opens directly  {', '.join(surface['direct_urls'])}")
-    if surface.get("url_envs"):
-        print(f" URLs YOU supply    {', '.join(surface['url_envs'])}")
-    # Same derivation, one more row. Unset here SKIPS a stop and says so in
-    # the PRE-FLIGHT above; unset in the row above REFUSES the ride.
-    if surface.get("optional_url_envs"):
-        print(f" optional, if set   {', '.join(surface['optional_url_envs'])}")
-    print(f" names as runnable  {', '.join(surface['connector_scripts'])}")
-    print(
-        f" browser profile    {browser['profile_name']!r}"
-        f"  (persistent={browser['persistent']}, headless={browser['headless']})"
-    )
-    print(rule)
-    print(" CAPTURE saves each stop locally; captures may include account details.")
-    print(f" {DECANT_TOKEN} authorizes a checked preview file and a clipboard attempt.")
-    print(f" Preview in workshop: {DECANT_PREVIEW_PATH.relative_to(REPO_ROOT)} (private; replaced on save).")
-    print(" Declining or failing checks leaves any previous preview unchanged.")
-    print(" Nothing is uploaded automatically. The preview is trimmed.")
-    print(" Review before sharing; checks can miss sensitive data.")
-    print(rule)
-    print("")
+def _interrupt(signum, frame):
+    """SIGINT as KeyboardInterrupt under a name asyncio leaves alone; see ride()."""
+    raise KeyboardInterrupt
+
+
+def _plain_reason(error):
+    """A capture error as one short line a person can act on."""
+    text = str(error or "no receipt")
+    if any(sign in text for sign in ("no such window", "window already closed",
+                                     "not reachable", "disconnected")):
+        return "the browser was closed before Enter"
+    return text.splitlines()[0][:160].rstrip(". ")
+
+
 def _shown(path):
     """A path as the walk prints it: relative to the workshop when it is inside."""
     path = Path(path)
@@ -840,21 +700,21 @@ def _shown(path):
     except ValueError:
         return str(path)
 
-async def _ride_async(trail_path, dry_narrate=False, exports_path=None, intro=False):
+async def _ride_async(trail_path, dry_narrate=False, exports_path=None):
     archive = {"path": None, "finished": False, "previews": []}
     try:
-        return await _ride_steps(trail_path, archive, dry_narrate, exports_path, intro)
+        return await _ride_steps(trail_path, archive, dry_narrate, exports_path)
+    except KeyboardInterrupt:
+        return _stopped()
     finally:
         # Exceptions, cancellation and capture failures cannot promote a run.
         # Even an uncatchable kill leaves the initial PARTIAL statement intact.
         _finish_capture_archive(archive, "partial", archive.get("skipped", ()))
 
 
-async def _ride_steps(trail_path, archive, dry_narrate=False, exports_path=None, intro=False):
+async def _ride_steps(trail_path, archive, dry_narrate=False, exports_path=None):
     trail_path = Path(trail_path)
     trail = walk.load_trail(trail_path)
-    if intro and not _intro_eligible(trail_path, trail):
-        raise walk.TrailError("--intro is only for the bundled three-page public walk")
 
     problems = _capture_compatible(trail)
     if problems and not dry_narrate:
@@ -962,10 +822,8 @@ async def _ride_steps(trail_path, archive, dry_narrate=False, exports_path=None,
             pass
 
     stops = trail["stops"]
-    # The rider says the terms: the trail's description, with INTRO_NOTICE
-    # after it when --intro pre-authorizes the handoff. Direct callers
-    # without that flag retain DECANT. Practice says the same words and
-    # authorizes no capture or handoff; it returns before either can occur.
+    # The rider says the terms once: the trail's description, then
+    # WALK_RULES. Practice says the same words and captures nothing.
 
     # THE VOICE ASKS FIRST (2026-09-17), before the description, before the
     # practice notice below says nothing needs typing, and in practice mode
@@ -975,14 +833,12 @@ async def _ride_steps(trail_path, archive, dry_narrate=False, exports_path=None,
     # trail.description as non-empty since Car A, and nothing read it at
     # ride time: not the guidance loop, not the consent card, not the
     # sealed surface. A required field nothing collected. It is the walk's
-    # opening sentence, spoken once before the card in the same voice the
-    # stops use, and under --dry-narrate too, so the rehearsal opens the
-    # way the ride does, with INTRO_NOTICE after it under --intro.
+    # opening sentence, spoken in the same voice the stops use, and under
+    # --dry-narrate too, so the rehearsal opens the way the walk does, with
+    # WALK_RULES after it.
     if dry_narrate:
         print("\nPractice: these are the real walk's steps. Nothing opens, nothing is saved, and there is nothing to type.")
-    _narrate(trail["description"] + ("\n" + INTRO_NOTICE if intro else ""))
-    if not intro:
-        _announce_consent(trail_path)
+    _narrate(trail["description"] + "\n" + WALK_RULES)
     captured = []
     skipped = archive.setdefault("skipped", [])
     for index, stop in enumerate(stops, 1):
@@ -1016,9 +872,9 @@ async def _ride_steps(trail_path, archive, dry_narrate=False, exports_path=None,
                 ) from exc
 
         params = walk._browser_params(url, trail["defaults"])
-        # THE PROMPT IS THE CUE (2026-10-02): CAPTURE> appears only once the
-        # page has loaded, with the ding, so nothing is said before it. The
-        # empty hook below also keeps the checkpoint's default sentences off.
+        # THE BELL IS THE CUE (2026-10-02): the ding and the Enter prompt come
+        # once the page has loaded, so nothing is said before them. The empty
+        # hook below also keeps the checkpoint's default sentences off.
 
         result = await guided_browser_capture(
             params,
@@ -1028,13 +884,14 @@ async def _ride_steps(trail_path, archive, dry_narrate=False, exports_path=None,
         )
 
         if not result.get("success"):
-            reason = str(result.get("error") or "no receipt").rstrip(".")
-            if reason == "interactive checkpoint was not confirmed":
-                reason = "the answer was not CAPTURE"
+            # Ctrl+C at the Enter prompt comes back as a failed capture; it
+            # ends the walk the way Ctrl+C does anywhere else.
+            if result.get("error") == "interactive checkpoint interrupted":
+                return _stopped()
             # Work already banked is EVIDENCE: when pages were saved, the
             # archive's own partial line follows this one and names them.
             tail = "" if captured else " Nothing was saved. Type walk to start again."
-            print(f"\nStopped at page {index} of {len(stops)}: {reason}.{tail}")
+            print(f"\nStopped at page {index} of {len(stops)}: {_plain_reason(result.get('error'))}.{tail}")
             return 1
 
         artifacts = result.get("looking_at_files", {})
@@ -1058,7 +915,7 @@ async def _ride_steps(trail_path, archive, dry_narrate=False, exports_path=None,
         print("\nNothing was saved: every page was skipped.")
     if captured:
         payload = _decant(captured, archive["previews"], skipped)
-        _complete_preview(payload, captured, intro=intro, archive_path=archive["path"])
+        _decant_to_clipboard(payload, archive_path=archive["path"])
         # THE LAST LINE IS THE NEXT WORD (2026-10-02, the operator's ruling:
         # a what-to-do-next may repeat, shorter). Printed and spoken after
         # every finished walk, saved or withheld, since the line above it
@@ -1077,7 +934,7 @@ async def _ride_steps(trail_path, archive, dry_narrate=False, exports_path=None,
     return 0
 
 
-def ride(trail_path=None, dry_narrate=False, exports_path=None, intro=False):
+def ride(trail_path=None, dry_narrate=False, exports_path=None):
     """Run one validated trail to completion and return a process exit code."""
     if trail_path is None:
         path = walk.DEFAULT_TRAIL
@@ -1088,9 +945,26 @@ def ride(trail_path=None, dry_narrate=False, exports_path=None, intro=False):
             # A relative trail typed through the flake's `mothercat` alias
             # must resolve identically from any directory (UNNAMED-ROOT).
             path = REPO_ROOT / path
-    return asyncio.run(
-        _ride_async(path, dry_narrate=dry_narrate, exports_path=exports_path, intro=intro)
-    )
+    # CTRL+C STOPS THE WALK ON THE FIRST PRESS (2026-10-02). asyncio.run
+    # turns a first Ctrl+C into a task cancel that a blocking read never
+    # sees, so the Enter prompt would sit there until a second press. A
+    # handler of our own makes asyncio leave SIGINT alone: Ctrl+C raises
+    # where the walk is, and _ride_async says Stopped. Put back on the way out.
+    ours = signal.getsignal(signal.SIGINT) is signal.default_int_handler
+    if ours:
+        try:
+            signal.signal(signal.SIGINT, _interrupt)
+        except ValueError:  # not the main thread: leave signals alone
+            ours = False
+    try:
+        return asyncio.run(
+            _ride_async(path, dry_narrate=dry_narrate, exports_path=exports_path)
+        )
+    except KeyboardInterrupt:
+        return _stopped()
+    finally:
+        if ours:
+            signal.signal(signal.SIGINT, signal.default_int_handler)
 
 
 class CaptureDisclosureError(ValueError):
@@ -1296,10 +1170,12 @@ def main(argv=None):
             "a relative PATH anchors to the repository root"
         ),
     )
-    parser.add_argument("--intro", action="store_true",
-                        help="authorize checked summary saving and clipboard replacement for the bundled public walk")
-    parser.add_argument("--intro-contract", action="store_true",
-                        help="read-only: print introductory terms if this is the bundled route; otherwise print nothing")
+    # TWO RETIRED FLAGS (2026-10-02): every walk hands off the same way, so
+    # nothing is pre-authorized and there is no contract to print. A launcher
+    # fetched before today still passes them; they are accepted and ignored so
+    # it still runs. Delete them once no served mck.sh sends them.
+    parser.add_argument("--intro", action="store_true", help=argparse.SUPPRESS)
+    parser.add_argument("--intro-contract", action="store_true", help=argparse.SUPPRESS)
     parser.add_argument("--disclose", metavar="CAPTURES_MD",
                         help="write a private review-text disclosure; no browser or clipboard")
     parser.add_argument("--plan", action="store_true",
@@ -1335,17 +1211,12 @@ def main(argv=None):
                   "Check local input and policy; no content printed.")
             return 2
 
+    if args.intro_contract:
+        return 0
     try:
-        if args.intro_contract:
-            if args.intro or args.dry_narrate or args.exports:
-                parser.error("--intro-contract cannot be combined with ride options")
-            if _intro_eligible(args.trail or walk.DEFAULT_TRAIL):
-                print(INTRO_NOTICE)
-            return 0
-        return ride(args.trail, dry_narrate=args.dry_narrate,
-                    exports_path=args.exports, intro=args.intro)
+        return ride(args.trail, dry_narrate=args.dry_narrate, exports_path=args.exports)
     except walk.TrailError as exc:
-        print(f"TRAIL INVALID (Car A refused): {exc}")
+        print(f"This walk cannot run: {exc}")
         return 2
 
 
