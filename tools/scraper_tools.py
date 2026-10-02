@@ -268,7 +268,13 @@ def _document_candidates(cdp_events: list, domain: str, final_url: str = "") -> 
 
 
 def _capture_checkpoint(stdin=None, stdout=None, before_prompt=None) -> dict:
-    """Require an explicit CAPTURE token from the human's keyboard.
+    """Wait for Enter from the human's keyboard: the page has settled.
+
+    ENTER, NOT A WORD (2026-10-02, the operator's ruling). The fence used to
+    want the token CAPTURE, and one wrong letter ended the whole walk. Its
+    only job is a signal that the page has settled, and Enter is that signal;
+    Ctrl+C is the way out, as everywhere else. EOF still refuses, so a pipe
+    or a dead descriptor can never save a page.
 
     /DEV/TTY PREFERENCE (convicted 2026-07-29, public_walk stop 1): the
     inherited sys.stdin returned INSTANT EOF at the CAPTURE> prompt -- the
@@ -316,13 +322,13 @@ def _capture_checkpoint(stdin=None, stdout=None, before_prompt=None) -> dict:
                     output_stream.write(f"\n(checkpoint narration unavailable: {exc})\n")
             else:
                 output_stream.write(
-                    "\nWhen the page you want is ready, type CAPTURE and press Enter.\n"
-                    "Any other response aborts without capturing artifacts.\n"
+                    "\nWhen the page you want is ready, press Enter here.\n"
+                    "Ctrl+C stops without saving it.\n"
                 )
             # A CALLER'S HOOK OWNS EVERYTHING BEFORE THE PROMPT (2026-10-02):
-            # the default sentences print only when no hook was given, so the
-            # bytes on that path are unchanged and the walk shows just the prompt.
-            output_stream.write("CAPTURE> ")
+            # the default sentences print only when no hook was given, and
+            # the prompt itself says what Enter does.
+            output_stream.write("Press Enter to save the page. ")
             output_stream.flush()
             response = input_stream.readline()
         except KeyboardInterrupt:
@@ -341,23 +347,9 @@ def _capture_checkpoint(stdin=None, stdout=None, before_prompt=None) -> dict:
                 "success": False,
                 "error": "interactive checkpoint reached EOF",
             }
-        # CASE-INSENSITIVE ON PURPOSE (banked 2026-08-01). The token's safety
-        # comes entirely from being IMPOSSIBLE TO PRODUCE BY ACCIDENT: no pipe,
-        # no EOF, no stray Enter, no dead descriptor and no automation emits
-        # these seven letters. Lowercase is exactly as impossible as uppercase,
-        # so the shift key was a tax with no revenue -- and it was collected at
-        # the newcomer's first handshake, where a refusal reads as "this thing
-        # is broken" rather than "you missed a key."
-        # DELIBERATELY NOT A RETRY LOOP. A retry gives the fence a SECOND STATE,
-        # and "nothing was written" stops being provable in one sentence. One
-        # read, one comparison, one branch, and every non-match returns before
-        # mkdir. A wrong answer still costs the ENTIRE ride, because a non-token
-        # answer is the human's ABORT, and abort must be as instant as consent.
-        if response.strip().upper() != "CAPTURE":
-            return {
-                "success": False,
-                "error": "interactive checkpoint was not confirmed",
-            }
+
+        # ANY LINE IS THE SIGNAL (2026-10-02): whatever was typed before Enter
+        # is ignored, so there is no wrong answer to end a walk on.
         return {"success": True}
     finally:
         if tty_handle is not None:
