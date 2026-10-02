@@ -1442,25 +1442,34 @@ def write_context_cartridge(
     return result
 
 
-def copy_to_clipboard(text: str):
-    """Copies text to the system clipboard gracefully across macOS and Linux."""
+def copy_to_clipboard(text: str, quiet: bool = False):
+    """Copy text to the clipboard on macOS and Linux; return what happened.
+
+    Returns "copied", "bridge" (over SSH: written to /tmp/clipboard_bridge.txt
+    for the other computer to pull), or a short reason nothing was copied.
+    quiet=True prints nothing, so the caller can say it in its own words.
+    """
     import platform
     
-    # BANKED 2026-09-15 -- RETURN IS NOT DELIVERY: this helper reports via
-    # its own messages and returns no delivery status. An SSH bridge write
-    # is not confirmation of the client's clipboard. Callers must not turn
-    # normal return, or a saved preview, into an unconditional copy claim.
-    # Preserve separate file and clipboard outcomes when shortening output.
+    # THE RETURN IS THE OUTCOME (2026-10-02; banked 2026-09-15 as RETURN IS
+    # NOT DELIVERY, when this returned nothing and only its own lines said
+    # what happened). "copied" means the copy command succeeded; "bridge"
+    # means a file on this machine, which is not the other computer's
+    # clipboard until pull fetches it; anything else is the reason nothing
+    # was copied. Without quiet, the lines printed are the compile's own.
     # === THE 80/20 SSH BYPASS ===
     # If logged in via SSH, dump to the bridge file instead of fighting X11
     if os.getenv("SSH_CLIENT"):
         try:
             with open("/tmp/clipboard_bridge.txt", "w", encoding="utf-8") as f:
                 f.write(text)
-            logger.print("✨ Markdown output routed to SSH Bridge (/tmp/clipboard_bridge.txt)")
         except Exception as e:
-            logger.print(f"\nWarning: Could not write to SSH Bridge: {e}")
-        return
+            if not quiet:
+                logger.print(f"\nWarning: Could not write to SSH Bridge: {e}")
+            return f"the bridge file could not be written ({e})"
+        if not quiet:
+            logger.print("✨ Markdown output routed to SSH Bridge (/tmp/clipboard_bridge.txt)")
+        return "bridge"
     # ============================
 
     system = platform.system().lower()
@@ -1470,18 +1479,31 @@ def copy_to_clipboard(text: str):
     elif system == "linux":
         cmd = ['xclip', '-selection', 'clipboard']
     else:
-        logger.print(f"\nWarning: Unsupported OS for clipboard copy: {system}")
-        return
+        if not quiet:
+            logger.print(f"\nWarning: Unsupported OS for clipboard copy: {system}")
+        return f"no clipboard command for {system}"
         
     if not shutil.which(cmd[0]):
-        logger.print(f"\nWarning: '{cmd[0]}' not found. Cannot copy to clipboard.")
-        return
+        if not quiet:
+            logger.print(f"\nWarning: '{cmd[0]}' not found. Cannot copy to clipboard.")
+        return f"{cmd[0]} is not installed"
 
     try:
-        subprocess.run(cmd, input=text.encode('utf-8'), check=True)
-        logger.print("Markdown output copied to clipboard")
+        # Quiet drops the tool's own complaint, because the caller says what
+        # happened in one line. DEVNULL, never a pipe: a forked xclip keeps a
+        # pipe open, and the wait for it would never end.
+        subprocess.run(cmd, input=text.encode('utf-8'), check=True,
+                       stderr=subprocess.DEVNULL if quiet else None)
     except Exception as e:
-        logger.print(f"\nWarning: Could not copy to clipboard: {e}")
+        if not quiet:
+            logger.print(f"\nWarning: Could not copy to clipboard: {e}")
+        if system == "linux" and not (os.getenv("DISPLAY") or os.getenv("WAYLAND_DISPLAY")):
+            return "there is no display for xclip to use"
+        code = getattr(e, "returncode", None)
+        return f"{cmd[0]} exited with status {code}" if code is not None else f"{cmd[0]} did not run ({e})"
+    if not quiet:
+        logger.print("Markdown output copied to clipboard")
+    return "copied"
 
 def cartridge_deed_footer(cartridge_path) -> str:
     """Name the archive that seals this payload, in a line that rides outside it.
