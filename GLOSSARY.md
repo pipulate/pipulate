@@ -1028,7 +1028,17 @@ Entries are alphabetical, numbers spelled as spoken.
   later: rm -rf ~/qamyai), and the flake's entry line read (Determinate
   Nix 3.19.1) 2.34.6 · Python 3.12.13 · v2.74 · ~/qamyai. The words rode
   along unread at 2.74, so the old card played; THE DOOR SPEAKS is their
-  reader.
+  reader. THE WORDS, WITNESSED (deed 1779, the same Mac): the first entry
+  after the pull printed only the menu although .door had no welcomed=
+  line, which the new gate opens for, so the runScript that ran was the
+  one built before the pull. With the voice answer moved aside, the next
+  entry printed This LLM Quality Assurance workshop talks you through
+  steps., This is only text-to-speech. Local AI detected but not used.,
+  the question and Enter or n:; Enter printed Voice on. and both qamy
+  welcome lines; tail -2 .door read the comment and welcomed=2026-10-01,
+  the Mac's local date at 23:13 EDT, a day behind UTC; the entry after
+  that printed only the menu. A paste carries no sound, and Enter is yes
+  whether or not anything was heard (THE SILENT YES).
 - **The Dotfile-Blind Probe** -- *ripgrep's hidden-file default.* Banked
   2026-08-05, self-convicted. ripgrep skips hidden files by default, so any rg
   probe hunting a name that lives in .gitignore, .gitattributes, or any other
