@@ -317,8 +317,9 @@
     # shared acme-challenge webroot, its own certificate and its own log.
     # The body is its own tree under /home/mike/www so the two doors
     # diverge by rsync alone, never by rebuild. THE DOOR NAMES THE FOLDER
-    # (2026-09-14): the one-liner from this door lands in ~/qamy. The
-    # stamp mechanics are documented once, on npvg.org's door above.
+    # (2026-09-14): the stamp qamy picks install.sh's qamy row, which names
+    # the folder qamyai, so the one-liner from this door lands in ~/qamyai.
+    # The stamp mechanics are documented once, on npvg.org's door above.
     virtualHosts."qamy.ai" = {
       forceSSL = true;
       enableACME = true;
