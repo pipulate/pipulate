@@ -93,12 +93,8 @@
 #            offer, no browser, no voice, no writes, no network. This is the
 #            probe that makes marker discovery witnessable without needing a
 #            fresh machine.
-#   --yolo   skip INSTALL confirmation and the menu; keep every CAPTURE.
-#            For the bundled introduction it accepts the printed summary
-#            and clipboard terms, as does choosing 2. Other trails retain
-#            DECANT. ASSUME_YES rehearses first under the same policy.
-#            The rider's read-only --intro-contract determines eligibility;
-#            a same-named private trail does not inherit this policy.
+#   --yolo   skip INSTALL confirmation and the menu; every page still
+#            waits for Enter. ASSUME_YES practices first, then walks.
 #
 # EXIT CODES: 0 rode or explicit stop; nonzero usage, refusal, input or rider failure.
 if [ -z "${BASH_VERSION:-}" ]; then
@@ -570,11 +566,7 @@ run_wrapped() {
 # ONE SPELLING FOR BOTH RIDER CALLS, so the rehearsal and the ride can never
 # read different exports files. The flag rides only when a file resolved; the
 # empty case expands no array (bash 3.2 + set -u, the trap NIXWRAP dodges).
-INTRO_CONTRACT="$("$PY" scripts/mother_cat.py "$TRAIL_PATH" --intro-contract)"
 run_rider() {
-  if [ -n "$INTRO_CONTRACT" ]; then
-    set -- --intro "$@"
-  fi
   if [ -n "$EXPORTS_PATH" ]; then
     run_wrapped "$PY" scripts/mother_cat.py "$TRAIL_PATH" --exports "$EXPORTS_PATH" "$@"
   else
@@ -586,9 +578,9 @@ run_rider() {
 # not the menu or caller input; fd 3 is closed in the child as well. This
 # does not change shared voice callers or the real ride's /dev/tty input.
 if [ "$YOLO" -eq 1 ]; then
-  echo "Starting the real walk. CAPTURE is still required at each page."
+  echo "Starting the walk. Each page still waits for Enter."
 elif [ "${PIPULATE_MCK_ASSUME_YES:-0}" = "1" ]; then
-  echo "Practice first, then the real walk. CAPTURE is still required at each page."
+  echo "Practice first, then the walk. Each page still waits for Enter."
   run_rider --dry-narrate </dev/null 3<&-
 else
   if ! { exec 3</dev/tty; } 2>/dev/null; then
@@ -619,7 +611,8 @@ else
         PRACTICE_RC=0
         run_rider --dry-narrate </dev/null 3<&- || PRACTICE_RC=$?
         if [ "$PRACTICE_RC" -ne 0 ]; then
-          echo "Practice stopped (exit $PRACTICE_RC). No real walk started." >&2
+          # 130 is Ctrl+C, and the rider has already said Stopped.
+          [ "$PRACTICE_RC" -eq 130 ] || echo "Practice stopped (exit $PRACTICE_RC). No real walk started." >&2
           exec 3<&-
           exit "$PRACTICE_RC"
         fi
@@ -685,12 +678,12 @@ else
   exec 3<&-
 fi
 # THE RIDER SAYS THE TERMS (2026-10-02): mother_cat.py prints and speaks the
-# trail's description with INTRO_NOTICE after it, one string for screen and
-# voice, before the first page. INTRO_CONTRACT only decides --intro here.
+# trail's description and the walk's rules, one string for screen and voice,
+# before the first page. Every walk ends the same way, with nothing to type.
 # THE STDIN REDIRECT IS LOAD-BEARING, NOT DECORATION. Under curl|bash this
 # script's stdin is the PIPE, and guided_browser_capture's PRE-LAUNCH gate
 # tests isatty() on the INHERITED descriptor before it opens anything. The
-# CAPTURE prompt itself already prefers /dev/tty; its doorman does not.
+# Enter prompt itself already prefers /dev/tty; its doorman does not.
 # Handing the ride a real terminal on fd 0 satisfies both, and stays correct
 # even after the gate is taught the same trick.
 RIDE_RC=0
