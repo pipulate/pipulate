@@ -1457,25 +1457,25 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # tests/test_mck_rep2.py      # <-- Rep 2: the earmark's owed side-by-side witness
 #
 # THE TRAILS (bundled; each status is the newest receipt, never a promise)
-# assets/trails/public_walk.json         # profile default; SETTLE trivial; three unlinked npvg.org pages (the_word, the_receipt, the_two_pages), inline script on stop three only, connector noop.py; RIDDEN 2026-09-15 on these stops, 3 of 3 at artifacts=11 each, archive complete, DECANT AUTHORIZED at 20,992 B with checks 0/0/0, and the chatbot given stop three's question said the preview does not carry the server's sentence, which is true (the diff-lens TODO); the 2026-08-01 ride walked the OLD stop set (example.com, mikelev.in, pipulate.com); what bare `walk` rides
+# assets/trails/public_walk.json         # profile default; SETTLE trivial; three unlinked qamy.ai pages (the_word, the_receipt, the_two_pages) since c7faeb2, inline script on stop three only, connector noop.py; RIDDEN 2026-10-02 on Prime and on a fresh Mac install at v2.76, 3 of 3 saved at the Enter fence, summary saved and copied with nothing to type, every page fetched from the server (fromDiskCache=false); the 2026-09-15 ride walked the npvg.org copies under CAPTURE and DECANT and left the diff-lens TODO open: the summary may not carry stop three's server sentence; the 2026-08-01 ride walked the OLD stop set (example.com, mikelev.in, pipulate.com); what bare `walk` rides
 # assets/trails/practice.yaml            # one configurable page; UNREAD, label stale since 2026-08-01
 # assets/trails/first_context.yaml       # profile default; SETTLE real; Jira/Botify/Gmail, THREE wallet kinds in one trail; UNRIDDEN
 # assets/trails/botify_pageworkers.yaml  # profile botify; SETTLE real; UNRIDDEN -- the only trail on a non-default profile, and no such ride has ever been witnessed
 # assets/trails/jira_for_you.yaml        # profile default; SETTLE real (Atlassian sign-in); top of the ticket loop; RIDDEN 2026-09-01 and DECANTED, the sign-in moment unrecorded (a cold profile records it)
 # assets/trails/ticket.yaml              # profile default; SETTLE real; url_env x2 (JIRA, BOTIFY) fed by one gitignored exports file per ticket under Notebooks/Client_Work/tickets/; stop two of the ticket loop; RIDDEN 2026-09-01 to stop 1 then REFUSED at stop 2 on an unset url_env, Linux and Mac -- the ride that bought the rider its PRE-FLIGHT. RULING: the connector does NOT run at DECANT (DECANT gates only CAPTURE-fenced material; API auth is a different wallet; the rider never harvests). The bridge to the issue text is a ! line in context.txt.
-# assets/trails/se_ticket.yaml           # profile default; SETTLE real; the SE ticket template: for_you (literal) + issue (JIRA, required) + project/slack/confluence (optional, skipped when unset); RIDDEN 2026-09-02, 3 of 5 captured, 2 skipped, 72,383 B decanted, card showed both rows; harvest regexes on optional stops are PLACEHOLDERS (botify_analysis's already fullmatched a live analysisSlug); guidance strings hand-count "of five" and go stale on the sixth stop
+# assets/trails/se_ticket.yaml           # profile default; SETTLE real; the SE ticket template: for_you (literal) + issue (JIRA, required) + project/slack/confluence (optional, skipped when unset); RIDDEN 2026-09-02, 3 of 5 captured, 2 skipped, 72,383 B decanted, card showed both rows; harvest regexes on optional stops are PLACEHOLDERS (botify_analysis's already fullmatched a live analysisSlug); guidance strings hand-count "of five" and go stale on the sixth stop; they still say to type the capture word, which the Enter fence retired (2026-10-02 practice receipt)
 #
-# UNLINKED PAGES (npvg.org; nothing links to them and no page links out, so a trail is the only edge; nixops.sh rsyncs them, no rebuild)
+# UNLINKED PAGES (npvg.org; no trail opens them since c7faeb2, and they still say CAPTURE, as a checkout older than that expects; nothing links to them and no page links out; nixops.sh rsyncs them, no rebuild)
 # remotes/honeybot/www/npvg.org/index.html          # <-- the door: a browser gets this page, curl and wget get install.sh ($npvg_index)
 # remotes/honeybot/www/npvg.org/walk/1/index.html   # <-- public_walk stop one: the capture word; no script, so source and hydrated DOM should match
 # remotes/honeybot/www/npvg.org/walk/2/index.html   # <-- stop two: count the archive's fingerprints against the terminal's artifacts= number
 # remotes/honeybot/www/npvg.org/walk/3/index.html   # <-- stop three: the walk's only script rewrites the server's sentence and appends a paragraph; the DECANT test lives here
 #
-# THE SECOND DOOR (qamy.ai; landed 2026-09-29): npvg.org's tree copied, its own vhost, certificate and log in configuration.nix, four lines in nixops.sh; only the two command lines differ until the divergence ride, and no trail names these stops yet
+# THE SECOND DOOR (qamy.ai; landed 2026-09-29): npvg.org's tree copied, its own vhost, certificate and log in configuration.nix, four lines in nixops.sh; they diverged 2026-10-02: public_walk opens these three pages, which say Enter and never CAPTURE or DECANT
 # remotes/honeybot/www/qamy.ai/index.html           # <-- the door: the same negotiation as npvg.org's, the stamp qamy, which picks install.sh's qamy row, so the one-liner lands in ~/qamyai
-# remotes/honeybot/www/qamy.ai/walk/1/index.html    # <-- npvg.org's stop one, copied
-# remotes/honeybot/www/qamy.ai/walk/2/index.html    # <-- stop two, copied; its ls path still spells npvg.org
-# remotes/honeybot/www/qamy.ai/walk/3/index.html    # <-- stop three, copied
+# remotes/honeybot/www/qamy.ai/walk/1/index.html    # <-- public_walk stop one: go back to the command line and press Enter; no script
+# remotes/honeybot/www/qamy.ai/walk/2/index.html    # <-- stop two: press Enter, one page left; the page names no host
+# remotes/honeybot/www/qamy.ai/walk/3/index.html    # <-- stop three: press Enter; the walk's only script, and the optional checkword test
 #
 # OFF-ROSTER DISTRIBUTION RESIDUE (not a walk dependency)
 # assets/installer/replay.sh  # <-- OFF the roster 2026-08-01, stranded; re-add needs syntax + one ride + a pinned verifier fetch
