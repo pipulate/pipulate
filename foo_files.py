@@ -12,8 +12,8 @@ AI_PHOOEY_CHOP = r"""#
 # makes reproducible context as zip-files for Quality Assurance and Portability.
 
 # --- START STATS ---
-# There are 1,510 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 16 published in the last 7 days
+# There are 1,511 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 17 published in the last 7 days
 # Markdown negotiated: 2,852 reads (0.22% of all responses)
 # DOM hydration: 3638 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
 # Honeybot telemetry fetched 2026-10-02T18:19Z
@@ -3243,7 +3243,7 @@ MATCHBOOK_CHOP = r"""
 # ============================================================================
 # Files tracked by git but not yet mixed into the palette above.
 # Move these into the active chapters to paint them onto the context canvas.
-# Coverage: 202/280 tracked files claimed. The compiler reads this line back on the next compile and prints the delta beside the live count, so an unclaimed file rings once.
+# Coverage: 203/280 tracked files claimed. The compiler reads this line back on the next compile and prints the delta beside the live count, so an unclaimed file rings once.
 
 # AGENTS.md  # [1,039 tokens | 4,223 bytes]
 # AUDIT.md  # [2,993 tokens | 13,897 bytes]
@@ -3283,7 +3283,6 @@ MATCHBOOK_CHOP = r"""
 # imports/dom_processing/__init__.py  # [0 tokens | 0 bytes]
 # imports/dom_processing/ai_dom_beautifier.py  # [4,291 tokens | 19,809 bytes]
 # imports/dom_processing/enhanced_dom_processor.py  # [3,150 tokens | 15,771 bytes]
-# introduction.md  # [578 tokens | 2,520 bytes]
 # remotes/honeybot/queries/health_db_vitals.sql  # [465 tokens | 1,927 bytes]
 # remotes/honeybot/queries/hydration_family.sql  # [1,736 tokens | 6,756 bytes]
 # remotes/honeybot/queries/hydration_rate.sql  # [1,331 tokens | 5,146 bytes]
