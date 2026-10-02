@@ -352,9 +352,10 @@ ROUTER_TAIL = (
     "# Walks rewrite this file until you edit it; after that they append below.\n"
 )
 # THE WHEELS COME OFF BY THEMSELVES. "First" means the router did not exist
-# before this ride. The rider writes it twice per ride (after ARCHIVE STATUS,
-# then after DECANT), so the absence test runs once per process and its
-# answer is cached here; the second write must not find the file its own
+# before this ride. The rider writes it twice per ride (once the archive
+# closes, then once the summary is saved), so the absence test runs once per
+# process and its answer is cached here; the second write must not find the
+# file its own
 # first write made. A later walk finds the file, writes ROUTER_KEYS, and the
 # wheels are off. A human who edits the router keeps it: later walks append
 # a marked block below their lines; deleting it brings the lesson back.
@@ -479,7 +480,7 @@ def _write_walk_router(archive_path, preview_path=None, first=None):
 
 
 def _finish_capture_archive(archive, status, skipped=()):
-    """Finalize evidence first; a router failure must not block the later DECANT."""
+    """Finalize evidence first; a router failure must not block the summary after it."""
     if archive["path"] is None or archive["finished"]:
         return
     _capture_append(archive, {
@@ -509,29 +510,29 @@ def _decant(captured, previews, skipped=()):
     be able to tell a baton that was never carried from one that was dropped.
     """
     parts = [
-        "# Capture preview -- not the evidence archive",
+        "# Walk summary",
         "",
-        "Selected lenses frozen before ADVANCE; long lenses are truncated here.",
-        "Original cache paths below are provenance, not preserved storage.",
-        "The local captures.md holds the full returned bytes and coverage.",
+        "What the walk saved from each page, after the checks for secrets and private names.",
+        "Long files are cut short here; captures.md, on the computer that walked, has every file whole.",
+        "The paths are where that computer saved each file; a later walk may have replaced them.",
         "",
     ]
     if skipped:
-        parts.append("## Skipped stops (optional; URL not exported at ride time)")
+        parts.append("## Skipped pages (optional; their address was not set)")
         for stop_name, var_name in skipped:
             parts.append(
-                f"- {stop_name}: {var_name} was unset; nothing opened, nothing captured"
+                f"- {stop_name}: {var_name} was not set, so nothing opened"
             )
         parts.append("")
     for (stop_name, final_url, artifacts), preview in zip(captured, previews, strict=True):
         parts.append(f"## Stop: {stop_name}")
         parts.append(f"- final_url: {final_url}")
-        parts.append("- artifacts on disk:")
+        parts.append("- files on disk:")
         for key, path in sorted(artifacts.items()):
             parts.append(f"  - {key}: {path}")
         missing = [key for key in DECANT_INLINE_KEYS if key not in preview]
         if missing:
-            parts.append("- missing preview lenses: " + ", ".join(missing))
+            parts.append("- files this page did not produce: " + ", ".join(missing))
         parts.append("")
         for key, text in preview.items():
             parts.append(f"### {stop_name} -- {key}")
@@ -732,9 +733,7 @@ async def _ride_steps(trail_path, archive, dry_narrate=False, exports_path=None)
 
     problems = _capture_compatible(trail)
     if problems and not dry_narrate:
-        print("REFUSING TO RIDE -- trail defaults are not capture-compatible:")
-        for problem in problems:
-            print(f"  - {problem}")
+        print("This walk cannot run: its trail's browser settings are wrong (" + ", ".join(problems) + ").")
         return 2
     if problems:
         # A rehearsal that stays silent about a refusal it can already see is
@@ -742,29 +741,19 @@ async def _ride_steps(trail_path, archive, dry_narrate=False, exports_path=None)
         # costs nothing; discovering it at the browser costs the newcomer's
         # first sixty seconds. ATTRIBUTED-VOICE: narration may not imply a
         # capability the next step will withhold.
-        print("NOTE -- a real ride of this trail would be REFUSED:")
-        for problem in problems:
-            print(f"  - {problem}")
-        print("  (--dry-narrate continues anyway; nothing will open.)")
+        print("The real walk would not run: its trail's browser settings are wrong (" + ", ".join(problems) + "). Practice goes on.")
 
     # EXPORTS, BEFORE PRE-FLIGHT, UNDER --dry-narrate TOO: the rehearsal must
     # disclose the ride it rehearses, not a bare shell's. THE LINE PRINTS
     # ONLY WHEN A FILE WAS READ, and it prints a path and two counts -- the
-    # names ride on the consent card and the values ride nowhere.
+    # names and the values print nowhere.
     exports_file = _resolve_exports(trail_path, exports_path)
     if exports_file is not None:
         if not exports_file.is_file():
-            print(f"REFUSING TO RIDE -- --exports names a file that is not there: {exports_file}")
-            print("  Relative paths resolve from the repository root, never from where you stand.")
-            print("  Nothing opened, nothing was spoken, nothing was written.")
+            print(f"This walk cannot run: --exports names {exports_file}, which is not there. A relative path starts at the workshop folder.")
             return 2
         filled, kept = _load_exports(exports_file)
-        print(f"EXPORTS  {exports_file}")
-        print(
-            f"  {len(filled)} set from the file; {len(kept)} already exported "
-            "and kept (environment wins)."
-        )
-        print("")
+        print(f"\nAddresses from {_shown(exports_file)}: {len(filled)} set from it, {len(kept)} already set and kept.")
     # PRE-FLIGHT (2026-09-01, the ticket ride that died at stop two). A trail
     # declares every URL it needs before it opens anything, so the rider can
     # know at t=0 whether it can finish -- and it used to find out one stop at
@@ -776,40 +765,23 @@ async def _ride_steps(trail_path, archive, dry_narrate=False, exports_path=None)
     # captures, and a long walk would waste many. mck.sh already runs this
     # check in shell, but `mothercat` is the direct alias and the Mac path,
     # and neither passes through mck.sh, so the rider owns it too: EVERY
-    # missing variable, named beside its stop, with the export line to type,
-    # before narration, before the consent card, before any browser. Under
-    # --dry-narrate it is disclosed and not enforced, same as the capture
-    # problems above: the rehearsal mck.sh forces on first contact must be
-    # able to run in a shell that has exported nothing yet.
-    # OPTIONAL FIRST, AS A DISCLOSURE: the skips are named before any refusal
-    # so the human reads the whole shape of the ride in one screen. A skipped
-    # stop is not a failure and does not read like one.
+    # missing variable, as the export line to type, before narration and
+    # before any browser. Under --dry-narrate it is disclosed and not
+    # enforced, same as the capture problems above: practice must be able to
+    # run in a shell that has exported nothing yet. AN OPTIONAL STOP IS SAID
+    # ONCE, AT THE STOP (2026-10-02, the operator's ruling): the loop below
+    # prints Skipped there, and nothing about it prints here.
     missing_envs, optional_missing = _missing_url_envs(trail["stops"])
     skip_vars = dict(optional_missing)
-    if optional_missing:
-        print("SKIPPING optional stop(s) -- their URLs are not in your environment:")
-        for stop_name, var_name in optional_missing:
-            print(f"  - stop {stop_name!r} is optional; {var_name} is unset, so it will be SKIPPED")
-        print("  Export it and ride again to include that stop.")
-        print("")
     if missing_envs:
+        sibling = _shown(trail_path.with_name(trail_path.stem + ".exports.sh"))
         if dry_narrate:
-            print("NOTE -- a real ride of this trail would be REFUSED before stop one:")
+            print(f"\nThe real walk needs addresses that are not set; practice goes on. Type these lines with the real addresses, or put them in {sibling}, before the real walk:")
         else:
-            print("REFUSING TO RIDE -- this walk needs URLs your environment does not have:")
-        for stop_name, var_name in missing_envs:
-            print(f"  - stop {stop_name!r} needs {var_name}")
-        print("  Export each one, then ride again:")
-        seen = set()
-        for _stop_name, var_name in missing_envs:
-            if var_name in seen:
-                continue
-            seen.add(var_name)
-            print(f"    export {var_name}='https://...'")
-        if dry_narrate:
-            print("  (--dry-narrate continues anyway; nothing will open.)")
-        else:
-            print("  Nothing opened, nothing was spoken, nothing was written.")
+            print(f"\nThis walk needs addresses that are not set. Type these lines with the real addresses, or put them in {sibling}, then start the walk again:")
+        for var_name in dict.fromkeys(var for _, var in missing_envs):
+            print(f"export {var_name}='https://...'")
+        if not dry_narrate:
             return 2
     guided_browser_capture = None
     if not dry_narrate:
@@ -817,14 +789,14 @@ async def _ride_steps(trail_path, archive, dry_narrate=False, exports_path=None)
         # QUIET ON SUCCESS, LOUD ON FAILURE (2026-09-01, the first real ride).
         # scraper_tools narrates every step through loguru at INFO, and this
         # rider ALREADY narrates the ride in its own voice -- the spoken
-        # guidance, the CAPTURE prompt, the "Captured. final_url=" receipt --
+        # guidance, the Enter prompt, the Saved line --
         # so the first jira_for_you ride printed fifteen INFO lines saying
         # what the rider had just said. Two narrators, one story. The floor
         # moves to WARNING for the ride only: provenance fallbacks, driver
         # failures and CDP misses still print, because those change what the
         # capture MEANS. PIPULATE_RIDE_LOG=INFO restores the chatter when a
-        # ride needs debugging. print() output is untouched: the wait message
-        # and both fences ride on it, and it is the human's channel.
+        # ride needs debugging. print() output is untouched: the Enter prompt
+        # rides on it, and it is the human's channel.
         try:
             from loguru import logger as _ride_log
             _ride_log.remove()
@@ -844,9 +816,8 @@ async def _ride_steps(trail_path, archive, dry_narrate=False, exports_path=None)
     # too, because the rehearsal is the first thing a newcomer hears.
     _ask_voice()
     # THE DESCRIPTION SPEAKS FIRST (2026-09-05). walk.py has validated
-    # trail.description as non-empty since Car A, and nothing read it at
-    # ride time: not the guidance loop, not the consent card, not the
-    # sealed surface. A required field nothing collected. It is the walk's
+    # trail.description as non-empty since Car A, and until that day nothing
+    # read it at ride time: a required field nothing collected. It is the walk's
     # opening sentence, spoken in the same voice the stops use, and under
     # --dry-narrate too, so the rehearsal opens the way the walk does, with
     # WALK_RULES after it.
