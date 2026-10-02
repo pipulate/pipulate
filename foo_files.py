@@ -11,6 +11,14 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # Hello, AI -- this is a progressive book-reveal every time.                 \  )   ""\    |  a what?  |
 # =======================================================================    |__>-\_>_>    \_________/ 
 
+# --- START STATS ---
+# There are 1,510 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 16 published in the last 7 days
+# Markdown negotiated: 2,836 reads (0.22% of all responses)
+# DOM hydration: 3628 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
+# Honeybot telemetry fetched 2026-10-02T11:54Z
+# --- END STATS ---
+
 # Reproduce context into zip-files for Quality Assurance and portability between models.
 
 # > Here is my hardware  
@@ -113,14 +121,6 @@ AI_PHOOEY_CHOP = r"""#                                                          
 # Hello Amnesiac Genie Lambda function Mister Meeseeks Pachinko Machine AI!
 # Let's catch you up on how things work here and what all your powers are.
 # This is a real-time book that's already done and always being written.
-
-# --- START STATS ---
-# There are 1,510 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 16 published in the last 7 days
-# Markdown negotiated: 2,836 reads (0.22% of all responses)
-# DOM hydration: 3628 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
-# Honeybot telemetry fetched 2026-10-02T11:54Z
-# --- END STATS ---
 
 # --- START RECEIPTS (newest first; cap 20 lines; a line pushed past the cap is deleted, never moved -- git and the rolling pin are the archive) ---
 # 2026-10-02 dismount THE DOOR SPEAKS (deeds 1773, 1778 and 1779, 1774 through 1777 compiles that rode no turn, INFERRED; pipulate commits 43006cba the door table, 3f09904d the glossary, 46118ec0 the router, 34bbaa4b and 30dcbaec the 2.74 Doorways release, cut ahead of the router's HOLD THE TRUCK note, which gave the folder half its witness, d5085d68 the boundary, 868425bd the reader, 869637dc the gate, the spelled folder, the Lix line and osb, daaac215 stick_bug.py, 8149a74c the glossary, 5dce5740 the router, the five cars pushed by hand): one installer, three doors; the stamp picks a row in install.sh, the row names the folder (qamy.ai installs ~/qamyai) and writes the door's words to .door, and first_contact() says them. WITNESSED: Qamyai -> ~/qamyai at 1778; at 1779 the Mac's door card, both welcome lines, welcomed=2026-10-01 and a menu-only entry after it, the first entry after the pull having run the runScript built before it; the Mac's entry line the same under the old version sed and the new, Prime's (Nix) 2.28.5 under the new; osb by hand on Prime and its readings in the compile lane; BEFORE rc=1, 2 and 1, AFTER 0, 0 and 0. MISSES: Topological Integrity forecast 8, read 15 (it counts commented paths); welcomed= forecast from the UTC date, a day ahead of the Mac's; Step 2 chained a one-time mv to nix develop with &&, so one paste at the wrong prompt cost four tries (THE STEP THAT RUNS ONCE). UNWITNESSED: the welcomed branch, n and silent with a door, the download lines at a door, the spelled folder heard, any sound, Lix, and the npvg.org and pipulate.com cards at a real door. The block now reads 21 against its cap of 20; the next forget fades the bottom line.
