@@ -1394,12 +1394,16 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # logs what the instruments measured; the cockpit voice recorder logs what the
 # crew said. A model narrating what it did is the voice recorder. A walk is the
 # flight: a rider carries a human bookmark to bookmark, a voice reads each
-# stop, and nothing advances until the human types CAPTURE, at which point the
-# page as served, the page as built, every request it made, its headers and
-# its outline land on disk with a hash. DECANT bundles them; the compile seals
-# them. Four moves, one of them human-only -- SETTLE (log in, clear the
-# CAPTCHA; the machine inherits the session and never fakes it), CAPTURE,
-# NARRATE/FENCE, ADVANCE -- and DECANT once at the end. The whole vocabulary:
+# stop, and nothing advances until the human presses Enter after the bell, at
+# which point the page as served, the page as built, every request it made,
+# its headers and its outline land on disk with a hash. The rider folds them
+# into a checked summary; the compile seals them. Four moves, one of them
+# human-only -- SETTLE (log in, clear the CAPTCHA; the machine inherits the
+# session and never fakes it), CAPTURE, NARRATE/FENCE, ADVANCE. RULED
+# 2026-10-02: the CAPTURE token and the DECANT word are retired. Enter is the
+# fence, Ctrl+C stops a walk, every walk hands off the same way with nothing
+# to type, and what a walk prints has no indent, says a thing once and ends
+# on one next word. The whole vocabulary:
 # rg -in 'mother cat kata' GLOSSARY.md. The trail is DATA, the rider is CODE,
 # and the split is the point: a new walkthrough is a new trail, never a new
 # script. THE PATHS BELOW STAY COMMENTED ON PURPOSE: a commented path costs
@@ -1421,8 +1425,8 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 #
 # LAUNCH
 # walk                        # <-- Repo-root wrapper; delegates to mck.sh, NOT to scripts/walk.py
-# assets/installer/mck.sh     # <-- THE LAUNCHER (curl -fsSL pipulate.com/mck.sh | bash): finds the workshop, forces the spoken rehearsal on first contact, asks for the word RIDE
-# scripts/mother_cat.py       # <-- THE RIDER (alias: mothercat), Car B: actuates walk.py's validated plan; per-run capture banking, DECANT, the context.txt writer
+# assets/installer/mck.sh     # <-- THE LAUNCHER (curl -fsSL pipulate.com/mck.sh | bash): finds the workshop or offers to install one, prints the 1/2/3/q menu (RIDE still means 2), and runs a first word as an executable from Workshop/personal/walks, then Workshop/corporate/walks, before it looks for a trail; this chapter names no routed walk
+# scripts/mother_cat.py       # <-- THE RIDER (alias: mothercat), Car B: actuates walk.py's validated plan; per-run capture banking, the checked summary and its clipboard copy, the context.txt writer
 # scripts/boot_menu.py        # <-- The one-door command list; short on shell entry, expanded by `all`, both rendered from tuples in the file
 # scripts/stick_bug.py        # <-- osb, operation stick bug: the egg under the menu; readings taken as they print, then six transmissions that say they are a story
 # scripts/sources_menu.py     # <-- The roster `connect` prints; filename stays descriptive, conn is the short spelling
@@ -1441,12 +1445,13 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 #
 # CAPTURE
 # scripts/weblogin.py         # <-- SETTLE ahead of time: warm a login on the persistent profile; --profile default unless told otherwise
-# tools/scraper_tools.py      # <-- The browser capture and the CAPTURE fence (_capture_checkpoint is a write barrier, not a prompt)
+# tools/scraper_tools.py      # <-- The browser capture and the Enter fence (_capture_checkpoint is a write barrier: keys typed early are dropped, any line is the signal, EOF refuses); the browser's HTTP cache is off for every capture since 2026-10-02
 # assets/sounds/README.md     # <-- the tick while the browser opens and the ding when the page has loaded, both CC0 with their sources named; a copy under ~/.local/share/pipulate wins
-# imports/voice_synthesis.py  # <-- Piper: scripted narration, never a model (ATTRIBUTED-VOICE)
+# imports/voice_synthesis.py  # <-- Piper: scripted narration, never a model (ATTRIBUTED-VOICE); the model is real files in assets/piper_models inside the folder, and hf_xet keeps ~/.cache/huggingface/xet (61M on Prime 2026-10-02, source unproven)
 #
 # HAND OFF
 # prompt_foo.py               # <-- Compiles context.txt (`context` opens it, `compile` builds it) into a payload
+# introduction.md             # <-- What an AI reads first after a walk: what the workshop is, what the walk did, which words the person has met
 # scripts/foo_cartridge.py    # <-- The second seal, over the EVIDENCE: payload.md, prompt.md, manifest.json
 # scripts/foo_replay.py       # <-- Context extraction and attention checks; not browser or API replay
 # tests/test_mck_rep2.py      # <-- Rep 2: the earmark's owed side-by-side witness
@@ -1478,7 +1483,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # FOUR OUTPUTS, NOT FOUR NAMES FOR ONE THING. Evidence: captures.md banks the
 # returned file bytes with sha256 BEFORE ADVANCE; a mutable browser_cache path
 # is not the record, and coverage is what the capture returned, not every
-# network body. Preview: DECANT releases selected, capped text, never the raw
+# network body. Preview: the checked summary carries selected, capped text, never the raw
 # archive. Disclosure: captures.disclosed.json is a separately prepared
 # derivative with omissions and review status; nothing writes it for you.
 # Selection: context.txt names the checked preview and, commented beneath it, the raw captures.md;
