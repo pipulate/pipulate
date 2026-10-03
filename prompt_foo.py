@@ -1651,12 +1651,11 @@ class PromptBuilder:
         # .invalid is RFC 2606 reserved and can never resolve.
         canary = "www." + "canary" + ".invalid"
         lines.append(
-            f"RENDER CANARY -- {canary} -- emitted BARE by the compiler. If it reached "
-            "you wrapped in markdown link syntax, the transport rewrote this payload "
-            "and EVERY bare www-prefixed token in it is suspect, including inside "
-            "Codebase file bodies and `!` receipts. Say so ONLY at the moment you are "
-            "about to quote such a token into a patch; otherwise do not mention the "
-            "canary at all -- its arrival state is not a finding."
+            f"RENDER CANARY -- {canary} -- emitted bare. Silent transport diagnostic, "
+            "not a repository defect or a task. Do not report its status. If a requested "
+            "edit depends on text suspected of transport rewriting, verify that region "
+            "against independent file-byte evidence before patching. An unchanged "
+            "canary does not certify the payload."
         )
         lines.append("")
         # LIVE RECEIPTS INDEX: executed `!` probes are current evidence, not
