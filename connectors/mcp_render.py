@@ -4,14 +4,20 @@
 mcp_render.py -- Decode, diff or mint a PocketRender share link.
 
 THE CONF IS IN THE LINK (READ 2026-09-27, deed 1629, off the two PocketRender
-links on one SVB ticket): a share link's #conf= fragment is standard base64 of
+links on one ticket): a share link's #conf= fragment is standard base64 of
 a zlib-compressed JSON object with nine keys -- urls, devices, userAgent,
 extraHeaders, renderingRules (a list, one rule per item), js (a dict of the
-eight injectJs* hooks, INFERRED from the key count), presetFilters,
+eight injectJs* hooks, named on the page; see below), presetFilters,
 detectAPIs, execEnvUri -- so the existing and the suggested configs on a
 ticket decode offline with the standard library, and the three rule-text
 diffs a ticket needs (original|vendor, original|ours, vendor|ours) need no
 render at all. The render farm is for the metrics only.
+
+THE EIGHT HOOKS ARE ON THE PAGE (READ 2026-10-02, the first PocketRender
+walk's seo.md): its Inject JavaScript section names onNavigate, onInit,
+domContentLoaded, onLoad, stoppedLoading, action, onDone and waitFor, the
+same count as the keys of js. Which key spells which hook is still read only
+off a decoded link.
 
 The typed word is `render` (a flake.nix connectorCommand line since 2026-09-27);
 the interpreter's spelling works anywhere the word is not on PATH:
@@ -26,7 +32,7 @@ the interpreter's spelling works anywhere the word is not on PATH:
 
 Designed for context.txt as a `!` line, e.g.:
 
-  ! jira SVB-123 2>&1 | .venv/bin/python connectors/mcp_render.py diff - --labels existing suggested
+  ! jira KEY-123 2>&1 | .venv/bin/python connectors/mcp_render.py diff - --labels existing suggested
 
 THE RELAY LANES (landed 2026-09-28, the relay's --help read by hand first):
 
