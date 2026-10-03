@@ -87,6 +87,7 @@
 #                             and therefore never override you
 #
 # Plain invocation offers Practice, Sample walk, Select a walk, or Exit before narration.
+# A walk named on the command line (walk <name>) rides without that menu.
 # FLAGS:
 #   --exports=PATH  the exports file for this ride when it is NOT the
 #            <trail>.exports.sh sibling bookmark_import.py writes. This
@@ -459,7 +460,14 @@ fi
 # nothing (2026-10-02, the operator's ruling: the ordinary case is silent).
 case "$TRAIL_PATH" in
   assets/trails/*) ;;
-  *) echo "Trail resolved: $TRAIL_PATH" ;;
+  *)
+    for SHADOWED in "assets/trails/${TRAIL_NAME}.json" "assets/trails/${TRAIL_NAME}.yaml"; do
+      if [ -f "$SHADOWED" ]; then
+        echo "Trail resolved: $TRAIL_PATH, in place of $SHADOWED"
+        break
+      fi
+    done
+    ;;
 esac
 # --- EXPORTS FILE (2026-09-05): the same derivation the rider runs ---------
 # bookmark_import.py writes <name>.exports.sh beside <name>.walk.md and
@@ -569,6 +577,12 @@ if [ "$YOLO" -eq 1 ]; then
 elif [ "${PIPULATE_MCK_ASSUME_YES:-0}" = "1" ]; then
   echo "Practice first, then the walk. Each page still waits for Enter."
   run_rider --dry-narrate </dev/null 3<&-
+elif [ -n "$MCK_POSITIONAL" ] && [ "$TRAIL_NAME" != "public_walk" ]; then
+  # A NAMED WALK RIDES (2026-10-02, the operator's ruling): walk <name> has
+  # already made the choice the menu would ask for. The sample keeps its menu
+  # however it is named, and so do MCK_TRAIL and a door's stamped trail. Each
+  # page still waits for Enter.
+  :
 else
   if ! { exec 3</dev/tty; } 2>/dev/null; then
     echo "No keyboard to read here; type walk at the command line." >&2
