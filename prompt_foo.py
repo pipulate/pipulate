@@ -3833,44 +3833,18 @@ def main():
           f" | denylist={_identity_table_state(COMMIT_DENYLIST_FILE, denylist_mode != 'off')}")
     if pii_count:
         print(f"🪄 Compile-lane scrub: {pii_count} PII substitution(s) applied to payload.")
-    # RENDER CANARY (emitter half). The transform happens AFTER emit, so the
-    # compiler can never observe it directly -- it does the one thing it can:
-    # name every token exposed to it, every compile, unprompted.
-    #
-    # THE FLOOR MOVED TO ZERO (2026-09-01, operator-convicted as noise). It
-    # was deliberately nonzero: _build_manifest_content plants one bare token,
-    # so this could never read 0, on the theory that a counter able to read 0
-    # forever is indistinguishable from a dead one. In practice it read 1 on
-    # every compile and printed a warning the compiler had authored itself --
-    # the same always-fires shape that got the operator's own email address
-    # pub:-prefixed the same morning. A warning that fires on every run is a
-    # warning nobody reads. The canary is untouched and still does its job:
-    # the MODEL reads it to detect transit linkification. This line now reports
-    # only tokens the compiler did NOT plant, and is silent otherwise.
-    # LOOKBEHIND WIDENED (convicted 2026-08-06 by comb shapes F and G): the old
-    # spelling excluded a preceding slash, word character, AND dot, and it also
-    # demanded THREE or more labels. The live comb rewrote a host carrying a
-    # single leading slash (G), and rewrote the two-label host buried inside a
-    # longer dotted name (F) -- so this scanner was structurally blind to both
-    # classes and UNDER-REPORTED its own exposure while printing a confident
-    # count. F was invisible for BOTH reasons at once, which is why one
-    # receipt convicts two defects. A pre-existing scheme is the ONLY observed
-    # suppressor, so exclude exactly that and nothing else. Bias is
-    # deliberately toward OVER-reporting: this line only prints, so a false
-    # positive costs one noisy word and a false negative costs a wrong edit.
-    # UNTESTED and therefore over-reported on purpose: a word character
-    # immediately before the prefix. It rides the next comb as shape J.
-    # Assembled from fragments for the same reason the emitter is: this file
-    # must never carry a bare www-token of its own.
-    _canary = "www." + "canary" + ".invalid"
-    autolink_bait = sorted(set(re.findall(
-        r'(?<!http://)(?<!https://)www\.[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*', final_output
-    )) - {_canary})
-    if autolink_bait:
-        preview = ", ".join(autolink_bait[:5])
-        if len(autolink_bait) > 5:
-            preview += f", +{len(autolink_bait) - 5} more"
-        print(f"🔎 Render canary: {len(autolink_bait)} bare www-token(s) exposed to autolinking: {preview}")
+    # RENDER CANARY (emitter half): exposure is not evidence of rewriting.
+    # This optional diagnostic does not gate the manifest sentinel or apply.py.
+    if args.verbose:
+        _canary = "www." + "canary" + ".invalid"
+        autolink_bait = sorted(set(re.findall(
+            r'(?<!http://)(?<!https://)www\.[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*', final_output
+        )) - {_canary})
+        if autolink_bait:
+            preview = ", ".join(autolink_bait[:5])
+            if len(autolink_bait) > 5:
+                preview += f", +{len(autolink_bait) - 5} more"
+            print(f"🔎 Autolink exposure (diagnostic): {len(autolink_bait)} bare www-token(s): {preview}")
 
     # Secrets tripwire: runs on every payload, under every profile. A
     # 'warn' secrets mode (no-egress local lane only) shouts but emits;
