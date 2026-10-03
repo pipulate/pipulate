@@ -5,10 +5,10 @@ mcp_render.py -- Decode, diff or mint a PocketRender share link.
 
 THE CONF IS IN THE LINK (READ 2026-09-27, deed 1629, off the two PocketRender
 links on one ticket): a share link's #conf= fragment is standard base64 of
-a zlib-compressed JSON object with nine keys -- urls, devices, userAgent,
-extraHeaders, renderingRules (a list, one rule per item), js (a dict of the
-eight injectJs* hooks, named on the page; see below), presetFilters,
-detectAPIs, execEnvUri -- so the existing and the suggested configs on a
+a zlib-compressed JSON object with eleven keys -- urls, devices, userAgent,
+extraHeaders, renderingRules (a list, one rule per item), js (the eight
+hooks, keyed by name; see below), presetFilters, detectAPIs, perfTrace,
+perfTraceMaxMB, execEnvUri -- so the existing and the suggested configs on a
 ticket decode offline with the standard library, and the three rule-text
 diffs a ticket needs (original|vendor, original|ours, vendor|ours) need no
 render at all. The render farm is for the metrics only.
@@ -16,8 +16,22 @@ render at all. The render farm is for the metrics only.
 THE EIGHT HOOKS ARE ON THE PAGE (READ 2026-10-02, the first PocketRender
 walk's seo.md): its Inject JavaScript section names onNavigate, onInit,
 domContentLoaded, onLoad, stoppedLoading, action, onDone and waitFor, the
-same count as the keys of js. Which key spells which hook is still read only
-off a decoded link.
+same count as the keys of js. READ 2026-10-02 off a decoded link: js is keyed
+by those names, in the page's own order onNavigate, onDone, onLoad, waitFor,
+onInit, domContentLoaded, stoppedLoading, action, each a string of script,
+empty when unused. The same link carried perfTrace and perfTraceMaxMB, which
+this docstring left out of its count until that day.
+
+THE LINK DRIVES THE RENDER (WITNESSED 2026-10-02, walks 3 and 4: one address
+rendered from the page's defaults, then from a minted link). In the first set
+of the POST to /v1/render/batch, devices[0] became renderOptions.device,
+userAgent renderOptions.http.userAgent, the rules renderOptions.rules.miniRules,
+and each presetFilters name a YES under renderOptions.resources, every other
+flag NO. execEnvUri rode as it was, perfTrace became results.doPerfTrace, and
+detectAPIs the batch's detect. The eight hooks fill execution.injectJs* by
+name (INFERRED: every hook was empty in both walks). The page names a set of
+values it knows as a preset: the defaults read Human; walk 4's filters
+matched none and read Custom.
 
 The typed word is `render` (a flake.nix connectorCommand line since 2026-09-27);
 the interpreter's spelling works anywhere the word is not on PATH:
@@ -28,7 +42,8 @@ the interpreter's spelling works anywhere the word is not on PATH:
   .venv/bin/python connectors/mcp_render.py decode LINK --json         # the whole conf as JSON
   .venv/bin/python connectors/mcp_render.py diff LINK_A LINK_B         # header keys that differ, then diff -u of the rules
   .venv/bin/python connectors/mcp_render.py diff - --labels existing suggested   # the first two links on stdin, in text order
-  .venv/bin/python connectors/mcp_render.py encode RULES_FILE --from LINK        # mint a link: LINK's conf with RULES_FILE as its rules
+  .venv/bin/python connectors/mcp_render.py encode RULES_FILE --from LINK        # mint a link: LINK's conf, headers and scripts too, with RULES_FILE as its rules
+  .venv/bin/python connectors/mcp_render.py new URL                              # mint a link from the page's own defaults, URL as its one address
 
 Designed for context.txt as a `!` line, e.g.:
 
@@ -63,16 +78,28 @@ beside it (it would take the port, and the tab with it).
 
 THE ROUND TRIP IS THE RECEIPT: encode decodes what it just minted and refuses
 with exit 1 when the two confs differ, so a minted link that prints is a link
-that decodes to the rules it was given. Whether PocketRender itself reads it
-is witnessed by a human opening it in a logged-in tab, and nothing here can
-claim that.
+that decodes to the rules it was given. PocketRender reads it (WITNESSED
+2026-10-02, walk 4): a minted link opened in a signed-in tab filled the form,
+the page took #conf= off the address, and Render sent the link's values (THE
+LINK DRIVES THE RENDER, above). new mints the same way and checks the same
+round trip.
+
+ENCODE KEEPS THE TEMPLATE'S HEADERS AND SCRIPTS (2026-10-02): every key but
+the rules, the url and the user agent comes from --from, extraHeaders and js
+included, so a client's link as the template carries the client's request
+headers, where a site's pass can ride, and its scripts into the mint. new
+starts from the page's own defaults (DEFAULT_CONF) and carries nothing of
+anyone's.
 
 No auth, no wallet slot, no --check, on noop.py's reasoning: a share link is
 readable by whoever holds it, and a green row for a decoder is a green row
 for nothing.
 
-COMPILE-LANE CAUTION: a conf carries the client's URL and its rule text, and
-a ticket's links name the client's project. Trusted payloads only.
+COMPILE-LANE CAUTION: a conf carries the client's URL, rule text, scripts and
+extra request headers, and a ticket's links name the client's project. The
+compile's scrub and secret checks read text, and a conf is zlib inside base64,
+so nothing there flags what one carries (2026-10-02: a client's link pasted
+into a prompt held a header that looked like a pass). Trusted payloads only.
 """
 
 import sys
@@ -207,6 +234,7 @@ def cmd_decode(args):
     if not args.rules_only:
         print("\n# Next: python connectors/mcp_render.py diff LINK_A LINK_B   (header keys that differ, then diff -u of the rules)")
         print("#       python connectors/mcp_render.py encode RULES_FILE --from LINK   (mint a link from a rules file)")
+        print("#       python connectors/mcp_render.py new URL   (mint a link from the page's own defaults)")
     return 0
 
 
@@ -263,6 +291,69 @@ def cmd_encode(args):
     base = found.group(1) if found else PR_URL
     sys.stderr.write(f"minted: {len(lines)} rule line(s), {len(fragment)} base64 chars, round trip ok\n")
     print(f"{base}#conf={fragment}")
+    return 0
+
+
+# THE PAGE'S OWN DEFAULTS (READ 2026-10-02, walk 3: a fresh page, preset Human,
+# Render clicked with only the address typed in; every value below but one is
+# what its POST to /v1/render/batch carried). render new mints from these, and
+#   render new https://qamy.ai/walk/1/
+# prints the PocketRender trail's link. The rules are the Configuration box's
+# fourteen lines, read off walk 1 and sent as miniRules. presetFilters is the
+# set the Human preset sent as YES; walk 4 sent another set, and the page
+# called it Custom. One value is not walk 3's, on purpose: execEnvUri. Walk 3
+# sent the operator's own environment, whose address carries his name;
+# irf://default is the farm's, and walk 4 rendered on it.
+# The box pads each rule to 21 characters before its comment. The padding is
+# built here, so code counts it and a chat's transport cannot eat it.
+DEFAULT_RULES = [f"{rule:<21}{note}".rstrip() for rule, note in (
+    ("# + *something*", "# allow"),
+    ("# - *something*", "# disallow"),
+    ("# ++ *something*", "# allow and force to ignore robots.txt/filters"),
+    ("# !eor-max:NNN", "# timeout rendering after (ms) default is 20000"),
+    ("", ""),
+    ("!dom", "#see 'help'"),
+    ("!2tld", "#see 'help'"),
+    ("!nojs-on 4xx 5xx", "# don't render error pages"),
+    ("!shadow", "# return serialized shadow dom if the page uses shadow dom"),
+    ("", ""),
+    ("- *.akamaihd.net/*", "# block akamai generating random subdomains on each page"),
+    ("- *.akstat.io/*", "# block akamai generating random subdomains on each page"),
+    ("- *.trk.sensic.net/*", "# block nielsen tracking generating random subdomains on each page"),
+    ("-*", "# and nothing else"),
+)]
+DEFAULT_CONF = {
+    "urls": [],
+    "devices": ["DEVICE_DESKTOP"],
+    "userAgent": "",
+    "extraHeaders": [],
+    RULES_KEY: DEFAULT_RULES,
+    "js": {hook: "" for hook in ("onNavigate", "onDone", "onLoad", "waitFor",
+                                 "onInit", "domContentLoaded", "stoppedLoading", "action")},
+    "presetFilters": ["whitelistAll", "noFrames"],
+    "detectAPIs": False,
+    "perfTrace": False,
+    "perfTraceMaxMB": 32,
+    "execEnvUri": "irf://default",
+}
+
+
+def cmd_new(args):
+    bad = [url for url in args.urls if not url.startswith(("http://", "https://"))]
+    if bad:
+        raise ValueError(f"not an http(s) address: {bad[0]}")
+    conf = json.loads(json.dumps(DEFAULT_CONF))
+    conf["urls"] = list(args.urls)
+    if args.rules:
+        with open(args.rules, encoding="utf-8") as handle:
+            conf[RULES_KEY] = handle.read().rstrip("\n").split("\n")
+    fragment = encode_conf(conf)
+    if decode_fragment(fragment) != conf:
+        sys.stderr.write("round trip FAILED: the minted fragment does not decode to the conf it was made from\n")
+        return 1
+    sys.stderr.write(f"minted from the page's defaults: {len(conf['urls'])} url(s), "
+                     f"{len(conf[RULES_KEY])} rule line(s), {len(fragment)} base64 chars, round trip ok\n")
+    print(f"{PR_URL}#conf={fragment}")
     return 0
 
 
@@ -602,7 +693,7 @@ def main():
     diff.add_argument("--context", type=int, default=3, help="context lines around each change (default: 3)")
     diff.set_defaults(func=cmd_diff)
 
-    encode = modes.add_parser("encode", help="mint a link: a template conf with a rules file as its rules")
+    encode = modes.add_parser("encode", help="mint a link: a template conf, headers and scripts included, with a rules file as its rules")
     encode.add_argument("rules_file", help="the rules, one per line, as decode --rules-only prints them")
     encode.add_argument("--from", dest="template", required=True,
                         help="the link (or file, or -) whose conf supplies every other key")
@@ -610,6 +701,12 @@ def main():
     encode.add_argument("--url", help="replace the conf's single url")
     encode.add_argument("--user-agent", help="replace the conf's userAgent")
     encode.set_defaults(func=cmd_encode)
+
+    new = modes.add_parser("new", help="mint a link from the page's own defaults (walk 3's), with the given address(es)")
+    new.add_argument("urls", nargs="+", metavar="URL", help="the address(es) to render, http(s)")
+    new.add_argument("--rules", metavar="RULES_FILE",
+                     help="the rules from a file instead, one per line, as decode --rules-only prints them")
+    new.set_defaults(func=cmd_new)
 
     def relay_options(sub, timeout):
         sub.add_argument("--relay", default=RELAY_CMD,
