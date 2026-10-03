@@ -2917,10 +2917,9 @@ def main():
     # the paintbox, integrity and processing lines print through logger.print
     # long before this. Bulk removed, receipts intact.
     parser.add_argument('--quiet', action='store_true', help='Suppress the step-5 console echo (Payload Ledger + Summary). Cannot reach the step-6 sanitizer, secrets tripwire, render canary, or disclosure receipt.')
-    # THE OTHER POLARITY (2026-09-06). --quiet hides one block of ACCOUNTING;
-    # -v restores the ANNOUNCEMENTS that note() stopped echoing. Readings,
-    # receipts and gates print under both flags and under neither.
-    parser.add_argument('-v', '--verbose', action='store_true', help='Echo progress announcements (step headers, flags echoed back) that the Rule of Silence hides by default. Readings, receipts, and gates always print.')
+    # --quiet hides accounting; --verbose adds announcements and optional
+    # transport-exposure diagnostics. Neither flag disables integrity checks.
+    parser.add_argument('-v', '--verbose', action='store_true', help='Echo progress announcements and the optional autolink-exposure diagnostic. Integrity checks and refusal messages remain enabled without this flag.')
     parser.add_argument('--chop', type=str, default='AI_PHOOEY_CHOP', help='Specify an alternative payload variable from foo_files.py')
     # THE FRAME IS A FLAG, NOT A PROPERTY OF THE CHOP (2026-09-19). A chop
     # selects files; a frame selects what rides ahead of the prompt. Since
