@@ -1064,7 +1064,7 @@ def warm(slot_name, stale_days, assume_yes=False, dry_run=False):
 # ---------------------------------------------------------------------------
 CHECK_TIMEOUT = 20      # each connector budgets 15s; this is the outer fence
 CHECK_WORKERS = 8       # slots are subprocesses, so this is pure I/O overlap
-_LIVE_MARK = {0: '🟢', 1: '🔴'}
+_LIVE_MARK = {0: '✅', 1: '🛑'}
 
 
 def _dotenv_pairs():
