@@ -14,9 +14,9 @@ AI_PHOOEY_CHOP = r"""#
 # --- START STATS ---
 # There are 1,511 already-written articles about this repo at MikeLev.in (Public)
 # Velocity: 17 published in the last 7 days
-# Markdown negotiated: 2,868 reads (0.22% of all responses)
-# DOM hydration: 3647 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
-# Honeybot telemetry fetched 2026-10-03T00:23Z
+# Markdown negotiated: 2,898 reads (0.22% of all responses)
+# DOM hydration: 3668 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
+# Honeybot telemetry fetched 2026-10-03T09:41Z
 # --- END STATS ---
 
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate
@@ -3243,7 +3243,7 @@ MATCHBOOK_CHOP = r"""
 # ============================================================================
 # Files tracked by git but not yet mixed into the palette above.
 # Move these into the active chapters to paint them onto the context canvas.
-# Coverage: 203/280 tracked files claimed. The compiler reads this line back on the next compile and prints the delta beside the live count, so an unclaimed file rings once.
+# Coverage: 203/281 tracked files claimed. The compiler reads this line back on the next compile and prints the delta beside the live count, so an unclaimed file rings once.
 
 # AGENTS.md  # [1,039 tokens | 4,223 bytes]
 # AUDIT.md  # [2,993 tokens | 13,897 bytes]
@@ -3278,7 +3278,7 @@ MATCHBOOK_CHOP = r"""
 # browser_cache/automation_recipes/README_SAVE_LOAD_AUTOMATION.md  # [1,751 tokens | 7,246 bytes]
 # browser_cache/recipe_executor.py  # [2,848 tokens | 14,661 bytes]
 # browser_cache/review_perception_history.py  # [3,208 tokens | 13,492 bytes]
-# connectors/mcp_render.py  # [7,509 tokens | 30,290 bytes]
+# connectors/mcp_render.py  # [8,959 tokens | 35,811 bytes]
 # imports/ai_tool_discovery_simple_parser.py  # [1,903 tokens | 7,977 bytes]
 # imports/dom_processing/__init__.py  # [0 tokens | 0 bytes]
 # imports/dom_processing/ai_dom_beautifier.py  # [4,291 tokens | 19,809 bytes]
@@ -3312,6 +3312,7 @@ MATCHBOOK_CHOP = r"""
 # scripts/gsc/gsc_keyworder.py  # [3,649 tokens | 15,360 bytes]
 # scripts/gsc/gsc_page_query.ipynb  # [7,842 tokens | 28,465 bytes]
 # scripts/gsc/gsc_top_movers.py  # [8,250 tokens | 35,695 bytes]
+# scripts/link_tiers.sh  # [818 tokens | 2,764 bytes]
 # scripts/map_sheet.py  # [3,613 tokens | 15,605 bytes]
 # scripts/playground/prompt_feeder.py  # [746 tokens | 3,154 bytes]
 # scripts/refactor_cards.py  # [381 tokens | 1,483 bytes]
