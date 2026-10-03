@@ -17,7 +17,7 @@ Golden-path modes, auto-detected from positionals:
   python connectors/mcp.py <server> <tool> '<args-json>'  # CALL: initialize -> tools/call
   python connectors/mcp.py <server> --check               # CHECK: envelope health; exit code is the answer
 
-Designed to be dropped into adhoc.txt as a `!` chisel-strike:
+Designed to be dropped into context.txt as a `!` chisel-strike:
 
   ! python connectors/mcp.py https://mcp.botify.com --check; echo "exit=$?"
 
