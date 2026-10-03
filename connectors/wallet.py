@@ -1013,6 +1013,16 @@ def warm(slot_name, stale_days, assume_yes=False, dry_run=False):
         print(f"  {_MARK.get(after, '[?]')} {after:<7}  "
               f"{_KIND_LABEL.get(akind, akind):<8}  {n:<14}  {adetail}")
         print(f"        ↳ {note}")
+    # A PASTE IS CHECKED WHEN IT LANDS (2026-10-03, the operator's rule): the
+    # live check runs for every env slot that now reads filled, so a bad paste
+    # fails here, in seconds, and not in the middle of a walk.
+    live_cfgs = dict(slots)
+    for after, akind, n, adetail, note in results:
+        if akind in _ENV_KINDS and after == 'filled':
+            code, line = check_slot(n, live_cfgs[n])
+            print(f"  {_LIVE_MARK.get(code, '⚪')} {line}")
+            if code == 1:
+                print(f"        ↳ not accepted: python connectors/wallet.py warm {n}")
     # THE TALLY COUNTS THE OFFLINE BOARD, WHICH CANNOT SEE A REVOKED TOKEN.
     # Witnessed 2026-08-26 in the same output that first printed the SHADOWED
     # block: this line read "1 warmed | 0 still cold" three lines above a
