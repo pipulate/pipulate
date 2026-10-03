@@ -136,6 +136,44 @@ def _blank_gap_spans(content: str, search_block: str):
             spans.append((kept[k][0], kept[k + width - 1][0]))
     return spans
 
+# THE INVISIBLE WRITE (convicted 2026-10-02, the PocketRender ride): this
+# tool wrote trails into Workshop/personal/, a plain folder the top-level
+# .gitignore hides, and printed CREATED and OVERWROTE while d had nothing to
+# show and m nothing to commit. A tier is a repo of its own, cloned to
+# ~/repos/<tier> and linked into Workshop/, where every write is a diff. So
+# a target that git ignores in the repo holding it is refused on both arms,
+# judged on its real path: a write through a linked tier is judged by the
+# tier's own repo. A tracked file is never ignored (git applies ignore rules
+# to untracked paths only), and a path in no repo, or a machine without git,
+# passes as before.
+def _invisible_to_git(filename: str):
+    """The root of the repo that holds filename and ignores it, else None."""
+    real = os.path.realpath(filename)
+    folder = os.path.dirname(real)
+    while not os.path.isdir(folder):
+        parent = os.path.dirname(folder)
+        if parent == folder:
+            return None
+        folder = parent
+    try:
+        top = subprocess.run(['git', '-C', folder, 'rev-parse', '--show-toplevel'],
+                             capture_output=True, text=True, timeout=10)
+        if top.returncode != 0:
+            return None
+        root = top.stdout.strip()
+        check = subprocess.run(['git', '-C', root, 'check-ignore', '-q', '--',
+                                os.path.relpath(real, root)],
+                               capture_output=True, text=True, timeout=10)
+    except (OSError, subprocess.SubprocessError, ValueError):
+        return None
+    return root if check.returncode == 0 else None
+
+def _refuse_invisible_write(filename: str, root: str, verb: str) -> None:
+    print(f"❌ Error: {verb} '{filename}' aborted. Git ignores this path in {root},")
+    print("    the repo that holds it, so the write would leave no diff for d and nothing")
+    print("    for a commit to record. A tier is its own repo: clone it to ~/repos/<tier>")
+    print("    and link it into Workshop/ first. Nothing was written.")
+
 def apply_search_replace_patch(payload: str) -> bool:
     # 1. NORMALIZE PAYLOAD WHITESPACE
     # Convert non-breaking spaces to regular spaces and normalize line endings
@@ -279,6 +317,13 @@ def apply_search_replace_patch(payload: str) -> bool:
                 success = False
                 continue
 
+        # THE INVISIBLE WRITE (whole-file arm), last before the disk.
+        ignored_in = _invisible_to_git(filename)
+        if ignored_in:
+            _refuse_invisible_write(filename, ignored_in, "Whole-file write of")
+            success = False
+            continue
+
         existed = os.path.exists(filename)
         parent = os.path.dirname(filename)
         if parent:
@@ -317,6 +362,13 @@ def apply_search_replace_patch(payload: str) -> bool:
 
         if not os.path.exists(filename):
             print(f"❌ Error: Target file '{filename}' not found.")
+            success = False
+            continue
+
+        # THE INVISIBLE WRITE (surgical arm), judged before the file is read.
+        ignored_in = _invisible_to_git(filename)
+        if ignored_in:
+            _refuse_invisible_write(filename, ignored_in, "Patching")
             success = False
             continue
 
