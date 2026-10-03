@@ -415,6 +415,7 @@ async def _selenium_capture(params: dict, checkpoint=None) -> dict:
     output_dir = base_dir / domain / url_path_slug
     artifacts = {}
     final_url = None
+    seconds_to_enter = None
 
     def failure(message):
         return {
@@ -663,6 +664,18 @@ async def _selenium_capture(params: dict, checkpoint=None) -> dict:
             driver.execute_cdp_cmd("Network.setCacheDisabled", {"cacheDisabled": True})
         except Exception as exc:
             logger.warning(f"⚠️ Could not turn off the browser cache; this page may come from it: {exc}")
+        # A BLANK START (2026-10-02): the window opened on the browser's
+        # new-tab page, and its chrome:// and chrome-untrusted:// loads sat at
+        # the top of every network log. Open about:blank, then read the
+        # performance log once and drop what it holds. The page under test
+        # has not been requested yet, so this read can take only the start
+        # page's traffic; the one read of the flight is still the drain
+        # further down.
+        try:
+            driver.get("about:blank")
+            driver.get_log("performance")
+        except Exception as exc:
+            logger.warning(f"⚠️ Could not clear the start page from the network log: {exc}")
         logger.info(f"Navigating to: {url}")
         driver.get(url)
 
@@ -686,6 +699,7 @@ async def _selenium_capture(params: dict, checkpoint=None) -> dict:
         # supplied one, play the ready sound exactly once.
         _stop_scrape_music(music_proc, ding=True)
         music_proc = None
+        bell_at = time.monotonic()
 
         if checkpoint is not None:
             try:
@@ -702,6 +716,7 @@ async def _selenium_capture(params: dict, checkpoint=None) -> dict:
                     checkpoint_result.get("error")
                     or "interactive checkpoint was not confirmed"
                 )
+            seconds_to_enter = round(time.monotonic() - bell_at, 1)
 
         try:
             final_url = driver.current_url
@@ -752,9 +767,12 @@ async def _selenium_capture(params: dict, checkpoint=None) -> dict:
         # Silent, plausible, and it inverts the one measurement the triptych
         # exists to take.
         #
-        # get_log() DRAINS: this is the one and only read. A second
-        # get_log("performance") anywhere returns [], so any debug drain added
-        # above this line steals the whole flight and leaves the ledger empty.
+        # get_log() DRAINS: this is the one read of the flight. A second
+        # get_log("performance") returns only what came after the first, so
+        # any debug drain added between driver.get(url) and here steals the
+        # flight and leaves the ledger empty. The start-page read just before
+        # driver.get(url) is the one exception (2026-10-02): it runs before
+        # the page under test is requested.
         if verbose: logger.info("🛜 Draining CDP performance log (network flight recorder)...")
         cdp_events = []
         try:
@@ -901,6 +919,10 @@ async def _selenium_capture(params: dict, checkpoint=None) -> dict:
             # not as bad -- fail-open on purpose, because marking years of
             # legacy captures suspect is noise wearing caution's hat.
             "source_provenance": source_provenance,
+            # SECONDS FROM THE BELL TO ENTER (2026-10-02): how long the human
+            # spent on the page after it loaded, so a glance can be told from
+            # two clicks and a wait. None when no human was asked.
+            "seconds_bell_to_enter": seconds_to_enter,
             "headers": actual_headers
         }
         headers_path = output_dir / "headers.json"
@@ -909,8 +931,98 @@ async def _selenium_capture(params: dict, checkpoint=None) -> dict:
 
         if take_screenshot:
             screenshot_path = output_dir / "screenshot.png"
-            driver.save_screenshot(str(screenshot_path))
+            # THE WHOLE PAGE, NOT THE WINDOW (2026-10-02, walk 3: the operator
+            # had scrolled down, and the screenshot held only the lower part).
+            # save_screenshot takes the viewport as it stands. CDP takes the
+            # page: scroll to the top, read the page's CSS size, and capture
+            # beyond the viewport with a clip of that size. Height is capped at
+            # 16384 px so a very long page cannot ask for a giant image. Any
+            # failure falls back to the window, and the log says so.
+            try:
+                import base64
+                driver.execute_script("window.scrollTo({top: 0, left: 0, behavior: 'instant'});")
+                metrics = driver.execute_cdp_cmd("Page.getLayoutMetrics", {})
+                size = metrics.get("cssContentSize") or metrics.get("contentSize") or {}
+                width = max(1, int(size.get("width") or 1920))
+                height = max(1, min(int(size.get("height") or 1080), 16384))
+                shot = driver.execute_cdp_cmd("Page.captureScreenshot", {
+                    "format": "png",
+                    "captureBeyondViewport": True,
+                    "clip": {"x": 0, "y": 0, "width": width, "height": height, "scale": 1},
+                })
+                screenshot_path.write_bytes(base64.b64decode(shot["data"]))
+            except Exception as exc:
+                logger.warning(f"⚠️ Full-page screenshot failed; saving the window instead: {exc}")
+                driver.save_screenshot(str(screenshot_path))
             artifacts['screenshot'] = str(screenshot_path)
+
+        # --- Response bodies: first-party scripts and data, bounded ---
+        # WHERE DID THIS TEXT COME FROM (2026-10-02, the PocketRender ride): a
+        # single-page app sends a small shell and builds every view from
+        # scripts and fetches, so the answer is in those bodies, not in
+        # source.html, and the browser forgets them when it closes. Kept:
+        # Script, XHR and Fetch responses whose host ends in the final URL's
+        # last two labels (app.botify.com and irf.production.botify.com both
+        # end in botify.com; a co.uk-style host takes in more, never less),
+        # read off the drained ledger with Network.getResponseBody, so nothing
+        # is requested twice. Bounds: 60 files, 2 MB each (cut, and marked),
+        # 20 MB in all, 120 tries. Only bodies/index.jsonl (address without
+        # its query, status, type, bytes) is an artifact; the bodies stay
+        # beside the capture, under the same gitignored browser_cache/ as
+        # everything else the page held.
+        try:
+            import base64
+            final_host = (urlparse(final_url).hostname or "").lower()
+            site = ".".join(final_host.split(".")[-2:])
+            bodies_dir = output_dir / "bodies"
+            rows, seen, kept, total = [], set(), 0, 0
+            for ev in cdp_events:
+                params_ev = ev.get("params", {})
+                response = params_ev.get("response", {})
+                body_url = response.get("url", "")
+                host = (urlparse(body_url).hostname or "").lower()
+                request_id = params_ev.get("requestId")
+                kind = params_ev.get("type")
+                if (ev.get("method") != "Network.responseReceived"
+                        or kind not in ("Script", "XHR", "Fetch")
+                        or not request_id or request_id in seen
+                        or not site or not (host == site or host.endswith("." + site))):
+                    continue
+                if kept >= 60 or total >= 20_000_000 or len(rows) >= 120:
+                    break
+                seen.add(request_id)
+                row = {"url": body_url.split("#", 1)[0].split("?", 1)[0],
+                       "status": response.get("status"), "type": kind,
+                       "mime": response.get("mimeType", "")}
+                try:
+                    got = driver.execute_cdp_cmd("Network.getResponseBody", {"requestId": request_id})
+                except Exception as exc:
+                    row["error"] = (str(exc).strip().splitlines() or [type(exc).__name__])[0][:200]
+                    rows.append(row)
+                    continue
+                if got.get("base64Encoded"):
+                    data, ext = base64.b64decode(got.get("body", "")), ".bin"
+                else:
+                    data = got.get("body", "").encode("utf-8")
+                    ext = ".js" if kind == "Script" else ".json" if "json" in row["mime"] else ".txt"
+                cut = len(data) > 2_000_000
+                data = data[:2_000_000]
+                name = f"{kept + 1:03d}-{kind.lower()}-{hashlib.sha256(body_url.encode('utf-8')).hexdigest()[:10]}{ext}"
+                bodies_dir.mkdir(exist_ok=True)
+                (bodies_dir / name).write_bytes(data)
+                kept += 1
+                total += len(data)
+                row.update({"file": name, "bytes": len(data), "cut": cut})
+                rows.append(row)
+            if rows:
+                bodies_dir.mkdir(exist_ok=True)
+                index_path = bodies_dir / "index.jsonl"
+                index_path.write_text("".join(json.dumps(r) + "\n" for r in rows), encoding="utf-8")
+                artifacts['bodies_index'] = str(index_path)
+            if verbose:
+                logger.info(f"📦 Kept {kept} first-party response bodies ({total} bytes) in {bodies_dir.name}/")
+        except Exception as exc:
+            logger.warning(f"⚠️ Could not keep response bodies: {exc}")
 
 
 
