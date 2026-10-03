@@ -150,6 +150,12 @@ Workshop/Playground/
 Workshop/Educational_Notebooks/
 Workshop/corporate/
 Workshop/corporate
+# A TIER CAN BE A LINK (2026-10-02): git sees a symlink as a file, so a
+# pattern ending in / never matches one. corporate already carries both
+# spellings; personal and shared carry them now, so a tier cloned to
+# ~/repos/<tier> and linked here stays out of git status and out of m.
+Workshop/personal
+Workshop/shared
 # THE THREE TIERS ARE THE WHOLE OF Workshop/ (2026-09-28): corporate/,
 # personal/ and shared/, each ignored whole, and nothing else lives there;
 # the starter notebooks, imports/, data/ and browser_cache/ sit under
