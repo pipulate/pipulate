@@ -1517,7 +1517,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # entered the default shell: the folder is already there, so `test -d`
           # prints the same answer in both worlds. The straddle reads the
           # GENERATED HOOK TEXT instead (nix eval on devShells.<sys>.quiet).
-          mkdir -p "$PIPULATE_ROOT/Workshop/corporate"
+          bash "$PIPULATE_ROOT/scripts/link_tiers.sh" || true; mkdir -p "$PIPULATE_ROOT/Workshop/corporate"
           mkdir -p "$PIPULATE_ROOT/Workshop/personal"
           mkdir -p "$PIPULATE_ROOT/Workshop/shared"
           # ONE printf, NEVER a heredoc. A cat-heredoc here broke nix develop on
