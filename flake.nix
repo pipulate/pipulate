@@ -1571,7 +1571,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
             untracked=$(git ls-files --others --exclude-standard)
             if [ -n "$untracked" ]; then
               echo ""
-              echo "--- UNTRACKED (invisible to the diff above; m will stage these) ---"
+              echo "--- UNTRACKED (invisible to the diff above; m will not commit these; git add the ones you mean) ---"
               printf '%s\n' "$untracked" | sed 's/^/  + /'
             fi
           }
@@ -2244,7 +2244,18 @@ print(max(1, n))
             # progress into the commit. The .gitignore and the pre-commit
             # denylist hook are the only fences, and they are the same
             # fences `blast` has always relied on.
-            git add -A
+            # NO git add -A (2026-10-03, the operator's ruling): m commits what is
+            # tracked and changed, and names every new file it left out.
+            local left_out
+            left_out=$(git ls-files --others --exclude-standard)
+            if [ -n "$left_out" ]; then
+              echo "NOT committed (new, untracked); git add the ones you mean, then run m again:"
+              printf '%s\n' "$left_out" | sed 's/^/  + /'
+            fi
+            if git diff --quiet HEAD 2>/dev/null; then
+              echo "Nothing tracked changed in $(git rev-parse --show-toplevel). A tier (Workshop/personal, corporate, shared) is its own repo: change into it, then run d and m there."
+              return 0
+            fi
             local msg
             # THE INTENT PARAMETER (router-churn edition, 2026-07-17): the
             # alias knows WHY this commit exists, so it says so. A diff that
