@@ -6,6 +6,16 @@
 # compiler kept reading it into payloads. Widened to every extension, and
 # the file was still deleted by hand: a gitignore pattern hides a file from
 # git, not from the disk, the compiler, or a probe's glob.
+
+#   Workshop/   -- the JupyterLab root (NOT Pipulate's own root)
+#   │            FLAT siblings. Nothing nests. Nothing to get wrong.
+#   │
+#   ├── corporate/    the org's canon · gitignored · its own private repo
+#   ├── personal/     personal · gitignored · your own git repo goes here
+#   └── shared/       the ONE folder for handing work to a teammate
+#       ├── alice/    one folder per person; you write ONLY your own
+#       └── bob/      single-writer partitions = zero merge conflicts
+
 deleteme*
 Notebooks/Advanced_Notebooks/Whatsa_Lambda.ipynb
 patch
