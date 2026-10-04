@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Mother Cat trail walker, Car B: actuate Car A's validated plan.
 
-walk.py remains the strict, stdlib-only dry-run planner. This module adds the
+walk.py remains the strict dry-run planner. This module adds the
 actuating side of the Mother Cat Kata:
 
   EXPORTS                  -- the walk's exports file, when one resolves, is
@@ -733,10 +733,10 @@ def _shown(path):
     except ValueError:
         return str(path)
 
-async def _ride_async(trail_path, dry_narrate=False, exports_path=None):
+async def _ride_async(trail_path, dry_narrate=False, exports_path=None, with_intro=False):
     archive = {"path": None, "finished": False, "previews": []}
     try:
-        return await _ride_steps(trail_path, archive, dry_narrate, exports_path)
+        return await _ride_steps(trail_path, archive, dry_narrate, exports_path, with_intro)
     except KeyboardInterrupt:
         return _stopped()
     finally:
@@ -745,9 +745,12 @@ async def _ride_async(trail_path, dry_narrate=False, exports_path=None):
         _finish_capture_archive(archive, "partial", archive.get("skipped", ()))
 
 
-async def _ride_steps(trail_path, archive, dry_narrate=False, exports_path=None):
+async def _ride_steps(trail_path, archive, dry_narrate=False, exports_path=None, with_intro=False):
     trail_path = Path(trail_path)
     trail = walk.load_trail(trail_path)
+    # `walk NAME intro` (2026-10-04): the introduction's stops ride first,
+    # through the same pre-flight, fence and capture as the walk's own.
+    played = (trail.get("introduction", []) if with_intro else []) + trail["stops"]
 
     problems = _capture_compatible(trail)
     if problems and not dry_narrate:
@@ -789,7 +792,7 @@ async def _ride_steps(trail_path, archive, dry_narrate=False, exports_path=None)
     # run in a shell that has exported nothing yet. AN OPTIONAL STOP IS SAID
     # ONCE, AT THE STOP (2026-10-02, the operator's ruling): the loop below
     # prints Skipped there, and nothing about it prints here.
-    missing_envs, optional_missing = _missing_url_envs(trail["stops"])
+    missing_envs, optional_missing = _missing_url_envs(played)
     skip_vars = dict(optional_missing)
     if missing_envs:
         sibling = _shown(trail_path.with_name(trail_path.stem + ".exports.sh"))
@@ -825,7 +828,7 @@ async def _ride_steps(trail_path, archive, dry_narrate=False, exports_path=None)
         except Exception:
             pass
 
-    stops = trail["stops"]
+    stops = played
     # The rider says the terms once: the trail's description, then
     # WALK_RULES. Practice says the same words and captures nothing.
 
@@ -841,6 +844,12 @@ async def _ride_steps(trail_path, archive, dry_narrate=False, exports_path=None)
     # WALK_RULES after it.
     if dry_narrate:
         print("\nPractice: these are the real walk's steps. Nothing opens, nothing is saved, and there is nothing to type.")
+    # THE INTRODUCTION IS SKIPPED BY DEFAULT (2026-10-04, the operator's
+    # ruling): one line, printed and never spoken, says how to ask for it.
+    if trail.get("introduction") and not with_intro:
+        print(f"\nIntroduction skipped. To see it: walk {trail['name']} intro")
+    elif with_intro and not trail.get("introduction"):
+        print("\nThis walk has no introduction.")
     _narrate(trail["description"] + "\n" + WALK_RULES)
     captured = []
     skipped = archive.setdefault("skipped", [])
@@ -937,7 +946,7 @@ async def _ride_steps(trail_path, archive, dry_narrate=False, exports_path=None)
     return 0
 
 
-def ride(trail_path=None, dry_narrate=False, exports_path=None):
+def ride(trail_path=None, dry_narrate=False, exports_path=None, with_intro=False):
     """Run one validated trail to completion and return a process exit code."""
     if trail_path is None:
         path = walk.DEFAULT_TRAIL
@@ -961,7 +970,8 @@ def ride(trail_path=None, dry_narrate=False, exports_path=None):
             ours = False
     try:
         return asyncio.run(
-            _ride_async(path, dry_narrate=dry_narrate, exports_path=exports_path)
+            _ride_async(path, dry_narrate=dry_narrate, exports_path=exports_path,
+                        with_intro=with_intro)
         )
     except KeyboardInterrupt:
         return _stopped()
@@ -1153,9 +1163,7 @@ def main(argv=None):
         nargs="?",
         default=None,
         help=(
-            "trail path (default: walk.DEFAULT_TRAIL, the zero-auth "
-            "public_walk softball). Expert, authenticated: "
-            "assets/trails/first_context.yaml"
+            "trail path (default: walk.DEFAULT_TRAIL, the zero-auth public_walk)"
         ),
     )
     parser.add_argument(
@@ -1172,6 +1180,13 @@ def main(argv=None):
             "(default: <trail>.exports.sh beside the trail, if it exists); "
             "a relative PATH anchors to the repository root"
         ),
+    )
+    # --with-intro and not --intro: a launcher fetched before 2026-10-02 still
+    # sends the retired --intro, and it must not start an introduction.
+    parser.add_argument(
+        "--with-intro",
+        action="store_true",
+        help="play the trail's introduction, if it has one, before its stops",
     )
     # TWO RETIRED FLAGS (2026-10-02): every walk hands off the same way, so
     # nothing is pre-authorized and there is no contract to print. A launcher
