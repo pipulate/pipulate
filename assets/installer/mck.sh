@@ -587,6 +587,10 @@ run_wrapped() {
 # read different exports files. The flag rides only when a file resolved; the
 # empty case expands no array (bash 3.2 + set -u, the trap NIXWRAP dodges).
 run_rider() {
+  # `walk NAME intro` (v0.7.0) asks for the introduction, practice included.
+  if [ "$WITH_INTRO" -eq 1 ]; then
+    set -- --with-intro "$@"
+  fi
   if [ -n "$EXPORTS_PATH" ]; then
     run_wrapped "$PY" scripts/mother_cat.py "$TRAIL_PATH" --exports "$EXPORTS_PATH" "$@"
   else
