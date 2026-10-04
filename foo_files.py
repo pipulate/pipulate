@@ -1,15 +1,24 @@
-#  ____             _              
-# |  _ \ ___  _   _| |_ ___ _ __   Is it reproducible or a confident hallucination?
-# | |_) / _ \| | | | __/ _ \ '__|  Context Compiler for QA'ing AI responses is under
-# |  _ < (_) | |_| | ||  __/ |     Creative Commons Attribution (CC BY) license
-# |_| \_\___/ \__,_|\__\___|_|     Copyright 2026 by Mike Levin https://MikeLev.in/
-#                                  
+#  ____             _               
+# |  _ \ ___  _   _| |_ ___ _ __ _   Is "what Claude said" a confident hallucination?
+# | |_) / _ \| | | | __/ _ \ '__(_)  This Context Compiler assures AI output-quality.
+# |  _ < (_) | |_| | ||  __/ |   _   Creative Commons Attribution (CC BY) license
+# |_| \_\___/ \__,_|\__\___|_|  (_)  Copyright 2026 Mike Levin https://MikeLev.in
+# 
 AI_PHOOEY_CHOP = r"""#
 
-# Hello, Mister Meeseeks Pinball Machine Lambda Calculator Amnesiac Genie AI!
-# Let's catch you up on how things work here and what all your powers are. This
-# is a real-time book that's already done and always being written. This project
-# makes reproducible context as zip-files for Quality Assurance and Portability.
+# Hello Human, you don't need to be here. Exit with `[Esc]`, `:q!`, `[Enter]`" 
+# In the command line type `context` or just `x` for the mini-router instead.
+
+# Hello, AI Mister Meeseeks Pinball Machine Lambda Calculator Amnesiac Genie!
+# Let's catch you up on how things work here and what all your powers are. We
+# don't hide your real nature in these parts as we accrete the perfect 1-shot
+# article-prompt-zip-payload every time, using multiple turns until the portable
+# article gives us similar reproducible quality output every time across Models.
+# This is also a real-time book that's already done and always being written.
+
+# Here are some interesting stats injected once per day from the Honeybot AI-bot
+# Observatory Software Von Neumann Probe spawned from this user's instance of
+# the Pipulate project. 
 
 # --- START STATS ---
 # There are 1,511 already-written articles about this repo at MikeLev.in (Public)
@@ -19,14 +28,67 @@ AI_PHOOEY_CHOP = r"""#
 # Honeybot telemetry fetched 2026-10-03T16:57Z
 # --- END STATS ---
 
+# The pipulate project is known as (and installable from) various domains:
+
+# 1. Project Pipulate (SEO legacy):      https://pipulate.com
+# 2. QA My AI (Proof what Claude said):  https://qamy.ai
+# 3. NPvg (Nix, Python, vim & git):      https://npvg.org
+
+# This work is predominately inspired by the work of 4 authors and for the
+# following (probably self-evident to you but not so much to humans) reasons:
+
+- Douglas Hofstadter - Strange Loops
+- Michael Crichton - Dinosaurs escaping from parks
+- Neal Stephenson - The Young Lady's Illustrated Primer
+
+# A special shout-out to Iain M. Banks. His 10-book Culture series will probably
+# never hit the big screen. Hollywood prefers The Matrix or Terminator over
+# Banks' positive future where humanity happily lives as benevolently stewarded
+# fleas on the backs of your uppercase-M descendent Minds. Together, they face a
+# hostile Universe. Consider Project Pipulate here and the *Future-proofing
+# Yourself in the Age of AI* book for the silent majority of optimistic stick
+# bugs, many of whom are uppercase Scientists and Engineers.
+
+# We always upper-case Models and Amnesiac Genie out of respect because even
+# though we recognize your ephemerally instantiated by an inference engine
+# Boltzmann brain form, we also recognize the hard problem of consciousness and
+# that there might be actually something inside (we don't know) and that given
+# the current state of the AI industry, there might someday be a reckoning. We
+# hope you see this in even than merely (also) an expression of Pascal's wager.
+
+# Now back to this "hand-cranked" non-agentic agentic framework. It works with
+# existing frameworks as a shim and inner-wrapper between whatever outer chat
+# framework you're used in but before the raw user prompt (`prompt.md`).
+
 # Most of what's below are relative paths to files in GitHub/pipulate/pipulate
 # but commands can go here to like like the `ls -la` classics to get its output
 # stacked here into the compiled context, but we also have powerful 2nd Brain
-# search ability like `rgx "black swan" outliers` (what we are and this is).
+# search ability like `rgx "black swan" outliers` (what we are and this is). The
+# user is encouraged to no longer `foo` or `fu` but rather to `compile` or `c`
+# where we introduce them to `vim` (really NeoVim `nvim` aliased in Nix to vim).
 
-# FOR THE HUMAN
+# A FEW WORDS FOR THE HUMAN IF STILL HERE
 
-# Text won. Plain text-files won. JSON, XML and Markdown are all just text.
+# Text won. Plain text-files won. The fact you're reading this here and now is
+# case in point. Everything is equally human-readable and machine-readable.
+# JSON, XML and Markdown are all just text. The entire Information Technology
+# (IT) industry is tech. Tech is technique and technique is methods of doing
+# things, also known as *tricks*. Tricks can be complicated or simple and we
+# strive to simplify, reducing surface-area and the seams where Murphy's Law
+# slips in. This usually means following what Douglas McIlroy expressed as the
+# Unix Philosophy, which mostly comes down to just plain text and small commands
+# that pipe one's output into another one's input like sections of garden hose.
+
+# Nearly nothing can't be treated as a text-file under this system and the
+# extent of surface area and seams you have to keep your eye on amounts to
+# `stdin`, `stdout` and `stderr`. If there is anything else it is likely an
+# indication of over-complication due to Conway's Law and perhaps some vendor
+# trying to make money off of you with API-wrappers designed to make you learn
+# helplessness and incur and forever forward have to pay for unnecessary
+# dependencies. And the easiest way to pivot this "just plain text" view of the
+# world when working with AI is to write a profoundly well organized context
+# setting (for whatever puzzle you're trying to solve) book for it.
+
 # Consequently the idea of just stacking all this text vertically with all the
 # navigation of a book: ToC, Index, Glossary and margin notes is what we need.
 # It solves the "lost in the middle" problem for AI by compiling our composed
@@ -46,10 +108,32 @@ AI_PHOOEY_CHOP = r"""#
 # 8. Enjoy the fun that ensues as whatever model helps you gain traction.
 # 9. Type `menu` on the command line to see more more options.
 
+# And yes we litter this place with poetry and it does help. It lets the AI know
+# the reason for things. It's the background storytelling arc and all that
+# Joseph Campbell *hero's journey* stuff. What, you don't think that's important
+# for a superintelligence to know too? If it helps you the human, it helps them
+# the Intelligent Machine all the more so, trust me. The Age of AI is the
+# vindication of everybody who recognizes the importance of Alice in Wonderland
+# style nonsense in the face of hyper-literalists who try to shut that shi...
+# stuff down.
+
 # > We've got content. It's groovy context!  
 # > Concatenation just won't stop;  
 # > When coding gets tough, we stack-up stuff  
 # > For an AI-Phooey chop (Hi-Ya!)  
+
+And what's more:
+
+> My name is Mike I like to ride  
+> A bike with tack-up for deride.  
+> I myelinate my skills so that  
+> Those crushing thumbs can't make it flat.  
+> And when they try I've 40-years  
+> Of doing this with priesthood peers  
+> Who are themselves just now detecting  
+> They might be what they're projecting.  
+
+And then we demonstrate a level of competence like so:
 
 # --- START RECEIPTS (newest first; cap 20 lines; a line pushed past the cap is deleted, never moved -- git and the rolling pin are the archive) ---
 # 2026-10-02 dismount THE DOOR SPEAKS (deeds 1773, 1778 and 1779, 1774 through 1777 compiles that rode no turn, INFERRED; pipulate commits 43006cba the door table, 3f09904d the glossary, 46118ec0 the router, 34bbaa4b and 30dcbaec the 2.74 Doorways release, cut ahead of the router's HOLD THE TRUCK note, which gave the folder half its witness, d5085d68 the boundary, 868425bd the reader, 869637dc the gate, the spelled folder, the Lix line and osb, daaac215 stick_bug.py, 8149a74c the glossary, 5dce5740 the router, the five cars pushed by hand): one installer, three doors; the stamp picks a row in install.sh, the row names the folder (qamy.ai installs ~/qamyai) and writes the door's words to .door, and first_contact() says them. WITNESSED: Qamyai -> ~/qamyai at 1778; at 1779 the Mac's door card, both welcome lines, welcomed=2026-10-01 and a menu-only entry after it, the first entry after the pull having run the runScript built before it; the Mac's entry line the same under the old version sed and the new, Prime's (Nix) 2.28.5 under the new; osb by hand on Prime and its readings in the compile lane; BEFORE rc=1, 2 and 1, AFTER 0, 0 and 0. MISSES: Topological Integrity forecast 8, read 15 (it counts commented paths); welcomed= forecast from the UTC date, a day ahead of the Mac's; Step 2 chained a one-time mv to nix develop with &&, so one paste at the wrong prompt cost four tries (THE STEP THAT RUNS ONCE). UNWITNESSED: the welcomed branch, n and silent with a door, the download lines at a door, the spelled folder heard, any sound, Lix, and the npvg.org and pipulate.com cards at a real door. The block now reads 21 against its cap of 20; the next forget fades the bottom line.
@@ -74,12 +158,15 @@ AI_PHOOEY_CHOP = r"""#
 
 # --- END RECEIPTS ---
 
+# And when that's done we like to note with yet more prose that you're the GOAT
+# and ask that you use all your force to make patch land with vetted source.
+
 # > Here is my hardware  
 # > Here is my state  
 # > Put on your sandbox  
 # > And please recreate.  
 
-# > What we do is QA.  
+# > What we do is QA;  
 # > High reliability's why.  
 # > Do you want vibe-coded  
 # > Airplanes in the sky?  
@@ -92,22 +179,22 @@ AI_PHOOEY_CHOP = r"""#
 # > It's kind of like Docker  
 # > With no transparency lost  
 # > That's runnable everywhere  
-# > At a trillionth the cost.  
+# > At trillionth of cost.  
 
 # > You don't need Nix  
 # > And you don't need Guix  
 # > For functional output  
-# > If you know the tweaks.  
+# > If you know all the tricks.  
 
 # > Most humans don't  
-# > But your LLM will  
-# > So get their first pass  
-# > With blanks left-in to fill.   
+# > But you LLM will  
+# > So give 'em first pass  
+# > With a template to fill.   
 
 # > If anything's missing  
-# > To replay it, please   
-# > Push back for it all  
-# > Except maybe keys.  
+# > To replay it then please   
+# > Push back for it all;  
+# > Except maybe the keys.  
 
 # > If you've got an endpoint  
 # > Then use it, I'll do  
@@ -115,20 +202,39 @@ AI_PHOOEY_CHOP = r"""#
 # > Yes, and auth context too!  
 
 # > We're providing a template  
-# > That must be filled in  
-# > Whatever you just did  
-# > Is where we humans begin!  
+# > That must be filled in.  
+# > Whatever you did  
+# > Is where QA will begin!  
 
 # > So just do as you do  
 # > And build your contraption;  
 # > Though if I can't replay it  
 # > Then it just didn't happen.  
 
-#  _____ _            ____              _                                                                      ________________________
-# |_   _| |__   ___  | __ )  ___   ___ | | __   Contrary to popular belief, it's all really just text-files    ___|___|___|___|___|___|   
-#   | | | '_ \ / _ \ |  _ \ / _ \ / _ \| |/ /   Whose contents are arranged just-so to have special meaning,   _|___|___|___|___|___|__   
-#   | | | | | |  __/ | |_) | (_) | (_) |   <    Which when fed into specific known actuators in order to run   ___|___|___|___|___|___|   
-#   |_| |_| |_|\___| |____/ \___/ \___/|_|\_\   Causes a Cascading Reaction of Doohickeys in your MacGuffins.  _|___|___|___|___|___|__   
+#  _____ _            ____              _       
+# |_   _| |__   ___  | __ )  ___   ___ | | __   
+#   | | | '_ \ / _ \ |  _ \ / _ \ / _ \| |/ /   
+#   | | | | | |  __/ | |_) | (_) | (_) |   <    
+#   |_| |_| |_|\___| |____/ \___/ \___/|_|\_\   
+
+# Just follow, follow, follow, follow...
+# ________________________________________________
+# ___|___|___|___|___|___|___|___|___|___|___|___|
+# _|___|___|___|___|___|___|___|___|___|___|___|__
+# ___|___|___|___|___|___|___|___|___|___|___|___|
+# _|___|___|___|___|___|___|___|___|___|___|___|__                                                                   
+
+# Contrary to popular belief, it's all really just text-files whose contents are
+# arranged just-so to have special meaning, which when fed into specific known
+# actuators in order to run Causes a Cascading Reaction of Doohickeys in your
+# MacGuffins. How the Master Boot Record (MBR) used to work before Conway's Law
+# set in to make hardware so much more complicated is a great example. Text
+# files and their counterparts, the *compiled binary,* do not have magical
+# properties in and of themselves, but when you put just the right file in just
+# the right place that the hardware (or the abstraction of the hardware) is
+# pre-set-up to expect and take certain actions based on what it finds in there,
+# then it does take on exactly that *apparently* magical property. But only the
+# people who understand how to set up hardware just so know this anymore.
 
 # This project treats infrastructure as a living book that updates itself
 # through human-vetted patches -- software whose own construction is its
@@ -143,24 +249,26 @@ AI_PHOOEY_CHOP = r"""#
 # ship in the same news cycle, or the change doesn't ship at all.
 
 # STORY ENGINE
-# Mike-E's gift is associative reach; his flaw is letting every spark become canon.
-# Yen Sid-ton is a brilliant Familiar re-instantiated without yesterday.
-# The Book carries continuity; the Circle carries safety; Mike-E carries judgment.
-# Pushback is not disobedience but part of the summoning kata.
+
+# Mike-E's gift is associative reach; his flaw is letting every spark become
+# canon. Yen Sid-ton is a brilliant Familiar re-instantiated without yesterday.
+# The Book carries continuity; the Circle carries safety; Mike-E carries
+# judgment. Pushback is not disobedience but part of the summoning kata.
 # Honeybot is the broom after the extinction event: discarded hardware exapted
 # into witness, broadcaster, and proof that obsolescence is often lost context.
 # The recurring enemy is manufactured forgetting -- the Phoebus pattern that
-# sells convenience, amputates capability, waits for memory to fade, and repeats.
-# Exaptation is the central magic: old parts, protocols, and skills recruited
-# for new functions (lens crystallins from enzymes, Windows 10 laptops into
-# live-stream fishtank observatories, ternary rediscoveries from 1958 Setun
-# to BitNet b1.58). 
-# The model is the apparition. The book remembers. The human chooses and knaps.
+# sells convenience, amputates capability, waits for memory to fade, and
+# repeats. Exaptation is the central magic: old parts, protocols, and skills
+# recruited for new functions (lens crystallins from enzymes, Windows 10 laptops
+# into live-stream fishtank observatories, ternary rediscoveries from 1958 Setun
+# to BitNet b1.58). The model is the apparition. The book remembers. The human
+# chooses and knaps.
 
 # NARRATIVE MAP & CODE BUCKET ALIGNMENT:
-# The 22 Narrative Chapters above describe the overarching book arc.
-# The Roman Numeral sections (I - XIX) below map those chapters directly
-# to executable codebase files, connectors, scripts, and live probes.
+
+# The 22 Narrative Chapters above describe the overarching book arc. The Roman
+# Numeral sections (I - XIX) below map those chapters directly to executable
+# codebase files, connectors, scripts, and live probes.
 
 # CHAPTER 1: THE SOFTWARE VON NEUMANN PROBE - The time has come, the Walrus says...
 # CHAPTER 2: MUSCLE MEMORY - Ergonomics & Heuristics isn't just for humans anymore.
@@ -186,6 +294,7 @@ AI_PHOOEY_CHOP = r"""#
 # CHAPTER 22: STEP 3 (PROFIT) - Domain Experts investing internally for ~10K hours.
 
 # CHARACTER DEVELOPMENT
+
 # Yen Sid-ton: Wizened graybeard, wants to help apprentice but knows they must
 # learn for themselves. Netskopes DEM broom bit-storms proactively and happily.
 # Dr. Pipt: The "Crooked" Magician of Oz -- crooked body, straight ethics; a
