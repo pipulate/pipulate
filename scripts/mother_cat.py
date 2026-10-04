@@ -1232,7 +1232,8 @@ def main(argv=None):
     if args.intro_contract:
         return 0
     try:
-        return ride(args.trail, dry_narrate=args.dry_narrate, exports_path=args.exports)
+        return ride(args.trail, dry_narrate=args.dry_narrate, exports_path=args.exports,
+                    with_intro=args.with_intro)
     except walk.TrailError as exc:
         print(f"This walk cannot run: {exc}")
         return 2
