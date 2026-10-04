@@ -172,16 +172,16 @@ WALK_RULES = (
 
 def _private_plan_path():
     """One local scratch itinerary; resolution is read-only and never falls back."""
-    path = Path.home() / ".local" / "state" / "pipulate" / "plan.json"
+    path = Path.home() / ".local" / "state" / "pipulate" / "plan.yaml"
     resolved = path.resolve()
     if path.is_symlink() or resolved.is_relative_to(REPO_ROOT.resolve()):
-        raise walk.TrailError("plan.json must be outside the workshop, not a symlink")
+        raise walk.TrailError("plan.yaml must be outside the workshop, not a symlink")
     if any((parent / ".git").exists() for parent in resolved.parents):
-        raise walk.TrailError("plan.json must not live inside a Git worktree")
+        raise walk.TrailError("plan.yaml must not live inside a Git worktree")
     if path.exists():
         info = path.stat()
         if not path.is_file() or info.st_nlink != 1 or info.st_mode & 0o777 != 0o600:
-            raise walk.TrailError("plan.json must be a private regular file (0600), not a hard link")
+            raise walk.TrailError("plan.yaml must be a private regular file (0600), not a hard link")
     return path
 
 
@@ -191,13 +191,16 @@ def _edit_private_plan():
 
     path = _private_plan_path()
     path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
-    legacy = path.with_suffix(".yaml")
+    # THE PLAN FOLLOWS THE TRAILS (2026-10-04): the plan is plan.yaml, and an
+    # older plan.json is renamed to it in place. JSON is YAML, so its text
+    # loads unchanged.
+    legacy = path.with_suffix(".json")
     if not path.exists() and legacy.exists():
         if legacy.is_symlink():
-            raise walk.TrailError("legacy plan.yaml must not be a symlink")
+            raise walk.TrailError("legacy plan.json must not be a symlink")
         info = legacy.stat()
         if not legacy.is_file() or info.st_nlink != 1 or info.st_mode & 0o777 != 0o600:
-            raise walk.TrailError("legacy plan.yaml must be a private regular file (0600), not a hard link")
+            raise walk.TrailError("legacy plan.json must be a private regular file (0600), not a hard link")
         os.replace(legacy, path)
         print(f"Migrated private plan to {path}", flush=True)
     if not path.exists():
@@ -226,7 +229,7 @@ def _edit_private_plan():
     result = subprocess.run([
         "nvim", "-u", "NONE", "-n", "-i", "NONE",
         "--cmd", "set nobackup nowritebackup noundofile nomodeline",
-        "-c", "setlocal filetype=json number textwidth=0",
+        "-c", "setlocal filetype=yaml number textwidth=0",
         str(path),
     ], check=False)
     if result.returncode:
@@ -1197,7 +1200,7 @@ def main(argv=None):
     parser.add_argument("--disclose", metavar="CAPTURES_MD",
                         help="write a private review-text disclosure; no browser or clipboard")
     parser.add_argument("--plan", action="store_true",
-                        help="seed once and edit the private plan.json; never ride")
+                        help="seed once and edit the private plan.yaml; never ride")
     parser.add_argument("--plan-path", action="store_true",
                         help="read-only: print the existing private plan path or refuse")
     args = parser.parse_args(argv)
