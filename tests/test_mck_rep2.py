@@ -10,43 +10,70 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT))
 sys.path.insert(0, str(REPO_ROOT / "scripts"))
 
-import prompt_foo
+# prompt_foo is imported inside the two resolver tests (2026-10-04), so the
+# trail tests below load neither the compiler nor the browser stack.
 import walk
 
 
 class MotherCatRep2Tests(unittest.TestCase):
-    def test_pageworkers_trail_satisfies_strict_car_a_schema(self):
-        trail_path = REPO_ROOT / "assets" / "trails" / "botify_pageworkers.yaml"
-        trail = walk.load_trail(trail_path)
+    def test_public_walk_yaml_is_the_default_trail(self):
+        # THREE WALKS (2026-10-04): the PageWorkers trail this test once read
+        # was purged with five others; it pinned a trail's shape, never the
+        # Rep 2 witness. The bundled trail is public_walk, YAML since that day.
+        # Its JSON twin stays out of this test, so removing the twin moves no line.
+        self.assertEqual(walk.DEFAULT_TRAIL.name, "public_walk.yaml")
+        trail = walk.load_trail(walk.DEFAULT_TRAIL)
 
         self.assertEqual(trail["schema_version"], 1)
-        self.assertEqual(trail["name"], "botify_pageworkers")
+        self.assertEqual(trail["name"], "public_walk")
         self.assertEqual(
-            [stop["url_env"] for stop in trail["stops"]],
-            [
-                "PIPULATE_TRAIL_BOTIFY_OPTIMIZATION_URL",
-                "PIPULATE_TRAIL_BOTIFY_MONITORING_URL",
-                "PIPULATE_TRAIL_BOTIFY_REPORTING_URL",
-            ],
+            [stop["name"] for stop in trail["stops"]],
+            ["the_word", "the_receipt", "the_two_pages"],
         )
+        self.assertNotIn("introduction", trail)
         self.assertEqual(
             {
                 "headless": trail["defaults"]["headless"],
                 "persistent": trail["defaults"]["persistent"],
                 "override_cache": trail["defaults"]["override_cache"],
-                "is_notebook_context": trail["defaults"]["is_notebook_context"],
                 "profile_name": trail["defaults"]["profile_name"],
             },
             {
                 "headless": False,
                 "persistent": True,
                 "override_cache": True,
-                "is_notebook_context": False,
-                "profile_name": "botify",
+                "profile_name": "default",
             },
         )
 
+    def test_introduction_is_optional_and_shares_the_walk_namespace(self):
+        # THE INTRODUCTION IS SKIPPED BY DEFAULT (2026-10-04): an optional list
+        # of stops, validated like the walk's own; a name is unique across both
+        # lists, because both land in one capture archive.
+        import yaml
+
+        raw = yaml.safe_load(walk.DEFAULT_TRAIL.read_text(encoding="utf-8"))
+        first = raw["stops"][0]
+        fresh = dict(first, name="first_look", target_slot="first_slot")
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path = Path(temp_dir) / "intro.yaml"
+            path.write_text(
+                yaml.safe_dump(dict(raw, introduction=[fresh])), encoding="utf-8"
+            )
+            trail = walk.load_trail(path)
+            self.assertEqual(
+                [stop["name"] for stop in trail["introduction"]], ["first_look"]
+            )
+            self.assertEqual(len(trail["stops"]), 3)
+            path.write_text(
+                yaml.safe_dump(dict(raw, introduction=[first])), encoding="utf-8"
+            )
+            with self.assertRaisesRegex(walk.TrailError, "must be unique"):
+                walk.load_trail(path)
+
     def test_resolver_matches_requested_and_final_guided_urls(self):
+        import prompt_foo
+
         requested_url = "https://app.example.com/project/page?analysis=1"
         final_url = requested_url + "&context=24h"
 
@@ -111,6 +138,8 @@ class MotherCatRep2Tests(unittest.TestCase):
             )
 
     def test_resolver_falls_back_to_legacy_prompt_foo_cache(self):
+        import prompt_foo
+
         target_url = "https://example.com/a/b?variant=1"
 
         with tempfile.TemporaryDirectory() as temp_dir:
