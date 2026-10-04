@@ -224,7 +224,8 @@ def build_book_spine(entries, full_detail_count=SPINE_FULL_DETAIL_COUNT):
     lines += [f"{e['date']} {e['slug']} | {e['title']}" for e in recent]
     return "\n".join(lines)
 
-def create_jekyll_post(article_content, instructions, output_dir, preview_port, base_url=""):
+def create_jekyll_post(article_content, instructions, output_dir, preview_port, base_url="",
+                       *, target_config=None):
     """
     Assembles and writes a Jekyll post file from the article content and
     structured AI-generated instructions.
@@ -278,14 +279,38 @@ def create_jekyll_post(article_content, instructions, output_dir, preview_port, 
     analysis_content = instructions.get("book_analysis_content", {})
     yaml_updates = editing_instr.get("yaml_updates", {})
 
-    # --- NEW: Construct the absolute Canonical URL ---
-    permalink = yaml_updates.get("permalink", "")
-    # Ensure proper slash formatting
-    if not permalink.startswith("/"):
-        permalink = f"/{permalink}"
+    # One slug; the selected publishing target owns its URL prefix.
+    try:
+        filename = analysis_content["title_brainstorm"][0]["filename"]
+    except (KeyError, IndexError, TypeError):
+        filename = None
+    slug = filename.removesuffix(".md") if isinstance(filename, str) else ""
+    if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", slug):
+        print("Refusing to write: title_brainstorm[0].filename must be a "
+              "lowercase alphanumeric/hyphen slug, optionally ending in .md.")
+        return None
+    prefix = lsa.permalink_prefix(target_config)
+    permalink = lsa.default_permalink(slug, prefix) + "/"
     base_url = (base_url or "").rstrip("/")
     canonical_url = f"{base_url}{permalink}" if base_url else ""
-    # -----------------------------------------------
+    # Only the generated promo is normalized, never links in the article body.
+    # Legacy cached replies carry a URL; new replies carry [ARTICLE_URL].
+    promo_text = analysis_content.get("promotional_tweet", "")
+    if not isinstance(promo_text, str):
+        print("Refusing to write: promotional_tweet must be a string.")
+        return None
+    promo_links = list(re.finditer(
+        r"\[ARTICLE_URL\]|https?://\S+|(?<!\S)/\S+", promo_text))
+    if len(promo_links) > 1:
+        print("Refusing to write: promotional_tweet must contain at most "
+              "one article link or [ARTICLE_URL] marker.")
+        return None
+    if promo_links:
+        match = promo_links[0]
+        promo_text = promo_text[:match.start()] + canonical_url + promo_text[match.end():]
+    elif canonical_url and promo_text:
+        promo_text = f"{promo_text}\n\n{canonical_url}"
+    promo_text = promo_text.strip()
 
     new_yaml_data = {
         'title': yaml_updates.get("title"),
@@ -384,7 +409,7 @@ def create_jekyll_post(article_content, instructions, output_dir, preview_port, 
     if 'ai_editorial_take' in analysis_content:
         analysis_markdown += f"\n### Ai Editorial Take\n{analysis_content['ai_editorial_take']}\n"
     if 'promotional_tweet' in analysis_content:
-        analysis_markdown += f"\n### 🐦 X.com Promo Tweet\n```text\n{analysis_content['promotional_tweet']}\n```\n"
+        analysis_markdown += f"\n### 🐦 X.com Promo Tweet\n```text\n{promo_text}\n```\n"
     for key, value in analysis_content.items():
         if key in ['authors_imprint', 'ai_editorial_take', 'promotional_tweet']:
             continue
@@ -411,11 +436,7 @@ def create_jekyll_post(article_content, instructions, output_dir, preview_port, 
 
     final_content = f"{final_yaml_block}\n\n{article_body}\n\n---\n{analysis_markdown}"
 
-    # 4. Generate Filename
-    slug = "untitled-article"
-    title_brainstorm = analysis_content.get("title_brainstorm", [])
-    if title_brainstorm and title_brainstorm[0].get("filename"):
-        slug = os.path.splitext(title_brainstorm[0]["filename"])[0]
+    # 4. Generate Filename from the same validated slug used in the URL.
 
     output_filename = f"{current_date}-{slug}.md"
 
@@ -435,7 +456,7 @@ def create_jekyll_post(article_content, instructions, output_dir, preview_port, 
         print("🛑 COLLISION GUARD: refusing to write new article.")
         for c in collisions:
             print(f"   - {c}")
-        print("   Pick a new slug/permalink (edit instructions.json, rerun with --local).")
+        print("   Pick a new title_brainstorm[0].filename in instructions.json; rerun with --local.")
         return None
 
     output_path = os.path.join(output_dir, output_filename)
@@ -826,9 +847,13 @@ def main():
         base_url = target_config.get("base_url")
         if base_url is None:
             base_url = target_config.get("url", "https://mikelev.in")
-        saved_path = create_jekyll_post(article_text, instructions, output_dir, preview_port, base_url)
+        saved_path = create_jekyll_post(
+            article_text, instructions, output_dir, preview_port, base_url,
+            target_config=target_config)
         if saved_path:
             common.record_last_published(args.target, saved_path, target_config.get("name"))
+        else:
+            sys.exit(1)
 
 
 if __name__ == '__main__':
