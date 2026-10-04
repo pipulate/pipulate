@@ -330,6 +330,33 @@ And then we demonstrate a level of competence like so:
 # color the canvas. I do a lot of gessoing over the canvas to start fresh, but a
 # bit lumpy. That lumpiness is cruft and tech liability. Let's prune!
 
+# THE TERMINAL HOUSE STYLE (2026-10-04, operator ruling):
+# Quiet the console, not the evidence. Default output earns its space by
+# helping the operator compare, decide, diagnose, or find the result.
+# Keep measurements with named units, safety-gate states, omissions,
+# failures and delivery receipts; do not equate not-run with clean.
+# Announcements and duplicate detail use logger.note() in prompt_foo.py:
+# captured for the Processing Log, echoed only with --verbose. Console
+# filtering must not trim the archived Summary or change any safety gate.
+# The models to reuse: the compiler's biggest-first Rich Payload Ledger,
+# b2's transient progress in backup-home.py, and release.py's quiet-success,
+# loud-failure subprocess reporting. These are examples, not blanket audits.
+# Tables compare: right-align numbers, label units and percentage bases,
+# retain useful totals, and let long labels wrap. Do not add a panel around
+# prose merely to decorate it. Keep a readable fallback when Rich is absent.
+# Progress belongs to a running task, transient on an interactive terminal;
+# a spinner proves no success, and completion follows a checked outcome.
+# Colour reinforces words and numbers, never replaces them. Warnings name
+# the cause; identical omissions may share one counted line, not disappear.
+# Artwork belongs to explicit illustration, onboarding, or --verbose, never
+# every ordinary compile. Keep the registered art and its seal unchanged;
+# suppress its display, not its integrity check or drift warning.
+# Default compile output keeps the ledger and a short assembled-size reading;
+# --verbose restores detail. --quiet hides ledger/summary only, never safety
+# or delivery receipts. Label pre-scrub counts; do not call a component sum
+# the final sealed size. Apply this style when touching a command, not by
+# mass restyling, a new renderer framework, or changes to unrelated runtimes.
+#
 # THE WIRE VERDICT (standing AI constitution, three-for-three and counting):
 # Post-cutoff claims that pattern-match to frog DNA keep turning out to be
 # journalism (LogicFolding, Tau Scaling Law, shipping co-packaged optics).
