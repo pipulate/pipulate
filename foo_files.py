@@ -330,6 +330,8 @@ And then we demonstrate a level of competence like so:
 # color the canvas. I do a lot of gessoing over the canvas to start fresh, but a
 # bit lumpy. That lumpiness is cruft and tech liability. Let's prune!
 
+# § A PATH LABEL IS NOT A FILE (banked 2026-10-04) -- When one queue stores filesystem paths and synthetic receipt labels in the same `path` field, any file-only consumer must establish filehood with `os.path.isfile(path)` or an equivalent filesystem test in addition to checking a suffix; a receipt whose label happens to end in `.py` is still a receipt.
+# - TODO (2026-10-04, terminal house style): make `python_files_to_diagram` use the same `endswith('.py') and os.path.isfile(f['path'])` predicate as `python_files_to_analyze`. Gate: a synthetic receipt label ending in `.py` contributes zero UML candidates while real Python files remain candidates.
 # THE TERMINAL HOUSE STYLE (2026-10-04, operator ruling):
 # Quiet the console, not the evidence. Default output earns its space by
 # helping the operator compare, decide, diagnose, or find the result.
