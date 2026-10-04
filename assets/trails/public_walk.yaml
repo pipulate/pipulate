@@ -1,56 +1,67 @@
-{
-  "schema_version": 1,
-  "name": "public_walk",
-  "description": "Three pages open in a browser, one at a time. There is nothing to click.",
-  "defaults": {
-    "take_screenshot": false,
-    "headless": false,
-    "is_notebook_context": false,
-    "persistent": true,
-    "profile_name": "default",
-    "verbose": true,
-    "override_cache": true,
-    "delay_range": null
-  },
-  "stops": [
-    {
-      "name": "the_word",
-      "label": "Page one",
-      "guidance": "Page 1 of 3. The first browser takes a few seconds to open.",
-      "url": "https://qamy.ai/walk/1/",
-      "target_slot": "slot_one",
-      "harvest_regex": ".+",
-      "connector": {
-        "script": "connectors/noop.py",
-        "argv": ["{harvested}"],
-        "read_only": true
-      }
-    },
-    {
-      "name": "the_receipt",
-      "label": "Page two",
-      "guidance": "Page 2 of 3.",
-      "url": "https://qamy.ai/walk/2/",
-      "target_slot": "slot_two",
-      "harvest_regex": ".+",
-      "connector": {
-        "script": "connectors/noop.py",
-        "argv": ["{harvested}"],
-        "read_only": true
-      }
-    },
-    {
-      "name": "the_two_pages",
-      "label": "Two versions of one page",
-      "guidance": "Page 3 of 3.",
-      "url": "https://qamy.ai/walk/3/",
-      "target_slot": "slot_three",
-      "harvest_regex": ".+",
-      "connector": {
-        "script": "connectors/noop.py",
-        "argv": ["{harvested}"],
-        "read_only": true
-      }
-    }
-  ]
-}
+# The sample walk: three pages, nothing to click, what a bare `walk` rides.
+#
+#   walk               a menu: practice, this walk, or another walk
+#   walk public_walk   the same menu; the sample keeps it however it is named
+#
+# Three unlinked pages on qamy.ai, opened one at a time in a visible browser.
+# Every connector is connectors/noop.py: a stop must name something that runs,
+# and nothing here needs to run.
+#
+# YAML since 2026-10-04, and the shape a new trail copies. Comments ride with
+# the trail and are never read aloud; the description and the guidance are
+# printed and spoken. Quote anything that could read as a number, a date, a
+# boolean or a flow mapping: "{harvested}", ".+", a URL.
+#
+# assets/trails/public_walk.json is this trail's JSON twin, kept only until the
+# launcher pipulate.com serves reads YAML (mck.sh v0.7.0, moved by a release).
+# Change both or neither until then; delete the twin after.
+#
+# These stops open qamy.ai, so a fork or a white label still sends its people
+# to this door (a TODO in foo_files.py).
+schema_version: 1
+name: public_walk
+description: >-
+  Three pages open in a browser, one at a time. There is nothing to click.
+defaults:
+  take_screenshot: false
+  headless: false
+  is_notebook_context: false
+  persistent: true
+  profile_name: default
+  verbose: true
+  override_cache: true
+  delay_range: null
+stops:
+  - name: the_word
+    label: Page one
+    guidance: >-
+      Page 1 of 3. The first browser takes a few seconds to open.
+    url: "https://qamy.ai/walk/1/"
+    target_slot: slot_one
+    harvest_regex: ".+"
+    connector:
+      script: connectors/noop.py
+      argv: ["{harvested}"]
+      read_only: true
+  - name: the_receipt
+    label: Page two
+    guidance: >-
+      Page 2 of 3.
+    url: "https://qamy.ai/walk/2/"
+    target_slot: slot_two
+    harvest_regex: ".+"
+    connector:
+      script: connectors/noop.py
+      argv: ["{harvested}"]
+      read_only: true
+  - name: the_two_pages
+    label: Two versions of one page
+    guidance: >-
+      Page 3 of 3.
+    url: "https://qamy.ai/walk/3/"
+    target_slot: slot_three
+    harvest_regex: ".+"
+    connector:
+      script: connectors/noop.py
+      argv: ["{harvested}"]
+      read_only: true

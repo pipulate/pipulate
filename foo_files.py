@@ -1608,6 +1608,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # tests/test_mck_rep2.py      # <-- Rep 2: the earmark's owed side-by-side witness
 #
 # THE TRAILS (bundled; each status is the newest receipt, never a promise)
+# assets/trails/public_walk.yaml  # the sample walk in YAML since 2026-10-04 (comments, folded guidance); DEFAULT_TRAIL and what bare `walk` rides; the json line below is its twin, kept only until pipulate.com serves mck.sh v0.7.0, then git rm
 # assets/trails/public_walk.json         # profile default; SETTLE trivial; three unlinked qamy.ai pages (the_word, the_receipt, the_two_pages) since c7faeb2, inline script on stop three only, connector noop.py; RIDDEN 2026-10-02 on Prime and on a fresh Mac install at v2.76, 3 of 3 saved at the Enter fence, summary saved and copied with nothing to type, every page fetched from the server (fromDiskCache=false); the 2026-09-15 ride walked the npvg.org copies under CAPTURE and DECANT and left the diff-lens TODO open: the summary may not carry stop three's server sentence; the 2026-08-01 ride walked the OLD stop set (example.com, mikelev.in, pipulate.com); what bare `walk` rides
 #
 # UNLINKED PAGES (npvg.org; no trail opens them since c7faeb2, and they still say CAPTURE, as a checkout older than that expects; nothing links to them and no page links out; nixops.sh rsyncs them, no rebuild)

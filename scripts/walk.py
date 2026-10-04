@@ -26,7 +26,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 # authenticated stops, and a newcomer's first contact was a KeyError on an
 # environment variable they had never heard of. Default to the walk that needs
 # no credential; make expert mode cost keystrokes.
-DEFAULT_TRAIL = REPO_ROOT / "assets" / "trails" / "public_walk.json"
+DEFAULT_TRAIL = REPO_ROOT / "assets" / "trails" / "public_walk.yaml"
 # public_walk is the one bundled trail since 2026-10-04 (the operator's purge);
 # a private walk lives in a tier, as a trail or as a routed walks/ executable.
 SCHEMA_VERSION = 1
