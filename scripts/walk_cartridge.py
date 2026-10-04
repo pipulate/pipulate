@@ -2,7 +2,9 @@
 """
 walk_cartridge.py -- the sealed, immutable form of a Mother Cat trail.
 
-Schema: walk-cartridge-integrity-v3. Stdlib only. Single file by design.
+Schema: walk-cartridge-integrity-v3. Runs in the workshop: a trail is YAML
+since 2026-10-04 and scripts/walk.py's parse_trail reads it, refusing a
+duplicate key as before. The ZIP and JSON primitives stay standard library.
 
 WHY THIS DOES NOT IMPORT scripts/foo_cartridge.py
 -------------------------------------------------
@@ -11,7 +13,9 @@ clean-room consumer can fetch this single file and verify or rebuild a
 cartridge with nothing but the Python standard library." Two files is not one
 file. So the canonicalization primitives below are DUPLICATED, deliberately,
 per the WET doctrine -- Write Everything Twice, on purpose, for a stated
-reason.
+reason. AMENDED 2026-10-04: this file now imports scripts/walk.py to parse a
+YAML trail, so it is no longer one file and that reason has lapsed; the
+reasons under WHY A SECOND SCHEMA still hold, so the primitives stay.
 
 The cost is named rather than hidden: a ZIP-metadata bug found here must be
 fixed in two places, and the second fix can be forgotten. The mitigation is
@@ -37,7 +41,7 @@ WHY A SECOND SCHEMA RATHER THAN A GENERALIZED foo_cartridge
 
 MEMBERS (exactly two, in this order)
 ------------------------------------
-  trail.yaml     the JSON-subset-of-YAML trail, BYTE-IDENTICAL to source
+  trail.yaml     the trail as written (YAML), BYTE-IDENTICAL to source
   manifest.json  sha256 of trail.yaml + the CONSENT SURFACE derived from it
 
 THE CONSENT SURFACE is the analogue of payload->prompt: a projection a human
@@ -88,7 +92,7 @@ identical archive bytes, forever, which is what makes content addressing work.
 
 USAGE
 -----
-  python scripts/walk_cartridge.py seal assets/trails/*.json
+  python scripts/walk_cartridge.py seal assets/trails/*.yaml
   python scripts/walk_cartridge.py verify data/walks/<sha256>/walk.zip
   python scripts/walk_cartridge.py show   data/walks/<sha256>/walk.zip
 
@@ -111,6 +115,12 @@ import zipfile
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
+# A trail is YAML since 2026-10-04 and walk.py's parse_trail reads it, so this
+# file imports walk.py the way mother_cat.py does.
+SCRIPTS_DIR = Path(__file__).resolve().parent
+if str(SCRIPTS_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPTS_DIR))
+import walk  # noqa: E402
 
 # v2 (2026-08-25): the consent surface gained direct_urls, because a stop may
 # now carry a literal `url` instead of a `url_env`. That changes manifest.json
@@ -188,19 +198,22 @@ def _canonical_zip_info(member_name):
 def _derive_consent_surface(trail_bytes):
     """Project trail.yaml into what a human must know before riding.
 
-    Pure json parsing, no import of walk.py, no validation beyond what the
+    Parsed by walk.parse_trail; no validation beyond what the
     projection itself requires. Every refusal names the exact field, so a
     trail this cannot seal is a trail whose shape is stated, not guessed at.
     """
     try:
-        trail = json.loads(
-            trail_bytes.decode("utf-8"),
-            object_pairs_hook=_reject_duplicate_json_keys,
-        )
-    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        trail = walk.parse_trail(trail_bytes.decode("utf-8"), "trail.yaml")
+    except UnicodeDecodeError as exc:
+        raise ValueError(f"trail.yaml is not UTF-8: {exc}") from exc
+    # THE INTRODUCTION IS NOT ON THE SURFACE YET (2026-10-04): the stops that
+    # walk NAME intro opens would be missing from what a human reads before
+    # riding, so a trail that carries one is refused until v4 lists them.
+    if isinstance(trail, dict) and "introduction" in trail:
         raise ValueError(
-            f"trail.yaml is not the JSON subset of YAML 1.2: {exc}"
-        ) from exc
+            "trail.introduction is not yet part of the consent surface; "
+            "sealing it would hide where the introduction goes"
+        )
 
     if not isinstance(trail, dict):
         raise ValueError("trail.yaml must be a mapping")

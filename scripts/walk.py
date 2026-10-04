@@ -223,16 +223,23 @@ def _validate_connector(raw, where):
     }
 
 
+def parse_trail(text, where="trail"):
+    """Trail text to values: YAML, refusing a duplicate key and a non-finite
+    number. The one parser for the rider, the launcher and the sealer."""
+    try:
+        trail = yaml.load(text, Loader=_TrailLoader)
+    except yaml.YAMLError as exc:
+        raise TrailError(f"invalid trail syntax in {where}: {exc}") from exc
+    _reject_nonfinite(trail, "trail")
+    return trail
+
+
 def load_trail(path):
     try:
         text = path.read_text(encoding="utf-8")
     except OSError as exc:
         raise TrailError(f"cannot read trail {path}: {exc}") from exc
-    try:
-        trail = yaml.load(text, Loader=_TrailLoader)
-    except yaml.YAMLError as exc:
-        raise TrailError(f"invalid trail syntax in {path}: {exc}") from exc
-    _reject_nonfinite(trail, "trail")
+    trail = parse_trail(text, path)
 
     trail = _mapping(trail, "trail")
     _exact(trail, ROOT_FIELDS | (ROOT_OPTIONAL_FIELDS & set(trail)), "trail")
