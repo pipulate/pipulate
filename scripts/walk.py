@@ -1,18 +1,24 @@
 #!/usr/bin/env python3
 """Mother Cat trail planner, Car A: strict dry-run and no actuation.
 
-Trail files use JSON. That keeps this car stdlib-only, duplicate-key-checkable,
-and explicit about the syntax humans are editing. There is deliberately no
-browser, voice, shell, or context.txt mutation path in this file.
+Trail files are YAML (2026-10-04, the operator's ruling), read by PyYAML's
+safe loader from the workshop's pinned environment, with duplicate keys and
+non-finite numbers refused as the JSON loader refused them. JSON is YAML, so a
+.json trail still loads. curl | bash runs once, at install, and nothing reads
+a trail before the workshop exists. There is deliberately no browser, voice,
+shell, or context.txt mutation path in this file.
 """
 
 import argparse
 import json
+import math
 import os
 import re
 import sys
 from pathlib import Path
 from urllib.parse import quote, urlparse
+
+import yaml
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 # THE DEFAULT IS THE SOFTBALL, ON PURPOSE (2026-08-01). Before this line moved,
@@ -21,9 +27,8 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 # environment variable they had never heard of. Default to the walk that needs
 # no credential; make expert mode cost keystrokes.
 DEFAULT_TRAIL = REPO_ROOT / "assets" / "trails" / "public_walk.json"
-# THE EXPERT TRAIL, named here rather than implied by being the default --
-# discoverability used to rest entirely on this line pointing at it:
-#   mothercat assets/trails/first_context.yaml   (Jira + Botify + Gmail, auth)
+# public_walk is the one bundled trail since 2026-10-04 (the operator's purge);
+# a private walk lives in a tier, as a trail or as a routed walks/ executable.
 SCHEMA_VERSION = 1
 
 SELENIUM_DEFAULTS = {
@@ -37,6 +42,10 @@ SELENIUM_DEFAULTS = {
     "delay_range": None,
 }
 ROOT_FIELDS = {"schema_version", "name", "description", "defaults", "stops"}
+# THE INTRODUCTION (2026-10-04): an optional list of stops, validated like the
+# walk's own, for someone who has never been there. The rider skips it unless
+# asked (walk NAME intro) and prints one line saying how to ask.
+ROOT_OPTIONAL_FIELDS = {"introduction"}
 DEFAULT_FIELDS = set(SELENIUM_DEFAULTS)
 # Every stop carries all of these.
 STOP_FIELDS = {
@@ -80,6 +89,43 @@ def _unique_pairs(pairs):
 
 def _reject_constant(value):
     raise TrailError(f"non-finite JSON number is not allowed: {value}")
+
+
+class _TrailLoader(yaml.SafeLoader):
+    """PyYAML's safe loader, refusing a duplicate key the way _unique_pairs did.
+
+    safe_load keeps the last of two equal keys and says nothing, so a trail
+    with two url lines would ride the second without a word.
+    """
+
+    def construct_mapping(self, node, deep=False):
+        if isinstance(node, yaml.MappingNode):
+            self.flatten_mapping(node)
+        seen = set()
+        for key_node, _ in node.value:
+            key = self.construct_object(key_node, deep=True)
+            try:
+                duplicate = key in seen
+            except TypeError:
+                continue
+            if duplicate:
+                raise TrailError(
+                    f"duplicate trail key: {key!r} (line {key_node.start_mark.line + 1})"
+                )
+            seen.add(key)
+        return super().construct_mapping(node, deep=deep)
+
+
+def _reject_nonfinite(value, where):
+    """YAML's .inf and .nan load as floats; the JSON loader refused them."""
+    if isinstance(value, float) and not math.isfinite(value):
+        raise TrailError(f"{where} is a non-finite number: {value}")
+    if isinstance(value, dict):
+        for key, item in value.items():
+            _reject_nonfinite(item, f"{where}.{key}")
+    elif isinstance(value, list):
+        for index, item in enumerate(value):
+            _reject_nonfinite(item, f"{where}[{index}]")
 
 
 def _mapping(value, where):
@@ -179,21 +225,17 @@ def _validate_connector(raw, where):
 
 def load_trail(path):
     try:
-        trail = json.loads(
-            path.read_text(encoding="utf-8"),
-            object_pairs_hook=_unique_pairs,
-            parse_constant=_reject_constant,
-        )
+        text = path.read_text(encoding="utf-8")
     except OSError as exc:
         raise TrailError(f"cannot read trail {path}: {exc}") from exc
-    except json.JSONDecodeError as exc:
-        raise TrailError(
-            f"invalid trail syntax in {path}: Car A accepts the JSON subset "
-            f"of YAML 1.2 only ({exc})"
-        ) from exc
+    try:
+        trail = yaml.load(text, Loader=_TrailLoader)
+    except yaml.YAMLError as exc:
+        raise TrailError(f"invalid trail syntax in {path}: {exc}") from exc
+    _reject_nonfinite(trail, "trail")
 
     trail = _mapping(trail, "trail")
-    _exact(trail, ROOT_FIELDS, "trail")
+    _exact(trail, ROOT_FIELDS | (ROOT_OPTIONAL_FIELDS & set(trail)), "trail")
     version = trail["schema_version"]
     if (
         isinstance(version, bool)
@@ -212,11 +254,23 @@ def load_trail(path):
     if not isinstance(stops, list) or not stops:
         raise TrailError("trail.stops must be a non-empty list")
 
+    introduction = trail.get("introduction", [])
+    if "introduction" in trail and (
+        not isinstance(introduction, list) or not introduction
+    ):
+        raise TrailError("trail.introduction must be a non-empty list when present")
     clean_stops = []
+    clean_introduction = []
     seen_names = set()
     seen_slots = set()
-    for index, raw_stop in enumerate(stops):
-        where = f"stops[{index}]"
+    # One loop over both lists, so a name and a slot are unique across the
+    # whole walk: the introduction's captures land in the same archive.
+    tagged = (
+        [("introduction", i, s, clean_introduction) for i, s in enumerate(introduction)]
+        + [("stops", i, s, clean_stops) for i, s in enumerate(stops)]
+    )
+    for part, index, raw_stop, cleaned in tagged:
+        where = f"{part}[{index}]"
         stop = _mapping(raw_stop, where)
         present = STOP_URL_FIELDS & set(stop)
         if len(present) != 1:
@@ -283,7 +337,7 @@ def load_trail(path):
             ) from exc
         seen_names.add(stop_name)
         seen_slots.add(target_slot)
-        clean_stops.append({
+        cleaned.append({
             "name": stop_name,
             "label": _text(stop["label"], f"{where}.label"),
             "guidance": _text(
@@ -315,6 +369,7 @@ def load_trail(path):
         ),
         "defaults": _validate_defaults(trail["defaults"]),
         "stops": clean_stops,
+        **({"introduction": clean_introduction} if "introduction" in trail else {}),
     }
 
 
