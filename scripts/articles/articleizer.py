@@ -362,7 +362,13 @@ def create_jekyll_post(article_content, instructions, output_dir, preview_port, 
         else:
             print(f"Warning: Snippet not found for subheading '{subheading}': '{snippet}'")
 
-    prepend_text = editing_instr.get("prepend_to_article_body", "")
+    prepend_text = (editing_instr.get("prepend_to_article_body") or "").strip()
+    # This field is prose; the assembler owns its opening heading.
+    prepend_text = re.sub(
+        r"\A(?:#{1,6}[ \t]+[^\n]*(?:\n|\Z)[ \t\r\n]*)+",
+        "",
+        prepend_text,
+    ).strip()
     if prepend_text:
         intro_section = f"## Setting the Stage: Context for the Curious Book Reader\n\n{prepend_text}\n\n---"
         article_body = f"{intro_section}\n\n{article_body}"
