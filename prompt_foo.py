@@ -63,7 +63,7 @@ DEFAULT_TARGETS = {
 # readings and verdicts. The Processing Log rides INSIDE the sealed payload
 # and is read by a model, which greps, so it keeps every line it ever had:
 # note() captures exactly what print() does and merely stops echoing. The
-# cartridge bytes for a given input are the same under either setting.
+# captured announcement bytes are the same under either setting.
 # Set once in main() from --verbose.
 VERBOSE = False
 class Logger:
@@ -87,9 +87,9 @@ class Logger:
         """Capture for the payload's Processing Log; echo to the console only
         under --verbose. Same signature and same captured bytes as print().
         Use it for ANNOUNCEMENTS -- a header, a flag echoed back, a step
-        about to start or just finished -- and never for a READING: a count,
-        a timing, a hash, a verdict, or any line whose text differs between
-        the world where the step worked and the world where it did not."""
+        about to start or just finished -- and duplicate detail already
+        represented in the Payload Ledger. Never hide the only reading of
+        an outcome, failure, omission, timing, hash, or safety verdict."""
         sep = kwargs.get('sep', ' ')
         end = kwargs.get('end', '\n')
         self.logs.append(sep.join(map(str, args)) + end)
@@ -2767,9 +2767,8 @@ def main():
         sys.exit(0)
     os.environ['PIPULATE_COMPILE_LOCK'] = '1'
 
-    # Manifest the first bunny via the wand for context compiler validation
+    # Keep the wand available for explicit bumper injection as well as art.
     from pipulate import wand
-    wand.figurate("white_rabbit")
 
     def generate_tool_roster() -> str:
         """Compile the live tool roster and static actuation grammar.
@@ -2919,7 +2918,7 @@ def main():
     parser.add_argument('--quiet', action='store_true', help='Suppress the step-5 console echo (Payload Ledger + Summary). Cannot reach the step-6 sanitizer, secrets tripwire, render canary, or disclosure receipt.')
     # --quiet hides accounting; --verbose adds announcements and optional
     # transport-exposure diagnostics. Neither flag disables integrity checks.
-    parser.add_argument('-v', '--verbose', action='store_true', help='Echo progress announcements and the optional autolink-exposure diagnostic. Integrity checks and refusal messages remain enabled without this flag.')
+    parser.add_argument('-v', '--verbose', action='store_true', help='Show artwork, progress detail, the full console summary, and the optional autolink-exposure diagnostic. Integrity checks and refusal messages remain enabled without this flag.')
     parser.add_argument('--chop', type=str, default='AI_PHOOEY_CHOP', help='Specify an alternative payload variable from foo_files.py')
     # THE FRAME IS A FLAG, NOT A PROPERTY OF THE CHOP (2026-09-19). A chop
     # selects files; a frame selects what rides ahead of the prompt. Since
@@ -2970,6 +2969,11 @@ def main():
     )
     args = parser.parse_args()
     VERBOSE = args.verbose
+
+    # Check the seal every run; display the illustration only when requested.
+    rabbit = wand.figurate("white_rabbit", console_output=VERBOSE)
+    if getattr(rabbit, "drift", 0):
+        logger.print("Warning: white_rabbit artwork seal drift detected.")
 
     # 💥 NEW: Parse --arg into a dictionary
     format_kwargs = {}
@@ -3664,9 +3668,10 @@ def main():
 
     python_files_to_diagram = [f['path'] for f in processed_files_data if f['path'].endswith('.py')]
     if python_files_to_diagram and not args.no_tree:
-        logger.print("Python file(s) detected. Generating UML diagrams...")
+        logger.note("Python file(s) detected. Generating UML diagrams...")
+        uml_omissions = {}
         for py_file_path in python_files_to_diagram:
-            logger.print(f"   -> Generating for {py_file_path}...", end='', flush=True)
+            logger.note(f"   -> Generating for {py_file_path}...", end='', flush=True)
             uml_context = generate_uml_and_dot(py_file_path, CONFIG["PROJECT_NAME"])
             uml_content = uml_context.get("ascii_uml")
             title = f"UML Class Diagram (ASCII for {py_file_path})"
@@ -3675,12 +3680,16 @@ def main():
             if title in builder.auto_context:
                 uml_data = builder.auto_context[title]
                 b_count = len(uml_data['content'].encode('utf-8'))
-                logger.print(f" ({uml_data['tokens']:,} tokens | {b_count:,} bytes)")
+                logger.note(f" ({uml_data['tokens']:,} tokens | {b_count:,} bytes)")
             elif uml_content and "note: no classes" in uml_content.lower():
-                logger.print(" (skipped, no classes)")
+                logger.note(" (skipped, no classes)")
             else:
-                logger.print(" (skipped)")
-        logger.print("...UML generation complete.\n")
+                logger.note(" (skipped)")
+                reason = uml_content or "no diagnostic returned"
+                uml_omissions[reason] = uml_omissions.get(reason, 0) + 1
+        logger.note("...UML generation complete.\n")
+        for reason, count in uml_omissions.items():
+            logger.print(f"UML unavailable for {count} file(s): {reason}")
  
     python_files_to_analyze = [f['path'] for f in processed_files_data if f['path'].endswith('.py') and os.path.isfile(f['path'])]
     if python_files_to_analyze:
@@ -3763,6 +3772,7 @@ def main():
                 'tokens': prompt_section.get('tokens', 0),
                 'bytes': len(prompt_section.get('content', '').encode('utf-8'))
             })
+        ledger_rendered = False
         if ledger_rows:
             try:
                 from rich.console import Console
@@ -3794,12 +3804,19 @@ def main():
                     )
 
                 Console().print(ledger)
+                ledger_rendered = True
             except ImportError:
                 # Rich unavailable: fall back silently; the text summary below
                 # still carries the totals.
                 pass
 
-        print(console_summary.strip())
+        if VERBOSE or not ledger_rendered:
+            print(console_summary.strip())
+        else:
+            # The ledger sums components; this measures the assembled text.
+            # Sanitization runs next, so these are explicitly pre-scrub units.
+            print(f"Assembled payload (pre-scrub): {count_tokens(final_output):,} tokens | "
+                  f"{len(final_output.encode('utf-8')):,} bytes")
 
     # 6. Compile-lane sanitizer: TRANSFORM then REFUSE, at the single
     # chokepoint every exit (clipboard, SSH bridge, --output) passes through.
