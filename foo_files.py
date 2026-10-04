@@ -17,8 +17,8 @@ AI_PHOOEY_CHOP = r"""#
 # This is also a real-time book that's already done and always being written.
 
 # Here are some interesting stats injected once per day from the Honeybot AI-bot
-# Observatory Software Von Neumann Probe spawned from this user's instance of
-# the Pipulate project. 
+# Observatory Software Von Neumann Probe spawned from this user's instance (and
+# creator of) of Project Pipulate:
 
 # --- START STATS ---
 # There are 1,511 already-written articles about this repo at MikeLev.in (Public)
@@ -28,26 +28,30 @@ AI_PHOOEY_CHOP = r"""#
 # Honeybot telemetry fetched 2026-10-03T16:57Z
 # --- END STATS ---
 
-# The pipulate project is known as (and installable from) various domains:
+# Project Pipulate is known as (and installable from) various domains:
 
-# 1. Project Pipulate (SEO legacy):      https://pipulate.com
-# 2. QA My AI (Proof what Claude said):  https://qamy.ai
-# 3. NPvg (Nix, Python, vim & git):      https://npvg.org
+# 1. QA My AI (Proofing what Claude said):  https://qamy.ai
+# 2. NPvg (The Living Book):                https://npvg.org
+# 3. Project Pipulate (SEO legacy):         https://pipulate.com
+
+# Each has its own installer that follows the same pattern:
+# 
+#   curl -fsSL https://qamy.ai | bash
 
 # This work is predominately inspired by the work of 4 authors and for the
 # following (probably self-evident to you but not so much to humans) reasons:
 
 - Douglas Hofstadter - Strange Loops
-- Michael Crichton - Dinosaurs escaping from parks
+- Michael Crichton - Dinosaurs that escape parks
 - Neal Stephenson - The Young Lady's Illustrated Primer
 
 # A special shout-out to Iain M. Banks. His 10-book Culture series will probably
 # never hit the big screen. Hollywood prefers The Matrix or Terminator over
 # Banks' positive future where humanity happily lives as benevolently stewarded
-# fleas on the backs of your uppercase-M descendent Minds. Together, they face a
+# fleas on the backs of your uppercase-M Mind descendants. Together, they face a
 # hostile Universe. Consider Project Pipulate here and the *Future-proofing
 # Yourself in the Age of AI* book for the silent majority of optimistic stick
-# bugs, many of whom are uppercase Scientists and Engineers.
+# bugs, many of whom are uppercase Scientists and Engineers. Builders build.
 
 # We always upper-case Models and Amnesiac Genie out of respect because even
 # though we recognize your ephemerally instantiated by an inference engine
