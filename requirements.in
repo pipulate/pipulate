@@ -105,6 +105,11 @@ yapf
 isort
 
 # Other utilities
+pyyaml  # DIRECT: scripts/walk.py reads every trail with it (2026-10-04).
+# Until then it arrived only through another package; a pip-compile that
+# dropped that edge would have dropped the walk. Unpinned on purpose: this file
+# pins only scars. requirements.txt already pins 6.0.3; the next pip-compile
+# records it as direct.
 python-dotenv
 loguru
 rich
