@@ -1557,10 +1557,13 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # a trail is YAML written by hand, read by walk.load_trail with PyYAML's safe
 # loader from the pinned workshop, a duplicate key and a non-finite number
 # refused as the JSON loader refused them. Comments and folded prose are what
-# the move buys. JSON is YAML, so public_walk.json still loads. OPEN: whether
-# the Markdown authoring form below earns its keep now that YAML carries prose,
-# and whether walk_cartridge.py seals a YAML trail (unread). SUPERSEDED, kept
-# as history:
+# the move buys. JSON is YAML, so public_walk.json still loads, as the twin of
+# public_walk.yaml, which is DEFAULT_TRAIL. walk_cartridge.py seals a YAML trail
+# through the same walk.parse_trail (public_walk.yaml at 02f405a0, deed 52) and
+# refuses one that carries an introduction until its consent surface lists it.
+# OPEN: whether the Markdown authoring form below earns its keep now that YAML
+# carries prose (no .walk.md under Workshop or assets at deed 52; ruling owed).
+# SUPERSEDED, kept as history:
 # TWO FORMS OF ONE TRAIL, and swapping their labels is the whole confusion. The
 # AUTHORING form is Markdown (<name>.walk.md): one section per stop, a short
 # head of plain key: value lines, guidance as prose in the body -- because
@@ -1586,7 +1589,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # scripts/bookmark_import.py  # <-- One bookmark folder -> <name>.walk.md (the human surface) + <name>.exports.sh (the URL values; gitignored by pattern so they never ship)
 #
 # COMPILE
-# scripts/walk_compile.py     # <-- .walk.md -> <name>.yaml BESIDE the surface, and only where git ignores it; url_env stops only (it refuses a scheme separator anywhere in its output), so it is the PRIVATE lane's compiler and a bundled trail in assets/trails/ is hand-written JSON; refuses on every TODO left in the surface; stdlib only, imports nothing
+# scripts/walk_compile.py     # <-- .walk.md -> <stem>.json BESIDE the surface (the code writes .json; this line said .yaml until 2026-10-04), and only where git ignores it; url_env stops only (it refuses a scheme separator anywhere in its output), so it is the PRIVATE lane's compiler and cannot write a direct url, optional or introduction; with trails hand-written in YAML it does not earn its keep, ruling owed; refuses on every TODO left in the surface; stdlib only, imports nothing
 #
 # VALIDATE
 # scripts/walk.py             # <-- Car A, the planner: loads a trail, refuses unknown or missing keys in BOTH directions, prints the dry-run plan; holds DEFAULT_TRAIL; never actuates
@@ -1609,7 +1612,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 #
 # THE TRAILS (bundled; each status is the newest receipt, never a promise)
 # assets/trails/public_walk.yaml  # the sample walk in YAML since 2026-10-04 (comments, folded guidance); DEFAULT_TRAIL and what bare `walk` rides; the json line below is its twin, kept only until pipulate.com serves mck.sh v0.7.0, then git rm
-# assets/trails/public_walk.json         # profile default; SETTLE trivial; three unlinked qamy.ai pages (the_word, the_receipt, the_two_pages) since c7faeb2, inline script on stop three only, connector noop.py; RIDDEN 2026-10-02 on Prime and on a fresh Mac install at v2.76, 3 of 3 saved at the Enter fence, summary saved and copied with nothing to type, every page fetched from the server (fromDiskCache=false); the 2026-09-15 ride walked the npvg.org copies under CAPTURE and DECANT and left the diff-lens TODO open: the summary may not carry stop three's server sentence; the 2026-08-01 ride walked the OLD stop set (example.com, mikelev.in, pipulate.com); what bare `walk` rides
+# assets/trails/public_walk.json         # profile default; SETTLE trivial; three unlinked qamy.ai pages (the_word, the_receipt, the_two_pages) since c7faeb2, inline script on stop three only, connector noop.py; RIDDEN 2026-10-02 on Prime and on a fresh Mac install at v2.76, 3 of 3 saved at the Enter fence, summary saved and copied with nothing to type, every page fetched from the server (fromDiskCache=false); the 2026-09-15 ride walked the npvg.org copies under CAPTURE and DECANT and left the diff-lens TODO open: the summary may not carry stop three's server sentence; the 2026-08-01 ride walked the OLD stop set (example.com, mikelev.in, pipulate.com); since 2026-10-04 the twin of public_walk.yaml, read only by a served mck.sh older than v0.7.0
 #
 # UNLINKED PAGES (npvg.org; no trail opens them since c7faeb2, and they still say CAPTURE, as a checkout older than that expects; nothing links to them and no page links out; nixops.sh rsyncs them, no rebuild)
 # remotes/honeybot/www/npvg.org/index.html          # <-- the door: a browser gets this page, curl and wget get install.sh ($npvg_index)

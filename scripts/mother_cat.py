@@ -636,7 +636,7 @@ def _decant_to_clipboard(payload, archive_path=None):
 
 # THE EXPORTS LOADER (2026-09-05, receipt-gated). bookmark_import.py writes
 # one export line per stop into <name>.exports.sh beside <name>.walk.md and
-# refuses any path git does not ignore; walk_compile.py puts <name>.yaml
+# refuses any path git does not ignore; walk_compile.py puts <name>.json
 # beside both. So the file a trail needs is a pure function of the trail's
 # own path -- THE DERIVED-PATH RULE -- and nothing had to be told. Until now
 # nothing READ it either: the human sourced it by hand, or did not, and
