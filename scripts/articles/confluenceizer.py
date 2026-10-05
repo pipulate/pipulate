@@ -727,6 +727,7 @@ def main():
                 failed += 1
 
         print(f"\n🏁 Upsert complete. Created: {created}  Updated: {updated}  Skipped: {skipped}  Failed: {failed}")
+        _reorder_newest_first(domain, email, api_token, parent_id, armed=True)
         return
     except Exception as e:
         print(f"❌ Network Boundary Handshake Failed: {e}")
