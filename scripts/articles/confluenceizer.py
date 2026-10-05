@@ -677,14 +677,9 @@ def main():
                         skipped += 1
                         continue
 
-                    # NEWEST-FIRST, EARMARKED (2026-10-05). A CREATE lands at the
-                    # BOTTOM of the parent's children: v2 childPosition rises with
-                    # creation order (295, 624, 1426 ...), and the sweep creates in
-                    # filename order, oldest first. Witnessed the same day: v1
-                    # PUT /wiki/rest/api/content/{id}/move/before/{targetId} moved
-                    # the canary 6898450484 from index 6 (position 2965) to index 0
-                    # (position 124) under 6898286616. _reorder_newest_first runs
-                    # after the upsert loop and moves it, and any stray, into place.
+                    # A CREATE lands at the BOTTOM of the parent's children (v2
+                    # childPosition rises with creation order). _reorder_newest_first
+                    # runs after this loop and moves it, and any stray, into place.
                     verb = "CREATE"
                     payload = {
                         "spaceId": str(space_id),
