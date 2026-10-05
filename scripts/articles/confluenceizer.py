@@ -666,9 +666,13 @@ def main():
         created = updated = skipped = failed = 0
         inventory_ids = {str(v.get("id")) for v in inventory.values() if v.get("id")}
 
-        for md_file, target_title, storage_xml in local_contracts:
+        for md_file, target_title in local_contracts:
             meta = inventory.get(target_title)
             try:
+                # Rendered here, once, inside the per-document try: a post
+                # md2conf cannot convert costs one failed line, not the sweep.
+                # The render check above already holds one post's XML.
+                storage_xml = rendered.pop(md_file, None) or markdown_to_storage(frontmatter.load(md_file).content)
                 if meta:
                     existing_id = meta["id"]
                     current = _request(domain, email, api_token, f"/pages/{existing_id}?include-version=true")
