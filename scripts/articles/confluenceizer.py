@@ -645,12 +645,17 @@ def main():
                 print(f"   • [ID: {meta['id']}] {title} (Version: {meta['version']})")
 
         print("\n🧭 Remote Match Contract:")
-        for md_file, target_title, storage_xml in local_contracts:
+        matched = 0
+        for md_file, target_title in local_contracts:
             meta = inventory.get(target_title)
             if meta:
-                print(f"   MATCH: {md_file.name} -> [ID: {meta['id']}] {target_title}")
+                matched += 1
+                if detail:
+                    print(f"   MATCH: {md_file.name} -> [ID: {meta['id']}] {target_title}")
             else:
                 print(f"   MISS:  {md_file.name} -> {target_title}")
+        if matched and not detail:
+            print(f"   ... plus {matched} MATCH(es), each an UPDATE when armed (-v to list).")
 
         if not args.yes:
             print("\n🅳🆁🆈 DRY-RUN -- no mutation. Review Target Title and MATCH/MISS lines and the reorder plan below.")
