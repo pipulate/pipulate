@@ -594,8 +594,6 @@ def main():
     
     try:
         post = frontmatter.load(first_file)
-        print(f"  • Frontmatter Title: {post.metadata.get('title', 'None')}")
-        print(f"  • Frontmatter Date:  {post.metadata.get('date', 'None')}")
         
         storage_xml = markdown_to_storage(post.content)
         print("\n--- Compiled Storage XML Representation Preview ---")
