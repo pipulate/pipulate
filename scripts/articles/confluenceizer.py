@@ -630,7 +630,8 @@ def main():
         elif isinstance(operations, list):
             ops = [o.get("operation") for o in operations]
         if ops:
-            print(f"   operations: {', '.join(o for o in ops if o)}")
+            if args.verbose:
+                print(f"   operations: {', '.join(o for o in ops if o)}")
             if "create" not in ops and "update" not in ops:
                 print("   ⚠ No 'create'/'update' in parent operations -- write may 403.")
         else:
