@@ -349,8 +349,9 @@ def _fetch_child_inventory(domain: str, email: str, api_token: str, parent_id: s
 # WITNESSED 2026-10-05: preview planned 50 moves for 52 children, and the
 # first armed run (gobot, --latest, one UPDATE) moved 50, failed 0, and read
 # back Order verified: True; the canary at position 124 on top became
-# 2026-10-05 (2) on top and 2026-06-16 (1) at the bottom. Unwitnessed: a
-# CREATE costing exactly one move, and a later run planning zero.
+# 2026-10-05 (2) on top and 2026-06-16 (1) at the bottom. WITNESSED the
+# same day: the next preview planned 0 moves for 52 children, and the gobot
+# that CREATEd 2026-10-05 (3) planned 1 move for 53, moved 1, verified True.
 # TODO: v2 marks /pages/{id}/children deprecated; /pages/{id}/direct-children
 # replaces it, but its cursor breaks when childPosition is null (sort=id is
 # the published workaround). Both fetchers here still use the old endpoint.
