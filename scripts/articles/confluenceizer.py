@@ -392,6 +392,14 @@ def main():
     config = targets[target_key]
     print(f"🔒 Locked Target: {config.get('name')} ({config.get('path')})")
 
+    # MOVING THE TARGET (2026-10-05, SERVICES -> personal space, 51 pages).
+    # The parent is the whole address: the space comes from the parent's
+    # spaceId, inventory is its direct children, and the collision check is
+    # scoped to that space, so a new parent starts empty and every post is a
+    # MISS. Nothing local stores page IDs. The move: new confluence_parent_id
+    # in blogs.nix, nr, preview -t bot (gate: new parent title, 0 children,
+    # all MISS), gobot --all, then archive the old tree by hand. Page history
+    # and comments do not travel; pages with no local .md do not either.
     parent_id = config.get("confluence_parent_id")
     if not parent_id:
         print(f"❌ Aborted: Target '{target_key}' does not define a 'confluence_parent_id' in blogs.json.")
