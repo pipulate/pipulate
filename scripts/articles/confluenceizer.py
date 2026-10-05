@@ -675,8 +675,8 @@ def main():
                     # filename order, oldest first. Witnessed the same day: v1
                     # PUT /wiki/rest/api/content/{id}/move/before/{targetId} moved
                     # the canary 6898450484 from index 6 (position 2965) to index 0
-                    # (position 124) under 6898286616. The next ride adds that move
-                    # after each CREATE and reorders the existing children once.
+                    # (position 124) under 6898286616. _reorder_newest_first runs
+                    # after the upsert loop and moves it, and any stray, into place.
                     verb = "CREATE"
                     payload = {
                         "spaceId": str(space_id),
