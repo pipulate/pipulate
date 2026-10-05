@@ -127,7 +127,7 @@ def sync_data_to_jekyll(target_path, since=0.0):
     # Sync dynamic sitemaps (sitemap.xml, sitemap-core.xml, sitemap-branch-0.xml, etc.)
     for sitemap in script_dir.glob("sitemap*.xml"):
         if sitemap.stat().st_mtime < since:
-            print(f"⏭️  {sitemap.name} predates this run; another lane made it. Not synced.")
+            stale.append(sitemap.name)
             continue
         dest = repo_root / sitemap.name
         shutil.copy2(sitemap, dest)
