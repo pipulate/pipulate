@@ -488,7 +488,16 @@ def main():
                         help="Sync only the given file(s). Repeatable. Beats both --latest and the full sweep.")
     parser.add_argument("--latest", action="store_true",
                         help="Sync only the article articleizer.py most recently wrote for this target (from the marker). Errors if no marker exists.")
+    parser.add_argument("-v", "--verbose", action="store_true",
+                        help="List every title, MATCH and remote page, and preview the storage XML (a sweep is quiet by default).")
     args = parser.parse_args()
+    # THE RULE OF SILENCE (2026-10-05, googledocizer.py's rule). A sweep
+    # printed every title, every remote page and every MATCH: about 160
+    # lines that each said the ordinary thing happened. Lines naming a change
+    # (MISS, CREATE, UPDATE, a move) or a problem always print; ordinary ones
+    # are counted. --file and --latest name their documents, so their
+    # per-document lines print in full. -v prints everything.
+    detail = args.verbose or bool(args.file or args.latest)
 
     targets = common.load_targets()
     target_key = str(args.target)
