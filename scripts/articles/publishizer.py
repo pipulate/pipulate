@@ -132,6 +132,8 @@ def sync_data_to_jekyll(target_path, since=0.0):
         dest = repo_root / sitemap.name
         shutil.copy2(sitemap, dest)
         print(f"✅ Synced {sitemap.name} -> {dest}")
+    if stale:
+        print(f"⏭️  {len(stale)} artifact(s) predate this run; another lane made them. Not synced.")
 
 def main():
     parser = argparse.ArgumentParser(description="Update all Pipulate graphs")
