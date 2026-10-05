@@ -623,8 +623,8 @@ def main():
                 print(f"   MISS:  {md_file.name} -> {target_title}")
 
         if not args.yes:
-            print("\n🅳🆁🆈 DRY-RUN -- no mutation. Review Target Title and MATCH/MISS lines before porting the proven upsert path.")
-            print("  ↳ Next patch should lift create_canary's space-scoped collision check, private create, version bump, and read-back verification.")
+            print("\n🅳🆁🆈 DRY-RUN -- no mutation. Review Target Title and MATCH/MISS lines and the reorder plan below.")
+            _reorder_newest_first(domain, email, api_token, parent_id, armed=False)
             return
 
         print(f"\n✍️  Mutations armed (--yes). Upserting {len(local_contracts)} document(s) into the space...")
