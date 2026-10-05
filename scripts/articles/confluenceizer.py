@@ -581,9 +581,16 @@ def main():
         print(f"❌ Local title contract failure: {e}")
         sys.exit(1)
 
-    # Handshake validation pass on the first document in the queue
-    first_file = md_files[0]
-    print(f"\n🔍 Handshake Verification Pass: Analyzing '{first_file.name}'...")
+    # THE RENDER CHECK RIDES ON THE NEWEST DOCUMENT (2026-10-05). The
+    # handshake rendered md_files[0], the oldest post, which converts every
+    # time. The post worth checking is the one `bot` just wrote: the marker's
+    # file when the queue holds it, else the newest by name. One render here,
+    # before any network call, still fails closed once if md2conf itself is
+    # broken. The dry run renders nothing else, so a failure in an older post
+    # first shows in an armed run, as one failed line for that post.
+    marker = common.get_last_published(target_key)
+    first_file = next((f for f in md_files if marker and f == Path(marker)), md_files[-1])
+    rendered = {}
     
     try:
         post = frontmatter.load(first_file)
