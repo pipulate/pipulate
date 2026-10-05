@@ -116,7 +116,7 @@ def sync_data_to_jekyll(target_path, since=0.0):
         dest = repo_root / dest_name
         
         if source.exists() and source.stat().st_mtime < since:
-            print(f"⏭️  {filename} predates this run; another lane made it. Not synced.")
+            stale.append(filename)
             continue
         if source.exists():
             shutil.copy2(source, dest)
