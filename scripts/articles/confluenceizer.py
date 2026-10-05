@@ -640,8 +640,9 @@ def main():
         print(f"🔎 Scanning Remote Page Inventory under Parent ID {parent_id}...")
         inventory = _fetch_child_inventory(domain, email, api_token, parent_id)
         print(f"✅ Inventory Scan Complete. Found {len(inventory)} matching child page(s) on remote wiki.")
-        for title, meta in inventory.items():
-            print(f"   • [ID: {meta['id']}] {title} (Version: {meta['version']})")
+        if args.verbose:
+            for title, meta in inventory.items():
+                print(f"   • [ID: {meta['id']}] {title} (Version: {meta['version']})")
 
         print("\n🧭 Remote Match Contract:")
         for md_file, target_title, storage_xml in local_contracts:
