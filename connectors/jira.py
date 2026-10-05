@@ -126,7 +126,7 @@ def _slug_from_url(url):
 # the fallback below has never fired on SVB). Titled at deed 1627, when one
 # link in 185 was all the join had: 185 board rows, one
 # app.botify.com link among them, and every open row naming its site in the
-# summary ("JS settings QA - client-g.example"), while a Botify project slug
+# summary ("JS settings QA - client-g.com"), while a Botify project slug
 # is usually the hostname itself (mikelev.in, client-c.example). A populated
 # field labelled Project-slug on the specimen ticket is the cleaner join and
 # rides first; the summary's hostname is the fallback, resolved against the
