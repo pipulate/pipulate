@@ -337,6 +337,106 @@ def _fetch_child_inventory(domain: str, email: str, api_token: str, parent_id: s
         path = data.get("_links", {}).get("next")
     return inventory
 
+# NEWEST-FIRST ORDER (2026-10-05). Confluence keeps sibling order as a hidden
+# childPosition; a CREATE lands last and v2 has no call that writes it. The
+# v1 move call does: PUT /wiki/rest/api/content/{id}/move/{before|after}/{target}
+# places a page beside a sibling (witnessed on the canary 6898450484, index 6
+# to 0 under 6898286616; documented response {"pageId": ...}). Targets come
+# only from the parent's own child listing, never a top-level page: before or
+# after a top-level target makes the moved page top-level too. The plan is
+# convergent: a tree already in order plans zero moves, so this runs on every
+# sweep, and a failed move stops the run for the next one to re-plan.
+_TITLE_ORDER_RE = re.compile(r"^(\d{4}-\d{2}-\d{2})(?: \((\d+)\))? \| ")
+
+def _fetch_child_order(domain: str, email: str, api_token: str, parent_id: str) -> list:
+    """Direct child pages as (id, title), in tree order (childPosition ascending)."""
+    rows = []
+    path = f"/pages/{parent_id}/children?limit=50"
+    while path:
+        if path.startswith("/wiki/api/v2"):
+            path = path[12:]
+        data = _request(domain, email, api_token, path)
+        for page in data.get("results", []):
+            pos = page.get("childPosition")
+            rows.append((pos is None, pos or 0, len(rows), str(page.get("id")), page.get("title") or ""))
+        path = data.get("_links", {}).get("next")
+    rows.sort()
+    return [(pid, title) for _, _, _, pid, title in rows]
+
+def _newest_first(children: list) -> list:
+    """Dated titles newest first (date, then sort_order, both descending);
+    undated pages keep their relative order below them."""
+    dated, undated = [], []
+    for pid, title in children:
+        m = _TITLE_ORDER_RE.match(title)
+        if m:
+            dated.append(((m.group(1), int(m.group(2) or 0)), pid, title))
+        else:
+            undated.append((pid, title))
+    dated.sort(key=lambda row: row[0], reverse=True)
+    return [(pid, title) for _, pid, title in dated] + undated
+
+def _plan_moves(current: list, desired: list) -> list:
+    """(page_id, position, target_id) moves that turn current into desired.
+    A page already first, or already directly after its desired predecessor,
+    stays put."""
+    order = [pid for pid, _ in current]
+    moves = []
+    for i, (pid, _) in enumerate(desired):
+        if i == 0:
+            if order and order[0] != pid:
+                moves.append((pid, "before", order[0]))
+                order.remove(pid)
+                order.insert(0, pid)
+            continue
+        prev = desired[i - 1][0]
+        at = order.index(prev)
+        if at + 1 < len(order) and order[at + 1] == pid:
+            continue
+        moves.append((pid, "after", prev))
+        order.remove(pid)
+        order.insert(order.index(prev) + 1, pid)
+    return moves
+
+def _move_page(domain: str, email: str, api_token: str, page_id: str, position: str, target_id: str) -> dict:
+    """The one v1 call in this file: a sibling move (v2 has none)."""
+    url = f"https://{domain}/wiki/rest/api/content/{page_id}/move/{position}/{target_id}"
+    req = urllib.request.Request(url, method="PUT")
+    req.add_header("Authorization", _auth_header(email, api_token))
+    req.add_header("Accept", "application/json")
+    with urllib.request.urlopen(req, data=b"") as response:
+        raw = response.read().decode("utf-8")
+        return json.loads(raw) if raw else {}
+
+def _reorder_newest_first(domain: str, email: str, api_token: str, parent_id: str, armed: bool) -> int:
+    """Plan, and when armed apply, the moves that put the journal newest first.
+    Returns the number of failed moves."""
+    current = _fetch_child_order(domain, email, api_token, parent_id)
+    desired = _newest_first(current)
+    moves = _plan_moves(current, desired)
+    titles = dict(current)
+    print(f"\n🔃 Newest-first order under {parent_id}: {len(current)} children, {len(moves)} move(s) needed.")
+    if not armed:
+        for pid, position, target in moves[:5]:
+            print(f"   would move {titles[pid][:50]!r} {position} {titles[target][:40]!r}")
+        if len(moves) > 5:
+            print(f"   ... and {len(moves) - 5} more.")
+        return 0
+    moved = failed = 0
+    for pid, position, target in moves:
+        try:
+            _move_page(domain, email, api_token, pid, position, target)
+            moved += 1
+        except Exception as err:
+            detail = getattr(err, "code", "") or err
+            print(f"   ❌ move {titles[pid][:50]!r} {position} {target} failed: {detail}")
+            failed += 1
+            break
+    after = [pid for pid, _ in _fetch_child_order(domain, email, api_token, parent_id)]
+    verified = after == [pid for pid, _ in desired]
+    print(f"   {'✅' if verified else '⚠'} Moved: {moved}  Failed: {failed}  Order verified: {verified}")
+    return failed
+
 def _metadata_value(metadata: dict, *keys):
     """Return the first present, non-empty front-matter value for any key."""
     for key in keys:
