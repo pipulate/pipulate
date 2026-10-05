@@ -567,6 +567,10 @@ def main():
     # subprocess each, to build titles that need only frontmatter, and the
     # dry run threw the XML away. Titles are built here; XML is rendered
     # once, in the upsert loop, for the documents actually sent.
+    # WITNESSED 2026-10-05 by straddle: the dry run read 64.1s and 186 lines
+    # before, 2.1s and 17 lines after, same last line (53 children, 0 moves);
+    # one md2conf render read 1.02s before and 1.00s after. Unwitnessed: the
+    # armed path (rendered.pop and the per-document render in the upsert loop).
     local_contracts = []
     if detail:
         print("\n🧾 Local Target Title Contract:")
