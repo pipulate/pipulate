@@ -106,6 +106,10 @@ def sync_data_to_jekyll(target_path, since=0.0):
     # We want the site root: .../trimnoir/
     repo_root = target_path.parent
     
+    # ONE LINE FOR THE SKIPS (2026-10-05): a lane whose pipeline makes none
+    # of these printed one skip per file, twelve lines each preview -t bot.
+    # The count still says the guard fired; a nonzero count is the receipt.
+    stale = []
     # Sync static artifacts
     for filename, dest_name in artifacts.items():
         source = script_dir / filename
