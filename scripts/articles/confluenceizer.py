@@ -346,6 +346,14 @@ def _fetch_child_inventory(domain: str, email: str, api_token: str, parent_id: s
 # after a top-level target makes the moved page top-level too. The plan is
 # convergent: a tree already in order plans zero moves, so this runs on every
 # sweep, and a failed move stops the run for the next one to re-plan.
+# WITNESSED 2026-10-05: preview planned 50 moves for 52 children, and the
+# first armed run (gobot, --latest, one UPDATE) moved 50, failed 0, and read
+# back Order verified: True; the canary at position 124 on top became
+# 2026-10-05 (2) on top and 2026-06-16 (1) at the bottom. Unwitnessed: a
+# CREATE costing exactly one move, and a later run planning zero.
+# TODO: v2 marks /pages/{id}/children deprecated; /pages/{id}/direct-children
+# replaces it, but its cursor breaks when childPosition is null (sort=id is
+# the published workaround). Both fetchers here still use the old endpoint.
 _TITLE_ORDER_RE = re.compile(r"^(\d{4}-\d{2}-\d{2})(?: \((\d+)\))? \| ")
 
 def _fetch_child_order(domain: str, email: str, api_token: str, parent_id: str) -> list:
