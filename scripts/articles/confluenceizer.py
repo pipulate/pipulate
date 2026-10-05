@@ -561,16 +561,22 @@ def main():
         print("🛑 Queue empty. Nothing to parse.")
         return
 
+    # THE LAZY RENDER (2026-10-05, measured: 62.88s for a 53-document dry
+    # run). This loop rendered every document through md2conf, one Python
+    # subprocess each, to build titles that need only frontmatter, and the
+    # dry run threw the XML away. Titles are built here; XML is rendered
+    # once, in the upsert loop, for the documents actually sent.
     local_contracts = []
-    print("\n🧾 Local Target Title Contract:")
+    if detail:
+        print("\n🧾 Local Target Title Contract:")
     try:
         for md_file in md_files:
             post = frontmatter.load(md_file)
             target_title = _target_title(md_file, post)
-            storage_xml = markdown_to_storage(post.content)
-            local_contracts.append((md_file, target_title, storage_xml))
-            print(f"   Target Title: {target_title}")
-        print(f"✅ Local title contract pass complete. {len(local_contracts)} document(s) mapped.")
+            local_contracts.append((md_file, target_title))
+            if detail:
+                print(f"   Target Title: {target_title}")
+        print(f"🧾 Title contract: {len(local_contracts)} document(s) mapped.")
     except Exception as e:
         print(f"❌ Local title contract failure: {e}")
         sys.exit(1)
