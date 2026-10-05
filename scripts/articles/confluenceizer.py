@@ -596,12 +596,12 @@ def main():
         post = frontmatter.load(first_file)
         
         storage_xml = markdown_to_storage(post.content)
-        print("\n--- Compiled Storage XML Representation Preview ---")
-        print(storage_xml[:500] + ("..." if len(storage_xml) > 500 else ""))
-        print("---------------------------------------------------")
-        print("✅ Local conversion pass successful.")
+        rendered[first_file] = storage_xml
+        print(f"✅ md2conf render check: {first_file.name} ({len(storage_xml):,} chars of storage XML).")
+        if args.verbose:
+            print(storage_xml[:500] + ("..." if len(storage_xml) > 500 else ""))
     except Exception as e:
-        print(f"❌ Structural load or compilation failure: {e}")
+        print(f"❌ md2conf render check failed on {first_file.name}: {e}")
         sys.exit(1)
 
     # 4. Network Handshake Pass (The Minimal Falsifying Probe)
