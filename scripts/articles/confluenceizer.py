@@ -506,7 +506,7 @@ def _child_read_restrictions(domain: str, email: str, api_token: str, parent_id:
         data = _request_v1(domain, email, api_token, path)
         for page in data.get("results", []):
             if "restrictions" not in page:
-                state[str(page.get("id"))] = (page.get("title") or "", None, 0)
+                state[str(page.get("id"))] = (page.get("title") or "", None, 0, None)
                 continue
             read = ((page["restrictions"] or {}).get("read") or {}).get("restrictions") or {}
             users = [u.get("accountId") for u in (read.get("user") or {}).get("results", [])]
