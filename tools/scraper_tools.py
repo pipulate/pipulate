@@ -267,7 +267,12 @@ def _document_candidates(cdp_events: list, domain: str, final_url: str = "") -> 
     return on_host
 
 
-def _capture_checkpoint(stdin=None, stdout=None, before_prompt=None) -> dict:
+def _capture_checkpoint(
+    stdin=None,
+    stdout=None,
+    before_prompt=None,
+    prompt="Press Enter to save the page. ",
+) -> dict:
     """Wait for Enter from the human's keyboard: the page has settled.
 
     ENTER, NOT A WORD (2026-10-02, the operator's ruling). The fence used to
