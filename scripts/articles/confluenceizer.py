@@ -483,11 +483,16 @@ def _current_account_id(domain: str, email: str, api_token: str) -> str:
     """The publisher's own accountId: the one user every padlock names."""
     return str(_request_v1(domain, email, api_token, "/user/current").get("accountId") or "")
 
-def _lock_page(domain: str, email: str, api_token: str, page_id: str, account_id: str) -> None:
-    """Add account_id to page_id's own read restriction (additive: keeps every share)."""
-    _request_v1(domain, email, api_token,
-                f"/content/{page_id}/restriction/byOperation/read/user?accountId={urllib.parse.quote(account_id)}",
-                method="PUT")
+def _lock_page(domain: str, email: str, api_token: str, page_id: str, account_id: str,
+               operations: tuple = ("read", "update")) -> None:
+    """Name account_id in page_id's own read and update restrictions (additive:
+    keeps every share). Read alone is not enough (2026-10-05: on pages padlocked
+    for read only, a v2 UPDATE read 404 and the v1 move read 403 'You do not
+    have permission to make this content move')."""
+    for operation in operations:
+        _request_v1(domain, email, api_token,
+                    f"/content/{page_id}/restriction/byOperation/{operation}/user?accountId={urllib.parse.quote(account_id)}",
+                    method="PUT")
 
 def _child_read_restrictions(domain: str, email: str, api_token: str, parent_id: str) -> dict:
     """{child id: (title, user accountIds, group count)} from each child's OWN read
