@@ -951,7 +951,17 @@ def main():
                         print(f"   ❌ {target_title!r} created as [ID: {new_id}] but NOT padlocked (HTTP {lock_err.code}).")
 
                 # Read-back round-trip: prove the write landed and the storage survived intact.
-                readback = _request(domain, email, api_token, f"/pages/{new_id}?body-format=storage&include-version=true")
+                # A page created and padlocked a moment ago can read 404 (convicted
+                # 2026-10-05: the CREATE of 6899007626 landed, the next listing counted
+                # it, and its read-back said NOT_FOUND), so a CREATE's 404 is retried.
+                for attempt in range(4):
+                    try:
+                        readback = _request(domain, email, api_token, f"/pages/{new_id}?body-format=storage&include-version=true")
+                        break
+                    except urllib.error.HTTPError as rb_err:
+                        if rb_err.code != 404 or verb != "CREATE" or attempt == 3:
+                            raise
+                        time.sleep(2)
                 rb_version = (readback.get("version") or {}).get("number")
                 rb_title = readback.get("title")
                 rb_value = ((readback.get("body") or {}).get("storage") or {}).get("value") or ""
