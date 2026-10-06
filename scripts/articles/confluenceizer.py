@@ -929,6 +929,13 @@ def main():
                         print(f"   ❌ {target_title!r} failed: Confluence returned no page id after create.")
                         failed += 1
                         continue
+                    # THE PADLOCK RIDES THE CREATE: under an open parent a new
+                    # entry is open for this one round-trip. A failure leaves
+                    # it open; the sweep after this loop retries.
+                    try:
+                        _lock_page(domain, email, api_token, new_id, me)
+                    except urllib.error.HTTPError as lock_err:
+                        print(f"   ❌ {target_title!r} created as [ID: {new_id}] but NOT padlocked (HTTP {lock_err.code}).")
 
                 # Read-back round-trip: prove the write landed and the storage survived intact.
                 readback = _request(domain, email, api_token, f"/pages/{new_id}?body-format=storage&include-version=true")
