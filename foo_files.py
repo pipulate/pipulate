@@ -21,11 +21,8 @@ AI_PHOOEY_CHOP = r"""#
 # creator of) of Project Pipulate:
 
 # --- START STATS ---
-# There are 1,518 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 17 published in the last 7 days
-# Markdown negotiated: 3,250 reads (0.24% of all responses)
-# DOM hydration: 3697 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
-# Honeybot telemetry fetched 2026-10-06T13:42Z
+# There are 1,505 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 4 published in the last 7 days
 # --- END STATS ---
 
 # Project Pipulate is known as (and installable from) various domains:
@@ -1113,25 +1110,7 @@ And then we demonstrate a level of competence like so:
 # noise-generating background jobs running BEHIND it has not delivered quiet.
 # Move the gate above the noise, never the noise below the gate.
 
-# THE CROSS-PLATFORM EVAL RULE (banked 2026-08-04, first-contact convicted on
-# aarch64-darwin): a package list is EVALUATED before any shellHook runs, so a
-# platform-restricted entry is not a runtime failure -- it is an EVAL-TIME
-# REFUSAL, and nothing downstream of it gets a chance to report. The flake died
-# on alsa-utils, which means gitUpdateLogic never ran, which means the magic
-# cookie transformation never happened, which means a Mac install could not
-# complete AT ALL. Rank eval-time refusals above every runtime bug: a runtime
-# bug leaves a diagnosable system, an eval refusal leaves nothing.
-# THE INSTRUMENT IS FREE AND LIVES ON THE WRONG MACHINE: nix EVALUATION is
-# cross-platform (only BUILDING needs the matching system), so
-# `nix eval --raw .#devShells.aarch64-darwin.default.drvPath` reproduces a Mac's
-# exact refusal FROM LINUX, in seconds, with no second machine in the room. Any
-# flake change touching buildInputs gets both systems evaluated before it ships.
-# SHELL SELECTION IS LOAD-BEARING IN THAT PROBE: `quiet` carries neither
-# runScript nor gitUpdateLogic, so a quiet-aimed probe prints the same hash in
-# both worlds for any edit to either -- THE DISCRIMINATION QUESTION failing in
-# the probe itself. Name `default` when the edit is in a shellHook; the hash
-# CHANGING is then the ignition witness, proving the patched text is what a
-# fresh `nix develop` would instantiate, without entering one.
+# § THE CROSS-PLATFORM EVAL RULE (banked 2026-08-04) -- Before shipping a flake change to buildInputs or shellHook, evaluate both Linux and Darwin default devShells with nix eval --raw .#devShells.<system>.default.drvPath, because platform-restricted inputs fail before hooks run and quiet cannot witness default-only hook changes.
 
 # THE STAT-CACHE FALSE POSITIVE (banked 2026-08-04, receipt-witnessed both lanes): `git diff-index --quiet` decides from the index's CACHED STAT DATA -- dev, inode, mtime, size -- and short-circuits before comparing content. Any operation that rewrites files while carrying an index along (cp -r, rsync without -a, a restored backup, a container layer) makes a byte-identical tree report DIRTY. Receipt: clone -> `cp -r src/. dst/` -> after_cp=1, after_refresh=0, reproduced identically in the operator and compile lanes. WHY IT SURVIVES SO LONG: `git status` refreshes the index as a side effect, so the false positive has ALWAYS healed by the time a human types the diagnostic. The symptom is structurally unobservable by the only method anyone reaches for. STANDING CONSEQUENCE: any automated dirty-tree check runs `git update-index -q --refresh 2>/dev/null || true` first. It clears ONLY stale entries, so a genuinely modified file still reports dirty and a halt-don't-destroy gate keeps its teeth.
 # THE DUAL-LANE WALK SCHEMA (banked 2026-08-25, receipt-witnessed): a trail stop accepts exactly one of `url` (public, direct HTTP/HTTPS) or `url_env` (sensitive, client-isolated), validated via exact set difference. Direct URLs surface openly on consent cards; environment variables surface as requirements on the human. Connectors declare honest execution targets, and `walk-cartridge-integrity-v2` enforces ordered destination disclosure. Conviction: the schema required url_env on every stop, so public pages paid for an env var nothing collected; a required field is a BILL, and you charge it only when something collects.

@@ -847,6 +847,32 @@ Entries are alphabetical, numbers spelled as spoken.
   check can be READ there, because the receipt is a recording and a
   recording does not expire. The credential is the perishable thing; the
   artifact is not.
+- **The Cross-Platform Eval Rule** -- *cross-platform evaluation before shell entry.*
+
+~~~text
+
+
+# THE CROSS-PLATFORM EVAL RULE (banked 2026-08-04, first-contact convicted on
+# aarch64-darwin): a package list is EVALUATED before any shellHook runs, so a
+# platform-restricted entry is not a runtime failure -- it is an EVAL-TIME
+# REFUSAL, and nothing downstream of it gets a chance to report. The flake died
+# on alsa-utils, which means gitUpdateLogic never ran, which means the magic
+# cookie transformation never happened, which means a Mac install could not
+# complete AT ALL. Rank eval-time refusals above every runtime bug: a runtime
+# bug leaves a diagnosable system, an eval refusal leaves nothing.
+# THE INSTRUMENT IS FREE AND LIVES ON THE WRONG MACHINE: nix EVALUATION is
+# cross-platform (only BUILDING needs the matching system), so
+# `nix eval --raw .#devShells.aarch64-darwin.default.drvPath` reproduces a Mac's
+# exact refusal FROM LINUX, in seconds, with no second machine in the room. Any
+# flake change touching buildInputs gets both systems evaluated before it ships.
+# SHELL SELECTION IS LOAD-BEARING IN THAT PROBE: `quiet` carries neither
+# runScript nor gitUpdateLogic, so a quiet-aimed probe prints the same hash in
+# both worlds for any edit to either -- THE DISCRIMINATION QUESTION failing in
+# the probe itself. Name `default` when the edit is in a shellHook; the hash
+# CHANGING is then the ignition witness, proving the patched text is what a
+# fresh `nix develop` would instantiate, without entering one.
+~~~
+
 - **The Declared-Fixture Relief Valve** -- (banked 2026-08-28,
   hand-edit-convicted): a guard that fires on the ONE activity this repo
   performs constantly -- writing about credentials -- is a guard on its way
