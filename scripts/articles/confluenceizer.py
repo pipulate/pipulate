@@ -511,7 +511,9 @@ def _child_read_restrictions(domain: str, email: str, api_token: str, parent_id:
             read = ((page["restrictions"] or {}).get("read") or {}).get("restrictions") or {}
             users = [u.get("accountId") for u in (read.get("user") or {}).get("results", [])]
             groups = len((read.get("group") or {}).get("results", []))
-            state[str(page.get("id"))] = (page.get("title") or "", users, groups)
+            edit = ((page["restrictions"] or {}).get("update") or {}).get("restrictions") or {}
+            editors = [u.get("accountId") for u in (edit.get("user") or {}).get("results", [])]
+            state[str(page.get("id"))] = (page.get("title") or "", users, groups, editors)
         nxt = (data.get("_links") or {}).get("next") or ""
         path = nxt.split("/rest/api", 1)[1] if "/rest/api" in nxt else None
     return state
