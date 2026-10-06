@@ -774,6 +774,7 @@ def main():
         if not args.yes:
             print("\n🅳🆁🆈 DRY-RUN -- no mutation. Review Target Title and MATCH/MISS lines and the reorder plan below.")
             _reorder_newest_first(domain, email, api_token, parent_id, armed=False)
+            _publish_journal_index(domain, email, api_token, config, parent_id, posts_dir, armed=False)
             return
 
         print(f"\n✍️  Mutations armed (--yes). Upserting {len(local_contracts)} document(s) into the space...")
