@@ -460,6 +460,13 @@ def _reorder_newest_first(domain: str, email: str, api_token: str, parent_id: st
 # share made in the Restrictions dialog survives every run. Convergent like
 # the reorder: only a child with NO read restriction of its own is locked;
 # a child whose restriction state did not come back is left alone, reported.
+# WITNESSED 2026-10-05: the canary 6898450484 took the call by hand (HTTP
+# 200); preview then planned 1 locked, 53 open; gobot locked 53, failed 0,
+# still open 0; the child listing read 54 locked, 0 open, 0 shared; and after
+# the parent's padlock came off by hand its own read restriction read users
+# [] groups 0. UNWITNESSED: the lock right after a CREATE, a share surviving
+# a sweep, and any colleague's view. TODO: main ignores _lock_children's
+# still-open count, so gobot exits 0 with an entry open.
 def _request_v1(domain: str, email: str, api_token: str, path: str, method: str = "GET") -> dict:
     """A body-less v1 call (/wiki/rest/api...), for the writes v2 does not offer."""
     req = urllib.request.Request(f"https://{domain}/wiki/rest/api{path}", method=method)
