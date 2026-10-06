@@ -443,6 +443,8 @@ def _reorder_newest_first(domain: str, email: str, api_token: str, parent_id: st
         except Exception as err:
             detail = getattr(err, "code", "") or err
             print(f"   ❌ move {titles[pid][:50]!r} {position} {target} failed: {detail}")
+            if hasattr(err, "read"):
+                print(f"      {err.read().decode('utf-8', 'replace')[:300]}")
             failed += 1
             break
     after = [pid for pid, _ in _fetch_child_order(domain, email, api_token, parent_id)]
