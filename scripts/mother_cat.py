@@ -921,6 +921,10 @@ async def _ride_steps(trail_path, archive, dry_narrate=False, exports_path=None,
             print(f"\nStopped at page {index} of {len(stops)}: {_plain_reason(result.get('error'))}.{tail}")
             return 1
 
+        if not capture:
+            print("Looked; nothing saved.")
+            continue
+
         artifacts = result.get("looking_at_files", {})
         problems = _bank_capture(archive, trail, index, stop, params, result)
         captured.append((stop["name"], result.get("final_url"), artifacts))
