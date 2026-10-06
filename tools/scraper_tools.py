@@ -1162,8 +1162,10 @@ async def selenium_automation(params: dict) -> dict:
     return await _selenium_capture(params)
 
 
-async def guided_browser_capture(params: dict, stdin=None, stdout=None, before_prompt=None) -> dict:
-    """Capture one human-guided page through one visible persistent driver."""
+async def guided_browser_capture(
+    params: dict, stdin=None, stdout=None, before_prompt=None, capture=True
+) -> dict:
+    """Guide one visible persistent page; capture artifacts unless capture=False."""
     if not isinstance(params, dict):
         return {
             "success": False,
