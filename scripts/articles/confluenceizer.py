@@ -981,6 +981,8 @@ def main():
                 # A page created and padlocked a moment ago can read 404 (convicted
                 # 2026-10-05: the CREATE of 6899007626 landed, the next listing counted
                 # it, and its read-back said NOT_FOUND), so a CREATE's 404 is retried.
+                # Cause unproven: one run earlier the read-back of 6899597409, created
+                # and padlocked the same way, succeeded. The retry is UNWITNESSED.
                 for attempt in range(4):
                     try:
                         readback = _request(domain, email, api_token, f"/pages/{new_id}?body-format=storage&include-version=true")
