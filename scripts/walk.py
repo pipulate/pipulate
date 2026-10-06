@@ -292,6 +292,9 @@ def load_trail(path):
         optional = stop.get("optional", False)
         if not isinstance(optional, bool):
             raise TrailError(f"{where}.optional must be true or false")
+        capture = stop.get("capture", True)
+        if not isinstance(capture, bool):
+            raise TrailError(f"{where}.capture must be true or false")
         if optional and "url" in present:
             raise TrailError(
                 f"{where}.optional is only meaningful on a url_env stop: "
