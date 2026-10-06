@@ -896,6 +896,7 @@ async def _ride_steps(trail_path, archive, dry_narrate=False, exports_path=None,
                     f"stop {stop['name']!r} requires environment variable {url_env}"
                 ) from exc
 
+        capture = stop.get("capture", True)
         params = walk._browser_params(url, trail["defaults"])
         # THE BELL IS THE CUE (2026-10-02): the ding and the Enter prompt come
         # once the page has loaded, so nothing is said before them. The empty
