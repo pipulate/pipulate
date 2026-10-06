@@ -484,6 +484,112 @@ def _target_title(md_file: Path, post) -> str:
         return f"{date_part} | {title}"
     return f"{date_part} ({sort_order}) | {title}"
 
+# THE JOURNAL INDEX (2026-10-05). On every run the index page is rewritten
+# whole as a listing of the newest entries, built from local frontmatter,
+# the _context/ shards and the token cache `posts` keeps, never from the
+# wiki: the pages are a projection, so their index is too, and an edit made
+# on the page is overwritten. The version message carries a hash of the
+# body, so a run whose body would not change writes nothing. The index page
+# is confluence_index_page_id from blogs.json, else the parent itself. A
+# page is readable only by who can read every ancestor, so an index on the
+# view-restricted parent is seen by that restriction list and nobody else.
+_INDEX_LIMIT = 100
+_INDEX_INTRO = ("A private work journal: written as Markdown in git and published here by a script. "
+                "Entries are restricted; ask Mike Levin for access to any of them.")
+
+def _journal_index_body(posts_dir: Path, children: list, domain: str) -> tuple:
+    """(storage XML, entries, listed, linked) for the newest-first listing.
+    Ordered by _newest_first, the key the reorder uses, so index and tree agree."""
+    ids = {title: pid for pid, title in children}
+    memo = lsa.MtimeMemo(lsa.CONFIG_DIR / "token_cache.json")
+    entries = []
+    total_tokens = total_bytes = 0
+    for md in sorted(posts_dir.glob("*.md")):
+        post = frontmatter.load(md)
+        title = _target_title(md, post)
+        path = str(md)
+        mtime = os.path.getmtime(path)
+        cached = memo.lookup(path, mtime)
+        if cached is not None and cached[0] > 0:
+            tokens, size = cached[0], cached[1]
+        else:
+            text = md.read_text(encoding="utf-8")
+            tokens, size = lsa.count_tokens(text), len(text.encode("utf-8"))
+            if tokens > 0:
+                memo.store(path, mtime, [tokens, size])
+        total_tokens += tokens
+        total_bytes += size
+        summary = ""
+        shard = posts_dir / "_context" / f"{md.stem}.json"
+        if shard.is_file():
+            try:
+                summary = json.loads(shard.read_text(encoding="utf-8")).get("s") or ""
+            except (OSError, ValueError, AttributeError):
+                summary = ""
+        if not summary:
+            summary = _metadata_value(post.metadata or {}, "meta_description", "excerpt") or ""
+        summary = _sanitize_internal_pii(" ".join(str(summary).split()))
+        entries.append(((title, tokens, summary), title))
+    memo.save()
+    ranked = [entry for entry, _ in _newest_first(entries)]
+    rows, linked = [], 0
+    for title, tokens, summary in ranked[:_INDEX_LIMIT]:
+        when, _, headline = title.partition(" | ")
+        name = html_escape(headline)
+        pid = ids.get(title)
+        if pid:
+            linked += 1
+            name = f'<a href="https://{domain}/wiki/pages/viewpage.action?pageId={pid}">{name}</a>'
+        if summary:
+            name += f"<br />{html_escape(summary)}"
+        rows.append(f"<tr><td>{html_escape(when)}</td><td>{name}</td><td>{tokens / 1000:.1f}k</td></tr>")
+    newest = ranked[0][0].partition(" | ")[0] if ranked else "none"
+    body = (f"<p>{html_escape(_INDEX_INTRO)}</p>"
+            f"<p><strong>{len(ranked)} entries</strong>, {total_tokens:,} tokens, {total_bytes:,} bytes. "
+            f"The newest {len(rows)} are below, newest first; the latest is {newest}. "
+            "This page is rebuilt on every publish, so edits made here are overwritten.</p>"
+            "<table><tbody><tr><th>Date (n)</th><th>Entry</th><th>Tokens</th></tr>"
+            + "".join(rows) + "</tbody></table>")
+    return body, len(ranked), len(rows), linked
+
+def _publish_journal_index(domain: str, email: str, api_token: str, config: dict,
+                           parent_id: str, posts_dir: Path, armed: bool) -> int:
+    """Plan, and when armed write, the journal index. Returns 1 on a failed write."""
+    index_id = str(config.get("confluence_index_page_id") or parent_id)
+    children = _fetch_child_order(domain, email, api_token, parent_id)
+    body, total, listed, linked = _journal_index_body(posts_dir, children, domain)
+    stamp = "journal index " + hashlib.sha256(body.encode("utf-8")).hexdigest()[:12]
+    page = _request(domain, email, api_token, f"/pages/{index_id}?include-version=true")
+    current = page.get("version") or {}
+    version = current.get("number")
+    label = (f"\n📇 Journal index on {index_id} {page.get('title')!r}: "
+             f"{total} entries, {listed} listed, {linked} linked")
+    if current.get("message") == stamp:
+        print(f"{label}; unchanged.")
+        return 0
+    if version is None:
+        print(f"{label}; ⚠ could not read its version, refusing to guess the bump.")
+        return 1
+    if not armed:
+        print(f"{label}; would rewrite v{version} ({len(body):,} chars).")
+        return 0
+    payload = {
+        "id": index_id,
+        "status": "current",
+        "title": page.get("title"),
+        "body": {"representation": "storage", "value": body},
+        "version": {"number": version + 1, "message": stamp},
+    }
+    try:
+        _request(domain, email, api_token, f"/pages/{index_id}", method="PUT", payload=payload)
+        readback = _request(domain, email, api_token, f"/pages/{index_id}?include-version=true").get("version") or {}
+    except urllib.error.HTTPError as err:
+        print(f"{label}; ❌ rewrite failed (HTTP {err.code}): {err.read().decode('utf-8', 'replace')[:300]}")
+        return 1
+    ok = readback.get("number") == version + 1 and readback.get("message") == stamp
+    print(f"{label}; {'✅' if ok else '⚠'} rewritten as v{readback.get('number')}.")
+    return 0 if ok else 1
+
 def main():
     parser = argparse.ArgumentParser(description="Publish local markdown articles to Confluence Cloud.")
     common.add_standard_arguments(parser)
