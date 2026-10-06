@@ -1,6 +1,14 @@
 #!/usr/bin/env bash
-# Pipulate MCK Bootstrap v0.7.0 -- the Mother Cat Kata launcher
+# Pipulate MCK Bootstrap v0.8.0 -- the Mother Cat Kata launcher
 # =============================================================
+#
+# WHAT CHANGED IN v0.8.0 -- A SYMLINK IS A SHORT NAME
+#   (2026-10-06) A symlink in a lane is a short name for the file it points
+#   at: walks/short -> long, or trails/short.yaml -> long.yaml. The walk rides
+#   as the long name (its exports file, a routed walk's $0), the Select-a-walk
+#   menu lists long names only, and the no-such-walk refusal ends with one
+#   Short names line. The links live in a private tier; this file still names
+#   no walk.
 #
 # WHAT CHANGED IN v0.7.0 -- A TRAIL IS YAML, AND MAY CARRY AN INTRODUCTION
 #   (2026-10-04) The trail is read by walk.load_trail, the rider's own loader,
@@ -196,6 +204,21 @@ _shown() {
     "$HOME"/*) printf '~%s' "${1#"$HOME"}" ;;
     *) printf '%s' "$1" ;;
   esac
+}
+# A SYMLINK IS A SHORT NAME (v0.8.0): follow it to the file it names, one hop at
+# a time and at most eight, with plain readlink (readlink -f is missing on older
+# Macs). A relative target is relative to the link's own folder.
+_through_links() {
+  local p="$1" hops=0 target
+  while [ -L "$p" ] && [ "$hops" -lt 8 ]; do
+    target="$(readlink "$p")"
+    case "$target" in
+      /*) p="$target" ;;
+      *) p="$(dirname "$p")/$target" ;;
+    esac
+    hops=$((hops + 1))
+  done
+  printf '%s' "$p"
 }
 # --- MARKER DISCOVERY --------------------------------------------------
 # A workshop is identified by three TRACKED files, so a plain git clone
@@ -400,11 +423,12 @@ fi
 WALK_SEARCH_DIRS="Workshop/personal/walks Workshop/corporate/walks"
 for WALK_DIR in $WALK_SEARCH_DIRS; do
   if [ -f "$WALK_DIR/$TRAIL_NAME" ] && [ -x "$WALK_DIR/$TRAIL_NAME" ]; then
-    echo "Walk resolved: $WALK_DIR/$TRAIL_NAME" >&2
+    WALK_EXEC="$(_through_links "$WALK_DIR/$TRAIL_NAME")"
+    echo "Walk resolved: $WALK_EXEC" >&2
     if [ ${#HELD_ARGS[@]} -gt 0 ]; then
-      exec "$WALK_DIR/$TRAIL_NAME" "${HELD_ARGS[@]}"
+      exec "$WALK_EXEC" "${HELD_ARGS[@]}"
     fi
-    exec "$WALK_DIR/$TRAIL_NAME"
+    exec "$WALK_EXEC"
   fi
 done
 if [ ${#HELD_ARGS[@]} -gt 0 ]; then
@@ -444,6 +468,8 @@ if [ -z "$TRAIL_PATH" ]; then
   # test and is skipped, so a missing lane cannot stop the list (the
   # 2026-08-05 conviction, answered without ls).
   WORDS=""
+  LINKED=""
+  SHORTS=""
   for LIST_DIR in $WALK_SEARCH_DIRS $TRAIL_SEARCH_DIRS; do
     [ -d "$LIST_DIR" ] || continue
     for LIST_FILE in "$LIST_DIR"/*; do
@@ -459,13 +485,26 @@ if [ -z "$TRAIL_PATH" ]; then
           ;;
       esac
       printf '%s' "$LIST_WORD" | grep -qE '^[a-z][a-z0-9_]*$' || continue
-      case " $WORDS " in *" $LIST_WORD "*) continue ;; esac
+      case " $WORDS $LINKED " in *" $LIST_WORD "*) continue ;; esac
+      # A symlink is a short name (v0.8.0): named once, after the list.
+      if [ -L "$LIST_FILE" ]; then
+        LINK_WORD="$(basename "$(_through_links "$LIST_FILE")")"
+        LINK_WORD="${LINK_WORD%.json}"
+        LINK_WORD="${LINK_WORD%.yaml}"
+        LINKED="$LINKED $LIST_WORD"
+        SHORTS="${SHORTS:+$SHORTS, }$LIST_WORD for $LINK_WORD"
+        continue
+      fi
       WORDS="${WORDS:+$WORDS }$LIST_WORD"
     done
   done
   echo "No walk is named $TRAIL_NAME. Type walk and one of these: $WORDS" >&2
+  [ -z "$SHORTS" ] || echo "Short names: $SHORTS." >&2
   exit 1
 fi
+# A short name rides as the file it names (v0.8.0), so the exports file below
+# and the rider's path for the trail are the long one.
+TRAIL_PATH="$(_through_links "$TRAIL_PATH")"
 # Which lane won is a receipt only when it is a surprise: a private trail
 # shadowing a tracked one. The bundled lane is the expected answer and says
 # nothing (2026-10-02, the operator's ruling: the ordinary case is silent).
@@ -654,6 +693,7 @@ else
           [ -d "$WALK_DIR" ] || continue
           for WALK_FILE in "$WALK_DIR"/*; do
             [ -f "$WALK_FILE" ] && [ -x "$WALK_FILE" ] || continue
+            [ ! -L "$WALK_FILE" ] || continue
             WALK_NAME="$(basename "$WALK_FILE")"
             WALK_SEEN=0
             WALK_I=0
