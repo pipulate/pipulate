@@ -618,6 +618,12 @@ Entries are alphabetical, numbers spelled as spoken.
 # afterward. Exercises the hard half; costs no publish.
 ~~~
 
+- **The Actuator'S Own Diagnostic Rule** -- *expanded rule; banked 2026-09-01.*
+
+~~~text
+# THE ACTUATOR'S OWN DIAGNOSTIC RULE (banked 2026-09-01). apply.py's AST airlock compiles candidate content before writing, so it printed `<unknown>:985: SyntaxWarning: invalid escape sequence` on THREE consecutive `app` runs -- correct message, correct line number -- and it read as noise FROM the tool rather than a finding ABOUT the file. The `<unknown>` filename is what disguised it: a diagnostic with no filename reads as the tool complaining about itself. A LINE NUMBER in an actuator's output is a finding about the FILE. Read it, or the instrument you built is reporting to nobody.
+~~~
+
 - **Admin Forms Are Credential Surfaces** -- (banked 2026-09-11, cartridge
   foo-d5dfdb65-1342.zip). A `?URL` scrape of a vendor's Django admin renders a
   live secret as a BARE VALUE under its human-readable field label -- no
@@ -795,6 +801,35 @@ Entries are alphabetical, numbers spelled as spoken.
 # probe so the surprise becomes reusable rather than re-derived.
 ~~~
 
+- **The Barney Reset Rule** -- *expanded rule; banked 2026-07-21.*
+
+~~~text
+# THE BARNEY RESET RULE (banked 2026-07-21, articulation-banked): Trigger
+# when the human says they do not understand. Trigger when the human asks
+# what they are supposed to do. Trigger when confusion survives into a
+# second consecutive turn.
+#
+# STOP THE TORTOISE PROTOCOL.
+#
+# Open with exactly five plain statements. Use this order:
+#
+# Problem: ...
+# Evidence: ...
+# Danger: ...
+# Next action: ...
+# Remaining unknown: ...
+#
+# Keep sentences short. Keep them literal.
+#
+# PUT EVERY IMPORTANT INSTRUCTION ON ITS OWN LINE.
+#
+# NO METAPHOR BEFORE THE FIVE.
+#
+# NO PATCH BEFORE THE FIVE.
+#
+# Resume the normal protocol only after the next action is obvious.
+~~~
+
 - **The Blank Stare Rule** -- (banked 2026-09-28, the operator's words): every word a newcomer types is the plain name of the thing it does (walk, connect, context, prompt, compile, about, menu), and an abbreviation is an alias behind it, never the word the menu prints. The answer to "your system is unusual" is the objector's own word, typed into a text file, and a blank stare: which part is difficult, the word connect, or that a word can be written down where a hand-motion in a browser cannot? Operation Stick Bug's rule for names: the instrument vanishes when it is called what it is. Sibling of THE NEXT ACTION, NOT THE MACHINERY. ONE EXCEPTION, on purpose (2026-10-02): osb, Operation Stick Bug's own word, printed last by all and never by the short menu, because a name like a twig is its camouflage.
 - **The Browser Is Not A Config File** -- *expanded rule; banked 2026-09-28.*
 
@@ -829,6 +864,12 @@ Entries are alphabetical, numbers spelled as spoken.
   into the PROMPT that will read it. STANDING CONSEQUENCE: every conditional
   in a caboose names its PRECONDITION first, or it states the check and leaves
   the ruling to the turn that holds the receipt.
+- **Cache-Churn Exclusion Principle** -- *expanded rule; banked 2026-07-20.*
+
+~~~text
+# - EARMARK: CACHE-CHURN EXCLUSION PRINCIPLE (banked 2026-07-20): a hash-gated backup reduces writes only if its manifest excludes always-churning files; token_cache.json/fm_cache.json carrying the compile's own mtime is the conviction.
+~~~
+
 - **The Cap That Hid the Answer** -- *a count-bounded probe hides the
   discriminator.* Banked 2026-08-05, convicted three times in three compiles.
   A `head -N` cap set to bound noise silently truncates the decisive line when
@@ -1144,6 +1185,12 @@ Entries are alphabetical, numbers spelled as spoken.
 # fresh `nix develop` would instantiate, without entering one.
 ~~~
 
+- **The Data-File Re-Render Rule** -- *expanded rule; banked 2026-09-03.*
+
+~~~text
+# THE DATA-FILE RE-RENDER RULE (banked 2026-09-03). When a layout gains a site.data.* lookup, jekyll serve's incremental mode will not re-render existing pages when only the data file changes. Local preview needs `touch _layouts/default.html`; production `jekyll build` needs nothing.
+~~~
+
 - **The Declared-Fixture Relief Valve** -- (banked 2026-08-28,
   hand-edit-convicted): a guard that fires on the ONE activity this repo
   performs constantly -- writing about credentials -- is a guard on its way
@@ -1170,6 +1217,12 @@ Entries are alphabetical, numbers spelled as spoken.
   closing grep -n receipt. THE DISPLACEMENT RECEIPT carries the rg -n form of
   the same rule: a line number is an absolute, and its movement across the
   patch is the receipt.
+- **The Diffstat Is Not The Block Count** -- *expanded rule; banked 2026-09-15.*
+
+~~~text
+# THE DIFFSTAT IS NOT THE BLOCK COUNT (banked 2026-09-15). git matches every line a SEARCH and its REPLACE share and reports them unchanged, so a diffstat's insertions and deletions read LOWER than the block lengths by the shared count: blocks of 120 and 151 read +110/-139, twelve bare # separators and carried-over lines matched. Only the net is invariant. Predict the net from the blocks; read insertions and deletions as floors. Sibling of COUNT THE REPLACE AFTER YOU WRITE IT.
+~~~
+
 - **The Directory Key Crossed Machines** -- (banked 2026-09-08, convicted by the second machine): a shared file may not name a thing by a MACHINE-LOCAL handle, because the handle is assigned per machine and the file is not. Chrome numbers profile directories in creation order, so "Profile 2" was the Work profile on NixOS and the PERSONAL profile on the Mac (Mike, 121 synced bookmarks), and bookmarks.nix, keyed by that directory, resolved to the wrong profile the first time a second checkout ran it; only the sync_metadata fence stood between a real run and a harvest-and-wipe of a personal bar. The key had been right for the whole life of the feature on the one machine that existed, which is SINGLE-CANDIDATE BLINDNESS wearing a filename: n=1 cannot tell a stable identity from a coincidence. CURE, a grammar change rather than a value change: the key is a human name and a `match` list names IDENTITIES the machine derives and the operator cannot author (a label, an account, an account domain, read from the application's own registry); exactly one hit resolves, none skips, several refuse. THE TEST before any key rides a shared file: is this value assigned by the machine in an order the other machine never saw? Directory numbers, pids, device paths, X display numbers and "Profile N" all fail it. Sibling of THE DERIVED-PATH RULE (a write target computed from an identity the writer cannot author) and of SINGLE-CANDIDATE BLINDNESS (create the second candidate); this names the class of key the second candidate convicts.
 - **The Disappearing Instrument Rule** -- *expanded rule; banked 2026-07-19.*
 
@@ -1398,6 +1451,12 @@ Entries are alphabetical, numbers spelled as spoken.
 # one compile later, exactly as the pipeline ordering predicts.
 ~~~
 
+- **The Dual-Lane Walk Schema** -- *expanded rule; banked 2026-08-25.*
+
+~~~text
+# THE DUAL-LANE WALK SCHEMA (banked 2026-08-25, receipt-witnessed): a trail stop accepts exactly one of `url` (public, direct HTTP/HTTPS) or `url_env` (sensitive, client-isolated), validated via exact set difference. Direct URLs surface openly on consent cards; environment variables surface as requirements on the human. Connectors declare honest execution targets, and `walk-cartridge-integrity-v2` enforces ordered destination disclosure. Conviction: the schema required url_env on every stop, so public pages paid for an env var nothing collected; a required field is a BILL, and you charge it only when something collects.
+~~~
+
 - **The Eliminator Needs a Generator** -- *bisection cannot fail to eliminate
   and can silently fail to converge.* Banked 2026-08-06, thrice-convicted in
   one ride. Binary search terminates only if the target is IN THE ARRAY.
@@ -1422,6 +1481,12 @@ Entries are alphabetical, numbers spelled as spoken.
   GENERATE (30-and-3, AXIS-FORCING, the rising sea) -> ELIMINATE (bisection,
   the straddle) -> WITNESS (receipts). This repo has always had all three and
   had been calling the middle one "science" as though it were the method.
+- **The Entry-Point Check** -- *expanded rule; banked 2026-09-03.*
+
+~~~text
+# THE ENTRY-POINT CHECK (banked 2026-09-03). Every WRITE_FILE of a runnable .py script MUST end with the __main__ guard, and the first probe after ignition MUST be one that can only print if main() actually ran (a target line, a wrote-N line). A script that imports cleanly and exits 0 is indistinguishable from success by exit code alone.
+~~~
+
 - **The Environment-As-Last-Inch Corollary** -- *expanded rule; banked 2026-08-02.*
 
 ~~~text
@@ -1593,6 +1658,12 @@ Entries are alphabetical, numbers spelled as spoken.
   apply.py's fixed tail from 2026-09-24 until THE ACTUATOR IS NOT THE LEDGER
   moved it to the router on 2026-09-26; graduated here 2026-09-28, the first
   of the moved rules to leave the router.
+- **The First-Cell Blast Radius Rule** -- *expanded rule; banked 2026-09-01.*
+
+~~~text
+# THE FIRST-CELL BLAST RADIUS RULE (banked 2026-09-01, two convictions in two consecutive rides). Anything the FIRST executable cell of Onboarding.ipynb touches -- including every module it imports at load time -- prints to a stranger at the one moment they cannot tell noise from failure. Both convictions were trivial in SUBSTANCE and severe in POSITION: a KeyError from a read-before-write, and a SyntaxWarning from an unraw ASCII-art literal. Judge a defect in that blast radius by WHERE it fires, never by how small it is, and hold first-cell code to the standard of a cold install rather than the standard of the maintainer's warm one.
+~~~
+
 - **The First-Error Floor** -- *a refusal's line number is a floor, never a
   ceiling.* Banked 2026-08-09, airlock-witnessed. A parser reports the FIRST
   error it cannot get past, never the LAST one in the file, so the line number
@@ -1686,6 +1757,12 @@ Entries are alphabetical, numbers spelled as spoken.
 ~~~
 
 - **The Four Stages of the Harness** -- (banked 2026-09-28, the operator's words at the dismount): a human on this harness climbs the four stages of any new language -- literacy (can read and write the words at all: patch, app, d, m), automaticity (the words leave executive function for muscle memory), prosody (play in the words: bjj, the blank stare), fluency (the tools internalized, mastery spontaneous) -- and the models climb in lock-step, so the article archive is a training loop for both; the vendors' default compels learned helplessness, and the alternative is a scaffold you strap onto that pulls you along while forcing you to READ the red-and-green diff you actuate. Why the rides carry almost no wrong turn that must be backed out: the unit of change is a car, a car cannot land wrong silently (the exact-match interlock, the AST and Nix airlocks, a hand fence's own STOP/GO), every forecast is graded one compile later by receipts the model did not write, git holds every step, and the payload carries the ledger of prior misses as rules, so the model answers inside a corridor its predecessors dug; this ride's misses (git mv -q, the reseal in prose, Deliverables, imports=8, the absolutes one over) were each one car wide and each caught by the next tap. Home owed: a higher-profile line for the four stages, the walk's closing or the GLOSSARY, unruled.
+- **The Gate-Or-Straddle Rule** -- *expanded rule; banked 2026-09-03.*
+
+~~~text
+# THE GATE-OR-STRADDLE RULE (banked 2026-09-03). A probe that prints the same thing in both worlds (a syntax check, a load test) is a GATE: it can prove the patch broke nothing, never that it landed. Every car needs at least one probe whose reading MOVES. Label gates as gates when recommending them, so a green gate is never mistaken for a witnessed landing.
+~~~
+
 - **The Generated-Not-Authored Rule** -- *expanded rule; banked 2026-07-20.*
 
 ~~~text
@@ -1930,6 +2007,17 @@ Entries are alphabetical, numbers spelled as spoken.
   turn only when every car is already justified by evidence present when the
   answer is written. Never say "if this prints X, apply the next patch." That is
   an uncompiled conditional handed to a tired person.
+- **Ignition Is A Sentence** -- *expanded rule; banked 2026-09-24.*
+
+~~~text
+# IGNITION IS A SENTENCE (banked 2026-09-24). When patched code must be run,
+# reloaded, restarted, sourced, or otherwise actuated before an AFTER receipt
+# can mean anything, close PATCHES with exactly one plain imperative:
+# `Ignition: <exact command or action>.` If nothing needs ignition, say
+# `Ignition: none.` Never imply ignition by describing expected output, and
+# never make the human infer the command from prose.
+~~~
+
 - **The Ignition Rule** -- *the patched code must RUN before the AFTER tap.*
   Banked 2026-07-23, lived the same day. Between PATCHES and PROMPT sits an
   act that had no name until now -- MAKING THE PATCHED CODE RUN, so the AFTER
@@ -2017,6 +2105,12 @@ Entries are alphabetical, numbers spelled as spoken.
   THAT expression and not a plausible neighbour. Sibling: THE NIX-FILE LINT
   PROBE, where ruff parsed flake.nix as Python and printed 2,544 correct
   errors about the wrong question.
+- **The Indented Quote Rule** -- *expanded rule; banked 2026-09-03.*
+
+~~~text
+# THE INDENTED QUOTE RULE (banked 2026-09-03). To quote a template that itself contains code fences, indent it four spaces instead of fencing it: an indented block has no closing delimiter, so nothing inside it can end it early. Costs the language tag; buys correctness. Fences stay for everything else.
+~~~
+
 - **The Instrument Decides the State** -- *expanded rule; banked 2026-09-08.*
 
 ~~~text
@@ -2127,6 +2221,20 @@ Entries are alphabetical, numbers spelled as spoken.
   terminal and "guided capture requires a TTY on stdin before browser launch"
   as a compile receipt. Two lanes, two strings, one command -- the pair
   discriminated exactly as predicted, and neither reading alone could have.
+- **The Lane-Exclusive Branch** -- *expanded rule; banked 2026-08-03.*
+
+~~~text
+# - EARMARK: THE LANE-EXCLUSIVE BRANCH (banked 2026-08-03, canary-witnessed):
+#   some branches can fire in ONE lane only. prompt_foo's de-prefixed-command
+#   hint lives inside main()'s file loop, so no hand-run terminal can ever
+#   reach it. That is neither lane agreement nor LANE-DISAGREEMENT but a THIRD
+#   case, and its only possible witness is a MANUFACTURED failure planted in
+#   the lane that owns it. COROLLARY -- RETIRE THE CANARY: an instrument that
+#   fires on EVERY run is noise wearing an instrument's costume, and it
+#   recreates the trained-to-skip-warnings failure it was built to convict.
+#   Witness once, then delete the line. Sibling of REFUSAL-ONLY WITNESS.
+~~~
+
 - **The Last-Inch Rule** -- (banked 2026-07-31, two convictions in two days):
   the transformation NEAREST THE READER is the one nobody audits, and it can
   destroy a result that every upstream stage computed correctly. CONVICTION A
@@ -2170,6 +2278,20 @@ Entries are alphabetical, numbers spelled as spoken.
 # give transformed content its own digest. Record omissions explicitly.
 # Check those inner digests after compilation; zero detector hits do not
 # waive human review, and event presence does not prove complete bodies.
+~~~
+
+- **The Live-Prompt Mirage** -- *expanded rule; banked 2026-07-23.*
+
+~~~text
+# THE LIVE-PROMPT MIRAGE (banked 2026-07-23, dot-counted): a background job
+# still writing to the tty after the foreground process exits makes a WORKING
+# shell look hung. Count the emitter's cadence before diagnosing a hang -- the
+# browser-poll subshell prints one dot per second, so 22 dots, the door-2
+# message, `(nix) pipulate $`, then 8 more dots is a prompt that was live at
+# second 22 and got painted over for 8 more. The Enter that "unstuck" it only
+# redrew a prompt already accepting input. Corollary: a gate that leaves
+# noise-generating background jobs running BEHIND it has not delivered quiet.
+# Move the gate above the noise, never the noise below the gate.
 ~~~
 
 - **The Locator That Pointed At Nothing** -- *expanded rule; banked 2026-08-28.*
@@ -2311,6 +2433,25 @@ Entries are alphabetical, numbers spelled as spoken.
   nonzero enumeration in this shape, and a fixed rendering for it (one
   line per call, the four points in order) so the enumeration is grep-able
   across cartridges.
+- **The Model Follows The Map Rule** -- *expanded rule; banked 2026-07-22.*
+
+~~~text
+# - EARMARK: THE MODEL FOLLOWS THE MAP RULE (banked 2026-07-22, blind-test witnessed): capability prose is actuation. A summoned model that invokes a nonexistent tool named by our onboarding map is following instructions correctly; the map is defective. Every first-turn capability name must be generated from or mechanically validated against current source before shipping.
+~~~
+
+- **The Mount** -- *expanded rule; banked 2026-07-19.*
+
+~~~text
+# THE MOUNT (banked 2026-07-19, witnessed same compile): the zeroth beat.
+# <leader>m runs mount_sandworm(): full saddle (Probe / Context / Patches /
+# Ignition /
+# Prompt / 🎤) dropped at the cursor -- blank line replaced, non-blank
+# preserved with insert-below -- landing in insert mode after **Me**: .
+# Witness: receipt shows def@568 + map@663, "Probe:" literal migrated to
+# 574 (once), clean headless load. \j cuts the slate, \m mounts, \k
+# dismounts: three keys bracketing Probe, Patch, Prompt.
+~~~
+
 - **The Name Is Not The Value** -- *expanded rule; banked 2026-08-28.*
 
 ~~~text
@@ -2390,6 +2531,18 @@ Entries are alphabetical, numbers spelled as spoken.
 # and a § key in foo_files.py the third.
 ~~~
 
+- **The Nix-File Lint Probe** -- *expanded rule; banked 2026-08-21.*
+
+~~~text
+# - EARMARK: THE NIX-FILE LINT PROBE (banked 2026-08-21, receipt-witnessed):
+#   a probe that passes a non-Python file to ruff produces thousands of
+#   invalid-syntax errors that read as catastrophic repo rot. Receipt: the
+#   dismount compile's four-file statistics probe included flake.nix and
+#   printed 2,544 errors, 2,394 invalid-syntax -- ruff parsing Nix as Python.
+#   Sibling of INCOMMENSURABLE MEASUREMENTS: a correct number about the wrong
+#   question. Lint probes name .py files only.
+~~~
+
 - **NIX_DEVELOP_DELAY CONVICTED** -- (2026-07-21, receipts banked): warm hydration of .#quiet measured 12.5s/12.2s hand-run vs 1.0s in-compile -- BIMODAL. CAUSAL CLAIM RETRACTED 2026-08-01: this blamed a gitignored flake.lock and .gitignore carries no flake.lock entry (operator reports the lock is now pinned as intended, and `ndq` is fast enough to run casually). The MEASUREMENT stands; the EXPLANATION is now UNEXPLAINED and must be re-derived before anyone cites it. Conviction shape: a model read this comment and repeated it as a fact about a file while .gitignore sat in the same payload -- THE LAST-INCH RULE with the model as the last inch, and a CVR sentence wearing an FDR's typeface. A 3.5s constant cannot track a bimodal distribution (too slow for hits, catastrophic for misses; Desktop 7's full `nix develop` tabs are strictly slower). SENTINEL RIDE scoped: the TYPED-AHEAD SENTINEL -- autognome types cd X, nix develop .#quiet, and touch /tmp/autognome_ready_N in one burst; all three buffer in the pty and the touch executes only when a live shell drains the queue; poll the file with a timeout. Zero flake edits, arrows point down the ziggurat, and the cure's mechanism IS the pty type-ahead claim -- verify that claim (transcript receipts) before implementing. Known fracture: full-shell tabs end blocked in server.py (no stdin reader), so buffered lines become ghost commands that fire at the next prompt.
 - **NixOS Selenium 127** -- (banked 2026-07-20, receipt-witnessed same day): Selenium Manager auto-downloads an FHS-linked chromedriver into ~/.cache/selenium that dies status-127 on NixOS -- no /lib64 dynamic linker (ldd convicted it: libnss3/libnspr4/libglib "not found"). Fix: resolve the Nix driver via shutil.which('undetected-chromedriver') -- HYPHEN, the exact name scraper_tools.py already uses; bare 'chromedriver' and the UNDERSCORE variant are both MISSING on PATH. Conviction: a helper checking the wrong names is a silent no-op that STILL commits green ("refactor: implement PATH-resolved chromedriver" landed, changed only the log line, and the 127 survived until the hyphen name landed). Same disease as the uvx/Rustkyll stub-ld earmark; browser + driver stay paired because both track one nixpkgs pin (chromium 150 == undetected-chromedriver 150). weblogin.py and all five apps/440 Chrome instantiations now route through this resolution. SECOND CONVICTION 2026-09-27, the lanes swapped: connectors/botify.py's _admin_cookies_inner was written on the Mac during the blackout ride and passed uc.Chrome no driver path, so the first census ever run on Prime died at the downloaded driver's exit 127 in 1.2 s, twice, the second time after exit and ndq, and the refusal blamed a locked profile; the car emitted at deed 1621 resolves the hyphenated driver and the flake's chromium there, prints both before the launch, and makes a 127 name the loader. WITNESSED 2026-09-27 (deed 1622): the compile-lane census read the pair at 150.0.7871.128 both and the downloaded driver at exit 127 with the stub loader's own sentence, and the operator's census printed both store paths and harvested in 7.8 s.
 - **No Heredoc Inside An Interpolated Nix String** -- *expanded rule; banked 2026-08-05.*
@@ -2398,7 +2551,66 @@ Entries are alphabetical, numbers spelled as spoken.
 # - EARMARK: NO HEREDOC INSIDE AN INTERPOLATED NIX STRING (banked 2026-08-05, main-breaking): a bash heredoc whose terminator sits inside a Nix indented string that is itself INTERPOLATED into another indented string can lose its column-0 alignment, after which bash swallows the rest of the shellHook to EOF. Conviction: a cat-heredoc added to miscSetupLogic broke nix develop on main for every user; the identical pattern in runScript -- a standalone writeShellScriptBin, never interpolated -- has worked for years. THE MECHANISM IS UNWITNESSED: the BEFORE tap on the generated hook text was never taken (the operator healed main first, correctly), and it is deliberately NOT being reconstructed, because the forward blast radius is zero once the pattern itself is banned. FALSIFIED from raw source: every line of miscSetupLogic sits at exactly 10 spaces, so no under-indented line dragged the minimum down. PRESCRIPTION: write multi-line files from a shellHook with ONE printf and never a heredoc, and syntax-check the generated hook before any commit that touches it.
 ~~~
 
+- **No Placeholders In Paste-Ready Lines** -- *expanded rule; banked 2026-08-30.*
+
+~~~text
+# NO PLACEHOLDERS IN PASTE-READY LINES (convicted 2026-08-30, both lanes): <NAME> in a shell line is a redirection from a file called NAME -- "No such file or directory" -- silent in the compile lane, loud in the operator lane, dead in both. Write "$NAME" and put `export NAME=...` once on the line above; a variable runs verbatim, a placeholder needs an edit the human will not make.
+~~~
+
+- **The No-Dead-Cars Rule** -- *expanded rule; banked 2026-07-20.*
+
+~~~text
+# THE NO-DEAD-CARS RULE (banked 2026-07-20): every fenced patch block emitted
+# is a live actuator, regardless of surrounding prose. Never ship a malformed
+# block with an "ignore this / strike that" note -- the clipboard lane cannot
+# hear prose, and `patch` grabs whatever block the hand copies. Conviction:
+# the END_REPLACE_MARKER_NOTE dead car of 2026-07-19 rode `patch` into
+# apply.py and was stopped only by the AST airlock (rerun cost, zero
+# regression -- the fence held). If a block is wrong, delete it before
+# responding; a correction note is not a coupling pin.
+~~~
+
+- **The Notary Amendment** -- *expanded rule; banked 2026-07-30.*
+
+~~~text
+# - THE NOTARY AMENDMENT (banked 2026-07-30, source-witnessed): the dismount is
+#   seven beats, not four -- TLDR (0), VERIFY, BANK, DANGLING, SEED, CLOSING (5),
+#   NOTARIZE (6) -- closed by a FINALITY clause that forbids any five-car train
+#   after beat 6. The sealed foo-<hash8>-NN.zip is the deed; the CRC is the
+#   signature. A published article is an archive entry, not an open thread.
+~~~
+
+- **One Operator Interface** -- *expanded rule; banked 2026-09-24.*
+
+~~~text
+# ONE OPERATOR INTERFACE (banked 2026-09-24, same conviction). For this
+# operator, each patch car already has four controls: patch, app, d, m. Emit the
+# SEARCH/DIVIDER/REPLACE payload and let those controls actuate, inspect, and
+# commit it. DO NOT also emit expanded duplicates such as `cat patch | python
+# apply.py`, `git diff`, `git add`, or `git commit`. An ALREADY APPLIED receipt
+# caused by the model telling the human to actuate the same car twice is not a
+# safety check; it is duplicate work generated by the model.
+~~~
+
 - **One Timeline, No Previews** -- every command in the response appears exactly once, in the section where it executes, in execution order -- PROBES (read-only) first, then PATCHES as numbered cars with any dependent actuator or ignition as the LAST cars, then PROMPT. A command that depends on a patch is never quoted above that patch, not as a preview, not "for later"; if it must be mentioned early, name it ("Car 3, the smoke") and show nothing. Convicted 2026-09-28 (deed 1662): the git add for a file a WRITE_FILE car creates rode in its own fence ABOVE that car's fence; the operator pasted in reading order, git answered fatal: pathspec, and the line ran again after app; a hand fence that depends on a car sits below it, in the order the hand will meet them. A CAR OUTSIDE THE TRAIN DID NOT RUN (second conviction 2026-09-29, deed 1693; the operator's words: "instructions to do-this or do-that outside where I'm expecting you to tell me is tantamount to sabotage"): the WRITE_FILE car for SVB-133's deliverable and its git add fence rode in the reply's kata section, above the train, the operator ran the train and never them, the next compile read TICKET_DIR_ABSENT, and the compaction summary said WRITTEN. Every car and every hand step the train needs (a git mv, a walk typed by hand) is a numbered car in (3) PATCHES, a plain fenced command under its prompt line and never a banner; the operator's own habits (patch, app, d, m, git push, the paste into context.txt, prompt, bff) are never written, because the operator does them unasked and a written one costs a re-read to learn whether something changed; a repo step written outside the train is a step that did not happen, and the one step no terminal can take rides above the train under THE HALT BANNER, below. RULED 2026-09-29 (deed 1703, the operator's words): "NEVER use HALT inside the 5-Car Train. ALWAYS use HALT for OOB things that need my attention outside the 5-Car Train."
+- **The One-Fence-Per-Hand-Step Rule** -- *expanded rule; banked 2026-09-03.*
+
+~~~text
+# THE ONE-FENCE-PER-HAND-STEP RULE (banked 2026-09-03). Operators paste fenced blocks whole; a smoke command and the full sweep it was meant to gate, sharing one fence, fire together and the smoke never happens. When a hand-run step exists to be INSPECTED before the next, each step gets its own fence. Second conviction 2026-09-28 (deed 1635): a reseal named in Car 11's prose, between app and d, was never typed, and the drifted art shipped through the 2.65 release with index.md left untouched; the same step as its own numbered car (deed 1636's Car 5) was typed before the train even started. A hand step is a car or it is missed, the operator's words.
+~~~
+
+- **One-Liner Corollary** -- *expanded rule; banked 2026-07-19.*
+
+~~~text
+# ONE-LINER COROLLARY (banked 2026-07-19): a `!` line is ONE shell command.
+# Multi-line probes shatter in the executor (unexpected-EOF, then each
+# continuation line parsed as a phantom file path -- 2026-07-19 compile log
+# is the conviction). Collapse with semicolons or do not echo. And when the
+# evidence rides stderr (`time`, cache counters, -X importtime), append
+# 2>&1 or the receipt arrives empty; the compiler's own [N.NNNNs] execution
+# annotation is the fallback timing witness of last resort.
+~~~
+
 - **The Operator Is a Variable** -- (banked 2026-09-08, three convictions in one ride): a straddle holds the world constant and changes ONE thing, but the operator lives in the world and acts on it between taps -- toggles a setting, runs the actuator early, runs it again -- and every such act is a SECOND manipulated variable no probe was told about. CONVICTIONS, one ride: a census labeled "reads identically by design" flipped Profile 2's sync_metadata from True to False between the hand tap and the compile because the operator toggled Chrome Sync, while the script refused Default, the only declared profile, and "no luck" was read off a verdict about a different subject; a dry-run predicted to read DRY_RUN read IN_SYNC because the operator ran the real sync before the compile; a backup listing predicted at two files read three because the operator ran a purge the article described only in prose. In every case the receipt was TRUE about the world and silent about which variable moved. STANDING CONSEQUENCE: when a reading moves by more than the patch can explain, ask what the operator did between taps before crediting or blaming the patch, and write operator actions taken between taps into the article as loudly as patches. Sibling of THE PRE-COMPILE ACTUATOR RULE (one instance: the actuator run early) and of THE STRADDLE IS A CONTROLLED EXPERIMENT, whose four named confound controls do not cover the experimenter's own hands.
 - **The Out-of-Band (OOB) Edit Rule** -- (banked 2026-07-21, articulation-banked --
   pure judgment): an edit is a DELIMITER COLLISION when the text to be mutated
@@ -2414,6 +2626,12 @@ Entries are alphabetical, numbers spelled as spoken.
   vim skills make the cut. Collision-free edits stay in the airlocked
   SEARCH/REPLACE lane; collision-class edits route to the human as actuator.
   The airlock is for content that does not speak the airlock's own language.
+- **The Page That Holds In Both Worlds** -- *expanded rule; banked 2026-09-15.*
+
+~~~text
+# THE PAGE THAT HOLDS IN BOTH WORLDS (banked 2026-09-15, witnessed once). A public page that asks a stranger to test a machine is written before anyone knows what the machine's evidence will carry, so its instruction must stay true either way. Stop three said a good answer admits the preview lacks the server's sentence; the preview lacked it, ChatGPT 6 said so and pointed at source.html, and the page taught the lesson instead of promising a word the bundle never held. THE CABOOSE-VERDICT COROLLARY aimed at a reader who cannot ask a follow-up.
+~~~
+
 - **The Pending Amendment Rule** -- *expanded rule; banked 2026-07-19.*
 
 ~~~text
@@ -2478,6 +2696,12 @@ Entries are alphabetical, numbers spelled as spoken.
   because main() returns 2 for "plan not ready" and argparse returns 2 for bad
   arguments. One number, two worlds. Read stderr or read plan["ready"]; never
   grade that one on the exit code alone.
+- **The Pre-Compile Actuator Rule** -- *expanded rule; banked 2026-09-01.*
+
+~~~text
+# THE PRE-COMPILE ACTUATOR RULE (banked 2026-09-01). A straddle probe answers honestly only when its two taps land on OPPOSITE sides of the actuator. The `diff -q` sync probe was designed as three states (0 in sync, 1 patched-not- copied, 0 after the cp) and printed 0 in BOTH receipts, because the cp ran before the compile -- the same printout in both worlds, which is the DISCRIMINATION QUESTION failing inside a probe written to answer it. Prefer a probe that reads the PROPERTY at the destination (does the working copy compile?) over one that COMPARES two files; the property probe cannot be defeated by running the actuator early.
+~~~
+
 - **The Probe Dedup Corollary** -- (convicted 2026-07-21): identical `!` lines dedupe in parse_file_list_from_config (seen_files), so the deliberate double-tap timing probe produced ONE receipt. A re-run must vary the command text (append `; : tap2`), never merely repeat the line.
 - **The Probe Echo Rule** -- *before/after symmetry.* Every probe recommended
   for hand-execution must also be echoed verbatim as a `!` line into the next
@@ -2601,6 +2825,29 @@ Entries are alphabetical, numbers spelled as spoken.
   therefore unshippable. That is a STRANDED ARTIFACT, not a security gap --
   there is no v0.1.0 in the wild for the fix to be a fix to. It costs nothing
   today and will confuse whoever finds it later.
+- **Push Is Assumed** -- *expanded rule; banked 2026-09-24.*
+
+~~~text
+# PUSH IS ASSUMED (banked 2026-09-24, operator's standing rule). Immediately
+# after the final m in a patch series the operator runs git push to put the
+# newest commits offsite. Do not emit blast. Do not emit git push. Do not make
+# pushing conditional on another reading. The operator owns that invariant and
+# performs it automatically; repeating it spends attention without adding
+# information.
+~~~
+
+- **The Quoted-Hash Amendment** -- *expanded rule; banked 2026-07-19.*
+
+~~~text
+# THE QUOTED-HASH AMENDMENT (banked 2026-07-19, witnessed same day): `!`
+# lines treat only a two-plus-space "  # " gap as an inline comment; a `#`
+# inside a quoted shell argument survives to the executor intact.
+# Conviction: the pin-count canary (grep -c on '^# 📌') was decapitated at
+# its quoted hash into an unterminated-quote EOF. Witness: the very next
+# compile carried that same probe returning 4 -- and the parser-demo probe,
+# itself quoted-hash-bearing, survived to print the old splitter's stub.
+~~~
+
 - **The Read-Write Probe** -- *expanded rule; banked 2026-08-04.*
 
 ~~~text
@@ -2770,6 +3017,27 @@ Entries are alphabetical, numbers spelled as spoken.
   THE SILENCED CHANNEL (a verdict that reads a channel the instrument closed);
   cousin of THE FOLDER IS A VARIABLE (a hand step that prints the same thing in
   both worlds).
+- **The Rewrite Tax** -- *expanded rule; banked 2026-09-02.*
+
+~~~text
+# THE REWRITE TAX (banked 2026-09-02). A history rewrite on a repo whose installer auto-pulls --ff-only breaks the auto-update on EVERY existing install until each is hand-reset (git fetch origin && git reset --hard origin/main) or rebuilt (rm -rf and reinstall -- the disposable workshop is the cheap path and the reason it was affordable). It also orphans every commit hash from the rewrite point forward, including the ones published article ledgers link to. A rewrite is a clean-up, never an un-publish: forks, prior clones and host caches keep the blob. Price these BEFORE the push.
+~~~
+
+- **The Ride Contract** -- *expanded rule; banked 2026-07-20.*
+
+~~~text
+# THE RIDE CONTRACT (banked 2026-07-20): a discussion is a SERIES of worm
+# rides, and the series' shape is declared at the mount: the opening
+# article states the destination AND the arrival conditions -- the receipts
+# that must exist before dismounting is permitted. Worm-hopping continues
+# while conditions are unwitnessed; the moment receipts witness them,
+# DISMOUNT (\k) instead of steamrolling the momentum into scope creep -- an
+# unbanked win is a Murphy seam where catastrophe slips in. Ulysses comes
+# off the mast once the sirens are astern: bank the winnings (rules,
+# todos, pins), publish the article, seed the next ride's first compile.
+# Arrival without a dismount is not arrival.
+~~~
+
 - **The Saddle Amendment** -- *expanded rule; banked 2026-07-28.*
 
 ~~~text
@@ -2786,6 +3054,18 @@ Entries are alphabetical, numbers spelled as spoken.
 # it simply stops printing its own number. Same-car label discipline: this
 # note ships in the same ride as the init.lua saddle edit it describes.
 # Ref: the MCK build ride (see THE MOTHER CAT KATA above).
+~~~
+
+- **The Same-Car Label Rule** -- *expanded rule; banked 2026-07-23.*
+
+~~~text
+# THE SAME-CAR LABEL RULE (banked 2026-07-23, operator's ruling; sibling of
+# GENERATED-NOT-AUTHORED): when a gate MOVES, every string describing what it
+# gates moves in the SAME car. A menu describing its old placement is not
+# stale documentation -- it is a lie told at the exact moment the user is
+# deciding, and a lying menu is worse than no menu. Applies to anything read
+# AT the decision point: labels, subtitles, confirmations, and any promise of
+# a deadline that no longer exists.
 ~~~
 
 - **The Screenshot Is Not a Locator** -- (banked 2026-09-11, two exchanges lost).
@@ -2952,6 +3232,20 @@ Entries are alphabetical, numbers spelled as spoken.
   flip. Pick witnesses from lines that cannot wrap (dated headers like 'BANKED
   2026-07-29 (same-day flip'), and when the patched text is your own, confirm
   the phrase sits on one line before recommending the probe.
+- **The Source-Of-Source Secret Scrub Rule** -- *expanded rule; banked 2026-08-28.*
+
+~~~text
+# THE SOURCE-OF-SOURCE SECRET SCRUB RULE (banked 2026-08-28,
+# receipt-witnessed): move credential EPHEMERA upstream only when the match is
+# high-precision -- query/JSON/Bearer syntax or a vendor-issued prefix. Preserve
+# the smallest stable family discriminator and replace the entire issued suffix
+# with <redacted:N>. Identity and PII substitutions remain downstream, because
+# a false positive there must never rewrite journal.txt. Witness: scrub_oauth
+# masked Google, Slack, and Anthropic fixtures, left
+# `session = requests.Session()` unchanged, and scan_secrets reported
+# downstream_hits=0.
+~~~
+
 - **Spell Out The Tool-Call You Are Making Of The Human** -- *expanded rule; banked 2026-09-22.*
 
 ~~~text
@@ -2971,10 +3265,33 @@ Entries are alphabetical, numbers spelled as spoken.
 # bibliography."
 ~~~
 
+- **The Stale Overlay** -- *expanded rule; banked 2026-08-05.*
+
+~~~text
+# - EARMARK: THE STALE OVERLAY (banked 2026-08-05, Manifest-arbitrated): the context.txt pasted into an article and the context.txt the compiler READ can disagree within a single turn, and only the Manifest's LIVE COMMAND RECEIPTS can tell them apart. CONVICTION: a turn pasted three new probe lines while the compile executed the five from two compiles earlier -- the pasted context described a file the compiler never opened. STANDING CONSEQUENCE: the Manifest is the sole authority on what ran; when the pasted overlay and the receipts disagree, rule from the receipts and say so out loud. The map can outrun the territory inside one turn.
+~~~
+
 - **The Stat-Cache False Positive** -- *expanded rule; banked 2026-08-04.*
 
 ~~~text
 # THE STAT-CACHE FALSE POSITIVE (banked 2026-08-04, receipt-witnessed both lanes): `git diff-index --quiet` decides from the index's CACHED STAT DATA -- dev, inode, mtime, size -- and short-circuits before comparing content. Any operation that rewrites files while carrying an index along (cp -r, rsync without -a, a restored backup, a container layer) makes a byte-identical tree report DIRTY. Receipt: clone -> `cp -r src/. dst/` -> after_cp=1, after_refresh=0, reproduced identically in the operator and compile lanes. WHY IT SURVIVES SO LONG: `git status` refreshes the index as a side effect, so the false positive has ALWAYS healed by the time a human types the diagnostic. The symptom is structurally unobservable by the only method anyone reaches for. STANDING CONSEQUENCE: any automated dirty-tree check runs `git update-index -q --refresh 2>/dev/null || true` first. It clears ONLY stale entries, so a genuinely modified file still reports dirty and a halt-don't-destroy gate keeps its teeth.
+~~~
+
+- **Stderr Merge Amendment** -- *expanded rule; banked 2026-07-19.*
+
+~~~text
+# STDERR MERGE AMENDMENT (banked 2026-07-19): the `!` executor now folds
+# stderr into every receipt (fenced `--- stderr ---`, tail-capped 2000).
+# The 2>&1 workaround is retired for new probes. Corollary ruling: probe
+# counters gate on the interesting case (misses>0) -- meaningful silence
+# over unconditional chatter, because silence is backed by an independent
+# timing witness. A quiet system and a dead one must differ in receipts.
+~~~
+
+- **The Step That Runs Once** -- *expanded rule; banked 2026-10-02.*
+
+~~~text
+# - EARMARK: THE STEP THAT RUNS ONCE (banked 2026-10-02, self-convicted at deed 1779): a witness step never chains a one-time change to its reading with &&. Step 2 read mv ~/.config/pipulate/voice ~/.config/pipulate/voice.was && nix develop; pasted inside the nix shell, the mv ran and nix develop was refused, and every paste after exit stopped at mv, so the witness took four tries and left voice.was on the Mac. The change goes on its own line, written so a second paste does no harm, and the reading on the next.
 ~~~
 
 - **The Stewardship Rule** -- *expanded rule; banked 2026-07-22.*
@@ -3059,6 +3376,17 @@ Entries are alphabetical, numbers spelled as spoken.
 
 ~~~text
 # - EARMARK: THE SUCCESS-ONLY WITNESS (banked 2026-08-02, cold-start ride six): a claim observed ONLY succeeding is indistinguishable from a claim that CANNOT fail, exactly as a guard observed only refusing is indistinguishable from one broken shut. Conviction: synthesize_and_play called wait() and DISCARDED the exit code while stderr went to DEVNULL, so a player killed by SIGFPE printed its reason into the void and the function returned True anyway -- speak_text reported success, the rider printed nothing, and the human heard silence beside a green console. The instrument that was supposed to report the failure was the thing hiding it. DISCRIMINATING QUESTION for act-claims: what does this print in the world where the act did not happen? If the answer is "success," it is not a receipt. This is also the missing third suspect from the 2026-07-26 THE DEMO WENT SILENT todo, which named transport and engine and never once looked at the subprocess exit status. Sibling of REFUSAL-ONLY WITNESS (one branch of a state machine) and of the MECHANICAL TEST in ATTRIBUTED-VOICE (a verb naming an act that no code performed).
+~~~
+
+- **The Surface-First Routing Rule** -- *expanded rule; banked 2026-07-22.*
+
+~~~text
+# THE SURFACE-FIRST ROUTING RULE (banked 2026-07-22, blind-test witnessed):
+# Pipulate has two Golden Paths because it has two execution surfaces.
+# Prompt Fu is the compile-time Unix-pipe/cartridge lane; FastHTML/MCP is the
+# runtime app-state/tool lane. Identify the active surface before recommending
+# an actuator. pipeline_state_inspector is a valid MCP/FastHTML drill-down,
+# never the default first move inside a Prompt Fu ride.
 ~~~
 
 - **The Talmud-Page Rule** -- *expanded rule; banked 2026-07-22.*
@@ -3158,6 +3486,12 @@ Entries are alphabetical, numbers spelled as spoken.
 #   An art car may never declare "no ignition required".
 ~~~
 
+- **Three-Standards Superposition** -- *expanded rule; banked 2026-07-20.*
+
+~~~text
+# - EARMARK: THREE-STANDARDS SUPERPOSITION (banked 2026-07-20): AGENTS.md = one freeform signpost file, nearest-ancestor wins; Agent Skills = folder fronted by SKILL.md YAML frontmatter, progressive disclosure (Notebooks/.agents/skills already conforms); OKF = markdown+YAML bundle with index.md and one required field (type) -- trimnoir _posts + holographic shards + llms.txt are one avant la lettre. DIRECTION OF TRAVEL for scripts/: every new capability lands as a tiny gmail-shaped connector command; SKILL.md/OKF files are SIGNPOSTS to executable truth, never second implementations. Symlinks in spirit, never on disk. WALLET LESSON (jq conviction 2026-07-20): connectors.json carries non-object top-level entries -- every wallet reader type-checks before descending.
+~~~
+
 - **The Three-Tier Amendment** -- (banked 2026-08-06, paired-lane receipt): the
   standing consequence above stops ONE TIER SHORT and is therefore a trap for
   any word that must be reachable by a CHILD process. There are THREE tiers,
@@ -3209,16 +3543,45 @@ Entries are alphabetical, numbers spelled as spoken.
 # an explicit or implicit "your turn" = the Tortoise is being summoned.
 ~~~
 
+- **The Two-Hand Test Is Not A Test** -- *expanded rule; banked 2026-08-04.*
+
+~~~text
+# - EARMARK: THE TWO-HAND TEST IS NOT A TEST (banked 2026-08-04, operator-
+#   refused): a procedure asking a human to type in terminal A, then type in
+#   terminal B while A still runs, has no receipt, no reproducibility and no
+#   defined failure mode. If a behavior needs two processes, the witness is a
+#   SCRIPT that spawns both and asserts on the output, or the behavior stays
+#   honestly UNWITNESSED. Conviction: the one-workshop echo is
+#   instantiation-green and behaviorally unwitnessed to this day, because the
+#   only test ever offered for it was a two-terminal choreography.
+~~~
+
 - **The Unasked Second Window** -- *expanded rule; banked 2026-09-16.*
 
 ~~~text
 # THE UNASKED SECOND WINDOW (banked 2026-09-16, operator-convicted three times in one minute). A newcomer's word opens what its name says and nothing more; a second file in a split, added to solve a problem the operator had not raised, is a second lesson at the exact moment the first was meant to be the whole lesson, and it lands in the same car as the ruling they did ask for. Conviction: epr opened the prompt router and prompt.md in one -o split for one turn, the operator hit the split three times on the way out the door, and the revert was one car. Same disease, smaller: the ignition spelling handed over was cpr "smoke", a probe's argument wearing the command's clothes. Name the ignition in the newcomer's own spelling, and answer the unraised question as a TODO, never as a feature riding the train. Sibling of THE COACHMAN'S VETO: a train is a proposal, and an unasked car costs exactly what a wrong one does.
 ~~~
 
+- **The Unsorted Cap** -- *expanded rule; banked 2026-09-15.*
+
+~~~text
+# THE UNSORTED CAP (banked 2026-09-15). rg -l and a multi-file rg -n print files in the order their searches finish, so one census printed nine files in two orders across the hand-run and compile lanes, and a head -N on that output cuts a different subset each run. Sort before you cap, and compare unsorted listings as sets. Sibling of THE CAP THAT HID THE ANSWER.
+~~~
+
 - **The Verifier That Never Ran** -- *expanded rule; banked 2026-08-05.*
 
 ~~~text
 # - EARMARK: THE VERIFIER THAT NEVER RAN (banked 2026-08-05, same conviction): a verification block placed AFTER the action it verifies is dead code if the action can kill the reporter, and its silence is indistinguishable from success. flake.nix's [4/4] block held `sleep 12`, a pgrep re-count, and three verdict branches -- none had EVER executed, while a green Atomic Deployment Complete printed underneath every time. THE DISCRIMINATION QUESTION applied to a MISSING line: what does this print in the world where the verifier died? The same checkmark. STANDING CONSEQUENCE: when a receipt block has an expected line that is ABSENT, treat the absence as the finding; do not read the surviving lines as the whole receipt. Third shape in the family -- REFUSAL-ONLY WITNESS is a branch never observed, THE SUCCESS-ONLY WITNESS is a failure never reportable, this is a witness never REACHED.
+~~~
+
+- **The Warn-Mode No-Egress Rule** -- *expanded rule; banked 2026-08-28.*
+
+~~~text
+# THE WARN-MODE NO-EGRESS RULE (banked 2026-08-28, receipt-witnessed): a
+# disclosure profile with secrets=WARN is a local inspection lane, not an
+# automatic transport lane. It may write foo.zip and an explicit -o file, but
+# clipboard and SSH-bridge egress stay disabled. Witness:
+# clipboard_egress_allowed read warn=False, block=True, explicit_no=False.
 ~~~
 
 - **The Warning That Was The Hazard** -- *expanded rule; banked 2026-08-25.*
