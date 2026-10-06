@@ -594,6 +594,11 @@ def _fallback_title(md_file: Path) -> str:
     stem = re.sub(r"^\d{4}-\d{2}-\d{2}-", "", md_file.stem)
     return stem.replace("-", " ").strip().title()
 
+# THE TITLE IS THE ADDRESS (convicted 2026-10-05). Nothing local stores a
+# page ID: the Remote Match Contract finds a post's page by this exact title.
+# Retitling a published post is a MISS and a second CREATE, and the old page
+# stays behind as an orphan (6899597409, trashed by hand). To retitle, rename
+# the wiki page to the new contract title first, then publish.
 def _target_title(md_file: Path, post) -> str:
     """Compile the local Markdown file into the Confluence title contract."""
     metadata = post.metadata or {}
