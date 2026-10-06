@@ -622,8 +622,7 @@ def _target_title(md_file: Path, post) -> str:
 # Since 2026-10-05 the parent is open and each entry carries its own padlock
 # (THE PER-ENTRY PADLOCK), so this index is what the team sees.
 _INDEX_LIMIT = 100
-_INDEX_INTRO = ("A private work journal: written as Markdown in git and published here by a script. "
-                "Entries are restricted; ask Mike Levin for access to any of them.")
+_INDEX_INTRO = ("Entries restricted so Claude doesn't over-serve this stuff; ask Mike Levin for access to any of them.")
 
 def _journal_index_body(posts_dir: Path, children: list, domain: str) -> tuple:
     """(storage XML, entries, listed, linked) for the newest-first listing.
@@ -674,8 +673,7 @@ def _journal_index_body(posts_dir: Path, children: list, domain: str) -> tuple:
     newest = ranked[0][0].partition(" | ")[0] if ranked else "none"
     body = (f"<p>{html_escape(_INDEX_INTRO)}</p>"
             f"<p><strong>{len(ranked)} entries</strong>, {total_tokens:,} tokens, {total_bytes:,} bytes. "
-            f"The newest {len(rows)} are below, newest first; the latest is {newest}. "
-            "This page is rebuilt on every publish, so edits made here are overwritten.</p>"
+            f"The newest {len(rows)} are below, newest first.</p>"
             "<table><tbody><tr><th>Date (n)</th><th>Entry</th><th>Tokens</th></tr>"
             + "".join(rows) + "</tbody></table>")
     return body, len(ranked), len(rows), linked
