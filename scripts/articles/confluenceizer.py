@@ -500,7 +500,8 @@ def _child_read_restrictions(domain: str, email: str, api_token: str, parent_id:
     response carried no restriction data for that child."""
     state = {}
     path = (f"/content/{parent_id}/child/page?limit=100"
-            "&expand=restrictions.read.restrictions.user,restrictions.read.restrictions.group")
+            "&expand=restrictions.read.restrictions.user,restrictions.read.restrictions.group"
+            ",restrictions.update.restrictions.user")
     while path:
         data = _request_v1(domain, email, api_token, path)
         for page in data.get("results", []):
