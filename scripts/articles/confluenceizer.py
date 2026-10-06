@@ -972,6 +972,7 @@ def main():
                 failed += 1
 
         print(f"\n🏁 Upsert complete. Created: {created}  Updated: {updated}  Skipped: {skipped}  Failed: {failed}")
+        _lock_children(domain, email, api_token, parent_id, me, armed=True)
         _reorder_newest_first(domain, email, api_token, parent_id, armed=True)
         _publish_journal_index(domain, email, api_token, config, parent_id, posts_dir, armed=True)
         return
