@@ -495,7 +495,7 @@ def _lock_page(domain: str, email: str, api_token: str, page_id: str, account_id
                     method="PUT")
 
 def _child_read_restrictions(domain: str, email: str, api_token: str, parent_id: str) -> dict:
-    """{child id: (title, user accountIds, group count)} from each child's OWN read
+    """{child id: (title, read users, read group count, update users)} from each child's OWN read
     restriction (inherited ones are not listed). The users slot is None when the
     response carried no restriction data for that child."""
     state = {}
