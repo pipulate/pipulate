@@ -907,6 +907,7 @@ async def _ride_steps(trail_path, archive, dry_narrate=False, exports_path=None,
             stdin=sys.stdin,
             stdout=sys.stdout,
             before_prompt=lambda: None,
+            capture=capture,
         )
 
         if not result.get("success"):
