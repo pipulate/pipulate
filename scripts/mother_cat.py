@@ -853,7 +853,17 @@ async def _ride_steps(trail_path, archive, dry_narrate=False, exports_path=None,
         print(f"\nIntroduction skipped. To see it: walk {trail['name']} intro")
     elif with_intro and not trail.get("introduction"):
         print("\nThis walk has no introduction.")
-    _narrate(trail["description"] + "\n" + WALK_RULES)
+    walk_rules = WALK_RULES
+    if any(stop.get("capture") is False for stop in stops):
+        walk_rules = (
+            "When you hear the bell, the page has loaded: look it over, come back to the "
+            "command line and press Enter. Leave the browser open; Enter closes it. "
+            "A look-only page says so and saves nothing; every other page is saved. "
+            "Ctrl+C can stop the walk.\n"
+            "If the walk saves any pages, a checked summary is saved on this computer and "
+            "copied to your clipboard. Nothing is sent anywhere."
+        )
+    _narrate(trail["description"] + "\n" + walk_rules)
     captured = []
     skipped = archive.setdefault("skipped", [])
     for index, stop in enumerate(stops, 1):
