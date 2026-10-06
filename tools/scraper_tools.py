@@ -375,7 +375,7 @@ def _capture_checkpoint(
                 pass
 
 
-async def _selenium_capture(params: dict, checkpoint=None) -> dict:
+async def _selenium_capture(params: dict, checkpoint=None, capture_artifacts=True) -> dict:
     """
     Performs an advanced browser automation scrape of a single URL using undetected-chromedriver.
     Checks for cached data before initiating a new scrape.
