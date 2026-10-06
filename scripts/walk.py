@@ -364,6 +364,7 @@ def load_trail(path):
             # avoids adding a SECOND reason it would not.
             **url_key,
             "optional": optional,
+            **({"capture": capture} if "capture" in stop else {}),
             "target_slot": target_slot,
             "harvest_regex": harvest_regex,
             "connector": _validate_connector(
