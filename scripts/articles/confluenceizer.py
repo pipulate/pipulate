@@ -820,6 +820,10 @@ def main():
         if not space_id:
             print("❌ Parent returned no spaceId; cannot place children. Aborting.")
             sys.exit(1)
+        me = _current_account_id(domain, email, api_token)
+        if not me:
+            print("❌ /wiki/rest/api/user/current returned no accountId; cannot padlock pages. Aborting.")
+            sys.exit(1)
 
         ops = []
         operations = parent_meta.get("operations") or {}
