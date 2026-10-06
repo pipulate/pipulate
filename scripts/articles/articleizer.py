@@ -602,6 +602,14 @@ def main():
             lsa.default_permalink("[slug]", prompt_prefix) + "/")
         prompt_template = prompt_template.replace(
             BASE_URL_PLACEHOLDER, prompt_base_url.rstrip("/"))
+        prompt_editorial_context = target_config.get("editorial_context")
+        if prompt_editorial_context is None:
+            prompt_editorial_context = (
+                "This is an article in Future Proofing Yourself in the Age of AI. "
+                "Book-oriented framing is welcome when it genuinely fits the article."
+            )
+        prompt_template = prompt_template.replace(
+            EDITORIAL_CONTEXT_PLACEHOLDER, str(prompt_editorial_context).strip())
         # THE UNSUBSTITUTED-PLACEHOLDER AIRLOCK: if editing_prompt.txt carries
         # a placeholder this file does not know -- a typo, or a template
         # patched ahead of its reader -- the literal "[INSERT ...]" reaches the
