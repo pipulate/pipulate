@@ -456,13 +456,19 @@ def _reorder_newest_first(domain: str, email: str, api_token: str, parent_id: st
 # carry its own read restriction: a view restriction on the parent is
 # inherited by every child, and nobody can read a child whose parent they
 # cannot read, so a padlock on the parent opens only for the whole journal
-# at once. Every child gets its own read restriction naming the publisher,
-# then the parent's padlock comes off by hand, in that order. v2 has no
-# restriction write; v1 does: PUT /wiki/rest/api/content/{id}/restriction/
-# byOperation/read/user?accountId=... ADDS one user and removes nobody, so a
-# share made in the Restrictions dialog survives every run. Convergent like
-# the reorder: only a child with NO read restriction of its own is locked;
-# a child whose restriction state did not come back is left alone, reported.
+# at once. Every child gets its own read AND update restriction naming the
+# publisher, then the parent's padlock comes off by hand, in that order. v2
+# has no restriction write; v1 does: PUT /wiki/rest/api/content/{id}/
+# restriction/byOperation/{read|update}/user?accountId=... ADDS one user and
+# removes nobody, so a share made in the Restrictions dialog survives every
+# run. Convergent like the reorder: a child with NO read restriction of its
+# own gets both; a child whose padlock does not name the publisher for
+# update gets update; a child whose restriction state did not come back is
+# left alone, reported.
+# READ ALONE LOCKS THE PUBLISHER OUT (convicted 2026-10-05). A page with only
+# a read restriction dropped 'update' from the publisher's own operations:
+# the v2 UPDATE read 404 Not Found and the v1 move read 403 'You do not have
+# permission to make this content move'. Delete still worked (space admin).
 # WITNESSED 2026-10-05: the canary 6898450484 took the call by hand (HTTP
 # 200); preview then planned 1 locked, 53 open; gobot locked 53, failed 0,
 # still open 0; the child listing read 54 locked, 0 open, 0 shared; and after
