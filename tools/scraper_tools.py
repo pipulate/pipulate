@@ -736,6 +736,16 @@ async def _selenium_capture(params: dict, checkpoint=None, capture_artifacts=Tru
         ):
             return failure(f"browser final URL is not absolute http(s): {final_url!r}")
 
+        if interactive and not capture_artifacts:
+            return {
+                "success": True,
+                "looking_at_files": {},
+                "cached": False,
+                "requested_url": url,
+                "final_url": final_url,
+                "interactive": True,
+            }
+
         if interactive:
             final_domain, final_slug = _guided_path_component(final_url)
             output_dir = base_dir / final_domain / final_slug
