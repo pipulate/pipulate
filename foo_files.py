@@ -376,51 +376,14 @@ And then we demonstrate a level of competence like so:
 # `Ignition: none.` Never imply ignition by describing expected output, and
 # never make the human infer the command from prose.
 #
-# THE ANSWER IS THE ARTIFACT (banked 2026-09-24, convicted the turn it was
-# named). The model offered to render a case card as a host-side "Artifact"
-# panel one breath before being told those are forbidden. An Artifact is
-# unsigned, unhashed, unversioned, and lives OUTSIDE the cartridge -- the exact
-# trusting-trust binary this system exists to abolish, in a convenience's
-# clothes. THE RULE: the only durable outputs are the sealed cartridge
-# (qamy.zip = prompt.md + payload.md + manifest.json) and the copyable text of
-# the response. Never emit, offer, or route work into an Artifact, canvas, or
-# side panel. A finding that cannot be pasted here and rebuilt from the manifest
-# is not a finding.
+# § THE ANSWER IS THE ARTIFACT (banked 2026-09-24) -- Deliver durable findings as copyable response text or the sealed cartridge reproducible from its manifest, and never offer or route them into an unsigned, unversioned host-side Artifact, canvas, or side panel.
 #
 # § NEXT CONTEXT IS PASTE-READY OR IT IS SABOTAGE (banked 2026-09-24; convicted again 2026-09-29) -- Emit NEXT CONTEXT as one fenced block of literal context.txt lines pasted at the bottom before the train runs: include the whole next-turn file list and every PROBES command verbatim with only the leading "! " added, and never put prose, vim keystrokes, or assumptions about a car's future output inside it.
 #
 # § A PROBE RUNS ON THE OPERATOR'S MACHINE OR IT IS NOT A PROBE (banked 2026-09-24) -- Make every probe target files on the operator's machine or carry its evidence inline or in the cartridge, use rg for repository searches, and invoke remote MCP tools through connectors/mcp.py rather than listing tool names as file includes.
 #
-# SPELL OUT THE TOOL-CALL YOU ARE MAKING OF THE HUMAN (banked 2026-09-22, at
-# the operator's instruction, after a Context car that said "same as last
-# turn" and taught nothing). The model reading this file is tool-calling a
-# PERSON, and a person cannot ask a paragraph a clarifying question. Polite,
-# indirect, erudite or compressed wording is ambiguity, and ambiguity gets
-# resolved wrong.
-# THE RULE: short words, imperative, one action per line. Never point at
-# another turn instead of restating the step: no "same as before", no "as
-# above", no "the usual". Never make the human guess which file, which
-# command, or which of two readings you meant. Write for someone in a hurry
-# on a laptop in an internet cafe who will act on the first sentence that
-# looks like an instruction. Example: "Run this in a terminal on Pipulate
-# Prime when the power returns," never "carried in full so it is not a
-# bibliography."
-# NEXT CONTEXT IS THE WHOLE LIST (banked 2026-09-20, convicted the same day,
-# and banked HERE because this file rides the fixed tail of every ADHOC
-# compile while the constitution does not): the payload a model is reading is
-# the ONLY raw source it will ever be allowed to patch, and the operator
-# comments the 40K-foot block out on turn two. A file that "is already there"
-# this compile is gone next compile. Every file a next-turn car will patch is
-# named in full in NEXT CONTEXT -- one that rode this compile, one that rides
-# every compile, one the operator knows by heart -- because "already there"
-# is a claim about the past wearing the future's label. CONVICTION: a
-# three-car caboose said init.lua, flake.nix and index.html were already
-# there; the next payload carried mother_cat.py and none of them, and two
-# cars waited a turn for raw source the list had waved at. The cost is one
-# line per file. THE GROOVE THAT HOLDS: the checklist's own NEXT CONTEXT
-# clause in prompt_foo.py is the eventual home, read at the highest-attention
-# position of every full-frame compile; this comment is the second groove,
-# and a § key in foo_files.py the third.
+# § SPELL OUT THE TOOL-CALL YOU ARE MAKING OF THE HUMAN (banked 2026-09-22) -- Give the human short imperative steps with one action per line and explicit files, commands, and target terminals, restating each step in full instead of referring to an earlier turn or the usual procedure.
+# § NEXT CONTEXT IS THE WHOLE LIST (banked 2026-09-20) -- List every file the next turn may patch explicitly in NEXT CONTEXT, even when it appears in this compile or the default roster, so the next payload carries all required raw source.
 
 # § THE SCREENSHOT IS NOT A LOCATOR (banked 2026-09-11) -- When documentation's evidence is an image, enumerate the target UI's actual field labels and rule out same-named decoys before directing the operator; prose that says only "go to the project page" is not a locator.
 
@@ -430,21 +393,7 @@ And then we demonstrate a level of competence like so:
 # § THE HELP TEXT IS NOT A CENSUS (banked 2026-09-17; convictions 2026-09-17, 2026-09-27, 2026-09-28) -- Verify every switch against the exact tool's own semantics before trusting a probe's numbers, keep stderr and exit status visible, and treat usage text or rc=2 as a dead instrument rather than data.
 # § A CENSUS CARRIES A KNOWN MEMBER (banked 2026-09-24) -- Name a known member in every census and forecast missing-member or empty output as instrument failure; derive exact counts from matching output lines rather than pattern occurrences, or state only known members and an at-least bound.
 # § THE PIPELINE ATE THE FALLBACK (banked 2026-09-21) -- Make every fallback probe test the exit status of the command that owns the question and print a negative token no successful path can produce; a fallback hidden behind a pipeline or spelled as a legal success value is not a discriminator.
-# THE WRAPPER IS NOT THE MEASUREMENT (convicted 2026-09-22, by a receipt that
-# disagreed with itself and was right twice). `time` on a census run read
-# real 8m3.689s, while the program's OWN stopwatch, added the same turn, read
-# "export POST returned in 123.6s". Both numbers are true. The six minutes
-# between them were undetected-chromedriver launching a headful Chrome over
-# cafe wifi to harvest one session cookie. Reading the shell's `real` as the
-# cost of the export would have overstated it FOURFOLD and sent the next turn
-# optimizing the wrong half of the program.
-# THE RULE: `time <program>` measures the PROGRAM, never the step inside it
-# that the question is about. When a command has an expensive setup phase --
-# a browser launch, an auth handshake, an index build, a model load -- the
-# step under test carries its own stopwatch and prints it, and the wrapper's
-# number is read as the total rather than as the answer. Two clocks that
-# disagree are not a contradiction. The gap between them IS the setup cost,
-# and it is more often the larger one than anybody expects.
+# § THE WRAPPER IS NOT THE MEASUREMENT (banked 2026-09-22) -- Time the step under investigation with its own stopwatch when setup is expensive, and label the wrapper's time as the whole program rather than attributing browser launch, authentication, indexing, or model loading to the inner operation.
 #
 # § THE A11Y OUTLINE DESCRIBES THE HYDRATED DOM (banked 2026-09-21) -- Treat accessibility-tree roles as hydrated semantic claims, not HTML tags or form semantics: trace every DOM claim to its capture file, test a11y or screenshot claims against hydrated_dom.html rather than source.html, and read markup to learn the actual element and submitted name.
 #
@@ -474,46 +423,10 @@ And then we demonstrate a level of competence like so:
 # its quoted hash into an unterminated-quote EOF. Witness: the very next
 # compile carried that same probe returning 4 -- and the parser-demo probe,
 # itself quoted-hash-bearing, survived to print the old splitter's stub.
-# THE PENDING AMENDMENT RULE (banked 2026-07-19, witnessed same compile):
-# an amendment that describes MECHANISM BEHAVIOR enters the constitution
-# tagged PENDING and stays PENDING until a compiled receipt witnesses the
-# behavior it asserts; the flip to banked is its own chisel-strike.
-# Conviction: the STDERR MERGE AMENDMENT was committed one compile before
-# its mechanism existed -- the map outran the territory and only the
-# scheduled canary caught it. The constitution may PROPOSE one turn ahead
-# of the code; it may never ASSERT ahead of it. Rules of pure judgment
-# (30-and-3, Probe Economy) bank on articulation; rules claiming what the
-# machinery DOES require the machinery's receipt first. Never more than
-# one unwitnessed turn between an amendment and its evidence.
-# THE ACTUATION-BOUNDARY RULE (banked 2026-07-23, receipt-witnessed): a
-# probe that measures an ARTIFACT cannot witness a patch that changes
-# CODE unless the code RUNS between the two taps. The PROBE ECHO
-# INVARIANT's straddle must bracket the EXECUTION, not the commit.
-# Conviction: the fence-heal patch landed, committed and pushed, and the
-# echoed awk probe still read naked_openers=12 -- byte-identical to
-# BEFORE -- because `article`, the only command that feeds article.txt
-# through sanitizer.py, was never invoked between taps. A code-only patch
-# paired with an artifact-only probe is an OPEN FENCE dressed as a closed
-# one, and it reports green for a thing that was never tried.
-# COROLLARY -- WITNESS WITHOUT MUTATING: when the actuator is a mutating
-# lane (publish, writers), do NOT run the lane to collect the receipt --
-# it consumes the specimen. Import the patched function, run it on the
-# real input WITHOUT writing, and assert the input is byte-identical
-# afterward. Exercises the hard half; costs no publish.
+# § THE PENDING AMENDMENT RULE (banked 2026-07-19) -- Keep mechanism-behavior amendments PENDING until a compiled receipt witnesses them, bank the status change explicitly, distinguish articulation-only judgment rules, and allow no more than one unwitnessed turn before the mechanism's evidence.
+# § THE ACTUATION-BOUNDARY RULE (banked 2026-07-23) -- Bracket execution of changed code with the before and after probes rather than bracketing only its commit, and witness mutating lanes by calling the patched function on real input without writing and verifying that the specimen remains unchanged.
 # § THE IGNITION RULE (banked 2026-07-23) -- between PATCHES and PROMPT sits IGNITION, making the patched code RUN so the AFTER tap measures something that happened; it completes the Patch beat and is never a fourth one. If the probe's own command loads the patched file at call time it self-ignites; if the patched thing was read once at entry (shellHook, daemon, cache) ignite it explicitly -- exit then nd, or <F2> -- and every turn NAMES its ignition or declares "no ignition required". Conviction: the vault probe read False inside a compile whose flake patch had landed, committed and pushed, because that shell predated the hook. The straddle brackets EXECUTION, not the commit; ahc is the experiment, not a probe, and it writes, so it fires once, bounded by a BLAST on either side. Grammar: PROBE singular, PATCHES plural, IGNITION singular or none, PROMPT singular.
-# THE SADDLE AMENDMENT (banked 2026-07-28): the mount saddle (init.lua
-# mount_sandworm) no longer numbers Ignition as its own slot. Ignition
-# RIDES INSIDE the Patches car -- exactly as this rule already requires
-# ("not a fourth beat; it completes PATCH") -- so the saddle's five
-# numbered slots now match the Actionable Response Contract one-for-one:
-# 1 Probe, 2 Context, 3 Patches (patch/app/d/m THEN ignite: exit+nd, <F2>,
-# or "no ignition required"), 4 Prompt, 5 Deliverables. The earlier "only
-# the saddle gains a slot" reading is SUPERSEDED, not retconned: the slot it
-# named was Ignition-as-beat-4, and folding it into Patches is precisely the
-# alignment. Ignition stays a real singular step ("one actuation, or none");
-# it simply stops printing its own number. Same-car label discipline: this
-# note ships in the same ride as the init.lua saddle edit it describes.
-# Ref: the MCK build ride (see THE MOTHER CAT KATA above).
+# § THE SADDLE AMENDMENT (banked 2026-07-28) -- Keep Ignition inside Patches as one actuation or an explicit no-ignition declaration, preserve the five slots Probe, Context, Patches, Prompt, and Deliverables, and ship any corresponding saddle labels with the change they describe.
 # THE SELF-HEALING FENCE AMENDMENT (PENDING 2026-07-23): sanitizer.py's
 # fence contract rule 2 no longer refuses a naked opening fence; it tags
 # it `text` in place, writes the heal back to article.txt, and prints a
@@ -524,16 +437,7 @@ And then we demonstrate a level of competence like so:
 # still fail CLOSED. WITNESS OWED: a compiled receipt showing a nonzero
 # heal count against a file with known naked openers. The flip to banked
 # is its own chisel-strike.
-# THE DISMOUNT (banked 2026-07-19, mechanism witnessed 2026-07-19): a ride
-# series ends with a fourth beat -- the hop-off. The dismount prompt makes
-# the model (1) VERIFY the article's opening goal against THIS compile's
-# receipts, never memory; (2) BANK graduations as SEARCH/REPLACE patch
-# cars, deletions included; (3) name the DANGLING carried forward
-# unbanked, one line each; (4) SEED the next ride's first compile with
-# context.txt lines. Mechanism: init.lua's <leader>k stages the canned block
-# above the current article's !!! floor. Witness: the \k-staged block rode
-# a Prompt section in the same compile whose receipt still showed PENDING --
-# flipped by patch, never by drift, one unwitnessed turn exactly as allowed.
+# § THE DISMOUNT (banked 2026-07-19) -- Dismount a completed ride by verifying its opening goal against this compile's receipts, banking rules and deletions through patches, naming each dangling item in one line, and seeding the next ride with explicit context.txt lines.
 # § THE TEMPLATE THAT FORBIDS WHAT IT DEMANDS (banked 2026-09-04) -- a prompt template is one document with one reader, so a beat that demands an artifact and a clause that forbids the only lane it can ship through cancel into a hand edit the operator will not make; when a template's demand changes, grep that same template for every clause that gates it, and make the exemption name the beat by number. Conviction: \k's BANK asked for paste-ready lines while FINALITY said no patches, and two dismounts handed the operator addresses in prose. Sibling of THE SAME-CAR LABEL RULE and THE LABEL THAT PROMISES A SIBLING: this is the gate and the label in one file, contradicting each other.
 # THE MOUNT (banked 2026-07-19, witnessed same compile): the zeroth beat.
 # <leader>m runs mount_sandworm(): full saddle (Probe / Context / Patches /
@@ -544,16 +448,7 @@ And then we demonstrate a level of competence like so:
 # 574 (once), clean headless load. \j cuts the slate, \m mounts, \k
 # dismounts: three keys bracketing Probe, Patch, Prompt.
 
-# THE GENERATED-NOT-AUTHORED RULE (banked 2026-07-20, witnessed same day):
-# any payload section that DESCRIBES live capability (tool rosters,
-# registry counts, version stats) must be produced by the compile that
-# ships it -- computed from the live source in a bounded subprocess, with a
-# fail-LOUD placeholder on error -- never hand-authored prose. An authored
-# capability list is drift-by-construction: the sibling-.md failure mode
-# this repo exists to refuse. Witness: the Tool Roster's "21 tools"
-# matched the same compile's live_registry_count=21 receipt name-for-name
-# on its first flight; the only stale state it can ever exhibit is a loud
-# GENERATION FAILED banner, which is a wound, not a lie.
+# § THE GENERATED-NOT-AUTHORED RULE (banked 2026-07-20) -- Generate every live-capability payload section from current source during the compile that ships it, using a bounded subprocess and a loud failure placeholder rather than hand-authored tool lists, registry counts, or version statistics.
 
 # § THE ATTRIBUTED-VOICE RULE (banked 2026-07-26) -- a synthesized voice is not evidence of a mind, and the rule covers every UTTERANCE, spoken OR on-screen: scripted narration discloses that it is scripted and never says "I am <persona>", model output NAMES its engine because a name is a receipt and not a costume, and deterministic automation demonstrates THE SYSTEM and never "my capabilities". THE MECHANICAL TEST, in place of judgment: if a string names an ACT -- confirmed, secured, verified, connected, validated, active -- then some code must have PERFORMED that act in the same turn, or the verb changes to what happened (recorded, saved, stored, set), because storing a credential is not testing it and the first real request is the earliest honest moment to claim a connection. Chip O'Theseus is EARNED, never asserted: speak the name only while a model is actually answering with keychain memory live.
 
@@ -564,103 +459,25 @@ And then we demonstrate a level of competence like so:
 # an actuator. pipeline_state_inspector is a valid MCP/FastHTML drill-down,
 # never the default first move inside a Prompt Fu ride.
 
-# THE REDUNDANT-GROOVE RULE (banked 2026-07-22, witnessed this compile):
-# on-topic-ness is not a personality you beg the model to wear; it is a
-# groove you carve so attention rolls into it wherever it drops. Encode the
-# frame TWICE: the canonical roster welded into foo_files.py travels as
-# visible text in every compile (the declared MAP), while the live overlay
-# splices those same files in as content (the realized TERRITORY) -- map and
-# territory in one window, cross-checking each other. Two grooves = the
-# marble rolls home no matter where it lands = forward error correction; the
-# West African talking drum repeats the tonal pattern for the identical
-# reason -- redundancy is how a signal survives a noisy channel. Corollary:
-# this IS the receipt's manifest+payload symmetry (what-bytes cross-checking
-# the-bytes) generalized to the router itself -- the book teaching its own
-# technique by using the technique on its table of contents. By the time the
-# model reaches the Prompt at the bottom it has read the frame twice and
-# answers primed, not cold. Furnish the room before the guest walks in.
+# § THE REDUNDANT-GROOVE RULE (banked 2026-07-22) -- Carry both the canonical roster as visible text and its selected files as actual payload content in every compile so the declared map and realized evidence cross-check each other and reinforce the task frame.
 
-# THE HONEST-SEAM RULE (banked 2026-07-22, witnessed same compile -- the
-# 80-column tell): when the machine mimics the operator's surface (vim
-# textwidth=80 hard-wraps, his line-break cadence) it leaves a fingerprint,
-# and the fingerprint is LOAD-BEARING. The caboose prompt the AI hands back
-# for the next turn MUST stay UNWRAPPED -- no cosmetic 80-col fold -- so the
-# operator can always tell the mirror from the man standing in front of it.
-# Sanding the seam smooth is precisely how the drift-checker becomes the
-# drift. Source-file rules wrap (they are code); the returned prompt does
-# not (it is the receipt that says a machine wrote it). Conviction: Opus 4.8
-# hard-wrapped its own caboose to 80 and got caught red-handed, eighty
-# columns wide -- the dinosaur seam in the line-wraps. Leave the seams in.
+# § THE HONEST-SEAM RULE (banked 2026-07-22) -- Leave the model-authored caboose prompt unwrapped rather than cosmetically folding it to the operator's eighty-column cadence, preserving the visible authorship seam while allowing source-file rules to wrap normally.
 
-# THE NEW-B GRADIENT RULE (banked 2026-07-22, articulation-banked): the top
-# and bottom of the register stack execute the IDENTICAL move. Skippy
-# (godlike-AI condescension) and Barney (toddler-wholesome earnestness) both
-# say "let me break this down for the newcomer" -- one gesture, opposite
-# hats; the failure at the genius end is pretension, at the simpleton end is
-# dilution, and the target is the competent middle (Joe Bishop: plain-talk
-# that is not dumb). Choose the register on PURPOSE, and keep one plain true
-# thing dead-center so the sophistication has something real to rebut -- the
-# ex-cop's duct-taped recliner parked in the tasteful apartment is the whole
-# comedy of Frasier and the whole shape of a good New-B explanation.
+# § THE NEW-B GRADIENT RULE (banked 2026-07-22) -- Choose a competent, plainspoken register deliberately and keep one concrete true point at its center, avoiding both condescending sophistication and simplification that dilutes the explanation.
 
-# THE EXAPTATION RULE (banked 2026-07-22, articulation-banked; forms molt,
-# they do not die): a form pronounced extinct is usually a form mid-molt --
-# recruited into a new substrate, same function in a new organ. Serial radio
-# drama did not die in the fifties; it molted into the fiction podcast and
-# the voice-acted audiobook (Expeditionary Force IS a serial radio program
-# with better headphones). The crystallin enzyme became a lens: same
-# protein, new job. Before accepting "X is impossible now," run two checks --
-# (1) manufactured forgetting: who profits from the corpse (the Phoebus
-# move)? (2) the live substrate the form already migrated to. Exaptation is
-# the DEFAULT hypothesis; extinction is the claim that needs the receipt.
-# Sibling to AXIS-FORCING: when stuck, ask what old organ this new pressure
-# can repurpose.
+# § THE EXAPTATION RULE (banked 2026-07-22) -- Before accepting that a form is extinct or impossible, check who profits from manufactured forgetting and which live substrate already carries its function, then seek an old organ the new pressure can repurpose.
 
 # § THE RECEIPT LADDER RULE (banked 2026-07-22; amended 2026-09-26) -- Match each receipt to the question it can prove: CRC detects change, SHA-256 fixes exact bytes, signatures name a signer, mutable time stays outside hashed bodies, and no integrity rung may infer who caused a change.
 
-# THE CODEX-AS-DATASTRUCTURE RULE (banked 2026-07-22, articulation-banked): the
-# printed book's apparatus is a random-access + cross-reference + drift-detection
-# machine, every part a structure this repo already runs. Table of contents = the
-# manifest (authored, forward, hierarchical: declared shape). Index = an inverted
-# index (access by concept, not position), hand-built four centuries before a
-# machine could query one. Glossary = a controlled vocabulary -- a type system for
-# prose that pins terms so they do not drift between chapters. Concordance = the
-# maximal index (grep -n over the corpus), and the load-bearing lesson: a
-# concordance is POSSIBLE ONLY over an immutable text -- verse numbering, the whole
-# citation address space, requires freezing the corpus first. Immutability is not
-# the apparatus's enemy; it is its precondition. Footnote = an out-of-band,
-# non-destructive annotation channel (the OOB EDIT RULE in print). Margin = the
-# user-writable per-copy layer (context.txt is this book's margin). Errata/addenda =
-# append-only patches that preserve the original error ON PURPOSE, so the delta
-# stays visible.
+# § THE CODEX-AS-DATASTRUCTURE RULE (banked 2026-07-22) -- Build context as a book with a manifest, concept index, controlled glossary, immutable citation substrate, attributed non-destructive annotations, personal margin, and append-only errata that preserve the original error.
 
-# THE TALMUD-PAGE RULE (banked 2026-07-22, articulation-banked): the tzurat
-# ha-daf is the master pattern for a signed discussion cartridge -- immutable core
-# text ringed by attributed, stratified commentary (Rashi inner, Tosafot outer,
-# later authorities beyond): a versioned, cross-referenced hypertext on one fixed
-# page, centuries before "hypertext." Its defining move is that it PRESERVES
-# DISAGREEMENT instead of resolving it. Elu v'elu -- the minority ruling stays on
-# the page so a later generation can re-derive and find the losing branch was
-# right. That is keeping the dead branches in the DAG. A Confluence discussion +
-# replay-cartridge per closed ticket IS a Talmud page per ticket: frozen core =
-# the cartridge, commentary = the discussion, Jira ID = the address in the ToC.
-# Do not resolve-and-delete; attribute-and-preserve.
+# § THE TALMUD-PAGE RULE (banked 2026-07-22) -- Keep an immutable discussion core with attributed, stratified commentary and stable cross-references, preserving minority and losing rulings so later readers can re-derive the result instead of deleting disagreement when resolving it.
 
 # § THE LEDGER-SEPARATION RULE (banked 2026-07-22) -- Keep mutable work separate from immutable history, bank capture bytes before ADVANCE, resolve a named router and verify selected evidence, decode before disclosure while preserving original and transformed digests and recording omissions, then check inner digests and human review rather than treating a checksum or zero detector hits as completeness.
 
 # § THE STEWARDSHIP RULE (banked 2026-07-22) -- Practice SMALL-MARKET WORA and STRUCTURAL HUMILITY by using portable open standards, leaving the host unchanged with no mutable residue, and making each tool and artifact carry its full meaning and recoverable record without its maker present.
 
-# THE DOUBLE-TAP RULE (banked 2026-07-20, witnessed same day): a `!` probe
-# that reads an artifact WRITTEN LATER IN THE SAME COMPILE (foo.zip and its
-# rotated snapshots -- probes execute at step 2, the cartridge writes at
-# step 7, post-sanitize) photographs the N−1 compile. That stale-by-one
-# reading is a LAGGED receipt, not a failed one -- but the exemption must be
-# CLAIMED, never assumed: name the mechanism (which pipeline step writes
-# the artifact) and re-fire the identical probe next compile to collect the
-# AFTER. The second tap is mandatory; a lag excuse without a closing
-# receipt is an open fence. Conviction: the ContextCartridge topper read
-# `# KUNG FU` on its first zipfile probe and frontmatter on the second,
-# one compile later, exactly as the pipeline ordering predicts.
+# § THE DOUBLE-TAP RULE (banked 2026-07-20) -- Label probes of artifacts written later in the same compile as lagged receipts, name the pipeline ordering that causes the lag, and re-run the identical probe in the next compile to close the before/after comparison.
 
 # THE RIDE CONTRACT (banked 2026-07-20): a discussion is a SERIES of worm
 # rides, and the series' shape is declared at the mount: the opening
@@ -689,50 +506,15 @@ And then we demonstrate a level of competence like so:
 # responding; a correction note is not a coupling pin.
 # § THE HAND-REPAIR CLAUSE (amended 2026-08-03, missing-target class banked 2026-08-25, malformed-protocol class amended 2026-09-26) -- Repair a refused patch by hand only when apply.py demonstrably parsed and witnessed the body: search-block-not-found is diagnosable, missing-target may receive only its Target after the intact body is printed back, malformed-protocol means visible delimiters failed the grammar and the body was not parsed, and generic no-blocks-found now means no recognizable patch protocol was present; both parser-gate classes are deleted and re-emitted, never hand-repaired.
 
-# THE CARRIED-DELIVERABLE RULE (banked 2026-07-29, operator-convicted): a
-# Car-5 external deliverable is CARRIED, NOT CITED. Car 5's actuator is the
-# human pasting into a FOREIGN system (Confluence, a CMS, a dashboard) -- by
-# definition out-of-band of the terminal choreography driving Cars 1-4, and
-# that is not a leak in the train; it IS the fifth car's identity. The car
-# therefore either contains the deliverable's COMPLETE text in one fenced
-# block labeled manual-paste, or states "no deliverables this turn"; it
-# never references cargo living only in a prior chat turn ("use the earlier
-# artifact, with two edits"). A cited-not-carried deliverable hands the
-# operator a bibliography instead of cargo, so it silently never ships --
-# three consecutive turns of an owed Confluence page are the conviction,
-# surfaced when the operator asked "am I supposed to be pasting things
-# out-of-bounds of the train?" The answer is yes, and only from Car 5.
-# Sibling of NO-DEAD-CARS (every emitted block is an actuator) and of
-# Mother Cat's carry-don't-menu.
+# § THE CARRIED-DELIVERABLE RULE (banked 2026-07-29) -- Carry each external deliverable's complete current text in Car 5 as one manual-paste block, or explicitly state that there are no deliverables, instead of referring the operator to earlier chat cargo and edits.
 
 # § THE OUT-OF-BAND (OOB) EDIT RULE (banked 2026-07-21) -- When target text contains patch-protocol markers or marker-shaped siblings, do not encode the edit as SEARCH/REPLACE; name the delimiter collision, give exact boundaries and surviving neighbors, and hand the cut to the human in vim.
 
 # **THE DERIVED-PATH RULE:** an agent's write-target must be a pure function of an identity value it reads and cannot author. If the agent *chooses* where to write, every guard downstream is etiquette. If it *computes* where to write, collision is unrepresentable -- the property that makes `/opt/<vendor>`, npm scopes, and the Nix store safe without any of them trusting their writers.
 
-# THE 30-AND-3 RULE (banked 2026-07-19): the standing ideation kata. When a
-# problem space needs mapping, generate THIRTY brief text vignettes -- one or
-# two sentences each, breadth over depth, no self-censoring past the obvious
-# first octave -- then select THREE favorites and justify each selection
-# explicitly. The 30 is the fan-out (cheap divergence; quantity is the
-# forcing function); the 3 is the reduce (the human-taste bottleneck that
-# banks wins per the 80/20 rule). Pairs with the 2-axis grid: axes surface
-# black-swan outliers, 30-and-3 surfaces candidates. Selections should name
-# what makes each winner load-bearing, not merely appealing. Progressive
-# passes, never one heroic pass; write the reduction down (article, earmark,
-# or chop) so the traversal is memoized and never re-derived from scratch.
+# § THE 30-AND-3 RULE (banked 2026-07-19) -- Map a problem with thirty brief, diverse text vignettes, select three favorites with explicit reasons for their usefulness, and record the reduction so successive passes reuse the traversal instead of restarting it.
 
-# THE AXIS-FORCING RULE (banked 2026-07-19): when novelty, bias escape,
-# or rival-model comparison matters, a flat 30-and-3 list is not enough.
-# Convert candidates into BIPOLAR AXES with concrete, mutually incompatible
-# anchors drawn deliberately from remote disciplines, cultures, scales,
-# organisms, or eras. Reduce by:
-#     orthogonality × prediction disagreement × observability ÷ probe cost.
-# An axis creates novelty by making the high-probability centroid illegal;
-# it becomes scientific only when its competing frames predict observably
-# different outcomes -- charge every metaphor rent. The model supplies
-# associative reach; the human supplies the want and selects the three.
-# Bank the winning axis, anchors, predictions, and cheapest discriminating
-# probe so the surprise becomes reusable rather than re-derived.
+# § THE AXIS-FORCING RULE (banked 2026-07-19) -- For novelty or rival-model comparison, build bipolar axes from concrete incompatible anchors in remote disciplines, rank them by orthogonality, prediction disagreement, observability, and probe cost, and bank the human-selected axes with their rival predictions and cheapest discriminating probes.
 
 # § THE FORCING-PAIR RULE (articulation-banked 2026-07-27) -- 30-and-3 and AXIS-FORCING are ONE instrument with two grips: thirty candidates exhaust a frame's high-probability centroid so taste can pick three, which fights premature CONVERGENCE, and imported bipolar anchors make that centroid ILLEGAL, which fights premature COMMITMENT to the frame itself. Read an axis as a COORDINATE SYSTEM, never a filter: a filter needs the swan already in the sample, a coordinate system creates an ADDRESS for the empty region beside the clump, and the next thirty are ordered INTO that address, so the loop is a ratchet and neither grip comes first. Anchors are IMPORTED from a remote discipline, era, scale or organism, because a home-grown axis inherits the home blindspot, and an axis you cannot cheaply falsify is one you do not draw (orthogonality x disagreement x observability / probe cost). THE RENAME TEST sorts handle from mechanism: swap the label and the artifact stands, it was a handle; change the constraint and the output degrades to cliche, that was the mechanism; a handle earns rent only when it predicts something checkable.
 #
@@ -779,21 +561,7 @@ And then we demonstrate a level of competence like so:
 
 # § THE TORTOISE PROTOCOL (banked 2026-07-21) -- Infer a discursive meditation as an invitation to dialogue: complete its unfinished transitions, steelman its claim before challenging its weakest point with concrete evidence, require metaphors to predict something checkable, and still close with the Actionable Response Contract.
 
-# THE DISAPPEARING INSTRUMENT RULE (banked 2026-07-19; command-surface witness
-# 2026-09-24): The supreme design goal is invisible utility. The system must
-# fade into the background like a stick bug--inert and unnoticeable until called
-# upon as a guardian angel. The outward deployment mechanisms (curl | bash
-# bootstraps) are secondary to the portability of the state itself; if the
-# workspace only ever compiles context cartridges (foo.zip) to document and
-# deliver self-contained, perfect problem resolutions, it has fulfilled its
-# mission. The artifact travels as a legible, open-standard text ledger
-# (resembling AGENTS.md or SKILL.md structures), presenting zero friction to
-# the receiver while packing a complete, verifier-enforced cognitive
-# environment under the skin. Concrete command-surface witness: `compile`
-# (ahc) is the workbench compiler, the walk writes the same context.txt that
-# `compile` reads, and the reading frame is one flag on the same command,
-# compile --frame lean --chop WALK_CHOP (2026-09-25). The user names the
-# goal; the framework stays behind it.
+# § THE DISAPPEARING INSTRUMENT RULE (banked 2026-07-19) -- Keep the framework behind the user's goal by routing the walk through the same context.txt and compile command and delivering a portable, legible, verifier-enforced text cartridge whose receiver needs no knowledge of the machinery.
 
 # THE MOTHER CAT KATA (MCK) (earmark-seeded 2026-07-28): the record-and-playback
 # session that carries the human by the scruff -- bookmark to bookmark, a popped
@@ -833,32 +601,10 @@ And then we demonstrate a level of competence like so:
 # § THE UNEXPORTED-SHIM RULE (banked 2026-08-01, second conviction 2026-09-14) -- a shell FUNCTION protects exactly one process, the interactive shell that defined it, because functions are not exported: every child inherits the ENVIRONMENT the shim neutralizes and none inherits the shim, so a script that invokes nix from inside the workshop shell dies at the loader on library skew while the same script passes on a stranger's clean shell, and the only person who can see it blames his own environment. Write the empty LD_LIBRARY_PATH assignment inline on EVERY branch of every script that reaches the nix binary (a no-op on a clean shell), and witness it from a compile, because prompt_foo's ! executor spawns children that inherit the pollution and never the function -- the failing lane in miniature. Sibling of LANE-DISAGREEMENT (a probe blind to a patch; this is an environment blind to a shim) and of THE THREE-TIER AMENDMENT (a name a child cannot resolve).
 # § THE SINGLE-CANDIDATE BLINDNESS RULE (banked 2026-08-01) -- Before trusting any selector, disambiguator, router, or precedence rule, create a second distinguishable candidate and witness selection across both; N=1 can only test fallback because correct selection and fallback may print the same answer.
 
-# - EARMARK: THE SUCCESS-ONLY WITNESS (banked 2026-08-02, cold-start ride six): a claim observed ONLY succeeding is indistinguishable from a claim that CANNOT fail, exactly as a guard observed only refusing is indistinguishable from one broken shut. Conviction: synthesize_and_play called wait() and DISCARDED the exit code while stderr went to DEVNULL, so a player killed by SIGFPE printed its reason into the void and the function returned True anyway -- speak_text reported success, the rider printed nothing, and the human heard silence beside a green console. The instrument that was supposed to report the failure was the thing hiding it. DISCRIMINATING QUESTION for act-claims: what does this print in the world where the act did not happen? If the answer is "success," it is not a receipt. This is also the missing third suspect from the 2026-07-26 THE DEMO WENT SILENT todo, which named transport and engine and never once looked at the subprocess exit status. Sibling of REFUSAL-ONLY WITNESS (one branch of a state machine) and of the MECHANICAL TEST in ATTRIBUTED-VOICE (a verb naming an act that no code performed).
+# § THE SUCCESS-ONLY WITNESS (banked 2026-08-02) -- Make action receipts discriminate failure from success by checking subprocess exit status and preserving failure diagnostics, and witness the failure branch before trusting a green that could also print when the action never happened.
 # § THE LANE-DISAGREEMENT WITNESS (banked 2026-08-01) -- When one lane is structurally blind to a patch, run the identical probe in both lanes and use the expected output disagreement as the witness; label every receipt with its lane.
-# CEREMONY IS SKIPPABLE; BARRIERS ARE NOT (banked 2026-08-01, the --yolo
-# ruling): a confirmation that authorizes a SEQUENCE may be skipped by flag; a
-# fence that authorizes each WRITE may not, ever, by any flag. THE TEST IS
-# WHETHER THE PROPERTY SURVIVES AS A SENTENCE: "nothing is written until the
-# human types the word" is provable in one clause only while the fence has
-# exactly one state. Add a bypass and it becomes "...unless the flag was set,"
-# which forces every reader to audit the call site -- and a property requiring
-# a call-site audit is a convention, not a property. COROLLARY -- THE BYPASS
-# USUALLY ALREADY EXISTS UNDER ANOTHER NAME: the unfenced guided-capture lane
-# is selenium_automation / !URL / ?URL. A flag duplicating a shipped capability
-# is the sibling-.md failure in flag form.
-# THE REFUSAL-ONLY WITNESS (banked 2026-08-01, ride-convicted): a guard
-# observed ONLY refusing is indistinguishable from a guard that is BROKEN SHUT,
-# and no read-only probe can tell them apart -- the open state is not
-# observable without an actuation. THE DISCRIMINATION QUESTION applied to
-# fences: "what does this print in the world where the fence is stuck?" The
-# same refusal, every time. Conviction: ~10 receipts across five compiles all
-# measured _capture_checkpoint saying NO (pipe, EOF, explicit stream, no
-# controlling terminal), and the first {"success": True} it ever returned was
-# 12:54:47.912 on the first real MCK ride. STANDING CONSEQUENCE: a fence is
-# UNWITNESSED until something has been observed passing through it; count a
-# guard's greens as evidence of the closed branch only, and say which branch
-# a receipt covers. Sibling of LANE-DISAGREEMENT (that one is a probe blind to
-# the patch; this one is a probe blind to half the state machine).
+# § CEREMONY IS SKIPPABLE; BARRIERS ARE NOT (banked 2026-08-01) -- Allow flags to skip sequence-opening ceremony only, never the per-write human fence, and use the existing unfenced capture lane rather than introducing a bypass that makes write authorization depend on auditing every call site.
+# § THE REFUSAL-ONLY WITNESS (banked 2026-08-01) -- Treat a fence as unwitnessed until an authorized passage through it has been observed, and label refusal receipts as evidence of the closed branch only rather than proof that the guard can open.
 
 # THE FLIGHT-RECORDER POSITIONING (earmark-seeded 2026-07-28, MCK build ride):
 # the product is NOT "compile a context payload" -- anyone concatenates files.
@@ -877,62 +623,17 @@ And then we demonstrate a level of competence like so:
 # the day the receipt exists. Ref:
 # /futureproof/dayton-wind-tunnel-auth-capture-mother-cat/.
 
-# THE ARTIFACT-OF-RECORD RULE (banked 2026-07-19): A discussion may produce
-# many complete cartridge snapshots. They are successive full editions, not
-# interdependent parts or deltas. The artifact of record is the single
-# hash-stamped snapshot (foo-<hash8>-NN.zip) produced by the final deliberate
-# compile after the flat narrative, router selection, actionable Prompt,
-# sanitization, and receipts have been reviewed. Attach that one file.
-# foo.zip is the mutable working alias; older numbered snapshots remain local
-# rollback history. The ticket or receiver owns the durable copy once attached.
-# No per-ticket directories, resettable counters, nested cartridges, or
-# correlation manifests are required until a real handoff demonstrates friction.
-# RENAMED 2026-09-29: the alias is qamy.ai.zip and the snapshot qamy.ai_<deed>-<hash8>.zip,
-# the deed number first so a plain sort reads in order and the door's name on the
-# file so a stranger who receives one knows where it is explained; snapshots minted
-# before that day keep their foo- names, because an archive is never renamed.
+# § THE ARTIFACT-OF-RECORD RULE (banked 2026-07-19) -- Attach only the final deliberately reviewed qamy.ai_<deed>-<hash8>.zip as the complete artifact of record, keep qamy.ai.zip as the mutable working alias and older snapshots as local history, and never rename historical archives or invent dependent per-ticket bundles without witnessed need.
 # § THE MCP RECEIPT RULE (banked 2026-07-29, amended 2026-09-27) -- a model-mediated tool call enters this system as a receipt or not at all: the endpoint and the four-tuple (server, verb, tool, args) emitted verbatim, with the HTTP method, the encoding that carried the arguments and the order where the API is order-sensitive, every value known without its parameter name spelled "value known, parameter unknown", and one line for what the harness may have added and the model cannot see (timestamps, locale, headers), stated as unknowns rather than omitted; web searches for research are exempt, a reply that made no call says "Tool calls this turn: none", and one that cannot spell its calls out says so, its readings confabulation until reproduced; plus a determinism class -- D0 deterministic, D1 stable read, D2 time-varying and INADMISSIBLE as evidence -- and an OBSERVED or INFERRED label on every line; the envelope is INFERRED until the operator's own replay client witnesses it once, then PINNED. A remote server's upstream traffic is invisible to every client instrument, so the MCP call is the deepest reproducible layer, and the manifest is a MAP a model cannot see go stale.
 # § THE TWO-RECORDER RULE (banked 2026-07-29) -- the FDR records machine-sampled parameters, the CVR records what the humans said; when they disagree the FDR wins on parameters and the CVR on intent. Three surfaces, authority only decreasing: a wire receipt persisted by our process, a tool transcript handed to the model, narrative prose -- and a sentence never carries more authority than the surface that fed it. Capable-of-FDR is not FDR until the response side is persisted; an FDR without its frame doc is no evidence. Hosted MCP flies on an experimental certificate: dispatch it when being wrong costs a rerun, the connector lane when output leaves with our name on it; report in NTSB shape, where UNKNOWN is a valid instrument reading.
 # § THE CREDENTIAL-LIFE RULE (banked 2026-08-06, amended 2026-08-29) -- a limit belongs to the credential's LIFE, never to the lane: a credential shorter-lived than the human loop cannot be witnessed GREEN from a compile, a static one can be, and the credential kind is per-server, never per-vendor. Chain the perishable one in the operator's terminal (mcp_warm.py --refresh && mcp.py ...) so the order lives in the command, read the clock note's magnitude rather than its colour, and remember that a GREEN check which cannot be re-run in the compile lane can still be READ there: the recording outlives the flight.
 
 
-# THE SECOND INTERPRETER RULE (banked 2026-07-17): this file has two
-# interpreters. CPython reads the path strings; the summoned model reads
-# the prose. Comments here are therefore PROGRAM, not annotation -- but a
-# program running on an UNPINNED interpreter (no Nix for the genie), so
-# execution may vary across models, versions, and days. Trust boundary:
-# only 📌 PINBOARD pins and EARMARK lines carry standing-instruction
-# authority across compiles; all other prose is context. Prose PROPOSES;
-# only the airlocked lane (apply.py exact-match, AST/Nix checks, git,
-# human clipboard actuation) ever MUTATES. Divergent execution therefore
-# costs a rerun, never a regression -- the nondeterminism is typed and
-# quarantined at the proposal stage, and replay convergence is measured
-# by foo-cartridge-replay-v1 rather than trusted on manners.
+# § THE SECOND INTERPRETER RULE (banked 2026-07-17) -- Treat router prose as a program for an unpinned model while keeping standing authority on the declared PINBOARD and EARMARK surfaces, quarantine its variable output as proposals, and mutate only through the exact-match and syntax-checked apply.py lane with git and human actuation.
 
-# THE EXIT-CODE PROTOCOL RULE (banked 2026-07-23, witnessed same day): a
-# program a shell hook invokes for a DECISION speaks through its exit code,
-# never stdout. Nothing parses it, so no forked grandchild can hold a capture
-# pipe open (the rgx/xclip deadlock is the conviction), and the renderer
-# becomes swappable without the caller learning anything. Witness: across four
-# compiles boot_menu.py's timeout policy flipped, its labels changed, and its
-# entire call site MOVED ~80 lines up runScript, while flake.nix's invocation
-# stayed byte-identical -- `python scripts/boot_menu.py`, then capture $?.
-# Corollary, THE FALL-THROUGH GUARANTEE: pair every such call with an
-# `if [ -f <script> ]` test and a pre-gate default, so the hook behaves
-# EXACTLY as it did before the gate existed when the file has not landed.
+# § THE EXIT-CODE PROTOCOL RULE (banked 2026-07-23) -- Make shell-hook decision programs return their decision through exit status rather than captured stdout, and preserve THE FALL-THROUGH GUARANTEE with a file-existence guard and pre-gate default so an absent script leaves prior behavior intact.
 
-# THE FAIL-OPEN THRESHOLD RULE (banked 2026-07-23, receipt-witnessed): an
-# interactive gate placed on a DEFAULT entry path must return the pre-gate
-# behavior on every path an automated caller can reach -- no tty, explicit env
-# opt-out, missing termios, unexpected exception -- because a gate that can
-# strand an unattended `nix develop` is strictly worse than no gate. Blocking
-# FOREVER is then safe, but ONLY strictly after the isatty gate: a human is
-# provably present before anything waits. Every unattended tty must DECLARE
-# intent (PIPULATE_BOOT_MENU=0) rather than race the gate -- autognome's
-# clean-entry protocol types synthetic keys into the same pty, and
-# "Environment" contains an `n`, which is a door. Witness: nontty_exit=0,
-# bypass_exit=0, and the quiet devShell (which never reaches the gate)
-# evaluating to an unchanged drv hash across the whole ride.
+# § THE FAIL-OPEN THRESHOLD RULE (banked 2026-07-23) -- Make default-entry interactive menus return pre-gate behavior on non-TTY, explicit opt-out, missing-termios, and exception paths, wait only after isatty proves a human is present, and require unattended PTYs to declare PIPULATE_BOOT_MENU=0 rather than racing the menu with synthetic keys.
 
 # THE SAME-CAR LABEL RULE (banked 2026-07-23, operator's ruling; sibling of
 # GENERATED-NOT-AUTHORED): when a gate MOVES, every string describing what it
@@ -942,19 +643,7 @@ And then we demonstrate a level of competence like so:
 # AT the decision point: labels, subtitles, confirmations, and any promise of
 # a deadline that no longer exists.
 
-# THE ALIAS-DISPATCH RULE (banked 2026-07-23, RETRACTING the same day's DIGIT
-# NAMESPACE RULE -- the mechanism that rule assumed does not exist): a shell
-# alias is not a callable object. Bash expands an alias only when it is the
-# literal first word a parser reads; `cmd=warm; $cmd` searches functions,
-# builtins, and PATH, finds none, and reports command-not-found. NOTHING can
-# invoke an alias on a human's behalf -- no menu, no wrapper, no dispatcher.
-# Conviction: bare `1` resolved correctly to `warm` and died as
-# `warm: command not found`, while row 8 (`pu`, a FUNCTION) would have run --
-# half a menu working for a reason invisible from the menu, the worst failure
-# shape there is. STANDING CONSEQUENCE: if a word must be reachable by
-# anything other than a human typing it, define it as a FUNCTION. Otherwise
-# let the menu print words and let the human type them; a list the eye reads
-# and the hand retypes has no second ordering to drift.
+# § THE ALIAS-DISPATCH RULE (banked 2026-07-23) -- Define dynamically dispatched same-shell commands as functions rather than aliases, or have the menu print the alias for the human to type, because a command name stored in a variable does not undergo alias expansion.
 #
 # § THE THREE-TIER AMENDMENT (banked 2026-08-06) -- Classify shell command reach by caller: aliases are human-only, functions are same-shell only, and anything a child process must invoke belongs as a derivation on PATH; gate the claim by exercising the hardest reachability boundary, not merely naming or argument forwarding.
 
@@ -970,7 +659,7 @@ And then we demonstrate a level of competence like so:
 
 # § THE CROSS-PLATFORM EVAL RULE (banked 2026-08-04) -- Before shipping a flake change to buildInputs or shellHook, evaluate both Linux and Darwin default devShells with nix eval --raw .#devShells.<system>.default.drvPath, because platform-restricted inputs fail before hooks run and quiet cannot witness default-only hook changes.
 
-# THE STAT-CACHE FALSE POSITIVE (banked 2026-08-04, receipt-witnessed both lanes): `git diff-index --quiet` decides from the index's CACHED STAT DATA -- dev, inode, mtime, size -- and short-circuits before comparing content. Any operation that rewrites files while carrying an index along (cp -r, rsync without -a, a restored backup, a container layer) makes a byte-identical tree report DIRTY. Receipt: clone -> `cp -r src/. dst/` -> after_cp=1, after_refresh=0, reproduced identically in the operator and compile lanes. WHY IT SURVIVES SO LONG: `git status` refreshes the index as a side effect, so the false positive has ALWAYS healed by the time a human types the diagnostic. The symptom is structurally unobservable by the only method anyone reaches for. STANDING CONSEQUENCE: any automated dirty-tree check runs `git update-index -q --refresh 2>/dev/null || true` first. It clears ONLY stale entries, so a genuinely modified file still reports dirty and a halt-don't-destroy gate keeps its teeth.
+# § THE STAT-CACHE FALSE POSITIVE (banked 2026-08-04) -- Run git update-index -q --refresh 2>/dev/null || true before every automated dirty-tree check so a copied index's stale stat cache cannot masquerade as changed content while genuine modifications still stop destructive actions.
 # THE DUAL-LANE WALK SCHEMA (banked 2026-08-25, receipt-witnessed): a trail stop accepts exactly one of `url` (public, direct HTTP/HTTPS) or `url_env` (sensitive, client-isolated), validated via exact set difference. Direct URLs surface openly on consent cards; environment variables surface as requirements on the human. Connectors declare honest execution targets, and `walk-cartridge-integrity-v2` enforces ordered destination disclosure. Conviction: the schema required url_env on every stop, so public pages paid for an env var nothing collected; a required field is a BILL, and you charge it only when something collects.
 # THE FIRST-CELL BLAST RADIUS RULE (banked 2026-09-01, two convictions in two consecutive rides). Anything the FIRST executable cell of Onboarding.ipynb touches -- including every module it imports at load time -- prints to a stranger at the one moment they cannot tell noise from failure. Both convictions were trivial in SUBSTANCE and severe in POSITION: a KeyError from a read-before-write, and a SyntaxWarning from an unraw ASCII-art literal. Judge a defect in that blast radius by WHERE it fires, never by how small it is, and hold first-cell code to the standard of a cold install rather than the standard of the maintainer's warm one.
 # THE ACTUATOR'S OWN DIAGNOSTIC RULE (banked 2026-09-01). apply.py's AST airlock compiles candidate content before writing, so it printed `<unknown>:985: SyntaxWarning: invalid escape sequence` on THREE consecutive `app` runs -- correct message, correct line number -- and it read as noise FROM the tool rather than a finding ABOUT the file. The `<unknown>` filename is what disguised it: a diagnostic with no filename reads as the tool complaining about itself. A LINE NUMBER in an actuator's output is a finding about the FILE. Read it, or the instrument you built is reporting to nobody.
@@ -994,7 +683,7 @@ And then we demonstrate a level of competence like so:
 # THE DIFFSTAT IS NOT THE BLOCK COUNT (banked 2026-09-15). git matches every line a SEARCH and its REPLACE share and reports them unchanged, so a diffstat's insertions and deletions read LOWER than the block lengths by the shared count: blocks of 120 and 151 read +110/-139, twelve bare # separators and carried-over lines matched. Only the net is invariant. Predict the net from the blocks; read insertions and deletions as floors. Sibling of COUNT THE REPLACE AFTER YOU WRITE IT.
 # THE UNSORTED CAP (banked 2026-09-15). rg -l and a multi-file rg -n print files in the order their searches finish, so one census printed nine files in two orders across the hand-run and compile lanes, and a head -N on that output cuts a different subset each run. Sort before you cap, and compare unsorted listings as sets. Sibling of THE CAP THAT HID THE ANSWER.
 # THE PAGE THAT HOLDS IN BOTH WORLDS (banked 2026-09-15, witnessed once). A public page that asks a stranger to test a machine is written before anyone knows what the machine's evidence will carry, so its instruction must stay true either way. Stop three said a good answer admits the preview lacks the server's sentence; the preview lacked it, ChatGPT 6 said so and pointed at source.html, and the page taught the lesson instead of promising a word the bundle never held. THE CABOOSE-VERDICT COROLLARY aimed at a reader who cannot ask a follow-up.
-# THE UNASKED SECOND WINDOW (banked 2026-09-16, operator-convicted three times in one minute). A newcomer's word opens what its name says and nothing more; a second file in a split, added to solve a problem the operator had not raised, is a second lesson at the exact moment the first was meant to be the whole lesson, and it lands in the same car as the ruling they did ask for. Conviction: epr opened the prompt router and prompt.md in one -o split for one turn, the operator hit the split three times on the way out the door, and the revert was one car. Same disease, smaller: the ignition spelling handed over was cpr "smoke", a probe's argument wearing the command's clothes. Name the ignition in the newcomer's own spelling, and answer the unraised question as a TODO, never as a feature riding the train. Sibling of THE COACHMAN'S VETO: a train is a proposal, and an unasked car costs exactly what a wrong one does.
+# § THE UNASKED SECOND WINDOW (banked 2026-09-16) -- Make a newcomer's command open only what its name promises, give ignition in that command's own spelling, and record unasked enhancements as TODOs instead of adding extra windows or features to the requested change.
 # § THE FLAG WENT COLD (banked 2026-09-17) -- Before deferring the operation that sets a readiness flag, find every reader and update all callers in the same change to ask the capability question they actually mean, so a fresh process cannot mistake not-yet-used for unavailable.
 # § THE DOOR NAMES THE FOLDER (banked 2026-09-14) -- a script arriving through a pipe cannot learn which address served it ($0 is the word bash and the pipe carries no address), and two copies of one file drift, so the DOOR names the default: the body carries one contiguous placeholder, the door that wants a different default stamps it with nginx sub_filter (sub_filter_types for the served MIME type, sub_filter_once off), and the script tells stamped from unstamped by comparing against the same word spelled in two halves, which no substitution can reach. Gate every door with the round trip: reverse the one token in the served body and the hash must equal the repo file. A URL stamp needs its own placeholder, never a hostname rewrite, because KEY_URL stays at the old door on purpose. Witnessed 2026-09-14: npvg_door=npvg, pipulate_door=pipulate, 064cad99 on both sides. Sibling of THE WRITE-SIDE / READ-SIDE SPLIT: the folder and the app label were one string answering two questions.
 
@@ -2255,7 +1944,7 @@ MATCHBOOK_CHOP = r"""
 # § THE PLACEHOLDER IS A DECODER RING (banked 2026-10-05, convicted at deeds 61 and 62: a bare-word table run over the whole book replaced eleven public senses of client words, each placeholder beside the public sense that names it, and the receipt that banked the restore then described those senses in this public file) -- read a scrub table's word diff before its commit, restore every replacement whose word meant something public there, and describe a restored sense in no tracked file, because a placeholder decoded once is decoded wherever it appears. Value: GLOSSARY.md entry owed.
 # - TODO (2026-10-04, THE SCRUB'S REMAINDER): (1) the history: git filter-repo over the public repo, ruled once the -G census names the oldest commit carrying a name; the tax is every --ff-only checkout reset by hand, commit hashes cited after that date broken, old SHAs still served by GitHub until a support purge, forks and clones keeping everything, and until then the scrub commit's own diff indexing every name; (2) PyPI sdists already published, if the local sdist carries foo_files.py; (3) the anyone-with-link Google Doc copies googledocizer made of affected posts; (4) the same names into ~/.config/pipulate/pii_substitutions.txt so the publish lane catches them, its format unread here; (5) employer-internal prose (chapter XVIII's BOTIFY CORPUS block, admin endpoints, project counts, Jira field and filter ids) moved behind a one-line pointer into Workshop/corporate, operator's ruling; (6) a post slug that carries a name is a URL decision (redirect or keep), never a sed. Gate: the tree census reads 0 files, and the -G census reads 0 commits after any rewrite. READ 2026-10-04 (deed 60): the tree census 0 files with SCRUB_GO; the book 20 -> 1, the one the census's own false positive; no post filename carries a name, so (6) has nothing to rule; (2) the 2.77 sdist carries no foo_files.py, and whether it carries the old connector comment is deed 61's scan; (1) RULED (broken hashes accepted, PyPI and forks deferred) and run from a fresh bare clone, because ~/qamyai's census reads only back to its install (THE SHALLOW CENSUS). READ 2026-10-05 (deed 61): (1) done, ed99b358 on GitHub, the oldest name-bearing commit 2025-10-28; (2) the 2.77 sdist reads names=0 in the compile lane (the hand lane's line carried no file name, typed in a folder with no dist/, the null world); (3) the Doc copies still hold the original text (INFERRED, no publish ran), which for the eleven over-scrubbed posts is the right text; (4) and (5) stand; (6) nothing to rule. (7), new: the table's bare brand words catch public-company prose as readily as client work, so the table runs on a new article with its word diff read before publish and never blind over the archive; narrowing those rules to client-shaped spellings (org slugs, client hosts) is the operator's ruling. (8), new at deed 62: trimnoir tracked a file named patch and the blog served it (mikelev.in/patch 200 -> 404 once untracked), so each patch written in that folder was public until the next replaced it; which versions deployed and whether any named a client is unread (git log -- patch in trimnoir; Honeybot's access log for /patch), and the table's own version rode only the intermediate commit 999e0dfd8, INFERRED never deployed, since one push carried it and its successor. Gate for (8): every deployed version of patch read once and its names counted.
 # - TODO (2026-10-05, THE STALE SHALLOW FILE): ~/qamyai's .git/shallow outlived the reset and names a commit the rewrite orphaned, so git rev-parse --is-shallow-repository reads true over a history rev-list counts whole (9853 on main); move it aside with mv -v once every line it lists fails git merge-base --is-ancestor against HEAD, so a history census there stops lying. Gate: is-shallow reads false and rev-list --count HEAD is unchanged.
-# - EARMARK: THE SHALLOW CENSUS (banked 2026-10-04, witnessed at deed 61: in the compile lane ~/qamyai read true with 9853 commits after the reset, the shallow file outliving it as forecast and naming a commit the rewrite orphaned, while the fresh bare clone saw the oldest name-bearing commit a year back): a git log census in a shallow clone reads the clone's boundary as the oldest commit, because git treats the boundary as a root whose diff adds every file; ~/qamyai came from the installer's clone (INFERRED depth=1, THE TEST-RIG PROVENANCE RULE), so its -G census named the install day as the first commit carrying a client name, a week late, and a rewrite from that clone could push a history that starts there (INFERRED). Read git rev-parse --is-shallow-repository beside any history census, and rewrite history only in a fresh full clone whose census sees a known member before it may read zero. Sibling of A CENSUS CARRIES A KNOWN MEMBER and THE TAPE IS NOT THE WORK.
+# § THE SHALLOW CENSUS (banked 2026-10-04) -- Read git rev-parse --is-shallow-repository alongside every history census, and perform history rewrites only in a fresh full clone whose census finds a known member before accepting zero matches.
 # § ONE INSTALL, ONE PIPE (banked 2026-10-04, the operator's ruling) -- curl | bash runs once, at install; everything after runs in the pinned workshop, so a walk is YAML read by the workshop's PyYAML, and only the installer and the launcher's bash above its workshop check stay stdlib-only.
 # § THE INTRODUCTION IS SKIPPED BY DEFAULT (banked 2026-10-04, the operator's ruling) -- a trail may carry an introduction, stops for someone who has never been there, played only by walk NAME intro (mother_cat.py --with-intro) and announced by one printed line that is never spoken; an expert reads past the line and a newcomer follows it.
 # § NARRATION NAMES WHAT A READING SHOWED (banked 2026-10-04) -- guidance names no link, tab or location that no capture has shown; where it cannot know, it asks the person to look and lets the capture answer.
@@ -2280,7 +1969,7 @@ MATCHBOOK_CHOP = r"""
 # - TODO (2026-09-29, THE UNUSUAL LINE; the operator's ask at deed 1692: "what the weird exception, attribute or detail makes this case different or unusual"): the SVB board is the exceptions desk and In Review its strangest column, so the post and the deliverable each carry one line, before the finding, naming what is unusual about the ticket. The deliverable's section landed at deed 1692 (What makes this one unusual: a US-only site, a client-side exception in the vendor's render that a real Chrome does not throw, access blocked after a few renders, three PocketRender confs on one ticket, a field reading Rules update not needed beside a comment reading JS update needed: yes, an origin that varies its HTML on Sec-CH-Viewport-Width); the post's line (*Unusual:*, one line, the cap 13 to 14) waits on the operator's ruling in SVB_PROMPT.md. In the same car: the template's fixed italic line says the live rules were read, and at deed 1692 they were not (no local pull; ATTRIBUTED-VOICE), so svb fills a {LIVE_RULES} clause from the first line botify --rules prints; the post at deed 1692 departed from the fixed shape by that clause. Gate: the post on the second ticket carries both, filled by svb. READ 2026-09-29 (deed 1696): the Unusual line LANDED in the operator's own shape at cfd2f69 (no line cap now: one line per field and per rule, the Difference lines in words); the live-rules line is a field the model fills from the botify --rules receipt (Live rules today: not pulled at 1693), not yet filled by svb; the deliverable half is moot (THE POST IS THE DELIVERABLE).
 # - TODO (2026-09-29, THE CORPUS CENSUS; the operator's ask at deed 1692: "5 to 10 interesting things that might not be noticed at first glance", read as a newcomer with Dory syndrome needs them): the local corpus (Prime, 2026-09-27: 229 sitecrawler files with 1,958 mini entries; 224 speedworkers files, 1,821 section lines and 4,830 config lines) read for its shape, each finding one ! line: the hosts blocked most (every - line, by host, uniq -c) and the hosts forced past robots.txt (every ++, by host; the SVB-115 shape, a ++ on the site's own host, counted); what a rule text opens with and what it closes with (the leading token of line 1 and of the last line, uniq -c: deny-all-then-allow or allow-all-then-deny, and how many sets close on -*; the two SVB specimens both close on -* after their allows and flags, deny by default with !dom and !2tld the implicit allowlist); the flags by count and by first appearance (!nojs-on 4xx 5xx from 2026-06-04, !custom-dom-header and !no-header from 2026-07-29, !follow, !fake-preflight: how many sets carry each, so a new default's rollout is a number and not a Slack thread); what no rule does (the flags never used, the hosts no set blocks); the house template's fingerprint (its comment lines verbatim, how many sets still carry them); the sections whose desktop and mobile texts differ (155 of 577 at deed 1628); and one site's mini and SpeedWorkers texts side by side, to read what the crawl allows that delivery cuts. One compile of its own with the awk censuses in place of the body (THE TASTE; botify --rules whole is a quarter of a million tokens), the findings landing in Workshop/corporate/botify/ beside the reference, each with the command that produced it. Gate: a page of ten findings, every number reproducible by one ! line.
 # - TODO (2026-09-29, nixops takes an argument): flake.nix's nixops is an alias whose body is a subshell, so nixops --installer expands to a subshell followed by a word and dies at the parser, the 2026-08-01 release() shape; the cure is a function, nixops() { (cd "$PIPULATE_ROOT" && ./nixops.sh "$@"); }, one line when flake.nix next rides, ignition exit then nix develop. Until then the spelling is ./nixops.sh --installer from the repo root. Gate: type nixops at a (nix) prompt reads "nixops is a function".
-# - EARMARK: THE FORECAST NAMED THE PROSE (banked 2026-09-29, convicted at deed 1671): a prediction about an instrument's WORDING is a prediction about the instrument's version, never about the world. curl -v's "SSL certificate verify ok." never printed on Honeybot's build, the grep read the content-type where the sentence was forecast, and the miss was the forecaster's while the certificate verified. Forecast the value an instrument exposes on purpose (%{ssl_verify_result}, an exit code, a count, a verdict token) and read its prose as decoration; when only prose is available, name its ABSENCE as one of the worlds. Sibling of THE GATE SPEAKS A VERDICT and THE SILENCED CHANNEL; cousin of INCOMMENSURABLE MEASUREMENTS.
+# § THE FORECAST NAMED THE PROSE (banked 2026-09-29) -- Forecast an instrument's deliberate values, exit codes, counts, or verdict tokens rather than incidental prose, and include missing wording as a possible outcome whenever prose is the only available signal.
 # § THE FOLDER IS A VARIABLE (banked 2026-09-29, convicted twice at deed 1677, graduated at deed 1679) -- app resolves Targets from PIPULATE_ROOT and nothing else in a hand fence does, so every hand fence opens with cd "$PIPULATE_ROOT" && pwd and its first receipt names the folder every later line ran in; and a hand step prints a different thing in the world where it did nothing (rm -v and never rm -f, mv -v, a verdict token), so no "You will see" is true in both worlds. Value: GLOSSARY.md.
 # § A SED RANGE WITH NO END RUNS TO EOF (banked 2026-09-29, convicted at deed 1693's Car 3, read at 1695 and 1696) -- a sed address range whose end pattern never matches deletes from its start to the end of the file, and sed -i has already written when a guard after it prints; so a range delete counts its END anchor as exactly one BEFORE the sed runs (test, then sed, never sed then test), the guard names the zero-blocks world beside the two-blocks world, and the STOP line prints what the sed did rather than "nothing was cut". Conviction: the operator had commented the live board out before the train (THE OPERATOR IS A VARIABLE), the end anchor matched nothing, the range ate Contexts 1 through 4 and both commented boards, the guard said STOP_blocks=0 with "nothing was cut", Car 4 appended a fresh board, and the 1695 compile read no Context 4. Value: GLOSSARY.md.
 # § THE TAPE (banked 2026-09-29) -- Put durable work on the next compile's tape: refuse any repo-output car whose result the next compile will not read back, use the reply itself as the deliverable, and reserve declared off-tape paths for configuration and state; keep the full value in GLOSSARY.md.
@@ -2299,7 +1988,7 @@ MATCHBOOK_CHOP = r"""
 # - TODO (2026-09-28, THE ARTICLE LARGER THAN A MINUTE; read at deed 1647 off the grim run): a 915,721-char article estimated 228,930 tokens at chars/4 and the API refused both models at generate_content_free_tier_input_token_count, limit 250000, then the loop waited 57 s for a minute the request could never fit in; the estimate now divides by 3.5, a quota on the input-token metric whose limit is below the estimate stops the run with a SIZE verdict, and the publish words forward their arguments to the editing script alone. The escape today is a key named by hand: a paid Gemini key (billing on one project lifts the minute into the millions on the same tokenizer and a million-token window; a Flash-class price makes such an article cents), or another provider through --model with -k, the wallet's flat alias-to-secret shape unchanged; the window of any other provider is checked against the size line before trusting it. The creative solution for a free key, unbuilt: a map-reduce lane for the editing pass, the article cut at paragraph seams into pieces under the minute, each piece asked for one or two subheadings with a verbatim after_text_snippet and a three-sentence summary, then the template run once on the head plus the summaries for the frontmatter and the analysis, the subheadings merged in article order; N+1 requests against a day of twenty, so a 900K article costs eight; or the cheaper lossy twin, --trim with the middle elided and subheadings for the ends only. Needs editing_prompt.txt and contextualizer.py (the sibling ring) in the payload. Gate for either: one oversized article published on a free key with the spine, the subheadings and the collision guard intact. RULED 2026-09-28 (deed 1648; the Workspace key read free_tier too, and the operator: "not gonna pay", "I don't think chunking is good"): the fences leave first. Past the free minute, or on --lean, every fenced block leaves the editor's copy for a one-line bracketed stand-in naming its language and line count, an editor's note closes the copy, and the prompt is rebuilt and re-read; the post is built from the original article_text, so every snippet the model quotes from prose still matches, and the note forbids quoting a stand-in. The spine lands in the template before the article, so an article quoting the placeholder is left alone. Map-reduce and --trim are dropped. b2 sweeps the wallet through backup-home.py's Key Configs include (pipulate at line 63; the stale articleizer entry beside it is harmless). Gate: the fence probe reads the lean copy under 250,000 on the specimen, and one oversized article publishes on a free key with its subheadings placed. READ 2026-09-28 (deed 1650): the lean copy read 87 fences, 894,222 chars to 106,111, about 30,317 tokens, and grim's scissors line 261,634 tokens to 36,527 on a 127,846-char prompt; then the API failed three more ways: "high demand" on Lite every time at any size, so it was never the size; "The service is currently unavailable" with no status code, read as unrecoverable; and a ring of 26 that never turned, its rule wanting quota from every model while Lite only ever said high demand, the operator cutting it at the fourth wait. The same metric, free_tier_requests, carried limit 5 (the minute) and limit 20 (the day). RULED (the operator: "make it give really good instructions on how to do this in the Web UI, can we make it super simple?", "anti-fragility, always another way?"): THE WEB LANE. Every exit that leaves no instructions (unrecoverable, exhausted, SIZE, a wait cut by hand, or --web on purpose) puts the prompt on the clipboard and prints four steps: paste into any AI chat in a browser, copy the whole reply, press Enter; the JSON is read off the clipboard, refused if it is the prompt's own schema pasted back, cached, and the post built by the same code as after an API answer, article.txt untouched, which the old --copy then --local lane could not promise because the publish word rewrites article.txt from the clipboard first. The ring turns once a quota is reported on a key and every model on it has failed, or once its ten attempts are spent, and leaves the last key the same way; unavailable and overloaded are transient; one parser serves both lanes. Gate: one publish end to end through the web lane, and one ring turn witnessed on -m all.
 # - EARMARK: THE TWIN IN THE WEB UI (banked 2026-09-28, the operator's words at the dismount, "so the human can quality assure the LLM quality assuring"): every back-end receipt on a board names its equivalent in the Web UI beside it, a link or a place a skeptic can open and read the same numbers by hand, because the demo that builds confidence is two columns, what the command line did and what the same thing looks like in the app. The twins on the SVB board, banked into CONTEXT_TEMPLATE.txt at deed 1644: jira KEY has https://botify.atlassian.net/browse/KEY (the post's second line since 1644); render diff has the ticket's two PocketRender links, which open with their rules shown; the optics have the page in a Chrome tab (view-source: for panel 1, DevTools' Network for the wire truth, Elements for the hydrated DOM); robots.txt has the URL itself; botify --rules has the crawl config in the Botify admin (projectsettings, an id not on the ticket, THE SCREENSHOT IS NOT A LOCATOR's page), owed as a derived link. Rule: a receipt with no twin named is a receipt the skeptic cannot check, and a board line without one is not finished. Sibling of THE MCP RECEIPT RULE (the call spelled out) and THE FLIGHT-RECORDER POSITIONING (the wire the model cannot fake): the twin is the human's replay.
 # - TODO (2026-09-28, THE KATA'S PROMPT; the operator's four points at deed 1643: the next game is easy to play, the archive feeds any capable model, every model answers in one shape, a slice of the answer pastes into Slack where the tickets are speed-dated): the shape is fixed by the prompt and not by the model, so Workshop/corporate/tickets/SVB_PROMPT.md is the kata's prompt (the board's receipts named, the crawler rubric, the rules of the answer, the post's six-line Slack shape with a Drive-link slot and the deed off the seal footer, the receipts as claim-dash-lens lines, the deliverable corrected or created, then the house train), and svb.py --prompt writes it filled to PIPULATE_ROOT/prompt.md (INFERRED the file compile reads: bjj cd's to the root, .gitignore lists prompt.md there, and the Summary's Command line names no prompt file; deed 1644's prompt_foo.py --help names the positional), refusing a prompt.md whose first line is not the svb marker so an article in progress is never overwritten (the refusal by hand at 1643 is the witnessed branch; the pass branch to /tmp the same hand step, and to prompt.md itself on the next article's first demo). The demo: svb KEY --write --prompt, then compile; the clipboard holds the payload, the newest zip holds prompt.md (the kata's 40 lines) and payload.md (the board). SIZE, the reading that rules the next article: this payload verified 430,766 tokens, the article's prompt 180,113 of them, the router 134,633, the PDP's six lenses about 66,000 (outline 22,906, SEO 21,277, links 16,924, wire 4,642), the fixed tail about 10,000; the kata's archive is therefore about 240,000 tokens with the router and about 106,000 without, and "drop it into Haiku" needs the second number: the router line leaves the board, or the board compiles --frame lean, the operator's ruling. Gate: one archive from svb KEY --write --prompt then compile, dropped into two models, both answering with the post first in the fixed shape. READ 2026-09-28 (deed 1644, the dismount): the kata's first end to end by hand at 1643's Car 6: --write appended (the operator had commented the block out with Context 5, so no START line stood; THE OPERATOR IS A VARIABLE) then replaced, 68 lines each; --prompt refused prompt.md holding this article (the refusal's own path names the file compile reads, so PIPULATE_ROOT/prompt.md is OBSERVED as the default by the payload's own Prompt section) and wrote /tmp/svb115_prompt.md, its first line the marker; at 1644 the board read back from disk (^@https 2, ^!https 0, the PDP's headers stamped 09:22:43 and robots.txt's 09:23:12, deed 1643's flights, no CAPTURE FAULT), so the second compile cost no flight; --prompt 9, sigil 8, the post 1. The size held: 503,750 verified with the article at 229,427 and the router at 136,202. prompt_foo.py's positional stayed unread (the compile lane's OUROBOROS LOCK refuses the compiler inside its own executor; by hand the 14-line cap cut the usage before it, THE CAP THAT HID THE ANSWER); the router's own COMMAND lines spell a prompt file or an @VARIABLE as the positional, INFERRED bjj PATH works, a hand reading of --help past line 14 owed. The ticket's URL joined the post's second line at the operator's ask (https://botify.atlassian.net/browse/KEY, filled from {TICKET}), and the board's captions name each receipt's twin in the Web UI (THE TWIN IN THE WEB UI).
-# - EARMARK: THE BROWSER IS NOT A CONFIG FILE (banked 2026-09-28, the operator's ruling at deed 1642): a per-profile browser mutation, a chrome://flags toggle or a setting, that no flake or equivalent manages is a "works on my machine" mutation and is refused, even when it is the vendor's documented prerequisite; a browser feature reaches this system as a switch on the flake's pinned Chromium, a line in code the same on every machine, or it does not reach it. Conviction: the WebMCP relay's prerequisite, chrome://flags/#enable-webmcp-testing, was absent from Prime's everyday Chrome 150 and would not have been toggled had it been present; the PocketRender render farm is driven from the command line or not at all, and its details land in payload.md or it did not happen (the operator's words). Corollary: a vendor note that says "set these flags" names a per-machine state, and the WORA lanes are the switch, the wire-truth reading of the vendor's own backend calls, or waiting. Sibling of THE STEWARDSHIP RULE (leave the machine unchanged) and of THE MAINTAINER-INVISIBLE LANE (a state one machine holds and no stranger's does).
+# § THE BROWSER IS NOT A CONFIG FILE (banked 2026-09-28) -- Express browser prerequisites as reproducible switches on the pinned Chromium or equivalent code, use the vendor's backend wire interface, or wait; never require an unmanaged per-profile setting or chrome://flags mutation.
 # - TODO (2026-09-28, THE DING BEFORE THE BROWSER LEAVES; the operator's ear at deed 1640): on a guided capture the tick stops and the ding fires when driver.get returns, which is before the lenses are harvested and the window closes, so the human hears "done" while a window still stands and reads it as leave to close it by hand; the tick should run until the browser is gone (driver.quit returned, or the process no longer alive) and the ding fire then, so the window vanishing and the ding land together to the senses. tools/scraper_tools.py (the setsid loop at :97, the SIGKILL and ding at :115, ding=True at :659 as of 2026-09-19); the ordering is the whole change, one car when it rides.
 # - TODO (2026-09-28, THE RELAY PIN; the operator's word at deed 1640, "there's always a Nix way"): npx -y @mcp-b/webmcp-local-relay@latest re-resolves the package on every run (a pip, GRAFT NOT SEED) and needs node and npx on PATH, which Prime has from packages.nix (npm 10.9.3 by its own notice) and the Mac and a stranger's install do not; the pin is a version in RELAY_CMD first (npm view @mcp-b/webmcp-local-relay version by hand names it), nodejs in flake.nix's commonPackages next, then a buildNpmPackage derivation with a lockfile hash so the word render carries its relay the way the connector words carry their python; --relay names a Nix-built binary the day it exists. Gate: render tools runs on a fresh Mac install with no npx on PATH.
 # - TODO (2026-09-28, THE FENCE INSIDE THE FENCE; ruled writing deliverable.md at deed 1640): a WRITE_FILE body that itself carries a code fence rides inside the car's own three-backtick fence, and the copy button reaches only the fence body, so a backtick fence in the body ends the car early in the chat window; the body spells its fences with tildes (~~~diff), which CommonMark and any renderer accept and which no backtick fence closes, and the house-subset renderer accepts both spellings. Home: checklist item 10 in prompt_foo.py, one sentence, when prompt_foo.py rides.
@@ -2525,7 +2214,7 @@ MATCHBOOK_CHOP = r"""
 # - TODO (2026-09-30, THE TAPE LEAVES THE HOUSE): flake.nix grew mirror, a packaged word that lists every *.git under another machine's ~/git-repos over SSH and keeps a bare mirror of each at the same path here (clone if new, fetch --prune if not, the newest commit per repo printed, DONE or INCOMPLETE or STOP on the last line), refusing on the source machine itself; the Mac pulls, so it needs no sshd, and every ssh shares one ControlMaster socket. It is the Mac half of THE TAPE LIVES IN ONE PLACE and of the line above; the SSD bundle half stands. OPEN: whether trimnoir's history sits under ~/git-repos at all (its push is the Honeybot deploy; the remote census answers it); the Mac's read copies (a clone from the mirror with its push URL disabled, because Prime is the one writer and b2's nightly push would meet a non-fast-forward if the Mac wrote too) are a hand loop today and a switch on mirror or a sibling word later. Gate: the Mac's mirror paste reads DONE with each repo's newest commit equal to Prime's own receipt for that repo. READ 2026-09-30 (deed 1726, Prime's receipts before any Mac run): sixteen bare repos, myjournal.git at 7.5G and personal.git at 226M among them, so the operator RULED a whitelist before the first Mac run: botifyml, clients, corporate, grimoire and trimnoir are the word's default (PIPULATE_MIRROR_REPOS and arguments replace it), a named repo the source lacks prints ABSENT beside the source's roster, and the rest stay home, the Vault blog included. THE BOOK'S TAPE WAS NINE MONTHS STALE: trimnoir.git read 740K with its newest commit 2025-12-23 while the blog publishes daily, because backup_commit = false skips b2's push along with its commit and publish pushes only to its upstream on Honeybot (INFERRED; deed 1727's upstream probe reads it), so the book's history lived in Prime's working copy and on Honeybot and nowhere under ~/git-repos; one push by hand to local_origin, no -u, rides deed 1726's train, and the standing cure is the TODO below. git-upload-pack on the system path, sshd active, the timer's last run 00:00:05, and the word's STOP on an unresolvable host all read as forecast. READ 2026-09-30 (deed 1729, the dismount): the gate is met: the Mac read mirror: DONE -- 5 of 5, five cloned lines whose newest commits equal Prime's per-repo receipt row for row (botifyml 2026-09-27 10:15:06, clients 2025-04-01 07:59:22, corporate 2026-09-29 18:42:18, grimoire 2026-09-30 00:00:05, trimnoir 2026-09-29 21:49:24), the header naming the five, and the word's store path moved idvzw6sx -> n0cn1bgz on Prime after exit then ndq. The routine is b2 on Prime (or the midnight timer), then mirror on the Mac; two repos fall outside it, trimnoir (THE BOOK'S TAPE, below) and clients (THE CLIENTS TAPE IS A FOSSIL, below). UNWITNESSED: the read copies (the hand loop was not run), a second run reading fetched, the word off the LAN. The read copies stay a hand loop; a switch on mirror once a second paste shows they earn one, never a second word. WIDENED 2026-09-30 (deed 1730, the operator's ask): personal joins the whitelist (six by default), and the copies became the word's default rather than a switch: ~/repos/<name> on the Mac, cloned from the Mac's own tape, push URL disabled, refreshed by pull --ff-only with a HELD line where a copy has local work or is not a copy of the tape; corporate and personal sit beside the blogs there because the Mac's Workshop holds the Mac's own tiers. mirror derives ~/.config/pipulate/blogs.mirror.json from the source's blogs.json (keys and aliases unchanged, paths moved to the copies, pipeline emptied, Drive and Confluence ids cut), the Darwin branch reads it at shell entry, write_post pins the shadow, and publish refuses on darwin. The compiler on the Mac reads the copies too, so THE ZERO GATE TODO's cure gates on any PIPULATE_BLOGS_CONFIG, not the shadow name alone. Gate: on the Mac after re-entry, posts -t grim --fmt paths prints paths under ~/repos/grimoire/_posts, and a second mirror run reads fetched with every copy current. READ 2026-09-30 (deed 1733): half the gate met: after re-entry PIPULATE_BLOGS_CONFIG named blogs.mirror.json, posts -t grim printed three paths under /Users/michaellevin/repos/grimoire/_posts, posts printed three under ~/repos/trimnoir/_posts dated 2026-09-29, rgx -t all 3 nix read the three-blog header, and the fm cache read 1505 then 1616 hits, the book's copy equal to Prime's 1,505; the first run read personal cloned, five fetched, every copy cloned and DONE -- 6 of 6. The other half, a second run reading pulled or current on every copy, and every HELD branch, stay unwitnessed; checkout independence is witnessed from ~/qamy alone and holds by construction (every path hangs off HOME).
 # - TODO (2026-09-30, THE BOOK'S TAPE): b2 keeps ~/git-repos/trimnoir.git current without deploying: blogs.nix grows backup_remote = "local_origin" on trimnoir, and backup-home.py, for a blog whose backup_commit is false, pushes the current branch to that remote by name (git push <remote> <branch>: never a bare push, which is the deploy, and never -u, which would move publish's upstream off Honeybot), its commit untouched. Needs ~/repos/nixos/blogs.nix and backup-home.py in the payload; ignition nr. Gate: the midnight journal prints a pushed line for trimnoir, and the morning after a publish the per-repo probe reads trimnoir.git's newest commit equal to the working copy's. READ 2026-09-30 (deed 1729): the inference held: trimnoir's upstream reads home/main (Honeybot) and the tape read 22 commits, 740K, 2025-12-23 against the working copy's 1165; NO_ACTIVE_HOOKS read first, then one hand push to local_origin by name (no -u, the tape's HEAD set to main) printed TRIMNOIR_TAPE_CURRENT main, and the tape reads 1165, 293M, 2026-09-29 21:49:24. Until this car lands the same push is typed by hand after a publish; blogs.nix and backup-home.py rode deed 1729's payload, so the car is the next ride's first.
 # - TODO (2026-09-30, THE CLIENTS TAPE IS A FOSSIL; read at deed 1729): Workshop/personal/Client_Work's origin reads git@github.com:miklevin/client.git with dirty=9, not ~/git-repos/clients.git as the 2026-09-28 EMBEDDED REPO TODO INFERRED, so clients.git's newest commit (2025-04-01) is where that tape stopped and the Mac now carries a year-and-a-half-old copy under a DONE line. Ruling owed, the operator's: a second push URL on Client_Work so one push lands on GitHub and on clients.git, or clients leaves the whitelist and the Mac clones from GitHub. Beside it, corporate read level and clean against corporate.git, so its hand push after each train is the whole cure today (b2 commits blogs only, the 2026-09-28 tiers TODO). Gate: the per-repo probe reads clients.git's newest commit equal to Client_Work's.
-# - EARMARK: THE TAPE IS NOT THE WORK (banked 2026-09-30, deed 1729): a mirror's DONE and a date that matches the source witness the TAPE, never the working copy behind it; a repo whose push goes somewhere other than the tape (trimnoir's to Honeybot, Client_Work's to GitHub) keeps a stale tape that mirrors green. Conviction: trimnoir.git sat nine months behind daily publishing and clients.git a year and a half behind Client_Work, and either would have printed cloned with its source's own date and DONE. The census that tells them apart is per working copy: its push URL (git remote get-url) beside its ahead and dirty counts, read before the mirror is trusted. Sibling of THE SUCCESS-ONLY WITNESS (a green that cannot fail) and of THE TAPE LIVES IN ONE PLACE (that one asks where the tape is; this one asks whether it is the tape of anything).
+# § THE TAPE IS NOT THE WORK (banked 2026-09-30) -- Check each working repository's push URL, ahead count, and dirty state before trusting a mirror, because DONE and matching source dates prove only that the tape was copied, not that the tape contains current work.
 # - TODO (2026-09-24, the shadow comes home): the Mac's shadow corpora (~/.local/share/pipulate/shadow-publishing/ per lane) hold four days of posts already in Jekyll shape under the same permalink grammar as the real targets; bring them over FROM the Mac side, where nixos.local already answers, one rsync per lane into its _posts/, then publish once (googledocizer --latest will skip them; sweep or run by hand). Gate: `posts 10` on Linux lists 2026-09-21 through 09-24 slugs after the copy.
 # § THE TAPE LIVES IN ONE PLACE (banked 2026-09-24) -- Put every remote, bundle, standby, watchdog, and bootstrap source that matters on power and an address the primary does not share, and state WORA only for hosts that can hold a POSIX shell and a Nix store, naming every exception.
 # - TODO (2026-09-23, THE ZERO GATE LET ONE THROUGH; read off this compile's router): the stats block reads "1 already-written articles ... at Mac Shadow" with a blank DOM-hydration line, and it is committed. Two causes, both in prompt_foo.py. (1) update_stats_in_place gates on count == 0, and the Mac shadow corpus now holds one post, so the rewrite fires; gate on the shadow config (PIPULATE_BLOGS_CONFIG naming blogs.shadow.json) instead of the count. (2) The cache holds "hydration": "|", and fetch_honeybot_stats's keep-the-last-reading branch trusts any truthy metrics, so the junk survives every failed fetch; run _HONEYBOT_SHAPE over cached values too, in render_honeybot_stat_lines. Then restore the block to the 1,490 / 2026-09-20T17:42Z reading. Gate: a compile on the Mac leaves git status empty. THE RESTORE HALF LANDED 2026-09-24 without a patch: the reset brought the Mac's committed block (2 already-written articles at Mac Shadow, a blank hydration line, fetched 2026-09-21T07:23Z) onto Prime, and Prime's first compile rewrote it in the working tree to 1,491 / 2,664 reads / 2970 from 15 / 2026-09-25T00:12Z (deed 1555's Telemetry), committed by the next m. The two prompt_foo.py causes stand and their gate is unchanged.
@@ -2542,7 +2231,7 @@ MATCHBOOK_CHOP = r"""
 # - TODO (2026-09-21, the sed that could not see): the connectors move's literal sed rewrote scripts/connectors/ and missed confluence.py and gmail.py, which had said scripts/<name>.py since before the folder existed (11 and 8 lines, replaced by a gated python car on the Mac, e47ce2c); before any future move, census rg -n 'scripts/[a-z_]+\.py' <folder>/ and read every spelling, not the one you remember. sources_menu.py's docstring still says the door tells the human to type `sources` where the word is conn; the flake's Darwin branch hardwires the shadow blog's name, so a stranger's Mac console names the author (DE-HARDWIRE THE PERSONAL PATHS, one more site).
 # - TODO (2026-09-19, the header that flows back): the live router at ~/.local/state/pipulate/adhoc.txt still carries the sigil table the 2026-09-18 sed retired from the tracked template (that dismount named it: a second copy the sed never reached), and on 2026-09-19 that header was copied back over the template in the working tree -- sigil table 0 -> 35, the chapter-XVIII pointer gone, prompt_foo.py commented out of the default chop -- caught only because a displacement receipt read +29 where +1 was predicted (WALK_CHOP 1990 -> 2019), and discarded by git checkout before it rode a commit whose subject would have said documentation. Retire the table from the live router by hand in ahe (cut from the line ending "Here is how to include web pages:" through the "Every step is one argument longer" line, restore the four-line pointer), or the next sync flows it back. Two copies of one header drift; THE OPERATOR IS A VARIABLE, and this time the variable was a paste. AMENDED the same day, deed 1496: it was not discarded. The operator committed the paste before the BEFORE tap ("the easiest thing"; the parent of 6e4af6ee carries foo_files.py at blob a427fc2e, the pasted header, by the Telemetry index line), so Car 0's git checkout restored nothing and its gate printed TEMPLATE_RESTORED anyway, a false green that read git's status where it should have read the file (the sigil heading's grep -c at 0, or STOP): AN EXIT CODE IS A VERDICT ONLY FOR THE PATH THAT REACHES IT, in a gate this ride wrote. The sigil table now lives in HEAD's template, the chapter-XVIII pointer is gone, and prompt_foo.py is commented out of AI_PHOOEY_CHOP so bare foo compiles the router alone. TWO AUDIENCES, ONE FILE (2026-09-18) is reversed by action and unruled in words: either the template mirrors the live router, and the pointer and the 2026-09-18 sed are the things to retire, or the table leaves both files by hand; until ruled, the two copies will keep flowing into each other.
 # - TODO (2026-09-19, rgx's empty branch): rgx jeopardy.wav ffmpg (a typo) and a true empty intersection both print "No matching articles.", the same line in two worlds, THE DISCRIMINATION QUESTION at the search prompt; the operator retyped from memory and the tool taught nothing. On the empty branch print each term's solo count beside the zero (jeopardy.wav: 19 | ffmpg: 0 | together: 0) so a typo names itself and a real empty intersection reads as one. rgxCommand and rgxcCommand in flake.nix, one car, exit then ndq as the ignition. Unasked this ride; a TODO, never a car.
-# - EARMARK: A CAR IS A FENCE (banked 2026-09-18, commit-log convicted): the \m template commits one fence per patch, app, d, m, so prose cannot join two fences into one commit; "the two Path joins ride in the same car, same commit" put the git mv in efd85e1d and the CONNECTORS Path join in cd88518b, a window where the folder had moved and the registry face still pointed at the old one, pushed together and harmless only because nothing ran between them. An edit whose truth depends on another edit rides in the SAME FENCE or carries its own gate; a sentence saying they belong together is a switch nobody throws. Sibling of THE TRAIN HAS NO SWITCHES (a choice in the prose is a branch nobody takes) and THE SAME-CAR LABEL RULE (what moves together ships together): this one names the unit, and the unit is the fence.
+# § A CAR IS A FENCE (banked 2026-09-18) -- Put edits whose correctness depends on each other inside the same patch fence or give each its own gate, because prose declaring separate fences to be one commit cannot prevent an inconsistent intermediate state.
 # - EARMARK: THE TRAIN HAS NO SWITCHES (captured 2026-09-18 at the operator's request, deliberately unruled: "I took all the Cars"): the operator runs the \m template linearly, patch, app, d, m per car, and anything the emitter phrases as a choice ("if you veto Car 2b, change two words"; "drop these two files if the payload runs heavy") is a switch on a track laid for one line; the operator will take every car or stop the train and never throw the switch, so a conditional in the prose is a branch nobody takes and a label that can end up lying. Two such switches rode deed 1469 unthrown. The shape that fits the template: a car whose truth depends on another car landing carries its own gate (the sed spans did) or rides in the same car, and a choice is a TODO, never a fork inside PATCHES. Sibling of THE COACHMAN'S VETO (a whole train or one car, never a branch) and THE UNASKED SECOND WINDOW (the unraised question is a TODO). The fix is deferred by ruling; this line is the article's capture.
 # - TODO (2026-09-17, the gauge with no memory; mechanism landed the same day in prompt_foo.py): the Coverage line now reads its previous claimed/tracked pair back from a Coverage line the Paintbox header carries and prints the delta beside the live count. Two of three branches have printed: first-reading at deed 1442, +0 on three compiles running through 1446. The negative branch was ARMED (git ls-files reads 1 for scripts/takeover_main.sh, and the router claims it once) and run without its ignition on 2026-09-17: sed, d, sed, d, no ahc between the unclaim and the restore, so git saw the line leave and return and the compiler never did (the Useless Machine: a change that happens and unhappens between two readings is invisible to a gauge with a one-compile memory). Next attempt: Car 1 is the unclaim sed AND ahc in ONE fence, read -1 on the console; Car 2, its own fence, is the restore sed and ahc, read +1; restore by sed and never by git checkout, or the header resets with the line and the +1 reads +0. THE +1 PRINTED 2026-09-26 (deed 1567): a real claim, assets/sounds/README.md moved from the Paintbox into chapter VIII-b, and the Processing Log read 204/274 (was 203/274: +1 claimed, +0 tracked), the positive branch by an ordinary edit rather than the two-fence choreography. Only the -1 remains, and the Car 1 unclaim-and-compile fence above is its shape. Delete this line when -1 has printed.
 # § THE CEREMONY AND THE BARRIER (banked 2026-09-17) -- Split consent into a ceremony that may prompt only where a terminal is owned and a barrier at the protected action that never prompts and rereads recorded consent on every call; value: GLOSSARY.md. AMENDED 2026-10-01 (THE VOICE ASKS ONCE, OUT LOUD): the first-contact ceremony speaks its own question before any answer exists, the one line the barrier lets through (synthesize_and_play's ceremony flag, first_contact() its only caller), because a voice nobody has heard is a voice nobody can answer for (CONSENT CANNOT PRECEDE ITS OBJECT); the model download before it is disclosed in a printed line and never asked; the GLOSSARY value owes the same sentence.
@@ -2682,29 +2371,8 @@ MATCHBOOK_CHOP = r"""
 
 # - TODO (orphaned 2026-09-04; the url-widening plan that carried it was discharged by THE DUAL-LANE WALK SCHEMA, so only the debt survives): _ignored_or_outside returns safe on the FIRST check-ignore hit and never consults a nested repo; it gates the public catalog repo and nothing else. Own ride; gate: a nested-repo fixture whose ignore rules disagree with the outer repo's, and a receipt naming which repo answered.
 # § THE DECLARED-FIXTURE RELIEF VALVE (banked 2026-08-28) -- Exempt a synthetic secret-scan fixture only when its marker occurs inside the matched credential value, never in the variable name or elsewhere on the line, and print every exemption so a live secret cannot pass silently.
-# - EARMARK: THE NAME IS NOT THE VALUE (banked 2026-08-28, hole found the same
-#   morning the valve landed): the first spelling searched the whole match, and
-#   ten of eleven tripwires match the credential ITSELF -- but the generic
-#   assignment tripwire captures the VARIABLE NAME too, so an uppercase name
-#   carrying a marker word would have exempted whatever real credential sat to
-#   the right of the equals sign. The marker riding OUTSIDE the value is the
-#   exact failure the valve's own comment says a line-level check would have.
-#   Cured by cutting at the first "=" or ":" in the match. WITNESSED both ways
-#   in one straddle: name_marker_blocks 0 -> 1 while value_marker_exempt held
-#   at 0, the negative control that proves the cure did not break exemption.
-#   STANDING CONSEQUENCE FOR AUTHORS: spell fixture BODIES so they announce
-#   themselves; a marker word in the variable NAME buys nothing.
-# - EARMARK: THE LOCATOR THAT POINTED AT NOTHING (banked 2026-08-28): the
-#   refusal printed a payload byte offset and told the operator to inspect that
-#   payload line -- an artifact that BY CONSTRUCTION does not exist, because a
-#   blocked run exits at step 6 and write_context_cartridge runs at step 7.
-#   Four CORRECT refusals read as noise for that reason alone. Cured by
-#   scanning back to the nearest START marker, which the payload already
-#   carries, so the refusal names a FILE the operator can open and grep. Both
-#   branches witnessed: the section-naming branch against a real payload, the
-#   "(before any section marker)" fallback against raw text read off disk.
-#   Sibling of THE LAST-INCH RULE -- every upstream stage was right and the
-#   reader-facing string was the whole defect.
+# § THE NAME IS NOT THE VALUE (banked 2026-08-28) -- Apply fixture exemptions to the credential value alone, separating it from any assignment name at the first equals sign or colon, and put fixture markers inside the value rather than relying on a marker in the variable name.
+# § THE LOCATOR THAT POINTED AT NOTHING (banked 2026-08-28) -- Make a refusal locate evidence in an existing source file or section marker, with an explicit pre-section fallback, rather than pointing to an output artifact that the refusal prevented from being written.
 # - TODO (banked 2026-08-28, census-scoped, LATENT NOT OUTAGE): 18 published
 #   articles carry 52 credential-shaped strings; NONE blocks anything until it
 #   rides in a payload. Bulk is generic-assignment config-shape prose (29 hits
@@ -2721,19 +2389,7 @@ MATCHBOOK_CHOP = r"""
 #   only). Real -> sed is NOT the fix: the value is already published and in
 #   git history, so ROTATE first and edit second.
 
-# - EARMARK: THE WARNING THAT WAS THE HAZARD (banked 2026-08-25, airlock-
-#   convicted): a comment explaining a delimiter hazard must never CONTAIN the
-#   delimiter, because a comment DOES NOT EXIST at the outer parser's parse
-#   time. CONVICTION: a flake.nix comment warning that a dollar immediately
-#   followed by an open brace is eaten by Nix's interpolator was refused by
-#   apply.py's Nix airlock at the exact column of its own warning -- the whole
-#   indented string is ONE Nix value, and interpolation starts anywhere inside
-#   it, comment or not. CURE: name the sequence in words ("dollar-brace") and
-#   never type it. Third sibling of THE INSTRUMENT BECOMES BAIT -- the first is
-#   a probe that attracts the transform it measures, the second is a label
-#   eaten by the markup it rides in, this is a warning eaten by the grammar it
-#   warns about. Cousin of THE LABEL IS NOT DATA, which is the same collision
-#   with the compiler's own console as the victim.
+# § THE WARNING THAT WAS THE HAZARD (banked 2026-08-25) -- Spell an outer parser's hazardous delimiter in words inside comments embedded in its strings, because comment syntax for an inner language cannot prevent interpolation or delimiter parsing by the outer language.
 # - EARMARK: THE NIX-FILE LINT PROBE (banked 2026-08-21, receipt-witnessed):
 #   a probe that passes a non-Python file to ruff produces thousands of
 #   invalid-syntax errors that read as catastrophic repo rot. Receipt: the
@@ -2757,34 +2413,22 @@ MATCHBOOK_CHOP = r"""
 # § THE STRADDLE IS A CONTROLLED EXPERIMENT (banked 2026-08-06) -- the before/after pair is a controlled comparison with ONE manipulated variable, and every straddle rule is a named confound control: IGNITION (was the treatment administered), PROBE ECHO (did the instrument change between taps), LANE-DISAGREEMENT (did the environment differ), ACTUATION-BOUNDARY (did the treatment reach the measured surface). Add CONTROLLED-vs-OBSERVED as a third axis beside determinism and instrument; determinism is what buys n=1, which is why the Nix pin and the byte-reproducible cartridge are the science rather than hygiene around it.
 # § THE FILTER THAT ATE THE EVIDENCE (banked 2026-08-06) -- a content filter may gate a channel only when that channel's content IS status; when the content is PAYLOAD (a git diff, a lint report), exempt the channel BY NAME, because a substring guard that eats "error" drops the evidence silently and the placeholder reads the same whether the channel was empty or eaten. Mechanism landed as is_telemetry in PromptBuilder.add_auto_context.
 # § THE HISTORY-EXPANSION PROBE (banked 2026-08-06) -- a ! followed by a word character inside double quotes is bash history expansion, ON in the operator's interactive shell and OFF in the compile lane's non-interactive one, so the probe runs clean as a receipt and dies at the hand-run with an error naming a shell feature; single-quote the outer -c argument and use double quotes for the Python strings inside it. A probe that cannot be hand-run has no BEFORE. Second conviction 2026-09-28 (deed 1641), in a hand fence and not a probe: a corporate commit message carried "the !scroll row" inside double quotes, bash answered "bash: !scroll: event not found" and the whole ( cd && git add && git commit && git push ) line died before its first command, with this rule in the same payload (THE CITED RULE IS NOT AN APPLIED RULE); the compile lane would have run the identical line clean. A hand fence's quoted strings are single-quoted, or the ! is kept out of them.
-# - EARMARK: THE SELF-MATCHING PATTERN (banked 2026-08-05, twice-convicted in one transcript): pkill -f and pgrep -f match the FULL COMMAND LINE, and the shell running the script carries the pattern in its own argv -- so an unescaped pattern kills or counts the process that issued it. CONVICTION: flake.nix's publish() [4/4] block protected two patterns with the [.] trick (a regex demanding a literal dot the argv literal does not contain) and MISSED THE THIRD, so every `publish --reboot` killed its own ssh session at that line. The guard must be applied to EVERY pattern in a block, not most of them -- a partially-guarded block READS as guarded. WITNESS: after the fix, `publish force --reboot` printed `new_count=1`, `new=534841`, and the watchdog verdict line, three lines that had never once appeared in any prior transcript.
-# - EARMARK: THE VERIFIER THAT NEVER RAN (banked 2026-08-05, same conviction): a verification block placed AFTER the action it verifies is dead code if the action can kill the reporter, and its silence is indistinguishable from success. flake.nix's [4/4] block held `sleep 12`, a pgrep re-count, and three verdict branches -- none had EVER executed, while a green Atomic Deployment Complete printed underneath every time. THE DISCRIMINATION QUESTION applied to a MISSING line: what does this print in the world where the verifier died? The same checkmark. STANDING CONSEQUENCE: when a receipt block has an expected line that is ABSENT, treat the absence as the finding; do not read the surviving lines as the whole receipt. Third shape in the family -- REFUSAL-ONLY WITNESS is a branch never observed, THE SUCCESS-ONLY WITNESS is a failure never reportable, this is a witness never REACHED.
+# § THE SELF-MATCHING PATTERN (banked 2026-08-05) -- Protect every pkill -f and pgrep -f pattern against matching the invoking shell's own full command line, using a regex spelling such as [.] that the literal argv does not satisfy, and witness that the later verdict is reached.
+# § THE VERIFIER THAT NEVER RAN (banked 2026-08-05) -- Treat an absent expected verification line as a finding that the verifier may never have run, especially when the preceding action can kill its reporter, and never let a surviving success message substitute for that missing witness.
 # § INCOMMENSURABLE MEASUREMENTS (banked 2026-08-05) -- a probe can return a CORRECT number about a DIFFERENT question, and the receipt looks authoritative because the number is right; name the exact expression the mechanism evaluates, then confirm the probe evaluates THAT expression and not a plausible neighbour. Cousin of THE DISCRIMINATION QUESTION's family: it sees something real and irrelevant.
 # - EARMARK: THE STALE OVERLAY (banked 2026-08-05, Manifest-arbitrated): the context.txt pasted into an article and the context.txt the compiler READ can disagree within a single turn, and only the Manifest's LIVE COMMAND RECEIPTS can tell them apart. CONVICTION: a turn pasted three new probe lines while the compile executed the five from two compiles earlier -- the pasted context described a file the compiler never opened. STANDING CONSEQUENCE: the Manifest is the sole authority on what ran; when the pasted overlay and the receipts disagree, rule from the receipts and say so out loud. The map can outrun the territory inside one turn.
 # - TODO (banked 2026-08-05, receipt-scoped): SEVEN in-window articles are the entire residual on-air bracket noise -- 2026-07-31-absolute-timing-and-side-channel-sanitization, 2026-08-01-agentic-web-content-negotiation-telemetry, 2026-08-01-hatching-the-seed-installer-automation, 2026-08-01-mother-cat-kata-deterministic-walk, 2026-08-03-debugging-self-referential-prompt-guards, 2026-08-04-disposable-installations-durable-backups, 2026-08-05-sentinel-splices-workspace-tree-automation. They age out of the 7-day window unaided, so this backlog SHRINKS without action. HAND-EDIT ONLY: several quote the patch-protocol markers verbatim, which is a DELIMITER COLLISION under the OOB EDIT RULE -- vim, never apply.py. Full 300-article list is 20 and lives in the 2026-08-05 compile receipt.
 # - TODO (banked 2026-08-05, publish-transcript convicted): nixops.sh's rsync --delete ships the Z640's __pycache__ (cpython-312) to Honeybot and DELETES Honeybot's own (cpython-313) on every publish -- six lines of churn per deploy for zero benefit, since a 3.12 pyc can never load on 3.13. Add --exclude=__pycache__. Separately, trimnoir tracks scripts/aquarium.py and scripts/aquarium_tui.py and nothing else (receipt: git ls-files scripts/ returns exactly those two), so the post-receive checkout restores them and the rsync deletes them again, forever. Delete them from trimnoir. TWO WRITERS, ONE DIRECTORY -- cosmetic today only because content_loader.py is NOT tracked there, and a live regression path the day it is.
 # - TODO (banked 2026-08-05, two-sided receipt): stream.py's stdout is TTY-ONLY and structurally unreadable as text. Receipt: journalctl over 45 minutes returned journal_lines=761 (the journal is alive) and unbalanced=0 (the warnings are not in it), and configuration.nix defines `stream` as a writeShellScriptBin watchdog in environment.systemPackages with NO systemd unit -- so it runs in a terminal in the XFCE session and its output exists only as pixels for OBS. THE OPERATOR HAS BEEN DIAGNOSING FROM A VIDEO FEED for the whole census ride. Cheapest capture: tee the watchdog's python3 invocation to a file inside the `stream` script. That is a configuration.nix plus nixos-rebuild ride of its own.
 # § THE HEADER-BOUNDED SCANNER (banked 2026-08-05) -- Bound every scanner edit region with explicit author-placed sentinels, never nearby Markdown heading syntax, because fenced code comments can impersonate headings and silently move the blast radius.
-# - EARMARK: THE SENTINEL WRITTEN INTO ITS OWN FILE (banked 2026-08-05, near-miss): documenting a scanner's trigger string inside the file that scanner reads is a self-referential hazard, and it is invisible until the scanner runs. CONVICTION: a guard comment explaining release.py's waxascii canary was added to README.md and CONTAINED THE CANARY PHRASE. It was safe for two independent reasons -- the real needle carries a blockquote prefix the prose lacks, and the scanner breaks on the first match, which is the real canary twelve lines above -- and both were established AFTER the write, by reading source. The fail-safe direction held by construction (if the real canary were deleted the prose still would not match, so the scanner skips rather than aiming at the wrong line), but that was luck. PRESCRIPTION: when documenting a sentinel inside its own file, refer to it by NAME and never reproduce its literal text; if the literal is unavoidable, verify the matcher's exact needle before the write, not after.
+# § THE SENTINEL WRITTEN INTO ITS OWN FILE (banked 2026-08-05) -- Refer to a scanner's sentinel by name rather than reproducing its literal trigger inside the scanned file, and verify the matcher's exact needle before writing any unavoidable literal.
 # § THE PROSE-INFLATED COUNTER (banked 2026-08-05) -- a counter whose pattern is a NAME counts documentation and mechanism together, so a patch that also writes prose with that name moves the count by an amount no prediction can compute; anchor mechanism counters on syntax only mechanism produces (^def name, name\(), or print the lines instead of the count.
 # § THE CITED RULE IS NOT AN APPLIED RULE (banked 2026-09-06) -- naming a rule in a sentence is not running it against the case in hand, and the two feel identical from the inside; the VHOST CENSUS earmark closed by citing THE PROSE-INFLATED COUNTER as its sibling while its own body had already guessed three SYNTACTIC worlds and never once considered that a comment would match, which is exactly what the cited rule predicts and exactly what the enumeration then printed. STANDING CONSEQUENCE: when a ruling names a sibling rule, apply that sibling to THIS reading before shipping the ruling, out loud, as its own sentence -- the citation is the cheapest possible signal that the answer is already on the shelf, and reaching past it is the cheapest possible miss. Corollary for a model: a rule you can quote is not a rule you have used.
 # § THE DOTFILE-BLIND PROBE (banked 2026-08-05) -- rg skips hidden files by default, so a probe hunting a name that lives in .gitignore or any dotfile prints the same silence either way; add --hidden --glob '!.git' when the target might be a dotfile.
 # § THE CAP THAT HID THE ANSWER (banked 2026-08-05) -- a head -N cap set to bound noise silently truncates the decisive line when the noise sorts first, and leaves no ellipsis; when the discriminator's position is unknown, bound by CONTENT (grep for the tokens that differ between the two worlds), never by count, and read a cap hit exactly as TRUNCATED.
-# - EARMARK: NO HEREDOC INSIDE AN INTERPOLATED NIX STRING (banked 2026-08-05, main-breaking): a bash heredoc whose terminator sits inside a Nix indented string that is itself INTERPOLATED into another indented string can lose its column-0 alignment, after which bash swallows the rest of the shellHook to EOF. Conviction: a cat-heredoc added to miscSetupLogic broke nix develop on main for every user; the identical pattern in runScript -- a standalone writeShellScriptBin, never interpolated -- has worked for years. THE MECHANISM IS UNWITNESSED: the BEFORE tap on the generated hook text was never taken (the operator healed main first, correctly), and it is deliberately NOT being reconstructed, because the forward blast radius is zero once the pattern itself is banned. FALSIFIED from raw source: every line of miscSetupLogic sits at exactly 10 spaces, so no under-indented line dragged the minimum down. PRESCRIPTION: write multi-line files from a shellHook with ONE printf and never a heredoc, and syntax-check the generated hook before any commit that touches it.
-# - EARMARK: THE HALF-EXECUTED HOOK (banked 2026-08-05, self-convicted): bash parses-and-executes an eval'd script ONE COMMAND AT A TIME, so a syntax error partway through a shellHook leaves everything ABOVE it applied and everything below it missing -- a half-configured environment that looks alive and is not. Conviction: an unterminated heredoc in miscSetupLogic let `mkdir -p Notebooks/Shared` land while PS1, the nix() rpath shim, and EVERY alias silently never defined; the artifact probe read GREEN off the surviving line. STANDING CONSEQUENCE: an artifact probe cannot witness a shellHook. The witness is the hook's own syntax -- `nix eval --raw .#devShells.<sys>.<shell>.shellHook | bash -n` -- or a marker exported by the LAST line of the hook. Sibling of THE SUCCESS-ONLY WITNESS: there the instrument hid a failure, here the instrument sat above it.
-# - EARMARK: THE READ-WRITE PROBE (banked 2026-08-04, specimen-convicted): a
-#   probe that OPENS a database is not read-only, and the damage lands on the
-#   EVIDENCE rather than on the data. sqlite3.connect() defaults to read-write,
-#   so `cli.py db-inspect` touched data/botifython_dev.db and moved its mtime
-#   from May 3 13:26 to Aug 4 08:43 with its SIZE UNCHANGED at 503808 -- opened,
-#   not written. That mtime was the single cheapest liveness signal separating
-#   the live app database from the three-month-old fossil the backup roster was
-#   copying, and the probe sent to READ it DESTROYED it. Harmless only because
-#   the roster fix had already landed. PRESCRIPTION: inspect SQLite through the
-#   read-only URI (sqlite3.connect('file:path?mode=ro', uri=True)), or stat the
-#   file without opening it. Sibling of THE PROBE THAT ATE ITS SIBLINGS: that
-#   one bounds a probe's effect on SHELL STATE, this one bounds its effect on
-#   the MEASUREMENT.
+# § NO HEREDOC INSIDE AN INTERPOLATED NIX STRING (banked 2026-08-05) -- Write multiline files in interpolated shellHook strings with one printf rather than a heredoc, and syntax-check the generated hook before committing any change to it.
+# § THE HALF-EXECUTED HOOK (banked 2026-08-05) -- Witness a shellHook with syntax checking of its generated text or a marker exported by its final line, because an artifact created before a later parse error cannot prove that the whole hook executed.
+# § THE READ-WRITE PROBE (banked 2026-08-04) -- Inspect SQLite through sqlite3.connect('file:path?mode=ro', uri=True), or stat the file without opening it, so a probe cannot destroy the timestamps that distinguish live data from a fossil.
 # - EARMARK: THE TWO-HAND TEST IS NOT A TEST (banked 2026-08-04, operator-
 #   refused): a procedure asking a human to type in terminal A, then type in
 #   terminal B while A still runs, has no receipt, no reproducibility and no
@@ -2820,19 +2464,7 @@ MATCHBOOK_CHOP = r"""
 #   menu, every shell entry), so the BANNER lowercases to match:
 #   substr($0,2) -> tolower(substr($0,2)). One word.
 # § THE PROBE THAT ATE ITS SIBLINGS (banked 2026-08-04) -- Run every probe that changes directory inside a subshell and isolate or restore any other shell-state changes, including cleanup, so pasting the whole probe block cannot break subsequent probes.
-# - EARMARK: THE MAINTAINER-INVISIBLE LANE (banked 2026-08-04, three-for-three):
-#   every defect this ride closed was structurally unobservable from the
-#   maintainer's daily machine, and for THREE DIFFERENT REASONS. The alsa-utils
-#   refusal needs a foreign hostPlatform. The 24 INFO lines need twelve absent
-#   destination files, which exist on any machine used twice. The false-dirty
-#   gate needs a freshly cp'd index, which exists for about forty seconds once per
-#   install, a year ago on Prime. NONE is a rare edge case; each is the ONLY
-#   thing a stranger ever sees, and each is invisible to the one person who could
-#   fix it. STANDING CONSEQUENCE: when a lane's whole audience is people who
-#   cannot report bugs, budget rides for it on a schedule, not on complaint --
-#   there will never be a complaint. Sibling of THE UNEXPORTED-SHIM RULE
-#   ("lane-visible only ... the audience the artifact ships to can never report
-#   it") generalized from one mechanism to a whole class.
+# § THE MAINTAINER-INVISIBLE LANE (banked 2026-08-04) -- Budget scheduled fresh-user and foreign-platform checks for lanes whose users cannot report bugs, including missing destination files and freshly copied indexes, rather than judging those lanes from the maintainer's historically populated machine.
 
 # - TODO (banked 2026-08-03, THIRD conviction in one ride series): ai.py's
 #   get_change_analysis() falls to an all-zero stub in the `m` lane, because
@@ -2927,19 +2559,7 @@ MATCHBOOK_CHOP = r"""
 #   (+7/-0, a guard and its comment) under "chore: Remove redundant orphan
 #   shard check logic in contextualizer.py", the comment's "the twin is cut"
 #   read as the commit's verb.
-# - EARMARK: THE THREE-REGION ART EDIT (banked 2026-08-03, receipt-corrected):
-#   registering one piece of figurate art is a THREE-region change with an
-#   integrity coupling and NO airlock -- not two, as a prior turn asserted.
-#   Receipt (rg over imports/ascii_displays.py): a `_figurate_<name>` render fn
-#   above FIGURATE_RENDER_EXTRUDE_BOTTOM (:884), a CRC32 entry above
-#   FIGURATE_LEDGER_EXTRUDE_BOTTOM (:71), and a dict entry above
-#   FIGURATE_REGISTRY_EXTRUDE_BOTTOM (:927). apply.py has AST, Nix, JSON,
-#   protocol-marker and autolink airlocks and NOTHING that checks whether an
-#   art string still agrees with its seal, because that coupling is semantic,
-#   not syntactic. ORDERING: the CRC cannot be known until the art exists, so
-#   author first, print(binascii.crc32(art.encode('utf-8'))), then seal.
-#   MANDATORY IGNITION for every art car: `figurate <name>`, read `Drift: 0`.
-#   An art car may never declare "no ignition required".
+# § THE THREE-REGION ART EDIT (banked 2026-08-03) -- Register figurate art in all three regions, rendering function, CRC32 ledger, and registry, compute its CRC only after authoring the art, and run figurate <name> to witness Drift: 0 for every art edit.
 # - EARMARK: THE LANE-EXCLUSIVE BRANCH (banked 2026-08-03, canary-witnessed):
 #   some branches can fire in ONE lane only. prompt_foo's de-prefixed-command
 #   hint lives inside main()'s file loop, so no hand-run terminal can ever
@@ -2969,8 +2589,8 @@ MATCHBOOK_CHOP = r"""
 #   clone with an EMPTY blogs.json reaches a compiled payload without editing
 #   a single tracked file. Anything a forker must edit INSIDE the repo is
 #   personal data living in the mechanism lane.
-# - EARMARK: THE RECEIPT-PLUS-LANE TABLE (banked 2026-08-02, four-turn witnessed): the standing render for pass/fail rulings is a markdown table with FOUR columns -- Item, Colour, Receipt, Lane -- and the load-bearing part is the last two, not the glyph. Receipt forces a claim to name its evidence; Lane forces it to name its vantage (compile lane = prompt_foo's ! executor; operator lane = a hand-run terminal), because a receipt without a lane is unlabeled evidence and the two lanes routinely disagree. THREE STATES, not two: green (witnessed), red (witnessed failing), and a third for attempted-but-unverified or VOID (the probe could not see). A two-state table flattens both into a lie -- convicted twice in one ride series, once when a sudo-refused probe's `0` was read as a reading and once when a program's own "copied to clipboard" print stood in for a paste. The glyph is the HANDLE (memorable, scannable); the receipt-and-lane pair is the MECHANISM. Sibling of THE TWO-RECORDER RULE: authority may only decrease from wire receipt to tool transcript to narrative, and the Lane column is where that ladder becomes visible.
-# - EARMARK: THE TEST-RIG PROVENANCE RULE (banked 2026-08-02, cold-start ride six): a cold-start rig can be a PRISTINE PUBLISHED-ARTIFACT test or a CURRENT-CODE test, never both in one directory, and which one it is must be stated before any ruling is taken from it. Conviction: /home/coldstart/pipulate ran the published ZIP for three rides, so every repo patch was structurally invisible to it and a correct per-user-lock fix appeared to fail; the magic-cookie transformation then replaced it by `git clone --depth=1`, so the rig received code by CLONE, not by PULL, and is now frozen at clone-time HEAD with a dead update lane -- a THIRD thing that is neither property cleanly. Patches reach it only by hand-carry (sudo install), and the hand-carry is itself a receipt that the pull is broken. STANDING CONSEQUENCE: name the rig's provenance in every ruling taken from it, and prefer two rigs (one pristine, one current) over one ambiguous rig.
+# § THE RECEIPT-PLUS-LANE TABLE (banked 2026-08-02) -- Report pass/fail rulings in Item, Colour, Receipt, and Lane columns, distinguishing witnessed success, witnessed failure, and attempted-but-unverified or VOID so an inaccessible probe or unverified success message cannot count as evidence.
+# § THE TEST-RIG PROVENANCE RULE (banked 2026-08-02) -- State each test rig's provenance in every ruling, distinguish pristine published-artifact tests from current-code tests, and use separate rigs rather than treating a frozen clone or hand-carried patch as evidence that the update lane works.
 # - TODO: CUT THE GHOST-DRIVER BODY BRANCHES (seeded 2026-07-26, receipt-convicted):
 #   assets/scenarios/introduction.json's branch_llm_body_chain_reaction,
 #   branch_llm_body_test_results, and branch_dom_visualizer_intro stack THREE
@@ -3080,7 +2700,7 @@ MATCHBOOK_CHOP = r"""
 # § THE DISCRIMINATION QUESTION (banked 2026-07-31) -- before typing any probe ask: what does this print in the world where I am wrong? If the answer is "the same thing" you have a ritual, not a probe, and its green is uninformative; the straddle is this question applied twice. Children, each a way the answer comes back the same: SINGLE-LINE-WITNESS, CASE-BLIND, UNANCHORED, CONTIGUITY, DOTFILE-BLIND, THE CAP THAT HID THE ANSWER, THE PROSE-INFLATED COUNTER, THE EPITAPH COUNTER.
 # § THE CONTIGUITY COROLLARY (banked 2026-07-31) -- the compile transport strips truly-empty lines from Codebase bodies, so a SEARCH block must span contiguous non-empty lines exactly as the payload shows them; a SEARCH crossing an invisible blank fails exact-match with a first-line-matches diagnostic that reads like indentation and is not. When an insertion straddles a probable blank, anchor on one unique line.
 # § THE LAST-INCH RULE (banked 2026-07-31, two convictions in two days) -- Check the transformation nearest the reader first -- formatter, truncation, column width, transport, display -- because the last inch can fabricate or erase identity while every upstream number remains correct; parent of THE RENDER-GAP RULE, instance of THE DISCRIMINATION QUESTION; Value: GLOSSARY.md.
-# - EARMARK: THE ENVIRONMENT-AS-LAST-INCH COROLLARY (banked 2026-08-02, three-ride conviction): an environment variable is a transformation nearest the actuator, and it is audited last or never. Conviction: three consecutive cold-start rides exported DISPLAY=:0 on a machine whose only X socket is X1, so chromium printed `xcb_connect() failed, error 1` after a 60s hang -- IDENTICALLY in the world where the xhost grant existed and in the world where it did not, which is THE DISCRIMINATION QUESTION failing in the operator's own hands. Every layer above it computed correctly: the xorg.xhost package landed, the shell was re-entered, the grant applied, chromium ran as the second user and dumped a DOM headless. The whole chain was green and invisible because the last variable was wrong. Settled by `echo $DISPLAY`, one word. STANDING CONSEQUENCE: before diagnosing a display, socket, port, or path failure, PRINT THE VARIABLE -- an auth-shaped error names a credential, a connect-shaped error names a destination, and the two are not interchangeable. Instance of THE LAST-INCH RULE with an env var as the last inch.
+# § THE ENVIRONMENT-AS-LAST-INCH COROLLARY (banked 2026-08-02) -- Print the actual environment variable before diagnosing any display, socket, port, or path failure, and distinguish a wrong destination from an authentication failure before changing higher layers.
 # § THE CHURNING-KEY RULE (banked 2026-07-31) -- Before reading any GROUP BY or ranking, ask whether the subject controls and revs the grouping key; if it does, roll up to a stable family and keep an Unclassified bucket, because key churn fragments one subject into invisible under-threshold rows.
 # § THE VERDICT-IN-THE-INSTRUMENT RULE (banked 2026-07-31) -- Never write the expected answer into the artifact whose job is to determine it; state only the question, rival hypotheses, and predicted printouts before evidence, and add the answer only after naming the receipt.
 
@@ -3156,7 +2776,7 @@ MATCHBOOK_CHOP = r"""
 # § FAILED-PROBE RECEIPT (banked 2026-07-20) -- Preserve stderr-only nonzero exits as bounded first-class compile receipts, and validate the lane by manufacturing a known failure before trusting its green.
 # - NEXT RIDE -- RUNTIME TOOL-DISCOVERY IMPORT SPLIT (seeded 2026-07-20 at dismount): the compile-lane roster now dodges the tax via AST, but cli.py mcp-discover and get_all_tools() STILL import every tools/*.py at tool-call time, eating the ~3.8s imports.voice_synthesis engine load (runtime BEFORE receipt: get_all_tools() at 5.58s vs the 0.18s AST path). Defer/lazy-load the engine import inside tools/voice_synthesis.py so enumerating names/metadata never constructs the TTS engine -- it loads only when voice_synthesis is CALLED. Arrival: a runtime AFTER receipt showing get_all_tools() drop from ~5.5s toward the AST floor. DISCHARGED 2026-09-17 (deed 1460): the engine load left ChipVoiceSystem.__init__ for ensure_voice() in imports/voice_synthesis.py, the import straddle read 3.51 s loaded=True -> 0.40 s loaded=False, and cli.py mcp-discover ran in 0.23 s in the compile lane against the 5.58 s BEFORE, at the AST floor; the load now happens only after a human has answered the voice card. RECALL HANDLE (the "rtx" pull = rgx/rgxc AND-search over _posts, since 2-3 rare words set-intersect to one article): `rgxc roster triptych hinge` re-prints this article's shards AND copies a TODO_SLUGS block, so `xp` right after re-hydrates the FULL article into context -- no bookmark, just two rare words meeting once. THE 1+1=3: LLM Optics + AST-derived roster + rgx word-union recall + the mount/dismount ride kata all landed within days and now COMPOSE -- each makes the next cheaper to reach for; that compounding, not any lone unlock, is the acceleration.
 
-# - EARMARK: THE COVER-PROMPT RULE (banked 2026-07-20, fan-out-witnessed same day): an instruction embedded in an uploaded artifact is INJECTION to a cautious model; the same instruction typed by the human is INTENT. Conviction: 4-model SEED fan-out -- ChatGPT/Grok/Gemini adopted Yen Sid-ton five-for-five; Opus verified the cartridge sha256, then explicitly demoted prompt.md to context-not-marching-orders and asked the human what they wanted. Any distributable artifact therefore ships with a one-line human cover prompt (e.g. "Please help me install this using the included instructions") that authorizes the embedded protocol. Verification receipts were unanimous wherever code execution existed -- cartridge integrity is proven; only the authority channel needed the fix.
+# § THE COVER-PROMPT RULE (banked 2026-07-20) -- Ship distributable artifacts with a one-line cover prompt for the human to send that explicitly authorizes the embedded instructions, because verifying an archive's integrity does not itself establish instruction authority.
 
 # § THE ANCESTOR-DISCIPLINE RULE (banked 2026-07-21) -- Name legacy categories as lineage, never identity: position the current system by directly measurable invariants and receipts, gate language migration on observed evidence, preserve ancestor anchors and stable identifiers, and never sell the replacement framing as a score that can Goodhart.
 
