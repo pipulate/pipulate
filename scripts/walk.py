@@ -64,7 +64,9 @@ STOP_URL_FIELDS = {"url", "url_env"}
 # stop instead of refusing the ride. Kept out of STOP_FIELDS for the same
 # reason STOP_URL_FIELDS is: _exact demands a complete set, so the key is
 # unioned in per stop only when present, and unknown-key rejection is intact.
-STOP_OPTIONAL_FIELDS = {"optional"}
+STOP_OPTIONAL_FIELDS = {"optional", "capture"}
+# `capture: false` shares this optional-key lane: absent means capture exactly
+# as before; false means browser + human fence with no page artifacts.
 CONNECTOR_FIELDS = {"script", "argv", "read_only"}
 BOOL_DEFAULTS = {
     "take_screenshot", "headless", "is_notebook_context", "persistent",
