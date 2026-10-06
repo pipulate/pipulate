@@ -333,7 +333,7 @@ def _capture_checkpoint(
             # A CALLER'S HOOK OWNS EVERYTHING BEFORE THE PROMPT (2026-10-02):
             # the default sentences print only when no hook was given, and
             # the prompt itself says what Enter does.
-            output_stream.write("Press Enter to save the page. ")
+            output_stream.write(prompt)
             output_stream.flush()
             # TYPE-AHEAD IS NOT THE SIGNAL (2026-10-02, read off a walk whose
             # third page printed "Press Enter to save the page. Saved." on one
