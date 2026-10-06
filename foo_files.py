@@ -2422,18 +2422,21 @@ ruling, and never enters the Constitution section. Skip it in the ranker and
 take the next largest.
 FAMILY ROSTERS RIDE THE PARENT KEY: a child key carries only its imperative.
 DELIMITER COLLISION: if the block to be cut contains patch-protocol markers,
-call it out and hand the human an out-of-band vim instruction instead of a
-SEARCH/REPLACE block. Every SEARCH block spans contiguous non-empty lines.
-Predict every counter as a DELTA and every byte figure by counting the REPLACE
-block after it is written. Close with the standard five-car train: the AFTER
-probes are the same five lines that produced the receipts you just read."""
+skip it and take the next eligible candidate; this chop never emits an
+out-of-band instruction. Every SEARCH block spans contiguous non-empty lines.
+If a verb has no safe mutation, omit that car silently and continue.
+OUTPUT CONTRACT: reply with only the complete patch payload: one or more
+Target:/[[[SEARCH]]]/[[[DIVIDER]]]/[[[REPLACE]]] blocks and nothing else.
+Do not emit "Context verified.", analysis, headings, fences, counter
+predictions, PROBES, NEXT CONTEXT, PROMPT, EXTERNAL DELIVERABLES, or ignition
+text. The human owns patch/app/d/m; the next compile is the AFTER reading."""
 COMPACT_CHOP = r"""
 # THE FORGETTING KATA (forget with style: dedupe, fade, graduate)
 # COMMAND: python prompt_foo.py @COMPACT_PROMPT --chop COMPACT_CHOP --no-tree
 # ALIAS: `forget` (flake.nix; lands as its own car once flake.nix rides)
 # Run it whenever the router feels heavy. It compiles only the two files the
 # KEY/VALUE CONTRACT governs plus the instruments that grade a strike, and the
-# baked prompt asks for exactly one car per verb. The ranker prints the
+# baked prompt asks for at most one car per verb and a patch-only reply. The
 # heaviest comment bodies first so the graduation candidate is named by
 # weight, not by memory. The glossary rides ABOVE the router on purpose: a
 # linear reader meets values before keys.
