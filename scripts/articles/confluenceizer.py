@@ -582,8 +582,10 @@ def _target_title(md_file: Path, post) -> str:
 # on the page is overwritten. The version message carries a hash of the
 # body, so a run whose body would not change writes nothing. The index page
 # is confluence_index_page_id from blogs.json, else the parent itself. A
-# page is readable only by who can read every ancestor, so an index on the
+# page is readable only by who can read every ancestor, so an index on a
 # view-restricted parent is seen by that restriction list and nobody else.
+# Since 2026-10-05 the parent is open and each entry carries its own padlock
+# (THE PER-ENTRY PADLOCK), so this index is what the team sees.
 _INDEX_LIMIT = 100
 _INDEX_INTRO = ("A private work journal: written as Markdown in git and published here by a script. "
                 "Entries are restricted; ask Mike Levin for access to any of them.")
