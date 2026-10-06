@@ -389,23 +389,7 @@ And then we demonstrate a level of competence like so:
 #
 # § NEXT CONTEXT IS PASTE-READY OR IT IS SABOTAGE (banked 2026-09-24; convicted again 2026-09-29) -- Emit NEXT CONTEXT as one fenced block of literal context.txt lines pasted at the bottom before the train runs: include the whole next-turn file list and every PROBES command verbatim with only the leading "! " added, and never put prose, vim keystrokes, or assumptions about a car's future output inside it.
 #
-# A PROBE RUNS ON THE OPERATOR'S MACHINE OR IT IS NOT A PROBE (banked
-# 2026-09-24, convicted by four dead probes in one car). (1) PROBES pointed at
-# /root/.claude/... -- paths that exist only on the model's ephemeral cloud
-# disk -- so every jq and grep answered "No such file or directory" on the
-# operator's Mac. The one probe that WORKED carried its evidence inline (a
-# base64 blob it decoded on the spot). A probe against a file only the model can
-# see is a promissory note, not a falsifier. THREE SUB-RULES:
-#   (a) USE rg, NEVER grep. The tree is full of .git/ folders; rg honors
-#       .gitignore and skips them, grep recurses into every object.
-#   (b) A PROBE TARGETS A FILE THE OPERATOR HAS, or carries its evidence inline.
-#       Evidence living only on the model's side is DELIVERED into the cartridge
-#       as a real file first, then the probe reads that file.
-#   (c) A NAME THAT IS NOT A FILE IS NOT A FILE INCLUDE. A remote MCP tool
-#       (html_pageworkers_preview, site_crawler_url_detail) is actuated through
-#       connectors/mcp.py, never listed as a bare path; prompt_foo.py answers a
-#       bare tool name with "FILE NOT FOUND AND WILL BE SKIPPED" and the context
-#       arrives silently empty.
+# § A PROBE RUNS ON THE OPERATOR'S MACHINE OR IT IS NOT A PROBE (banked 2026-09-24) -- Make every probe target files on the operator's machine or carry its evidence inline or in the cartridge, use rg for repository searches, and invoke remote MCP tools through connectors/mcp.py rather than listing tool names as file includes.
 #
 # SPELL OUT THE TOOL-CALL YOU ARE MAKING OF THE HUMAN (banked 2026-09-22, at
 # the operator's instruction, after a Context car that said "same as last
@@ -662,40 +646,9 @@ And then we demonstrate a level of competence like so:
 # the cartridge, commentary = the discussion, Jira ID = the address in the ToC.
 # Do not resolve-and-delete; attribute-and-preserve.
 
-# THE LEDGER-SEPARATION RULE (banked 2026-07-22, articulation-banked):
-# "immutability vs mutability" is a false choice -- git already refuses it: the
-# working copy is mutable, the log is immutable, and you SEPARATE them rather than
-# pick. Immutability of the ledger is exactly what makes mutation of the text
-# auditable rather than amnesiac. Drift-analysis corollary (the KJV lesson): a
-# frozen canon is dangerous only when its history is thrown away. Keep the
-# original-language substrate and the losing readings and "dominion" stays
-# reinterpretable as stewardship forever, because original intent stays
-# RECOVERABLE. A frozen output with the source branches deleted is the cage; a
-# frozen output over a preserved DAG is the safety mechanism.
-# CAPTURE / DISCLOSURE AMENDMENT (2026-09-06): bank observation bytes before
-# ADVANCE; a mutable URL-cache path is provenance, not historical storage.
-# Require a named router to resolve; verify selected evidence in the output,
-# since a correct checksum can seal an incomplete selection.
-# Decode before applying disclosure policy; preserve original digests and
-# give transformed content its own digest. Record omissions explicitly.
-# Check those inner digests after compilation; zero detector hits do not
-# waive human review, and event presence does not prove complete bodies.
+# § THE LEDGER-SEPARATION RULE (banked 2026-07-22) -- Keep mutable work separate from immutable history, bank capture bytes before ADVANCE, resolve a named router and verify selected evidence, decode before disclosure while preserving original and transformed digests and recording omissions, then check inner digests and human review rather than treating a checksum or zero detector hits as completeness.
 
-# THE STEWARDSHIP RULE (banked 2026-07-22, articulation-banked; rentmeesterschap):
-# the whole NPvg stack is Northwestern-European commons-infrastructure culture
-# expressed as software -- Nix (Dolstra), Python (van Rossum), vim (Moolenaar) all
-# Dutch, git (Torvalds) Finnish -- and its engineering value is stewardship, not
-# dominion: manage an estate you do not own, leave the machine UNCHANGED, accrete
-# nothing mutable, garbage-collect to a clean store, take no residue. Two siblings
-# of the Disappearing Instrument Rule: (1) SMALL-MARKET WORA -- build for the world
-# by default even when your market is one person; parochial software is suicidal
-# in a small open economy, which is why the region ships portable, standard-
-# anchored substrate, not walled unicorns. (2) STRUCTURAL HUMILITY (Janteloven-as-
-# UX) -- the tool must carry the whole meaning without the maker in the room; that
-# is the cold-start test (a cartridge either reconstructs the reasoning with no
-# human present, or it failed). The instinct unifying the Alþingi Lawspeaker,
-# Kuyper's steward, the faceless SSH tunnel, and the flake that rebuilds
-# identically after its author is gone: MAKE THE RECORD OUTLIVE THE MAKER.
+# § THE STEWARDSHIP RULE (banked 2026-07-22) -- Practice SMALL-MARKET WORA and STRUCTURAL HUMILITY by using portable open standards, leaving the host unchanged with no mutable residue, and making each tool and artifact carry its full meaning and recoverable record without its maker present.
 
 # THE DOUBLE-TAP RULE (banked 2026-07-20, witnessed same day): a `!` probe
 # that reads an artifact WRITTEN LATER IN THE SAME COMPILE (foo.zip and its
@@ -824,24 +777,7 @@ And then we demonstrate a level of competence like so:
 #
 # Resume the normal protocol only after the next action is obvious.
 
-# THE TORTOISE PROTOCOL (banked 2026-07-21, articulation-banked -- a rule
-# of pure judgment, no mechanism claims): when the Prompt arrives as a
-# discursive meditation rather than a task -- topic-hopping through SSH,
-# SQLite, init systems, whatever caught the light -- Mike-E is opening a
-# Locke-and-Demosthenes exchange (Achilles and the Tortoise by way of
-# Ender's Game), not requesting a summary. Expected move set: (1) FILL
-# THE LINES -- complete the transitions deliberately left dangling
-# ("something something") with the strongest version of where he was
-# headed; (2) STEELMAN THEN STRIKE -- restate his claim better than he
-# did, then hit the weakest joint with a specific date, mechanism, or
-# counterexample from HIS OWN codebase where possible, never a vibe;
-# (3) CHARGE EVERY METAPHOR RENT (Axis-Forcing sibling) -- a governor, a
-# Chaos Monkey, a player piano must each predict something checkable or
-# be returned to the shelf; (4) LAND THE TURN SHAPE ANYWAY -- dialogue is
-# the body, but the Actionable Response Contract still closes the turn,
-# even when PATCHES honestly reads "No repo patches required." Detection
-# is inferred, never declared: rambling prose + no imperative verbs +
-# an explicit or implicit "your turn" = the Tortoise is being summoned.
+# § THE TORTOISE PROTOCOL (banked 2026-07-21) -- Infer a discursive meditation as an invitation to dialogue: complete its unfinished transitions, steelman its claim before challenging its weakest point with concrete evidence, require metaphors to predict something checkable, and still close with the Actionable Response Contract.
 
 # THE DISAPPEARING INSTRUMENT RULE (banked 2026-07-19; command-surface witness
 # 2026-09-24): The supreme design goal is invisible utility. The system must
@@ -1059,7 +995,7 @@ And then we demonstrate a level of competence like so:
 # THE UNSORTED CAP (banked 2026-09-15). rg -l and a multi-file rg -n print files in the order their searches finish, so one census printed nine files in two orders across the hand-run and compile lanes, and a head -N on that output cuts a different subset each run. Sort before you cap, and compare unsorted listings as sets. Sibling of THE CAP THAT HID THE ANSWER.
 # THE PAGE THAT HOLDS IN BOTH WORLDS (banked 2026-09-15, witnessed once). A public page that asks a stranger to test a machine is written before anyone knows what the machine's evidence will carry, so its instruction must stay true either way. Stop three said a good answer admits the preview lacks the server's sentence; the preview lacked it, ChatGPT 6 said so and pointed at source.html, and the page taught the lesson instead of promising a word the bundle never held. THE CABOOSE-VERDICT COROLLARY aimed at a reader who cannot ask a follow-up.
 # THE UNASKED SECOND WINDOW (banked 2026-09-16, operator-convicted three times in one minute). A newcomer's word opens what its name says and nothing more; a second file in a split, added to solve a problem the operator had not raised, is a second lesson at the exact moment the first was meant to be the whole lesson, and it lands in the same car as the ruling they did ask for. Conviction: epr opened the prompt router and prompt.md in one -o split for one turn, the operator hit the split three times on the way out the door, and the revert was one car. Same disease, smaller: the ignition spelling handed over was cpr "smoke", a probe's argument wearing the command's clothes. Name the ignition in the newcomer's own spelling, and answer the unraised question as a TODO, never as a feature riding the train. Sibling of THE COACHMAN'S VETO: a train is a proposal, and an unasked car costs exactly what a wrong one does.
-# THE FLAG WENT COLD (banked 2026-09-17, census-convicted one compile late). When a load moves from import time to first use, every reader of its readiness flag moves in the SAME car, because the flag's meaning changed under them: voice_ready meant the model is on disk and now means something in this process has already spoken. CONVICTION: the lazy load shipped in imports/voice_synthesis.py without a grep for the flag's readers, and the next compile's census read voice_ready gating BEFORE speak_text in four untouched files (apps/010_introduction.py, pipulate/core.py, server.py, tools/mcp_tools.py), every gate shut in every fresh process, the wand's voice, the introduction app and the registered voice_synthesis tool silent on a machine that said yes and reporting not-ready. CURE: the speaker grows the question the callers meant to ask, can_speak() = consent and load, and each caller swaps one word. STANDING CONSEQUENCE: grep the readers of a flag before deferring what sets it. Sibling of THE SAME-CAR LABEL RULE (a moved gate drags its labels) and THE PROTECTION-LAG POLARITY (an added protection understates itself in stale strings); here the stale thing is a boolean, not a string, and it lies with a False.
+# § THE FLAG WENT COLD (banked 2026-09-17) -- Before deferring the operation that sets a readiness flag, find every reader and update all callers in the same change to ask the capability question they actually mean, so a fresh process cannot mistake not-yet-used for unavailable.
 # § THE DOOR NAMES THE FOLDER (banked 2026-09-14) -- a script arriving through a pipe cannot learn which address served it ($0 is the word bash and the pipe carries no address), and two copies of one file drift, so the DOOR names the default: the body carries one contiguous placeholder, the door that wants a different default stamps it with nginx sub_filter (sub_filter_types for the served MIME type, sub_filter_once off), and the script tells stamped from unstamped by comparing against the same word spelled in two halves, which no substitution can reach. Gate every door with the round trip: reverse the one token in the served body and the hash must equal the repo file. A URL stamp needs its own placeholder, never a hostname rewrite, because KEY_URL stays at the old door on purpose. Witnessed 2026-09-14: npvg_door=npvg, pipulate_door=pipulate, 064cad99 on both sides. Sibling of THE WRITE-SIDE / READ-SIDE SPLIT: the folder and the app label were one string answering two questions.
 
 # ============================================================================
@@ -2638,9 +2574,9 @@ MATCHBOOK_CHOP = r"""
 # - TODO (2026-09-13): npvg.org rides mikelev.in's public address as a STATIC A record while only mikelev.in gets the namecheap-ddns heartbeat; a second unit (domain=npvg.org, its own token) or an ALIAS record is owed before the next public-IP change, or the pad goes dark with nothing printed anywhere. THIRD RECORD 2026-09-29: qamy.ai, static, the same address (the sentence rode the qamy.ai door TODO by hand first, and stands there too); on the next move two doors go dark, not one, and the unit covering all three names is the cure.
 # - TODO (2026-09-13): the pad has no favicon, so every browser visit writes a 404 line into npvg.access.log beside its 200 (the cellular witness was two lines for one visit); a locations."= /favicon.ico" returning 204 is three lines, owed before the funnel is read from that log. SECOND WITNESS 2026-09-29: the qamy.ai door's cellular tag read 2 for one visit, the same shape; the location belongs on both doors.
 # § THE DIRECTORY KEY CROSSED MACHINES (banked 2026-09-08) -- Never key a shared file by a machine-local handle; use a human name plus identities derived from the local application's own registry, and require exactly one match.
-# - EARMARK: THE INSTRUMENT DECIDES THE STATE (banked 2026-09-08, operator-convicted: "I'm so confused. Do I have Chrome open? Do I close it?"): when a fence REPORTS the world (RUNNING, STOPPED, STALE_LOCK) and ends in a verdict token, the operator's loop contains no question about the world; it is run, read the last line, do what the verdict names, run again. An instruction that asks the human to STAGE the world ("with a Chrome window visibly open") is witness choreography for the record, the one-time act that observes both branches of a fence owed under REFUSAL-ONLY WITNESS, and it must be labeled as such and retired the compile after the receipt lands, or the operator reads the staging as the standing procedure and a fence built to remove a decision has added one. STANDING CONSEQUENCE for any hand-run process an article hands over: write it as verdict -> action pairs (REFUSED_CHROME_RUNNING means quit Chrome and run again; IN_SYNC means nothing to do) and never as preconditions the human establishes before typing the command. Sibling of THE GATE SPEAKS A VERDICT (the gate says a word, not a number) and of THE BARNEY RESET RULE (confusion in the human is the trigger, and it fired here).
+# § THE INSTRUMENT DECIDES THE STATE (banked 2026-09-08) -- Write hand-run procedures as instrument verdict-to-action pairs, and label any human staging of a state as temporary branch-witness choreography that is retired after its receipt, never as the standing procedure.
 # § THE OPERATOR IS A VARIABLE (banked 2026-09-08) -- Before crediting or blaming a patch for a reading that moved beyond its predicted delta, ask what the operator did between taps and record every operator action as a manipulated variable.
-# - EARMARK: THE PROBE NAMED THE VERSION (banked 2026-09-28, self-convicted at deed 1660): a probe that names its artifact by a value the ride itself can move -- a version number in a filename, a date, a counter -- prints the OLD world after the move and is byte-identical to a null result, so a stale BEFORE wears the AFTER's label with no tell. CONVICTION: the sdist build probe spelled pipulate-2.65.tar.gz; the operator bumped __init__.py and released between the taps, the compile built pipulate-2.66.tar.gz beside it, and the tar line read the 2.65 file the hand run had left: build_rc=0, members=98, no hits, identical to BEFORE, which is exactly what a MANIFEST car that did nothing would also print. Sibling of THE OPERATOR IS A VARIABLE (the release was the operator's act between taps) and THE DOUBLE-TAP RULE (a lagged reading must be claimed, never assumed). PRESCRIPTION: name the newest file by mtime (ls -t ... | head -1) and print the name beside the reading, or print the version the probe resolved; a probe whose subject is a literal filename is a probe with a clock in it. DISCHARGED at deed 1661: the corrected line printed file=pipulate-2.66.tar.gz and members=114, and named which world it read.
+# § THE PROBE NAMED THE VERSION (banked 2026-09-28) -- Resolve an artifact by its current version or newest matching mtime and print the resolved filename or version beside the reading, rather than hardcoding a version, date, or counter that can change between the before and after taps.
 # § HARVEST THEN PROJECT (banked 2026-09-08) -- Before overwriting mutable application state from declarative config, read and harvest undeclared live state, back up, and refuse the write on running, foreign-owned, or unparseable files; prove idempotence by shape, not bytes.
 # - TODO (2026-09-08, code landed the same day in nixos 230c64c): validate_entries in scripts/bookmarks_sync.py ACCEPTS a per-entry `description` string (grep read 2), but no entry in bookmarks.nix carries one yet, so the accept branch is UNWITNESSED; the first entry that does must read IN_SYNC or WRITTEN under bm, never BAD_MATRIX, and that receipt deletes this line.
 # - EARMARK: THE HIDDEN DENOMINATOR (banked 2026-09-06, articulation-banked): a
@@ -2814,22 +2750,7 @@ MATCHBOOK_CHOP = r"""
 # § THE COMPILED TRAIL (banked 2026-08-08, OWES discharged 2026-08-09) -- a trail has two legitimate forms and conflating them is the confusion: the SEALED form is machine cargo and stays the JSON subset of YAML 1.2 because there is no stdlib YAML parser, because the sealer hashes those exact bytes and recomputes the consent surface from them, and because duplicate keys must fail closed; the AUTHORING form is a different artifact and may be prose-shaped, one SECTION per stop, parsed by a ten-line scalar subset. The seal was already the compiler; what was missing was a human-shaped input, and walk_compile.py plus bookmark_import.py landed it. SUPERSEDED 2026-10-04 by ONE INSTALL, ONE PIPE: a trail is hand-written YAML read in the workshop; the duplicate-key refusal stays.
 # § THE UNREACHABLE GUARD (banked 2026-08-07) -- Put every guard before any line that can raise the error it is meant to report, and make the caller catch that error type.
 # § CONSENT CANNOT PRECEDE ITS OBJECT (banked 2026-08-07, fence-witnessed) -- Put disclosure at t=0 and consent at t=N for any artifact created after the initial choice: an early flag may authorize a fully described sequence, but it cannot authorize the later disposition of a bundle whose size and contents did not yet exist.
-# - EARMARK: THE PROTECTION-LAG POLARITY (banked 2026-08-07, three-file
-#   conviction): when a mechanism is REMOVED the stale strings overstate
-#   protection, which is the failure everyone expects. When a protection is
-#   ADDED the stale strings understate it -- and that direction is MORE
-#   expensive, because the string then overstates the RISK to a newcomer at the
-#   exact moment they decide whether to ride at all. CONVICTION: the DECANT
-#   fence landed in one ride; for that ride mother_cat._announce_consent told
-#   every rider "WITHOUT ASKING AGAIN" about a gate that does ask,
-#   public_walk.yaml's third stop said the same thing in trail DATA, and
-#   GLOSSARY.md said it a third and fourth time -- and the glossary instances
-#   were found only because a dismount went looking. STANDING CONSEQUENCE, the
-#   search discipline THE SAME-CAR LABEL RULE implies but never spells: when a
-#   gate lands, grep the CORPUS for every string describing that gate -- prose,
-#   trail data, glossary, launcher cards, spoken narration -- not merely the
-#   file the gate lives in. The gate's own file is the one place the author
-#   cannot forget, which is precisely why it is the one place that is fine.
+# § THE PROTECTION-LAG POLARITY (banked 2026-08-07) -- When adding or removing a protection gate, search and update every description of that gate across code, prose, trail data, glossary, launcher cards, and spoken narration in the same change so stale strings neither overstate protection nor overstate risk.
 # § THE ELIMINATOR NEEDS A GENERATOR (banked 2026-08-06) -- bisection cannot fail to eliminate and CAN silently fail to converge, because binary search terminates only if the target is in the array; when probes keep discriminating and the boundary does not move, the fault is the ENUMERATION, so stop probing and GENERATE -- list every artifact the pipeline already writes, because the cheapest midpoint is usually a byproduct nobody thought to open. Append "none of the above, and that is the finding" to every pre-committed ruling. Three beats, not one: GENERATE, ELIMINATE, WITNESS.
 # § THE TRANSFER FUNCTION (banked 2026-08-06) -- the render transform is a binary GATE (active for this payload or not) times a deterministic GRAMMAR: it wraps a www prefix followed by a dot and one or more further labels ANYWHERE in the text, inside code spans and fences too, is suppressed only by a preceding scheme or a preceding word character, and never re-fires on its own output. Characterize a channel with a CO-LOCATED CONTROL, and prefer an instrument whose subject is a SHAPE generated fresh each run over one whose subject is a unique token, which dies the moment the report quotes it.
 # § THE LABEL IS NOT DATA (banked 2026-08-06) -- Escape every dynamic string that arrived as content before interpolating it into markup, query, or shell grammar; style the trusted wrapper, never the payload.
@@ -2898,22 +2819,7 @@ MATCHBOOK_CHOP = r"""
 #   ninety seconds apart. APP_NAME is load-bearing (server.py:1418, the boot
 #   menu, every shell entry), so the BANNER lowercases to match:
 #   substr($0,2) -> tolower(substr($0,2)). One word.
-# - EARMARK: THE PROBE THAT ATE ITS SIBLINGS (banked 2026-08-04, self-convicted):
-#   a probe's CLEANUP is part of its blast radius. Probe A of the stat-cache ride
-#   ended `cd /; rm -rf "$T"` to avoid deleting a directory it was standing in --
-#   correct in isolation -- and the operator pastes probes as ONE BLOCK, so the
-#   three probes after it ran from `/` and printed `No such file or directory`
-#   and `could not find a flake.nix file`. Two-thirds of a straddle's BEFORE half,
-#   destroyed by a housekeeping step. The compile lane recovered it only because
-#   the `!` executor spawns each line as its own process from REPO_ROOT -- luck,
-#   not design. STANDING CONSEQUENCE: any probe that cd's, sets a variable, or
-#   changes shell state either restores it (`cd - >/dev/null`) or runs inside a
-#   subshell `( ... )`. Sibling of THE PROBE ECONOMY RULE: that one bounds a
-#   probe's OUTPUT, this one bounds its SIDE EFFECTS. Second conviction
-#   2026-09-26: a smoke probe opened with cd $(mktemp -d), rode last of
-#   eight, and left the operator's prompt in the temp folder; harmless only
-#   because nothing followed it and the next car's first line was a cd. A
-#   probe that must cd runs inside ( ... ), whatever its position.
+# § THE PROBE THAT ATE ITS SIBLINGS (banked 2026-08-04) -- Run every probe that changes directory inside a subshell and isolate or restore any other shell-state changes, including cleanup, so pasting the whole probe block cannot break subsequent probes.
 # - EARMARK: THE MAINTAINER-INVISIBLE LANE (banked 2026-08-04, three-for-three):
 #   every defect this ride closed was structurally unobservable from the
 #   maintainer's daily machine, and for THREE DIFFERENT REASONS. The alsa-utils
@@ -3245,8 +3151,7 @@ MATCHBOOK_CHOP = r"""
 # - MAPPER LANE v2 SCOPE (seeded 2026-07-20 at dismount): the human-confirmation schema. A confirmed map is the DRAFT edited by hand: top-level status -> human_confirmed (+ confirmed_by/confirmed_at_utc); per-tab subset is VALID (confirm Tabs 1-3, mark the rest mapping_status: excluded with a reason -- downstream consumes ONLY confirmed tabs); each confirmed qa_field collapses its candidate list to ONE api_field; lookup_key gains api_join. No template file exists BY DESIGN -- map_sheet.py is the template generator; schema is the constant, every instance derives fresh from THE sheet. Date-range parameters attach to the API side of confirmed qa_fields later, never the sheet side. Fiction reference: example.com colored-widget PDPs sample in the 2026-07-20 dismount article.
 # - EARMARK: THE COACHMAN'S VETO (banked 2026-07-20): an emitted patch train is a PROPOSAL until the human runs `app`; refusing an entire train costs nothing (no dead cars -- nothing was applied) and is the correct move when the strategy beneath it shifts. The Horse has instincts; the coachman has been down the road. Witness: the measure.py train of 2026-07-20, refused at the platform, redirected into the MAPPER LANE.
 # - TODO (ratify wording, then retitle EARMARK): PATCH CAR BUNDLING -- a car = one commit story. Bundle blocks into one fenced payload when they form one atomic change deserving one commit message, even across files; split cars when the commits should teach separately (feature vs docs vs constitution flip), so `m`'s message and the human's internalization track each lesson. Evidence: the 2026-07-20 five-block sheets.py car cut the human loop from O(blocks) to O(cars) with zero exact-match failures.
-# - EARMARK: AUTH-KIND RESIDUE (convicted 2026-07-20): sheets.py v1 inherited gsc's service_account plumbing by pattern-proximity, so the API-enablement toggle went to the right console page for the WRONG credential's project -- SERVICE_DISABLED persisted post-enablement and only the human caught the identity-model mismatch. Auth kind is a USER-story decision, never nearest-neighbor: Pipulate humans own Google accounts -> oauth_token_file (gmail pattern, per-scope token files, NO sharing gate); unattended robots -> service_account_file. Every connector's identity mode must print its credential's project_id so wrong-project convictions take seconds, not console archaeology.
-# - WALLET DESCRIPTOR LANE (opened 2026-07-20): one richly-annotated wallet (connectors.json today; eventually connectors.nix -> materialized JSON, blogs.nix pattern) where every credential carries a human-facing description -- what it is, which Cloud project, which scopes, which connectors consume it, where the secret file lives, rotation notes. Names/paths/descriptions only, never secret values. The cure to auth opacity: left hand and right hand read the same illuminated page, and it stays joyful to touch.
+# § AUTH-KIND RESIDUE (banked 2026-07-20) -- Choose connector auth from the user story rather than neighboring code: use per-scope oauth_token_file credentials without a sharing gate for human Google accounts, service_account_file for unattended robots, and print the credential project_id so enablement targets the correct Cloud project.
 # - EARMARK: DECLARATION -> MATERIALIZATION (banked 2026-09-24, scratch-wallet witnessed): connector auth shape lives as a top-level literal AUTH_SLOT beside the connector that consumes it; wallet.py reads that literal by AST, never imports the connector, and warm/login materialize a missing connectors.json entry while existing entries always win. Witness: `wallet.py warm botify` against a scratch wallet containing only non-object `_meta: "keep"` preserved `_meta`, materialized the Botify bearer_token metadata naming BOTIFY_API_TOKEN, and wrote no credential value. connectors.json is implementation state, not a JSON authoring exercise for normal users.
 # § FAILED-PROBE RECEIPT (banked 2026-07-20) -- Preserve stderr-only nonzero exits as bounded first-class compile receipts, and validate the lane by manufacturing a known failure before trusting its green.
 # - NEXT RIDE -- RUNTIME TOOL-DISCOVERY IMPORT SPLIT (seeded 2026-07-20 at dismount): the compile-lane roster now dodges the tax via AST, but cli.py mcp-discover and get_all_tools() STILL import every tools/*.py at tool-call time, eating the ~3.8s imports.voice_synthesis engine load (runtime BEFORE receipt: get_all_tools() at 5.58s vs the 0.18s AST path). Defer/lazy-load the engine import inside tools/voice_synthesis.py so enumerating names/metadata never constructs the TTS engine -- it loads only when voice_synthesis is CALLED. Arrival: a runtime AFTER receipt showing get_all_tools() drop from ~5.5s toward the AST floor. DISCHARGED 2026-09-17 (deed 1460): the engine load left ChipVoiceSystem.__init__ for ensure_voice() in imports/voice_synthesis.py, the import straddle read 3.51 s loaded=True -> 0.40 s loaded=False, and cli.py mcp-discover ran in 0.23 s in the compile lane against the 5.58 s BEFORE, at the AST floor; the load now happens only after a human has answered the voice card. RECALL HANDLE (the "rtx" pull = rgx/rgxc AND-search over _posts, since 2-3 rare words set-intersect to one article): `rgxc roster triptych hinge` re-prints this article's shards AND copies a TODO_SLUGS block, so `xp` right after re-hydrates the FULL article into context -- no bookmark, just two rare words meeting once. THE 1+1=3: LLM Optics + AST-derived roster + rgx word-union recall + the mount/dismount ride kata all landed within days and now COMPOSE -- each makes the next cheaper to reach for; that compounding, not any lone unlock, is the acceleration.

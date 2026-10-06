@@ -528,6 +528,28 @@ Entries are alphabetical, numbers spelled as spoken.
 # a guess wearing a number.
 ~~~
 
+- **A Probe Runs on the Operator's Machine or It Is Not a Probe** -- *expanded rule; banked 2026-09-24.*
+
+~~~text
+# A PROBE RUNS ON THE OPERATOR'S MACHINE OR IT IS NOT A PROBE (banked
+# 2026-09-24, convicted by four dead probes in one car). (1) PROBES pointed at
+# /root/.claude/... -- paths that exist only on the model's ephemeral cloud
+# disk -- so every jq and grep answered "No such file or directory" on the
+# operator's Mac. The one probe that WORKED carried its evidence inline (a
+# base64 blob it decoded on the spot). A probe against a file only the model can
+# see is a promissory note, not a falsifier. THREE SUB-RULES:
+#   (a) USE rg, NEVER grep. The tree is full of .git/ folders; rg honors
+#       .gitignore and skips them, grep recurses into every object.
+#   (b) A PROBE TARGETS A FILE THE OPERATOR HAS, or carries its evidence inline.
+#       Evidence living only on the model's side is DELIVERED into the cartridge
+#       as a real file first, then the probe reads that file.
+#   (c) A NAME THAT IS NOT A FILE IS NOT A FILE INCLUDE. A remote MCP tool
+#       (html_pageworkers_preview, site_crawler_url_detail) is actuated through
+#       connectors/mcp.py, never listed as a bare path; prompt_foo.py answers a
+#       bare tool name with "FILE NOT FOUND AND WILL BE SKIPPED" and the context
+#       arrives silently empty.
+~~~
+
 - **The A11Y Outline Describes the Hydrated DOM** -- (convicted 2026-09-21). Four
   probes in a row failed at one question -- what is the querystring parameter
   behind the Has SW filter -- because the claim being tested came from an
@@ -653,6 +675,13 @@ Entries are alphabetical, numbers spelled as spoken.
 # fetches a trail over the network yet; when something does, a trail that can
 # change out from under you is not replayable, so seal on arrival and ride the
 # sealed copy.
+~~~
+
+- **Auth-Kind Residue** -- *expanded rule; banked 2026-07-20.*
+
+~~~text
+# - EARMARK: AUTH-KIND RESIDUE (convicted 2026-07-20): sheets.py v1 inherited gsc's service_account plumbing by pattern-proximity, so the API-enablement toggle went to the right console page for the WRONG credential's project -- SERVICE_DISABLED persisted post-enablement and only the human caught the identity-model mismatch. Auth kind is a USER-story decision, never nearest-neighbor: Pipulate humans own Google accounts -> oauth_token_file (gmail pattern, per-scope token files, NO sharing gate); unattended robots -> service_account_file. Every connector's identity mode must print its credential's project_id so wrong-project convictions take seconds, not console archaeology.
+# - WALLET DESCRIPTOR LANE (opened 2026-07-20): one richly-annotated wallet (connectors.json today; eventually connectors.nix -> materialized JSON, blogs.nix pattern) where every credential carries a human-facing description -- what it is, which Cloud project, which scopes, which connectors consume it, where the secret file lives, rotation notes. Names/paths/descriptions only, never secret values. The cure to auth opacity: left hand and right hand read the same illuminated page, and it stays joyful to touch.
 ~~~
 
 - **The Blank Stare Rule** -- (banked 2026-09-28, the operator's words): every word a newcomer types is the plain name of the thing it does (walk, connect, context, prompt, compile, about, menu), and an abbreviation is an alias behind it, never the word the menu prints. The answer to "your system is unusual" is the objector's own word, typed into a text file, and a blank stare: which part is difficult, the word connect, or that a word can be written down where a hand-motion in a browser cannot? Operation Stick Bug's rule for names: the instrument vanishes when it is called what it is. Sibling of THE NEXT ACTION, NOT THE MACHINERY. ONE EXCEPTION, on purpose (2026-10-02): osb, Operation Stick Bug's own word, printed last by all and never by the short menu, because a name like a twig is its camouflage.
@@ -1301,6 +1330,12 @@ Entries are alphabetical, numbers spelled as spoken.
   assignment, the stray paren riding the second -- two drafts of one line
   shipped together. Dead code beside a syntax error is the signature of an
   emitter that changed its mind mid-file and shipped both minds.
+- **The Flag Went Cold** -- *expanded rule; banked 2026-09-17.*
+
+~~~text
+# THE FLAG WENT COLD (banked 2026-09-17, census-convicted one compile late). When a load moves from import time to first use, every reader of its readiness flag moves in the SAME car, because the flag's meaning changed under them: voice_ready meant the model is on disk and now means something in this process has already spoken. CONVICTION: the lazy load shipped in imports/voice_synthesis.py without a grep for the flag's readers, and the next compile's census read voice_ready gating BEFORE speak_text in four untouched files (apps/010_introduction.py, pipulate/core.py, server.py, tools/mcp_tools.py), every gate shut in every fresh process, the wand's voice, the introduction app and the registered voice_synthesis tool silent on a machine that said yes and reporting not-ready. CURE: the speaker grows the question the callers meant to ask, can_speak() = consent and load, and each caller swaps one word. STANDING CONSEQUENCE: grep the readers of a flag before deferring what sets it. Sibling of THE SAME-CAR LABEL RULE (a moved gate drags its labels) and THE PROTECTION-LAG POLARITY (an added protection understates itself in stale strings); here the stale thing is a boolean, not a string, and it lies with a False.
+~~~
+
 - **The Folder Is a Variable** -- *a hand fence runs where the prompt stands,
   and only app resolves the root.* Banked 2026-09-29, convicted twice in one
   paste at deed 1677; graduated at the dismount of the same ride, deed 1679.
@@ -1653,6 +1688,12 @@ Entries are alphabetical, numbers spelled as spoken.
   THAT expression and not a plausible neighbour. Sibling: THE NIX-FILE LINT
   PROBE, where ruff parsed flake.nix as Python and printed 2,544 correct
   errors about the wrong question.
+- **The Instrument Decides the State** -- *expanded rule; banked 2026-09-08.*
+
+~~~text
+# - EARMARK: THE INSTRUMENT DECIDES THE STATE (banked 2026-09-08, operator-convicted: "I'm so confused. Do I have Chrome open? Do I close it?"): when a fence REPORTS the world (RUNNING, STOPPED, STALE_LOCK) and ends in a verdict token, the operator's loop contains no question about the world; it is run, read the last line, do what the verdict names, run again. An instruction that asks the human to STAGE the world ("with a Chrome window visibly open") is witness choreography for the record, the one-time act that observes both branches of a fence owed under REFUSAL-ONLY WITNESS, and it must be labeled as such and retired the compile after the receipt lands, or the operator reads the staging as the standing procedure and a fence built to remove a decision has added one. STANDING CONSEQUENCE for any hand-run process an article hands over: write it as verdict -> action pairs (REFUSED_CHROME_RUNNING means quit Chrome and run again; IN_SYNC means nothing to do) and never as preconditions the human establishes before typing the command. Sibling of THE GATE SPEAKS A VERDICT (the gate says a word, not a number) and of THE BARNEY RESET RULE (confusion in the human is the trigger, and it fired here).
+~~~
+
 - **The Key/Value Contract** -- *the router keeps keys, the glossary keeps
   values.* Banked 2026-08-30, articulation-banked, the day foo_files.py read
   75,947 tokens and 34% of a default payload. FOUR KINDS OF LINE, FOUR FATES.
@@ -1779,6 +1820,29 @@ Entries are alphabetical, numbers spelled as spoken.
   this rule's foreign-transport instance) and an instance of THE
   DISCRIMINATION QUESTION (a label that cannot distinguish two agents prints
   identically in both worlds).
+- **The Ledger-Separation Rule** -- *expanded rule; banked 2026-07-22.*
+
+~~~text
+# THE LEDGER-SEPARATION RULE (banked 2026-07-22, articulation-banked):
+# "immutability vs mutability" is a false choice -- git already refuses it: the
+# working copy is mutable, the log is immutable, and you SEPARATE them rather than
+# pick. Immutability of the ledger is exactly what makes mutation of the text
+# auditable rather than amnesiac. Drift-analysis corollary (the KJV lesson): a
+# frozen canon is dangerous only when its history is thrown away. Keep the
+# original-language substrate and the losing readings and "dominion" stays
+# reinterpretable as stewardship forever, because original intent stays
+# RECOVERABLE. A frozen output with the source branches deleted is the cage; a
+# frozen output over a preserved DAG is the safety mechanism.
+# CAPTURE / DISCLOSURE AMENDMENT (2026-09-06): bank observation bytes before
+# ADVANCE; a mutable URL-cache path is provenance, not historical storage.
+# Require a named router to resolve; verify selected evidence in the output,
+# since a correct checksum can seal an incomplete selection.
+# Decode before applying disclosure policy; preserve original digests and
+# give transformed content its own digest. Record omissions explicitly.
+# Check those inner digests after compilation; zero detector hits do not
+# waive human review, and event presence does not prove complete bodies.
+~~~
+
 - **The Machine Is Named by Its Prompt** -- *every command block is headed
   by the prompt string of the terminal it runs in.* Banked 2026-09-29,
   convicted at deed 1682; its checklist line landed at deed 1685 as item 13
@@ -2001,6 +2065,33 @@ Entries are alphabetical, numbers spelled as spoken.
   to bound noise can truncate the decisive line, so bound by content (grep for
   the discriminator) rather than by count when the discriminator's position
   is unknown.
+- **The Probe Named the Version** -- *expanded rule; banked 2026-09-28.*
+
+~~~text
+# - EARMARK: THE PROBE NAMED THE VERSION (banked 2026-09-28, self-convicted at deed 1660): a probe that names its artifact by a value the ride itself can move -- a version number in a filename, a date, a counter -- prints the OLD world after the move and is byte-identical to a null result, so a stale BEFORE wears the AFTER's label with no tell. CONVICTION: the sdist build probe spelled pipulate-2.65.tar.gz; the operator bumped __init__.py and released between the taps, the compile built pipulate-2.66.tar.gz beside it, and the tar line read the 2.65 file the hand run had left: build_rc=0, members=98, no hits, identical to BEFORE, which is exactly what a MANIFEST car that did nothing would also print. Sibling of THE OPERATOR IS A VARIABLE (the release was the operator's act between taps) and THE DOUBLE-TAP RULE (a lagged reading must be claimed, never assumed). PRESCRIPTION: name the newest file by mtime (ls -t ... | head -1) and print the name beside the reading, or print the version the probe resolved; a probe whose subject is a literal filename is a probe with a clock in it. DISCHARGED at deed 1661: the corrected line printed file=pipulate-2.66.tar.gz and members=114, and named which world it read.
+~~~
+
+- **The Probe That Ate Its Siblings** -- *expanded rule; banked 2026-08-04.*
+
+~~~text
+# - EARMARK: THE PROBE THAT ATE ITS SIBLINGS (banked 2026-08-04, self-convicted):
+#   a probe's CLEANUP is part of its blast radius. Probe A of the stat-cache ride
+#   ended `cd /; rm -rf "$T"` to avoid deleting a directory it was standing in --
+#   correct in isolation -- and the operator pastes probes as ONE BLOCK, so the
+#   three probes after it ran from `/` and printed `No such file or directory`
+#   and `could not find a flake.nix file`. Two-thirds of a straddle's BEFORE half,
+#   destroyed by a housekeeping step. The compile lane recovered it only because
+#   the `!` executor spawns each line as its own process from REPO_ROOT -- luck,
+#   not design. STANDING CONSEQUENCE: any probe that cd's, sets a variable, or
+#   changes shell state either restores it (`cd - >/dev/null`) or runs inside a
+#   subshell `( ... )`. Sibling of THE PROBE ECONOMY RULE: that one bounds a
+#   probe's OUTPUT, this one bounds its SIDE EFFECTS. Second conviction
+#   2026-09-26: a smoke probe opened with cd $(mktemp -d), rode last of
+#   eight, and left the operator's prompt in the temp folder; harmless only
+#   because nothing followed it and the next car's first line was a cd. A
+#   probe that must cd runs inside ( ... ), whatever its position.
+~~~
+
 - **The Prose-Inflated Counter** -- *a name-anchored count includes its own
   documentation.* Banked 2026-08-05, self-convicted. A counter probe whose
   pattern is a NAME counts DOCUMENTATION and MECHANISM together, so any patch
@@ -2019,6 +2110,27 @@ Entries are alphabetical, numbers spelled as spoken.
   sees what matched. Fifth sibling of DOTFILE-BLIND / CASE-BLIND / UNANCHORED /
   CAP -- another way a probe answers a question other than the one on its
   label.
+- **The Protection-Lag Polarity** -- *expanded rule; banked 2026-08-07.*
+
+~~~text
+# - EARMARK: THE PROTECTION-LAG POLARITY (banked 2026-08-07, three-file
+#   conviction): when a mechanism is REMOVED the stale strings overstate
+#   protection, which is the failure everyone expects. When a protection is
+#   ADDED the stale strings understate it -- and that direction is MORE
+#   expensive, because the string then overstates the RISK to a newcomer at the
+#   exact moment they decide whether to ride at all. CONVICTION: the DECANT
+#   fence landed in one ride; for that ride mother_cat._announce_consent told
+#   every rider "WITHOUT ASKING AGAIN" about a gate that does ask,
+#   public_walk.yaml's third stop said the same thing in trail DATA, and
+#   GLOSSARY.md said it a third and fourth time -- and the glossary instances
+#   were found only because a dismount went looking. STANDING CONSEQUENCE, the
+#   search discipline THE SAME-CAR LABEL RULE implies but never spells: when a
+#   gate lands, grep the CORPUS for every string describing that gate -- prose,
+#   trail data, glossary, launcher cards, spoken narration -- not merely the
+#   file the gate lives in. The gate's own file is the one place the author
+#   cannot forget, which is precisely why it is the one place that is fine.
+~~~
+
 - **The Publish Lane Is Not The Push** -- installer edits reach strangers only through each door's own truck; `git push` is not their ignition. TWO DOORS SINCE 2026-09-14: pipulate.com through release.py's sync_install_sh (publish-only lane, proven idempotent 2026-08-30: python release.py --skip-version-sync --skip-docs-sync --skip-audit-sync --skip-breadcrumb-sync --skip-trifecta-rebuild) and npvg.org through nixops.sh's rsync to the pad, which needs no nixos-rebuild for a body-only change (two no-op rebuilds witnessed 2026-09-14). release.py prints Pushed for one door and moves one door; the release lane run alone leaves npvg.org stale. Fetch from each door and count. THREE DOORS SINCE 2026-09-29, and the rule convicted a second time the same day: release 2.70 printed Pushed install.sh update to Pipulate.com and the Mac read the old header from npvg.org and qamy.ai. The cure landed at deed 1684: nixops.sh's sync_installer holds the pad list, ./nixops.sh --installer runs it alone, and release.py's Step 3.1 calls it, non-fatal, so one release moves three doors. Gate: line 2 of each door reading the file's line 2 after the next release; until that release, ./nixops.sh --installer by hand is the truck. READ 2026-09-29 (deed 1685): the hand truck moved both pads, line 2 of the file and of all three doors equal and the qamy.ai round trip (the stamp reversed) hashing to the file at f5debcfc; Step 3.1 landed in release.py (rg 2) and the full sync's own call landed one car late, its block refused as ambiguous because the function body carries the very rsync line the block searched for; deed 1685's Car 4 runs the publish-only lane by hand as Step 3.1's first run, since the doors already agree and only the console line can move.
 - **The Publish-Roster Rule** -- *roster membership is actuation, not
   annotation.* Banked 2026-08-01; hazard-convicted one turn after it was named.
@@ -2287,6 +2399,26 @@ Entries are alphabetical, numbers spelled as spoken.
   flip. Pick witnesses from lines that cannot wrap (dated headers like 'BANKED
   2026-07-29 (same-day flip'), and when the patched text is your own, confirm
   the phrase sits on one line before recommending the probe.
+- **The Stewardship Rule** -- *expanded rule; banked 2026-07-22.*
+
+~~~text
+# THE STEWARDSHIP RULE (banked 2026-07-22, articulation-banked; rentmeesterschap):
+# the whole NPvg stack is Northwestern-European commons-infrastructure culture
+# expressed as software -- Nix (Dolstra), Python (van Rossum), vim (Moolenaar) all
+# Dutch, git (Torvalds) Finnish -- and its engineering value is stewardship, not
+# dominion: manage an estate you do not own, leave the machine UNCHANGED, accrete
+# nothing mutable, garbage-collect to a clean store, take no residue. Two siblings
+# of the Disappearing Instrument Rule: (1) SMALL-MARKET WORA -- build for the world
+# by default even when your market is one person; parochial software is suicidal
+# in a small open economy, which is why the region ships portable, standard-
+# anchored substrate, not walled unicorns. (2) STRUCTURAL HUMILITY (Janteloven-as-
+# UX) -- the tool must carry the whole meaning without the maker in the room; that
+# is the cold-start test (a cartridge either reconstructs the reasoning with no
+# human present, or it failed). The instinct unifying the Alþingi Lawspeaker,
+# Kuyper's steward, the faceless SSH tunnel, and the flake that rebuilds
+# identically after its author is gone: MAKE THE RECORD OUTLIVE THE MAKER.
+~~~
+
 - **The Straddle Is a Controlled Experiment** -- *one manipulated variable,
   everything else held.* Banked 2026-08-06, articulation-banked. The
   BEFORE/AFTER pair is not a metaphor for science, it IS a controlled
@@ -2424,6 +2556,29 @@ Entries are alphabetical, numbers spelled as spoken.
   claim is not a weak receipt, it is a FALSE one -- it returns green for a
   thing that was never tried. Before accepting a probe as a gate, name the
   step most likely to fail and confirm the probe performs THAT step.
+- **The Tortoise Protocol** -- *expanded rule; banked 2026-07-21.*
+
+~~~text
+# THE TORTOISE PROTOCOL (banked 2026-07-21, articulation-banked -- a rule
+# of pure judgment, no mechanism claims): when the Prompt arrives as a
+# discursive meditation rather than a task -- topic-hopping through SSH,
+# SQLite, init systems, whatever caught the light -- Mike-E is opening a
+# Locke-and-Demosthenes exchange (Achilles and the Tortoise by way of
+# Ender's Game), not requesting a summary. Expected move set: (1) FILL
+# THE LINES -- complete the transitions deliberately left dangling
+# ("something something") with the strongest version of where he was
+# headed; (2) STEELMAN THEN STRIKE -- restate his claim better than he
+# did, then hit the weakest joint with a specific date, mechanism, or
+# counterexample from HIS OWN codebase where possible, never a vibe;
+# (3) CHARGE EVERY METAPHOR RENT (Axis-Forcing sibling) -- a governor, a
+# Chaos Monkey, a player piano must each predict something checkable or
+# be returned to the shelf; (4) LAND THE TURN SHAPE ANYWAY -- dialogue is
+# the body, but the Actionable Response Contract still closes the turn,
+# even when PATCHES honestly reads "No repo patches required." Detection
+# is inferred, never declared: rambling prose + no imperative verbs +
+# an explicit or implicit "your turn" = the Tortoise is being summoned.
+~~~
+
 - **The Write-Side / Read-Side Split** -- *one word, two questions, two
   owners.* Banked 2026-09-04, found while un-hardwiring a blog's URL
   folder. `permalink_prefix` in blogs.nix answers WHERE NEW POSTS ARE
