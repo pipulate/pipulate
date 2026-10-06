@@ -1,8 +1,8 @@
 # The Pipulate journal, indexed
 
-> Auto-generated on 2026-10-05 by `scripts/articles/generate_ai_context.py` and
+> Auto-generated on 2026-10-06 by `scripts/articles/generate_ai_context.py` and
 > rewritten from scratch on every release. If this date looks stale, assume
-> the rest of the repo is newer than this map. 1517 entries indexed.
+> the rest of the repo is newer than this map. 1518 entries indexed.
 
 This repository holds the *machinery*. The *reasoning*, the running journal
 that explains why every piece exists, lives on a separate website and not in
@@ -27,6 +27,7 @@ The first 20 entries include full `index.md` URLs to establish
 the link pattern. All remaining entries are bare slugs. Reconstruct any full
 URL as: `https://mikelev.in/futureproof/{slug}/index.md`
 
+- [2026-10-06] [Declarative Editorial Context: Decoupling Publishing Targets in the AI Era](https://mikelev.in/futureproof/declarative-editorial-framing-pipeline/index.md)
 - [2026-10-04] [The Digital Thunk and Shannon's Codebook: Engineering Replayable Workflows in the Age of AI](https://mikelev.in/futureproof/digital-thunk-shannons-codebook-replayable-workflows/index.md)
 - [2026-10-04] [Learning to Walk: YAML Trails and the Quiet Skip](https://mikelev.in/futureproof/learning-to-walk-yaml-trails-and-the-quiet-skip/index.md)
 - [2026-10-04] [The Terminal House Style: Quieting the Console Without Silencing the Evidence](https://mikelev.in/futureproof/terminal-house-style-quiet-console-evidence/index.md)
@@ -46,12 +47,12 @@ URL as: `https://mikelev.in/futureproof/{slug}/index.md`
 - [2026-09-28] [The Forward-Slash Test: Bridging Agent Skills to Claude Code with Verifiable Receipts](https://mikelev.in/futureproof/the-forward-slash-test-claude-skills-bridge/index.md)
 - [2026-09-28] [AGENTS.md and Agent Skills: Refactoring Pipulate for a Checkable PyPI Release](https://mikelev.in/futureproof/agents-md-agent-skills-pypi-receipts/index.md)
 - [2026-09-28] [The Cost of Forgetting: The Epistemic Price List and the Art of the Lean Codebase](https://mikelev.in/futureproof/the-forgetting-kata-and-the-epistemic-price-list/index.md)
-- [2026-09-28] [Pinball, Pachinko, and the Art of Replayable AI Workflows](https://mikelev.in/futureproof/pinball-pachinko-replayable-ai-workflows/index.md)
 
 ## Compact slug index -- pattern: https://mikelev.in/futureproof/{slug}/index.md
 
 Format: `[date] [size] slug` -- fetch any entry as `https://mikelev.in/futureproof/{slug}/index.md`
 
+- [2026-09-28] [24k] pinball-pachinko-replayable-ai-workflows
 - [2026-09-28] [454k] three-folder-boundary-and-the-blank-stare
 - [2026-09-26] [65k] fixing-patch-parser-failures-and-actuator-surprises
 - [2026-09-26] [460k] plain-words-verifiable-ai-context
