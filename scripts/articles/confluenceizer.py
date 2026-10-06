@@ -519,37 +519,42 @@ def _child_read_restrictions(domain: str, email: str, api_token: str, parent_id:
     return state
 
 def _lock_children(domain: str, email: str, api_token: str, parent_id: str, me: str, armed: bool) -> int:
-    """Plan, and when armed apply, a padlock on every child with none of its own.
-    Returns the count of children still open after an armed run (0 when dry)."""
+    """Plan, and when armed apply, a padlock on every child that lacks one: no
+    read restriction of its own (open), or one the publisher is not named on
+    for update (read-only to them). Returns the count still needing a lock."""
+    def needs(state):
+        open_ = [(cid, e[0], ("read", "update")) for cid, e in state.items() if e[1] == [] and not e[2]]
+        readonly = [(cid, e[0], ("update",)) for cid, e in state.items() if e[1] and me not in (e[3] or [])]
+        return open_, readonly
     state = _child_read_restrictions(domain, email, api_token, parent_id)
-    unread = [cid for cid, entry in state.items() if entry[1] is None]
-    open_ = [(cid, title) for cid, (title, users, groups) in state.items() if users == [] and not groups]
-    shared = sum(1 for _, users, groups in state.values()
-                 if users and (groups or any(u != me for u in users)))
+    unread = [cid for cid, e in state.items() if e[1] is None]
+    open_, readonly = needs(state)
+    shared = sum(1 for e in state.values() if e[1] and (e[2] or any(u != me for u in e[1])))
     locked = len(state) - len(open_) - len(unread)
     note = f", {len(unread)} unread (left alone)" if unread else ""
+    note += f", {len(readonly)} not editable by you" if readonly else ""
     print(f"\n🔐 Per-entry padlocks under {parent_id}: {len(state)} children, {locked} locked "
           f"({shared} shared), {len(open_)} open{note}.")
+    todo = open_ + readonly
     if not armed:
-        for _, title in open_[:5]:
-            print(f"   would lock {title[:60]!r}")
-        if len(open_) > 5:
-            print(f"   ... and {len(open_) - 5} more.")
+        for _, title, ops in todo[:5]:
+            print(f"   would lock ({'+'.join(ops)}) {title[:60]!r}")
+        if len(todo) > 5:
+            print(f"   ... and {len(todo) - 5} more.")
         return 0
-    if not open_:
+    if not todo:
         return 0
     failed = 0
-    for cid, title in open_:
+    for cid, title, ops in todo:
         try:
-            _lock_page(domain, email, api_token, cid, me)
+            _lock_page(domain, email, api_token, cid, me, ops)
         except urllib.error.HTTPError as err:
             print(f"   ❌ lock {title[:60]!r} failed (HTTP {err.code}): {err.read().decode('utf-8', 'replace')[:200]}")
             failed += 1
             break
-    still = [cid for cid, (_, users, groups) in _child_read_restrictions(domain, email, api_token, parent_id).items()
-             if users == [] and not groups]
-    print(f"   {'✅' if not still else '⚠'} Locked: {len(open_) - len(still)}  Failed: {failed}  Still open: {len(still)}")
-    return len(still)
+    still = sum(len(part) for part in needs(_child_read_restrictions(domain, email, api_token, parent_id)))
+    print(f"   {'✅' if not still else '⚠'} Locked: {len(todo) - still}  Failed: {failed}  Still needing a lock: {still}")
+    return still
 
 def _metadata_value(metadata: dict, *keys):
     """Return the first present, non-empty front-matter value for any key."""
