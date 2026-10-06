@@ -1238,5 +1238,11 @@ async def guided_browser_capture(
             stdin=input_stream,
             stdout=stdout,
             before_prompt=before_prompt,
+            prompt=(
+                "Press Enter to save the page. "
+                if capture
+                else "Press Enter to continue without saving. "
+            ),
         ),
+        capture_artifacts=capture,
     )
