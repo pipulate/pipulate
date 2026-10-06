@@ -449,6 +449,90 @@ def _reorder_newest_first(domain: str, email: str, api_token: str, parent_id: st
     print(f"   {'✅' if verified else '⚠'} Moved: {moved}  Failed: {failed}  Order verified: {verified}")
     return failed
 
+# THE PER-ENTRY PADLOCK (2026-10-05). Sharing one entry needs the entry to
+# carry its own read restriction: a view restriction on the parent is
+# inherited by every child, and nobody can read a child whose parent they
+# cannot read, so a padlock on the parent opens only for the whole journal
+# at once. Every child gets its own read restriction naming the publisher,
+# then the parent's padlock comes off by hand, in that order. v2 has no
+# restriction write; v1 does: PUT /wiki/rest/api/content/{id}/restriction/
+# byOperation/read/user?accountId=... ADDS one user and removes nobody, so a
+# share made in the Restrictions dialog survives every run. Convergent like
+# the reorder: only a child with NO read restriction of its own is locked;
+# a child whose restriction state did not come back is left alone, reported.
+def _request_v1(domain: str, email: str, api_token: str, path: str, method: str = "GET") -> dict:
+    """A body-less v1 call (/wiki/rest/api...), for the writes v2 does not offer."""
+    req = urllib.request.Request(f"https://{domain}/wiki/rest/api{path}", method=method)
+    req.add_header("Authorization", _auth_header(email, api_token))
+    req.add_header("Accept", "application/json")
+    with urllib.request.urlopen(req, data=None if method == "GET" else b"") as response:
+        raw = response.read().decode("utf-8")
+        return json.loads(raw) if raw else {}
+
+def _current_account_id(domain: str, email: str, api_token: str) -> str:
+    """The publisher's own accountId: the one user every padlock names."""
+    return str(_request_v1(domain, email, api_token, "/user/current").get("accountId") or "")
+
+def _lock_page(domain: str, email: str, api_token: str, page_id: str, account_id: str) -> None:
+    """Add account_id to page_id's own read restriction (additive: keeps every share)."""
+    _request_v1(domain, email, api_token,
+                f"/content/{page_id}/restriction/byOperation/read/user?accountId={urllib.parse.quote(account_id)}",
+                method="PUT")
+
+def _child_read_restrictions(domain: str, email: str, api_token: str, parent_id: str) -> dict:
+    """{child id: (title, user accountIds, group count)} from each child's OWN read
+    restriction (inherited ones are not listed). The users slot is None when the
+    response carried no restriction data for that child."""
+    state = {}
+    path = (f"/content/{parent_id}/child/page?limit=100"
+            "&expand=restrictions.read.restrictions.user,restrictions.read.restrictions.group")
+    while path:
+        data = _request_v1(domain, email, api_token, path)
+        for page in data.get("results", []):
+            if "restrictions" not in page:
+                state[str(page.get("id"))] = (page.get("title") or "", None, 0)
+                continue
+            read = ((page["restrictions"] or {}).get("read") or {}).get("restrictions") or {}
+            users = [u.get("accountId") for u in (read.get("user") or {}).get("results", [])]
+            groups = len((read.get("group") or {}).get("results", []))
+            state[str(page.get("id"))] = (page.get("title") or "", users, groups)
+        nxt = (data.get("_links") or {}).get("next") or ""
+        path = nxt.split("/rest/api", 1)[1] if "/rest/api" in nxt else None
+    return state
+
+def _lock_children(domain: str, email: str, api_token: str, parent_id: str, me: str, armed: bool) -> int:
+    """Plan, and when armed apply, a padlock on every child with none of its own.
+    Returns the count of children still open after an armed run (0 when dry)."""
+    state = _child_read_restrictions(domain, email, api_token, parent_id)
+    unread = [cid for cid, entry in state.items() if entry[1] is None]
+    open_ = [(cid, title) for cid, (title, users, groups) in state.items() if users == [] and not groups]
+    shared = sum(1 for _, users, groups in state.values()
+                 if users and (groups or any(u != me for u in users)))
+    locked = len(state) - len(open_) - len(unread)
+    note = f", {len(unread)} unread (left alone)" if unread else ""
+    print(f"\n🔐 Per-entry padlocks under {parent_id}: {len(state)} children, {locked} locked "
+          f"({shared} shared), {len(open_)} open{note}.")
+    if not armed:
+        for _, title in open_[:5]:
+            print(f"   would lock {title[:60]!r}")
+        if len(open_) > 5:
+            print(f"   ... and {len(open_) - 5} more.")
+        return 0
+    if not open_:
+        return 0
+    failed = 0
+    for cid, title in open_:
+        try:
+            _lock_page(domain, email, api_token, cid, me)
+        except urllib.error.HTTPError as err:
+            print(f"   ❌ lock {title[:60]!r} failed (HTTP {err.code}): {err.read().decode('utf-8', 'replace')[:200]}")
+            failed += 1
+            break
+    still = [cid for cid, (_, users, groups) in _child_read_restrictions(domain, email, api_token, parent_id).items()
+             if users == [] and not groups]
+    print(f"   {'✅' if not still else '⚠'} Locked: {len(open_) - len(still)}  Failed: {failed}  Still open: {len(still)}")
+    return len(still)
+
 def _metadata_value(metadata: dict, *keys):
     """Return the first present, non-empty front-matter value for any key."""
     for key in keys:
