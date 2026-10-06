@@ -12,9 +12,7 @@
 # printed and spoken. Quote anything that could read as a number, a date, a
 # boolean or a flow mapping: "{harvested}", ".+", a URL.
 #
-# assets/trails/public_walk.json is this trail's JSON twin, kept only until the
-# launcher pipulate.com serves reads YAML (mck.sh v0.7.0, moved by a release).
-# Change both or neither until then; delete the twin after.
+# Its JSON twin went 2026-10-06, once pipulate.com served mck.sh v0.7.0.
 #
 # These stops open qamy.ai, so a fork or a white label still sends its people
 # to this door (a TODO in foo_files.py).
