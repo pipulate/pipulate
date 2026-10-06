@@ -103,8 +103,8 @@ door_row() {
     qamy)
       DOOR_FOLDER="qamyai"
       DOOR_WORKSHOP="This LLM Quality Assurance workshop talks you through steps."
-      DOOR_WELCOME1="Welcome. Ready to Q/A your AI with the Flight Data Recorder (FDR)"
-      DOOR_WELCOME2='Different from Cockpit Voice Recorder (CVR) or "what Claude said".'
+      DOOR_WELCOME1="Welcome. We are ready to Q/A your AI with the Flight Data Recorder (FDR)"
+      DOOR_WELCOME2='which is different from Cockpit Voice Recorder (CVR), or "what Claude said".'
       DOOR_TAGLINE="Treat claims as confident hallucination until reproduced."
       ;;
   esac
