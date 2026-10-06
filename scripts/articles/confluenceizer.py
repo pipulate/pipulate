@@ -467,7 +467,8 @@ def _reorder_newest_first(domain: str, email: str, api_token: str, parent_id: st
 # 200); preview then planned 1 locked, 53 open; gobot locked 53, failed 0,
 # still open 0; the child listing read 54 locked, 0 open, 0 shared; and after
 # the parent's padlock came off by hand its own read restriction read users
-# [] groups 0. UNWITNESSED: the lock right after a CREATE, a share surviving
+# [] groups 0. The lock right after a CREATE is WITNESSED (55 locked, 0 open
+# right after one). UNWITNESSED: a share surviving
 # a sweep, and any colleague's view. TODO: main ignores _lock_children's
 # still-open count, so gobot exits 0 with an entry open.
 def _request_v1(domain: str, email: str, api_token: str, path: str, method: str = "GET") -> dict:
