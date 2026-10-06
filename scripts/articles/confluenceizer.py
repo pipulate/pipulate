@@ -475,8 +475,15 @@ def _reorder_newest_first(domain: str, email: str, api_token: str, parent_id: st
 # the parent's padlock came off by hand its own read restriction read users
 # [] groups 0. The lock right after a CREATE is WITNESSED (55 locked, 0 open
 # right after one). UNWITNESSED: a share surviving
-# a sweep, and any colleague's view. TODO: main ignores _lock_children's
-# still-open count, so gobot exits 0 with an entry open.
+# a sweep, and any colleague's view. WITNESSED 2026-10-05 for update, by
+# straddle on 6899007626: its operations lacked 'update' and its move read
+# 403; one update PUT by hand (HTTP 200), then the same move read 200
+# {"pageId": "6899007626"}. gobot then read UPDATE v2, 54 not editable by
+# you, Locked 54, Still needing a lock 0, 0 moves, order verified; the child
+# listing read 55 of 55 with an update restriction, and both sampled pages
+# list 'update'. UNWITNESSED: read+update on a fresh CREATE.
+# TODO: main ignores _lock_children's still-needing count, so gobot exits 0
+# with an entry open or read-only.
 def _request_v1(domain: str, email: str, api_token: str, path: str, method: str = "GET") -> dict:
     """A body-less v1 call (/wiki/rest/api...), for the writes v2 does not offer."""
     req = urllib.request.Request(f"https://{domain}/wiki/rest/api{path}", method=method)
