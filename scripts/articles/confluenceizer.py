@@ -21,6 +21,9 @@ from urllib.parse import urlparse
 from pathlib import Path
 import frontmatter
 import common
+import hashlib
+import lsa
+from html import escape as html_escape
 
 def _sanitize_internal_pii(text: str) -> str:
     """Map pseudo-private client/colleague identities to roles out-of-band."""
