@@ -500,6 +500,7 @@ def build_plan(trail, supplied_values):
             "url_env": url_env,
             "url": url or None,
             "optional": bool(stop.get("optional")),
+            **({"capture": stop["capture"]} if "capture" in stop else {}),
             "skipped": skipped,
             "target_slot": stop["target_slot"],
             "harvest_regex": stop["harvest_regex"],
