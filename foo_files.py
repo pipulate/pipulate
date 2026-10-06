@@ -446,31 +446,7 @@ And then we demonstrate a level of competence like so:
 
 # § THE COLD-START EXIT IS A FALSE GREEN (banked 2026-09-16) -- Before treating exit 0 as a probe verdict, enumerate every earlier success exit on the path and keep the discriminator visible so a cold-start branch cannot masquerade as the code path you meant to test.
 # § THE HELP TEXT IS NOT A CENSUS (banked 2026-09-17; convictions 2026-09-17, 2026-09-27, 2026-09-28) -- Verify every switch against the exact tool's own semantics before trusting a probe's numbers, keep stderr and exit status visible, and treat usage text or rc=2 as a dead instrument rather than data.
-# A CENSUS CARRIES A KNOWN MEMBER (convicted 2026-09-24, cartridge
-# foo-71ecd539-97.zip). Three key-range JQL windows were forecast to add up
-# to one project's full issue count. Each printed "(no matches)": no error,
-# no count, in the same compile where the plain listing of that project
-# returned rows through the same code. Issues known to exist sat inside the
-# middle window, and that alone falsified the reading. The forecast had
-# named only one failure shape, an HTTP 400, so the empty set arrived as a
-# shape nobody had named, and it looks exactly like an answer.
-# THE RULE: every probe that enumerates or counts names one member that
-# must appear in its output, and the Car 4 forecast says which. Zero rows
-# where a known member must be is an instrument failure, never an empty
-# world. A forecast lists its failure shapes, and the empty one goes first.
-# A FORECAST COUNTS LINES, NOT PATTERNS (convicted 2026-09-26, twice in
-# one ride, both times by the model's own probe). rg -n prints a line
-# ONCE however many alternatives it satisfies: `def status(limit,
-# only=None):` matched both `^def status\(` and `only=` and was forecast
-# as two. And a quoted token matches everywhere it appears: `"adopted"`
-# was forecast once, for meta.get("adopted"), and matched r["adopted"]
-# twice more. Neither miss was a failure of the file; both were the
-# forecast reading its own pattern as a wish. THE RULE: forecast a census
-# by walking the file the patch will leave and counting the LINES the
-# pattern hits, or forecast only the known members and say "at least".
-# A forecast that names an exact count it did not derive by that walk is a guess wearing a number.
-# Third conviction 2026-09-28 (deed 1665): grep -c 'deed 1663' forecast 4 and read 3, because RULED and LANDED sat on one TODO line; grep -c counts lines, and a line carrying the pattern twice counts once.
-# a guess wearing a number.
+# § A CENSUS CARRIES A KNOWN MEMBER (banked 2026-09-24) -- Name a known member in every census and forecast missing-member or empty output as instrument failure; derive exact counts from matching output lines rather than pattern occurrences, or state only known members and an at-least bound.
 # § THE PIPELINE ATE THE FALLBACK (banked 2026-09-21) -- Make every fallback probe test the exit status of the command that owns the question and print a negative token no successful path can produce; a fallback hidden behind a pipeline or spelled as a legal success value is not a discriminator.
 # THE WRAPPER IS NOT THE MEASUREMENT (convicted 2026-09-22, by a receipt that
 # disagreed with itself and was right twice). `time` on a census run read
@@ -490,59 +466,7 @@ And then we demonstrate a level of competence like so:
 #
 # § THE A11Y OUTLINE DESCRIBES THE HYDRATED DOM (banked 2026-09-21) -- Treat accessibility-tree roles as hydrated semantic claims, not HTML tags or form semantics: trace every DOM claim to its capture file, test a11y or screenshot claims against hydrated_dom.html rather than source.html, and read markup to learn the actual element and submitted name.
 #
-# THE HALT BANNER (banked 2026-09-21, at the operator's instruction). Anything
-# the human must DO that is not one of the five cars will be missed. Not might
-# be. Will be. The five cars are myelinated; everything else is invisible.
-# Prose does not work. A polite closing sentence does not work. Asking three
-# times does not work, and that is the exact failure this bans: three turns in
-# a row ending with "say the word and I will write those four facts", each one
-# unread, because each one was a sentence.
-# THE RULE, in two halves:
-#   1. IF IT IS NOT A CAR, DO NOT ASK. Turn the ask into a car, or into a
-#      paste-ready artifact the human can move without deciding anything, or
-#      just do it yourself if you have the hands.
-#   2. IF IT TRULY CANNOT BE A CAR, it gets a full-width ASCII HALT banner at
-#      the TOP of the reply. Plain speech. Imperative. One action per line.
-#      Peanut butter sandwich rules: "open the jar" beats "ensure the vessel
-#      is accessible". No Claude-speak inside the banner. No explanation
-#      inside the banner. The explanation goes after it, where skipping it
-#      costs nothing.
-#   AMENDED 2026-09-29 (deed 1695, the operator's ruling: "it sure as hell
-#   be in the 5-Car Train or I'm liable to miss it"): the banner rides INSIDE
-#   (3) PATCHES as a numbered car's label, its one fence under it; a banner
-#   at the top of the reply is outside the train, and the train is the only
-#   place the operator's eyes go. The walk's own steps (svb --write, context,
-#   prompt, bff) are cars there too.
-#   RETRACTED 2026-09-29 (deed 1703, the operator's ruling, in the operator's
-#   words: "NEVER use HALT inside the 5-Car Train. ALWAYS use HALT for OOB
-#   things that need my attention outside the 5-Car Train."): the 1695
-#   amendment was read by the letter, every hand step in the train got the
-#   banner, and the banner became the boy who cried wolf: a signal repeated
-#   where the eyes already go is a signal the eyes learn to skip, so it fails
-#   at the one place it exists for, the OOB step; deed 1701's train carried
-#   two banners inside it and its second banner's car was the one not run.
-#   THE RULE, restored to its 09-21 placement and sharpened: a hand step the
-#   train needs (a git mv, a walk typed by hand) is a plain numbered car with
-#   one fence under its prompt line and no banner; the operator's habits
-#   (patch, app, d, m, git push, the paste into context.txt, prompt, bff) are
-#   never written at all, because a written habit costs a re-read to learn
-#   whether something changed; a step no terminal can take (a web console, a
-#   phone, a registrar, the other machine when the turn cannot proceed without
-#   it) rides ABOVE the train, one action, under THIS banner and no other
-#   spelling. THE BANNER IS THE GLYPH, five lines of block characters in a
-#   text fence, never the word in capitals (a capitalized word is what the
-#   last attempt at this rule produced, and the eye skipped it):
-#   ██   ██  █████  ██   █████
-#   ██   ██ ██   ██ ██     ██
-#   ███████ ███████ ██     ██
-#   ██   ██ ██   ██ ██     ██
-#   ██   ██ ██   ██ █████  ██
-#   THE LESSON UNDER THE RULE, which the operator had to say because a
-#   pattern-predictor does not reach it on its own: a rule that ADDS an
-#   attention signal must name, in the same sentence, where it must NOT fire,
-#   or the model reads "always X" as "X everywhere X-shaped" and grants the
-#   wish by the letter; every future rule that adds a banner, a colour, a
-#   sound or a repeated instruction carries its exclusion zone beside it.
+# § THE HALT BANNER (banked 2026-09-21) -- Put necessary terminal steps in plain numbered train cars, omit habitual operator steps, and reserve the five-line block-letter HALT glyph above the train for one indispensable out-of-band action, explicitly excluding ordinary train steps from every added attention signal.
 #
 # § THE FINDING DORY RULE (banked 2026-09-24, four hand-step failures in one ride) -- before emitting any step the human does by hand and does not yet do by reflex (the reflexes, patch, app, d, m, git push, the paste into context.txt, prompt and bff, are never written at all, deed 1703; the rule is for the step Dory has never met), walk it from the operator's chair with no memory of the last line: the command travels through the clipboard, so a command never reads its input from the clipboard and a value only the human has is asked for at a visible, labeled prompt as its own numbered step after the command is running; every step is "copy the block below, paste it into <which window>, press Enter", then the fence, then "You will see: <exact text>"; a fence holds only what its paste target can run as-is; a HALT carries one action or it becomes the whole turn; a patch anchors on this compile's raw source, never on a line another car would create; and the operator is told what to do, never what to check (forecasts ride Car 4, a guard rides inside the command and prints its own verdict). Value: GLOSSARY.md.
 #
@@ -1611,34 +1535,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # naming context.txt inside another list includes its text and never
 # recurses into its entries.
 #
-# AUTH RULING (banked 2026-08-09, source-witnessed): THERE IS NO AUTH FIELD IN
-# THE TRAIL SCHEMA. walk.py enforces set-difference in BOTH directions over the
-# root, defaults, stop and connector field sets, so a trail cannot declare an
-# auth kind. TWO SURFACES, ONE LIVE AT RIDE TIME. BROWSER AUTH is
-# defaults.profile_name plus persistent, which warmed uc_profiles directory
-# opens; exercised on every ride; this IS what SETTLE means. CONNECTOR AUTH is
-# connector.script, the wallet kind; NEVER exercised by a ride -- walk.py builds
-# the argv for the plan and nothing runs it. So OAuth and API-key are NOT
-# distinct rides, and three YAMLs differing only in an inert string would be
-# the sibling-md failure; the auth-kind example set already exists in chapter
-# XVIII's connector README, five kinds, one working connector each, plus the
-# `warm` red/green board. THE DUAL LANE (2026-08-25): a stop declares exactly
-# one of `url` (public) or `url_env` (a variable the trail NAMES and a
-# gitignored exports file HOLDS), so a "private" walk is usually a publishable
-# trail plus a private values file. TRAP: weblogin defaults to --profile
-# default, and scraper_tools mkdirs a missing profile silently, so an unwarmed
-# profile name opens a logged-out browser with no error anywhere.
-#
-# STILL OWED: a signature over the sealed manifest (a hash buys integrity,
-# never authorship); one witnessed ride on a NON-DEFAULT profile
-# (botify_pageworkers is the shape); the end-to-end seam, which THE
-# COMPOSITION IS NOT THE PARTS earmark owns -- the walk-to-compiler fixture
-# reported GO with its archive append mocked, and this chapter does not
-# promote it. DISCHARGED 2026-09-15: THE WALK THAT TEACHES WALKS, public_walk on
-# three unlinked npvg.org pages, built, deployed and ridden. Nothing in the repo
-# fetches a trail over the network yet; when something does, a trail that can
-# change out from under you is not replayable, so seal on arrival and ride the
-# sealed copy.
+# § AUTH RULING (banked 2026-08-09) -- Keep auth out of the trail schema: select an explicitly warmed persistent browser profile, treat connector.script as the connector wallet rather than evidence of execution, declare exactly one of url or url_env per stop, and seal any remotely fetched trail before riding it.
 
 # ============================================================================
 # IX. SURVEYING LANDSCAPE - You're dead in the water without intelligence (HONEYBOT TV STUDIO)

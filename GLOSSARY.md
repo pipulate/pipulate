@@ -498,6 +498,36 @@ Entries are alphabetical, numbers spelled as spoken.
 > ignored, because this section is read by rg while the router is read
 > top-down as a program.
 
+- **A Census Carries a Known Member** -- *expanded rule; banked 2026-09-24.*
+
+~~~text
+# A CENSUS CARRIES A KNOWN MEMBER (convicted 2026-09-24, cartridge
+# foo-71ecd539-97.zip). Three key-range JQL windows were forecast to add up
+# to one project's full issue count. Each printed "(no matches)": no error,
+# no count, in the same compile where the plain listing of that project
+# returned rows through the same code. Issues known to exist sat inside the
+# middle window, and that alone falsified the reading. The forecast had
+# named only one failure shape, an HTTP 400, so the empty set arrived as a
+# shape nobody had named, and it looks exactly like an answer.
+# THE RULE: every probe that enumerates or counts names one member that
+# must appear in its output, and the Car 4 forecast says which. Zero rows
+# where a known member must be is an instrument failure, never an empty
+# world. A forecast lists its failure shapes, and the empty one goes first.
+# A FORECAST COUNTS LINES, NOT PATTERNS (convicted 2026-09-26, twice in
+# one ride, both times by the model's own probe). rg -n prints a line
+# ONCE however many alternatives it satisfies: `def status(limit,
+# only=None):` matched both `^def status\(` and `only=` and was forecast
+# as two. And a quoted token matches everywhere it appears: `"adopted"`
+# was forecast once, for meta.get("adopted"), and matched r["adopted"]
+# twice more. Neither miss was a failure of the file; both were the
+# forecast reading its own pattern as a wish. THE RULE: forecast a census
+# by walking the file the patch will leave and counting the LINES the
+# pattern hits, or forecast only the known members and say "at least".
+# A forecast that names an exact count it did not derive by that walk is a guess wearing a number.
+# Third conviction 2026-09-28 (deed 1665): grep -c 'deed 1663' forecast 4 and read 3, because RULED and LANDED sat on one TODO line; grep -c counts lines, and a line carrying the pattern twice counts once.
+# a guess wearing a number.
+~~~
+
 - **The A11Y Outline Describes the Hydrated DOM** -- (convicted 2026-09-21). Four
   probes in a row failed at one question -- what is the querystring parameter
   behind the Has SW filter -- because the claim being tested came from an
@@ -592,6 +622,39 @@ Entries are alphabetical, numbers spelled as spoken.
   fourth was a logger line. The mechanical test found five offenders that
   GENERATED-NOT-AUTHORED could not see, which is the evidence that this rule
   is load-bearing rather than that rule with a microphone.
+- **Auth Ruling** -- *expanded rule; banked 2026-08-09.*
+
+~~~text
+# AUTH RULING (banked 2026-08-09, source-witnessed): THERE IS NO AUTH FIELD IN
+# THE TRAIL SCHEMA. walk.py enforces set-difference in BOTH directions over the
+# root, defaults, stop and connector field sets, so a trail cannot declare an
+# auth kind. TWO SURFACES, ONE LIVE AT RIDE TIME. BROWSER AUTH is
+# defaults.profile_name plus persistent, which warmed uc_profiles directory
+# opens; exercised on every ride; this IS what SETTLE means. CONNECTOR AUTH is
+# connector.script, the wallet kind; NEVER exercised by a ride -- walk.py builds
+# the argv for the plan and nothing runs it. So OAuth and API-key are NOT
+# distinct rides, and three YAMLs differing only in an inert string would be
+# the sibling-md failure; the auth-kind example set already exists in chapter
+# XVIII's connector README, five kinds, one working connector each, plus the
+# `warm` red/green board. THE DUAL LANE (2026-08-25): a stop declares exactly
+# one of `url` (public) or `url_env` (a variable the trail NAMES and a
+# gitignored exports file HOLDS), so a "private" walk is usually a publishable
+# trail plus a private values file. TRAP: weblogin defaults to --profile
+# default, and scraper_tools mkdirs a missing profile silently, so an unwarmed
+# profile name opens a logged-out browser with no error anywhere.
+#
+# STILL OWED: a signature over the sealed manifest (a hash buys integrity,
+# never authorship); one witnessed ride on a NON-DEFAULT profile
+# (botify_pageworkers is the shape); the end-to-end seam, which THE
+# COMPOSITION IS NOT THE PARTS earmark owns -- the walk-to-compiler fixture
+# reported GO with its archive append mocked, and this chapter does not
+# promote it. DISCHARGED 2026-09-15: THE WALK THAT TEACHES WALKS, public_walk on
+# three unlinked npvg.org pages, built, deployed and ridden. Nothing in the repo
+# fetches a trail over the network yet; when something does, a trail that can
+# change out from under you is not replayable, so seal on arrival and ride the
+# sealed copy.
+~~~
+
 - **The Blank Stare Rule** -- (banked 2026-09-28, the operator's words): every word a newcomer types is the plain name of the thing it does (walk, connect, context, prompt, compile, about, menu), and an abbreviation is an alias behind it, never the word the menu prints. The answer to "your system is unusual" is the objector's own word, typed into a text file, and a blank stare: which part is difficult, the word connect, or that a word can be written down where a hand-motion in a browser cannot? Operation Stick Bug's rule for names: the instrument vanishes when it is called what it is. Sibling of THE NEXT ACTION, NOT THE MACHINERY. ONE EXCEPTION, on purpose (2026-10-02): osb, Operation Stick Bug's own word, printed last by all and never by the short menu, because a name like a twig is its camouflage.
 - **The Caboose-Verdict Corollary** -- (banked 2026-08-01, self-convicted one turn
   later): a prompt written for the NEXT turn may name what to CHECK; it may
@@ -1296,6 +1359,64 @@ Entries are alphabetical, numbers spelled as spoken.
   is a mood). The forcing function is always the constraint that outlaws the
   likely answer; the animal is the sticker on the constraint's box.
 - **The Four Stages of the Harness** -- (banked 2026-09-28, the operator's words at the dismount): a human on this harness climbs the four stages of any new language -- literacy (can read and write the words at all: patch, app, d, m), automaticity (the words leave executive function for muscle memory), prosody (play in the words: bjj, the blank stare), fluency (the tools internalized, mastery spontaneous) -- and the models climb in lock-step, so the article archive is a training loop for both; the vendors' default compels learned helplessness, and the alternative is a scaffold you strap onto that pulls you along while forcing you to READ the red-and-green diff you actuate. Why the rides carry almost no wrong turn that must be backed out: the unit of change is a car, a car cannot land wrong silently (the exact-match interlock, the AST and Nix airlocks, a hand fence's own STOP/GO), every forecast is graded one compile later by receipts the model did not write, git holds every step, and the payload carries the ledger of prior misses as rules, so the model answers inside a corridor its predecessors dug; this ride's misses (git mv -q, the reseal in prose, Deliverables, imports=8, the absolutes one over) were each one car wide and each caught by the next tap. Home owed: a higher-profile line for the four stages, the walk's closing or the GLOSSARY, unruled.
+- **The Halt Banner** -- *expanded rule; banked 2026-09-21.*
+
+~~~text
+# THE HALT BANNER (banked 2026-09-21, at the operator's instruction). Anything
+# the human must DO that is not one of the five cars will be missed. Not might
+# be. Will be. The five cars are myelinated; everything else is invisible.
+# Prose does not work. A polite closing sentence does not work. Asking three
+# times does not work, and that is the exact failure this bans: three turns in
+# a row ending with "say the word and I will write those four facts", each one
+# unread, because each one was a sentence.
+# THE RULE, in two halves:
+#   1. IF IT IS NOT A CAR, DO NOT ASK. Turn the ask into a car, or into a
+#      paste-ready artifact the human can move without deciding anything, or
+#      just do it yourself if you have the hands.
+#   2. IF IT TRULY CANNOT BE A CAR, it gets a full-width ASCII HALT banner at
+#      the TOP of the reply. Plain speech. Imperative. One action per line.
+#      Peanut butter sandwich rules: "open the jar" beats "ensure the vessel
+#      is accessible". No Claude-speak inside the banner. No explanation
+#      inside the banner. The explanation goes after it, where skipping it
+#      costs nothing.
+#   AMENDED 2026-09-29 (deed 1695, the operator's ruling: "it sure as hell
+#   be in the 5-Car Train or I'm liable to miss it"): the banner rides INSIDE
+#   (3) PATCHES as a numbered car's label, its one fence under it; a banner
+#   at the top of the reply is outside the train, and the train is the only
+#   place the operator's eyes go. The walk's own steps (svb --write, context,
+#   prompt, bff) are cars there too.
+#   RETRACTED 2026-09-29 (deed 1703, the operator's ruling, in the operator's
+#   words: "NEVER use HALT inside the 5-Car Train. ALWAYS use HALT for OOB
+#   things that need my attention outside the 5-Car Train."): the 1695
+#   amendment was read by the letter, every hand step in the train got the
+#   banner, and the banner became the boy who cried wolf: a signal repeated
+#   where the eyes already go is a signal the eyes learn to skip, so it fails
+#   at the one place it exists for, the OOB step; deed 1701's train carried
+#   two banners inside it and its second banner's car was the one not run.
+#   THE RULE, restored to its 09-21 placement and sharpened: a hand step the
+#   train needs (a git mv, a walk typed by hand) is a plain numbered car with
+#   one fence under its prompt line and no banner; the operator's habits
+#   (patch, app, d, m, git push, the paste into context.txt, prompt, bff) are
+#   never written at all, because a written habit costs a re-read to learn
+#   whether something changed; a step no terminal can take (a web console, a
+#   phone, a registrar, the other machine when the turn cannot proceed without
+#   it) rides ABOVE the train, one action, under THIS banner and no other
+#   spelling. THE BANNER IS THE GLYPH, five lines of block characters in a
+#   text fence, never the word in capitals (a capitalized word is what the
+#   last attempt at this rule produced, and the eye skipped it):
+#   ██   ██  █████  ██   █████
+#   ██   ██ ██   ██ ██     ██
+#   ███████ ███████ ██     ██
+#   ██   ██ ██   ██ ██     ██
+#   ██   ██ ██   ██ █████  ██
+#   THE LESSON UNDER THE RULE, which the operator had to say because a
+#   pattern-predictor does not reach it on its own: a rule that ADDS an
+#   attention signal must name, in the same sentence, where it must NOT fire,
+#   or the model reads "always X" as "X everywhere X-shaped" and grants the
+#   wish by the letter; every future rule that adds a banner, a colour, a
+#   sound or a repeated instruction carries its exclusion zone beside it.
+~~~
+
 - **HALT Only Out of Bounds** -- *an attention banner reserved for the one
   step outside the turn's train, and forbidden inside it.* Banked 2026-09-29,
   deed 1703, the operator's ruling in the operator's words: "NEVER use HALT
