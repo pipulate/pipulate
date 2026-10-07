@@ -501,6 +501,52 @@
           (connectorCommand "render" "mcp_render")
         ];
 
+        # THE POCKETRENDER WORD: one stage-facing spelling over the two
+        # mechanisms already present. A URL goes to the direct render farm;
+        # config verbs go to mcp_render.py. Packaged rather than a function so
+        # the same word works at a human prompt and behind context.txt `!`.
+        pocketCommand = pkgs.writeShellScriptBin "pocket" ''
+          set -euo pipefail
+          root="''${PIPULATE_ROOT:-$PWD}"
+          python_bin="$root/.venv/bin/python"
+          decoder="$root/connectors/mcp_render.py"
+          farm="$root/Workshop/corporate/farm/render.sh"
+
+          case "''${1:-}" in
+            decode|diff|encode|new|tools|schema|call|switch)
+              if [ ! -x "$python_bin" ]; then
+                echo "pocket: missing $python_bin; enter the Pipulate Nix shell first." >&2
+                exit 1
+              fi
+              if [ ! -f "$decoder" ]; then
+                echo "pocket: missing $decoder" >&2
+                exit 1
+              fi
+              exec "$python_bin" "$decoder" "$@"
+              ;;
+            http://*|https://*)
+              if [ ! -f "$farm" ]; then
+                echo "pocket: the render-farm helper is not installed at $farm" >&2
+                exit 1
+              fi
+              exec ${pkgs.bash}/bin/bash "$farm" "$@"
+              ;;
+            ""|-h|--help|help)
+              printf '%s\n' \
+                'PocketRender' \
+                '  pocket URL [OPTIONS_JSON] [K]   render on the farm' \
+                '  pocket decode ...               decode a share config' \
+                '  pocket diff ...                 diff share configs' \
+                '  pocket encode ...               mint from existing config' \
+                '  pocket new ...                  mint from defaults'
+              ;;
+            *)
+              echo "pocket: expected a URL or decode|diff|encode|new|tools|schema|call|switch" >&2
+              exit 2
+              ;;
+          esac
+        '';
+
         # THE CORPORATE WORD LEFT (2026-09-29, deed 1704). svb rode here as a
         # packaged word from deed 1692, one org's ticket walk on every Pipulate
         # user's PATH; it is a route of walk now (walk svb KEY: mck.sh v0.6.0
