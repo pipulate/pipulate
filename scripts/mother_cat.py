@@ -35,6 +35,9 @@ import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 
+from rich.console import Console
+from rich.panel import Panel
+
 REPO_ROOT = Path(__file__).resolve().parent.parent
 SCRIPTS_DIR = Path(__file__).resolve().parent
 
@@ -59,7 +62,22 @@ def _voice_trouble(reason):
         print(f"The voice could not speak ({reason}); the screen shows the same words.")
 
 
-def _narrate(text, disclosed=True):
+def _confirm(question):
+    """Require an explicit y/n before a trail crosses its declared boundary."""
+    console = Console()
+    while True:
+        console.print()
+        console.print(question, style="bold cyan", end=" ")
+        console.print("(y)es/(n)o?", style="dim", end=" ")
+        answer = input().strip().lower()
+        if answer in {"y", "yes"}:
+            return True
+        if answer in {"n", "no"}:
+            return False
+        console.print("Please answer y or n.", style="yellow")
+
+
+def _narrate(text, disclosed=True, panel=False):
     """Speak scripted guidance if Piper is available; never gate the ride.
 
     The visible channel always lands first, before importing or invoking Piper.
@@ -67,7 +85,10 @@ def _narrate(text, disclosed=True):
     eighty-column terminal wraps the guidance.
     """
     print()
-    print(text)
+    if panel:
+        Console().print(Panel(text, border_style="bright_blue", padding=(0, 1)))
+    else:
+        print(text)
 
     try:
         from imports.voice_synthesis import chip_voice_system
@@ -863,7 +884,13 @@ async def _ride_steps(trail_path, archive, dry_narrate=False, exports_path=None,
             "If the walk saves any pages, a checked summary is saved on this computer and "
             "copied to your clipboard. Nothing is sent anywhere."
         )
-    _narrate(trail["description"] + "\n" + walk_rules)
+    if trail.get("confirm"):
+        _narrate(trail["description"], panel=True)
+        if not dry_narrate and not _confirm(trail["confirm"]):
+            print("Walk stopped before opening the browser.")
+            return 0
+    else:
+        _narrate(trail["description"] + "\n" + walk_rules)
     captured = []
     skipped = archive.setdefault("skipped", [])
     for index, stop in enumerate(stops, 1):
