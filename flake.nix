@@ -529,6 +529,9 @@
                 echo "pocket: the render-farm helper is not installed at $farm" >&2
                 exit 1
               fi
+              printf '%s\n' '# replay this exact call:'
+              "$python_bin" -c 'import shlex, sys; print(shlex.join(["pocket", *sys.argv[1:]]))' "$@"
+              printf '\n'
               exec ${pkgs.bash}/bin/bash "$farm" "$@"
               ;;
             ""|-h|--help|help)
