@@ -63,18 +63,28 @@ def _voice_trouble(reason):
 
 
 def _confirm(question):
-    """Require an explicit y/n before a trail crosses its declared boundary."""
+    """Require an explicit y/n from the controlling terminal."""
     console = Console()
-    while True:
-        console.print()
-        console.print(question, style="bold cyan", end=" ")
-        console.print("(y)es/(n)o?", style="dim", end=" ")
-        answer = input().strip().lower()
-        if answer in {"y", "yes"}:
-            return True
-        if answer in {"n", "no"}:
-            return False
-        console.print("Please answer y or n.", style="yellow")
+    try:
+        tty = open("/dev/tty", "r", encoding="utf-8")
+    except OSError:
+        return None
+    try:
+        while True:
+            console.print()
+            console.print(question, style="bold cyan", end=" ")
+            console.print("(y)es/(n)o?", style="dim", end=" ")
+            answer = tty.readline()
+            if answer == "":
+                return None
+            answer = answer.strip().lower()
+            if answer in {"y", "yes"}:
+                return True
+            if answer in {"n", "no"}:
+                return False
+            console.print("Please answer y or n.", style="yellow")
+    finally:
+        tty.close()
 
 
 def _narrate(text, disclosed=True, panel=False):
@@ -886,9 +896,14 @@ async def _ride_steps(trail_path, archive, dry_narrate=False, exports_path=None,
         )
     if trail.get("confirm"):
         _narrate(trail["description"], panel=True)
-        if not dry_narrate and not _confirm(trail["confirm"]):
-            print("Walk stopped before opening the browser.")
-            return 0
+        if not dry_narrate:
+            confirmed = _confirm(trail["confirm"])
+            if confirmed is None:
+                print("This walk cannot ask for confirmation here; no terminal is available.")
+                return 2
+            if not confirmed:
+                print("Walk stopped before opening the browser.")
+                return 0
     else:
         _narrate(trail["description"] + "\n" + walk_rules)
     captured = []
