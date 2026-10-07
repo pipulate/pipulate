@@ -45,7 +45,7 @@ ROOT_FIELDS = {"schema_version", "name", "description", "defaults", "stops"}
 # THE INTRODUCTION (2026-10-04): an optional list of stops, validated like the
 # walk's own, for someone who has never been there. The rider skips it unless
 # asked (walk NAME intro) and prints one line saying how to ask.
-ROOT_OPTIONAL_FIELDS = {"introduction"}
+ROOT_OPTIONAL_FIELDS = {"introduction", "confirm"}
 DEFAULT_FIELDS = set(SELENIUM_DEFAULTS)
 # Every stop carries all of these.
 STOP_FIELDS = {
@@ -383,6 +383,7 @@ def load_trail(path):
         "defaults": _validate_defaults(trail["defaults"]),
         "stops": clean_stops,
         **({"introduction": clean_introduction} if "introduction" in trail else {}),
+        **({"confirm": _text(trail["confirm"], "trail.confirm")} if "confirm" in trail else {}),
     }
 
 
