@@ -35,6 +35,13 @@ __init__.py                 # <-- the version
 # imports/ascii_displays.py   # <-- the ASCII art
 # scripts/release/version_sync.py  # <-- version stamping (to be folded into release.py)
 
+# WORKING TICKETS
+# tools/scraper_tools.py
+# scripts/walk_cartridge.py
+# scripts/walk.py
+# scripts/mother_cat.py
+# Workshop/personal/trails/pocketrender.yaml
+
 # JEKYLL
 # ~/repos/nixos/blogs.nix
 # ~/.config/pipulate/blogs.json                # <-- CAUTION! Derived from ~/repos/nixos/blogs.nix
