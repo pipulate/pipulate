@@ -801,6 +801,7 @@
           deedCommand                  # Promote one cartridge snapshot out of rotation, verified
           mirrorCommand                # Bare mirrors of the named repos, and read-only copies under ~/repos
           ferryCommand                 # Carry the Mac's shadow posts to Prime, overwriting nothing
+          pocketCommand                # PocketRender: same word for humans and context.txt receipts
           uv                           # Fast Python package installer and resolver
           sqlite                       # Ensures correct SQLite library is linked on macOS
           ruff                         # Fast Python linter (native Nix binary)
