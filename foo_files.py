@@ -21,8 +21,8 @@ AI_PHOOEY_CHOP = r"""#
 # creator of) of Project Pipulate:
 
 # --- START STATS ---
-# There are 1,522 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 16 published in the last 7 days
+# There are 1,523 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 17 published in the last 7 days
 # Markdown negotiated: 3,424 reads (0.25% of all responses)
 # DOM hydration: 3735 trapdoor triggers from 15 non-local IPs (top-N sample, self excluded)
 # Honeybot telemetry fetched 2026-10-08T11:07Z
@@ -2623,9 +2623,9 @@ MATCHBOOK_CHOP = r"""
 # apps/830_pico_slider.py  # [4,362 tokens | 19,320 bytes]
 # apps/xx_link_graph_v2.py  # [63,999 tokens | 332,384 bytes]
 # assets/jekyll/common-packages.nix  # [100 tokens | 294 bytes]
-# assets/jekyll/consumer-fixture/flake.nix  # [256 tokens | 909 bytes]
+# assets/jekyll/consumer-fixture/flake.nix  # [290 tokens | 1,060 bytes]
 # assets/oz-effect-demo.html  # [3,847 tokens | 16,459 bytes]
-# assets/prompts/find404s.md  # [459 tokens | 2,098 bytes]
+# assets/prompts/find404s.md  # [461 tokens | 2,105 bytes]
 # assets/prompts/llms_header.md  # [1,110 tokens | 5,129 bytes]
 # assets/prompts/pipulate-context.xsd  # [2,286 tokens | 8,129 bytes]
 # assets/prompts/system_prompt.md  # [628 tokens | 2,618 bytes]
