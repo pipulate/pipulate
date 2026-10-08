@@ -1,8 +1,8 @@
 # The Pipulate journal, indexed
 
-> Auto-generated on 2026-10-06 by `scripts/articles/generate_ai_context.py` and
+> Auto-generated on 2026-10-08 by `scripts/articles/generate_ai_context.py` and
 > rewritten from scratch on every release. If this date looks stale, assume
-> the rest of the repo is newer than this map. 1518 entries indexed.
+> the rest of the repo is newer than this map. 1523 entries indexed.
 
 This repository holds the *machinery*. The *reasoning*, the running journal
 that explains why every piece exists, lives on a separate website and not in
@@ -27,6 +27,11 @@ The first 20 entries include full `index.md` URLs to establish
 the link pattern. All remaining entries are bare slugs. Reconstruct any full
 URL as: `https://mikelev.in/futureproof/{slug}/index.md`
 
+- [2026-10-08] [Jekyll Satellites: Decoupling Shared Tooling from Independent Sites with Nix](https://mikelev.in/futureproof/jekyll-satellites-shared-nix-kernel/index.md)
+- [2026-10-07] [Removing the Conversion Event: When Paradigms Become Invisible Infrastructure](https://mikelev.in/futureproof/removing-the-conversion-event/index.md)
+- [2026-10-07] [Public Installers, Private Entitlements, and Watching the Infrastructure Read](https://mikelev.in/futureproof/public-installers-private-entitlements-wire-telemetry/index.md)
+- [2026-10-06] [Making Verification Cheaper Than Trust: The Flight Data Recorder for AI Workflows](https://mikelev.in/futureproof/making-verification-cheaper-than-trust/index.md)
+- [2026-10-06] [The Router That Learned to Forget: Compaction, Pure Patches, and Earned Simplicity](https://mikelev.in/futureproof/the-router-that-learned-to-forget/index.md)
 - [2026-10-06] [Declarative Editorial Context: Decoupling Publishing Targets in the AI Era](https://mikelev.in/futureproof/declarative-editorial-framing-pipeline/index.md)
 - [2026-10-04] [The Digital Thunk and Shannon's Codebook: Engineering Replayable Workflows in the Age of AI](https://mikelev.in/futureproof/digital-thunk-shannons-codebook-replayable-workflows/index.md)
 - [2026-10-04] [Learning to Walk: YAML Trails and the Quiet Skip](https://mikelev.in/futureproof/learning-to-walk-yaml-trails-and-the-quiet-skip/index.md)
@@ -42,16 +47,16 @@ URL as: `https://mikelev.in/futureproof/{slug}/index.md`
 - [2026-09-30] [Forever-Commands and the Talk Toggle: Replayable CLI Habits in the Age of AI](https://mikelev.in/futureproof/forever-commands-and-the-talk-toggle/index.md)
 - [2026-09-29] [Layered Reality and Operator Overloading: Reading the Physics of CPython in the Age of AI](https://mikelev.in/futureproof/layered-reality-operator-overloading-cpython/index.md)
 - [2026-09-29] [The Three-Door Installer: Named Prompts, Split DNS, and Verifiable Releases](https://mikelev.in/futureproof/the-three-door-installer-and-named-prompts/index.md)
-- [2026-09-29] [The Deed Is Named for the Door: Engineering Replayable QA Archives for AI](https://mikelev.in/futureproof/the-deed-is-named-for-the-door-qa-archive-zip/index.md)
-- [2026-09-29] [The Qamy Door and the Cellular Witness: Launching a Third Domain with Replayable Receipts](https://mikelev.in/futureproof/qamy-door-cellular-witness-replayable-receipts/index.md)
-- [2026-09-28] [The Forward-Slash Test: Bridging Agent Skills to Claude Code with Verifiable Receipts](https://mikelev.in/futureproof/the-forward-slash-test-claude-skills-bridge/index.md)
-- [2026-09-28] [AGENTS.md and Agent Skills: Refactoring Pipulate for a Checkable PyPI Release](https://mikelev.in/futureproof/agents-md-agent-skills-pypi-receipts/index.md)
-- [2026-09-28] [The Cost of Forgetting: The Epistemic Price List and the Art of the Lean Codebase](https://mikelev.in/futureproof/the-forgetting-kata-and-the-epistemic-price-list/index.md)
 
 ## Compact slug index -- pattern: https://mikelev.in/futureproof/{slug}/index.md
 
 Format: `[date] [size] slug` -- fetch any entry as `https://mikelev.in/futureproof/{slug}/index.md`
 
+- [2026-09-29] [234k] the-deed-is-named-for-the-door-qa-archive-zip
+- [2026-09-29] [200k] qamy-door-cellular-witness-replayable-receipts
+- [2026-09-28] [368k] the-forward-slash-test-claude-skills-bridge
+- [2026-09-28] [241k] agents-md-agent-skills-pypi-receipts
+- [2026-09-28] [172k] the-forgetting-kata-and-the-epistemic-price-list
 - [2026-09-28] [24k] pinball-pachinko-replayable-ai-workflows
 - [2026-09-28] [454k] three-folder-boundary-and-the-blank-stare
 - [2026-09-26] [65k] fixing-patch-parser-failures-and-actuator-surprises
