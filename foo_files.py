@@ -2596,7 +2596,7 @@ MATCHBOOK_CHOP = r"""
 # ============================================================================
 # Files tracked by git but not yet mixed into the palette above.
 # Move these into the active chapters to paint them onto the context canvas.
-# Coverage: 197/276 tracked files claimed. The compiler reads this line back on the next compile and prints the delta beside the live count, so an unclaimed file rings once.
+# Coverage: 197/277 tracked files claimed. The compiler reads this line back on the next compile and prints the delta beside the live count, so an unclaimed file rings once.
 
 # AGENTS.md  # [1,039 tokens | 4,223 bytes]
 # AUDIT.md  # [2,993 tokens | 13,897 bytes]
@@ -2623,6 +2623,7 @@ MATCHBOOK_CHOP = r"""
 # apps/830_pico_slider.py  # [4,362 tokens | 19,320 bytes]
 # apps/xx_link_graph_v2.py  # [63,999 tokens | 332,384 bytes]
 # assets/jekyll/common-packages.nix  # [100 tokens | 294 bytes]
+# assets/jekyll/consumer-fixture/flake.nix  # [256 tokens | 909 bytes]
 # assets/oz-effect-demo.html  # [3,847 tokens | 16,459 bytes]
 # assets/prompts/find404s.md  # [459 tokens | 2,098 bytes]
 # assets/prompts/llms_header.md  # [1,110 tokens | 5,129 bytes]

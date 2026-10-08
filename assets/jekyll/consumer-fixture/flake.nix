@@ -2,6 +2,8 @@
   description = "Independent consumer fixture for Pipulate's Jekyll package kernel";
 
   inputs.pipulate = {
+    # TODO: Test the remote input without --override-input, then commit a
+    # fixture-local flake.lock after checking locked.rev and locked.narHash.
     url = "github:pipulate/pipulate";
     flake = false;
   };
