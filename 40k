@@ -42,6 +42,18 @@ __init__.py                 # <-- the version
 # scripts/mother_cat.py
 # Workshop/personal/trails/pocketrender.yaml
 
+# connectors/README.md     # <-- the contract, the wallet, and the six auth kinds every new connector copies one of
+# connectors/wallet.py     # <-- Connect your accounts, or any site by URL; see what's live.
+# connectors/botify.py     # <-- Bring Botify crawl data and BQL query results into context.
+# connectors/confluence.py # <-- Bring a Confluence space, page, or search hit into context.
+# connectors/gmail.py      # <-- Bring an email thread or a sender's threads into context.
+# connectors/jira.py       # <-- List your open Jira tickets, or fetch one by key.
+# connectors/sheets.py     # <-- Bring a Google Sheet's tabs and cell data into context.
+# connectors/slack.py      # <-- Bring a Slack channel or message thread into context.
+# connectors/mcp.py        # <-- Replay client for remote MCP servers (Streamable HTTP transport).
+# connectors/mcp_warm.py  # <-- Mint the OAuth bearer token a remote MCP server asks for.
+# connectors/noop.py      # <-- The honest non-operative connector: one positional, prints what it received, exits 0; what public_walk.yaml names at every stop, because a plan must name something that RUNS
+
 # JEKYLL
 # ~/repos/nixos/blogs.nix
 # ~/.config/pipulate/blogs.json                # <-- CAUTION! Derived from ~/repos/nixos/blogs.nix
