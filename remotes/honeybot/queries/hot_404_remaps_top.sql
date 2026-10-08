@@ -1,5 +1,5 @@
 -- ============================================================================
--- PROMPT FU: SEMANTIC ROUTER
+-- COMPILED CONTEXT: SEMANTIC ROUTER
 -- ============================================================================
 -- System Directive: Semantic Router (CSV Output ONLY)
 -- You are a deterministic semantic routing engine. Your only job is to map the 

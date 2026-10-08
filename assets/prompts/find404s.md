@@ -1,5 +1,5 @@
 ============================================================================
-PROMPT FU: SEMANTIC ROUTER (STRICT EXTRACTION MODE)
+COMPILED CONTEXT: SEMANTIC ROUTER (STRICT EXTRACTION MODE)
 ============================================================================
 System Directive: Deterministic Lookup Table (CSV Output ONLY)
 
