@@ -1876,7 +1876,6 @@ async def browser_automate_workflow_walkthrough(params: dict) -> dict:
             '140_dev_assistant': 'dev_assistant',
             '150_simon_mcp': 'simon_mcp',
             '160_blank_placeholder': 'blank_placeholder',
-            '170_botify_trifecta': 'botify_trifecta',
             '180_tab_opener': 'tab_opener',
             '190_browser_cache': 'browser_cache',
             '200_stream_simulator': 'stream_simulator'
@@ -2111,7 +2110,6 @@ async def browser_automate_workflow_walkthrough(params: dict) -> dict:
                 '140_dev_assistant': 'dev_assistant',
                 '150_simon_mcp': 'simon_mcp',
                 '160_blank_placeholder': 'blank_placeholder',
-                '170_botify_trifecta': 'botify_trifecta',
                 '180_tab_opener': 'tab_opener',
                 '190_browser_cache': 'browser_cache',
                 '200_stream_simulator': 'stream_simulator'
@@ -2681,7 +2679,7 @@ async def ai_self_discovery_assistant(params: dict) -> dict:
                 for name, obj in inspect.getmembers(mcp_module):
                     if (callable(obj) and
                         not name.startswith('__') and
-                        ('test_' in name or 'ai_' in name or 'botify_' in name or
+                        ('test_' in name or 'ai_' in name or
                          'browser_' in name or 'ui_' in name or 'local_llm_' in name or
                          'pipeline_' in name or 'execute_' in name)):
                         available_tools.append(name)
@@ -2793,7 +2791,7 @@ async def ai_self_discovery_assistant(params: dict) -> dict:
                 "key_insight": "Real-world security measures provide valuable learning opportunities"
             },
             "workflow_session_hijacking": {
-                "task": "Take over user's Botifython workflow",
+                "task": "Take over user's session workflow",
                 "tools_used": ["pipeline_state_inspector", "browser_scrape_page"],
                 "result": "Successfully captured and analyzed user's current workflow state",
                 "key_insight": "Complete session visibility enables seamless AI assistance"
@@ -3148,7 +3146,7 @@ async def test_pipeline_functionality() -> dict:
             pass
 
         # Final fallback: Check if pipeline files exist
-        if os.path.exists("data/") and (os.path.exists("data/data.db") or os.path.exists("data/botifython_dev.db")):
+        if os.path.exists("data/") and (os.path.exists("data/data.db") or os.path.exists("data/pipulate_dev.db")):
             return {
                 "success": True,
                 "pipeline_functional": True,

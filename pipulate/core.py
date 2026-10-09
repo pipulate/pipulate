@@ -2750,8 +2750,8 @@ class Pipulate:
         then immediately prompts the user to enter a new one via the UI widget.
         
         Args:
-            env_var_name (str): The environment variable to remove (e.g., 'BOTIFY_API_TOKEN').
-            service_name (str): Friendly name for the UI (e.g., 'Botify'). Auto-derived if None.
+            env_var_name (str): The environment variable to remove (e.g., 'GEMINI_API_KEY').
+            service_name (str): Friendly name for the UI (e.g., 'Gemini'). Auto-derived if None.
         """
         import os
         from dotenv import load_dotenv, set_key
@@ -3003,8 +3003,8 @@ class Pipulate:
         mid-workflow lazy-loading crashes. Renders a secure widget if missing.
         
         Args:
-            env_var_name: The environment variable to look for (e.g., 'BOTIFY_API_TOKEN').
-            service_name: Friendly name for the UI (e.g., 'Botify'). Auto-derived if None.
+            env_var_name: The environment variable to look for (e.g., 'GEMINI_API_KEY').
+            service_name: Friendly name for the UI (e.g., 'Gemini'). Auto-derived if None.
             force_prompt: If True, ignores cached credentials and forces the UI widget.
         """
         import os
@@ -3013,7 +3013,7 @@ class Pipulate:
         from dotenv import load_dotenv, set_key
         
         if not service_name:
-            # Auto-derive friendly name (e.g., 'BOTIFY_API_TOKEN' -> 'Botify')
+            # Auto-derive friendly name (e.g., 'GEMINI_API_KEY' -> 'Gemini')
             service_name = env_var_name.split('_')[0].title()
 
         # 1. Load existing environment variables (override=True fights caching stubbornness)

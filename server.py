@@ -3732,8 +3732,7 @@ async def reset_config_onboarding(request):
             "OPENAI_API_KEY", 
             "ANTHROPIC_API_KEY", 
             "GEMINI_API_KEY",
-            "GOOGLE_API_KEY",
-            "BOTIFY_API_TOKEN"
+            "GOOGLE_API_KEY"
         ]
         
         # Clear from active memory
@@ -4897,7 +4896,6 @@ Your MCP tools are now available:
 - local_llm_list_files - Explore safe directories
 - local_llm_grep_logs - Search server logs for patterns
 - pipeline_state_inspector - Check application state
-- Botify API tools - Full schema access with 4,449+ fields
 
 Use these tools to assist users within your guided capabilities. Remember that advanced AI exploration (file system access, complex debugging) is handled by Claude/GPT in Cursor/Windsurf/VSCode when needed."""
 
