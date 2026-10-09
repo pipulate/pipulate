@@ -4909,6 +4909,129 @@ Use these tools to assist users within your guided capabilities. Remember that a
         logger.error(f"Error preparing local LLM context: {e}")
         # Don't fail startup if context preparation fails
 
+@rt('/diff')
+@rt('/preview')
+async def diff_preview(request):
+    """Live-preview prompt.md and working tree git diffs with Prism syntax highlighting."""
+    pipulate_root = Path(os.environ.get('PIPULATE_ROOT', os.getcwd()))
+    prompt_path = pipulate_root / 'prompt.md'
+
+    prompt_content = ""
+    if prompt_path.exists():
+        try:
+            prompt_content = prompt_path.read_text(encoding='utf-8')
+        except Exception as e:
+            prompt_content = f"Error reading prompt.md: {e}"
+    else:
+        prompt_content = f"No prompt.md found at {prompt_path}"
+
+    git_diff = ""
+    try:
+        diff_proc = subprocess.run(
+            ['git', 'diff', 'HEAD'],
+            cwd=str(pipulate_root),
+            capture_output=True,
+            text=True,
+            timeout=5
+        )
+        if diff_proc.returncode == 0:
+            git_diff = diff_proc.stdout.strip()
+    except Exception as e:
+        git_diff = f"Error running git diff: {e}"
+
+    diff_section = Article(
+        Header(
+            H3("Working Tree Diff (git diff HEAD)", style="margin-bottom: 0.25rem;"),
+            P("Cherenkov flash: red deletions (erased state), green additions (mutated state)",
+              cls="text-muted", style="margin-bottom: 0; font-size: 0.85rem;")
+        ),
+        Pre(Code(git_diff, cls="language-diff"), cls="language-diff", style="max-height: 350px; overflow-y: auto;")
+        if git_diff else
+        P("✓ Working tree clean (zero uncommitted diffs relative to HEAD).",
+          style="color: var(--pico-color-green-500); margin: 1rem 0; font-weight: bold;")
+    )
+
+    prompt_json = json.dumps(prompt_content).replace('</', '<\\/')
+    prompt_section = Article(
+        Header(
+            H3("prompt.md Preview", style="margin-bottom: 0.25rem;"),
+            P(f"Source: {prompt_path}",
+              cls="text-muted", style="margin-bottom: 0; font-family: monospace; font-size: 0.8rem;")
+        ),
+        Div(id="prompt-rendered-view", style="min-height: 100px;"),
+        Script(f"""
+            document.addEventListener('DOMContentLoaded', function() {{
+                const rawContent = {prompt_json};
+                const viewEl = document.getElementById('prompt-rendered-view');
+                if (viewEl) {{
+                    let content = rawContent;
+                    if (content.trim().startsWith('diff --git') || content.trim().startsWith('--- ')) {{
+                        content = '```diff\\n' + content + '\\n```';
+                    }}
+                    if (window.marked) {{
+                        viewEl.innerHTML = marked.parse(content);
+                    }} else {{
+                        const pre = document.createElement('pre');
+                        pre.textContent = content;
+                        viewEl.appendChild(pre);
+                    }}
+                    if (window.Prism) {{
+                        if (Prism.highlightAllUnder) {{
+                            Prism.highlightAllUnder(viewEl);
+                        }} else {{
+                            Prism.highlightAll();
+                        }}
+                    }}
+                }}
+            }});
+        """)
+    )
+
+    diff_styling = Style("""
+        .token.inserted, pre[class*="language-"] .token.inserted, code[class*="language-"] .token.inserted {
+            color: #2ea043 !important;
+            background-color: rgba(46, 160, 67, 0.15) !important;
+            display: inline-block;
+            width: 100%;
+        }
+        .token.deleted, pre[class*="language-"] .token.deleted, code[class*="language-"] .token.deleted {
+            color: #f85149 !important;
+            background-color: rgba(248, 81, 73, 0.15) !important;
+            display: inline-block;
+            width: 100%;
+        }
+        .token.coord, pre[class*="language-"] .token.coord {
+            color: #58a6ff !important;
+            font-weight: bold;
+        }
+        pre[class*="language-"] {
+            border: 1px solid var(--pico-muted-border-color);
+            border-radius: var(--pico-border-radius);
+            padding: 1rem;
+            background-color: var(--pico-card-background-color);
+        }
+    """)
+
+    nav = Nav(
+        Ul(
+            Li(Strong(A(APP_NAME, href='/', cls='contrast'))),
+            Li(Span(" / ")),
+            Li(Span("Diff & Prompt Preview"))
+        ),
+        Ul(
+            Li(A("🏠 Back to Workshop", href='/', role='button', cls='secondary outline', style='padding: 0.35rem 0.75rem; font-size: 0.85rem;')),
+            Li(A("🔄 Refresh", href=request.url.path, role='button', cls='outline', style='padding: 0.35rem 0.75rem; font-size: 0.85rem;'))
+        ),
+        style="margin-bottom: 1.5rem;"
+    )
+
+    return (
+        Title(f"{APP_NAME} - Diff & Prompt Preview"),
+        diff_styling,
+        Main(nav, diff_section, prompt_section, cls="container", style="max-width: 960px; padding-top: 1rem;")
+    )
+
+
 ALL_ROUTES = list(set([''] + MENU_ITEMS))
 for route in ALL_ROUTES:
     route_path = f'/{route}' if route else '/'
