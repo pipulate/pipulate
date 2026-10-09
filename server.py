@@ -616,7 +616,7 @@ def append_to_conversation(message=None, role='user'):
     
     Root Cause: modules.append_only_conversation.get_conversation_system() creates a
     separate SQLite connection to data/discussion.db while the main app uses 
-    data/botifython.db. SQLite doesn't handle concurrent connections well, causing
+    data/pipulate.db. SQLite doesn't handle concurrent connections well, causing
     transaction corruption and data loss.
     
     Solution: Use simple in-memory deque for conversation history. This eliminates the
