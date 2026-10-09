@@ -1156,23 +1156,15 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # variables without teaching the startup body another branch.
           OPEN_JUPYTER="''${PIPULATE_OPEN_JUPYTER:-${autoOpenJupyter}}"
           OPEN_FASTHTML="''${PIPULATE_OPEN_FASTHTML:-${autoOpenFastHTML}}"
+          START_JUPYTER="''${PIPULATE_START_JUPYTER:-${startJupyter}}"
           JUPYTER_BROWSER_FLAG=""
           if [ "$OPEN_JUPYTER" != "true" ]; then JUPYTER_BROWSER_FLAG="--no-browser"; fi
-          # Automatically start JupyterLab in background and server in foreground
-          # Start JupyterLab in a tmux session
-          # NOTE: kill and launch stay PAIRED inside the branch. Splitting
-          # them (kill outside, launch inside) would murder another
-          # terminal's JupyterLab every time someone stayed at the shell prompt.
-          tmux kill-session -t jupyter 2>/dev/null || true
-          # THE ROOT IS SAID OUT LOUD (2026-09-28): jupyter sets root_dir to the
-          # startup notebook's folder when nothing says otherwise, and that folder
-          # is two levels down in personal/Notebooks/ now. root_dir=Workshop keeps
-          # the file browser on the three tiers and opens the notebook by its
-          # relative path; a server started before a folder moves keeps the old
-          # root and answers 404 on it (convicted 2026-09-28, the AFTER read 200).
-          # Start JupyterLab with error logging
-          tmux new-session -d -s jupyter "source .venv/bin/activate && jupyter lab ${jupyterStartupNotebook} --ServerApp.root_dir=Workshop $JUPYTER_BROWSER_FLAG --workspace=\$JUPYTER_WORKSPACE_NAME --NotebookApp.token=\"\" --NotebookApp.password=\"\" --NotebookApp.disable_check_xsrf=True 2>&1 | tee /tmp/jupyter-startup.log"
-          sleep 2
+          # Conditionally start JupyterLab in background tmux session (default: off)
+          if [ "$START_JUPYTER" = "true" ]; then
+            tmux kill-session -t jupyter 2>/dev/null || true
+            tmux new-session -d -s jupyter "source .venv/bin/activate && jupyter lab ${jupyterStartupNotebook} --ServerApp.root_dir=Workshop $JUPYTER_BROWSER_FLAG --workspace=\$JUPYTER_WORKSPACE_NAME --NotebookApp.token=\"\" --NotebookApp.password=\"\" --NotebookApp.disable_check_xsrf=True 2>&1 | tee /tmp/jupyter-startup.log"
+            sleep 2
+          fi
 
           # 🗣️ THE UNIFIED VOICE TRIGGER (Context-Aware)
           if [ -f Workshop/personal/Notebooks/data/.onboarded ]; then
