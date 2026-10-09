@@ -964,18 +964,6 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # assets/trails/public_walk.yaml  # the sample walk in YAML since 2026-10-04 (comments, folded guidance); DEFAULT_TRAIL and what bare `walk` rides; the json line below is its twin, kept only until pipulate.com serves mck.sh v0.7.0, then git rm
 # assets/trails/public_walk.json         # profile default; SETTLE trivial; three unlinked qamy.ai pages (the_word, the_receipt, the_two_pages) since c7faeb2, inline script on stop three only, connector noop.py; RIDDEN 2026-10-02 on Prime and on a fresh Mac install at v2.76, 3 of 3 saved at the Enter fence, summary saved and copied with nothing to type, every page fetched from the server (fromDiskCache=false); the 2026-09-15 ride walked the npvg.org copies under CAPTURE and DECANT and left the diff-lens TODO open: the summary may not carry stop three's server sentence; the 2026-08-01 ride walked the OLD stop set (example.com, mikelev.in, pipulate.com); since 2026-10-04 the twin of public_walk.yaml, read only by a served mck.sh older than v0.7.0
 #
-# UNLINKED PAGES (npvg.org; no trail opens them since c7faeb2, and they still say CAPTURE, as a checkout older than that expects; nothing links to them and no page links out; nixops.sh rsyncs them, no rebuild)
-# remotes/honeybot/www/npvg.org/index.html          # <-- the door: a browser gets this page, curl and wget get install.sh ($npvg_index)
-# remotes/honeybot/www/npvg.org/walk/1/index.html   # <-- public_walk stop one: the capture word; no script, so source and hydrated DOM should match
-# remotes/honeybot/www/npvg.org/walk/2/index.html   # <-- stop two: count the archive's fingerprints against the terminal's artifacts= number
-# remotes/honeybot/www/npvg.org/walk/3/index.html   # <-- stop three: the walk's only script rewrites the server's sentence and appends a paragraph; the DECANT test lives here
-#
-# THE SECOND DOOR (qamy.ai; landed 2026-09-29): npvg.org's tree copied, its own vhost, certificate and log in configuration.nix, four lines in nixops.sh; they diverged 2026-10-02: public_walk opens these three pages, which say Enter and never CAPTURE or DECANT
-# remotes/honeybot/www/qamy.ai/index.html           # <-- the door: the same negotiation as npvg.org's, the stamp qamy, which picks install.sh's qamy row, so the one-liner lands in ~/qamyai
-# remotes/honeybot/www/qamy.ai/walk/1/index.html    # <-- public_walk stop one: go back to the command line and press Enter; no script
-# remotes/honeybot/www/qamy.ai/walk/2/index.html    # <-- stop two: press Enter, one page left; the page names no host
-# remotes/honeybot/www/qamy.ai/walk/3/index.html    # <-- stop three: press Enter; the walk's only script, and the optional checkword test
-#
 # OFF-ROSTER DISTRIBUTION RESIDUE (not a walk dependency)
 # assets/installer/replay.sh  # <-- OFF the roster 2026-08-01, stranded; re-add needs syntax + one ride + a pinned verifier fetch
 #
@@ -1026,7 +1014,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # (~0.2% of traffic) simply asks and gets the master for free. Small streams
 # carve the sinkholes; this chapter is the seismograph.
 
-# CORE SLIDESHOW FILES
+# CORE AGENT OBSERVATORY FILES (HONEYBOT)
 # nixops.sh                                   # <-- You've heard of GitOPs? Well, this is NixOPs. 
 # remotes/honeybot/hooks/post-receive         # <-- Ever hear of GitHub Pages? Or github.io? This is that.
 # remotes/honeybot/nixos/configuration.nix    # <-- It's as if Pipulate had kids. Spy kids.
@@ -1039,6 +1027,18 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # remotes/honeybot/scripts/content_loader.py  # <-- Tricky TV programming & scheduling stuff. Absolute versus relative timing. Loops. Interrupts.
 # remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblogs forever! And we want trending. And data-mining. Here's how.
 # imports/voice_synthesis.py                  # <-- The wand can talk to you (not sure if I'm keeping it in Honeybot chapter)
+
+# THE SECOND DOOR (qamy.ai; landed 2026-09-29): npvg.org's tree copied, its own vhost, certificate and log in configuration.nix, four lines in nixops.sh; they diverged 2026-10-02: public_walk opens these three pages, which say Enter and never CAPTURE or DECANT
+# remotes/honeybot/www/qamy.ai/index.html           # <-- the door: the same negotiation as npvg.org's, the stamp qamy, which picks install.sh's qamy row, so the one-liner lands in ~/qamyai
+# remotes/honeybot/www/qamy.ai/walk/1/index.html    # <-- public_walk stop one: go back to the command line and press Enter; no script
+# remotes/honeybot/www/qamy.ai/walk/2/index.html    # <-- stop two: press Enter, one page left; the page names no host
+# remotes/honeybot/www/qamy.ai/walk/3/index.html    # <-- stop three: press Enter; the walk's only script, and the optional checkword test
+
+# UNLINKED PAGES (npvg.org; no trail opens them since c7faeb2, and they still say CAPTURE, as a checkout older than that expects; nothing links to them and no page links out; nixops.sh rsyncs them, no rebuild)
+# remotes/honeybot/www/npvg.org/index.html          # <-- the door: a browser gets this page, curl and wget get install.sh ($npvg_index)
+# remotes/honeybot/www/npvg.org/walk/1/index.html   # <-- public_walk stop one: the capture word; no script, so source and hydrated DOM should match
+# remotes/honeybot/www/npvg.org/walk/2/index.html   # <-- stop two: count the archive's fingerprints against the terminal's artifacts= number
+# remotes/honeybot/www/npvg.org/walk/3/index.html   # <-- stop three: the walk's only script rewrites the server's sentence and appends a paragraph; the DECANT test lives here
 
 # remotes/honeybot/scripts/bot_intel.json     # <-- Where we hand-register known bots we've encounters. Needs better discover/include methodology.
 

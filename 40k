@@ -44,7 +44,6 @@ __init__.py                 # <-- the version
 
 # connectors/README.md     # <-- the contract, the wallet, and the six auth kinds every new connector copies one of
 # connectors/wallet.py     # <-- Connect your accounts, or any site by URL; see what's live.
-# connectors/botify.py     # <-- Bring Botify crawl data and BQL query results into context.
 # connectors/confluence.py # <-- Bring a Confluence space, page, or search hit into context.
 # connectors/gmail.py      # <-- Bring an email thread or a sender's threads into context.
 # connectors/jira.py       # <-- List your open Jira tickets, or fetch one by key.
@@ -65,6 +64,26 @@ scripts/articles/sanitizer.py                # <-- Scrubs PII
 scripts/articles/contextualizer.py           # <-- Builds JSON summaries of articles in `_posts/context/` called "Holographic Shards".
 scripts/articles/confluenceizer.py           # <-- Idempotent Jekyll-to-Confluence corporate wiki
 scripts/articles/googledocizer.py            # <-- Just added
+
+# CORE AGENT OBSERVATORY FILES (HONEYBOT)
+nixops.sh                                   # <-- You've heard of GitOPs? Well, this is NixOPs. 
+remotes/honeybot/hooks/post-receive         # <-- Ever hear of GitHub Pages? Or github.io? This is that.
+remotes/honeybot/nixos/configuration.nix    # <-- It's as if Pipulate had kids. Spy kids.
+remotes/honeybot/scripts/stream.py          # <-- Starts the TV Channel streaming to YouTube-live via OBS from Nginx Honeybot XFCE Desktop. Clear?
+remotes/honeybot/scripts/score.py           # <-- Where "Greetings Entity" slideshow reads on post-receive interrupts
+remotes/honeybot/scripts/card.py            # <-- Just added for station identification breaks
+remotes/honeybot/scripts/forest.py          # <-- Likewise, just added for the new storytelling system on Honeybot
+remotes/honeybot/scripts/test_forest.py     # <-- Test Honeybot station identification sequence on Pipulate Prime
+remotes/honeybot/scripts/logs.py            # <-- The TV Show is mostly Nginx `access.log` files tailed and piped through Python to colorize (this).
+remotes/honeybot/scripts/content_loader.py  # <-- Tricky TV programming & scheduling stuff. Absolute versus relative timing. Loops. Interrupts.
+remotes/honeybot/scripts/db.py              # <-- But you can't keep your weblogs forever! And we want trending. And data-mining. Here's how.
+imports/voice_synthesis.py                  # <-- The wand can talk to you (not sure if I'm keeping it in Honeybot chapter)
+
+# THE SECOND DOOR (qamy.ai; landed 2026-09-29): npvg.org's tree copied, its own vhost, certificate and log in configuration.nix, four lines in nixops.sh; they diverged 2026-10-02: public_walk opens these three pages, which say Enter and never CAPTURE or DECANT
+remotes/honeybot/www/qamy.ai/index.html           # <-- the door: the same negotiation as npvg.org's, the stamp qamy, which picks install.sh's qamy row, so the one-liner lands in ~/qamyai
+remotes/honeybot/www/qamy.ai/walk/1/index.html    # <-- public_walk stop one: go back to the command line and press Enter; no script
+remotes/honeybot/www/qamy.ai/walk/2/index.html    # <-- stop two: press Enter, one page left; the page names no host
+remotes/honeybot/www/qamy.ai/walk/3/index.html    # <-- stop three: press Enter; the walk's only script, and the optional checkword test
 
     !URL  --------------------------------------------------------------------
       when    Public page; what a stranger or crawler sees; the BEFORE of a
