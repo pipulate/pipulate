@@ -17,7 +17,6 @@ from loguru import logger
 import imports.server_logging as slog
 import config as CFG
 from config import COLOR_MAP
-from imports import botify_code_generation
 from imports.stream_orchestrator import stream_orchestrator
 from typing import AsyncGenerator, Optional
 import imports.server_logging as slog
@@ -902,7 +901,6 @@ class Pipulate:
 
         full_log_message = '\n'.join(log_entry_parts)
         logger.info(f'\n🚀 === API CALL TRANSPARENCY ===\n{full_log_message}\n🚀 === END API TRANSPARENCY ===')
-        is_bql = 'bql' in (call_description or '').lower() or 'botify query language' in (call_description or '').lower()
 
     def _is_discovery_endpoint(self, url: str) -> bool:
         """Detect if this is a key discovery endpoint that should have full response logging.
@@ -1165,45 +1163,7 @@ class Pipulate:
 
         return '\n'.join(lines)
 
-    # ========================================
-    # REUSABLE BOTIFY PYTHON CODE GENERATION
-    # ========================================
 
-    def generate_botify_code_header(self, display_name: str, step_name: str, username: str, project_name: str,
-                                    template_info: dict = None, qualifier_config: dict = None) -> list:
-        """Generate standardized header for Botify Python debugging code.
-
-        Delegates to external botify_code_generation module to reduce server.py size.
-        """
-        return botify_code_generation.generate_botify_code_header(
-            display_name=display_name,
-            step_name=step_name,
-            username=username,
-            project_name=project_name,
-            template_info=template_info,
-            qualifier_config=qualifier_config
-        )
-
-    def generate_botify_token_loader(self) -> str:
-        """Generate the standard Botify token loading function.
-
-        Delegates to external botify_code_generation module to reduce server.py size.
-        """
-        return botify_code_generation.generate_botify_token_loader()
-
-    def generate_botify_http_client(self, client_name: str, description: str) -> str:
-        """Generate the standard HTTP client function for Botify APIs.
-
-        Delegates to external botify_code_generation module to reduce server.py size.
-        """
-        return botify_code_generation.generate_botify_http_client(client_name, description)
-
-    def generate_botify_main_executor(self, client_function_name: str, api_description: str) -> str:
-        """Generate the main execution function for Botify APIs.
-
-        Delegates to external botify_code_generation module to reduce server.py size.
-        """
-        return botify_code_generation.generate_botify_main_executor(client_function_name, api_description)
 
     def create_folder_button(self, folder_path: str, icon: str = "📁", text: str = "Open Folder",
                              title_prefix: str = "Open folder") -> object:
@@ -1226,50 +1186,7 @@ class Pipulate:
             cls="button-link"
         )
 
-    # ========================================
-    # ADVANCED BOTIFY CODE GENERATION UTILITIES
-    # ========================================
 
-    def generate_botify_bqlv2_python_code(self, query_payload, username, project_name, page_size, jobs_payload, display_name, get_step_name_from_payload_func, get_configured_template_func=None, query_templates=None):
-        """
-        🚀 REUSABLE UTILITY: Generate complete Python code for BQLv2 queries (crawl, GSC)
-
-        Delegates to external botify_code_generation module to reduce server.py size.
-        """
-        return botify_code_generation.generate_botify_bqlv2_python_code(
-            query_payload=query_payload,
-            username=username,
-            project_name=project_name,
-            page_size=page_size,
-            jobs_payload=jobs_payload,
-            display_name=display_name,
-            get_step_name_from_payload_func=get_step_name_from_payload_func,
-            get_configured_template_func=get_configured_template_func,
-            query_templates=query_templates
-        )
-
-    def generate_botify_bqlv1_python_code(self, query_payload, username, project_name, jobs_payload, display_name, get_step_name_from_payload_func):
-        """
-        🚀 REUSABLE UTILITY: Generate complete Python code for BQLv1 queries (web logs)
-
-        Delegates to external botify_code_generation module to reduce server.py size.
-        """
-        return botify_code_generation.generate_botify_bqlv1_python_code(
-            query_payload=query_payload,
-            username=username,
-            project_name=project_name,
-            jobs_payload=jobs_payload,
-            display_name=display_name,
-            get_step_name_from_payload_func=get_step_name_from_payload_func
-        )
-
-    def get_botify_analysis_path(self, app_name, username, project_name, analysis_slug, filename=None):
-        """
-        🚀 REUSABLE UTILITY: Construct standardized Botify analysis file paths
-
-        Delegates to external botify_code_generation module to reduce server.py size.
-        """
-        return botify_code_generation.get_botify_analysis_path(app_name, username, project_name, analysis_slug, filename)
 
     def fmt(self, endpoint: str) -> str:
         """Format an endpoint string into a human-readable form."""
@@ -2466,8 +2383,6 @@ class Pipulate:
                     
                     if "CLIENT_DOMAIN" in target_names:
                         node.value = ast.Constant(value="uhnd.com")
-                    elif "BOTIFY_PROJECT_URL" in target_names:
-                        node.value = ast.Constant(value="https://app.botify.com/uhnd-com/uhnd.com-demo-account/")
                     else:
                         # Replace all other string values with None
                         node.value = ast.Constant(value=None)

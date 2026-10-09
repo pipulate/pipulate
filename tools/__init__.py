@@ -81,15 +81,9 @@ def denied_tools():
 # below leaves with botify_tools.py. Not this ride.
 __version__ = "1.0.0"
 
-# Import shared constants to eliminate duplication
-try:
-    from .botify_tools import CORE_BOTIFY_TOOLS
-    botify_exports = CORE_BOTIFY_TOOLS + ['get_botify_tools']
-except ImportError:
-    # Fallback if import fails
-    botify_exports = ['get_botify_tools']
 
-__all__ = botify_exports + [
+
+__all__ = [
     'execute_complete_session_hijacking',
     'selenium_automation',
     'execute_automation_recipe',

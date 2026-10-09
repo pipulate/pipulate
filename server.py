@@ -72,7 +72,7 @@ from config import get_db_filename, get_app_name, APP_NAME, get_current_environm
 import imports.ascii_displays as aa
 import tools.mcp_tools as mcp_tools
 from tools import get_all_tools
-from imports import botify_code_generation, mcp_orchestrator
+from imports import mcp_orchestrator
 import imports.server_logging as slog
 
 from pipulate.core import Pipulate
@@ -3592,11 +3592,6 @@ async def mcp_tool_executor_endpoint(request):
         if tool_name == "pipeline_state_inspector":
             pipeline_count = len(tool_result.get("result", {}).get("pipelines", []))
             logger.info(f"🔧 MCP_SEMANTIC: Pipeline inspector found {pipeline_count} active pipelines")
-        elif tool_name.startswith("botify_"):
-            if "projects" in str(tool_result.get("result", "")):
-                logger.info(f"🔧 MCP_SEMANTIC: Botify API call returned project data")
-            elif "schema" in str(tool_result.get("result", "")):
-                logger.info(f"🔧 MCP_SEMANTIC: Botify API call returned schema information")
         elif tool_name.startswith("local_llm_"):
             if tool_name == "local_llm_grep_logs":
                 matches = tool_result.get("result", {}).get("matches", [])
@@ -4866,19 +4861,13 @@ async def prepare_local_llm_context():
             "available_mcp_tools": {
                 "file_access": ["local_llm_read_file", "local_llm_list_files"],
                 "log_search": ["local_llm_grep_logs"],
-                "state_inspection": ["pipeline_state_inspector"],
-                "botify_api": ["botify_get_full_schema", "botify_list_available_analyses", "botify_execute_custom_bql_query"]
+                "state_inspection": ["pipeline_state_inspector"]
             },
             "key_directories": {
                 "training": "AI training materials and guides",
                 "apps": "Workflow applications and business logic",
                 "helpers": "Utility scripts and API integrations",
                 "logs": "Server logs with FINDER_TOKEN patterns"
-            },
-            "botify_capabilities": {
-                "demo_projects": ["uhnd.com-demo-account", "mikelev.in"],
-                "key_features": ["GA4/Adobe Analytics integration", "Traffic source attribution", "Custom BQL queries"],
-                "field_count": "4,449+ fields available via schema discovery"
             },
             "transparency_patterns": {
                 "log_tokens": "Search logs with FINDER_TOKEN patterns",
