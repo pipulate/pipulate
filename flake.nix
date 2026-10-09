@@ -120,9 +120,10 @@
  		jupyterStartupNotebook = "Workshop/personal/Notebooks/Onboarding.ipynb";
 
         # --- 🌐 BROWSER TAB CONFIGURATION ---
-        autoOpenJupyter = "true";
-        autoOpenFastHTML = "false";
+        autoOpenJupyter = "false";
+        autoOpenFastHTML = "true";
         fastHtmlOpenDelay = "0";  # Seconds to delay FastHTML tab if both are true
+        startJupyter = "false";
 
         # --- CORRECTED: Declarative list for notebooks to copy ---
         notebookFilesToCopy = [
