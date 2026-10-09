@@ -8,9 +8,10 @@ from pathlib import Path
 import common
 
 
-def brand_markdown_files(target_path):
+def brand_markdown_files(target_path, verbose=False):
     """Sweeps the posts directory and swaps **Me**: for the semantic brand."""
-    print("\n--- 🏷️  Branding Markdown Files ---")
+    if verbose:
+        print("\n--- 🏷️  Branding Markdown Files ---")
     count = 0
     # Search all markdown files in the target directory
     for md_file in target_path.glob("*.md"):
@@ -21,12 +22,12 @@ def brand_markdown_files(target_path):
             count += 1
     
     if count > 0:
-        print(f"✅ Applied semantic branding to {count} files.")
-    else:
+        print(f"🏷️  Applied semantic branding to {count} file(s).")
+    elif verbose:
         print("✅ All files are perfectly branded.")
 
 
-def prune_orphan_shards(target_path):
+def prune_orphan_shards(target_path, verbose=False):
     """Delete _context/<stem>.json whose post no longer sits in _posts."""
     # THE ORPHAN PRUNE (2026-09-26, the day a post changed lanes). A post
     # moved to another lane, renamed or deleted leaves its shard behind, and
@@ -47,12 +48,13 @@ def prune_orphan_shards(target_path):
         shard.unlink()
         print(f"🧹 Orphan shard removed: {shard.name}")
         removed += 1
-    if removed == 0:
+    if removed == 0 and verbose:
         print("✅ No orphan shards.")
 
 
-def run_step(script_name, target_key, extra_args=None):
-    print(f"\n--- 🚀 Step: {script_name} ---")
+def run_step(script_name, target_key, extra_args=None, verbose=False):
+    if verbose:
+        print(f"\n--- 🚀 Step: {script_name} ---")
     start = time.time()
 
     # We pass the target key to every script. Pipeline entries may carry
@@ -87,11 +89,12 @@ def run_step(script_name, target_key, extra_args=None):
 # already left the public lane's copies there, so a probe on existence
 # reads the same before and after, and only the skip lines discriminate.
 # Those leftovers are removed by hand; nothing here deletes in a site root.
-def sync_data_to_jekyll(target_path, since=0.0):
+def sync_data_to_jekyll(target_path, since=0.0, verbose=False):
     """
     Copies the generated artifacts to the Jekyll SITE ROOT.
     """
-    print("\n--- 📦 Syncing Data to Jekyll ---")
+    if verbose:
+        print("\n--- 📦 Syncing Data to Jekyll ---")
     
     # Source is local to this script
     script_dir = Path(__file__).parent
@@ -110,6 +113,7 @@ def sync_data_to_jekyll(target_path, since=0.0):
     # of these printed one skip per file, twelve lines each preview -t bot.
     # The count still says the guard fired; a nonzero count is the receipt.
     stale = []
+    synced = []
     # Sync static artifacts
     for filename, dest_name in artifacts.items():
         source = script_dir / filename
@@ -120,7 +124,9 @@ def sync_data_to_jekyll(target_path, since=0.0):
             continue
         if source.exists():
             shutil.copy2(source, dest)
-            print(f"✅ Synced {filename} -> {dest}")
+            synced.append(filename)
+            if verbose:
+                print(f"✅ Synced {filename} -> {dest}")
         else:
             print(f"⚠️ Warning: {filename} not found. Skipping sync.")
 
@@ -131,7 +137,11 @@ def sync_data_to_jekyll(target_path, since=0.0):
             continue
         dest = repo_root / sitemap.name
         shutil.copy2(sitemap, dest)
-        print(f"✅ Synced {sitemap.name} -> {dest}")
+        synced.append(sitemap.name)
+        if verbose:
+            print(f"✅ Synced {sitemap.name} -> {dest}")
+    if synced and not verbose:
+        print(f"📦 Synced {len(synced)} artifact(s) -> {repo_root.name}/")
     if stale:
         print(f"⏭️  {len(stale)} artifact(s) predate this run; another lane made them. Not synced.")
 
@@ -139,6 +149,7 @@ def main():
     parser = argparse.ArgumentParser(description="Update all Pipulate graphs")
     common.add_standard_arguments(parser)
     parser.add_argument('-m', '--keys', type=str, help="Pass a comma-separated list of keys for rotation")
+    parser.add_argument('-v', '--verbose', action='store_true', help="Verbose output (show routine announcements and individual file syncs).")
 
     args = parser.parse_args()
     
@@ -174,17 +185,17 @@ def main():
         extra_args.extend(['-m', args.keys])
 
     # 1.5 THE BRANDING SWEEP (Run this right before the JIU-JITSU Sweep!)
-    brand_markdown_files(target_path)
-    prune_orphan_shards(target_path)
+    brand_markdown_files(target_path, verbose=args.verbose)
+    prune_orphan_shards(target_path, verbose=args.verbose)
 
     # 2. Run the sequence
     total_start = time.time()
     
     for script in pipeline_scripts:
-        run_step(script, target_key, extra_args)
+        run_step(script, target_key, extra_args, verbose=args.verbose)
     
     # 3. Sync Data
-    sync_data_to_jekyll(target_path, since=total_start)
+    sync_data_to_jekyll(target_path, since=total_start, verbose=args.verbose)
         
     total_duration = time.time() - total_start
     print(f"\n✨ All steps completed successfully in {total_duration:.2f}s.")
