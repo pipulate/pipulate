@@ -63,6 +63,13 @@ except ImportError:
     chip_voice_system = None
     VOICE_SYNTHESIS_AVAILABLE = False
 
+# Import AI Keychain system
+try:
+    from imports.ai_dictdb import keychain_instance, KEYCHAIN_AVAILABLE
+except ImportError:
+    keychain_instance = None
+    KEYCHAIN_AVAILABLE = False
+
 # Get logger from server context
 logger = logging.getLogger(__name__)
 
@@ -275,24 +282,6 @@ def rotate_looking_at_directory(looking_at_path: Path = None, max_rolled_dirs: i
     except Exception as e:
         logger.error(f'❌ FINDER_TOKEN: DIRECTORY_ROTATION_ERROR - Failed to rotate directories: {e}')
         return False
-
-# ================================================================
-# HELPER FUNCTIONS
-# ================================================================
-
-
-def _read_botify_api_token() -> str:
-    """Read Botify API token from the environment (.env vault).
-
-    Returns the token string or None if not configured. Delegates to
-    config.get_botify_token() so there is a single canonical source of truth
-    for the Botify credential.
-    """
-    try:
-        from config import get_botify_token
-        return get_botify_token()
-    except Exception:
-        return None
 
 # ================================================================
 # CORE MCP TOOLS
@@ -718,228 +707,7 @@ async def pipeline_state_inspector(params: dict) -> dict:
         logger.error(f"❌ FINDER_TOKEN: MCP_PIPELINE_INSPECTOR_ERROR - {e}")
         return {"success": False, "error": str(e)}
 
-# ================================================================
-# BOTIFY API MCP TOOLS
-# ================================================================
 
-
-async def botify_ping(params: dict) -> dict:
-    """Test Botify API connectivity and authentication."""
-    api_token = _read_botify_api_token()
-    if not api_token:
-        return {
-            "status": "error",
-            "message": "Botify API token not found. Please configure BOTIFY_API_TOKEN in .env.",
-            "token_location": ".env:BOTIFY_API_TOKEN"
-        }
-
-    try:
-        async with aiohttp.ClientSession() as session:
-            # Use the user endpoint as a simple ping/auth test
-            external_url = "https://api.botify.com/v1/user"
-            headers = {"Authorization": f"Token {api_token}"}
-
-            async with session.get(external_url, headers=headers) as response:
-                if response.status == 200:
-                    user_data = await response.json()
-                    return {
-                        "status": "success",
-                        "result": {
-                            "message": "Botify API connection successful",
-                            "user": user_data.get("login", "unknown"),
-                            "organizations": len(user_data.get("organizations", []))
-                        },
-                        "external_api_url": external_url,
-                        "external_api_method": "GET",
-                        "external_api_status": response.status
-                    }
-                else:
-                    error_text = await response.text()
-                    return {
-                        "status": "error",
-                        "message": f"Botify API authentication failed: {response.status}",
-                        "error_details": error_text,
-                        "external_api_url": external_url,
-                        "external_api_method": "GET",
-                        "external_api_status": response.status
-                    }
-    except Exception as e:
-        return {
-            "status": "error",
-            "message": f"Network error: {str(e)}",
-            "external_api_url": external_url if 'external_url' in locals() else None,
-            "external_api_method": "GET"
-        }
-
-
-async def botify_list_projects(params: dict) -> dict:
-    """List all projects for the authenticated user."""
-    api_token = _read_botify_api_token()
-    if not api_token:
-        return {
-            "status": "error",
-            "message": "Botify API token not found. Please configure BOTIFY_API_TOKEN in .env.",
-            "token_location": ".env:BOTIFY_API_TOKEN"
-        }
-
-    try:
-        async with aiohttp.ClientSession() as session:
-            external_url = "https://api.botify.com/v1/projects"
-            headers = {"Authorization": f"Token {api_token}"}
-
-            async with session.get(external_url, headers=headers) as response:
-                if response.status == 200:
-                    projects_data = await response.json()
-                    projects = projects_data.get("results", [])
-
-                    # Format for easy consumption
-                    formatted_projects = []
-                    for project in projects:
-                        formatted_projects.append({
-                            "slug": project.get("slug"),
-                            "name": project.get("name"),
-                            "url": project.get("url"),
-                            "organization": project.get("organization", {}).get("name"),
-                            "active": project.get("active", False)
-                        })
-
-                    return {
-                        "status": "success",
-                        "result": {
-                            "projects": formatted_projects,
-                            "total_count": len(formatted_projects)
-                        },
-                        "external_api_url": external_url,
-                        "external_api_method": "GET",
-                        "external_api_status": response.status
-                    }
-                else:
-                    error_text = await response.text()
-                    return {
-                        "status": "error",
-                        "message": f"Failed to fetch projects: {response.status}",
-                        "error_details": error_text,
-                        "external_api_url": external_url,
-                        "external_api_method": "GET",
-                        "external_api_status": response.status
-                    }
-    except Exception as e:
-        return {
-            "status": "error",
-            "message": f"Network error: {str(e)}",
-            "external_api_url": external_url if 'external_url' in locals() else None,
-            "external_api_method": "GET"
-        }
-
-# Additional Botify tools will be added in subsequent edits...
-
-# ================================================================
-# MCP TOOL REGISTRY AND REGISTRATION
-# ================================================================
-
-
-# Additional Botify tools from server.py
-
-async def botify_simple_query(params: dict) -> dict:
-    """Execute a simple BQL query against Botify API."""
-    api_token = _read_botify_api_token()
-    if not api_token:
-        return {
-            "status": "error",
-            "message": "Botify API token not found. Please configure BOTIFY_API_TOKEN in .env.",
-            "token_location": ".env:BOTIFY_API_TOKEN"
-        }
-
-    org_slug = params.get("org_slug")
-    project_slug = params.get("project_slug")
-    analysis_slug = params.get("analysis_slug")
-    query = params.get("query")
-
-    # Validate required parameters
-    missing_params = []
-    if not org_slug:
-        missing_params.append("org_slug")
-    if not project_slug:
-        missing_params.append("project_slug")
-    if not analysis_slug:
-        missing_params.append("analysis_slug")
-    if not query:
-        missing_params.append("query")
-
-    if missing_params:
-        return {
-            "status": "error",
-            "message": f"Missing required parameters: {', '.join(missing_params)}",
-            "required_params": ["org_slug", "project_slug", "analysis_slug", "query"]
-        }
-
-    try:
-        async with aiohttp.ClientSession() as session:
-            external_url = f"https://api.botify.com/v1/projects/{org_slug}/{project_slug}/query"
-            from config import get_botify_headers
-            headers = get_botify_headers(api_token)
-
-            # Build the BQL query payload
-            payload = {
-                "query": query,
-                "analysis": analysis_slug,
-                "size": params.get("size", 100)  # Default to 100 results
-            }
-
-            async with session.post(external_url, headers=headers, json=payload) as response:
-                if response.status == 200:
-                    query_result = await response.json()
-
-                    # Extract result summary for easier consumption
-                    result_summary = {
-                        "total_results": len(query_result.get("results", [])),
-                        "has_pagination": "next" in query_result,
-                        "query_size_requested": payload.get("size", 100)
-                    }
-
-                    return {
-                        "status": "success",
-                        "result": query_result,
-                        "result_summary": result_summary,
-                        "external_api_url": external_url,
-                        "external_api_method": "POST",
-                        "external_api_status": response.status,
-                        "external_api_payload": payload,
-                        "query_info": {
-                            "org": org_slug,
-                            "project": project_slug,
-                            "analysis": analysis_slug,
-                            "query_type": "custom_bql"
-                        }
-                    }
-                else:
-                    error_text = await response.text()
-                    return {
-                        "status": "error",
-                        "message": f"Custom BQL query failed: {response.status}",
-                        "error_details": error_text,
-                        "external_api_url": external_url,
-                        "external_api_method": "POST",
-                        "external_api_status": response.status,
-                        "external_api_payload": payload,
-                        "query_info": {
-                            "org": org_slug,
-                            "project": project_slug,
-                            "analysis": analysis_slug
-                        }
-                    }
-    except Exception as e:
-        return {
-            "status": "error",
-            "message": f"Network error: {str(e)}",
-            "external_api_url": external_url if 'external_url' in locals() else None,
-            "external_api_method": "POST",
-            "query_info": {
-                "org": org_slug,
-                "project": project_slug,
-                "analysis": analysis_slug
-            }
-        }
 
 # Local LLM tools for file system operations
 
@@ -2614,315 +2382,7 @@ async def browser_automate_workflow_walkthrough(params: dict) -> dict:
         return {"success": False, "error": str(e)}
 
 
-async def botify_get_full_schema(params: dict) -> dict:
-    """Discover complete Botify API schema using the true_schema_discoverer.py module.
 
-    This tool fetches the comprehensive schema from Botify's official datamodel endpoints,
-    providing access to all 4,449+ fields for building advanced queries. Implements intelligent
-    caching for instant access to support "radical transparency" AI context bootstrapping.
-    """
-    # Read API token from standard location (never pass as parameter)
-    api_token = _read_botify_api_token()
-    if not api_token:
-        return {
-            "status": "error",
-            "message": "Botify API token not found. Please configure BOTIFY_API_TOKEN in .env.",
-            "token_location": ".env:BOTIFY_API_TOKEN"
-        }
-
-    org = params.get("org")
-    project = params.get("project")
-    analysis = params.get("analysis")
-    force_refresh = params.get("force_refresh", False)
-
-    # Validate required parameters (token no longer required as param)
-    missing_params = []
-    if not org:
-        missing_params.append("org")
-    if not project:
-        missing_params.append("project")
-    if not analysis:
-        missing_params.append("analysis")
-
-    if missing_params:
-        return {
-            "status": "error",
-            "message": f"Missing required parameters: {', '.join(missing_params)}",
-            "required_params": ["org", "project", "analysis"]
-        }
-
-    # Implement intelligent caching for instant schema access
-    try:
-        import json
-        from datetime import datetime, timedelta
-        from pathlib import Path
-
-        # Define cache file path
-        cache_dir = Path("downloads/botify_schema_cache")
-        cache_dir.mkdir(parents=True, exist_ok=True)
-        cache_file = cache_dir / f"{org}_{project}_{analysis}_schema.json"
-
-        # Check if cached file exists and is recent (within 24 hours)
-        if cache_file.exists() and not force_refresh:
-            try:
-                with open(cache_file, 'r') as f:
-                    cached_data = json.load(f)
-
-                # Check cache age
-                cache_timestamp = datetime.fromisoformat(cached_data.get("cache_metadata", {}).get("cached_at", "1970-01-01"))
-                cache_age = datetime.now() - cache_timestamp
-
-                if cache_age < timedelta(hours=24):
-                    # Return fresh cached data
-                    cached_data["cache_metadata"]["cache_hit"] = True
-                    cached_data["cache_metadata"]["cache_age_hours"] = round(cache_age.total_seconds() / 3600, 2)
-
-                    return {
-                        "status": "success",
-                        "result": cached_data,
-                        "external_api_method": "GET",
-                        "summary": {
-                            "total_fields_discovered": cached_data.get("total_fields_discovered", 0),
-                            "collections_discovered": len(cached_data.get("collections_discovered", [])),
-                            "discovery_timestamp": cached_data.get("project_info", {}).get("discovery_timestamp"),
-                            "cache_used": True,
-                            "cache_age_hours": round(cache_age.total_seconds() / 3600, 2)
-                        }
-                    }
-            except (json.JSONDecodeError, KeyError, ValueError):
-                # Cache file corrupted, proceed with fresh discovery
-                pass
-
-        # Perform live schema discovery
-        from imports.botify.true_schema_discoverer import \
-            BotifySchemaDiscoverer
-
-        # Create discoverer instance
-        discoverer = BotifySchemaDiscoverer(org, project, analysis, api_token)
-
-        # Execute the discovery
-        schema_results = await discoverer.discover_complete_schema()
-
-        # Add cache metadata
-        schema_results["cache_metadata"] = {
-            "cached_at": datetime.now().isoformat(),
-            "cache_hit": False,
-            "org": org,
-            "project": project,
-            "analysis": analysis
-        }
-
-        # Save to cache for future use
-        try:
-            with open(cache_file, 'w') as f:
-                json.dump(schema_results, f, indent=2)
-        except Exception as cache_error:
-            # Don't fail the main operation if caching fails
-            logger.warning(f"Failed to save schema cache: {cache_error}")
-
-        return {
-            "status": "success",
-            "result": schema_results,
-            "external_api_method": "GET",
-            "summary": {
-                "total_fields_discovered": schema_results.get("total_fields_discovered", 0),
-                "collections_discovered": len(schema_results.get("collections_discovered", [])),
-                "discovery_timestamp": schema_results.get("project_info", {}).get("discovery_timestamp"),
-                "cache_used": False,
-                "cache_saved": cache_file.exists()
-            }
-        }
-
-    except Exception as e:
-        return {
-            "status": "error",
-            "message": f"Schema discovery error: {str(e)}",
-            "org": org,
-            "project": project,
-            "analysis": analysis
-        }
-
-
-async def botify_list_available_analyses(params: dict) -> dict:
-    """List available analyses from the local analyses.json file.
-
-    This tool reads the cached analyses data to help LLMs select the correct
-    analysis_slug for queries without requiring live API calls.
-    """
-    username = params.get("username", "michaellevin-org")
-    project_name = params.get("project_name", "mikelev.in")
-
-    try:
-        # Construct the path to the analyses.json file
-        from pathlib import Path
-        analyses_path = Path(f"downloads/quadfecta/{username}/{project_name}/analyses.json")
-
-        if not analyses_path.exists():
-            return {
-                "status": "error",
-                "message": f"Analyses file not found at {analyses_path}",
-                "file_path": str(analyses_path)
-            }
-
-        # Read and parse the analyses file
-        with open(analyses_path, 'r') as f:
-            import json
-            analyses_data = json.load(f)
-
-        # Extract simplified analysis info for LLM consumption
-        analyses_list = []
-        for analysis in analyses_data.get("results", []):
-            analyses_list.append({
-                "slug": analysis.get("slug"),
-                "name": analysis.get("name"),
-                "date_finished": analysis.get("date_finished"),
-                "urls_done": analysis.get("urls_done", 0),
-                "status": analysis.get("status"),
-                "id": analysis.get("id")
-            })
-
-        # Sort by date_finished (most recent first)
-        analyses_list.sort(key=lambda x: x.get("date_finished", ""), reverse=True)
-
-        return {
-            "status": "success",
-            "result": {
-                "analyses": analyses_list,
-                "total_count": len(analyses_list),
-                "file_path": str(analyses_path),
-                "most_recent": analyses_list[0] if analyses_list else None
-            },
-            "summary": {
-                "total_analyses": len(analyses_list),
-                "file_checked": str(analyses_path)
-            }
-        }
-
-    except Exception as e:
-        return {
-            "status": "error",
-            "message": f"Error reading analyses: {str(e)}",
-            "username": username,
-            "project_name": project_name,
-            "attempted_path": str(analyses_path) if 'analyses_path' in locals() else None
-        }
-
-
-async def botify_execute_custom_bql_query(params: dict) -> dict:
-    """Execute a custom BQL query with full parameter control.
-
-    This is the core 'query wizard' tool that enables LLMs to construct and execute
-    sophisticated BQL queries with custom dimensions, metrics, and filters.
-    """
-    # Read API token from standard location (never pass as parameter)
-    api_token = _read_botify_api_token()
-    if not api_token:
-        return {
-            "status": "error",
-            "message": "Botify API token not found. Please configure BOTIFY_API_TOKEN in .env.",
-            "token_location": ".env:BOTIFY_API_TOKEN"
-        }
-
-    org_slug = params.get("org_slug")
-    project_slug = params.get("project_slug")
-    analysis_slug = params.get("analysis_slug")
-    query_json = params.get("query_json")
-
-    # Validate required parameters (token no longer required as param)
-    missing_params = []
-    if not org_slug:
-        missing_params.append("org_slug")
-    if not project_slug:
-        missing_params.append("project_slug")
-    if not analysis_slug:
-        missing_params.append("analysis_slug")
-    if not query_json:
-        missing_params.append("query_json")
-
-    if missing_params:
-        return {
-            "status": "error",
-            "message": f"Missing required parameters: {', '.join(missing_params)}",
-            "required_params": ["org_slug", "project_slug", "analysis_slug", "query_json"]
-        }
-
-    # Validate query_json structure
-    if not isinstance(query_json, dict):
-        return {
-            "status": "error",
-            "message": "query_json must be a dictionary containing the BQL query structure"
-        }
-
-    try:
-        async with aiohttp.ClientSession() as session:
-            external_url = f"https://api.botify.com/v1/projects/{org_slug}/{project_slug}/query"
-            headers = {
-                "Authorization": f"Token {api_token}",
-                "Content-Type": "application/json"
-            }
-
-            # Build the complete payload with analysis
-            payload = dict(query_json)  # Copy the query structure
-            payload["analysis"] = analysis_slug
-
-            # Set default size if not specified
-            if "size" not in payload:
-                payload["size"] = 100
-
-            async with session.post(external_url, headers=headers, json=payload) as response:
-                if response.status == 200:
-                    query_result = await response.json()
-
-                    # Extract result summary for easier consumption
-                    result_summary = {
-                        "total_results": len(query_result.get("results", [])),
-                        "has_pagination": "next" in query_result,
-                        "query_size_requested": payload.get("size", 100)
-                    }
-
-                    return {
-                        "status": "success",
-                        "result": query_result,
-                        "result_summary": result_summary,
-                        "external_api_url": external_url,
-                        "external_api_method": "POST",
-                        "external_api_status": response.status,
-                        "external_api_payload": payload,
-                        "query_info": {
-                            "org": org_slug,
-                            "project": project_slug,
-                            "analysis": analysis_slug,
-                            "query_type": "custom_bql"
-                        }
-                    }
-                else:
-                    error_text = await response.text()
-                    return {
-                        "status": "error",
-                        "message": f"Custom BQL query failed: {response.status}",
-                        "error_details": error_text,
-                        "external_api_url": external_url,
-                        "external_api_method": "POST",
-                        "external_api_status": response.status,
-                        "external_api_payload": payload,
-                        "query_info": {
-                            "org": org_slug,
-                            "project": project_slug,
-                            "analysis": analysis_slug
-                        }
-                    }
-    except Exception as e:
-        return {
-            "status": "error",
-            "message": f"Network error: {str(e)}",
-            "external_api_url": external_url if 'external_url' in locals() else None,
-            "external_api_method": "POST",
-            "query_info": {
-                "org": org_slug,
-                "project": project_slug,
-                "analysis": analysis_slug
-            }
-        }
 
 
 async def browser_interact_with_current_page(params: dict) -> dict:
@@ -3197,7 +2657,8 @@ async def ai_self_discovery_assistant(params: dict) -> dict:
     global MCP_TOOL_REGISTRY
     try:
         if not MCP_TOOL_REGISTRY or len(MCP_TOOL_REGISTRY) < 10:
-            register_all_mcp_tools()
+            from tools import get_all_tools
+            MCP_TOOL_REGISTRY = get_all_tools()
     except Exception as e:
         logger.warning(f'Could not auto-register MCP tools: {e}')
     # -----------------------------------------------------------------------------
@@ -3258,12 +2719,6 @@ async def ai_self_discovery_assistant(params: dict) -> dict:
             "session_hijacking": [
                 "_execute_ai_session_hijacking_demonstration",
                 "_pipeline_state_inspector"
-            ],
-            "external_integration": [
-                "_botify_ping",
-                "_botify_list_projects",
-                "_botify_get_full_schema",
-                "_botify_execute_custom_bql_query"
             ],
             "debugging_transparency": [
                 "_local_llm_grep_logs",
@@ -3361,11 +2816,6 @@ async def ai_self_discovery_assistant(params: dict) -> dict:
                 "symptom": "Cannot read files in /looking_at/ directory",
                 "solution": "Verify file exists, check permissions, use browser_scrape_page first",
                 "prevention": "Always check file existence before attempting to read"
-            },
-            "api_authentication_failure": {
-                "symptom": "Botify API calls return 401/403 errors",
-                "solution": "Verify BOTIFY_API_TOKEN is configured in .env and contains a valid token",
-                "prevention": "Use botify_ping to test connectivity before complex operations"
             }
         }
 
@@ -3460,7 +2910,7 @@ async def ai_capability_test_suite(params: dict) -> dict:
 
         if test_type == "specific_tool" and specific_tool:
             # Test specific tool
-            test_results["results"][specific_tool] = await _test_specific_tool(specific_tool)
+            test_results["results"][specific_tool] = await test_specific_tool(specific_tool)
             test_results["tests_run"] = 1
             test_results["tests_passed"] = 1 if test_results["results"][specific_tool]["success"] else 0
             test_results["tests_failed"] = 1 - test_results["tests_passed"]
@@ -3492,8 +2942,7 @@ async def ai_capability_test_suite(params: dict) -> dict:
                 ("basic_browser", test_basic_browser_capability),
                 ("pipeline_inspection", test_pipeline_inspection_context_aware),
                 ("log_access", test_log_access),
-                ("ui_interaction", test_ui_interaction_context_aware),
-                ("botify_connectivity", test_botify_connectivity)
+                ("ui_interaction", test_ui_interaction_context_aware)
             ]
 
             for test_name, test_func in comprehensive_tests:
@@ -3586,16 +3035,7 @@ async def _run_context_aware_test_suite() -> dict:
     else:
         test_results["tests_failed"] += 1
 
-    # Test 6: Botify API (Test actual connectivity)
-    test_results["tests_run"] += 1
-    botify_result = await test_botify_actual_connectivity()
-    test_results["results"]["botify_api"] = botify_result
-    if botify_result["success"]:
-        test_results["tests_passed"] += 1
-    else:
-        test_results["tests_failed"] += 1
-
-    # Test 7: Log Access
+    # Test 6: Log Access
     test_results["tests_run"] += 1
     log_result = await test_log_access()
     test_results["results"]["log_access"] = log_result
@@ -3604,7 +3044,7 @@ async def _run_context_aware_test_suite() -> dict:
     else:
         test_results["tests_failed"] += 1
 
-    # Test 8: UI Interaction (Test if server is running and accessible)
+    # Test 7: UI Interaction (Test if server is running and accessible)
     test_results["tests_run"] += 1
     ui_result = await test_ui_accessibility()
     test_results["results"]["ui_accessibility"] = ui_result
@@ -3696,7 +3136,7 @@ async def test_pipeline_functionality() -> dict:
 
         # Fallback: Test if we can use the pipeline inspector tool
         try:
-            result = await _pipeline_state_inspector({'format': 'summary'})
+            result = await pipeline_state_inspector({'format': 'summary'})
             if result.get("success"):
                 return {
                     "success": True,
@@ -3717,66 +3157,6 @@ async def test_pipeline_functionality() -> dict:
             }
 
         return {"success": False, "error": "Pipeline functionality not accessible"}
-    except Exception as e:
-        return {"success": False, "error": str(e)}
-
-
-async def test_botify_actual_connectivity() -> dict:
-    """Test actual Botify API connectivity."""
-    try:
-        # First check if token is available
-        token = _read_botify_api_token()
-        if not token:
-            return {
-                "success": False,
-                "error": "Botify API token not available",
-                "suggestion": "Configure BOTIFY_API_TOKEN in .env via the Configuration workflow"
-            }
-
-        # Test actual API call
-        try:
-            result = await _botify_ping({})
-            if result.get("success"):
-                return {
-                    "success": True,
-                    "botify_connected": True,
-                    "api_responding": True,
-                    "test_result": "Botify API responding successfully"
-                }
-            else:
-                # Analyze the error to provide better context
-                error_msg = result.get("message", "Unknown error")
-                status = result.get("external_api_status", "Unknown")
-
-                if "404" in str(status) or "404" in error_msg:
-                    return {
-                        "success": False,
-                        "error": "Botify API endpoint not found (404) - token may be expired or API changed",
-                        "token_available": True,
-                        "suggestion": "Check Botify API documentation for endpoint changes or renew token"
-                    }
-                elif "401" in str(status) or "401" in error_msg:
-                    return {
-                        "success": False,
-                        "error": "Botify API authentication failed (401) - token may be invalid",
-                        "token_available": True,
-                        "suggestion": "Verify Botify API token is correct and not expired"
-                    }
-                else:
-                    return {
-                        "success": False,
-                        "error": f"Botify API error: {error_msg} (Status: {status})",
-                        "token_available": True,
-                        "suggestion": "Check Botify API status and token validity"
-                    }
-        except Exception as api_error:
-            return {
-                "success": False,
-                "error": f"Botify API call failed: {str(api_error)}",
-                "token_available": True,
-                "suggestion": "Check network connectivity and Botify API availability"
-            }
-
     except Exception as e:
         return {"success": False, "error": str(e)}
 
@@ -4020,26 +3400,6 @@ async def test_ui_interaction() -> dict:
         return {"success": False, "error": str(e)}
 
 
-async def test_botify_connectivity() -> dict:
-    """Test Botify API token availability."""
-    try:
-        token = _read_botify_api_token()
-        if token:
-            return {
-                "success": True,
-                "credential_source": "BOTIFY_API_TOKEN",
-                "token_available": True
-            }
-        return {
-            "success": False,
-            "error": "BOTIFY_API_TOKEN not configured",
-            "credential_source": "BOTIFY_API_TOKEN",
-            "token_available": False
-        }
-    except Exception as e:
-        return {"success": False, "error": str(e)}
-
-
 async def test_specific_tool(tool_name: str) -> dict:
     """Test a specific MCP tool."""
     try:
@@ -4265,9 +3625,6 @@ def get_available_tools():
         'get_cat_fact',
         'pipeline_state_inspector',
         'get_user_session_state',
-        'botify_ping',
-        'botify_list_projects',
-        'botify_simple_query',
         'local_llm_read_file',
         'local_llm_grep_logs',
         'local_llm_list_files',
@@ -4283,9 +3640,6 @@ def get_available_tools():
         'selenium_automation',
         'execute_automation_recipe',
         'execute_mcp_cli_command',
-        'botify_get_full_schema',
-        'botify_list_available_analyses',
-        'botify_execute_custom_bql_query',
         'keychain_set',
         'keychain_get',
         'keychain_delete',
