@@ -4892,12 +4892,12 @@ async def prepare_local_llm_context():
             context_msg = """🤖 Local LLM Context Initialized
 
 Your MCP tools are now available:
-• local_llm_get_context - Get system overview
-• local_llm_read_file - Read training materials and code  
-• local_llm_list_files - Explore safe directories
-• local_llm_grep_logs - Search server logs for patterns
-• pipeline_state_inspector - Check application state
-• Botify API tools - Full schema access with 4,449+ fields
+- local_llm_get_context - Get system overview
+- local_llm_read_file - Read training materials and code  
+- local_llm_list_files - Explore safe directories
+- local_llm_grep_logs - Search server logs for patterns
+- pipeline_state_inspector - Check application state
+- Botify API tools - Full schema access with 4,449+ fields
 
 Use these tools to assist users within your guided capabilities. Remember that advanced AI exploration (file system access, complex debugging) is handled by Claude/GPT in Cursor/Windsurf/VSCode when needed."""
 
