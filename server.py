@@ -4992,6 +4992,66 @@ async def diff_preview(request):
                         }}
                     }}
 
+                    window.copyCodeBlock = function(btn) {{
+                        const wrapper = btn.closest('.code-block-wrapper');
+                        const code = wrapper ? wrapper.querySelector('code') : null;
+                        if (code && navigator.clipboard) {{
+                            navigator.clipboard.writeText(code.textContent);
+                            btn.textContent = '✓ Copied';
+                            setTimeout(function() {{ btn.textContent = 'Copy'; }}, 1500);
+                        }}
+                    }};
+
+                    if (window.marked) {{
+                        const prevCode = marked.defaults && marked.defaults.renderer && marked.defaults.renderer.code;
+                        const origCode = (prevCode && !prevCode._isFixCode) ? prevCode : null;
+
+                        const fixCode = function(codeOrToken, infostring, escaped) {{
+                            let text = '';
+                            let lang = '';
+                            if (typeof codeOrToken === 'object' && codeOrToken !== null) {{
+                                text = codeOrToken.text || codeOrToken.raw || '';
+                                lang = (codeOrToken.lang || infostring || '');
+                            }} else {{
+                                text = String(codeOrToken || '');
+                                lang = (infostring || '');
+                            }}
+                            lang = lang.trim().split(/\s+/)[0];
+
+                            let rendered = null;
+                            if (origCode) {{
+                                try {{
+                                    rendered = origCode.call(this, text, lang, escaped);
+                                }} catch (e) {{}}
+                            }}
+                            if (!rendered || typeof rendered !== 'string' || rendered.includes('[object Object]')) {{
+                                const esc = text
+                                    .replace(/&/g, '&amp;')
+                                    .replace(/</g, '&lt;')
+                                    .replace(/>/g, '&gt;')
+                                    .replace(/"/g, '&quot;')
+                                    .replace(/'/g, '&#39;');
+                                const validLang = lang || 'text';
+                                return '<div class="code-block-wrapper" style="position: relative;">' +
+                                    '<button type="button" class="copy-code-btn" onclick="copyCodeBlock(this)" style="position: absolute; top: 0.5rem; right: 0.5rem; font-size: 0.75rem; padding: 0.2rem 0.5rem; z-index: 10; cursor: pointer; opacity: 0.8;">Copy</button>' +
+                                    '<pre class="language-' + validLang + '"><code class="language-' + validLang + '">' + esc + '</code></pre>' +
+                                '</div>';
+                            }}
+                            return rendered;
+                        }};
+                        fixCode._isFixCode = true;
+
+                        if (marked.use) {{
+                            marked.use({{ renderer: {{ code: fixCode }} }});
+                        }} else if (marked.setOptions) {{
+                            const r = new marked.Renderer();
+                            r.code = fixCode;
+                            marked.setOptions({{ renderer: r }});
+                        }} else if (marked.defaults && marked.defaults.renderer) {{
+                            marked.defaults.renderer.code = fixCode;
+                        }}
+                    }}
+
                     try {{
                         let out = null;
                         if (window.marked) {{
