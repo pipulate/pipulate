@@ -4960,30 +4960,69 @@ async def diff_preview(request):
         ),
         Div(id="prompt-rendered-view", style="min-height: 100px;"),
         Script(f"""
-            document.addEventListener('DOMContentLoaded', function() {{
-                const rawContent = {prompt_json};
-                const viewEl = document.getElementById('prompt-rendered-view');
-                if (viewEl) {{
-                    let content = rawContent;
-                    if (content.trim().startsWith('diff --git') || content.trim().startsWith('--- ')) {{
+            (function() {{
+                function renderPrompt() {{
+                    const viewEl = document.getElementById('prompt-rendered-view');
+                    if (!viewEl) return;
+                    const raw = {prompt_json};
+                    let content = raw;
+                    if (content.trim().startsWith('diff --git') || content.trim().startsWith('--- a/')) {{
                         content = '```diff\\n' + content + '\\n```';
                     }}
-                    if (window.marked) {{
-                        viewEl.innerHTML = marked.parse(content);
-                    }} else {{
-                        const pre = document.createElement('pre');
-                        pre.textContent = content;
-                        viewEl.appendChild(pre);
-                    }}
-                    if (window.Prism) {{
-                        if (Prism.highlightAllUnder) {{
-                            Prism.highlightAllUnder(viewEl);
+
+                    function updateView(html) {{
+                        if (typeof html !== 'string') {{
+                            if (html && typeof html === 'object') {{
+                                html = html.html || html.body || html.content || html.text || '';
+                            }}
+                        }}
+                        if (!html || html === '[object Object]' || html === '[object Promise]') {{
+                            const pre = document.createElement('pre');
+                            const code = document.createElement('code');
+                            code.className = 'language-markdown';
+                            code.textContent = raw;
+                            pre.appendChild(code);
+                            viewEl.innerHTML = '';
+                            viewEl.appendChild(pre);
                         }} else {{
+                            viewEl.innerHTML = html;
+                        }}
+                        if (window.Prism) {{
                             Prism.highlightAll();
                         }}
                     }}
+
+                    try {{
+                        let out = null;
+                        if (window.marked) {{
+                            if (typeof marked.parse === 'function') {{
+                                out = marked.parse(content);
+                            }} else if (typeof marked === 'function') {{
+                                out = marked(content);
+                            }}
+                        }}
+                        if (out && typeof out.then === 'function') {{
+                            out.then(updateView).catch(function(err) {{
+                                console.error('Marked async parse error:', err);
+                                updateView(null);
+                            }});
+                        }} else if (out !== null && out !== undefined) {{
+                            updateView(out);
+                        }} else {{
+                            updateView(null);
+                        }}
+                    }} catch (e) {{
+                        console.error('Marked parsing error:', e);
+                        updateView(null);
+                    }}
                 }}
-            }});
+
+                if (document.readyState === 'loading') {{
+                    document.addEventListener('DOMContentLoaded', renderPrompt);
+                }} else {{
+                    setTimeout(renderPrompt, 50);
+                }}
+            }})();
         """)
     )
 
