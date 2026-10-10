@@ -2,9 +2,36 @@
 # The installer behind pipulate.com, npvg.org and qamy.ai
 # =======================================================
 #
-# You are reading this because you piped it to cat or less instead of
-# bash. That is the first QA step: a Unix pipe can be read before it is
-# run, and nothing here runs until you swap cat for bash.
+# You are reading this because you piped it to less instead of bash.
+# That is the first QA step: you held the silver crucifix against the pane.
+#
+# In Stephen King's 'Salem's Lot, Danny Glick hovers in the fog outside
+# Mark Petrie's second-story bedroom window, scratching his fingernails
+# against the glass: "Let me in. You have to invite me in."
+# The ancient law of the threshold holds: a vampire cannot cross uninvited.
+#
+# Modern developer culture has trained you to recline in your hoverchair
+# and type:
+#     curl -fsSL https://vendor.com/install.sh | sudo bash
+# That is pulling the sash, throwing open the shutters, and inviting the
+# creature into your living room with root execution privileges.
+#
+# In Vernor Vinge's 'A Fire Upon the Deep', the Straumli Realm uncompresses
+# an unknown archive in the High Beyond without reading the protocol.
+# What could possibly go wrong? They wake the Blight.
+#
+# Piping to less is the airlock. You are looking through the glass.
+# Nothing has executed. No processes have forked. Not a single byte has
+# touched your filesystem. You are inside a classic Unix pager:
+#     j = scroll down one line
+#     k = scroll up one line
+#     / = search for a pattern
+#     q = quit cleanly, leaving your machine untouched.
+#
+# If you feel your water drying up—if the 1,000-hour Phoebus lightbulbs of
+# ephemeral cloud subscriptions are burning out around you—here is the
+# passport of the visitor outside your window, and the exact contract
+# of what happens if you choose to let it in:
 #
 # What it does, in order:
 #   1. downloads a zip of the repository from github.com;
