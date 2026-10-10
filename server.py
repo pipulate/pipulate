@@ -4920,6 +4920,7 @@ async def diff_preview(request):
     if prompt_path.exists():
         try:
             prompt_content = prompt_path.read_text(encoding='utf-8')
+            prompt_content = prompt_content.replace('\r\n', '\n').replace('\r', '\n')
         except Exception as e:
             prompt_content = f"Error reading prompt.md: {e}"
     else:
@@ -5142,22 +5143,14 @@ async def diff_preview(request):
             white-space: pre !important;
             word-break: normal !important;
             word-wrap: normal !important;
-            display: inline-block;
-            min-width: 100%;
         }
         .token.inserted, pre[class*="language-"] .token.inserted, code[class*="language-"] .token.inserted {
             color: #2ea043 !important;
             background-color: rgba(46, 160, 67, 0.15) !important;
-            display: inline-block;
-            min-width: 100%;
-            width: max-content;
         }
         .token.deleted, pre[class*="language-"] .token.deleted, code[class*="language-"] .token.deleted {
             color: #f85149 !important;
             background-color: rgba(248, 81, 73, 0.15) !important;
-            display: inline-block;
-            min-width: 100%;
-            width: max-content;
         }
         .token.coord, pre[class*="language-"] .token.coord {
             color: #58a6ff !important;
