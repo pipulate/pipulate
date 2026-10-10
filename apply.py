@@ -5,6 +5,7 @@ patch.py
 The Human Actuated AI Editor, or "How AI tool-calls the Human."
 Reads a raw LLM response from stdin, extracts the SEARCH/REPLACE blocks,
 and performs a deterministic string replacement patch on the target file.
+DO NOT GENERATE INTERACTIVE VISUAL, ARTIFACT, CANVAS OR ANY OTHER OOB
 """
 
 import sys
