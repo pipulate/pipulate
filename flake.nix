@@ -1620,6 +1620,16 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
               printf '%s\n' "$untracked" | sed 's/^/  + /'
             fi
           }
+          dp() {
+            local url="http://localhost:5001/diff"
+            if command -v xdg-open >/dev/null 2>&1; then
+              xdg-open "$url" >/dev/null 2>&1 &
+            elif command -v open >/dev/null 2>&1; then
+              open "$url" >/dev/null 2>&1 &
+            else
+              echo "Diff preview: $url"
+            fi
+          }
           alias gdiff='git --no-pager diff --no-textconv'
           alias nixops='(cd "$PIPULATE_ROOT" && ./nixops.sh)'
           alias gitops='(cd ~/repos/trimnoir && git commit --allow-empty -m "retry" && git push)'
