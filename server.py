@@ -5027,6 +5027,32 @@ async def diff_preview(request):
     )
 
     diff_styling = Style("""
+        html, body {
+            height: auto !important;
+            min-height: 100% !important;
+            overflow-x: hidden !important;
+            overflow-y: auto !important;
+        }
+        body > main:first-of-type {
+            height: auto !important;
+            min-height: 100vh !important;
+            overflow: visible !important;
+        }
+        body > main:first-of-type > main.container {
+            height: auto !important;
+            overflow: visible !important;
+            max-width: 960px !important;
+            padding-bottom: 5rem !important;
+        }
+        main.container > nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background-color: var(--pico-background-color);
+            border-bottom: 1px solid var(--pico-muted-border-color);
+            padding: 0.5rem 0;
+            margin-bottom: 1.5rem;
+        }
         .token.inserted, pre[class*="language-"] .token.inserted, code[class*="language-"] .token.inserted {
             color: #2ea043 !important;
             background-color: rgba(46, 160, 67, 0.15) !important;
@@ -5043,11 +5069,12 @@ async def diff_preview(request):
             color: #58a6ff !important;
             font-weight: bold;
         }
-        pre[class*="language-"] {
+        pre[class*="language-"], pre {
             border: 1px solid var(--pico-muted-border-color);
             border-radius: var(--pico-border-radius);
             padding: 1rem;
             background-color: var(--pico-card-background-color);
+            overflow-x: auto;
         }
     """)
 
