@@ -1926,7 +1926,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # typed after re-entry ran compile. Load-bearing; never delete it as
           # paranoia: any user's bashrc can carry a one-letter alias, so the
           # guard stays whatever Prime's own system config holds.
-          unalias p pr pro prom promp promt prompt x con cont conte contex c com comp compi compil 2>/dev/null || true
+          unalias p pr pro prom promp promt prompt x con cont conte contex c com comp compi compil dp 2>/dev/null || true
           p()      { prompt  "$@"; }
           pr()     { prompt  "$@"; }
           pro()    { prompt  "$@"; }
