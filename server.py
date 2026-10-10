@@ -5016,7 +5016,7 @@ async def diff_preview(request):
                                 text = String(codeOrToken || '');
                                 lang = (infostring || '');
                             }}
-                            lang = lang.trim().split(/\s+/)[0];
+                            lang = lang.trim().split(/\\s+/)[0];
 
                             let rendered = null;
                             if (origCode) {{
