@@ -4945,7 +4945,7 @@ async def diff_preview(request):
             P("Cherenkov flash: red deletions (erased state), green additions (mutated state)",
               cls="text-muted", style="margin-bottom: 0; font-size: 0.85rem;")
         ),
-        Pre(Code(git_diff, cls="language-diff"), cls="language-diff", style="max-height: 350px; overflow-y: auto;")
+        Pre(Code(git_diff, cls="language-diff"), cls="language-diff", style="max-height: 450px; overflow-y: auto; overflow-x: auto; max-width: 100%; box-sizing: border-box;")
         if git_diff else
         P("✓ Working tree clean (zero uncommitted diffs relative to HEAD).",
           style="color: var(--pico-color-green-500); margin: 1rem 0; font-weight: bold;")
