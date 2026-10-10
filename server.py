@@ -5090,7 +5090,7 @@ async def diff_preview(request):
         html, body {
             height: auto !important;
             min-height: 100% !important;
-            overflow-x: hidden !important;
+            overflow-x: auto !important;
             overflow-y: auto !important;
         }
         body > main:first-of-type {
@@ -5102,7 +5102,9 @@ async def diff_preview(request):
             height: auto !important;
             overflow: visible !important;
             max-width: 960px !important;
+            width: 100% !important;
             padding-bottom: 5rem !important;
+            box-sizing: border-box !important;
         }
         main.container > nav {
             position: sticky;
@@ -5113,28 +5115,58 @@ async def diff_preview(request):
             padding: 0.5rem 0;
             margin-bottom: 1.5rem;
         }
-        .token.inserted, pre[class*="language-"] .token.inserted, code[class*="language-"] .token.inserted {
-            color: #2ea043 !important;
-            background-color: rgba(46, 160, 67, 0.15) !important;
-            display: inline-block;
-            width: 100%;
+        article, #prompt-rendered-view {
+            max-width: 100% !important;
+            box-sizing: border-box !important;
         }
-        .token.deleted, pre[class*="language-"] .token.deleted, code[class*="language-"] .token.deleted {
-            color: #f85149 !important;
-            background-color: rgba(248, 81, 73, 0.15) !important;
-            display: inline-block;
-            width: 100%;
-        }
-        .token.coord, pre[class*="language-"] .token.coord {
-            color: #58a6ff !important;
-            font-weight: bold;
+        .code-block-wrapper, .code-container {
+            position: relative !important;
+            max-width: 100% !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+            margin-bottom: 1rem !important;
         }
         pre[class*="language-"], pre {
             border: 1px solid var(--pico-muted-border-color);
             border-radius: var(--pico-border-radius);
             padding: 1rem;
             background-color: var(--pico-card-background-color);
-            overflow-x: auto;
+            overflow-x: auto !important;
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+            white-space: pre !important;
+            word-break: normal !important;
+            word-wrap: normal !important;
+        }
+        pre code, pre[class*="language-"] code {
+            white-space: pre !important;
+            word-break: normal !important;
+            word-wrap: normal !important;
+            display: inline-block;
+            min-width: 100%;
+        }
+        .token.inserted, pre[class*="language-"] .token.inserted, code[class*="language-"] .token.inserted {
+            color: #2ea043 !important;
+            background-color: rgba(46, 160, 67, 0.15) !important;
+            display: inline-block;
+            min-width: 100%;
+            width: max-content;
+        }
+        .token.deleted, pre[class*="language-"] .token.deleted, code[class*="language-"] .token.deleted {
+            color: #f85149 !important;
+            background-color: rgba(248, 81, 73, 0.15) !important;
+            display: inline-block;
+            min-width: 100%;
+            width: max-content;
+        }
+        .token.coord, pre[class*="language-"] .token.coord {
+            color: #58a6ff !important;
+            font-weight: bold;
+        }
+        table {
+            display: block !important;
+            max-width: 100% !important;
+            overflow-x: auto !important;
         }
     """)
 
