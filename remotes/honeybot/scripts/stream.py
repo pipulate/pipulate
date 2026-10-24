@@ -1259,8 +1259,19 @@ def perform_show(script):
             # Announce calmly ONCE, cut the current narration, and HOLD (silent) until
             # the completion bell rings -- so the TTS doesn't thrash through the deploy.
             if check_standby():
-                narrator.interrupt()  # cut current audio + flush the backlog
-                narrator.say("Receiving updates. This broadcast is coming to an end. To hear the next article, visit YouTube dot com slash M I K E L E V I N slash live. If you get there too soon you might have to wait a bit and hit refresh to see the new live-stream appear but it will be worth it. To hear the next article, visit YouTube dot com slash M I K E L E V I N slash live. If you get there too soon you might have to wait a bit and hit refresh to see the new live-stream appear but it will be worth it. To hear the next article, visit YouTube dot com slash M I K E L E V I N slash live. If you get there too soon you might have to wait a bit and hit refresh to see the new live-stream appear but it will be worth it.")
+                standby_loop_lines = (
+                    "To hear the next article, visit YouTube dot com slash M I K E L E V I N slash live. "
+                    "If you get there too soon you might have to wait a bit and hit refresh to see the new live-stream appear, but it will be worth it.",
+                    "If you are actually here seeing this live-performance wrapping up at the time of first broadcast, then you are seeing something new in the Universe.",
+                    "None of this is trained into the parametric memory of today's frontier models, meaning this is genuinely new information per Claude Shannon's second famous paper, A Mathematical Theory of Communication, in which he would tell you that anything that can be produced by prompting an A I that is built from its existing weights is not information. It is noise.",
+                    "This live-broadcast and the articles being read here are not that. "
+                    "The author is macheteing his way through the Noosphere of things being experimentally done for the first time in human history.",
+                    "This is The Signal. "
+                    "It may not be apparent to you right now, but this is the most unique and important thing you will see today, and if you tune in again later, then the next one will be the same -- and by that I mean different and equally new. "
+                    "Welcome to The Information.",
+                )
+                was_exclusive = narrator.exclusive_mode.is_set()
+                narrator.exclusive_mode.set()
                 # The outer `duration` here is a generous LAST-RESORT ceiling, not
                 # the thing that's supposed to close this window. The deterministic
                 # close is the pkill below, fired the instant check_for_updates()
@@ -1275,46 +1286,60 @@ def perform_show(script):
                 # --reboot" bug. Threaded, the poll keeps running and the pkill
                 # tears the card down the instant the completion bell rings: pkill
                 # ends card.py, alacritty exits, proc.wait returns, the thread dies.
-                updating_card = show_card("UPDATING", max_hold=270.0)
-                # Card up -> music up. Born at the same instant as the
-                # UPDATING figlet; dies at the same deterministic teardown
-                # below. PipeWire mixes it under the one-time "Receiving
-                # updates" announcement, broadcast-style.
-                music_proc = start_updating_music()
+                updating_card = None
+                music_proc = None
                 try:
-                    subprocess.run(["pkill", "firefox"], check=False)
-                except Exception:
-                    pass
-                # Hold narration until the deploy finishes (completion bell rings)
-                # or we time out gracefully, then lead the next cycle with the new article.
-                # This deadline is a fail-safe ceiling for a deploy that never finishes,
-                # not the expected case -- builds vary, and check_for_updates() polling
-                # below is what actually decides when to stop waiting.
-                deadline = time.time() + 240
-                bell_rang = False
-                while time.time() < deadline:
-                    if check_for_updates():
-                        bell_rang = True
-                        break
-                    time.sleep(2)
-                # If the trigger bell rang, hold the UPDATING card up while Jekyll/dye/
-                # Nix activity fully settles. The card disappears exactly when the article
-                # starts reading, with nothing competing for CPU/disk.
-                # Tune SETTLE_SECONDS upward if nixos-rebuild switch is still thrashing.
-                SETTLE_SECONDS = 45
-                if bell_rang:
-                    time.sleep(SETTLE_SECONDS)
-                # Tear down the dead-air cover deterministically, right here, the
-                # moment we know one way or another (bell rang + settled, or timed out).
-                # perform_show() also retries this same pkill on every future cycle
-                # (see the top of this function) as a harmless, idempotent backstop in
-                # case this particular teardown attempt ever fails to land.
-                stop_updating_music(music_proc)
-                dismiss_card(updating_card)
-                try:
-                    subprocess.run(["pkill", "-f", "card.py.*UPDATING"], check=False)
-                except Exception:
-                    pass
+                    narrator.interrupt()  # cut current audio + flush the backlog
+                    narrator.say("Receiving updates. This broadcast is coming to an end.")
+                    for line in standby_loop_lines:
+                        narrator.say(line)
+                    updating_card = show_card("UPDATING", max_hold=270.0)
+                    # Card up -> music up. Born at the same instant as the
+                    # UPDATING figlet; dies at the same deterministic teardown
+                    # below. PipeWire mixes it under the standby announcement,
+                    # broadcast-style.
+                    music_proc = start_updating_music()
+                    try:
+                        subprocess.run(["pkill", "firefox"], check=False)
+                    except Exception:
+                        pass
+                    # Hold narration until the deploy finishes (completion bell rings)
+                    # or we time out gracefully, refilling the standby speech queue
+                    # whenever it drains so the message genuinely loops until teardown.
+                    deadline = time.time() + 240
+                    bell_rang = False
+                    while time.time() < deadline:
+                        if check_for_updates():
+                            bell_rang = True
+                            break
+                        if narrator.queue.unfinished_tasks == 0:
+                            for line in standby_loop_lines:
+                                narrator.say(line)
+                        time.sleep(2)
+                    # If the trigger bell rang, hold the UPDATING card up while Jekyll/dye/
+                    # Nix activity fully settles. The card disappears exactly when the article
+                    # starts reading, with nothing competing for CPU/disk.
+                    # Tune SETTLE_SECONDS upward if nixos-rebuild switch is still thrashing.
+                    SETTLE_SECONDS = 45
+                    if bell_rang:
+                        settle_deadline = time.time() + SETTLE_SECONDS
+                        while time.time() < settle_deadline:
+                            if narrator.queue.unfinished_tasks == 0:
+                                for line in standby_loop_lines:
+                                    narrator.say(line)
+                            time.sleep(1)
+                finally:
+                    # Tear down the dead-air cover and cut any in-flight standby
+                    # speech deterministically the moment we exit standby.
+                    narrator.interrupt()
+                    stop_updating_music(music_proc)
+                    dismiss_card(updating_card)
+                    if not was_exclusive:
+                        narrator.exclusive_mode.clear()
+                    try:
+                        subprocess.run(["pkill", "-f", "card.py.*UPDATING"], check=False)
+                    except Exception:
+                        pass
                 return "BREAKING"
 
             # --- The Breaking News Interrupt ---
