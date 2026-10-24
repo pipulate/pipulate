@@ -2619,6 +2619,8 @@ print('AI:\n', r.ai)
           ytlog()    { "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/articles/common.py" --broadcast watch attach "$@"; }
           yttop()    { "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/articles/common.py" --broadcast top   "$@"; }
           ytmedia()  { "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/articles/common.py" --broadcast say -m "$@"; }
+          ytoutro()  { "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/articles/common.py" --broadcast outro  "$@"; }
+          ytreboot() { "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/articles/common.py" --broadcast reboot "$@"; }
           ytapp()    { "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/ytstage.py" app "$@"; }
           ytvim()    { "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/ytstage.py" vim "$@"; }
 
@@ -2676,6 +2678,9 @@ print('AI:\n', r.ai)
             
             echo "🚀 [1/5] Payload Delivery: Committing and Pushing $TARGET_REPO..."
             "$PIPULATE_ROOT/.venv/bin/python" -c "import sys; sys.path.insert(0, '$PIPULATE_ROOT/scripts/articles'); import common; common.ensure_indexnow_key_file('1')" || true
+            # Pre-sync Honeybot stream scripts BEFORE git push rings .deploy_standby
+            # so any edits to STANDBY_LOOP_LINES in stream.py are on disk when standby begins.
+            rsync -aq "$PIPULATE_ROOT/remotes/honeybot/scripts/" mike@192.168.10.100:~/www/mikelev.in/scripts/ 2>/dev/null || true
             # Execute in a subshell to avoid stranding the user's terminal
             (
                 cd "$TARGET_REPO" || exit 1

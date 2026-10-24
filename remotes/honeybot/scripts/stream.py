@@ -63,6 +63,50 @@ def register_signal_handlers():
 SHOW_DURATION_MINUTES = 240  # Minutes for the big logfile stream
 PITCH_INTERVAL = 600        # Seconds between "Station Identification" (Bumped to 10 mins so it doesn't get repetitive)
 
+# Spoken over tick.wav when `publish "msg"` rings .deploy_standby on Honeybot.
+# Edit with `ytoutro edit` and audition locally on Prime with `ytoutro`.
+STANDBY_INTRO_LINE = "Receiving updates. This broadcast is coming to an end."
+
+STANDBY_LOOP_LINES = (
+    "To hear the next article, visit YouTube dot com slash M I K E L E V I N slash live. "
+    "If you get there too soon you might have to wait a bit and hit refresh to see the new live-stream appear, but it will be worth it.",
+    "If you are actually here seeing this live-performance wrapping up at the time of first broadcast, then you are seeing something new in the Universe.",
+    "None of this is trained into the parametric memory of today's frontier models, meaning this is genuinely new information per Claude Shannon's second famous paper, A Mathematical Theory of Communication, in which he would tell you that anything that can be produced by prompting an A I that is built from its existing weights is not information. It is noise.",
+    "This live-broadcast and the articles being read here are not that. "
+    "The author is macheteing his way through the Noosphere of things being experimentally done for the first time in human history.",
+    "This is The Signal. "
+    "It may not be apparent to you right now, but this is the most unique and important thing you will see today, and if you tune in again later, then the next one will be the same -- and by that I mean different and equally new. "
+    "Welcome to The Information.",
+)
+
+
+def load_standby_speech(stream_file=None):
+    """Read (STANDBY_INTRO_LINE, STANDBY_LOOP_LINES) fresh from stream.py on disk via AST.
+
+    Allows an rsynced update to stream.py to play on the very next .deploy_standby
+    bell without requiring a stream.py process restart.
+    """
+    import ast
+    intro = STANDBY_INTRO_LINE
+    loop_lines = STANDBY_LOOP_LINES
+    target = Path(stream_file) if stream_file else Path(__file__).resolve()
+    try:
+        tree = ast.parse(target.read_text(encoding="utf-8"))
+        for node in tree.body:
+            if isinstance(node, ast.Assign):
+                for t in node.targets:
+                    if isinstance(t, ast.Name) and t.id == "STANDBY_INTRO_LINE":
+                        val = ast.literal_eval(node.value)
+                        if isinstance(val, str) and val.strip():
+                            intro = val.strip()
+                    elif isinstance(t, ast.Name) and t.id == "STANDBY_LOOP_LINES":
+                        val = ast.literal_eval(node.value)
+                        if isinstance(val, (tuple, list)) and val:
+                            loop_lines = tuple(str(x) for x in val if str(x).strip())
+    except Exception:
+        pass
+    return intro, loop_lines
+
 PITCH_TEXT = (
     "If you are tuning in and wondering what this cascading wall of code is... welcome to Honeybot. "
     "You are watching the live, real time heartbeat of a web server. Specifically, my personal website, Mike L E V dot eye N. "
@@ -1259,17 +1303,7 @@ def perform_show(script):
             # Announce calmly ONCE, cut the current narration, and HOLD (silent) until
             # the completion bell rings -- so the TTS doesn't thrash through the deploy.
             if check_standby():
-                standby_loop_lines = (
-                    "To hear the next article, visit YouTube dot com slash M I K E L E V I N slash live. "
-                    "If you get there too soon you might have to wait a bit and hit refresh to see the new live-stream appear, but it will be worth it.",
-                    "If you are actually here seeing this live-performance wrapping up at the time of first broadcast, then you are seeing something new in the Universe.",
-                    "None of this is trained into the parametric memory of today's frontier models, meaning this is genuinely new information per Claude Shannon's second famous paper, A Mathematical Theory of Communication, in which he would tell you that anything that can be produced by prompting an A I that is built from its existing weights is not information. It is noise.",
-                    "This live-broadcast and the articles being read here are not that. "
-                    "The author is macheteing his way through the Noosphere of things being experimentally done for the first time in human history.",
-                    "This is The Signal. "
-                    "It may not be apparent to you right now, but this is the most unique and important thing you will see today, and if you tune in again later, then the next one will be the same -- and by that I mean different and equally new. "
-                    "Welcome to The Information.",
-                )
+                standby_intro_line, standby_loop_lines = load_standby_speech()
                 was_exclusive = narrator.exclusive_mode.is_set()
                 narrator.exclusive_mode.set()
                 # The outer `duration` here is a generous LAST-RESORT ceiling, not
@@ -1290,7 +1324,7 @@ def perform_show(script):
                 music_proc = None
                 try:
                     narrator.interrupt()  # cut current audio + flush the backlog
-                    narrator.say("Receiving updates. This broadcast is coming to an end.")
+                    narrator.say(standby_intro_line)
                     for line in standby_loop_lines:
                         narrator.say(line)
                     updating_card = show_card("UPDATING", max_hold=270.0)

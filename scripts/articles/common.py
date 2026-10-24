@@ -931,7 +931,7 @@ def print_broadcast_kit(target_key="1", mode="card", slug_match=None):
     if yt_thumb:
         print(thin)
         print(f"📺 YT STUDIO THUMBNAIL (1280x720 16:9): {yt_thumb} (Checklist: Upload thumb + Enable DVR)")
-    print("🎛️  Quick Words:  yt (help) | ythero | ytyaml | tweet | linkedin | ytpebble | yttitle | ytdesc | ytcard | yttop | ytsay | ytwatch | ytping | ytroll | ytbell | ytstatus")
+    print("🎛️  Quick Words:  yt (help) | ythero | ytyaml | tweet | linkedin | ytpebble | yttitle | ytdesc | ytcard | yttop | ytoutro | ytreboot | ytsay | ytwatch | ytping | ytroll | ytbell | ytstatus")
     print(thin)
     print(f"🔗 Preview URL:   {kit['preview_url']}")
     print(f"✏️  Edit Command:  vim {kit['path']}")
@@ -2250,14 +2250,199 @@ def fetch_youtube_top_videos(channel_or_url=None, limit=12, dry_run=False):
     return 0
 
 
+def _load_standby_speech_from_stream():
+    """Extract (STANDBY_INTRO_LINE, STANDBY_LOOP_LINES, stream_path) from remotes/honeybot/scripts/stream.py."""
+    import ast
+    repo_root = Path(__file__).resolve().parents[2]
+    stream_path = repo_root / "remotes" / "honeybot" / "scripts" / "stream.py"
+    intro = "Receiving updates. This broadcast is coming to an end."
+    loop_lines = ()
+    if stream_path.is_file():
+        try:
+            tree = ast.parse(stream_path.read_text(encoding="utf-8"))
+            for node in tree.body:
+                if isinstance(node, ast.Assign):
+                    for t in node.targets:
+                        if isinstance(t, ast.Name) and t.id == "STANDBY_INTRO_LINE":
+                            val = ast.literal_eval(node.value)
+                            if isinstance(val, str) and val.strip():
+                                intro = val.strip()
+                        elif isinstance(t, ast.Name) and t.id == "STANDBY_LOOP_LINES":
+                            val = ast.literal_eval(node.value)
+                            if isinstance(val, (tuple, list)) and val:
+                                loop_lines = tuple(str(x) for x in val if str(x).strip())
+        except Exception:
+            pass
+    return intro, loop_lines, stream_path
+
+
+def reboot_honeybot_stream(sync_only=False, dry_run=False):
+    """Sync remotes/honeybot/scripts/ to Honeybot and optionally restart stream.py."""
+    import subprocess
+    repo_root = Path(__file__).resolve().parents[2]
+    scripts_src = f"{repo_root}/remotes/honeybot/scripts/"
+    if dry_run:
+        mode_lbl = "sync-only" if sync_only else "sync + restart stream.py"
+        print(f"🔄 [DRY RUN] Honeybot Stream Reboot ({mode_lbl}): rsync {scripts_src} -> {HONEYBOT_SSH_HOST}:~/www/mikelev.in/scripts/")
+        return 0
+    print(f"🚀 Syncing Honeybot scripts to {HONEYBOT_SSH_HOST}:~/www/mikelev.in/scripts/...")
+    sync_res = subprocess.run(
+        ["rsync", "--delete", "-av", scripts_src, f"{HONEYBOT_SSH_HOST}:~/www/mikelev.in/scripts/"],
+        check=False,
+    )
+    if sync_res.returncode != 0:
+        print(f"❌ rsync failed (exit {sync_res.returncode}).")
+        return sync_res.returncode
+    subprocess.run(
+        ["rsync", "-aq", f"{repo_root}/imports/ascii_displays.py", f"{HONEYBOT_SSH_HOST}:~/www/mikelev.in/imports/"],
+        check=False,
+    )
+    subprocess.run(
+        ["rsync", "-aq", f"{repo_root}/assets/sounds/tick.wav", f"{HONEYBOT_SSH_HOST}:~/www/mikelev.in/assets/sounds/tick.wav"],
+        check=False,
+    )
+    if sync_only:
+        print("✅ Honeybot scripts synced (stream.py left running; new standby text will load on next .deploy_standby).")
+        return 0
+    print(f"🔄 Restarting Honeybot stream.py child on {HONEYBOT_SSH_HOST}...")
+    remote_sh = r"""
+pattern="/home/mike/www/mikelev[.]in/scripts/stream[.]py"
+old_pids=$(pgrep -f -- "$pattern" || true)
+for old in $old_pids; do
+    echo "   stopping old stream.py pid=$old"
+    kill -TERM "$old" || true
+done
+pkill -f "/home/mike/www/mikelev[.]in/scripts/logs[.]py" || true
+pkill -f "tail -f /var/log/nginx/access[.]log" || true
+for i in $(seq 1 14); do
+    sleep 1
+    new_pids=$(pgrep -f -- "$pattern" || true)
+    new_count=$(printf "%s\n" "$new_pids" | sed "/^$/d" | wc -l)
+    if [ "$new_count" -ge 1 ]; then
+        echo "✅ Stream watchdog relaunched stream.py (pid=$(echo $new_pids | tr '\n' ' ')after ${i}s)."
+        exit 0
+    fi
+done
+echo "⚠️ No new stream.py PID seen within 14s; verify the stream watchdog on Honeybot."
+exit 1
+"""
+    res = subprocess.run(["ssh", HONEYBOT_SSH_HOST, "sh", "-s"], input=remote_sh, text=True)
+    return res.returncode
+
+
+def run_honeybot_outro(action="play", tick=True, dry_run=False):
+    """Audition, edit, sync, or reboot the Honeybot deploy-standby outro speech on Pipulate Prime."""
+    import os
+    import shutil
+    import signal
+    import subprocess
+    act = (action or "play").strip().lower()
+    intro, loop_lines, stream_path = _load_standby_speech_from_stream()
+    if act in ("edit", "vim", "nvim"):
+        editor = shutil.which("nvim") or shutil.which("vim") or "vi"
+        if dry_run:
+            print(f"✏️  [DRY RUN] {editor} +/STANDBY_LOOP_LINES {stream_path}")
+            return 0
+        subprocess.run([editor, "+/STANDBY_LOOP_LINES", str(stream_path)])
+        print("💡 Audition locally: ytoutro  |  Sync without restart: ytoutro sync  |  Sync + restart stream: ytreboot")
+        return 0
+    if act in ("sync", "push"):
+        return reboot_honeybot_stream(sync_only=True, dry_run=dry_run)
+    if act in ("reboot", "restart"):
+        return reboot_honeybot_stream(sync_only=False, dry_run=dry_run)
+    all_lines = [intro, *loop_lines]
+    bar = "=" * 72
+    print(f"\n{bar}")
+    print(f"🎙️  HONEYBOT DEPLOY-STANDBY OUTRO ({stream_path})")
+    print("-" * 72)
+    print(f"  [Intro] {intro}")
+    for idx, ln in enumerate(loop_lines, 1):
+        print(f"  [{idx}/{len(loop_lines)}]   {ln}")
+    print("-" * 72)
+    print("🎛️  Subcommands: ytoutro (play) | ytoutro --no-tick | ytoutro show | ytoutro edit | ytoutro sync | ytreboot")
+    print(bar)
+    if dry_run or act in ("show", "text", "print"):
+        if dry_run:
+            print(f"🗣️  [DRY RUN] Outro audition ready ({len(all_lines)} spoken segments, tick={tick}).")
+        return 0
+    repo_root = Path(__file__).resolve().parents[2]
+    piper_bin = str(repo_root / ".venv/bin/piper")
+    if not Path(piper_bin).is_file():
+        piper_bin = shutil.which("piper") or ""
+    model_path = _ensure_local_piper_model()
+    if not piper_bin or not model_path:
+        print("⚠️ Local Piper TTS model or binary not found; printed text only.")
+        return 1
+    play_cmds = (["pw-play"], ["paplay"], ["aplay", "-q"], ["afplay"])
+    player_base = next((c for c in play_cmds if shutil.which(c[0])), None)
+    if not player_base:
+        print("⚠️ No local audio player (pw-play/paplay/aplay/afplay) found.")
+        return 1
+    tick_proc = None
+    active_proc = None
+    wav_path = Path(f"/tmp/pipulate_outro_{os.getpid()}.wav")
+    tick_file = repo_root / "assets" / "sounds" / "tick.wav"
+    print("🔊 Playing standby outro locally on Pipulate Prime (press Ctrl+C to stop)...")
+    try:
+        if tick and tick_file.is_file():
+            tick_cmd_str = " ".join([*player_base, f'"{tick_file}"'])
+            tick_proc = subprocess.Popen(
+                ["sh", "-c", f"while :; do {tick_cmd_str} >/dev/null 2>&1; sleep 1; done"],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                start_new_session=True,
+            )
+        for seg in all_lines:
+            subprocess.run(
+                [piper_bin, "--model", str(model_path), "--output_file", str(wav_path)],
+                input=seg.encode("utf-8"),
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                check=False,
+            )
+            if wav_path.is_file():
+                active_proc = subprocess.Popen(
+                    [*player_base, str(wav_path)],
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                )
+                active_proc.wait()
+                active_proc = None
+        print("✅ Outro audition complete.")
+        return 0
+    except KeyboardInterrupt:
+        print("\n🛑 Stopped local outro playback.")
+        return 0
+    finally:
+        if active_proc and active_proc.poll() is None:
+            try:
+                active_proc.kill()
+            except Exception:
+                pass
+        if tick_proc is not None:
+            try:
+                os.killpg(os.getpgid(tick_proc.pid), signal.SIGKILL)
+            except Exception:
+                pass
+        try:
+            wav_path.unlink(missing_ok=True)
+        except Exception:
+            pass
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Pipulate article common utilities & broadcast kit.")
     add_standard_arguments(parser)
     parser.add_argument(
         "--broadcast",
-        choices=("help", "card", "hero", "yaml", "tweet", "linkedin", "pebble", "title", "desc", "top", "status", "bell", "stop", "start", "roll", "enable-ws", "say", "ping", "watch"),
+        choices=("help", "card", "hero", "yaml", "tweet", "linkedin", "pebble", "title", "desc", "top", "outro", "reboot", "status", "bell", "stop", "start", "roll", "enable-ws", "say", "ping", "watch"),
         default="card",
-        help="Print/copy broadcast kit or control Honeybot (help|card|hero|yaml|tweet|linkedin|pebble|title|desc|top|status|bell|stop|start|roll|enable-ws|say|ping|watch).",
+        help="Print/copy broadcast kit or control Honeybot (help|card|hero|yaml|tweet|linkedin|pebble|title|desc|top|outro|reboot|status|bell|stop|start|roll|enable-ws|say|ping|watch).",
+    )
+    parser.add_argument(
+        "--no-tick",
+        action="store_true",
+        help="Disable background tick.wav clock loop during local `ytoutro` audition.",
     )
     parser.add_argument(
         "-s", "--slug",
@@ -2462,6 +2647,14 @@ if __name__ == "__main__":
         if cli_args.verify or first_pebble_arg in ("verify", "check", "status"):
             sys.exit(verify_pebble_receipts(cli_args.target, slug_match=cli_args.slug))
         sys.exit(drop_pebble_pings(cli_args.target, slug_match=cli_args.slug, dry_run=cli_args.dry_run))
+    if cli_args.broadcast == "reboot":
+        sys.exit(reboot_honeybot_stream(sync_only=False, dry_run=cli_args.dry_run))
+    if cli_args.broadcast == "outro":
+        outro_act = cli_args.message[0].strip().lower() if cli_args.message else "play"
+        use_tick = not (cli_args.no_tick or cli_args.no_ding or outro_act in ("voice", "notick"))
+        if outro_act in ("voice", "notick"):
+            outro_act = "play"
+        sys.exit(run_honeybot_outro(action=outro_act, tick=use_tick, dry_run=cli_args.dry_run))
     if cli_args.broadcast in ("status", "bell", "stop", "start", "roll", "enable-ws"):
         sys.exit(run_honeybot_obs(cli_args.broadcast))
     sys.exit(print_broadcast_kit(cli_args.target, cli_args.broadcast, slug_match=cli_args.slug))
