@@ -2561,7 +2561,7 @@ MATCHBOOK_CHOP = r"""
 # ============================================================================
 # Files tracked by git but not yet mixed into the palette above.
 # Move these into the active chapters to paint them onto the context canvas.
-# Coverage: 199/275 tracked files claimed. The compiler reads this line back on the next compile and prints the delta beside the live count, so an unclaimed file rings once.
+# Coverage: 199/281 tracked files claimed. The compiler reads this line back on the next compile and prints the delta beside the live count, so an unclaimed file rings once.
 
 # AGENTS.md  # [1,039 tokens | 4,223 bytes]
 # AUDIT.md  # [2,993 tokens | 13,897 bytes]
@@ -2605,6 +2605,12 @@ MATCHBOOK_CHOP = r"""
 # remotes/honeybot/queries/hydration_selftest.sql  # [1,204 tokens | 4,235 bytes]
 # remotes/honeybot/queries/intel_markdown_affinity.sql  # [434 tokens | 1,685 bytes]
 # remotes/honeybot/queries/ua_variants.sql  # [645 tokens | 2,535 bytes]
+# remotes/honeybot/www/guerillatech.com/index.html  # [797 tokens | 2,488 bytes]
+# remotes/honeybot/www/guerillatech.com/index.md  # [307 tokens | 1,267 bytes]
+# remotes/honeybot/www/rfc9110.org/index.html  # [823 tokens | 2,491 bytes]
+# remotes/honeybot/www/rfc9110.org/index.md  # [274 tokens | 1,067 bytes]
+# remotes/honeybot/www/rfc9111.io/index.html  # [786 tokens | 2,497 bytes]
+# remotes/honeybot/www/rfc9111.io/index.md  # [290 tokens | 1,232 bytes]
 # scripts/articles/build_hierarchy.py  # [2,460 tokens | 10,361 bytes]
 # scripts/articles/build_navgraph.py  # [2,119 tokens | 9,029 bytes]
 # scripts/articles/execute_massive_prompt.py  # [491 tokens | 2,209 bytes]
