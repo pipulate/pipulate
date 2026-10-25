@@ -145,7 +145,37 @@ STATION_SEGMENTS = [
             "Every code edit passes through an exact-match search and replace airlock with syntax tree verification before touching disk.",
         ],
     ),
+    # Bead 6 (EVEN -> Rich 8-Door Frequency Dial Report: doors)
+    _make_station_bead(
+        "EIGHT DOORS\nONE ENGINE",
+        (
+            "Why does one home-hosted Nix O S head-end broadcast across eight distinct domain names? "
+            "Because saying more requires saying less to each audience."
+        ),
+        ("WINDOW", "forest.py:65:doors"),
+        [
+            "Each door on this frequency dial scratches one specific engineering itch using the same underlying Software Von Neumann Probe.",
+            "Sun Pug dot eye oh frees your A I discussions from disposable browser tabs into portable plain text. "
+            "Q A my dot A I seals cryptographic flight-recorder deeds. "
+            "N P V G dot org teaches timeless Nix, Python, Vim, and Git skills, while Levinix dot org replaces bloated Electron containers.",
+            "Guerilla Tech dot com pits declarative Nix O S against Docker for home hosting, "
+            "R F C 9110 dot org demonstrates native Markdown content negotiation, "
+            "and R F C 9111 dot eye oh retires wasteful headless pre-render clusters. "
+            "Inspect any door safely in your terminal with curl pipe less.",
+        ],
+    ),
 ]
+
+DOOR_DIAL_ROWS = (
+    ("pipulate", "com", "~/pipulate", "Local-First AI & SEO Readiness Hub"),
+    ("npvg", "org", "~/npvg", "Nix, Python, vim & git Future-Proofing"),
+    ("qamy", "ai", "~/qamyai", "Flight Data Recorder & QA Archive Deeds"),
+    ("levinix", "org", "~/levinix", "Write-Once-Run-Anywhere Nix Flakes"),
+    ("sunpug", "io", "~/sunpug", "Portable Plain-Text AI Discussions"),
+    ("guerillatech", "com", "~/guerillatech", "NixOS vs. Docker DIY Home-Hosting"),
+    ("rfc9110", "org", "~/rfc9110", "HTTP Section 12 Markdown Negotiation"),
+    ("rfc9111", "io", "~/rfc9111", "Bimodal Edge Caching (Vary: Accept)"),
+)
 
 
 def _bar(pct, width=32, fill_color="cyan"):
@@ -242,6 +272,14 @@ def _build_station_report_panel(mode="overview"):
             f"{total_cneg - spoof_md:,}",
             f"{_bar(auth_pct, 28, 'dark_orange')} [bold orange1]{auth_pct}%[/bold orange1]",
         )
+    elif mode == "doors":
+        title_str = "🎙️ THE 8-DOOR HONEYBOT FREQUENCY DIAL (CURL -fsSL <DOOR> | LESS)"
+        tbl.add_column("Door / Frequency", style="bold bright_white", width=20)
+        tbl.add_column("Target Folder", style="bold cyan", width=16)
+        tbl.add_column("Focused Value Proposition (Saying More by Saying Less)", style="white", ratio=4)
+        for d_name, d_tld, d_folder, d_pitch in DOOR_DIAL_ROWS:
+            domain_str = f"{d_name}.{d_tld}"
+            tbl.add_row(f"🚪 {domain_str}", d_folder, d_pitch)
     else:
         title_str = "🔭 WEB BOT AI OBSERVATORY — LIVE SQLITE WIRE TELEMETRY (MIKELEV.IN)"
         tbl.add_column("Web AI Standard Metric", style="bold white", ratio=3)
