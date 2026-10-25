@@ -476,18 +476,15 @@ def get_broadcast_kit(target_key="1", slug_match=None):
         "• Agents sending 'Accept: text/markdown' (RFC 9110) receive clean raw Markdown.",
         "• Agents executing JavaScript trigger the DOM trapdoor sensor.",
         "• Zero-Agent Airlock: Deterministic NixOS + Piper TTS player piano (chat reaches a human, never an LLM shell).",
-        f"• Ephemeral Broadcast: Continuous streams >12h are not archived by YouTube. Permanent text & code: {base_url}/latest",
+        f"• Ephemeral Broadcast: Continuous streams over 12h are not archived by YouTube. Permanent text & code: {base_url}/latest",
         f"• AI Context Manifest: {base_url}/llms.txt",
-        "• Stack: NPvg (Nix, Python, Neovim, Git) — https://pipulate.com | https://qamy.ai",
+        "• Doors: https://sunpug.io | https://qamy.ai | https://npvg.org | https://levinix.org | https://guerillatech.com | https://rfc9110.org | https://rfc9111.io | https://pipulate.com",
     ])
     if tags:
         desc_parts.extend(["", tags])
     yt_description = _yt_sanitize("\n".join(desc_parts).strip())
-    def _li_defang_domains(text):
-        cleaned = re.sub(r"\b[Xx]\.com\b", "X (Twitter)", text or "")
-        return re.sub(r"\b([A-Za-z0-9_-]+)\.(com|org|net|io|ai|eu|dev|sh|py|md|nix)\b", "\\1.\u2060\\2", cleaned)
-    li_imprint = _li_defang_domains(imprint)
-    li_meta = _li_defang_domains(meta_desc)
+    li_imprint = _defang_prose_domains(imprint)
+    li_meta = _defang_prose_domains(meta_desc)
     li_parts = [
         f"🚀 {title}",
         "",
@@ -598,12 +595,15 @@ def drop_pebble_pings(target_key="1", slug_match=None, dry_run=False):
         f"{base_url}/sitemap.xml",
     ]
     wb_save_url = f"https://web.archive.org/save/{canonical_url}"
+    feed_url = f"{base_url}/feed.xml"
+    websub_hub = "https://pubsubhubbub.appspot.com/"
     if dry_run:
         masked_key = f"{key[:8]}..." if key else "NONE"
         masked_file = f"{key_file.parent}/{key[:8]}....txt" if key_file and key else str(key_file)
         print(f"🪨 [DRY RUN] Pebble-Drop Wire Pings ({Path(kit['path']).name}):")
         print(f"   • Wayback Save : GET {wb_save_url}")
         print(f"   • IndexNow POST: https://api.indexnow.org/indexnow (host={parsed_host}, key={masked_key}, urls={len(url_list)})")
+        print(f"   • WebSub Hub   : POST {websub_hub} (hub.mode=publish, hub.url={feed_url})")
         print(f"   • Key File     : {masked_file} (exists={bool(key_file and key_file.is_file())})")
         return 0
     results = {}
@@ -657,14 +657,47 @@ def drop_pebble_pings(target_key="1", slug_match=None, dry_run=False):
         except Exception as exc:
             results["indexnow"] = f"⚠️ {exc}"
 
+    def _ping_websub():
+        if not base_url.startswith("https://"):
+            results["websub"] = "⏭️  Skipped (non-HTTPS target)"
+            return
+        form_body = urllib.parse.urlencode({
+            "hub.mode": "publish",
+            "hub.url": feed_url,
+        }).encode("utf-8")
+        req = urllib.request.Request(
+            websub_hub,
+            data=form_body,
+            headers={
+                "Content-Type": "application/x-www-form-urlencoded",
+                "User-Agent": f"pipulate-pebble/1.0 (+{base_url})",
+            },
+            method="POST",
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=6) as resp:
+                status = getattr(resp, "status", 204)
+                results["websub"] = f"✅ HTTP {status} (published {feed_url} -> WebSub / PubSubHubbub)"
+        except urllib.error.HTTPError as exc:
+            if exc.code in (200, 202, 204):
+                results["websub"] = f"✅ HTTP {exc.code} (published {feed_url} -> WebSub / PubSubHubbub)"
+            else:
+                results["websub"] = f"ℹ️  HTTP {exc.code} ({exc.reason})"
+        except Exception as exc:
+            results["websub"] = f"⚠️ {exc}"
+
     t_wb = threading.Thread(target=_ping_wayback, daemon=True)
     t_in = threading.Thread(target=_ping_indexnow, daemon=True)
+    t_ws = threading.Thread(target=_ping_websub, daemon=True)
     t_wb.start()
     t_in.start()
+    t_ws.start()
     t_in.join(timeout=6.5)
+    t_ws.join(timeout=6.5)
     t_wb.join(timeout=6.5)
     print(f"🪨 Pebble-Drop Wire Pings ({canonical_url}):")
     print(f"   • IndexNow (Bing/Yandex/Yep): {results.get('indexnow', '⏳ Dispatched')}")
+    print(f"   • WebSub (PubSubHubbub Hub) : {results.get('websub', '⏳ Dispatched')}")
     print(f"   • Wayback Machine (Archive) : {results.get('wayback', f'⏳ Dispatched -> https://web.archive.org/web/*/{canonical_url}')}")
     print(f"   • GSC URL Inspection        : https://search.google.com/search-console/inspect?resource_id=sc-domain:{parsed_host}")
     print("   • Verify Reciprocal Receipts: ytpebble verify")
