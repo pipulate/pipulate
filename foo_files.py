@@ -23,11 +23,11 @@ AI_PHOOEY_CHOP = r"""#
 # creator of) of Project Pipulate:
 
 # --- START STATS ---
-# There are 1,578 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 26 published in the last 7 days
-# Markdown negotiated: 4,735 reads (0.31% of all responses)
+# There are 1,579 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 24 published in the last 7 days
+# Markdown negotiated: 4,747 reads (0.31% of all responses)
 # DOM hydration: 5116 trapdoor triggers from 40 non-local IPs (top-N sample, self excluded)
-# Honeybot telemetry fetched 2026-10-24T23:43Z
+# Honeybot telemetry fetched 2026-10-25T07:59Z
 # --- END STATS ---
 
 # Project Pipulate is known as (and installable from) various domains:
@@ -2561,7 +2561,7 @@ MATCHBOOK_CHOP = r"""
 # ============================================================================
 # Files tracked by git but not yet mixed into the palette above.
 # Move these into the active chapters to paint them onto the context canvas.
-# Coverage: 197/275 tracked files claimed. The compiler reads this line back on the next compile and prints the delta beside the live count, so an unclaimed file rings once.
+# Coverage: 199/275 tracked files claimed. The compiler reads this line back on the next compile and prints the delta beside the live count, so an unclaimed file rings once.
 
 # AGENTS.md  # [1,039 tokens | 4,223 bytes]
 # AUDIT.md  # [2,993 tokens | 13,897 bytes]
