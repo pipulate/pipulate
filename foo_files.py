@@ -1047,6 +1047,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # remotes/honeybot/www/levinux.com/index.html        # <-- Classic remark.js LPvg slideshow self-hosted on Honeybot
 # remotes/honeybot/www/levinux.com/index.md          # <-- RFC 9110 Accept: text/markdown slide deck for levinux.com
 # scripts/ytstage.py                                 # <-- LAN-to-DMZ stage projector (`ytapp` FastHTML reverse tunnel + `ytvim` live Neovim on Honeybot :10.0)
+# scripts/weebo.py                                   # <-- Operation Weebo: Double-buffered, self-terminating X11 media overlay engine (`weebo` / `weeboh` + `[[[weebo:...]]]`)
 
 # remotes/honeybot/scripts/bot_intel.json     # <-- Where we hand-register known bots we've encounters. Needs better discover/include methodology.
 

@@ -1326,12 +1326,33 @@ def send_honeybot_live_message(
         except ValueError:
             pass
     local_media_file = None
+    composited_tmp_file = None
     if resolved_media and not resolved_media.startswith(("http://", "https://", "file://")):
         cand = Path(resolved_media).expanduser()
+        if not cand.is_file():
+            try:
+                sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+                import weebo
+                w_target, w_dur, _ = weebo.resolve_media_target(resolved_media, default_duration=media_dur or 8.0)
+                if w_target and os.path.isfile(w_target):
+                    cand = Path(w_target)
+                    if media_dur is None:
+                        media_dur = w_dur
+            except Exception:
+                pass
         if cand.is_file():
             local_media_file = cand.resolve()
-            safe_fname = re.sub(r"[^A-Za-z0-9._-]", "_", local_media_file.name)
-            resolved_media = f"/tmp/honeybot_media/{safe_fname}"
+            try:
+                sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+                import weebo
+                buf_path, was_comp, _, _, _, _ = weebo.prepare_backbuffer(str(local_media_file))
+                if was_comp and buf_path and os.path.isfile(buf_path):
+                    composited_tmp_file = Path(buf_path)
+            except Exception:
+                pass
+            safe_stem = re.sub(r"[^A-Za-z0-9._-]", "_", local_media_file.stem)
+            ext = ".png" if composited_tmp_file is not None else local_media_file.suffix
+            resolved_media = f"/tmp/honeybot_media/weebo_{safe_stem}{ext}"
     if resolved_media and media_dur is not None:
         resolved_media = f"{resolved_media}:{media_dur:g}"
     eff_pre_pause = float(pre_pause)
@@ -1360,19 +1381,24 @@ def send_honeybot_live_message(
         payload["window"] = str(window_spec).strip()
     payload_json = json.dumps(payload, indent=2)
     if dry_run:
+        if composited_tmp_file is not None and composited_tmp_file.is_file():
+            composited_tmp_file.unlink(missing_ok=True)
         print("📡 [DRY RUN] Live break-in payload for Honeybot:")
         print(payload_json)
         return 0
     if local_media_file is not None:
         remote_dest = resolved_media.rsplit(":", 1)[0] if media_dur is not None else resolved_media
+        src_to_scp = composited_tmp_file if (composited_tmp_file is not None and composited_tmp_file.is_file()) else local_media_file
         subprocess.run(
             ["ssh", HONEYBOT_SSH_HOST, "mkdir", "-p", "/tmp/honeybot_media"],
             check=False,
         )
         scp_res = subprocess.run(
-            ["scp", "-q", str(local_media_file), f"{HONEYBOT_SSH_HOST}:{remote_dest}"],
+            ["scp", "-q", str(src_to_scp), f"{HONEYBOT_SSH_HOST}:{remote_dest}"],
             check=False,
         )
+        if composited_tmp_file is not None and composited_tmp_file.is_file():
+            composited_tmp_file.unlink(missing_ok=True)
         if scp_res.returncode == 0:
             print(f"🖼️  Staged local media to Honeybot: {local_media_file.name} -> {remote_dest}")
         else:

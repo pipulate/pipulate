@@ -291,35 +291,63 @@ def clean_markdown(text, label=None, census=True):
 
     pp4_directives = []
 
+    def _register_pp4_cue(cue_kind, asset_name, duration):
+        idx = len(pp4_directives)
+        pp4_directives.append((cue_kind, asset_name, duration))
+        return f"\n\nPP4PATRONUS{idx}PP4\n\n"
+
     def capture_pp4_comment(match):
-        """Preserve player-piano #4 directives before generic HTML stripping."""
-        directive = match.group(1).strip()
-        key_match = re.search(r'\bkey\s*=\s*[\'\"]?([A-Za-z0-9_-]+)', directive, flags=re.IGNORECASE)
-        patronus_match = re.search(r'\bpatronus\b\s*\(?\s*[\'\"]?([A-Za-z0-9_-]+)', directive, flags=re.IGNORECASE)
+        """Preserve player-piano #4 HTML comments before generic tag stripping."""
+        tag_kind = (match.group(1) or "pp4").strip().lower()
+        directive = (match.group(2) or "").strip()
+        is_media = tag_kind in ("weebo", "media") or bool(re.search(r'\b(weebo|media|image|video)\b', directive, flags=re.IGNORECASE))
+        cue_kind = "MEDIA" if is_media else "PATRONUS"
+        default_dur = 8.0 if is_media else 3.5
+        max_dur = 60.0 if is_media else 12.0
+
+        key_match = re.search(r'\bkey\s*=\s*[\'\"]?([A-Za-z0-9_./-]+)', directive, flags=re.IGNORECASE)
+        named_match = re.search(r'\b(?:patronus|weebo|media)\b\s*[:(]?\s*[\'\"]?([A-Za-z0-9_./-]+)', directive, flags=re.IGNORECASE)
         if key_match:
             asset_name = key_match.group(1)
-        elif patronus_match and patronus_match.group(1).lower() not in {"key", "duration", "mode"}:
-            asset_name = patronus_match.group(1)
+        elif named_match and named_match.group(1).lower() not in {"key", "duration", "mode"}:
+            asset_name = named_match.group(1)
         else:
-            token_match = re.search(r'[A-Za-z0-9_-]+', directive)
-            asset_name = token_match.group(0) if token_match else "white_rabbit"
+            token_match = re.search(r'[A-Za-z0-9_./-]+', directive)
+            asset_name = token_match.group(0) if token_match else ("ambigram" if is_media else "white_rabbit")
 
         if asset_name.lower() in {"pp4", "patronus"}:
             asset_name = "white_rabbit"
+        elif asset_name.lower() in {"weebo", "media"}:
+            asset_name = "ambigram"
 
         duration_match = re.search(r'\bduration\s*=\s*[\'\"]?([\d.]+)', directive, flags=re.IGNORECASE)
-        duration = float(duration_match.group(1)) if duration_match else 3.5
-        # Clamp duration
-        duration = max(0.75, min(12.0, duration))
+        duration = float(duration_match.group(1)) if duration_match else default_dur
+        duration = max(0.75, min(max_dur, duration))
+        return _register_pp4_cue(cue_kind, asset_name, duration)
 
-        pp4_directives.append((asset_name, duration))
-        return f"\n\nPP4PATRONUS{len(pp4_directives) - 1}PP4\n\n"
+    def capture_inline_bracket_cue(match):
+        """Capture triple-bracket inline cues like [[[weebo:ambigram:6]]] or [[[patronus:white_rabbit]]]."""
+        raw_kind = match.group(1).strip().lower()
+        payload = match.group(2).strip()
+        is_media = raw_kind in ("weebo", "media", "image", "video")
+        cue_kind = "MEDIA" if is_media else "PATRONUS"
+        default_dur = 8.0 if is_media else 3.5
+        max_dur = 60.0 if is_media else 12.0
+        parts = payload.rsplit(":", 1)
+        asset_name = parts[0].strip()
+        duration = default_dur
+        if len(parts) == 2:
+            try:
+                duration = float(parts[1].strip())
+            except ValueError:
+                asset_name = payload
+        duration = max(0.75, min(max_dur, duration))
+        return _register_pp4_cue(cue_kind, asset_name, duration)
 
-    # HTML comments are otherwise removed by the generic tag-stripper below.
-    # Capture comments like:
-    #   <!-- pp4: patronus white_rabbit -->
-    #   <!-- pp4 white_rabbit -->
-    text = re.sub(r'<!--\s*pp4\b(?::|\s)?(.*?)-->', capture_pp4_comment, text, flags=re.IGNORECASE | re.DOTALL)
+    # Capture both HTML comments (<!-- pp4: ... --> / <!-- weebo: ... -->) and
+    # triple-bracket player-piano cues ([[[weebo:ambigram:6]]]) before stripping.
+    text = re.sub(r'<!--\s*(pp4|weebo|media)\b(?::|\s)?(.*?)-->', capture_pp4_comment, text, flags=re.IGNORECASE | re.DOTALL)
+    text = re.sub(r'\[{3}\s*(weebo|media|image|video|patronus)\s*:\s*([^\]\s]+)\s*\]{3}', capture_inline_bracket_cue, text, flags=re.IGNORECASE)
 
     # --- Strip Liquid Tags ({% ... %}) ---
     # This removes {% raw %}, {% endraw %}, {% include ... %}, etc.
@@ -439,7 +467,8 @@ def clean_markdown(text, label=None, census=True):
     text = text.replace('||PARAGRAPH||', '\n')
     text = re.sub(r' +', ' ', text).strip()
 
-    for index, (asset_name, duration) in enumerate(pp4_directives):
-        text = text.replace(f"PP4PATRONUS{index}PP4", f"[[PATRONUS:{asset_name}:{duration}]]")
+    for index, item in enumerate(pp4_directives):
+        cue_kind, asset_name, duration = item if len(item) == 3 else ("PATRONUS", item[0], item[1])
+        text = text.replace(f"PP4PATRONUS{index}PP4", f"\n[[{cue_kind}:{asset_name}:{duration}]]\n")
     
     return text

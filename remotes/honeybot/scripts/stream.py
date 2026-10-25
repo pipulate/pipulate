@@ -647,7 +647,7 @@ def _read_image_dimensions(path):
 
 
 def _resolve_honeybot_media_target(raw_target):
-    """Resolve a local path, site-relative '/assets/...' path, or URL on Honeybot."""
+    """Resolve a local path, shorthand key, site-relative '/assets/...' path, or URL on Honeybot."""
     s = str(raw_target or "").strip()
     if not s:
         return ""
@@ -664,6 +664,22 @@ def _resolve_honeybot_media_target(raw_target):
     for c in candidates:
         if c.is_file():
             return str(c.resolve())
+    needle = Path(s.lower()).stem
+    search_dirs = [
+        Path("/tmp/honeybot_media"),
+        site_root / "assets" / "weebo",
+        site_root / "_site" / "assets" / "images",
+        site_root / "assets" / "images",
+        Path("/home/mike/www/mikelev.in/assets/weebo"),
+        Path("/home/mike/www/mikelev.in/_site/assets/images"),
+        Path("/home/mike/www/mikelev.in/assets/images"),
+    ]
+    for d in search_dirs:
+        if not d.is_dir():
+            continue
+        for p in sorted(d.iterdir()):
+            if p.is_file() and (p.stem.lower() == needle or p.stem.lower().startswith(needle)):
+                return str(p.resolve())
     return s
 
 
@@ -712,6 +728,29 @@ def conjure_media(media_spec, duration=15.0, mute=False):
             cmd.append(target)
             proc = subprocess.Popen(cmd, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             proc.wait(timeout=duration + 2.0)
+        elif shutil.which("mpv"):
+            img_w, img_h = _read_image_dimensions(target) if os.path.isfile(target) else (1440, 810)
+            max_w, max_h = 1440, 840
+            scale = min(max_w / max(1, img_w), max_h / max(1, img_h))
+            win_w = max(256, int(round(img_w * scale)))
+            win_h = max(256, int(round(img_h * scale)))
+            pos_x = max(0, (1920 - win_w) // 2)
+            pos_y = max(0, (1080 - win_h) // 2)
+            cmd = [
+                "mpv",
+                f"--title={MEDIA_OVERLAY_MARKER}",
+                "--no-border",
+                "--ontop",
+                f"--geometry={win_w}x{win_h}+{pos_x}+{pos_y}",
+                f"--image-display-duration={duration:.1f}",
+                "--keep-open=no",
+                "--really-quiet",
+                target,
+            ]
+            proc = subprocess.Popen(cmd, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            time.sleep(0.25)
+            subprocess.run(["wmctrl", "-r", MEDIA_OVERLAY_MARKER, "-b", "add,above"], env=env, check=False)
+            proc.wait(timeout=duration + 2.0)
         elif not is_video and shutil.which("feh") and not target.startswith(("http://", "https://")):
             img_w, img_h = _read_image_dimensions(target) if os.path.isfile(target) else (1440, 810)
             max_w, max_h = 1440, 840
@@ -738,21 +777,7 @@ def conjure_media(media_spec, duration=15.0, mute=False):
                 check=False,
             )
             subprocess.run(["wmctrl", "-r", MEDIA_OVERLAY_MARKER, "-b", "add,above"], env=env, check=False)
-            subprocess.run(["wmctrl", "-a", MEDIA_OVERLAY_MARKER], env=env, check=False)
             proc.wait(timeout=duration)
-        elif shutil.which("mpv"):
-            cmd = [
-                "mpv",
-                f"--title={MEDIA_OVERLAY_MARKER}",
-                "--no-border",
-                "--ontop",
-                "--geometry=82%x82%+50%+50%",
-                f"--image-display-duration={duration:.1f}",
-                "--really-quiet",
-                target,
-            ]
-            proc = subprocess.Popen(cmd, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            proc.wait(timeout=duration + 2.0)
         elif shutil.which("firefox"):
             tmp_profile = tempfile.mkdtemp(prefix=f"{MEDIA_OVERLAY_MARKER}_")
             uri = target if target.startswith(("http://", "https://", "file://")) else Path(target).resolve().as_uri()

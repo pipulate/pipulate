@@ -26,6 +26,13 @@ def append_article_content(script, article):
             duration = float(parts[1]) if len(parts) > 1 else 3.5
             if key:
                 script.append(("PATRONUS", {"key": key, "duration": duration}))
+        elif chunk.startswith("[[MEDIA:") and chunk.endswith("]]"):
+            inner = chunk[len("[[MEDIA:"):-2].strip()
+            parts = inner.split(":", 1)
+            key = parts[0].strip()
+            duration = float(parts[1]) if len(parts) > 1 else 8.0
+            if key:
+                script.append(("MEDIA", {"path": key, "duration": duration}))
         elif chunk and len(chunk) > 2:
             script.append(("SAY", chunk))
 
