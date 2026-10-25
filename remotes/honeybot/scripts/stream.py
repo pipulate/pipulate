@@ -75,7 +75,7 @@ STANDBY_LOOP_LINES = (
     "This live-broadcast and the articles being read here are not that. "
     "The author is macheteing his way through the Noosphere of things being experimentally done for the first time in human history.",
     "This is The Signal. "
-    "It may not be apparent to you right now, but this is the most unique and important thing you will see today, and if you tune in again later, then the next one will be the same -- and by that I mean different and equally new. "
+    "It may not be apparent to you right now, but this is the most unique thing you will see today, and if you tune in again later, then the next one will be the same -- and by that I mean different and equally new. "
     "Welcome to The Information.",
 )
 
