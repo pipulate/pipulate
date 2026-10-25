@@ -101,8 +101,10 @@ def get_script(breaking=False):
                 },
             ))
         try:
-            from content_loader import get_playlist
-            articles = get_playlist(recent_n=1, include_archive=False)
+            import importlib
+            import content_loader
+            importlib.reload(content_loader)
+            articles = content_loader.get_playlist(recent_n=1, include_archive=False)
             if articles:
                 _append_article_performance(script, articles[0], is_latest=True)
         except Exception as e:

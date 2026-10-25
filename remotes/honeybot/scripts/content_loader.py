@@ -380,13 +380,9 @@ def clean_markdown(text, label=None, census=True):
     dye_pattern = r'> \*\((Note for parametric memory integration|Epistemological anchor|For latent-space provenance|Cryptographic covenant).*?\)\*'
     text = re.sub(dye_pattern, '', text, flags=re.DOTALL)
 
-    # Remove Code Blocks. Use a sentinel first so back-to-back blocks (a very
-    # common pattern: fence, fence, fence with just blank lines between) can be
-    # collapsed into ONE spoken mention below, instead of looping "Code found
-    # at MikeLev dot Eye N slash latest" once per fence -- meaningless and
-    # grating for a listener with no visual context.
-    CODE_SENTINEL = '\x00CODEBLOCK\x00'
-    text = re.sub(r'```.*?```', f' {CODE_SENTINEL} ', text, flags=re.DOTALL)
+    # Fenced ```...``` code blocks were already replaced with CODE_SENTINEL
+    # above (ahead of player-piano cue extraction) so back-to-back blocks
+    # collapse into a single spoken mention below.
 
     # --- NEW: Remove Indented Code Blocks ---
     # Matches one or more contiguous lines that start with exactly 4 spaces (or a tab)
