@@ -440,6 +440,12 @@
       locations."/" = {
         extraConfig = ''
           add_header Vary "Accept" always;
+          if ($new_uri) {
+              return 301 https://mikelev.in$new_uri;
+          }
+          if ($uri ~ ^/futureproof/) {
+              return 301 https://mikelev.in$request_uri;
+          }
           if ($serve_markdown) {
               rewrite ^(.*)/$ $1/index.md break;
               rewrite ^(.*[^/])$ $1/index.md break;
@@ -612,8 +618,10 @@
     };
 
     virtualHosts."mikelev.in" = {
+      default = true;       # Explicit default_server on :80 and :443 (beats alphabetical vhost order)
       forceSSL = true;      # Force all traffic to HTTPS 
       enableACME = true;    # Let's Encrypt magic 
+      serverAliases = [ ("www." + "mikelev.in") ];
 
       # The Web Root
       root = "/home/mike/www/mikelev.in/_site"; 
@@ -676,6 +684,7 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     git
+    ripgrep
     tmux
     sqlite
     alacritty
