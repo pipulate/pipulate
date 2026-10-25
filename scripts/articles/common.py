@@ -410,10 +410,20 @@ def get_broadcast_kit(target_key="1", slug_match=None):
         body,
         re.DOTALL,
     )
+    def _defang_prose_domains(text):
+        cleaned = re.sub(r"\b[Xx]\.com\b", "X (Twitter)", text or "")
+        return re.sub(
+            r"(?<!/)\b([A-Za-z0-9_-]+)\.(com|org|net|io|ai|eu|dev|sh|py|md|nix)\b",
+            "\\1.\u2060\\2",
+            cleaned,
+        )
     if tweet_match:
-        tweet = tweet_match.group(1).strip()
+        raw_tweet = tweet_match.group(1).strip()
     else:
-        tweet = f"{title}\n\n{canonical_url}"
+        raw_tweet = f"{title}\n\n{canonical_url}"
+    url_token = "__CANONICAL_ARTICLE_URL__"
+    tweet_masked = raw_tweet.replace(canonical_url, url_token) if canonical_url else raw_tweet
+    tweet = _defang_prose_domains(tweet_masked).replace(url_token, canonical_url)
     if canonical_url in tweet and f"{canonical_url}?" not in tweet:
         tweet = tweet.replace(canonical_url, f"{canonical_url}?src=x")
     slug = re.sub(r"^\d{4}-\d{2}-\d{2}-", "", post_path.stem)
