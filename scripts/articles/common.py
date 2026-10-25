@@ -17,6 +17,7 @@ LAST_PUBLISHED_FILE = CONFIG_DIR / "last_published.json"
 # Minimum simultaneous viewers required to ring the bell + send an ntfy push
 # (2 = viewer + their trusted advisor; lone 1-viewer drive-bys stay silent unless they comment)
 YT_VIEWER_ALERT_MIN = int(os.environ.get("PIPULATE_YT_VIEWER_MIN", "3"))
+YT_VIEWER_ALERT_DWELL = int(os.environ.get("PIPULATE_YT_VIEWER_DWELL", "60"))  # Seconds viewers must stay >= min before alerting
 YT_VIEWER_ALERT_COOLDOWN = int(os.environ.get("PIPULATE_YT_VIEWER_COOLDOWN", "300"))  # Seconds between any two viewer alerts
 
 DEFAULT_POSTS_DIR = Path(
@@ -1758,6 +1759,20 @@ def _save_ytwatch_state(state_obj):
         pass
 
 
+def _sustained_viewer_count(dwell_window, now_ts, dwell_secs):
+    """Return the viewer count continuously sustained for at least dwell_secs, or 0."""
+    if not dwell_window:
+        return 0
+    if dwell_secs <= 0:
+        return int(dwell_window[-1][1])
+    run_min = int(dwell_window[-1][1])
+    for ts, v in reversed(dwell_window):
+        run_min = min(run_min, int(v))
+        if (now_ts - float(ts)) >= dwell_secs:
+            return run_min
+    return 0
+
+
 SPOKEN_ALERT_TABLE = {
     "viewers_threshold": "Web Bot Observatory alert. YouTube concurrent viewers reached {count}, meeting the summon threshold of {min_viewers}.",
     "viewers_above_2": "Web Bot Observatory alert. YouTube concurrent viewers climbed above two, now at {count}.",
@@ -2006,7 +2021,7 @@ def run_youtube_watch(
         parsed = _extract_yt_json(sample, "ytInitialPlayerResponse =")
         ok = (parsed.get("videoDetails") or {}).get("videoId") == "test1234567"
         t_label = "configured" if resolved_topic else "unconfigured"
-        print(f"📡 [DRY RUN] YouTube Watch: channel={resolved_channel} | min_viewers={YT_VIEWER_ALERT_MIN} | ntfy={t_label} | parser_ok={ok}")
+        print(f"📡 [DRY RUN] YouTube Watch: channel={resolved_channel} | min_viewers={YT_VIEWER_ALERT_MIN} | dwell={YT_VIEWER_ALERT_DWELL}s | ntfy={t_label} | parser_ok={ok}")
         return 0 if ok else 1
     try:
         state = fetch_youtube_live_state(resolved_channel)
@@ -2017,10 +2032,10 @@ def run_youtube_watch(
     same_video = (persisted.get("video_id") == state["video_id"] and bool(state["video_id"]))
     seen_ids = set(persisted.get("seen_ids") or []) if same_video else set()
     had_prior_snapshot = bool(same_video and persisted.get("seen_ids") is not None)
-    prev_viewers = int(persisted.get("concurrent_viewers") or 0) if same_video else state["concurrent_viewers"]
-    peak_viewers = int(persisted.get("peak_viewers") or 0) if same_video else state["concurrent_viewers"]
+    peak_viewers = int(persisted.get("peak_viewers") or 0) if same_video else 0
     prev_comments = persisted.get("comment_count") if same_video else state["comment_count"]
     last_viewer_alert = float(persisted.get("last_viewer_alert") or 0.0) if same_video else 0.0
+    alerted_in_run = bool(persisted.get("alerted_in_run")) if (same_video and state["concurrent_viewers"] >= YT_VIEWER_ALERT_MIN) else False
     daemon_running = (
         subprocess.run(
             ["tmux", "has-session", "-t", "ytwatch"],
@@ -2032,7 +2047,7 @@ def run_youtube_watch(
     d_str = " | daemon=RUNNING" if daemon_running else ""
     print(
         f"📡 YouTube Watch: LIVE={'yes' if state['is_live'] else 'no'} | "
-        f"video={state['video_id'] or 'NONE'} | viewers={state['concurrent_viewers']} (alert>={YT_VIEWER_ALERT_MIN}) | "
+        f"video={state['video_id'] or 'NONE'} | viewers={state['concurrent_viewers']} (alert>={YT_VIEWER_ALERT_MIN} for {YT_VIEWER_ALERT_DWELL}s) | "
         f"chat_items={len(state['chat_messages'])}{c_str}{d_str} | title={state['title']!r}"
     )
     if not loop:
@@ -2059,7 +2074,8 @@ def run_youtube_watch(
         _save_ytwatch_state({
             "video_id": state["video_id"],
             "concurrent_viewers": state["concurrent_viewers"],
-            "peak_viewers": max(peak_viewers, state["concurrent_viewers"]),
+            "peak_viewers": peak_viewers,
+            "alerted_in_run": alerted_in_run,
             "comment_count": state["comment_count"],
             "last_viewer_alert": last_viewer_alert,
             "seen_ids": all_ids,
@@ -2068,20 +2084,24 @@ def run_youtube_watch(
         return 0
     for m in state["chat_messages"]:
         seen_ids.add(m["id"])
+    init_ts = time.time()
+    dwell_window = [(init_ts, state["concurrent_viewers"])] if state["concurrent_viewers"] >= YT_VIEWER_ALERT_MIN else []
     _save_ytwatch_state({
         "video_id": state["video_id"],
         "concurrent_viewers": state["concurrent_viewers"],
-        "peak_viewers": max(peak_viewers, state["concurrent_viewers"]),
+        "peak_viewers": peak_viewers,
+        "alerted_in_run": alerted_in_run,
         "comment_count": state["comment_count"],
         "last_viewer_alert": last_viewer_alert,
         "seen_ids": list(seen_ids)[-500:],
-        "updated_at": int(time.time()),
+        "updated_at": int(init_ts),
     })
-    print(f"🔭 Watching {resolved_channel} every {interval}s...")
+    print(f"🔭 Watching {resolved_channel} every {interval}s (dwell={YT_VIEWER_ALERT_DWELL}s)...")
     print("💡 [HOW TO EXIT TMUX WITHOUT STOPPING]: Press 'q' OR press Ctrl+b, release, then press d")
     try:
         while True:
             time.sleep(max(5, int(interval)))
+            poll_ts = time.time()
             try:
                 state = fetch_youtube_live_state(resolved_channel)
             except Exception as exc:
@@ -2089,27 +2109,50 @@ def run_youtube_watch(
                 continue
             viewers = state["concurrent_viewers"]
             now = time.time()
-            cooldown_ok = (now - last_viewer_alert) > YT_VIEWER_ALERT_COOLDOWN
-            crossed_min = prev_viewers < YT_VIEWER_ALERT_MIN and viewers >= YT_VIEWER_ALERT_MIN
-            new_peak = viewers >= YT_VIEWER_ALERT_MIN and viewers > peak_viewers
-            if (crossed_min or new_peak) and cooldown_ok:
-                peak_viewers = max(peak_viewers, viewers)
-                last_viewer_alert = now
-                alert_msg = f"{viewers} watching now (min={YT_VIEWER_ALERT_MIN}) — {state['title']}"
-                print(f"👀 [VIEWER] {alert_msg}", flush=True)
-                spoken_v = SPOKEN_ALERT_TABLE["viewers_threshold"].format(
-                    count=viewers, min_viewers=YT_VIEWER_ALERT_MIN
-                )
-                _play_local_ding(ding, spoken_text=spoken_v)
-                if resolved_topic:
-                    send_ntfy_notification(
-                        alert_msg,
-                        title="👀 Honeybot Live Viewer",
-                        priority="default",
-                        tags="eyes",
-                        topic=resolved_topic,
+            if viewers >= YT_VIEWER_ALERT_MIN:
+                dwell_window.append((poll_ts, viewers))
+                cutoff_ts = poll_ts - max(YT_VIEWER_ALERT_DWELL * 3, int(interval) * 4)
+                dwell_window = [(ts, v) for ts, v in dwell_window if ts >= cutoff_ts]
+                if len(dwell_window) == 1 and YT_VIEWER_ALERT_DWELL > 0:
+                    print(
+                        f"⏳ [VIEWER DWELL] {viewers} watching (min={YT_VIEWER_ALERT_MIN}) — "
+                        f"holding {YT_VIEWER_ALERT_DWELL}s to confirm they stick around...",
+                        flush=True,
                     )
-            prev_viewers = viewers
+                sustained = _sustained_viewer_count(dwell_window, poll_ts, YT_VIEWER_ALERT_DWELL)
+                cooldown_ok = (now - last_viewer_alert) > YT_VIEWER_ALERT_COOLDOWN
+                if sustained >= YT_VIEWER_ALERT_MIN and (not alerted_in_run or sustained > peak_viewers) and cooldown_ok:
+                    alerted_in_run = True
+                    peak_viewers = max(peak_viewers, sustained)
+                    last_viewer_alert = now
+                    dwell_elapsed = int(round(poll_ts - dwell_window[0][0]))
+                    alert_msg = (
+                        f"{viewers} watching now (sustained >={dwell_elapsed}s, min={YT_VIEWER_ALERT_MIN}) — "
+                        f"{state['title']}"
+                    )
+                    print(f"👀 [VIEWER] {alert_msg}", flush=True)
+                    spoken_v = SPOKEN_ALERT_TABLE["viewers_threshold"].format(
+                        count=viewers, min_viewers=YT_VIEWER_ALERT_MIN
+                    )
+                    _play_local_ding(ding, spoken_text=spoken_v)
+                    if resolved_topic:
+                        send_ntfy_notification(
+                            alert_msg,
+                            title="👀 Honeybot Live Viewer",
+                            priority="default",
+                            tags="eyes",
+                            topic=resolved_topic,
+                        )
+            else:
+                if dwell_window and not alerted_in_run and YT_VIEWER_ALERT_DWELL > 0:
+                    dwell_elapsed = int(round(poll_ts - dwell_window[0][0]))
+                    print(
+                        f"💨 [VIEWER DWELL] Dropped to {viewers} after {dwell_elapsed}s "
+                        f"(<{YT_VIEWER_ALERT_DWELL}s dwell) — notification suppressed.",
+                        flush=True,
+                    )
+                dwell_window.clear()
+                alerted_in_run = False
             for msg in state["chat_messages"]:
                 if msg["id"] in seen_ids:
                     continue
@@ -2186,6 +2229,7 @@ def run_youtube_watch(
                 "video_id": state["video_id"],
                 "concurrent_viewers": viewers,
                 "peak_viewers": peak_viewers,
+                "alerted_in_run": alerted_in_run,
                 "comment_count": cur_comments,
                 "last_viewer_alert": last_viewer_alert,
                 "seen_ids": list(seen_ids)[-500:],
