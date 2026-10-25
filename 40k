@@ -8,6 +8,9 @@ init.lua
 scripts/articles/lsa.py
 
 ! book
+! rgxc 30
+! markov
+! latest
 
 # THE SOFTWARE VON NEUMANN PROBE
 assets/installer/install.sh
