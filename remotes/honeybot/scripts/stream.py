@@ -738,14 +738,21 @@ def conjure_media(media_spec, duration=15.0, mute=False):
             scale = min(1.0, max_w / max(1, img_w), max_h / max(1, img_h))
             win_w = max(16, int(round(img_w * scale)))
             win_h = max(16, int(round(img_h * scale)))
+            pos_x = max(0, (1920 - win_w) // 2)
+            pos_y = max(0, (1080 - win_h) // 2)
+            alpha_arg = []
+            for cand_flag in ("--alpha=yes", "--background=none"):
+                if subprocess.run(["mpv", "--no-config", cand_flag, "--version"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False).returncode == 0:
+                    alpha_arg = [cand_flag]
+                    break
             cmd = [
                 "mpv",
+                "--no-config",
                 f"--title={MEDIA_OVERLAY_MARKER}",
                 "--no-border",
                 "--ontop",
-                "--alpha=yes",
-                "--background=none",
-                f"--geometry={win_w}x{win_h}+50%+50%",
+                *alpha_arg,
+                f"--geometry={win_w}x{win_h}+{pos_x}+{pos_y}",
                 f"--image-display-duration={duration:.1f}",
                 "--keep-open=no",
                 "--really-quiet",
@@ -753,6 +760,11 @@ def conjure_media(media_spec, duration=15.0, mute=False):
             ]
             proc = subprocess.Popen(cmd, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             time.sleep(0.25)
+            subprocess.run(
+                ["wmctrl", "-r", MEDIA_OVERLAY_MARKER, "-e", f"0,{pos_x},{pos_y},{win_w},{win_h}"],
+                env=env,
+                check=False,
+            )
             subprocess.run(["wmctrl", "-r", MEDIA_OVERLAY_MARKER, "-b", "add,above"], env=env, check=False)
             proc.wait(timeout=duration + 2.0)
         elif not is_video and shutil.which("feh") and not target.startswith(("http://", "https://")):

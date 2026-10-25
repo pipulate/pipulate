@@ -316,9 +316,36 @@ def _get_active_window_id(env):
         return ""
 
 
-def _pin_above_and_restore_focus(orig_win, env):
+def _mpv_alpha_flags():
+    """Return the supported mpv CLI flag list for transparent alpha windows on this mpv version."""
+    if not shutil.which("mpv"):
+        return []
+    for candidate in (["--alpha=yes"], ["--background=none"]):
+        try:
+            res = subprocess.run(
+                ["mpv", "--no-config", *candidate, "--version"],
+                capture_output=True,
+                text=True,
+                timeout=2.0,
+                check=False,
+            )
+            if res.returncode == 0:
+                return candidate
+        except Exception:
+            pass
+    return []
+
+
+def _pin_above_and_restore_focus(orig_win, pos_x, pos_y, win_w, win_h, env):
     time.sleep(0.22)
     if shutil.which("wmctrl"):
+        subprocess.run(
+            ["wmctrl", "-r", MEDIA_OVERLAY_MARKER, "-e", f"0,{pos_x},{pos_y},{win_w},{win_h}"],
+            env=env,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=False,
+        )
         subprocess.run(
             ["wmctrl", "-r", MEDIA_OVERLAY_MARKER, "-b", "add,above"],
             env=env,
@@ -345,9 +372,9 @@ def pop_weebo(spec, duration=8.0, mute=False, matte=False, display=None, dry_run
 
     img_w, img_h = read_image_dimensions(target) if os.path.isfile(target) else (512, 512)
     alpha = has_alpha_channel(target) and not matte
+    alpha_flags = _mpv_alpha_flags() if alpha else []
     buf_path, temp_created, win_w, win_h, pos_x, pos_y = prepare_backbuffer(target, matte=matte)
-    mpv_geom = f"{win_w}x{win_h}+50%+50%"
-    feh_geom = f"{win_w}x{win_h}+{pos_x}+{pos_y}"
+    geom_str = f"{win_w}x{win_h}+{pos_x}+{pos_y}"
 
     if dry_run:
         if temp_created and buf_path != target and os.path.isfile(buf_path):
@@ -357,7 +384,8 @@ def pop_weebo(spec, duration=8.0, mute=False, matte=False, display=None, dry_run
                 pass
         print(
             f"WEEBO_DRY_RUN: kind={kind} | resolved={target} | "
-            f"native_size={img_w}x{img_h} | alpha={alpha} | geom={mpv_geom} | duration={dur:.1f}s"
+            f"native_size={img_w}x{img_h} | alpha={alpha} | alpha_flags={alpha_flags} | "
+            f"geom={geom_str} | duration={dur:.1f}s"
         )
         return 0
 
@@ -371,40 +399,59 @@ def pop_weebo(spec, duration=8.0, mute=False, matte=False, display=None, dry_run
     proc = None
     try:
         if shutil.which("mpv"):
-            cmd = [
+            base_cmd = [
                 "mpv",
+                "--no-config",
                 f"--title={MEDIA_OVERLAY_MARKER}",
                 "--no-border",
                 "--ontop",
-                f"--geometry={mpv_geom}",
+                f"--geometry={geom_str}",
                 "--keep-open=no",
-                "--really-quiet",
+                "--msg-level=all=error",
             ]
-            if alpha:
-                cmd.extend(["--alpha=yes", "--background=none"])
+            tail_cmd = []
             if kind == "IMAGE":
-                cmd.append(f"--image-display-duration={dur:.1f}")
+                tail_cmd.append(f"--image-display-duration={dur:.1f}")
             elif kind == "GIF":
-                cmd.extend(["--loop-file=inf", f"--length={dur:.1f}"])
+                tail_cmd.extend(["--loop-file=inf", f"--length={dur:.1f}"])
             else:
-                cmd.append(f"--length={dur:.1f}")
+                tail_cmd.append(f"--length={dur:.1f}")
                 if mute:
-                    cmd.append("--mute=yes")
-            cmd.append(buf_path)
-            proc = subprocess.Popen(cmd, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            _pin_above_and_restore_focus(orig_win, env)
+                    tail_cmd.append("--mute=yes")
+            tail_cmd.append(buf_path)
+
+            cmd = [*base_cmd, *alpha_flags, *tail_cmd]
+            t0 = time.time()
+            proc = subprocess.Popen(cmd, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
+            _pin_above_and_restore_focus(orig_win, pos_x, pos_y, win_w, win_h, env)
             proc.wait(timeout=dur + 2.0)
+            if proc.returncode not in (0, None) and (time.time() - t0) < 1.0:
+                err_txt = (proc.stderr.read().decode("utf-8", errors="replace") if proc.stderr else "").strip()
+                if alpha_flags:
+                    print(f"ℹ️ mpv rejected {alpha_flags} ({err_txt}); retrying with obsidian matte...", file=sys.stderr)
+                    matte_buf, matte_tmp, win_w, win_h, pos_x, pos_y = prepare_backbuffer(target, matte=True)
+                    retry_cmd = [*base_cmd, *tail_cmd[:-1], matte_buf]
+                    proc = subprocess.Popen(retry_cmd, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
+                    _pin_above_and_restore_focus(orig_win, pos_x, pos_y, win_w, win_h, env)
+                    proc.wait(timeout=dur + 2.0)
+                    if matte_tmp and matte_buf != target and os.path.isfile(matte_buf):
+                        try:
+                            os.remove(matte_buf)
+                        except OSError:
+                            pass
+                elif err_txt:
+                    print(f"⚠️ mpv error (exit {proc.returncode}): {err_txt}", file=sys.stderr)
         elif kind == "IMAGE" and shutil.which("feh") and os.path.isfile(buf_path):
             cmd = [
                 "feh",
                 "--title", MEDIA_OVERLAY_MARKER,
                 "--borderless",
                 "--image-bg", "black",
-                "--geometry", feh_geom,
+                "--geometry", geom_str,
                 buf_path,
             ]
             proc = subprocess.Popen(cmd, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            _pin_above_and_restore_focus(orig_win, env)
+            _pin_above_and_restore_focus(orig_win, pos_x, pos_y, win_w, win_h, env)
             proc.wait(timeout=dur)
         else:
             print("⚠️ Neither mpv nor feh found on PATH.", file=sys.stderr)
