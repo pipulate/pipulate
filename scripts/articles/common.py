@@ -1333,7 +1333,9 @@ def send_honeybot_live_message(
             try:
                 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
                 import weebo
-                w_target, w_dur, _ = weebo.resolve_media_target(resolved_media, default_duration=media_dur or 8.0)
+                w_target, w_dur, _ = weebo.resolve_media_target(
+                    resolved_media, default_duration=media_dur or 8.0, enroll=(not dry_run)
+                )
                 if w_target and os.path.isfile(w_target):
                     cand = Path(w_target)
                     if media_dur is None:
@@ -1341,18 +1343,19 @@ def send_honeybot_live_message(
             except Exception:
                 pass
         if cand.is_file():
-            local_media_file = cand.resolve()
+            local_media_file = enroll_cand = cand.resolve()
             try:
                 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
                 import weebo
-                buf_path, was_comp, _, _, _, _ = weebo.prepare_backbuffer(str(local_media_file))
+                if not dry_run:
+                    weebo.enroll_in_local_library(enroll_cand)
+                buf_path, was_comp, _, _, _, _ = weebo.prepare_backbuffer(str(local_media_file), matte=False)
                 if was_comp and buf_path and os.path.isfile(buf_path):
                     composited_tmp_file = Path(buf_path)
             except Exception:
                 pass
-            safe_stem = re.sub(r"[^A-Za-z0-9._-]", "_", local_media_file.stem)
-            ext = ".png" if composited_tmp_file is not None else local_media_file.suffix
-            resolved_media = f"/tmp/honeybot_media/weebo_{safe_stem}{ext}"
+            safe_fname = re.sub(r"[^A-Za-z0-9._-]", "_", local_media_file.name)
+            resolved_media = f"/home/mike/www/mikelev.in/assets/weebo/{safe_fname}"
     if resolved_media and media_dur is not None:
         resolved_media = f"{resolved_media}:{media_dur:g}"
     eff_pre_pause = float(pre_pause)
@@ -1390,7 +1393,7 @@ def send_honeybot_live_message(
         remote_dest = resolved_media.rsplit(":", 1)[0] if media_dur is not None else resolved_media
         src_to_scp = composited_tmp_file if (composited_tmp_file is not None and composited_tmp_file.is_file()) else local_media_file
         subprocess.run(
-            ["ssh", HONEYBOT_SSH_HOST, "mkdir", "-p", "/tmp/honeybot_media"],
+            ["ssh", HONEYBOT_SSH_HOST, "mkdir", "-p", "/home/mike/www/mikelev.in/assets/weebo", "/tmp/honeybot_media"],
             check=False,
         )
         scp_res = subprocess.run(

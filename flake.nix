@@ -353,6 +353,46 @@
           set -euo pipefail
           exec ${pkgs.python312}/bin/python /home/mike/repos/nixos/autognome.py --dry-run "$@"
         '';
+
+        # OPERATION WEEBO (Planck-quanta media overlay commands):
+        # - `weebo [name|path] [sec]` pops a 1:1 native-pixel, alpha-transparent
+        #   overlay locally on Pipulate Prime and enrolls any explicit file path
+        #   into ~/.local/share/pipulate/weebo/ (outside git).
+        # - `weeboh [name|path] [sec]` deliberately stages the asset to Honeybot's
+        #   ~/www/mikelev.in/assets/weebo/ library and pops it live on :10.0.
+        # - `weebol` lists the Wax Seal + all assets in Prime's local Weebo library.
+        weeboCommand = pkgs.writeShellScriptBin "weebo" ''
+          set -euo pipefail
+          root="''${PIPULATE_ROOT:-$PWD}"
+          python_bin="$root/.venv/bin/python"
+          if [ ! -x "$python_bin" ]; then
+            echo "weebo: missing $python_bin; enter the Pipulate Nix shell first." >&2
+            exit 1
+          fi
+          exec "$python_bin" "$root/scripts/weebo.py" "$@"
+        '';
+
+        weebohCommand = pkgs.writeShellScriptBin "weeboh" ''
+          set -euo pipefail
+          root="''${PIPULATE_ROOT:-$PWD}"
+          python_bin="$root/.venv/bin/python"
+          if [ ! -x "$python_bin" ]; then
+            echo "weeboh: missing $python_bin; enter the Pipulate Nix shell first." >&2
+            exit 1
+          fi
+          exec "$python_bin" "$root/scripts/weebo.py" --remote "$@"
+        '';
+
+        weebolCommand = pkgs.writeShellScriptBin "weebol" ''
+          set -euo pipefail
+          root="''${PIPULATE_ROOT:-$PWD}"
+          python_bin="$root/.venv/bin/python"
+          if [ ! -x "$python_bin" ]; then
+            echo "weebol: missing $python_bin; enter the Pipulate Nix shell first." >&2
+            exit 1
+          fi
+          exec "$python_bin" "$root/scripts/weebo.py" --list "$@"
+        '';
         rgxCommand = pkgs.writeShellScriptBin "rgx" ''
           set -euo pipefail
 
@@ -948,6 +988,9 @@
           latestCommand                # Full markdown body of newest article(s) for ! latest
           markovCommand                # Markov transition matrix + river streaming ML lens for ! markov
           swatCommand                  # 7-at-one-swat JSON dry-run lens for ! swat
+          weeboCommand                 # Local Operation Weebo native-pixel alpha overlay on Prime
+          weebohCommand                # Deliberate remote Operation Weebo overlay on Honeybot :10.0
+          weebolCommand                # List enrolled Operation Weebo shorthand assets
           rgxCommand                   # Bounded AND-search over article files
           rgxcCommand                  # rgx plus holographic shards and hit context
           aiCommitCommand              # \g's commit generator resolves in-shell on every platform

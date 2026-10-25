@@ -1,17 +1,19 @@
 #!/usr/bin/env python3
 """
-🤖 weebo.py -- Double-Buffered, Self-Terminating Media Overlay Engine.
+🤖 weebo.py -- Native-Resolution, Alpha-Transparent X11 Media Overlay Engine.
 
-Resolves shorthand asset names (e.g. 'ambigram', 'ai-seo-software') across local
-and blog image libraries, pre-composites transparent PNGs onto a #111111
-obsidian back-buffer so alpha channels never render a checkerboard, and pops a
-frameless, topmost X11 overlay via mpv that owns its own teardown without
-stealing keyboard focus from the active terminal.
+- Default asset is the Book of Proof Wax Seal (`assets/images/ambigram-209.png`).
+- Preserves 1:1 native pixel resolution (never upscales small icons/seals; only
+  downscales images that exceed max_w x max_h).
+- Preserves PNG/WebP/GIF alpha transparency via mpv `--alpha=yes --background=none`
+  (with optional `--matte` if a #111111 obsidian backing is ever desired).
+- Enrolls explicit local file paths into `~/.local/share/pipulate/weebo/` (outside
+  the Pipulate git repo) for instant shorthand recall on Pipulate Prime, while
+  requiring `weeboh` (`--remote`) to deliberately push an asset out to Honeybot.
 """
 
 import argparse
 import os
-import re
 import shutil
 import struct
 import subprocess
@@ -23,10 +25,28 @@ MEDIA_OVERLAY_MARKER = "honeybot_media_overlay"
 OBSIDIAN_RGB = (17, 17, 17)
 SUPPORTED_EXTS = (".png", ".jpg", ".jpeg", ".gif", ".webp", ".mp4", ".webm", ".mkv", ".mov")
 VIDEO_EXTS = (".mp4", ".webm", ".mkv", ".mov")
+DEFAULT_SEAL_ALIASES = frozenset({"", "seal", "wax", "ambigram", "ambigram-209", "default"})
+
+LOCAL_WEEBO_DIR = Path(
+    os.environ.get("PIPULATE_WEEBO_DIR", Path.home() / ".local" / "share" / "pipulate" / "weebo")
+).expanduser()
+HONEYBOT_WEEBO_DIR = Path("/home/mike/www/mikelev.in/assets/weebo")
+
+
+def default_wax_seal_path():
+    """Return the tracked Book of Proof Wax Seal path in the Pipulate repo."""
+    repo_root = Path(__file__).resolve().parents[1]
+    for cand in (
+        repo_root / "assets" / "images" / "ambigram-209.png",
+        repo_root / "ambigram-209.png",
+    ):
+        if cand.is_file():
+            return cand.resolve()
+    return None
 
 
 def read_image_dimensions(path):
-    """Read (width, height) from PNG/GIF/JPEG header bytes using stdlib only."""
+    """Read (width, height) from PNG/GIF/JPEG header bytes or PIL fallback."""
     try:
         with open(path, "rb") as f:
             head = f.read(32)
@@ -72,21 +92,28 @@ def read_image_dimensions(path):
             return im.size
     except Exception:
         pass
-    return 1440, 810
+    return 512, 512
+
+
+def has_alpha_channel(path):
+    """Return True when path is an image containing an alpha/transparency channel."""
+    if not path or not os.path.isfile(path):
+        return False
+    try:
+        from PIL import Image
+        with Image.open(path) as im:
+            return ("A" in im.getbands()) or ("transparency" in im.info)
+    except Exception:
+        return str(path).lower().endswith((".png", ".webp", ".gif"))
 
 
 def candidate_search_dirs():
-    """Return ordered list of existing directories searched for shorthand media keys."""
+    """Return dedicated Weebo library directories (never blog post hero folders)."""
     repo_root = Path(__file__).resolve().parents[1]
-    home = Path.home()
     candidates = [
+        LOCAL_WEEBO_DIR,
         repo_root / "assets" / "weebo",
-        repo_root / "assets" / "images",
-        home / "repos" / "trimnoir" / "assets" / "weebo",
-        home / "repos" / "trimnoir" / "assets" / "images",
-        home / "www" / "mikelev.in" / "assets" / "weebo",
-        home / "www" / "mikelev.in" / "_site" / "assets" / "images",
-        home / "www" / "mikelev.in" / "assets" / "images",
+        HONEYBOT_WEEBO_DIR,
         Path("/tmp/honeybot_media"),
     ]
     seen = set()
@@ -100,10 +127,37 @@ def candidate_search_dirs():
     return dirs
 
 
-def list_shorthand_assets(limit=40):
-    """Return list of (stem, Path) across all candidate media directories."""
+def enroll_in_local_library(src_path):
+    """Copy an explicit local file path into ~/.local/share/pipulate/weebo/ if not already there."""
+    src = Path(src_path).resolve()
+    if not src.is_file() or src.suffix.lower() not in SUPPORTED_EXTS:
+        return src
+    repo_root = Path(__file__).resolve().parents[1].resolve()
+    seal = default_wax_seal_path()
+    if seal and src == seal:
+        return src
+    if str(src).startswith(str(repo_root / "assets")):
+        return src
+    try:
+        LOCAL_WEEBO_DIR.mkdir(parents=True, exist_ok=True)
+        dest = LOCAL_WEEBO_DIR / src.name
+        if dest.resolve() != src:
+            if not dest.is_file() or src.stat().st_mtime > dest.stat().st_mtime:
+                shutil.copy2(src, dest)
+                print(f"📦 Rolled into local Weebo library: {dest} (shorthand: `weebo {dest.stem}`)", file=sys.stderr)
+    except Exception:
+        pass
+    return src
+
+
+def list_shorthand_assets(limit=50):
+    """Return list of (stem, Path, role) across the Wax Seal and local Weebo library."""
     items = []
     seen_stems = set()
+    seal = default_wax_seal_path()
+    if seal:
+        items.append(("seal / ambigram (default)", seal))
+        seen_stems.add(seal.stem.lower())
     for d in candidate_search_dirs():
         files = sorted(
             (p for p in d.iterdir() if p.is_file() and p.suffix.lower() in SUPPORTED_EXTS),
@@ -129,8 +183,11 @@ def _classify_ext(path_or_url):
     return "IMAGE"
 
 
-def resolve_media_target(raw_spec, default_duration=8.0):
-    """Resolve 'shorthand[:seconds]' or '/path/to/file[:seconds]' into (path_str, duration, kind)."""
+def resolve_media_target(raw_spec, default_duration=8.0, enroll=False):
+    """Resolve 'shorthand[:seconds]' or '/path/to/file[:seconds]' into (path_str, duration, kind).
+
+    Never falls back to unrelated blog hero images; returns '' if a named asset does not exist.
+    """
     if isinstance(raw_spec, dict):
         raw_str = str(raw_spec.get("path") or raw_spec.get("url") or "").strip()
         duration = float(raw_spec.get("duration", default_duration))
@@ -144,68 +201,72 @@ def resolve_media_target(raw_spec, default_duration=8.0):
                 raw_str = head.strip()
             except ValueError:
                 pass
-    duration = max(1.0, min(600.0, duration))
-    if not raw_str:
-        return "", duration, "IMAGE"
+    duration = max(0.5, min(600.0, duration))
+
     if raw_str.startswith(("http://", "https://", "file://")):
         return raw_str, duration, _classify_ext(raw_str)
 
-    direct = Path(raw_str).expanduser()
-    if direct.is_file():
-        resolved = str(direct.resolve())
-        return resolved, duration, _classify_ext(resolved)
+    # 1. Explicit file path on disk (absolute, ~/..., or repo-relative)
+    if raw_str:
+        direct = Path(raw_str).expanduser()
+        if direct.is_file():
+            resolved_p = enroll_in_local_library(direct) if enroll else direct.resolve()
+            return str(resolved_p), duration, _classify_ext(str(resolved_p))
 
-    repo_root = Path(__file__).resolve().parents[1]
-    rel_cand = repo_root / raw_str.lstrip("/")
-    if rel_cand.is_file():
-        resolved = str(rel_cand.resolve())
-        return resolved, duration, _classify_ext(resolved)
+        repo_root = Path(__file__).resolve().parents[1]
+        rel_cand = repo_root / raw_str.lstrip("/")
+        if rel_cand.is_file():
+            resolved = str(rel_cand.resolve())
+            return resolved, duration, _classify_ext(resolved)
 
     needle = raw_str.lower()
-    needle_stem = Path(needle).stem
+    needle_stem = Path(needle).stem if needle else ""
 
-    # Pass 1: exact filename or exact stem match
-    for d in candidate_search_dirs():
-        for p in d.iterdir():
-            if not p.is_file() or p.suffix.lower() not in SUPPORTED_EXTS:
-                continue
-            if p.name.lower() == needle or p.stem.lower() == needle_stem:
-                resolved = str(p.resolve())
-                return resolved, duration, _classify_ext(resolved)
+    # 2. Dedicated Weebo library lookup (exact filename or exact stem match first, then prefix)
+    if needle:
+        for d in candidate_search_dirs():
+            for p in d.iterdir():
+                if not p.is_file() or p.suffix.lower() not in SUPPORTED_EXTS:
+                    continue
+                if p.name.lower() == needle or p.stem.lower() == needle_stem:
+                    resolved = str(p.resolve())
+                    return resolved, duration, _classify_ext(resolved)
 
-    # Pass 2: prefix or substring stem match (prefer PNG/GIF/MP4 and newest file)
-    matches = []
-    for d in candidate_search_dirs():
-        for p in d.iterdir():
-            if not p.is_file() or p.suffix.lower() not in SUPPORTED_EXTS:
-                continue
-            stem_l = p.stem.lower()
-            if stem_l.startswith(needle_stem) or needle_stem in stem_l:
-                ext_rank = 0 if p.suffix.lower() in (".png", ".gif", ".mp4") else 1
-                prefix_rank = 0 if stem_l.startswith(needle_stem) else 1
-                matches.append((prefix_rank, ext_rank, -p.stat().st_mtime, p))
-    if matches:
-        matches.sort(key=lambda item: item[:3])
-        best = str(matches[0][3].resolve())
-        return best, duration, _classify_ext(best)
+        prefix_matches = []
+        for d in candidate_search_dirs():
+            for p in d.iterdir():
+                if not p.is_file() or p.suffix.lower() not in SUPPORTED_EXTS:
+                    continue
+                if p.stem.lower().startswith(needle_stem):
+                    prefix_matches.append((-p.stat().st_mtime, p))
+        if prefix_matches:
+            prefix_matches.sort(key=lambda item: item[0])
+            best = str(prefix_matches[0][1].resolve())
+            return best, duration, _classify_ext(best)
+
+    # 3. Default Book of Proof Wax Seal (only when bare/default alias is used)
+    if needle in DEFAULT_SEAL_ALIASES:
+        seal = default_wax_seal_path()
+        if seal:
+            return str(seal), duration, _classify_ext(str(seal))
 
     return "", duration, "IMAGE"
 
 
 def compute_centered_geometry(img_w, img_h, max_w=1440, max_h=840, screen_w=1920, screen_h=1080):
-    """Compute (win_w, win_h, pos_x, pos_y) centered on screen while preserving aspect ratio."""
-    scale = min(max_w / max(1, img_w), max_h / max(1, img_h))
-    win_w = max(256, int(round(img_w * scale)))
-    win_h = max(256, int(round(img_h * scale)))
+    """Compute (win_w, win_h, pos_x, pos_y) at 1:1 native pixel size, downscaling only if > max_w x max_h."""
+    scale = min(1.0, max_w / max(1, img_w), max_h / max(1, img_h))
+    win_w = max(16, int(round(img_w * scale)))
+    win_h = max(16, int(round(img_h * scale)))
     pos_x = max(0, (screen_w - win_w) // 2)
     pos_y = max(0, (screen_h - win_h) // 2)
     return win_w, win_h, pos_x, pos_y
 
 
-def prepare_backbuffer(src_path, max_w=1440, max_h=840, out_path=None):
-    """Pre-composite a still image onto a #111111 obsidian canvas in a back-buffer PNG."""
+def prepare_backbuffer(src_path, max_w=1440, max_h=840, matte=False, out_path=None):
+    """Prepare image at native 1:1 resolution (or downscaled if oversized), preserving RGBA alpha by default."""
     if not src_path or src_path.startswith(("http://", "https://", "file://")) or not os.path.isfile(src_path):
-        w, h, x, y = compute_centered_geometry(1440, 810, max_w=max_w, max_h=max_h)
+        w, h, x, y = compute_centered_geometry(512, 512, max_w=max_w, max_h=max_h)
         return src_path, False, w, h, x, y
 
     kind = _classify_ext(src_path)
@@ -215,17 +276,24 @@ def prepare_backbuffer(src_path, max_w=1440, max_h=840, out_path=None):
     if kind != "IMAGE":
         return src_path, False, win_w, win_h, pos_x, pos_y
 
+    needs_resize = (win_w, win_h) != (img_w, img_h)
+    if not needs_resize and not matte:
+        return src_path, False, win_w, win_h, pos_x, pos_y
+
     try:
         from PIL import Image
         with Image.open(src_path) as raw_im:
             rgba = raw_im.convert("RGBA")
-            if (win_w, win_h) != rgba.size:
+            if needs_resize:
                 rgba = rgba.resize((win_w, win_h), Image.Resampling.LANCZOS)
-            canvas = Image.new("RGB", (win_w, win_h), OBSIDIAN_RGB)
-            canvas.paste(rgba, (0, 0), mask=rgba.split()[3])
             dest = Path(out_path) if out_path else Path(f"/tmp/weebo_buf_{os.getpid()}_{int(time.time() * 1000)}.png")
             dest.parent.mkdir(parents=True, exist_ok=True)
-            canvas.save(dest, "PNG")
+            if matte:
+                canvas = Image.new("RGB", (win_w, win_h), OBSIDIAN_RGB)
+                canvas.paste(rgba, (0, 0), mask=rgba.split()[3])
+                canvas.save(dest, "PNG")
+            else:
+                rgba.save(dest, "PNG")
             return str(dest), True, win_w, win_h, pos_x, pos_y
     except Exception:
         return src_path, False, win_w, win_h, pos_x, pos_y
@@ -249,7 +317,7 @@ def _get_active_window_id(env):
 
 
 def _pin_above_and_restore_focus(orig_win, env):
-    time.sleep(0.25)
+    time.sleep(0.22)
     if shutil.which("wmctrl"):
         subprocess.run(
             ["wmctrl", "-r", MEDIA_OVERLAY_MARKER, "-b", "add,above"],
@@ -268,25 +336,28 @@ def _pin_above_and_restore_focus(orig_win, env):
         )
 
 
-def pop_weebo(spec, duration=8.0, mute=False, display=None, dry_run=False):
-    """Pop a self-terminating, double-buffered media overlay on X11 without stealing focus."""
-    target, dur, kind = resolve_media_target(spec, default_duration=duration)
+def pop_weebo(spec, duration=8.0, mute=False, matte=False, display=None, dry_run=False):
+    """Pop a self-terminating, native-size, alpha-transparent media overlay on X11 without stealing focus."""
+    target, dur, kind = resolve_media_target(spec, default_duration=duration, enroll=(not dry_run))
     if not target:
-        print(f"⚠️ Weebo could not resolve media asset: {spec!r}", file=sys.stderr)
+        print(f"⚠️ Weebo asset not found: {spec!r} (run `weebol` to list enrolled assets, or pass a file path)", file=sys.stderr)
         return 1
 
-    buf_path, composited, win_w, win_h, pos_x, pos_y = prepare_backbuffer(target)
-    geom_str = f"{win_w}x{win_h}+{pos_x}+{pos_y}"
+    img_w, img_h = read_image_dimensions(target) if os.path.isfile(target) else (512, 512)
+    alpha = has_alpha_channel(target) and not matte
+    buf_path, temp_created, win_w, win_h, pos_x, pos_y = prepare_backbuffer(target, matte=matte)
+    mpv_geom = f"{win_w}x{win_h}+50%+50%"
+    feh_geom = f"{win_w}x{win_h}+{pos_x}+{pos_y}"
 
     if dry_run:
-        if composited and buf_path != target and os.path.isfile(buf_path):
+        if temp_created and buf_path != target and os.path.isfile(buf_path):
             try:
                 os.remove(buf_path)
             except OSError:
                 pass
         print(
             f"WEEBO_DRY_RUN: kind={kind} | resolved={target} | "
-            f"composited={composited} | geom={geom_str} | duration={dur:.1f}s"
+            f"native_size={img_w}x{img_h} | alpha={alpha} | geom={mpv_geom} | duration={dur:.1f}s"
         )
         return 0
 
@@ -305,10 +376,12 @@ def pop_weebo(spec, duration=8.0, mute=False, display=None, dry_run=False):
                 f"--title={MEDIA_OVERLAY_MARKER}",
                 "--no-border",
                 "--ontop",
-                f"--geometry={geom_str}",
+                f"--geometry={mpv_geom}",
                 "--keep-open=no",
                 "--really-quiet",
             ]
+            if alpha:
+                cmd.extend(["--alpha=yes", "--background=none"])
             if kind == "IMAGE":
                 cmd.append(f"--image-display-duration={dur:.1f}")
             elif kind == "GIF":
@@ -327,9 +400,7 @@ def pop_weebo(spec, duration=8.0, mute=False, display=None, dry_run=False):
                 "--title", MEDIA_OVERLAY_MARKER,
                 "--borderless",
                 "--image-bg", "black",
-                "--auto-zoom",
-                "--scale-down",
-                "--geometry", geom_str,
+                "--geometry", feh_geom,
                 buf_path,
             ]
             proc = subprocess.Popen(cmd, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
@@ -352,7 +423,7 @@ def pop_weebo(spec, duration=8.0, mute=False, display=None, dry_run=False):
                     proc.kill()
                 except Exception:
                     pass
-        if composited and buf_path != target and os.path.isfile(buf_path):
+        if temp_created and buf_path != target and os.path.isfile(buf_path):
             try:
                 os.remove(buf_path)
             except OSError:
@@ -361,31 +432,50 @@ def pop_weebo(spec, duration=8.0, mute=False, display=None, dry_run=False):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Operation Weebo: Double-buffered X11 media overlay.")
-    parser.add_argument("spec", nargs="?", default="ambigram", help="Shorthand asset name, path, or 'list' (default: ambigram).")
-    parser.add_argument("-d", "--duration", type=float, default=8.0, help="Display duration in seconds (default: 8.0).")
+    parser = argparse.ArgumentParser(description="Operation Weebo: Native-resolution alpha-transparent X11 overlay.")
+    parser.add_argument("spec", nargs="?", default="seal", help="Shorthand name, file path, duration, or 'list' (default: seal).")
+    parser.add_argument("pos_duration", nargs="?", default=None, help="Optional duration in seconds as a second word (e.g. `weebo seal 4`).")
+    parser.add_argument("-d", "--duration", type=float, default=None, help="Display duration in seconds (default: 8.0).")
+    parser.add_argument("--matte", action="store_true", help="Composite transparent pixels over #111111 obsidian instead of transparent X11 alpha.")
     parser.add_argument("--mute", action="store_true", help="Mute audio on video clips.")
-    parser.add_argument("--remote", action="store_true", help="Stage and pop on Honeybot (:10.0) via ytsay/ytmedia.")
+    parser.add_argument("--remote", action="store_true", help="Deliberately stage to Honeybot and pop on :10.0.")
     parser.add_argument("--list", action="store_true", help="List available shorthand media assets.")
-    parser.add_argument("--dry-run", action="store_true", help="Verify resolution and back-buffer geometry without opening X11.")
+    parser.add_argument("--dry-run", action="store_true", help="Verify resolution and native geometry without opening X11.")
     args = parser.parse_args()
 
-    if args.list or str(args.spec).strip().lower() == "list":
+    spec_arg = str(args.spec or "seal").strip()
+    dur_val = args.duration if args.duration is not None else 8.0
+
+    # Allow bare numeric first arg (`weebo 4` -> default seal for 4 seconds)
+    try:
+        dur_val = float(spec_arg)
+        spec_arg = "seal"
+    except ValueError:
+        pass
+
+    if args.pos_duration is not None and args.duration is None:
+        try:
+            dur_val = float(args.pos_duration)
+        except ValueError:
+            pass
+
+    if args.list or spec_arg.lower() == "list":
         assets = list_shorthand_assets()
-        print(f"🤖 Operation Weebo Shorthand Library ({len(assets)} asset(s) found):")
-        for stem, path in assets[:25]:
-            print(f"   • {stem:<32} -> {path}")
+        print(f"🤖 Operation Weebo Library ({len(assets)} asset(s) — local dir: {LOCAL_WEEBO_DIR}):")
+        for label, path in assets[:30]:
+            w, h = read_image_dimensions(path)
+            a_tag = "alpha" if has_alpha_channel(path) else "opaque"
+            print(f"   • {label:<30} [{w}x{h} {a_tag}] -> {path}")
         return 0
 
     if args.remote:
         sys.path.insert(0, str(Path(__file__).resolve().parent / "articles"))
         from common import send_honeybot_live_message
-        spec_str = str(args.spec).strip()
-        if ":" not in spec_str and args.duration != 8.0:
-            spec_str = f"{spec_str}:{args.duration:g}"
-        return send_honeybot_live_message("", media_path=spec_str, dry_run=args.dry_run)
+        if ":" not in spec_arg and dur_val != 8.0:
+            spec_arg = f"{spec_arg}:{dur_val:g}"
+        return send_honeybot_live_message("", media_path=spec_arg, dry_run=args.dry_run)
 
-    return pop_weebo(args.spec, duration=args.duration, mute=args.mute, dry_run=args.dry_run)
+    return pop_weebo(spec_arg, duration=dur_val, mute=args.mute, matte=args.matte, dry_run=args.dry_run)
 
 
 if __name__ == "__main__":

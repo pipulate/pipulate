@@ -665,14 +665,18 @@ def _resolve_honeybot_media_target(raw_target):
         if c.is_file():
             return str(c.resolve())
     needle = Path(s.lower()).stem
+    if needle in ("seal", "wax", "ambigram", "ambigram-209", "default"):
+        for seal_cand in (
+            Path("/home/mike/www/mikelev.in/assets/weebo/ambigram-209.png"),
+            site_root / "assets" / "weebo" / "ambigram-209.png",
+            site_root / "assets" / "images" / "ambigram-209.png",
+        ):
+            if seal_cand.is_file():
+                return str(seal_cand.resolve())
     search_dirs = [
-        Path("/tmp/honeybot_media"),
-        site_root / "assets" / "weebo",
-        site_root / "_site" / "assets" / "images",
-        site_root / "assets" / "images",
         Path("/home/mike/www/mikelev.in/assets/weebo"),
-        Path("/home/mike/www/mikelev.in/_site/assets/images"),
-        Path("/home/mike/www/mikelev.in/assets/images"),
+        site_root / "assets" / "weebo",
+        Path("/tmp/honeybot_media"),
     ]
     for d in search_dirs:
         if not d.is_dir():
@@ -729,19 +733,19 @@ def conjure_media(media_spec, duration=15.0, mute=False):
             proc = subprocess.Popen(cmd, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             proc.wait(timeout=duration + 2.0)
         elif shutil.which("mpv"):
-            img_w, img_h = _read_image_dimensions(target) if os.path.isfile(target) else (1440, 810)
+            img_w, img_h = _read_image_dimensions(target) if os.path.isfile(target) else (512, 512)
             max_w, max_h = 1440, 840
-            scale = min(max_w / max(1, img_w), max_h / max(1, img_h))
-            win_w = max(256, int(round(img_w * scale)))
-            win_h = max(256, int(round(img_h * scale)))
-            pos_x = max(0, (1920 - win_w) // 2)
-            pos_y = max(0, (1080 - win_h) // 2)
+            scale = min(1.0, max_w / max(1, img_w), max_h / max(1, img_h))
+            win_w = max(16, int(round(img_w * scale)))
+            win_h = max(16, int(round(img_h * scale)))
             cmd = [
                 "mpv",
                 f"--title={MEDIA_OVERLAY_MARKER}",
                 "--no-border",
                 "--ontop",
-                f"--geometry={win_w}x{win_h}+{pos_x}+{pos_y}",
+                "--alpha=yes",
+                "--background=none",
+                f"--geometry={win_w}x{win_h}+50%+50%",
                 f"--image-display-duration={duration:.1f}",
                 "--keep-open=no",
                 "--really-quiet",
