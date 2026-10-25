@@ -18,15 +18,16 @@ TARGET="mike@192.168.10.100"
 # it alone so release.py can move all three doors without staging config or
 # sweeping scripts. Body only; no rebuild.
 sync_installer() {
-  echo "🚀 Syncing installer to the home-hosted doors (npvg.org, qamy.ai, levinix.org)..."
-  ssh $TARGET "mkdir -p ~/www/npvg.org ~/www/qamy.ai ~/www/levinix.org" \
+  echo "🚀 Syncing installer to the home-hosted doors (npvg.org, qamy.ai, levinix.org, sunpug.io)..."
+  ssh $TARGET "mkdir -p ~/www/npvg.org ~/www/qamy.ai ~/www/levinix.org ~/www/sunpug.io" \
     && rsync -av assets/installer/install.sh $TARGET:~/www/npvg.org/install.sh \
     && rsync -av assets/installer/install.sh $TARGET:~/www/qamy.ai/install.sh \
-    && rsync -av assets/installer/install.sh $TARGET:~/www/levinix.org/install.sh
+    && rsync -av assets/installer/install.sh $TARGET:~/www/levinix.org/install.sh \
+    && rsync -av assets/installer/install.sh $TARGET:~/www/sunpug.io/install.sh
 }
 if [ "${1:-}" = "--installer" ]; then
   if sync_installer; then
-    echo "✅ Installer synced to npvg.org, qamy.ai, and levinix.org (body only; no rebuild)."
+    echo "✅ Installer synced to npvg.org, qamy.ai, levinix.org, and sunpug.io (body only; no rebuild)."
     exit 0
   fi
   echo "❌ Installer sync failed; one or more doors still serve the previous file."

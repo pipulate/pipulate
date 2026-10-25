@@ -40,6 +40,7 @@
       "levinix.org" ("www." + "levinix.org")
       "levinix.com" ("www." + "levinix.com")
       "levinux.com" ("www." + "levinux.com")
+      "sunpug.io" ("www." + "sunpug.io")
     ];
   };
 
@@ -405,6 +406,47 @@
       };
     };
 
+    # THE SUNPUG DOOR (2026-10-24): SVNPvg -> SUNPug (the friendly vampire /
+    # Roman pugio sidearm). Combines the curl/wget installer door ($npvg_index
+    # stamped to 'sunpug') with RFC 9110 Accept: text/markdown negotiation
+    # (index.md) and browser HTML (index.html).
+    virtualHosts."sunpug.io" = {
+      forceSSL = true;
+      enableACME = true;
+      serverAliases = [ ("www." + "sunpug.io") ];
+      root = "/home/mike/www/sunpug.io";
+      extraConfig = ''
+        access_log /var/log/nginx/access.log ai_tracker;
+        access_log /var/log/nginx/sunpug.access.log ai_tracker;
+      '';
+      locations."= /" = {
+        extraConfig = ''
+          add_header Vary "Accept, User-Agent" always;
+          types {
+              text/html          html;
+              text/markdown      md;
+              text/x-shellscript sh;
+          }
+          sub_filter_types text/x-shellscript;
+          sub_filter_once off;
+          sub_filter '__INSTALL_DEFAULT_NAME__' 'sunpug';
+          if ($serve_markdown) {
+              rewrite ^ /index.md break;
+          }
+          try_files $npvg_index /index.md =404;
+        '';
+      };
+      locations."/" = {
+        extraConfig = ''
+          add_header Vary "Accept" always;
+          if ($serve_markdown) {
+              rewrite ^(.*)/$ $1/index.md break;
+              rewrite ^(.*[^/])$ $1/index.md break;
+          }
+          try_files $uri $uri/index.html $uri/index.md =404;
+        '';
+      };
+    };
     # THE LEVINIX.COM REDIRECT (2026-10-23): Retires the .com in favor of the
     # non-commercial .org Commons door while logging every redirect hit to the
     # unified access.log so traffic scrolls as [levinix.com] on Honeybot's HUD.

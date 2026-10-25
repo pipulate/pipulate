@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# The installer behind pipulate.com, npvg.org and qamy.ai
-# =======================================================
+# The installer behind pipulate.com, npvg.org, qamy.ai and sunpug.io
+# ==================================================================
 #
 # You are reading this because you piped it to less instead of bash.
 # That is the first QA step: verifying the contract before execution.
@@ -140,6 +140,13 @@ door_row() {
       DOOR_WELCOME1="Welcome. We are ready to Q/A your AI with the Flight Data Recorder (FDR)"
       DOOR_WELCOME2='which is different from Cockpit Voice Recorder (CVR), or "what Claude said".'
       DOOR_TAGLINE="Treat claims as confident hallucination until reproduced."
+      ;;
+    sunpug)
+      DOOR_FOLDER="sunpug"
+      DOOR_WORKSHOP="This Portable AI Discussion workshop talks you through steps."
+      DOOR_WELCOME1="Welcome. Ready to invite Sun Pug in and free your AI discussions"
+      DOOR_WELCOME2="from disposable browser tabs into local, portable plain text."
+      DOOR_TAGLINE="Inspect with curl | less first; own the transcript and the flight recorder."
       ;;
   esac
 }
