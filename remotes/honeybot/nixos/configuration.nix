@@ -320,6 +320,12 @@
 
       locations."/" = {
         extraConfig = ''
+          if ($new_uri) {
+              return 301 https://mikelev.in$new_uri;
+          }
+          if (!-e $request_filename) {
+              return 301 https://mikelev.in$request_uri;
+          }
           try_files $uri $uri/index.html =404;
         '';
       };
@@ -360,6 +366,12 @@
 
       locations."/" = {
         extraConfig = ''
+          if ($new_uri) {
+              return 301 https://mikelev.in$new_uri;
+          }
+          if (!-e $request_filename) {
+              return 301 https://mikelev.in$request_uri;
+          }
           try_files $uri $uri/index.html =404;
         '';
       };
@@ -400,6 +412,12 @@
       locations."/" = {
         extraConfig = ''
           add_header Vary "Accept" always;
+          if ($new_uri) {
+              return 301 https://mikelev.in$new_uri;
+          }
+          if (!-e $request_filename) {
+              return 301 https://mikelev.in$request_uri;
+          }
           if ($serve_markdown) {
               rewrite ^(.*)/$ $1/index.md break;
               rewrite ^(.*[^/])$ $1/index.md break;
@@ -443,7 +461,7 @@
           if ($new_uri) {
               return 301 https://mikelev.in$new_uri;
           }
-          if ($uri ~ ^/futureproof/) {
+          if (!-e $request_filename) {
               return 301 https://mikelev.in$request_uri;
           }
           if ($serve_markdown) {
@@ -486,6 +504,12 @@
       locations."/" = {
         extraConfig = ''
           add_header Vary "Accept" always;
+          if ($new_uri) {
+              return 301 https://mikelev.in$new_uri;
+          }
+          if (!-e $request_filename) {
+              return 301 https://mikelev.in$request_uri;
+          }
           if ($serve_markdown) {
               rewrite ^(.*)/$ $1/index.md break;
               rewrite ^(.*[^/])$ $1/index.md break;
@@ -526,6 +550,12 @@
       locations."/" = {
         extraConfig = ''
           add_header Vary "Accept" always;
+          if ($new_uri) {
+              return 301 https://mikelev.in$new_uri;
+          }
+          if (!-e $request_filename) {
+              return 301 https://mikelev.in$request_uri;
+          }
           if ($serve_markdown) {
               rewrite ^(.*)/$ $1/index.md break;
               rewrite ^(.*[^/])$ $1/index.md break;
@@ -568,6 +598,12 @@
       locations."/" = {
         extraConfig = ''
           add_header Vary "Accept" always;
+          if ($new_uri) {
+              return 301 https://mikelev.in$new_uri;
+          }
+          if (!-e $request_filename) {
+              return 301 https://mikelev.in$request_uri;
+          }
           if ($serve_markdown) {
               rewrite ^(.*)/$ $1/index.md break;
               rewrite ^(.*[^/])$ $1/index.md break;
