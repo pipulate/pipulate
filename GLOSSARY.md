@@ -1274,6 +1274,12 @@ Entries are alphabetical, numbers spelled as spoken.
   closing grep -n receipt. THE DISPLACEMENT RECEIPT carries the rg -n form of
   the same rule: a line number is an absolute, and its movement across the
   patch is the receipt.
+- **The Derived-Path Rule** -- *expanded rule; banked before 2026-08-07.*
+
+~~~text
+# **THE DERIVED-PATH RULE:** an agent's write-target must be a pure function of an identity value it reads and cannot author. If the agent *chooses* where to write, every guard downstream is etiquette. If it *computes* where to write, collision is unrepresentable -- the property that makes `/opt/<vendor>`, npm scopes, and the Nix store safe without any of them trusting their writers.
+~~~
+
 - **The Diffstat Is Not The Block Count** -- *expanded rule; banked 2026-09-15.*
 
 ~~~text
