@@ -625,6 +625,12 @@ Entries are alphabetical, numbers spelled as spoken.
 # afterward. Exercises the hard half; costs no publish.
 ~~~
 
+- **The Actuator Is a Car** -- *expanded rule; banked 2026-08-30.*
+
+~~~text
+# THE ACTUATOR IS A CAR: anything that runs against a server (--check, tools/list, tools/call, --refresh) rides in PATCHES as its own numbered car, after the patches it depends on, never previewed above them. Sibling of ONE TIMELINE, NO PREVIEWS (2026-08-30; its body moved here from apply.py on 2026-09-26).
+~~~
+
 - **The Actuator Is Not the Ledger** -- *expanded rule; banked 2026-09-26.*
 
 ~~~text
