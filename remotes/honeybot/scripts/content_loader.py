@@ -340,10 +340,29 @@ def clean_markdown(text, label=None, census=True):
             try:
                 duration = float(parts[1].strip())
             except ValueError:
-                asset_name = payload
+                return ""
+        if (
+            not asset_name
+            or ":" in asset_name
+            or "." * 3 in asset_name
+            or asset_name.lower() in {"name", "shorthand", "key", "path", "asset", "spec"}
+        ):
+            return ""
         duration = max(0.75, min(max_dur, duration))
         return _register_pp4_cue(cue_kind, asset_name, duration)
 
+    # Strip fenced code blocks and disarm backticked inline-code examples
+    # (e.g. `[[[weebo:name:seconds]]]` or `<!-- weebo: name -->` in prose)
+    # BEFORE capturing live player-piano cues so documentation never fires as a cue.
+    CODE_SENTINEL = '\x00CODEBLOCK\x00'
+    text = re.sub(r'```.*?```', f' {CODE_SENTINEL} ', text, flags=re.DOTALL)
+    text = re.sub(
+        r'`([^`\n]+)`',
+        lambda m: '`' + re.sub(r'\[{2,}|\]{2,}|<!--|-->', '', m.group(1)) + '`'
+        if ('[[' in m.group(1) or '<!--' in m.group(1))
+        else m.group(0),
+        text,
+    )
     # Capture both HTML comments (<!-- pp4: ... --> / <!-- weebo: ... -->) and
     # triple-bracket player-piano cues ([[[weebo:ambigram:6]]]) before stripping.
     text = re.sub(r'<!--\s*(pp4|weebo|media)\b(?::|\s)?(.*?)-->', capture_pp4_comment, text, flags=re.IGNORECASE | re.DOTALL)

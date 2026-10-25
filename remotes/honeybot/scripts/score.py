@@ -21,16 +21,22 @@ def append_article_content(script, article):
         chunk = chunk.strip()
         if chunk.startswith("[[PATRONUS:") and chunk.endswith("]]"):
             inner = chunk[len("[[PATRONUS:"):-2].strip()
-            parts = inner.split(":", 1)
+            parts = inner.rsplit(":", 1)
             key = parts[0].strip()
-            duration = float(parts[1]) if len(parts) > 1 else 3.5
+            try:
+                duration = float(parts[1]) if len(parts) > 1 else 3.5
+            except ValueError:
+                duration = 3.5
             if key:
                 script.append(("PATRONUS", {"key": key, "duration": duration}))
         elif chunk.startswith("[[MEDIA:") and chunk.endswith("]]"):
             inner = chunk[len("[[MEDIA:"):-2].strip()
-            parts = inner.split(":", 1)
+            parts = inner.rsplit(":", 1)
             key = parts[0].strip()
-            duration = float(parts[1]) if len(parts) > 1 else 8.0
+            try:
+                duration = float(parts[1]) if len(parts) > 1 else 8.0
+            except ValueError:
+                duration = 8.0
             if key:
                 script.append(("MEDIA", {"path": key, "duration": duration}))
         elif chunk and len(chunk) > 2:
