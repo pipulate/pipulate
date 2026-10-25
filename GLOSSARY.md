@@ -3533,6 +3533,12 @@ Entries are alphabetical, numbers spelled as spoken.
 # never the default first move inside a Prompt Fu ride.
 ~~~
 
+- **The Surviving Fallback** -- *expanded rule; banked 2026-09-04.*
+
+~~~text
+# § THE SURVIVING FALLBACK (banked 2026-09-04) -- sibling of THE EPITAPH COUNTER, opposite direction: a probe anchored on a string the patch DEMOTES rather than DELETES reads the same number before and after, because the survivor is the point of the change. Conviction: grep -c "get('url'" predicted 1 -> 0 against a patch that rewrote `.get('url', default)` into `base_url or url or default`, so the key it counted was deliberately kept. Ask before predicting a zero: does the patch remove this string, or demote it? If demote, the probe is unfalsifiable and the git diff is the only honest witness. RETIRE such a probe rather than repairing it; a reading that is identical in both worlds trains the operator to skip probe output. GIT FORM (2026-09-05): git log -S counts a string per commit and is blind to a commit that MOVES it, so -S 'pipulate/core.py' named an old refactor while 3799ffbc carried that path from a chapter into the paintbox; -G matches diff lines and would have named it. A moved string is a demoted string.
+~~~
+
 - **The Talmud-Page Rule** -- *expanded rule; banked 2026-07-22.*
 
 ~~~text
