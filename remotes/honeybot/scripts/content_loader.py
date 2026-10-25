@@ -14,21 +14,21 @@ BASE_URL = "https://mikelev.in"
 
 # ... existing imports ...
 
-# Global cache to track state
-_last_scan_time = 0
-_last_file_count = 0
+# Global cache to track state (preserved across importlib.reload)
+_last_scan_time = globals().get("_last_scan_time", 0)
+_last_file_count = globals().get("_last_file_count", 0)
 
 # The breaking-news bell. The post-receive hook writes a fresh epoch timestamp here
 # on every push, which lets us retry "read the newest article" even when the article
 # content itself did not change (e.g. an --allow-empty re-push).
 TRIGGER_FILE = Path("/home/mike/www/mikelev.in/.reading_trigger")
-_last_trigger = None
+_last_trigger = globals().get("_last_trigger", None)
 
 # The deploy stand-by bell. The post-receive hook writes a fresh epoch timestamp
 # here at the START of a deploy (before the long build), so the stream can announce
 # "stand by" and HOLD narration instead of thrashing through the whole build.
 STANDBY_FILE = Path("/home/mike/www/mikelev.in/.deploy_standby")
-_last_standby = "__UNINIT__"
+_last_standby = globals().get("_last_standby", "__UNINIT__")
 
 
 def check_standby():
@@ -230,7 +230,7 @@ def get_playlist(recent_n=10, include_archive=True):
             clean_text = clean_markdown(
                 body_text,
                 label=filename,
-                census=(datetime.now().date() - post_date).days <= 7,
+                census=include_archive and (datetime.now().date() - post_date).days <= 7,
             )
             
             all_articles.append({
@@ -260,6 +260,10 @@ def get_playlist(recent_n=10, include_archive=True):
             _last_scan_time = stat.st_mtime
             files = list(POSTS_DIR.glob("*.md")) + list(POSTS_DIR.glob("*.markdown"))
             _last_file_count = len(files)
+            try:
+                _last_trigger = TRIGGER_FILE.read_text().strip()
+            except FileNotFoundError:
+                _last_trigger = None
         except: pass
         
         if not include_archive:
