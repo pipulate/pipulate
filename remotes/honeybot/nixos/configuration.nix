@@ -41,6 +41,9 @@
       "levinix.com" ("www." + "levinix.com")
       "levinux.com" ("www." + "levinux.com")
       "sunpug.io" ("www." + "sunpug.io")
+      "guerillatech.com" ("www." + "guerillatech.com")
+      "rfc9110.org" ("www." + "rfc9110.org")
+      "rfc9111.io" ("www." + "rfc9111.io")
     ];
   };
 
@@ -394,6 +397,126 @@
         '';
       };
 
+      locations."/" = {
+        extraConfig = ''
+          add_header Vary "Accept" always;
+          if ($serve_markdown) {
+              rewrite ^(.*)/$ $1/index.md break;
+              rewrite ^(.*[^/])$ $1/index.md break;
+          }
+          try_files $uri $uri/index.html $uri/index.md =404;
+        '';
+      };
+    };
+
+    # THE GUERILLATECH DOOR (2026-10-25): Target 5 in blogs.nix (Nix vs. Docker
+    # for DIY Home-Hosting & AI-Bot Observatories).
+    virtualHosts."guerillatech.com" = {
+      forceSSL = true;
+      enableACME = true;
+      serverAliases = [ ("www." + "guerillatech.com") ];
+      root = "/home/mike/www/guerillatech.com";
+      extraConfig = ''
+        access_log /var/log/nginx/access.log ai_tracker;
+        access_log /var/log/nginx/guerillatech.access.log ai_tracker;
+      '';
+      locations."= /" = {
+        extraConfig = ''
+          add_header Vary "Accept, User-Agent" always;
+          types {
+              text/html          html;
+              text/markdown      md;
+              text/x-shellscript sh;
+          }
+          sub_filter_types text/x-shellscript;
+          sub_filter_once off;
+          sub_filter '__INSTALL_DEFAULT_NAME__' 'guerillatech';
+          if ($serve_markdown) {
+              rewrite ^ /index.md break;
+          }
+          try_files $npvg_index /index.md =404;
+        '';
+      };
+      locations."/" = {
+        extraConfig = ''
+          add_header Vary "Accept" always;
+          if ($serve_markdown) {
+              rewrite ^(.*)/$ $1/index.md break;
+              rewrite ^(.*[^/])$ $1/index.md break;
+          }
+          try_files $uri $uri/index.html $uri/index.md =404;
+        '';
+      };
+    };
+
+    # THE RFC 9110 DOOR (2026-10-25): Target 6 in blogs.nix (Proactive HTTP
+    # Content Negotiation for the Semantic Internet).
+    virtualHosts."rfc9110.org" = {
+      forceSSL = true;
+      enableACME = true;
+      serverAliases = [ ("www." + "rfc9110.org") ];
+      root = "/home/mike/www/rfc9110.org";
+      extraConfig = ''
+        access_log /var/log/nginx/access.log ai_tracker;
+        access_log /var/log/nginx/rfc9110.access.log ai_tracker;
+      '';
+      locations."= /" = {
+        extraConfig = ''
+          add_header Vary "Accept, User-Agent" always;
+          types {
+              text/html          html;
+              text/markdown      md;
+              text/x-shellscript sh;
+          }
+          sub_filter_types text/x-shellscript;
+          sub_filter_once off;
+          sub_filter '__INSTALL_DEFAULT_NAME__' 'rfc9110';
+          if ($serve_markdown) {
+              rewrite ^ /index.md break;
+          }
+          try_files $npvg_index /index.md =404;
+        '';
+      };
+      locations."/" = {
+        extraConfig = ''
+          add_header Vary "Accept" always;
+          if ($serve_markdown) {
+              rewrite ^(.*)/$ $1/index.md break;
+              rewrite ^(.*[^/])$ $1/index.md break;
+          }
+          try_files $uri $uri/index.html $uri/index.md =404;
+        '';
+      };
+    };
+
+    # THE RFC 9111 DOOR (2026-10-25): Target 7 in blogs.nix (Retiring wasteful
+    # pre-render solutions via Vary: Accept, User-Agent edge caching).
+    virtualHosts."rfc9111.io" = {
+      forceSSL = true;
+      enableACME = true;
+      serverAliases = [ ("www." + "rfc9111.io") ];
+      root = "/home/mike/www/rfc9111.io";
+      extraConfig = ''
+        access_log /var/log/nginx/access.log ai_tracker;
+        access_log /var/log/nginx/rfc9111.access.log ai_tracker;
+      '';
+      locations."= /" = {
+        extraConfig = ''
+          add_header Vary "Accept, User-Agent" always;
+          types {
+              text/html          html;
+              text/markdown      md;
+              text/x-shellscript sh;
+          }
+          sub_filter_types text/x-shellscript;
+          sub_filter_once off;
+          sub_filter '__INSTALL_DEFAULT_NAME__' 'rfc9111';
+          if ($serve_markdown) {
+              rewrite ^ /index.md break;
+          }
+          try_files $npvg_index /index.md =404;
+        '';
+      };
       locations."/" = {
         extraConfig = ''
           add_header Vary "Accept" always;

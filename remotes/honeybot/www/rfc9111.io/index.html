@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RFC 9111 (rfc9111.io): Retiring Wasteful Pre-Render Solutions with HTTP Caching</title>
+<style>
+  body { max-width: 42rem; margin: 3rem auto; padding: 0 1rem; font: 18px/1.5 Georgia, serif; }
+  pre  { padding: 1rem; background: #f4f4f4; overflow-x: auto; }
+  blockquote { margin: 1.5rem 0; padding-left: 1rem; border-left: 3px solid #ccc; color: #444; }
+</style>
+</head>
+<body>
+<h1>RFC 9111: Retiring Wasteful Pre-Render Solutions</h1>
+<p>Paying thousands of dollars a month to run headless Chromium clusters that pre-render JavaScript into disposable HTML snapshots for bots is an architectural tax on a solved problem. <strong>RFC 9111 Section 4.1 (Calculating Secondary Keys with <code>Vary</code>)</strong> lets your CDN cache both human HTML and agent-ready Markdown at the network edge from one origin URL.</p>
+<p>Inspect the reference harness in <code>less</code> first (scroll with <code>j</code> and <code>k</code>, quit with <code>q</code>):</p>
+<pre>curl -fsSL https&#58;//rfc9111&#46;io | less</pre>
+<p>When you are ready to launch the local edge-caching audit workbench in <code>~/rfc9111</code>:</p>
+<pre>curl -fsSL https&#58;//rfc9111&#46;io | bash</pre>
+<h2>Why Bimodal Edge Caching Beats Dynamic Pre-Rendering</h2>
+<ul>
+  <li><strong>Zero Headless-Browser Compute Tax</strong> &mdash; static HTML and static Markdown sit side-by-side in edge RAM, partitioned cleanly by <code>Vary&#58; Accept, User-Agent</code>.</li>
+  <li><strong>Zero Cloaking Liability</strong> &mdash; every representation is declared openly in standard HTTP response headers rather than hiding behind brittle user-agent sniffing middleware.</li>
+  <li><strong>Instant Time-to-First-Byte for AI Grounding</strong> &mdash; RAG and search agents receive compact Markdown in milliseconds instead of waiting for a headless browser spin-up.</li>
+</ul>
+<p><a href="https&#58;//mikelev&#46;in/">The book this grew out of</a> &middot; <a href="https&#58;//rfc9110&#46;org/">RFC 9110 Semantics</a> &middot; <a href="https&#58;//sunpug&#46;io/">Sun Pug</a> &middot; <a href="https&#58;//qamy&#46;ai/">QA My AI</a> &middot; <a href="https&#58;//npvg&#46;org/">NPvg</a> &middot; <a href="https&#58;//levinix&#46;org/">Levinix</a> &middot; <a href="https&#58;//guerillatech&#46;com/">GuerillaTech</a> &middot; <a href="https&#58;//pipulate&#46;com/">Pipulate</a></p>
+</body>
+</html>

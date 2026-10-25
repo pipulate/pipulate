@@ -17,17 +17,17 @@ TARGET="mike@192.168.10.100"
 # pad list, the full sync calls it below, and `./nixops.sh --installer` runs
 # it alone so release.py can move all three doors without staging config or
 # sweeping scripts. Body only; no rebuild.
+INSTALLER_DOORS="npvg.org qamy.ai levinix.org sunpug.io guerillatech.com rfc9110.org rfc9111.io"
 sync_installer() {
-  echo "🚀 Syncing installer to the home-hosted doors (npvg.org, qamy.ai, levinix.org, sunpug.io)..."
-  ssh $TARGET "mkdir -p ~/www/npvg.org ~/www/qamy.ai ~/www/levinix.org ~/www/sunpug.io" \
-    && rsync -av assets/installer/install.sh $TARGET:~/www/npvg.org/install.sh \
-    && rsync -av assets/installer/install.sh $TARGET:~/www/qamy.ai/install.sh \
-    && rsync -av assets/installer/install.sh $TARGET:~/www/levinix.org/install.sh \
-    && rsync -av assets/installer/install.sh $TARGET:~/www/sunpug.io/install.sh
+  echo "🚀 Syncing installer to the home-hosted doors ($INSTALLER_DOORS)..."
+  for door in $INSTALLER_DOORS; do
+    ssh $TARGET "mkdir -p ~/www/$door" \
+      && rsync -av assets/installer/install.sh "$TARGET:~/www/$door/install.sh" || return 1
+  done
 }
 if [ "${1:-}" = "--installer" ]; then
   if sync_installer; then
-    echo "✅ Installer synced to npvg.org, qamy.ai, levinix.org, and sunpug.io (body only; no rebuild)."
+    echo "✅ Installer synced to $INSTALLER_DOORS (body only; no rebuild)."
     exit 0
   fi
   echo "❌ Installer sync failed; one or more doors still serve the previous file."
@@ -83,9 +83,11 @@ ssh $TARGET "mkdir -p ~/www/levinux.com ~/www/levinix.org"
 rsync -av remotes/honeybot/www/levinux.com/ "$LEVINUX_CACHE/" $TARGET:~/www/levinux.com/
 rsync -av remotes/honeybot/www/levinix.org/ $TARGET:~/www/levinix.org/
 
-echo "🚀 Syncing sunpug.io door (SVNPvg -> SUNPug)..."
-ssh $TARGET "mkdir -p ~/www/sunpug.io"
-rsync -av remotes/honeybot/www/sunpug.io/ $TARGET:~/www/sunpug.io/
+for door in sunpug.io guerillatech.com rfc9110.org rfc9111.io; do
+  echo "🚀 Syncing $door door..."
+  ssh $TARGET "mkdir -p ~/www/$door"
+  rsync -av "remotes/honeybot/www/$door/" "$TARGET:~/www/$door/"
+done
 
 echo "🚀 Syncing NixOS Config..."
 rsync --delete -av remotes/honeybot/nixos/ $TARGET:~/nixos-config-staged/

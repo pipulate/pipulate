@@ -346,7 +346,7 @@ class SonarApp(App):
         if re.match(r"^\d+(\.\d+)+$", h) or ":" in h:
             return "mikelev.in"
         for known in (
-            "mikelev.in", "qamy.ai", "npvg.org",
+            "mikelev.in", "qamy.ai", "npvg.org", "sunpug.io",
             "levinix.org", "levinix.com", "levinux.com",
             "pipulate.com", "guerillatech.com", "rfc9110.org", "rfc9111.io", "rfc9111.com",
         ):
@@ -356,6 +356,8 @@ class SonarApp(App):
             return "qamy.ai"
         if "npvg" in h:
             return "npvg.org"
+        if "sunpug" in h:
+            return "sunpug.io"
         if "levinix" in h:
             return "levinix.org"
         if "levinux" in h:

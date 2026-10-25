@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# The installer behind pipulate.com, npvg.org, qamy.ai and sunpug.io
-# ==================================================================
+# The installer behind pipulate.com, npvg.org, qamy.ai, levinix.org, sunpug.io, guerillatech.com, rfc9110.org and rfc9111.io
+# ==========================================================================================================================
 #
 # You are reading this because you piped it to less instead of bash.
 # That is the first QA step: verifying the contract before execution.
@@ -147,6 +147,34 @@ door_row() {
       DOOR_WELCOME1="Welcome. Ready to invite Sun Pug in and free your AI discussions"
       DOOR_WELCOME2="from disposable browser tabs into local, portable plain text."
       DOOR_TAGLINE="Inspect with curl | less first; own the transcript and the flight recorder."
+      ;;
+    levinix)
+      DOOR_FOLDER="levinix"
+      DOOR_WORKSHOP="This Write-Once-Run-Anywhere Nix Flake workshop talks you through steps."
+      DOOR_WELCOME1="Welcome. Ready to replace bloated Electron containers with deterministic"
+      DOOR_WELCOME2="Nix flakes that run identically across Linux, macOS, and WSL."
+      DOOR_TAGLINE="One flake.nix, every platform; hardware is just a projection."
+      ;;
+    guerillatech)
+      DOOR_FOLDER="guerillatech"
+      DOOR_WORKSHOP="This DIY Bare-Metal Home-Hosting workshop talks you through steps."
+      DOOR_WELCOME1="Welcome. Ready to trade fragile Docker Compose sprawl and cloud rent"
+      DOOR_WELCOME2="for a declarative NixOS home appliance and live AI-bot observatory."
+      DOOR_TAGLINE="Own the metal, read the wire, and broadcast from home."
+      ;;
+    rfc9110)
+      DOOR_FOLDER="rfc9110"
+      DOOR_WORKSHOP="This RFC 9110 HTTP Content Negotiation workshop talks you through steps."
+      DOOR_WELCOME1="Welcome. Ready to serve clean Markdown to AI agents (Accept: text/markdown)"
+      DOOR_WELCOME2="and semantic HTML to human browsers from one canonical URI."
+      DOOR_TAGLINE="Speak native HTTP semantics; retire the headless browser tax."
+      ;;
+    rfc9111)
+      DOOR_FOLDER="rfc9111"
+      DOOR_WORKSHOP="This RFC 9111 Bimodal Edge-Caching workshop talks you through steps."
+      DOOR_WELCOME1="Welcome. Ready to partition your CDN cache with Vary: Accept, User-Agent"
+      DOOR_WELCOME2="and retire wasteful dynamic pre-rendering clusters for good."
+      DOOR_TAGLINE="Cache both representations at the edge; never pre-render what HTTP can negotiate."
       ;;
   esac
 }

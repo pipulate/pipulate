@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GuerillaTech (guerillatech.com): Nix vs. Docker for DIY Home-Hosting</title>
+<style>
+  body { max-width: 42rem; margin: 3rem auto; padding: 0 1rem; font: 18px/1.5 Georgia, serif; }
+  pre  { padding: 1rem; background: #f4f4f4; overflow-x: auto; }
+  blockquote { margin: 1.5rem 0; padding-left: 1rem; border-left: 3px solid #ccc; color: #444; }
+</style>
+</head>
+<body>
+<h1>Nix vs. Docker for DIY Home-Hosting</h1>
+<p>Cloud rent and fragile Docker Compose YAML sprawl are optional. A ten-year-old laptop running declarative NixOS can serve eight domains, terminate Let's Encrypt TLS, log live AI-crawler wire telemetry into SQLite, and broadcast a 24/7 radio-style observability stream from your spare room.</p>
+<p>Inspect the bootstrap contract through the read-only <code>less</code> window first:</p>
+<pre>curl -fsSL https&#58;//guerillatech&#46;com | less</pre>
+<p>Nothing executes while you read. Use <code>j</code> to scroll down, <code>k</code> to scroll up, and <code>q</code> to quit cleanly.</p>
+<p>When you are ready to build your local workshop in <code>~/guerillatech</code>:</p>
+<pre>curl -fsSL https&#58;//guerillatech&#46;com | bash</pre>
+<h2>Why Nix Beats Containers for Sovereign Appliances</h2>
+<ul>
+  <li><strong>Deterministic Math Over Layered Blobs</strong> &mdash; one <code>configuration.nix</code> and <code>flake.nix</code> file defines your OS, Nginx virtual hosts, systemd timers, and Python environment without shipping gigabytes of duplicate container userlands.</li>
+  <li><strong>Unblindfolded Wire Telemetry</strong> &mdash; observe real AI crawlers (RFC 9110 Markdown negotiation, RFC 9421 cryptographic signatures, and DOM-hydration trapdoors) directly on your own metal.</li>
+  <li><strong>Atomic Rollbacks</strong> &mdash; if an upgrade ever misbehaves, boot the previous NixOS generation in seconds.</li>
+</ul>
+<p><a href="https&#58;//mikelev&#46;in/">The book this grew out of</a> &middot; <a href="https&#58;//sunpug&#46;io/">Sun Pug</a> &middot; <a href="https&#58;//qamy&#46;ai/">QA My AI</a> &middot; <a href="https&#58;//npvg&#46;org/">NPvg</a> &middot; <a href="https&#58;//levinix&#46;org/">Levinix</a> &middot; <a href="https&#58;//rfc9110&#46;org/">RFC 9110</a> &middot; <a href="https&#58;//rfc9111&#46;io/">RFC 9111</a> &middot; <a href="https&#58;//pipulate&#46;com/">Pipulate</a></p>
+</body>
+</html>
