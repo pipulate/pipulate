@@ -316,11 +316,178 @@ def _get_active_window_id(env):
         return ""
 
 
+def _find_x11_lib(lib_name):
+    """Locate libX11.so.6 or libXext.so.6 via ldd on wmctrl/xdotool/mpv (NixOS store-safe)."""
+    for bin_name in ("wmctrl", "xdotool", "feh", "mpv"):
+        bin_path = shutil.which(bin_name)
+        if not bin_path:
+            continue
+        try:
+            res = subprocess.run(
+                ["ldd", bin_path],
+                capture_output=True,
+                text=True,
+                timeout=1.5,
+                check=False,
+            )
+            for line in (res.stdout or "").splitlines():
+                if lib_name in line and "=>" in line:
+                    rhs = line.split("=>", 1)[1].strip().split()[0]
+                    if os.path.isfile(rhs):
+                        return rhs
+        except Exception:
+            pass
+    return lib_name
+
+
+def _build_1bit_alpha_mask(img_path, win_w, win_h, threshold=24):
+    """Pack an image's alpha channel (> threshold) into X11 XBM 1-bit LSB-first row bytes."""
+    if not img_path or not os.path.isfile(img_path):
+        return None
+    try:
+        from PIL import Image
+        with Image.open(img_path) as im:
+            rgba = im.convert("RGBA")
+            if rgba.size != (win_w, win_h):
+                rgba = rgba.resize((win_w, win_h), Image.Resampling.LANCZOS)
+            alpha_bytes = rgba.split()[3].tobytes()
+        row_bytes = (win_w + 7) // 8
+        mask_buf = bytearray(row_bytes * win_h)
+        for y in range(win_h):
+            row_off = y * win_w
+            out_off = y * row_bytes
+            for x in range(win_w):
+                if alpha_bytes[row_off + x] > threshold:
+                    mask_buf[out_off + (x >> 3)] |= 1 << (x & 7)
+        return bytes(mask_buf)
+    except Exception:
+        return None
+
+
+def _apply_x11_shape_mask(win_id, mask_bytes, win_w, win_h, env):
+    """Apply a 1-bit cookie-cutter XShapeCombineMask to an X11 window ID via libX11 + libXext."""
+    if not win_id or not mask_bytes:
+        return False
+    try:
+        import ctypes
+        x11_path = _find_x11_lib("libX11.so.6")
+        xext_path = _find_x11_lib("libXext.so.6")
+        libX11 = ctypes.CDLL(x11_path)
+        libXext = ctypes.CDLL(xext_path)
+
+        libX11.XOpenDisplay.argtypes = [ctypes.c_char_p]
+        libX11.XOpenDisplay.restype = ctypes.c_void_p
+        libX11.XCreateBitmapFromData.argtypes = [
+            ctypes.c_void_p, ctypes.c_ulong, ctypes.c_char_p, ctypes.c_uint, ctypes.c_uint
+        ]
+        libX11.XCreateBitmapFromData.restype = ctypes.c_ulong
+        libX11.XFreePixmap.argtypes = [ctypes.c_void_p, ctypes.c_ulong]
+        libX11.XFlush.argtypes = [ctypes.c_void_p]
+        libX11.XCloseDisplay.argtypes = [ctypes.c_void_p]
+
+        libXext.XShapeCombineMask.argtypes = [
+            ctypes.c_void_p, ctypes.c_ulong, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_ulong, ctypes.c_int
+        ]
+
+        dpy_name = (env.get("DISPLAY") or ":0").encode("utf-8")
+        dpy = libX11.XOpenDisplay(dpy_name)
+        if not dpy:
+            return False
+        try:
+            wid = int(str(win_id).strip(), 0)
+            bmap = libX11.XCreateBitmapFromData(dpy, wid, mask_bytes, int(win_w), int(win_h))
+            if not bmap:
+                return False
+            # ShapeBounding = 0, ShapeClip = 2, ShapeSet = 0
+            libXext.XShapeCombineMask(dpy, wid, 0, 0, 0, bmap, 0)
+            libXext.XShapeCombineMask(dpy, wid, 2, 0, 0, bmap, 0)
+            libX11.XFreePixmap(dpy, bmap)
+            libX11.XFlush(dpy)
+            return True
+        finally:
+            libX11.XCloseDisplay(dpy)
+    except Exception:
+        return False
+
+
+def _pop_with_qt(buf_path, kind, dur, pos_x, pos_y, win_w, win_h, alpha, env):
+    """Pop a true cookie-cutter frameless overlay using PyQt6 setMask() + WA_TranslucentBackground."""
+    import importlib.util
+    if not importlib.util.find_spec("PyQt6") or kind not in ("IMAGE", "GIF"):
+        return False
+    qt_code = """
+import sys
+from PyQt6.QtCore import Qt, QTimer
+from PyQt6.QtGui import QMovie, QPixmap
+from PyQt6.QtWidgets import QApplication, QLabel
+
+path, kind, dur, x, y, w, h, use_alpha, title = (
+    sys.argv[1], sys.argv[2], float(sys.argv[3]),
+    int(sys.argv[4]), int(sys.argv[5]), int(sys.argv[6]), int(sys.argv[7]),
+    sys.argv[8] == "1", sys.argv[9]
+)
+app = QApplication(sys.argv[:1])
+lbl = QLabel()
+lbl.setWindowTitle(title)
+lbl.setWindowFlags(
+    Qt.WindowType.FramelessWindowHint
+    | Qt.WindowType.WindowStaysOnTopHint
+    | Qt.WindowType.Tool
+    | Qt.WindowType.WindowDoesNotAcceptFocus
+)
+lbl.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground, True)
+lbl.setAttribute(Qt.WidgetAttribute.WA_NoSystemBackground, True)
+lbl.setAttribute(Qt.WidgetAttribute.WA_ShowWithoutActivating, True)
+lbl.setGeometry(x, y, w, h)
+if kind == "GIF":
+    movie = QMovie(path)
+    lbl.setMovie(movie)
+    if use_alpha:
+        def _upd():
+            px = movie.currentPixmap()
+            if not px.isNull() and not px.mask().isNull():
+                lbl.setMask(px.mask())
+        movie.frameChanged.connect(lambda _: _upd())
+    movie.start()
+else:
+    px = QPixmap(path).scaled(w, h, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
+    lbl.setPixmap(px)
+    if use_alpha and not px.mask().isNull():
+        lbl.setMask(px.mask())
+lbl.show()
+QTimer.singleShot(max(100, int(dur * 1000)), app.quit)
+sys.exit(app.exec())
+"""
+    try:
+        res = subprocess.run(
+            [
+                sys.executable, "-c", qt_code,
+                str(buf_path), str(kind), str(dur),
+                str(pos_x), str(pos_y), str(win_w), str(win_h),
+                "1" if alpha else "0", MEDIA_OVERLAY_MARKER,
+            ],
+            env=env,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            timeout=dur + 2.5,
+            check=False,
+        )
+        return res.returncode == 0
+    except subprocess.TimeoutExpired:
+        return True
+    except Exception:
+        return False
+
+
 def _mpv_alpha_flags():
     """Return the supported mpv CLI flag list for transparent alpha windows on this mpv version."""
     if not shutil.which("mpv"):
         return []
-    for candidate in (["--alpha=yes"], ["--background=none"]):
+    for candidate in (
+        ["--gpu-context=x11egl", "--background=none"],
+        ["--alpha=yes"],
+        ["--background=none"],
+    ):
         try:
             res = subprocess.run(
                 ["mpv", "--no-config", *candidate, "--version"],
@@ -336,8 +503,36 @@ def _mpv_alpha_flags():
     return []
 
 
-def _pin_above_and_restore_focus(orig_win, pos_x, pos_y, win_w, win_h, env):
-    time.sleep(0.22)
+def _find_overlay_window_id(env, attempts=8, delay=0.05):
+    """Poll xdotool for the honeybot_media_overlay X11 window ID."""
+    if not shutil.which("xdotool"):
+        return ""
+    for _ in range(attempts):
+        try:
+            res = subprocess.run(
+                ["xdotool", "search", "--name", f"^{MEDIA_OVERLAY_MARKER}$"],
+                env=env,
+                capture_output=True,
+                text=True,
+                timeout=1.0,
+                check=False,
+            )
+            lines = [ln.strip() for ln in (res.stdout or "").splitlines() if ln.strip()]
+            if lines:
+                return lines[-1]
+        except Exception:
+            pass
+        time.sleep(delay)
+    return ""
+
+
+def _pin_above_and_restore_focus(orig_win, pos_x, pos_y, win_w, win_h, env, mask_bytes=None):
+    overlay_wid = _find_overlay_window_id(env) if mask_bytes else ""
+    if not overlay_wid:
+        time.sleep(0.22)
+        overlay_wid = _find_overlay_window_id(env, attempts=2, delay=0.04) if mask_bytes else ""
+    if overlay_wid and mask_bytes:
+        _apply_x11_shape_mask(overlay_wid, mask_bytes, win_w, win_h, env)
     if shutil.which("wmctrl"):
         subprocess.run(
             ["wmctrl", "-r", MEDIA_OVERLAY_MARKER, "-e", f"0,{pos_x},{pos_y},{win_w},{win_h}"],
@@ -374,6 +569,8 @@ def pop_weebo(spec, duration=8.0, mute=False, matte=False, display=None, dry_run
     alpha = has_alpha_channel(target) and not matte
     alpha_flags = _mpv_alpha_flags() if alpha else []
     buf_path, temp_created, win_w, win_h, pos_x, pos_y = prepare_backbuffer(target, matte=matte)
+    mask_bytes = _build_1bit_alpha_mask(buf_path, win_w, win_h) if (alpha and kind == "IMAGE") else None
+    xshape_ok = bool(mask_bytes and os.path.isfile(_find_x11_lib("libXext.so.6")))
     geom_str = f"{win_w}x{win_h}+{pos_x}+{pos_y}"
 
     if dry_run:
@@ -384,8 +581,8 @@ def pop_weebo(spec, duration=8.0, mute=False, matte=False, display=None, dry_run
                 pass
         print(
             f"WEEBO_DRY_RUN: kind={kind} | resolved={target} | "
-            f"native_size={img_w}x{img_h} | alpha={alpha} | alpha_flags={alpha_flags} | "
-            f"geom={geom_str} | duration={dur:.1f}s"
+            f"native_size={img_w}x{img_h} | alpha={alpha} | xshape_cutout={xshape_ok} | "
+            f"alpha_flags={alpha_flags} | geom={geom_str} | duration={dur:.1f}s"
         )
         return 0
 
@@ -398,6 +595,16 @@ def pop_weebo(spec, duration=8.0, mute=False, matte=False, display=None, dry_run
     orig_win = _get_active_window_id(env)
     proc = None
     try:
+        if _pop_with_qt(buf_path, kind, dur, pos_x, pos_y, win_w, win_h, alpha, env):
+            if orig_win and shutil.which("xdotool"):
+                subprocess.run(
+                    ["xdotool", "windowactivate", orig_win],
+                    env=env,
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                    check=False,
+                )
+            return 0
         if shutil.which("mpv"):
             base_cmd = [
                 "mpv",
@@ -423,22 +630,16 @@ def pop_weebo(spec, duration=8.0, mute=False, matte=False, display=None, dry_run
             cmd = [*base_cmd, *alpha_flags, *tail_cmd]
             t0 = time.time()
             proc = subprocess.Popen(cmd, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
-            _pin_above_and_restore_focus(orig_win, pos_x, pos_y, win_w, win_h, env)
+            _pin_above_and_restore_focus(orig_win, pos_x, pos_y, win_w, win_h, env, mask_bytes=mask_bytes)
             proc.wait(timeout=dur + 2.0)
             if proc.returncode not in (0, None) and (time.time() - t0) < 1.0:
                 err_txt = (proc.stderr.read().decode("utf-8", errors="replace") if proc.stderr else "").strip()
                 if alpha_flags:
-                    print(f"ℹ️ mpv rejected {alpha_flags} ({err_txt}); retrying with obsidian matte...", file=sys.stderr)
-                    matte_buf, matte_tmp, win_w, win_h, pos_x, pos_y = prepare_backbuffer(target, matte=True)
-                    retry_cmd = [*base_cmd, *tail_cmd[:-1], matte_buf]
+                    print(f"ℹ️ mpv rejected {alpha_flags} ({err_txt}); retrying with XShape cutout...", file=sys.stderr)
+                    retry_cmd = [*base_cmd, *tail_cmd]
                     proc = subprocess.Popen(retry_cmd, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
-                    _pin_above_and_restore_focus(orig_win, pos_x, pos_y, win_w, win_h, env)
+                    _pin_above_and_restore_focus(orig_win, pos_x, pos_y, win_w, win_h, env, mask_bytes=mask_bytes)
                     proc.wait(timeout=dur + 2.0)
-                    if matte_tmp and matte_buf != target and os.path.isfile(matte_buf):
-                        try:
-                            os.remove(matte_buf)
-                        except OSError:
-                            pass
                 elif err_txt:
                     print(f"⚠️ mpv error (exit {proc.returncode}): {err_txt}", file=sys.stderr)
         elif kind == "IMAGE" and shutil.which("feh") and os.path.isfile(buf_path):
@@ -451,7 +652,7 @@ def pop_weebo(spec, duration=8.0, mute=False, matte=False, display=None, dry_run
                 buf_path,
             ]
             proc = subprocess.Popen(cmd, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            _pin_above_and_restore_focus(orig_win, pos_x, pos_y, win_w, win_h, env)
+            _pin_above_and_restore_focus(orig_win, pos_x, pos_y, win_w, win_h, env, mask_bytes=mask_bytes)
             proc.wait(timeout=dur)
         else:
             print("⚠️ Neither mpv nor feh found on PATH.", file=sys.stderr)
@@ -478,9 +679,45 @@ def pop_weebo(spec, duration=8.0, mute=False, matte=False, display=None, dry_run
     return 0
 
 
+def print_weebo_cheatsheet():
+    """Print the yt-style Operation Weebo muscle-memory cheat sheet."""
+    bar = "=" * 72
+    thin = "-" * 72
+    seal = default_wax_seal_path()
+    assets = list_shorthand_assets()
+    print(f"\n{bar}")
+    print("🤖 OPERATION WEEBO CHEAT SHEET (1:1 Native-Pixel Cookie-Cutter Overlay)")
+    print(thin)
+    print("PHASE 1: LOCAL POPUPS ON PIPULATE PRIME (Test & Enroll)")
+    print("  1. weebo                        📋 Show this Operation Weebo cheat sheet")
+    print("  2. weebo <seconds>              🔴 Pop the Book of Proof Wax Seal (e.g. `weebo 4`)")
+    print("  3. weebo seal [sec]             🔴 Pop the default 209x209 Wax Seal (`wax` / `ambigram`)")
+    print("  4. weebo /path/to/img.png [sec] 📦 Pop at 1:1 pixel size & roll into local library")
+    print("  5. weebo <shorthand> [sec]      ⚡ Pop any enrolled asset by stem name (no path/ext)")
+    print("  6. weebol                       📚 List the Wax Seal + all enrolled local assets")
+    print(thin)
+    print("PHASE 2: DELIBERATE REMOTE POPUPS ON HONEYBOT (:10.0 Broadcast Stage)")
+    print("  7. weeboh [name|path] [sec]     📡 Stage asset via scp -> ~/www/mikelev.in/assets/weebo/")
+    print("                                     and pop live on Honeybot :10.0 (e.g. `weeboh seal 6`)")
+    print("  8. ytmedia <name|path>[:sec]    🎬 Pop via ytsay live break-in (`ytsay -m seal \"msg\"`)")
+    print(thin)
+    print("PHASE 3: INLINE ARTICLE PLAYER-PIANO CUES (Markdown -> Score -> Stream)")
+    print("  9. [[[weebo:seal]]]             📜 Pop Wax Seal for 8s at that paragraph boundary")
+    print(" 10. [[[weebo:ambigram-454:6]]]   📜 Pop named asset for 6s during article narration")
+    print(" 11. <!-- weebo: seal duration=5 --> HTML comment form (stripped from visible page)")
+    print(thin)
+    print(f"🔴 Default Wax Seal  : {seal or 'MISSING'}")
+    print(f"📦 Local Library Dir : {LOCAL_WEEBO_DIR} ({len(assets)} asset(s) available — type `weebol`)")
+    print(bar)
+    return 0
+
+
 def main():
+    if len(sys.argv) == 1:
+        return print_weebo_cheatsheet()
+
     parser = argparse.ArgumentParser(description="Operation Weebo: Native-resolution alpha-transparent X11 overlay.")
-    parser.add_argument("spec", nargs="?", default="seal", help="Shorthand name, file path, duration, or 'list' (default: seal).")
+    parser.add_argument("spec", nargs="?", default="seal", help="Shorthand name, file path, duration, 'help', or 'list' (default: seal).")
     parser.add_argument("pos_duration", nargs="?", default=None, help="Optional duration in seconds as a second word (e.g. `weebo seal 4`).")
     parser.add_argument("-d", "--duration", type=float, default=None, help="Display duration in seconds (default: 8.0).")
     parser.add_argument("--matte", action="store_true", help="Composite transparent pixels over #111111 obsidian instead of transparent X11 alpha.")
@@ -491,6 +728,8 @@ def main():
     args = parser.parse_args()
 
     spec_arg = str(args.spec or "seal").strip()
+    if spec_arg.lower() == "help":
+        return print_weebo_cheatsheet()
     dur_val = args.duration if args.duration is not None else 8.0
 
     # Allow bare numeric first arg (`weebo 4` -> default seal for 4 seconds)

@@ -741,9 +741,9 @@ def conjure_media(media_spec, duration=15.0, mute=False):
             pos_x = max(0, (1920 - win_w) // 2)
             pos_y = max(0, (1080 - win_h) // 2)
             alpha_arg = []
-            for cand_flag in ("--alpha=yes", "--background=none"):
-                if subprocess.run(["mpv", "--no-config", cand_flag, "--version"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False).returncode == 0:
-                    alpha_arg = [cand_flag]
+            for cand_flags in (["--gpu-context=x11egl", "--background=none"], ["--alpha=yes"], ["--background=none"]):
+                if subprocess.run(["mpv", "--no-config", *cand_flags, "--version"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False).returncode == 0:
+                    alpha_arg = cand_flags
                     break
             cmd = [
                 "mpv",
