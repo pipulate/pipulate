@@ -120,8 +120,10 @@ def get_script(breaking=False):
         },
     ))
     try:
-        from content_loader import get_playlist
-        articles = get_playlist(recent_n=10, include_archive=True)
+        import importlib
+        import content_loader
+        importlib.reload(content_loader)
+        articles = content_loader.get_playlist(recent_n=10, include_archive=True)
         for i, article in enumerate(articles):
             if i == 10:
                 script.append(("SAY", "Recent logs analysis complete. Engaging Random Access Memory."))

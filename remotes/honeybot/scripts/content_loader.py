@@ -320,8 +320,18 @@ def clean_markdown(text, label=None, census=True):
         elif asset_name.lower() in {"weebo", "media"}:
             asset_name = "ambigram"
 
-        duration_match = re.search(r'\bduration\s*=\s*[\'\"]?([\d.]+)', directive, flags=re.IGNORECASE)
-        duration = float(duration_match.group(1)) if duration_match else default_dur
+        if (
+            not asset_name
+            or ":" in asset_name
+            or "." * 3 in asset_name
+            or asset_name.lower() in {"name", "shorthand", "key", "path", "asset", "spec"}
+        ):
+            return ""
+        duration_match = re.search(r'\bduration\s*=\s*[\'\"]?(\d+(?:\.\d+)?)', directive, flags=re.IGNORECASE)
+        try:
+            duration = float(duration_match.group(1)) if duration_match else default_dur
+        except ValueError:
+            duration = default_dur
         duration = max(0.75, min(max_dur, duration))
         return _register_pp4_cue(cue_kind, asset_name, duration)
 
