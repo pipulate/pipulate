@@ -601,6 +601,202 @@ def stop_updating_music(proc):
 MEDIA_OVERLAY_MARKER = "honeybot_media_overlay"
 
 
+def _find_x11_lib(lib_name):
+    """Locate libX11.so.6 or libXext.so.6 via ldd on wmctrl/xdotool/mpv (NixOS store-safe)."""
+    for bin_name in ("wmctrl", "xdotool", "feh", "mpv"):
+        bin_path = shutil.which(bin_name)
+        if not bin_path:
+            continue
+        try:
+            res = subprocess.run(
+                ["ldd", bin_path],
+                capture_output=True,
+                text=True,
+                timeout=1.5,
+                check=False,
+            )
+            for line in (res.stdout or "").splitlines():
+                if lib_name in line and "=>" in line:
+                    rhs = line.split("=>", 1)[1].strip().split()[0]
+                    if os.path.isfile(rhs):
+                        return rhs
+        except Exception:
+            pass
+    return lib_name
+
+
+def _build_1bit_alpha_mask_stdlib(img_path, win_w, win_h, threshold=24):
+    """Build an X11 XBM 1-bit LSB-first alpha mask using PIL if present or pure stdlib (zlib + struct)."""
+    if not img_path or not os.path.isfile(img_path):
+        return None
+    try:
+        from PIL import Image
+        with Image.open(img_path) as im:
+            rgba = im.convert("RGBA")
+            if rgba.size != (win_w, win_h):
+                rgba = rgba.resize((win_w, win_h), Image.Resampling.LANCZOS)
+            alpha_bytes = rgba.split()[3].tobytes()
+        row_bytes = (win_w + 7) // 8
+        mask_buf = bytearray(row_bytes * win_h)
+        for y in range(win_h):
+            row_off = y * win_w
+            out_off = y * row_bytes
+            for x in range(win_w):
+                if alpha_bytes[row_off + x] > threshold:
+                    mask_buf[out_off + (x >> 3)] |= 1 << (x & 7)
+        return bytes(mask_buf)
+    except Exception:
+        pass
+    try:
+        import struct
+        import zlib
+        with open(img_path, "rb") as f:
+            data = f.read()
+        if not data.startswith(b"\x89PNG\r\n\x1a\n"):
+            return None
+        pos = 8
+        src_w = src_h = bit_depth = color_type = interlace = 0
+        trns = b""
+        idat_parts = []
+        while pos + 8 <= len(data):
+            length, ctype = struct.unpack(">I4s", data[pos:pos + 8])
+            chunk = data[pos + 8:pos + 8 + length]
+            pos += 12 + length
+            if ctype == b"IHDR" and len(chunk) >= 13:
+                src_w, src_h, bit_depth, color_type, _, _, interlace = struct.unpack(">IIBBBBB", chunk[:13])
+            elif ctype == b"tRNS":
+                trns = chunk
+            elif ctype == b"IDAT":
+                idat_parts.append(chunk)
+            elif ctype == b"IEND":
+                break
+        if bit_depth != 8 or interlace != 0 or color_type not in (6, 4, 3) or src_w <= 0 or src_h <= 0:
+            return None
+        bpp = 4 if color_type == 6 else (2 if color_type == 4 else 1)
+        stride = src_w * bpp
+        raw = zlib.decompress(b"".join(idat_parts))
+        if len(raw) < src_h * (1 + stride):
+            return None
+        alpha_grid = bytearray(src_w * src_h)
+        prev = bytearray(stride)
+        cur = bytearray(stride)
+        in_off = 0
+        for y in range(src_h):
+            flt = raw[in_off]
+            in_off += 1
+            line = raw[in_off:in_off + stride]
+            in_off += stride
+            if flt == 0:
+                cur[:] = line
+            elif flt == 1:
+                for i in range(stride):
+                    left = cur[i - bpp] if i >= bpp else 0
+                    cur[i] = (line[i] + left) & 0xFF
+            elif flt == 2:
+                for i in range(stride):
+                    cur[i] = (line[i] + prev[i]) & 0xFF
+            elif flt == 3:
+                for i in range(stride):
+                    left = cur[i - bpp] if i >= bpp else 0
+                    cur[i] = (line[i] + ((left + prev[i]) >> 1)) & 0xFF
+            elif flt == 4:
+                for i in range(stride):
+                    a = cur[i - bpp] if i >= bpp else 0
+                    b = prev[i]
+                    c = prev[i - bpp] if i >= bpp else 0
+                    p = a + b - c
+                    pa, pb, pc = abs(p - a), abs(p - b), abs(p - c)
+                    pr = a if (pa <= pb and pa <= pc) else (b if pb <= pc else c)
+                    cur[i] = (line[i] + pr) & 0xFF
+            else:
+                return None
+            row_base = y * src_w
+            if color_type == 6:
+                alpha_grid[row_base:row_base + src_w] = cur[3::4]
+            elif color_type == 4:
+                alpha_grid[row_base:row_base + src_w] = cur[1::2]
+            else:
+                for x in range(src_w):
+                    idx = cur[x]
+                    alpha_grid[row_base + x] = trns[idx] if idx < len(trns) else 255
+            prev[:] = cur
+        row_bytes = (win_w + 7) // 8
+        mask_buf = bytearray(row_bytes * win_h)
+        for y in range(win_h):
+            sy = (y * src_h) // win_h
+            s_row = sy * src_w
+            out_off = y * row_bytes
+            for x in range(win_w):
+                sx = (x * src_w) // win_w
+                if alpha_grid[s_row + sx] > threshold:
+                    mask_buf[out_off + (x >> 3)] |= 1 << (x & 7)
+        return bytes(mask_buf)
+    except Exception:
+        return None
+
+
+def _apply_x11_shape_mask_honeybot(win_id, mask_bytes, win_w, win_h, env):
+    """Apply a 1-bit cookie-cutter XShapeCombineMask to an X11 window ID on Honeybot."""
+    if not win_id or not mask_bytes:
+        return False
+    try:
+        import ctypes
+        libX11 = ctypes.CDLL(_find_x11_lib("libX11.so.6"))
+        libXext = ctypes.CDLL(_find_x11_lib("libXext.so.6"))
+        libX11.XOpenDisplay.argtypes = [ctypes.c_char_p]
+        libX11.XOpenDisplay.restype = ctypes.c_void_p
+        libX11.XCreateBitmapFromData.argtypes = [
+            ctypes.c_void_p, ctypes.c_ulong, ctypes.c_char_p, ctypes.c_uint, ctypes.c_uint
+        ]
+        libX11.XCreateBitmapFromData.restype = ctypes.c_ulong
+        libX11.XFreePixmap.argtypes = [ctypes.c_void_p, ctypes.c_ulong]
+        libX11.XFlush.argtypes = [ctypes.c_void_p]
+        libX11.XCloseDisplay.argtypes = [ctypes.c_void_p]
+        libXext.XShapeCombineMask.argtypes = [
+            ctypes.c_void_p, ctypes.c_ulong, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_ulong, ctypes.c_int
+        ]
+        dpy = libX11.XOpenDisplay((env.get("DISPLAY") or ":10.0").encode("utf-8"))
+        if not dpy:
+            return False
+        try:
+            wid = int(str(win_id).strip(), 0)
+            bmap = libX11.XCreateBitmapFromData(dpy, wid, mask_bytes, int(win_w), int(win_h))
+            if not bmap:
+                return False
+            libXext.XShapeCombineMask(dpy, wid, 0, 0, 0, bmap, 0)
+            libXext.XShapeCombineMask(dpy, wid, 2, 0, 0, bmap, 0)
+            libX11.XFreePixmap(dpy, bmap)
+            libX11.XFlush(dpy)
+            return True
+        finally:
+            libX11.XCloseDisplay(dpy)
+    except Exception:
+        return False
+
+
+def _shape_honeybot_overlay_window(mask_bytes, win_w, win_h, env):
+    """Find the honeybot_media_overlay window ID via xdotool and apply the XShape mask."""
+    if not mask_bytes or not shutil.which("xdotool"):
+        return
+    for _ in range(8):
+        try:
+            res = subprocess.run(
+                ["xdotool", "search", "--name", f"^{MEDIA_OVERLAY_MARKER}$"],
+                env=env,
+                capture_output=True,
+                text=True,
+                timeout=1.0,
+                check=False,
+            )
+            lines = [ln.strip() for ln in (res.stdout or "").splitlines() if ln.strip()]
+            if lines:
+                _apply_x11_shape_mask_honeybot(lines[-1], mask_bytes, win_w, win_h, env)
+                return
+        except Exception:
+            pass
+        time.sleep(0.05)
+
+
 def _read_image_dimensions(path):
     """Read (width, height) from PNG/GIF/JPEG header bytes using stdlib only."""
     import struct
@@ -758,8 +954,12 @@ def conjure_media(media_spec, duration=15.0, mute=False):
                 "--really-quiet",
                 target,
             ]
+            mask_bytes = _build_1bit_alpha_mask_stdlib(target, win_w, win_h) if target.lower().endswith(".png") else None
             proc = subprocess.Popen(cmd, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            time.sleep(0.25)
+            if mask_bytes:
+                _shape_honeybot_overlay_window(mask_bytes, win_w, win_h, env)
+            else:
+                time.sleep(0.25)
             subprocess.run(
                 ["wmctrl", "-r", MEDIA_OVERLAY_MARKER, "-e", f"0,{pos_x},{pos_y},{win_w},{win_h}"],
                 env=env,
@@ -1102,9 +1302,33 @@ _in_live_message = False
 
 def run_live_message(msg, env, profile_dir):
     """Preempt article narration for a live operator break-in, blocking audio
-    and Z-axis stomping until the operator's card and speech complete."""
+    and Z-axis stomping until the operator's card and speech complete.
+
+    When msg is a silent media-only popup (e.g. `weeboh 4`), pop the media
+    overlay on a daemon thread without interrupting the active voice narration.
+    """
     global _in_live_message
     if not msg or _in_live_message:
+        return
+    if (
+        isinstance(msg, dict)
+        and msg.get("media")
+        and not str(msg.get("say") or "").strip()
+        and not str(msg.get("card") or "").strip()
+        and not msg.get("patronus")
+        and not msg.get("window")
+        and not msg.get("cues")
+    ):
+        try:
+            subprocess.run(["pkill", "-f", MEDIA_OVERLAY_MARKER], check=False)
+        except Exception:
+            pass
+        threading.Thread(
+            target=conjure_media,
+            args=(msg.get("media"),),
+            kwargs={"duration": float(msg.get("linger", 8.0))},
+            daemon=True,
+        ).start()
         return
     _in_live_message = True
     was_exclusive = narrator.exclusive_mode.is_set()
