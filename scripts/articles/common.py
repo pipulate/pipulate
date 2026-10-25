@@ -778,6 +778,7 @@ md_served = 0
 dyes = {{"a+href": 0, "link+rel": 0, "llms.txt": 0, "youtube": 0, "linkedin": 0, "x": 0, "rfc9110": 0}}
 bots = set()
 key_hits = 0
+feed_hits = 0
 yt_refs = 0
 if log_p.is_file():
     sz = log_p.stat().st_size
@@ -788,6 +789,10 @@ if log_p.is_file():
         for line in f:
             if key_prefix and key_prefix in line:
                 key_hits += 1
+            if "/feed.xml" in line:
+                feed_hits += 1
+                if "feedfetcher-google" in line.lower():
+                    bots.add("FeedFetcher-Google")
             if slug not in line:
                 continue
             total += 1
@@ -798,10 +803,10 @@ if log_p.is_file():
                     dyes[d] += 1
             if "youtube.com" in line:
                 yt_refs += 1
-            for tok in ("Applebot", "bingbot", "IndexNow", "archive.org", "wayback", "CorpusBot", "AHC", "OAI-SearchBot", "GPTBot", "Claude", "ExaSearchBot", "ExaUser", "DuckAssistBot", "Googlebot"):
+            for tok in ("Applebot", "bingbot", "IndexNow", "archive.org", "wayback", "CorpusBot", "AHC", "OAI-SearchBot", "GPTBot", "Claude", "ExaSearchBot", "ExaUser", "DuckAssistBot", "Googlebot", "FeedFetcher-Google"):
                 if tok.lower() in line.lower():
                     bots.add(tok)
-print(f"TOTAL={{total}}|MD={{md_served}}|KEY_HITS={{key_hits}}|YT_REFS={{yt_refs}}|A_HREF={{dyes['a+href']}}|LINK_REL={{dyes['link+rel']}}|LLMS={{dyes['llms.txt']}}|S_YT={{dyes['youtube']}}|S_LI={{dyes['linkedin']}}|S_X={{dyes['x']}}|S_RFC={{dyes['rfc9110']}}|BOTS={{','.join(sorted(bots)) or 'none'}}")
+print(f"TOTAL={{total}}|MD={{md_served}}|KEY_HITS={{key_hits}}|FEED_HITS={{feed_hits}}|YT_REFS={{yt_refs}}|A_HREF={{dyes['a+href']}}|LINK_REL={{dyes['link+rel']}}|LLMS={{dyes['llms.txt']}}|S_YT={{dyes['youtube']}}|S_LI={{dyes['linkedin']}}|S_X={{dyes['x']}}|S_RFC={{dyes['rfc9110']}}|BOTS={{','.join(sorted(bots)) or 'none'}}")
 """
     try:
         res = subprocess.run(
@@ -817,7 +822,7 @@ print(f"TOTAL={{total}}|MD={{md_served}}|KEY_HITS={{key_hits}}|YT_REFS={{yt_refs
             print(
                 f"   3. Honeybot Wire Log : ✅ {kv.get('TOTAL', 0)} total hits on slug | "
                 f"RFC 9110 MarkdownServed={kv.get('MD', 0)} | YouTube referrals={kv.get('YT_REFS', 0)} | "
-                f"IndexNow key fetches={kv.get('KEY_HITS', 0)}"
+                f"IndexNow key fetches={kv.get('KEY_HITS', 0)} | WebSub /feed.xml fetches={kv.get('FEED_HITS', 0)}"
             )
             print(
                 f"      ↳ Tracer-Dye Doors: ?src=a+href ({kv.get('A_HREF', 0)}) · "
