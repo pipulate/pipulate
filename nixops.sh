@@ -83,6 +83,10 @@ ssh $TARGET "mkdir -p ~/www/levinux.com ~/www/levinix.org"
 rsync -av remotes/honeybot/www/levinux.com/ "$LEVINUX_CACHE/" $TARGET:~/www/levinux.com/
 rsync -av remotes/honeybot/www/levinix.org/ $TARGET:~/www/levinix.org/
 
+echo "🚀 Syncing sunpug.io door (SVNPvg -> SUNPug)..."
+ssh $TARGET "mkdir -p ~/www/sunpug.io"
+rsync -av remotes/honeybot/www/sunpug.io/ $TARGET:~/www/sunpug.io/
+
 echo "🚀 Syncing NixOS Config..."
 rsync --delete -av remotes/honeybot/nixos/ $TARGET:~/nixos-config-staged/
 

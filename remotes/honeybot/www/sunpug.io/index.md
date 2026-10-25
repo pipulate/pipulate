@@ -4,13 +4,13 @@ In vampire lore, a creature of the night cannot cross your threshold unless you 
 
 Look through the glass first with `less`:
 
-    curl -fsSL [https://sunpug.io](https://sunpug.io) | less
+    curl -fsSL sunpug.io | less
 
 Nothing runs. Nothing touches your disk. Put your right hand on the home row: press `j` to scroll down, `k` to scroll up, and `q` to step back out to your command line.
 
 When you have read the contract and are ready to invite the Sun Pug in:
 
-    curl -fsSL [https://sunpug.io](https://sunpug.io) | bash
+    curl -fsSL sunpug.io | bash
 
 ## Why Sun Pug? (SVNPvg -> SUNPug -> pug.io)
 
