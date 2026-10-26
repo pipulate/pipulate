@@ -942,10 +942,84 @@ def _shape_honeybot_overlay_window(mask_bytes, win_w, win_h, env, pos_x=None, po
     return ""
 
 
-def _probe_video_metadata_honeybot(path):
-    """Return (width, height, duration_sec) for a video/media file via ffprobe."""
-    if not path or not os.path.isfile(path) or not shutil.which("ffprobe"):
+def _probe_mp4_mov_atoms_stdlib(path):
+    """Parse (width, height, duration_sec) from QuickTime .mov / ISO .mp4 moov/mvhd/tkhd atoms using pure stdlib."""
+    import struct
+    if not path or not os.path.isfile(path):
         return 0, 0, 0.0
+    w = h = 0
+    dur_sec = 0.0
+
+    def _walk_moov(buf):
+        nonlocal w, h, dur_sec
+        pos = 0
+        n = len(buf)
+        while pos + 8 <= n:
+            sz, btype = struct.unpack(">I4s", buf[pos:pos + 8])
+            hdr = 8
+            if sz == 1 and pos + 16 <= n:
+                sz = struct.unpack(">Q", buf[pos + 8:pos + 16])[0]
+                hdr = 16
+            elif sz == 0:
+                sz = n - pos
+            if sz < hdr or pos + sz > n:
+                break
+            body = buf[pos + hdr:pos + sz]
+            if btype in (b"moov", b"trak", b"mdia", b"minf", b"dinf", b"stbl", b"edts"):
+                _walk_moov(body)
+            elif btype == b"mvhd" and len(body) >= 20:
+                ver = body[0]
+                if ver == 0 and len(body) >= 20:
+                    ts, d = struct.unpack(">II", body)
+                    if ts > 0:
+                        dur_sec = float(d) / float(ts)
+                elif ver == 1 and len(body) >= 32:
+                    ts, d = struct.unpack(">IQ", body)
+                    if ts > 0:
+                        dur_sec = float(d) / float(ts)
+            elif btype == b"tkhd" and len(body) >= 84:
+                ver = body[0]
+                off = 88 if (ver == 1 and len(body) >= 96) else 76
+                rw, rh = struct.unpack(">II", body[off:off + 8])
+                tw, th = rw >> 16, rh >> 16
+                if tw > 0 and th > 0 and (tw * th) > (w * h):
+                    w, h = int(tw), int(th)
+            pos += sz
+
+    try:
+        fsize = os.path.getsize(path)
+        with open(path, "rb") as f:
+            pos = 0
+            while pos + 8 <= fsize:
+                f.seek(pos)
+                head = f.read(16)
+                if len(head) < 8:
+                    break
+                sz, btype = struct.unpack(">I4s", head[:8])
+                hdr = 8
+                if sz == 1 and len(head) >= 16:
+                    sz = struct.unpack(">Q", head)[0]
+                    hdr = 16
+                elif sz == 0:
+                    sz = fsize - pos
+                if sz < hdr or pos + sz > fsize:
+                    break
+                if btype == b"moov" and (sz - hdr) <= 32 * 1024 * 1024:
+                    f.seek(pos + hdr)
+                    _walk_moov(f.read(sz - hdr))
+                    break
+                pos += sz
+    except Exception:
+        pass
+    return w, h, round(dur_sec, 4)
+
+
+def _probe_video_metadata_honeybot(path):
+    """Return (width, height, duration_sec) for a video/media file via ffprobe or stdlib moov atom fallback."""
+    if not path or not os.path.isfile(path):
+        return 0, 0, 0.0
+    if not shutil.which("ffprobe"):
+        return _probe_mp4_mov_atoms_stdlib(path)
     try:
         import json as _json
         res = subprocess.run(
@@ -966,9 +1040,11 @@ def _probe_video_metadata_honeybot(path):
         w = int(streams[0].get("width") or 0) if streams else 0
         h = int(streams[0].get("height") or 0) if streams else 0
         dur = float((data.get("format") or {}).get("duration") or 0.0)
-        return w, h, dur
+        if w > 0 and h > 0:
+            return w, h, dur
     except Exception:
-        return 0, 0, 0.0
+        pass
+    return _probe_mp4_mov_atoms_stdlib(path)
 
 
 def _read_image_dimensions(path):

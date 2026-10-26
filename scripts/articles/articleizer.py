@@ -352,9 +352,18 @@ def create_jekyll_post(article_content, instructions, output_dir, preview_port, 
             continue
 
         words = re.findall(r'\w+', snippet.lower())
-        pattern_text = r'.*?'.join(re.escape(word) for word in words)
-
-        match = re.search(pattern_text, article_body, re.IGNORECASE | re.DOTALL)
+        if not words:
+            continue
+        pattern_text = r'[\s\S]{1,160}?'.join(re.escape(word) for word in words)
+        fence_spans = [(m.start(), m.end()) for m in FENCE_BLOCK_RE.finditer(article_body)]
+        match = None
+        for cand in re.finditer(pattern_text, article_body, re.IGNORECASE):
+            ins_pt = article_body.find('\n\n', cand.end())
+            if ins_pt == -1:
+                ins_pt = len(article_body)
+            if not any(fs <= cand.start() < fe or fs < ins_pt < fe for fs, fe in fence_spans):
+                match = cand
+                break
         if match:
             # SAFETY FIX: Force insertion to the nearest paragraph break (double newline).
             # This prevents headlines from splitting sentences or paragraphs mid-stream.
@@ -395,6 +404,8 @@ def create_jekyll_post(article_content, instructions, output_dir, preview_port, 
         "",
         prepend_text,
     ).strip()
+    # Never allow AI-generated intro prose to fire a live player-piano cue
+    prepend_text = re.sub(r'\[{3}|\]{3}|<!--\s*(?:pp4|weebo|media)\b', '', prepend_text, flags=re.IGNORECASE)
     if prepend_text:
         intro_section = f"## Setting the Stage: Context for the Curious Book Reader\n\n{prepend_text}\n\n---"
         article_body = f"{intro_section}\n\n{article_body}"
@@ -441,6 +452,14 @@ def create_jekyll_post(article_content, instructions, output_dir, preview_port, 
         else:
             analysis_markdown += f"{value}\n"
 
+    # Never allow AI-generated Book Analysis commentary to fire a live player-piano cue
+    analysis_markdown = re.sub(
+        r'\[{3}(\s*(?:weebo|media|image|video|patronus)\s*:[^\]]+)\]{3}',
+        r'[\1]',
+        analysis_markdown,
+        flags=re.IGNORECASE,
+    )
+    analysis_markdown = re.sub(r'<!--\s*(?:pp4|weebo|media)\b.*?-->', '', analysis_markdown, flags=re.IGNORECASE | re.DOTALL)
     final_content = f"{final_yaml_block}\n\n{article_body}\n\n---\n{analysis_markdown}"
 
     # 4. Generate Filename from the same validated slug used in the URL.

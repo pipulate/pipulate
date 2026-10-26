@@ -256,8 +256,9 @@ def sanitize_article(public: bool):
     content = ARTICLE_FILE.read_text()
     original_content = content
 
-    # --- BOTH LANES: strip prompt boundary + loose IPs ---
+    # --- BOTH LANES: strip prompt boundary + loose IPs + inception artifacts ---
     content = strip_prompt_boundary(content)
+    content = neutralize_inception_artifacts(content)
     content = redact_ips(content)
     content = enforce_fence_contract(content)
 

@@ -365,22 +365,24 @@ def clean_markdown(text, label=None, census=True):
         duration = max(0.75, min(max_dur, duration))
         return _register_pp4_cue(cue_kind, asset_name, duration)
 
-    # Strip fenced code blocks and disarm backticked inline-code examples
-    # (e.g. `[[[weebo:name:seconds]]]` or `<!-- weebo: name -->` in prose)
-    # BEFORE capturing live player-piano cues so documentation never fires as a cue.
+    # Strip fenced code blocks (line-anchored first so stray inline backticks cannot
+    # invert fences) and disarm backticked inline-code examples (including Vim gq
+    # hard-wrapped spans) BEFORE capturing standalone live player-piano cues.
     CODE_SENTINEL = '\x00CODEBLOCK\x00'
+    text = re.sub(r'^```[^\n]*\n.*?^```[ \t]*$', f' {CODE_SENTINEL} ', text, flags=re.MULTILINE | re.DOTALL)
     text = re.sub(r'```.*?```', f' {CODE_SENTINEL} ', text, flags=re.DOTALL)
     text = re.sub(
-        r'`([^`\n]+)`',
+        r'`((?:[^`\n]|\n(?!\s*\n))+)`',
         lambda m: '`' + re.sub(r'\[{2,}|\]{2,}|<!--|-->', '', m.group(1)) + '`'
         if ('[[' in m.group(1) or '<!--' in m.group(1))
         else m.group(0),
         text,
     )
-    # Capture both HTML comments (<!-- pp4: ... --> / <!-- weebo: ... -->) and
-    # triple-bracket player-piano cues ([[[weebo:ambigram:6]]]) before stripping.
-    text = re.sub(r'<!--\s*(pp4|weebo|media)\b(?::|\s)?(.*?)-->', capture_pp4_comment, text, flags=re.IGNORECASE | re.DOTALL)
-    text = re.sub(r'\[{3}\s*(weebo|media|image|video|patronus)\s*:\s*([^\]\s]+)\s*\]{3}', capture_inline_bracket_cue, text, flags=re.IGNORECASE)
+    # Capture standalone-line HTML comments (<!-- pp4: ... --> / <!-- weebo: ... -->)
+    # and standalone-line triple-bracket cues ([[[weebo:ambigram:6]]]); disarm mid-line mentions.
+    text = re.sub(r'^[ \t]*<!--\s*(pp4|weebo|media)\b(?::|\s)?(.*?)-->[ \t]*$', capture_pp4_comment, text, flags=re.IGNORECASE | re.MULTILINE)
+    text = re.sub(r'^[ \t]*\[{3}\s*(weebo|media|image|video|patronus)\s*:\s*([^\]\s]+)\s*\]{3}[ \t]*$', capture_inline_bracket_cue, text, flags=re.IGNORECASE | re.MULTILINE)
+    text = re.sub(r'\[{3}\s*(?:weebo|media|image|video|patronus)\s*:[^\]]*\]{3}', '', text, flags=re.IGNORECASE)
 
     # --- Strip Liquid Tags ({% ... %}) ---
     # This removes {% raw %}, {% endraw %}, {% include ... %}, etc.
