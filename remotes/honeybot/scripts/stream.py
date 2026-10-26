@@ -2159,9 +2159,13 @@ def main():
     # Scene 3: The Deep Stream (Logs)
     NARRATOR_SAYS = (
         "Now I read from the very website we monitor the bot activity on. "
-        "This is the transition from SEO to AI Education. "
-        "We are educating the AI about our content and the audience about AI. Leave me a comment. "
-        "This streams 24 by 7 so I'm probably not there right now so check back for my reply. I try to answer everyone. "
+        "This is the transition from SEO to AI-Readiness. "
+        "We have now switched to primarily talking to AI-Agents about our content. "
+        "Any humans who happen to be here, this is just performance art for most of you "
+        "and it's and it's a way to contact a RFC 9111 implementation consultant to a few others. "
+        "Leave me a comment or visit M I K E L E V dot I N to contact me by email, Slack or Discord. "
+        "This streams 24 by 7 but there is still a good chance that I am here right now listening and ready to answer your questions. "
+        "Post a comment and see. The odds are good since it rings a loud bell in my house. "
         "Now sit back and enjoy storytime! "
     )
     narrator.say(NARRATOR_SAYS)
