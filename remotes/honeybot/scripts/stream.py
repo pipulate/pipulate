@@ -942,8 +942,37 @@ def _shape_honeybot_overlay_window(mask_bytes, win_w, win_h, env, pos_x=None, po
     return ""
 
 
+def _probe_video_metadata_honeybot(path):
+    """Return (width, height, duration_sec) for a video/media file via ffprobe."""
+    if not path or not os.path.isfile(path) or not shutil.which("ffprobe"):
+        return 0, 0, 0.0
+    try:
+        import json as _json
+        res = subprocess.run(
+            [
+                "ffprobe", "-v", "error",
+                "-select_streams", "v:0",
+                "-show_entries", "stream=width,height:format=duration",
+                "-of", "json",
+                str(path),
+            ],
+            capture_output=True,
+            text=True,
+            timeout=3.0,
+            check=False,
+        )
+        data = _json.loads(res.stdout or "{}")
+        streams = data.get("streams") or []
+        w = int(streams[0].get("width") or 0) if streams else 0
+        h = int(streams[0].get("height") or 0) if streams else 0
+        dur = float((data.get("format") or {}).get("duration") or 0.0)
+        return w, h, dur
+    except Exception:
+        return 0, 0, 0.0
+
+
 def _read_image_dimensions(path):
-    """Read (width, height) from PNG/GIF/JPEG header bytes using stdlib only."""
+    """Read (width, height) from PNG/GIF/JPEG header bytes or ffprobe fallback for video."""
     import struct
     try:
         with open(path, "rb") as f:
@@ -984,6 +1013,9 @@ def _read_image_dimensions(path):
                     f.seek(max(0, seg_len - 2), 1)
     except Exception:
         pass
+    vw, vh, _ = _probe_video_metadata_honeybot(path)
+    if vw > 0 and vh > 0:
+        return vw, vh
     return 1440, 810
 
 
@@ -1063,6 +1095,10 @@ def conjure_media(media_spec, duration=15.0, mute=False, _direct=False):
     env = _hydrate_honeybot_x11_env()
     ext = os.path.splitext(target.split("?", 1)[0])[1].lower()
     is_video = ext in (".mp4", ".webm", ".mkv", ".mov", ".gif")
+    if is_video and ext != ".gif" and os.path.isfile(target):
+        _, _, vdur = _probe_video_metadata_honeybot(target)
+        if vdur > 0 and abs(duration - 15.0) < 0.01:
+            duration = max(1.0, min(600.0, vdur))
     scr_w, scr_h, scr_ox, scr_oy = _get_honeybot_screen_dimensions(env)
     eff_max_w = min(1440, max(256, int(scr_w * 0.85)))
     eff_max_h = min(840, max(256, int(scr_h * 0.85)))
@@ -1070,8 +1106,12 @@ def conjure_media(media_spec, duration=15.0, mute=False, _direct=False):
     scale = min(1.0, eff_max_w / max(1, img_w), eff_max_h / max(1, img_h))
     win_w = max(16, int(round(img_w * scale)))
     win_h = max(16, int(round(img_h * scale)))
+    if is_video:
+        win_w = max(16, win_w - (win_w % 2))
+        win_h = max(16, win_h - (win_h % 2))
     pos_x = max(0, (scr_ox + (scr_w // 2)) - (win_w // 2))
     pos_y = max(0, (scr_oy + (scr_h // 2)) - (win_h // 2))
+    err_dest = None if _direct else subprocess.DEVNULL
 
     proc = None
     tmp_profile = None
@@ -1081,7 +1121,7 @@ def conjure_media(media_spec, duration=15.0, mute=False, _direct=False):
         except Exception:
             pass
         if is_video and shutil.which("mpv"):
-            cmd = [
+            base_vcmd = [
                 "mpv",
                 "--no-config",
                 f"--title={MEDIA_OVERLAY_MARKER}",
@@ -1089,21 +1129,35 @@ def conjure_media(media_spec, duration=15.0, mute=False, _direct=False):
                 "--ontop",
                 f"--geometry={win_w}x{win_h}+{pos_x}+{pos_y}",
                 "--keep-open=no",
-                "--really-quiet",
+                "--msg-level=all=error",
             ]
             if ext == ".gif":
-                cmd.extend(["--loop-file=inf", f"--length={duration:.1f}"])
+                base_vcmd.extend(["--loop-file=inf", f"--length={duration:.1f}"])
             else:
-                cmd.append(f"--length={duration:.1f}")
+                base_vcmd.append(f"--length={duration:.1f}")
                 if mute:
-                    cmd.append("--mute=yes")
-            cmd.append(target)
-            proc = subprocess.Popen(cmd, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            time.sleep(0.20)
+                    base_vcmd.append("--mute=yes")
+            scale_arg = [f"--vf=scale={win_w}:{win_h}"] if (win_w, win_h) != (img_w, img_h) else []
+            t0 = time.time()
+            proc = subprocess.Popen(
+                [*base_vcmd, "--vo=x11", "--hwdec=no", *scale_arg, target],
+                env=env,
+                stdout=subprocess.DEVNULL,
+                stderr=err_dest,
+            )
+            time.sleep(0.25)
+            if proc.poll() is not None and (time.time() - t0) < 0.9:
+                proc = subprocess.Popen(
+                    [*base_vcmd, "--vo=x11", "--hwdec=no", target],
+                    env=env,
+                    stdout=subprocess.DEVNULL,
+                    stderr=err_dest,
+                )
+                time.sleep(0.25)
             _shape_honeybot_overlay_window(None, win_w, win_h, env, pos_x=pos_x, pos_y=pos_y)
             subprocess.run(["wmctrl", "-r", MEDIA_OVERLAY_MARKER, "-e", f"0,{pos_x},{pos_y},{win_w},{win_h}"], env=env, check=False)
             subprocess.run(["wmctrl", "-r", MEDIA_OVERLAY_MARKER, "-b", "add,above"], env=env, check=False)
-            proc.wait(timeout=duration + 2.0)
+            proc.wait(timeout=duration + 3.0)
         elif shutil.which("mpv"):
             base_cmd = [
                 "mpv",

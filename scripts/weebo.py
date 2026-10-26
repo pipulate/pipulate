@@ -45,8 +45,37 @@ def default_wax_seal_path():
     return None
 
 
+def probe_video_metadata(path):
+    """Return (width, height, duration_sec) for a video file via ffprobe."""
+    if not path or not os.path.isfile(path) or not shutil.which("ffprobe"):
+        return 0, 0, 0.0
+    try:
+        import json as _json
+        res = subprocess.run(
+            [
+                "ffprobe", "-v", "error",
+                "-select_streams", "v:0",
+                "-show_entries", "stream=width,height:format=duration",
+                "-of", "json",
+                str(path),
+            ],
+            capture_output=True,
+            text=True,
+            timeout=3.0,
+            check=False,
+        )
+        data = _json.loads(res.stdout or "{}")
+        streams = data.get("streams") or []
+        w = int(streams[0].get("width") or 0) if streams else 0
+        h = int(streams[0].get("height") or 0) if streams else 0
+        dur = float((data.get("format") or {}).get("duration") or 0.0)
+        return w, h, dur
+    except Exception:
+        return 0, 0, 0.0
+
+
 def read_image_dimensions(path):
-    """Read (width, height) from PNG/GIF/JPEG header bytes or PIL fallback."""
+    """Read (width, height) from PNG/GIF/JPEG header bytes, PIL, or ffprobe fallback."""
     try:
         with open(path, "rb") as f:
             head = f.read(32)
@@ -92,6 +121,9 @@ def read_image_dimensions(path):
             return im.size
     except Exception:
         pass
+    vw, vh, _ = probe_video_metadata(path)
+    if vw > 0 and vh > 0:
+        return vw, vh
     return 512, 512
 
 
@@ -183,41 +215,57 @@ def _classify_ext(path_or_url):
     return "IMAGE"
 
 
-def resolve_media_target(raw_spec, default_duration=8.0, enroll=False):
+def _finalize_media_duration(path_str, kind, explicit_dur):
+    """Use explicit_dur if provided; otherwise use full natural duration for VIDEO or 8.0s for IMAGE/GIF."""
+    if explicit_dur is not None:
+        return max(0.5, min(600.0, float(explicit_dur)))
+    if kind == "VIDEO" and path_str and os.path.isfile(path_str):
+        _, _, vdur = probe_video_metadata(path_str)
+        if vdur > 0:
+            return max(1.0, min(600.0, float(vdur)))
+        return 20.0
+    return 8.0
+
+
+def resolve_media_target(raw_spec, default_duration=None, enroll=False):
     """Resolve 'shorthand[:seconds]' or '/path/to/file[:seconds]' into (path_str, duration, kind).
 
     Never falls back to unrelated blog hero images; returns '' if a named asset does not exist.
     """
+    explicit_dur = default_duration
     if isinstance(raw_spec, dict):
         raw_str = str(raw_spec.get("path") or raw_spec.get("url") or "").strip()
-        duration = float(raw_spec.get("duration", default_duration))
+        if raw_spec.get("duration") is not None:
+            explicit_dur = float(raw_spec["duration"])
     else:
         raw_str = str(raw_spec or "").strip()
-        duration = float(default_duration)
         if ":" in raw_str and not raw_str.startswith(("http://", "https://", "file://")):
             head, tail = raw_str.rsplit(":", 1)
             try:
-                duration = float(tail.strip())
+                explicit_dur = float(tail.strip())
                 raw_str = head.strip()
             except ValueError:
                 pass
-    duration = max(0.5, min(600.0, duration))
 
     if raw_str.startswith(("http://", "https://", "file://")):
-        return raw_str, duration, _classify_ext(raw_str)
+        kind = _classify_ext(raw_str)
+        return raw_str, _finalize_media_duration(raw_str, kind, explicit_dur), kind
 
     # 1. Explicit file path on disk (absolute, ~/..., or repo-relative)
     if raw_str:
         direct = Path(raw_str).expanduser()
         if direct.is_file():
             resolved_p = enroll_in_local_library(direct) if enroll else direct.resolve()
-            return str(resolved_p), duration, _classify_ext(str(resolved_p))
+            s_path = str(resolved_p)
+            kind = _classify_ext(s_path)
+            return s_path, _finalize_media_duration(s_path, kind, explicit_dur), kind
 
         repo_root = Path(__file__).resolve().parents[1]
         rel_cand = repo_root / raw_str.lstrip("/")
         if rel_cand.is_file():
             resolved = str(rel_cand.resolve())
-            return resolved, duration, _classify_ext(resolved)
+            kind = _classify_ext(resolved)
+            return resolved, _finalize_media_duration(resolved, kind, explicit_dur), kind
 
     needle = raw_str.lower()
     needle_stem = Path(needle).stem if needle else ""
@@ -230,7 +278,8 @@ def resolve_media_target(raw_spec, default_duration=8.0, enroll=False):
                     continue
                 if p.name.lower() == needle or p.stem.lower() == needle_stem:
                     resolved = str(p.resolve())
-                    return resolved, duration, _classify_ext(resolved)
+                    kind = _classify_ext(resolved)
+                    return resolved, _finalize_media_duration(resolved, kind, explicit_dur), kind
 
         prefix_matches = []
         for d in candidate_search_dirs():
@@ -242,15 +291,18 @@ def resolve_media_target(raw_spec, default_duration=8.0, enroll=False):
         if prefix_matches:
             prefix_matches.sort(key=lambda item: item[0])
             best = str(prefix_matches[0][1].resolve())
-            return best, duration, _classify_ext(best)
+            kind = _classify_ext(best)
+            return best, _finalize_media_duration(best, kind, explicit_dur), kind
 
     # 3. Default Book of Proof Wax Seal (only when bare/default alias is used)
     if needle in DEFAULT_SEAL_ALIASES:
         seal = default_wax_seal_path()
         if seal:
-            return str(seal), duration, _classify_ext(str(seal))
+            s_path = str(seal)
+            kind = _classify_ext(s_path)
+            return s_path, _finalize_media_duration(s_path, kind, explicit_dur), kind
 
-    return "", duration, "IMAGE"
+    return "", _finalize_media_duration("", "IMAGE", explicit_dur), "IMAGE"
 
 
 def get_screen_dimensions(env=None):
@@ -669,7 +721,7 @@ def _pin_above_and_restore_focus(orig_win, pos_x, pos_y, win_w, win_h, env, mask
         )
 
 
-def pop_weebo(spec, duration=8.0, mute=False, matte=False, display=None, dry_run=False):
+def pop_weebo(spec, duration=None, mute=False, matte=False, display=None, dry_run=False):
     """Pop a self-terminating, native-size, alpha-transparent media overlay on X11 without stealing focus."""
     target, dur, kind = resolve_media_target(spec, default_duration=duration, enroll=(not dry_run))
     if not target:
@@ -846,7 +898,7 @@ def main():
     spec_arg = str(args.spec or "seal").strip()
     if spec_arg.lower() == "help":
         return print_weebo_cheatsheet()
-    dur_val = args.duration if args.duration is not None else 8.0
+    dur_val = args.duration
 
     # Allow bare numeric first arg (`weebo 4` -> default seal for 4 seconds)
     try:
@@ -881,7 +933,11 @@ def main():
             safe_fname = _re.sub(r"[^A-Za-z0-9._-]", "_", local_p.name)
             remote_target = f"/home/mike/www/mikelev.in/assets/weebo/{safe_fname}"
         if args.dry_run:
-            print(f"WEEBO_REMOTE_DRY_RUN: host={HONEYBOT_SSH_HOST} | staged={remote_target} | duration={dur:.1f}s | mode=direct_proc_env_verified")
+            w_dim, h_dim = read_image_dimensions(target) if (target and os.path.isfile(target)) else (512, 512)
+            print(
+                f"WEEBO_REMOTE_DRY_RUN: host={HONEYBOT_SSH_HOST} | staged={remote_target} | "
+                f"native_size={w_dim}x{h_dim} | duration={dur:.1f}s | mode=direct_proc_env_verified"
+            )
             return 0
         repo_stream = Path(__file__).resolve().parents[1] / "remotes" / "honeybot" / "scripts" / "stream.py"
         if repo_stream.is_file():
@@ -927,7 +983,7 @@ proc = subprocess.Popen(
     start_new_session=True,
 )
 win_line = ""
-for _ in range(18):
+for _ in range(35):
     time.sleep(0.1)
     r = subprocess.run(["wmctrl", "-lG"], env=env, capture_output=True, text=True, check=False)
     for ln in (r.stdout or "").splitlines():
@@ -939,6 +995,11 @@ for _ in range(18):
 if win_line:
     print(f"LIVE_X11_WINDOW: {win_line}")
     sys.exit(0)
+if proc.poll() is None:
+    try:
+        proc.terminate()
+    except Exception:
+        pass
 log_f.flush()
 err = pathlib.Path("/tmp/honeybot_weebo.log").read_text(encoding="utf-8", errors="replace").strip()
 print(f"WEEBO_LAUNCH_ERR: poll={proc.poll()} log={err!r}")
@@ -956,10 +1017,8 @@ sys.exit(1)
             print(f"📡 Popped centered Weebo overlay on Honeybot :10.0: [{Path(remote_target).name} ({dur:g}s)]")
             print(f"   ↳ {out}")
             return 0
-        if out or res.stderr:
-            print(f"⚠️ Direct conjure diagnostic: {out} {(res.stderr or '').strip()}", file=sys.stderr)
-        remote_spec = f"{spec_arg}:{dur_val:g}" if (":" not in spec_arg and dur_val != 8.0) else spec_arg
-        return send_honeybot_live_message("", media_path=remote_spec, dry_run=False)
+        print(f"⚠️ Direct conjure diagnostic: {out} {(res.stderr or '').strip()}", file=sys.stderr)
+        return 1
 
     return pop_weebo(spec_arg, duration=dur_val, mute=args.mute, matte=args.matte, dry_run=args.dry_run)
 
