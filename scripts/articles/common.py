@@ -1987,8 +1987,8 @@ def _manage_ytwatch_daemon(action, interval=30, channel=None):
     return 0
 
 
-def _trigger_ytwatch_weebo(weebo_spec=None, duration=6.0):
-    """Fire a non-blocking centered Weebo popup on Honeybot :10.0 when ytwatch hits a viewer milestone."""
+def _trigger_ytwatch_weebo(weebo_spec=None, duration=None):
+    """Fire an undampened non-blocking centered Weebo popup on Honeybot :10.0 when ytwatch hits a viewer milestone."""
     import subprocess
     cfg_spec = (weebo_spec or _get_vault_var("PIPULATE_YTWATCH_WEEBO") or "auto").strip()
     if cfg_spec.lower() in ("0", "off", "false", "none"):
@@ -1999,21 +1999,34 @@ def _trigger_ytwatch_weebo(weebo_spec=None, duration=6.0):
         return
     chosen = cfg_spec
     if chosen.lower() == "auto":
-        chosen = "seal"
+        chosen = "mike-headroom"
         local_lib = Path.home() / ".local" / "share" / "pipulate" / "weebo"
         if local_lib.is_dir():
-            for p in sorted(local_lib.iterdir(), key=lambda x: x.stat().st_mtime, reverse=True):
-                if p.is_file() and ("max" in p.stem.lower() or "halloween" in p.stem.lower()):
+            files = [p for p in local_lib.iterdir() if p.is_file()]
+            files.sort(
+                key=lambda x: (
+                    x.suffix.lower() in (".mov", ".mp4", ".webm", ".mkv"),
+                    x.stat().st_mtime,
+                ),
+                reverse=True,
+            )
+            for p in files:
+                stem_l = p.stem.lower()
+                if any(k in stem_l for k in ("mike-headroom", "headroom", "max", "halloween")):
                     chosen = p.stem
                     break
     try:
+        cmd = [sys.executable, str(weebo_script), "--remote", str(chosen)]
+        if duration is not None:
+            cmd.append(str(duration))
         subprocess.Popen(
-            [sys.executable, str(weebo_script), "--remote", str(chosen), str(duration)],
+            cmd,
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
             start_new_session=True,
         )
-        print(f"🎭 [WEEBO] Auto-popped '{chosen}' ({duration:g}s) on Honeybot :10.0 for viewer milestone!", flush=True)
+        dur_lbl = f"{duration:g}s" if duration is not None else "full-clip"
+        print(f"🎭 [WEEBO] Auto-popped '{chosen}' ({dur_lbl}) on Honeybot :10.0 for viewer arrival!", flush=True)
     except Exception:
         pass
 
@@ -2067,6 +2080,7 @@ def run_youtube_watch(
     prev_comments = persisted.get("comment_count") if same_video else state["comment_count"]
     last_viewer_alert = float(persisted.get("last_viewer_alert") or 0.0) if same_video else 0.0
     alerted_in_run = bool(persisted.get("alerted_in_run")) if (same_video and state["concurrent_viewers"] >= YT_VIEWER_ALERT_MIN) else False
+    weebo_peak_viewers = int(persisted.get("weebo_peak_viewers") or 0) if (same_video and state["concurrent_viewers"] >= YT_VIEWER_ALERT_MIN) else 0
     daemon_running = (
         subprocess.run(
             ["tmux", "has-session", "-t", "ytwatch"],
@@ -2141,6 +2155,9 @@ def run_youtube_watch(
             viewers = state["concurrent_viewers"]
             now = time.time()
             if viewers >= YT_VIEWER_ALERT_MIN:
+                if viewers > weebo_peak_viewers:
+                    weebo_peak_viewers = viewers
+                    _trigger_ytwatch_weebo()
                 dwell_window.append((poll_ts, viewers))
                 cutoff_ts = poll_ts - max(YT_VIEWER_ALERT_DWELL * 3, int(interval) * 4)
                 dwell_window = [(ts, v) for ts, v in dwell_window if ts >= cutoff_ts]
@@ -2166,7 +2183,6 @@ def run_youtube_watch(
                         count=viewers, min_viewers=YT_VIEWER_ALERT_MIN
                     )
                     _play_local_ding(ding, spoken_text=spoken_v)
-                    _trigger_ytwatch_weebo()
                     if resolved_topic:
                         send_ntfy_notification(
                             alert_msg,
@@ -2185,6 +2201,7 @@ def run_youtube_watch(
                     )
                 dwell_window.clear()
                 alerted_in_run = False
+                weebo_peak_viewers = 0
             for msg in state["chat_messages"]:
                 if msg["id"] in seen_ids:
                     continue
@@ -2261,6 +2278,7 @@ def run_youtube_watch(
                 "video_id": state["video_id"],
                 "concurrent_viewers": viewers,
                 "peak_viewers": peak_viewers,
+                "weebo_peak_viewers": weebo_peak_viewers,
                 "alerted_in_run": alerted_in_run,
                 "comment_count": cur_comments,
                 "last_viewer_alert": last_viewer_alert,

@@ -909,14 +909,67 @@ def _apply_x11_shape_mask_honeybot(win_id, mask_bytes, win_w, win_h, env):
         return False
 
 
+def _enforce_overlay_z_order(wid, pos_x, pos_y, win_w, win_h, env):
+    """Force the overlay window to the top of xfwm4's X11 stacking order at (pos_x, pos_y)."""
+    try:
+        subprocess.run(
+            ["wmctrl", "-r", "Mozilla Firefox", "-b", "remove,fullscreen,above"],
+            env=env,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=False,
+        )
+    except Exception:
+        pass
+    try:
+        import ctypes
+        libX11 = ctypes.CDLL(_find_x11_lib("libX11.so.6"))
+        libX11.XOpenDisplay.argtypes = [ctypes.c_char_p]
+        libX11.XOpenDisplay.restype = ctypes.c_void_p
+        libX11.XMoveResizeWindow.argtypes = [
+            ctypes.c_void_p, ctypes.c_ulong, ctypes.c_int, ctypes.c_int, ctypes.c_uint, ctypes.c_uint
+        ]
+        libX11.XRaiseWindow.argtypes = [ctypes.c_void_p, ctypes.c_ulong]
+        libX11.XFlush.argtypes = [ctypes.c_void_p]
+        libX11.XCloseDisplay.argtypes = [ctypes.c_void_p]
+        dpy = libX11.XOpenDisplay((env.get("DISPLAY") or ":10.0").encode("utf-8"))
+        if dpy:
+            try:
+                w_int = int(str(wid).strip(), 0)
+                if pos_x is not None and pos_y is not None:
+                    libX11.XMoveResizeWindow(dpy, w_int, int(pos_x), int(pos_y), int(win_w), int(win_h))
+                libX11.XRaiseWindow(dpy, w_int)
+                libX11.XFlush(dpy)
+            finally:
+                libX11.XCloseDisplay(dpy)
+    except Exception:
+        pass
+    target_flag = ["-i", "-r", str(wid)] if wid else ["-r", MEDIA_OVERLAY_MARKER]
+    subprocess.run(["wmctrl", *target_flag, "-b", "remove,below,hidden,shaded"], env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False)
+    if pos_x is not None and pos_y is not None:
+        subprocess.run(["wmctrl", *target_flag, "-e", f"0,{pos_x},{pos_y},{win_w},{win_h}"], env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False)
+    subprocess.run(["wmctrl", *target_flag, "-b", "add,above,sticky"], env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False)
+    if wid:
+        subprocess.run(["wmctrl", "-i", "-a", str(wid)], env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False)
+        if shutil.which("xdotool"):
+            xdo_cmd = ["xdotool"]
+            if pos_x is not None and pos_y is not None:
+                xdo_cmd.extend(["windowmove", str(wid), str(pos_x), str(pos_y)])
+            xdo_cmd.extend(["windowraise", str(wid), "windowactivate", str(wid)])
+            subprocess.run(xdo_cmd, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False)
+
+
 def _shape_honeybot_overlay_window(mask_bytes, win_w, win_h, env, pos_x=None, pos_y=None):
-    """Find the honeybot_media_overlay window ID via xdotool, apply XShape mask, and move to (pos_x, pos_y)."""
+    """Find the mapped honeybot_media_overlay window ID via xdotool, apply XShape mask, and raise to top."""
     if not shutil.which("xdotool"):
         return ""
-    for _ in range(12):
+    for attempt in range(25):
         try:
+            search_cmd = ["xdotool", "search", "--onlyvisible", "--name", f"^{MEDIA_OVERLAY_MARKER}$"]
+            if attempt >= 8:
+                search_cmd = ["xdotool", "search", "--name", f"^{MEDIA_OVERLAY_MARKER}$"]
             res = subprocess.run(
-                ["xdotool", "search", "--name", f"^{MEDIA_OVERLAY_MARKER}$"],
+                search_cmd,
                 env=env,
                 capture_output=True,
                 text=True,
@@ -928,18 +981,11 @@ def _shape_honeybot_overlay_window(mask_bytes, win_w, win_h, env, pos_x=None, po
                 wid = lines[-1]
                 if mask_bytes:
                     _apply_x11_shape_mask_honeybot(wid, mask_bytes, win_w, win_h, env)
-                if pos_x is not None and pos_y is not None:
-                    subprocess.run(
-                        ["xdotool", "windowmove", str(wid), str(pos_x), str(pos_y)],
-                        env=env,
-                        stdout=subprocess.DEVNULL,
-                        stderr=subprocess.DEVNULL,
-                        check=False,
-                    )
+                _enforce_overlay_z_order(wid, pos_x, pos_y, win_w, win_h, env)
                 return wid
         except Exception:
             pass
-        time.sleep(0.05)
+        time.sleep(0.08)
     return ""
 
 
@@ -1274,6 +1320,8 @@ def conjure_media(media_spec, duration=15.0, mute=False, _direct=False):
             base_vcmd = [
                 "mpv",
                 "--no-config",
+                "--force-window=immediate",
+                "--x11-netwm=yes",
                 f"--title={MEDIA_OVERLAY_MARKER}",
                 "--no-border",
                 "--ontop",
@@ -1304,14 +1352,16 @@ def conjure_media(media_spec, duration=15.0, mute=False, _direct=False):
                     stderr=err_dest,
                 )
                 time.sleep(0.25)
-            _shape_honeybot_overlay_window(None, win_w, win_h, env, pos_x=pos_x, pos_y=pos_y)
-            subprocess.run(["wmctrl", "-r", MEDIA_OVERLAY_MARKER, "-e", f"0,{pos_x},{pos_y},{win_w},{win_h}"], env=env, check=False)
-            subprocess.run(["wmctrl", "-r", MEDIA_OVERLAY_MARKER, "-b", "add,above"], env=env, check=False)
+            wid = _shape_honeybot_overlay_window(None, win_w, win_h, env, pos_x=pos_x, pos_y=pos_y)
+            time.sleep(0.35)
+            _enforce_overlay_z_order(wid, pos_x, pos_y, win_w, win_h, env)
             proc.wait(timeout=duration + 3.0)
         elif shutil.which("mpv"):
             base_cmd = [
                 "mpv",
                 "--no-config",
+                "--force-window=immediate",
+                "--x11-netwm=yes",
                 f"--title={MEDIA_OVERLAY_MARKER}",
                 "--no-border",
                 "--ontop",
@@ -1327,13 +1377,9 @@ def conjure_media(media_spec, duration=15.0, mute=False, _direct=False):
             if proc.poll() is not None and (time.time() - t0) < 0.8:
                 proc = subprocess.Popen([*base_cmd, target], env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                 time.sleep(0.18)
-            _shape_honeybot_overlay_window(mask_bytes, win_w, win_h, env, pos_x=pos_x, pos_y=pos_y)
-            subprocess.run(
-                ["wmctrl", "-r", MEDIA_OVERLAY_MARKER, "-e", f"0,{pos_x},{pos_y},{win_w},{win_h}"],
-                env=env,
-                check=False,
-            )
-            subprocess.run(["wmctrl", "-r", MEDIA_OVERLAY_MARKER, "-b", "add,above"], env=env, check=False)
+            wid = _shape_honeybot_overlay_window(mask_bytes, win_w, win_h, env, pos_x=pos_x, pos_y=pos_y)
+            time.sleep(0.20)
+            _enforce_overlay_z_order(wid, pos_x, pos_y, win_w, win_h, env)
             proc.wait(timeout=duration + 2.0)
         elif not is_video and shutil.which("feh") and not target.startswith(("http://", "https://")):
             img_w, img_h = _read_image_dimensions(target) if os.path.isfile(target) else (1440, 810)

@@ -17,12 +17,18 @@ TARGET="mike@192.168.10.100"
 # pad list, the full sync calls it below, and `./nixops.sh --installer` runs
 # it alone so release.py can move all three doors without staging config or
 # sweeping scripts. Body only; no rebuild.
+RSYNC_OPTS="-aq"
+if [ "${1:-}" = "-v" ] || [ "${1:-}" = "--verbose" ]; then
+  RSYNC_OPTS="-av"
+  shift
+fi
+
 INSTALLER_DOORS="npvg.org qamy.ai levinix.org sunpug.io guerillatech.com rfc9110.org rfc9111.io"
 sync_installer() {
-  echo "🚀 Syncing installer to the home-hosted doors ($INSTALLER_DOORS)..."
+  echo "🚀 Syncing installer to home-hosted doors ($INSTALLER_DOORS)..."
   for door in $INSTALLER_DOORS; do
     ssh $TARGET "mkdir -p ~/www/$door" \
-      && rsync -av assets/installer/install.sh "$TARGET:~/www/$door/install.sh" || return 1
+      && rsync $RSYNC_OPTS assets/installer/install.sh "$TARGET:~/www/$door/install.sh" || return 1
   done
 }
 if [ "${1:-}" = "--installer" ]; then
@@ -34,41 +40,30 @@ if [ "${1:-}" = "--installer" ]; then
   exit 1
 fi
 
-echo "🚀 Syncing Hooks..."
-scp remotes/honeybot/hooks/post-receive $TARGET:~/git/mikelev.in.git/hooks/post-receive
-ssh $TARGET "chmod +x ~/git/mikelev.in.git/hooks/post-receive"
+echo "🚀 Syncing Hooks & Scripts..."
+scp -q remotes/honeybot/hooks/post-receive $TARGET:~/git/mikelev.in.git/hooks/post-receive
+ssh $TARGET "chmod +x ~/git/mikelev.in.git/hooks/post-receive && mkdir -p ~/www/mikelev.in/scripts ~/www/mikelev.in/imports ~/www/mikelev.in/assets/sounds"
+rsync --delete $RSYNC_OPTS remotes/honeybot/scripts/ $TARGET:~/www/mikelev.in/scripts/
+rsync $RSYNC_OPTS imports/ascii_displays.py $TARGET:~/www/mikelev.in/imports/
+rsync $RSYNC_OPTS assets/sounds/tick.wav $TARGET:~/www/mikelev.in/assets/sounds/tick.wav
 
-echo "🚀 Syncing Scripts (New Location)..."
-# Ensure the directory exists
-ssh $TARGET "mkdir -p ~/www/mikelev.in/scripts ~/www/mikelev.in/imports ~/www/mikelev.in/assets/sounds"
-
-# Sync the new dedicated script folder
-rsync --delete -av remotes/honeybot/scripts/ $TARGET:~/www/mikelev.in/scripts/
-
-# Surgical sync of the visual display, patronus engine, and CC0 sound assets
-rsync -av imports/ascii_displays.py $TARGET:~/www/mikelev.in/imports/
-rsync -av assets/sounds/tick.wav $TARGET:~/www/mikelev.in/assets/sounds/tick.wav
-
-echo "🚀 Syncing NPvg pad (one address, two bodies)..."
-ssh $TARGET "mkdir -p ~/www/npvg.org"
-rsync -av remotes/honeybot/www/npvg.org/ $TARGET:~/www/npvg.org/
-# ONE SOURCE, THREE PROJECTIONS: the installer lives at assets/installer/install.sh.
-# release.py projects it to Pipulate.com; sync_installer (above) projects it to both pads.
-
-echo "🚀 Syncing qamy.ai door (npvg.org's shape, its own tree)..."
-ssh $TARGET "mkdir -p ~/www/qamy.ai"
-rsync -av remotes/honeybot/www/qamy.ai/ $TARGET:~/www/qamy.ai/
+echo "🚀 Syncing 8 Domain Doors & Installer..."
+for door in npvg.org qamy.ai levinix.org sunpug.io guerillatech.com rfc9110.org rfc9111.io; do
+  ssh $TARGET "mkdir -p ~/www/$door"
+  rsync $RSYNC_OPTS "remotes/honeybot/www/$door/" "$TARGET:~/www/$door/"
+done
 sync_installer
+
 if [ -x ".venv/bin/python" ]; then
   .venv/bin/python -c "import sys, pathlib; sys.path.insert(0, 'scripts/articles'); import common, publishizer; t = common.load_targets().get('1', {}); p = pathlib.Path(t.get('path', '~/repos/trimnoir/_posts')).expanduser(); publishizer.build_brain_archive('1', p)" || true
 fi
 if [ -f "$HOME/.cache/pipulate/brain.zip" ]; then
-  echo "🧠 Syncing 2nd Brain archive (brain.zip) to qamy.ai and mikelev.in..."
-  rsync -av "$HOME/.cache/pipulate/brain.zip" $TARGET:~/www/qamy.ai/brain.zip
+  echo "🧠 Syncing 2nd Brain archive (brain.zip)..."
+  rsync $RSYNC_OPTS "$HOME/.cache/pipulate/brain.zip" $TARGET:~/www/qamy.ai/brain.zip
   ssh $TARGET "cp -lf ~/www/qamy.ai/brain.zip ~/www/mikelev.in/_site/brain.zip 2>/dev/null || cp -f ~/www/qamy.ai/brain.zip ~/www/mikelev.in/_site/brain.zip"
 fi
 
-echo "🚀 Syncing levinux.com deck (remark.js HTML + RFC 9110 index.md)..."
+echo "🚀 Syncing levinux.com deck & NixOS Config..."
 LEVINUX_CACHE="$HOME/.cache/pipulate/levinux-assets"
 mkdir -p "$LEVINUX_CACHE"
 for asset in levinux.png mike-levin-ambigram.svg; do
@@ -79,18 +74,9 @@ done
 if [ ! -f "$LEVINUX_CACHE/remark-latest.min.js" ]; then
   curl -fsSL "https://remarkjs.com/downloads/remark-latest.min.js" -o "$LEVINUX_CACHE/remark-latest.min.js" 2>/dev/null || true
 fi
-ssh $TARGET "mkdir -p ~/www/levinux.com ~/www/levinix.org"
-rsync -av remotes/honeybot/www/levinux.com/ "$LEVINUX_CACHE/" $TARGET:~/www/levinux.com/
-rsync -av remotes/honeybot/www/levinix.org/ $TARGET:~/www/levinix.org/
-
-for door in sunpug.io guerillatech.com rfc9110.org rfc9111.io; do
-  echo "🚀 Syncing $door door..."
-  ssh $TARGET "mkdir -p ~/www/$door"
-  rsync -av "remotes/honeybot/www/$door/" "$TARGET:~/www/$door/"
-done
-
-echo "🚀 Syncing NixOS Config..."
-rsync --delete -av remotes/honeybot/nixos/ $TARGET:~/nixos-config-staged/
+ssh $TARGET "mkdir -p ~/www/levinux.com"
+rsync $RSYNC_OPTS remotes/honeybot/www/levinux.com/ "$LEVINUX_CACHE/" $TARGET:~/www/levinux.com/
+rsync --delete $RSYNC_OPTS remotes/honeybot/nixos/ $TARGET:~/nixos-config-staged/
 
 echo "✅ Sync Complete."
 echo "   To apply NixOS config: ssh -t $TARGET 'sudo cp ~/nixos-config-staged/* /etc/nixos/ && sudo nixos-rebuild switch'"
