@@ -56,7 +56,7 @@ def _make_station_bead(card_label, card_say, capstone_cue, forest_story_lines):
         # 3. What Article Is Being Read & How to Read It in Full
         ("SAY", CURRENT_ARTICLE_BEAT),
         # 4. Consulting Call-to-Action ($10k/mo HTML Pre-Render Hook)
-        ("CARD", {"label": "$10K/MO\nPRE-RENDER?", "say": CONSULTING_CTA_BEAT}),
+        ("CARD", {"label": "$15K/MO\nPRE-RENDER?", "say": CONSULTING_CTA_BEAT}),
         # 5. Visual Capstone: Alternates between a Rich Data Report (WINDOW) and Forest ASCII Art (PATRONUS)
         capstone_cue,
         ("WAIT", 2),
@@ -317,7 +317,7 @@ def _build_station_report_panel(mode="overview"):
         )
 
     footer = Text.from_markup(
-        "[bold green]💸 Spending $10,000/mo+ on HTML pre-render?[/bold green] "
+        "[bold green]💸 Spending $15,000/mo+ on HTML pre-render?[/bold green] "
         "RFC 9110, RFC 9111 & RFC 9421 save that spend -> [bold cyan]https://mikelev.in/#consulting[/bold cyan]"
     )
     return Panel(tbl, title=f"[bold bright_cyan]{title_str}[/bold bright_cyan]", subtitle=footer, padding=(1, 2))
