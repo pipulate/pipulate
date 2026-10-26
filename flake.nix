@@ -2733,9 +2733,12 @@ print('AI:\n', r.ai)
                 # has nothing to commit and silently no-ops, which means no push, which
                 # means the post-receive hook on Honeybot never fires. Fall back to an
                 # empty commit so `publish` alone is always sufficient to trigger a deploy.
-                if ! git commit -am "$MSG"; then
+                if git commit -q -am "$MSG"; then
+                    git --no-pager show --stat="" --shortstat --oneline HEAD
+                else
                     echo "ℹ️  Nothing to commit in $TARGET_REPO; creating empty commit to ring the deploy bell."
-                    git commit --allow-empty -m "$MSG"
+                    git commit -q --allow-empty -m "$MSG"
+                    git --no-pager show --stat="" --shortstat --oneline HEAD
                 fi
                 git push
             )
@@ -2771,68 +2774,14 @@ print('AI:\n', r.ai)
                         echo "⏭️  [5/5] Skipped -- stream.py left running. Pass --reboot to force the restart now."
                         echo "✅ Atomic Deployment Complete (stream untouched)."
                         "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/articles/common.py" --broadcast pebble || true
-                        "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/articles/common.py" --broadcast card || true
+                        "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/articles/common.py" --broadcast summary || true
                         return 0
                     fi
                     echo "🚀 [5/5] Stream Refresh: Restarting Honeybot slideshow child..."
-                    ssh mike@192.168.10.100 '
-                        pattern="/home/mike/www/mikelev[.]in/scripts/stream[.]py"
-                        old_pids=$(pgrep -f -- "$pattern" || true)
-                        count=$(printf "%s\n" "$old_pids" | sed "/^$/d" | wc -l)
-
-                        if [ "$count" -eq 0 ]; then
-                            echo "⚠️ No stream.py child found; watchdog may already be between cycles."
-                            exit 0
-                        fi
-
-                        if [ "$count" -gt 1 ]; then
-                            echo "⚠️ Found $count stream.py children. Terminating all so the singleton lock can arbitrate."
-                            pgrep -af -- "$pattern" || true
-                        else
-                            echo "   old=$old_pids"
-                        fi
-
-                        for old in $old_pids; do
-                            kill -TERM "$old" || true
-                        done
-
-                        # Surgical sweep to flush any orphaned UI drawing children or text tails
-                        pkill -f "/home/mike/www/mikelev[.]in/scripts/logs[.]py" || true
-                        # THE SUICIDAL PKILL (convicted 2026-08-05, twice in one
-                        # transcript). pkill -f matches the FULL command line, and
-                        # the remote shell running this script carries the pattern
-                        # in its own argv -- so an unescaped pattern kills the
-                        # shell that issued it. The two lines above are protected
-                        # by the [.] trick: the regex demands a literal dot that
-                        # the argv literal does not contain. This one was missed.
-                        # CONSEQUENCE: the ssh session died HERE every time, so
-                        # sleep 12, the pgrep re-count, and all three verdict
-                        # branches below have NEVER EXECUTED -- an unreachable
-                        # verification block, and orphaned tails never reaped.
-                        pkill -f "tail -f /var/log/nginx/access[.]log" || true
-
-                        sleep 12
-
-                        new_pids=$(pgrep -f -- "$pattern" || true)
-                        new_count=$(printf "%s\n" "$new_pids" | sed "/^$/d" | wc -l)
-
-                        echo "   new_count=$new_count"
-                        if [ -n "$new_pids" ]; then
-                            printf "%s\n" "$new_pids" | sed "s/^/   new=/"
-                        fi
-
-                        if [ "$new_count" -eq 1 ]; then
-                            echo "✅ Stream watchdog relaunched exactly one stream.py child."
-                        elif [ "$new_count" -gt 1 ]; then
-                            echo "⚠️ Duplicate stream.py children remain after restart:"
-                            pgrep -af -- "$pattern" || true
-                        else
-                            echo "⚠️ Stream restart requested, but no new PID was confirmed."
-                        fi
-                    '
+                    "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/articles/common.py" --broadcast reboot || true
                     echo "✅ Atomic Deployment Complete."
                     "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/articles/common.py" --broadcast pebble || true
-                    "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/articles/common.py" --broadcast card || true
+                    "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/articles/common.py" --broadcast summary || true
                 else
                     echo "⚠️ Warning: nixops.sh not found. Server config sync skipped."
                 fi
@@ -2987,7 +2936,9 @@ print('AI:\n', r.ai)
               (
                 cd "$BOTIFY_REPO" || exit 1
                 git add .
-                if ! git commit -am "$msg"; then
+                if git commit -q -am "$msg"; then
+                  git --no-pager show --stat="" --shortstat --oneline HEAD
+                else
                   echo "ℹ️  Nothing to commit in botifyml; continuing to shards + Confluence."
                 fi
                 git push

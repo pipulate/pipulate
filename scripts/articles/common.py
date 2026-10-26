@@ -956,6 +956,14 @@ def print_broadcast_kit(target_key="1", mode="card", slug_match=None):
         print(kit["yt_description"])
         print(f"\n{'📋 Copied YouTube Live Description to clipboard!' if copied else 'ℹ️  (Non-TTY: printed only)'}")
         return 0
+    if mode == "summary":
+        yt_thumb = _ensure_yt_studio_thumbnail(kit["hero_img_dest"])
+        print(f"📡 Broadcast Kit Ready ({Path(kit['path']).name}):")
+        print(f"   • Live URL   : {kit['canonical_url']}")
+        if yt_thumb:
+            print(f"   • YT Thumb   : {yt_thumb} (1280x720 16:9)")
+        print("   • Quick Copy : tweet | linkedin | yttitle | ytdesc | ytcard (full kit)")
+        return 0
     print(f"\n{bar}")
     print(f"📡 GO-GO-GADGET BROADCAST KIT ({Path(kit['path']).name})")
     print(thin)
@@ -2629,9 +2637,9 @@ if __name__ == "__main__":
     add_standard_arguments(parser)
     parser.add_argument(
         "--broadcast",
-        choices=("help", "card", "hero", "yaml", "tweet", "linkedin", "pebble", "title", "desc", "top", "outro", "reboot", "status", "bell", "stop", "start", "roll", "enable-ws", "say", "ping", "watch"),
+        choices=("help", "card", "summary", "hero", "yaml", "tweet", "linkedin", "pebble", "title", "desc", "top", "outro", "reboot", "status", "bell", "stop", "start", "roll", "enable-ws", "say", "ping", "watch"),
         default="card",
-        help="Print/copy broadcast kit or control Honeybot (help|card|hero|yaml|tweet|linkedin|pebble|title|desc|top|outro|reboot|status|bell|stop|start|roll|enable-ws|say|ping|watch).",
+        help="Print/copy broadcast kit or control Honeybot (help|card|summary|hero|yaml|tweet|linkedin|pebble|title|desc|top|outro|reboot|status|bell|stop|start|roll|enable-ws|say|ping|watch).",
     )
     parser.add_argument(
         "--no-tick",

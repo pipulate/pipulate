@@ -52,8 +52,10 @@
 
   # 2. THE INSOMNIA (Server Mode)
   # Prevent the laptop from sleeping when you close the lid
-  services.logind.lidSwitch = "ignore";
-  services.logind.lidSwitchExternalPower = "ignore";
+  services.logind.settings.Login = {
+    HandleLidSwitch = "ignore";
+    HandleLidSwitchExternalPower = "ignore";
+  };
 
   # THE JOURNAL GOVERNOR
   # The gauge revealed journald (1G) is 6x larger than honeybot.db (160M).
@@ -122,10 +124,10 @@
   # Enable the X11 windowing system.
   services.xserver.enable = true;
 
-  # Enable the GNOME Desktop Environment.
-  services.xserver.displayManager.gdm.enable = true;
+  # Enable the GNOME Display Manager + XFCE Desktop Environment.
+  services.displayManager.gdm.enable = true;
   services.xserver.desktopManager.xfce.enable = true;
-  services.xserver.displayManager.gdm.wayland = false; # <--- CRITICAL: Force X11 for automation
+  services.displayManager.gdm.wayland = false; # <--- CRITICAL: Force X11 for automation
 
   # Remote Desktop - Debug Mode
   services.xrdp.enable = true;

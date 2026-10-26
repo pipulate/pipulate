@@ -13,7 +13,7 @@ echo "🎯 [Hook] Received Push. Deploying..."
 date +%s > $WORK_TREE/.deploy_standby
 
 # 1. Force Checkout to the Web Root
-git --work-tree=$WORK_TREE --git-dir=$GIT_DIR checkout -f main
+git --work-tree=$WORK_TREE --git-dir=$GIT_DIR checkout -q -f main
 
 # 2. Enter the Arena
 cd $WORK_TREE
