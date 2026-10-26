@@ -39,7 +39,7 @@ WHATS_HAPPENING_BEAT = (
 CURRENT_ARTICLE_BEAT = "{CURRENT_ARTICLE}"
 
 CONSULTING_CTA_BEAT = (
-    "Are you spending ten thousand dollars a month and up on H T M L pre-rendering? "
+    "Are you spending ten to twenty thousand dollars a month and up on H T M L pre-rendering? "
     "Did you know that fully implemented new web standards, including R F C 9110 Markdown content negotiation, "
     "R F C 9111 edge cache partitioning, and R F C 9421 Web Bot Auth, can save you that money? "
     "Contact Mike Levin at Mike L E V dot eye N for a consultation."
