@@ -29,7 +29,8 @@ def neutralize_inception_artifacts(content: str) -> str:
     content = re.sub(r'\[(https?://[^\]\s]+)\]\(\1/?\)', r'\1', content)
     content = re.sub(r'\[(www\.[^\]\s]+)\]\(https?://\1/?\)', r'\1', content)
     # 2. Repair inverted bold/inline-code closures (**foo `bar**` -> **foo `bar`**)
-    content = re.sub(r'(\*\*[^*\n]+`[^`\n]+)\*\*`', r'\1`**', content)
+    content = re.sub(r'`\*\*([^`*\n]+)`([^`*\n]+)\*\*`', r'`**\1`\2`**`', content)
+    content = re.sub(r'(\*\*(?:[^*\n]|`[^`\n]*`)*`[^`\n]+)\*\*`', r'\1`**', content)
     # 3. Collapse hard-wrapped newlines inside backticked player-piano cue examples
     content = re.sub(
         r'`((?:[^`\n]|\n(?!\s*\n))+)`',
