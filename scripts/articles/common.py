@@ -2482,16 +2482,38 @@ pattern="/home/mike/www/mikelev[.]in/scripts/stream[.]py"
 old_pids=$(pgrep -f -- "$pattern" || true)
 for old in $old_pids; do
     echo "   stopping old stream.py pid=$old"
-    kill -TERM "$old" || true
+    kill -TERM "$old" 2>/dev/null || true
 done
-pkill -f "/home/mike/www/mikelev[.]in/scripts/logs[.]py" || true
-pkill -f "tail -f /var/log/nginx/access[.]log" || true
+sleep 1
+for old in $old_pids; do
+    if kill -0 "$old" 2>/dev/null; then
+        echo "   force-killing stubborn stream.py pid=$old"
+        kill -KILL "$old" 2>/dev/null || true
+    fi
+done
+pkill -9 -f "aplay.*22050|honeybot_tts|piper.*output_raw" 2>/dev/null || true
+rm -f /tmp/honeybot_tts_*.raw 2>/dev/null || true
+pkill -f "/home/mike/www/mikelev[.]in/scripts/logs[.]py" 2>/dev/null || true
+pkill -f "tail -f /var/log/nginx/access[.]log" 2>/dev/null || true
 for i in $(seq 1 14); do
     sleep 1
-    new_pids=$(pgrep -f -- "$pattern" || true)
-    new_count=$(printf "%s\n" "$new_pids" | sed "/^$/d" | wc -l)
-    if [ "$new_count" -ge 1 ]; then
-        echo "✅ Stream watchdog relaunched stream.py (pid=$(echo $new_pids | tr '\n' ' ')after ${i}s)."
+    cand_pids=$(pgrep -f -- "$pattern" || true)
+    fresh_pids=""
+    for cp in $cand_pids; do
+        is_old=0
+        for op in $old_pids; do
+            if [ "$cp" = "$op" ]; then
+                is_old=1
+                break
+            fi
+        done
+        if [ "$is_old" -eq 0 ]; then
+            fresh_pids="$fresh_pids $cp"
+        fi
+    done
+    fresh_pids=$(echo "$fresh_pids" | sed 's/^ *//;s/ *$//')
+    if [ -n "$fresh_pids" ]; then
+        echo "✅ Stream watchdog relaunched fresh stream.py (pid=${fresh_pids} after ${i}s)."
         exit 0
     fi
 done

@@ -26,6 +26,32 @@ from pathlib import Path
 # --- Process Singleton ---
 STREAM_LOCK_PATH = "/tmp/honeybot-stream.py.lock"
 _stream_lock_handle = None
+_shutting_down = threading.Event()
+
+
+def _reap_orphaned_tts_and_overlays():
+    """Kill any orphaned aplay/piper TTS pipelines and stale /tmp/honeybot_tts_*.raw files."""
+    my_pid = os.getpid()
+    for p in sorted(Path("/proc").glob("[0-9]*/cmdline")):
+        try:
+            pid = int(p.parent.name)
+            if pid == my_pid:
+                continue
+            raw = p.read_bytes().replace(b"\x00", b" ").decode("utf-8", errors="ignore")
+            if "--conjure-media" in raw:
+                continue
+            if (
+                ("aplay" in raw and ("22050" in raw or "honeybot_tts" in raw or "tick.wav" in raw))
+                or ("piper" in raw and "output_raw" in raw)
+            ):
+                os.kill(pid, signal.SIGKILL)
+        except Exception:
+            continue
+    for raw_f in Path("/tmp").glob("honeybot_tts_*.raw"):
+        try:
+            raw_f.unlink(missing_ok=True)
+        except OSError:
+            pass
 
 
 def acquire_singleton_lock():
@@ -236,10 +262,18 @@ def run_tui_app(script_name, duration=None):
             proc.wait()
 
     except KeyboardInterrupt:
-        pass
+        raise
     finally:
-        if proc.poll() is None: proc.terminate()
-        if tail_proc: tail_proc.terminate()
+        for child_p in (proc, tail_proc):
+            if child_p and child_p.poll() is None:
+                try:
+                    child_p.terminate()
+                    child_p.wait(timeout=1.0)
+                except Exception:
+                    try:
+                        child_p.kill()
+                    except Exception:
+                        pass
 
 
 class Narrator(threading.Thread):
@@ -251,6 +285,7 @@ class Narrator(threading.Thread):
         self.daemon = True
         # Track the live audio pipeline so interrupt() can kill it mid-sentence.
         self._proc_lock = threading.Lock()
+        self._play_lock = threading.Lock()
         self._active_procs = []
         self._tts_seq = 0
         self.exclusive_mode = threading.Event()
@@ -401,62 +436,85 @@ class Narrator(threading.Thread):
 
     def _speak_now(self, text):
         """Internal method to actually generate and play audio."""
-        # Note: We avoid print() here because it might corrupt the TUI layout
+        if self.stop_event.is_set() or _shutting_down.is_set():
+            return
         model_path = MODEL_DIR / MODEL_NAME
-
         if not model_path.exists():
             return
-
-        try:
-            p1 = subprocess.Popen(["echo", text], stdout=subprocess.PIPE)
-            p2 = subprocess.Popen(
-                ["piper", "--model", str(model_path), "--output_raw"],
-                stdin=p1.stdout,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.DEVNULL
-            )
-            p1.stdout.close()
-            p3 = subprocess.Popen(
-                ["aplay", "-r", "22050", "-f", "S16_LE", "-t", "raw"],
-                stdin=p2.stdout,
-                stderr=subprocess.DEVNULL
-            )
-            # Register the live pipeline so interrupt() can kill it mid-sentence.
-            with self._proc_lock:
-                self._active_procs = [p1, p2, p3]
-            p3.wait()
-        except Exception:
-            pass
-        finally:
-            with self._proc_lock:
-                self._active_procs = []
+        with self._play_lock:
+            if self.stop_event.is_set() or _shutting_down.is_set():
+                return
+            p1 = p2 = p3 = None
+            try:
+                with self._proc_lock:
+                    p1 = subprocess.Popen(["echo", text], stdout=subprocess.PIPE)
+                    p2 = subprocess.Popen(
+                        ["piper", "--model", str(model_path), "--output_raw"],
+                        stdin=p1.stdout,
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.DEVNULL,
+                    )
+                    p1.stdout.close()
+                    p3 = subprocess.Popen(
+                        ["aplay", "-r", "22050", "-f", "S16_LE", "-t", "raw"],
+                        stdin=p2.stdout,
+                        stderr=subprocess.DEVNULL,
+                    )
+                    p2.stdout.close()
+                    self._active_procs = [p1, p2, p3]
+                p3.wait()
+            except Exception:
+                pass
+            finally:
+                with self._proc_lock:
+                    for p in (p1, p2, p3):
+                        if p and p.poll() is None:
+                            try:
+                                p.kill()
+                            except Exception:
+                                pass
+                    self._active_procs = []
 
     def _play_raw_now(self, raw_path):
         """Play a pre-synthesized .raw file immediately via aplay and unlink when done."""
         if not raw_path or not os.path.exists(raw_path):
             return
-        try:
-            p_play = subprocess.Popen(
-                ["aplay", "-r", "22050", "-f", "S16_LE", "-t", "raw", str(raw_path)],
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
-            )
-            with self._proc_lock:
-                self._active_procs = [p_play]
-            p_play.wait()
-        except Exception:
-            pass
-        finally:
-            with self._proc_lock:
-                self._active_procs = []
-            if os.path.exists(raw_path):
-                try:
-                    os.remove(raw_path)
-                except OSError:
-                    pass
+        if self.stop_event.is_set() or _shutting_down.is_set():
+            try:
+                os.remove(raw_path)
+            except OSError:
+                pass
+            return
+        with self._play_lock:
+            p_play = None
+            try:
+                with self._proc_lock:
+                    p_play = subprocess.Popen(
+                        ["aplay", "-r", "22050", "-f", "S16_LE", "-t", "raw", str(raw_path)],
+                        stdout=subprocess.DEVNULL,
+                        stderr=subprocess.DEVNULL,
+                    )
+                    self._active_procs = [p_play]
+                p_play.wait()
+            except Exception:
+                pass
+            finally:
+                with self._proc_lock:
+                    if p_play and p_play.poll() is None:
+                        try:
+                            p_play.kill()
+                        except Exception:
+                            pass
+                    self._active_procs = []
+                if os.path.exists(raw_path):
+                    try:
+                        os.remove(raw_path)
+                    except OSError:
+                        pass
 
     def stop(self):
         self.stop_event.set()
+        self.interrupt()
 
 # Initialize Global Narrator
 narrator = Narrator()
@@ -1917,9 +1975,10 @@ _reboot_announced = False
 def announce_scheduled_reboot():
     """Announce the 4-hour memory-purging restart with a Figlet card and blocking TTS before exiting."""
     global _reboot_announced
-    if _reboot_announced:
+    if _reboot_announced or _shutting_down.is_set():
         return
     _reboot_announced = True
+    _shutting_down.set()
     narrator.exclusive_mode.set()
     try:
         narrator.interrupt()
@@ -1983,6 +2042,8 @@ def perform_show(script):
 
     try:
         for command, content in script:
+            if _shutting_down.is_set():
+                return False
 
             # --- The Timer Interrupt ---
             # If we exceed the duration, announce the scheduled reboot and return False.
@@ -2172,6 +2233,8 @@ def run_logs():
 
 
 def main():
+    _reap_orphaned_tts_and_overlays()
+    atexit.register(_reap_orphaned_tts_and_overlays)
     narrator.start()
     director = threading.Thread(target=start_director_track, daemon=True)
     director.start()
@@ -2214,17 +2277,27 @@ def main():
         "Post a comment and see. The odds are good since it rings a loud bell in my house. "
         "Now sit back and enjoy storytime! "
     )
-    narrator.say(NARRATOR_SAYS)
+    if not (score and trigger_is_fresh()):
+        narrator.say(NARRATOR_SAYS)
 
     # Station ID Logic Update: Reset the pitch timer here so it doesn't fire immediately
     # We rely on last_pitch_time being initialized in perform_show, but for the main loop:
     # (Since perform_show is independent, we just let logs.py run)
 
-    run_tui_app("logs.py", duration=SHOW_DURATION_MINUTES)
-
-    # Outro: announce the 4-hour scheduled restart on-air and wait for speech to finish before exiting
-    announce_scheduled_reboot()
-    narrator.stop()
+    interrupted = False
+    try:
+        run_tui_app("logs.py", duration=SHOW_DURATION_MINUTES)
+    except KeyboardInterrupt:
+        interrupted = True
+        _shutting_down.set()
+    finally:
+        if not interrupted:
+            announce_scheduled_reboot()
+        _shutting_down.set()
+        narrator.stop()
+        _reap_orphaned_tts_and_overlays()
+    if interrupted:
+        sys.exit(130)
 
 
 if __name__ == "__main__":
