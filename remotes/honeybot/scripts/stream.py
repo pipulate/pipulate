@@ -1060,10 +1060,81 @@ def _resolve_honeybot_media_target(raw_target):
     return s
 
 
+def _pause_honeybot_stage_for_weebo():
+    """Clear competing overlays and SIGSTOP active TTS/director processes while Weebo holds the stage."""
+    paused = []
+    for pat in ("conjure_window_overlay", "patronus_visual_shield"):
+        try:
+            subprocess.run(["pkill", "-f", pat], check=False)
+        except Exception:
+            pass
+    my_pid = os.getpid()
+    parent_pid = os.getppid()
+    lock_pid = 0
+    try:
+        if os.path.isfile(STREAM_LOCK_PATH):
+            raw_lp = Path(STREAM_LOCK_PATH).read_text(encoding="utf-8").strip()
+            if raw_lp.isdigit():
+                lock_pid = int(raw_lp)
+    except Exception:
+        lock_pid = 0
+    if lock_pid and lock_pid not in (my_pid, parent_pid):
+        try:
+            os.kill(lock_pid, signal.SIGSTOP)
+            paused.append(lock_pid)
+        except Exception:
+            pass
+    for p in sorted(Path("/proc").glob("[0-9]*/cmdline")):
+        try:
+            pid = int(p.parent.name)
+            if pid in (my_pid, parent_pid) or pid in paused:
+                continue
+            raw = p.read_bytes().replace(b"\x00", b" ").decode("utf-8", errors="ignore")
+            if "--conjure-media" in raw:
+                continue
+            if (
+                ("aplay" in raw and ("22050" in raw or "honeybot_tts" in raw or "tick.wav" in raw))
+                or ("piper" in raw and "output_raw" in raw)
+            ):
+                os.kill(pid, signal.SIGSTOP)
+                paused.append(pid)
+        except Exception:
+            continue
+    return paused
+
+
+def _resume_honeybot_stage_after_weebo(paused_pids):
+    """Send SIGCONT to any paused TTS/director processes (idempotent safety sweep)."""
+    resumed = set()
+    for pid in (paused_pids or []):
+        try:
+            os.kill(int(pid), signal.SIGCONT)
+            resumed.add(int(pid))
+        except Exception:
+            pass
+    try:
+        if os.path.isfile(STREAM_LOCK_PATH):
+            raw_lp = Path(STREAM_LOCK_PATH).read_text(encoding="utf-8").strip()
+            if raw_lp.isdigit() and int(raw_lp) not in resumed:
+                os.kill(int(raw_lp), signal.SIGCONT)
+    except Exception:
+        pass
+    for p in sorted(Path("/proc").glob("[0-9]*/cmdline")):
+        try:
+            pid = int(p.parent.name)
+            if pid in resumed:
+                continue
+            raw = p.read_bytes().replace(b"\x00", b" ").decode("utf-8", errors="ignore")
+            if ("aplay" in raw and "22050" in raw) or ("piper" in raw and "output_raw" in raw):
+                os.kill(pid, signal.SIGCONT)
+        except Exception:
+            continue
+
+
 def conjure_media(media_spec, duration=15.0, mute=False, _direct=False):
     """Pop up an image or video over the Honeybot :10.0 stream using mpv, feh, or Firefox fallback."""
     if isinstance(media_spec, dict):
-        raw_target = str(media_spec.get("path") or media_spec.get("url") or "").strip()
+        raw_target = str(media_spec.get("path") or media_spec.get("url") or media_spec.get("key") or "").strip()
         duration = float(media_spec.get("duration", duration))
         mute = bool(media_spec.get("mute", mute))
     else:
@@ -1080,6 +1151,12 @@ def conjure_media(media_spec, duration=15.0, mute=False, _direct=False):
     target = _resolve_honeybot_media_target(raw_target)
     if not target:
         return
+    ext = os.path.splitext(target.split("?", 1)[0])[1].lower()
+    is_video = ext in (".mp4", ".webm", ".mkv", ".mov", ".gif")
+    if is_video and ext != ".gif" and os.path.isfile(target):
+        _, _, vdur = _probe_video_metadata_honeybot(target)
+        if vdur > 0 and (abs(duration - 15.0) < 0.01 or abs(duration - 8.0) < 0.01):
+            duration = max(1.0, min(600.0, vdur))
     duration = max(1.0, min(600.0, float(duration)))
     if not _direct:
         try:
@@ -1093,12 +1170,6 @@ def conjure_media(media_spec, duration=15.0, mute=False, _direct=False):
         except Exception:
             pass
     env = _hydrate_honeybot_x11_env()
-    ext = os.path.splitext(target.split("?", 1)[0])[1].lower()
-    is_video = ext in (".mp4", ".webm", ".mkv", ".mov", ".gif")
-    if is_video and ext != ".gif" and os.path.isfile(target):
-        _, _, vdur = _probe_video_metadata_honeybot(target)
-        if vdur > 0 and abs(duration - 15.0) < 0.01:
-            duration = max(1.0, min(600.0, vdur))
     scr_w, scr_h, scr_ox, scr_oy = _get_honeybot_screen_dimensions(env)
     eff_max_w = min(1440, max(256, int(scr_w * 0.85)))
     eff_max_h = min(840, max(256, int(scr_h * 0.85)))
@@ -1115,11 +1186,13 @@ def conjure_media(media_spec, duration=15.0, mute=False, _direct=False):
 
     proc = None
     tmp_profile = None
+    paused_pids = []
     try:
         try:
             subprocess.run(["pkill", "-f", MEDIA_OVERLAY_MARKER], check=False)
         except Exception:
             pass
+        paused_pids = _pause_honeybot_stage_for_weebo()
         if is_video and shutil.which("mpv"):
             base_vcmd = [
                 "mpv",
@@ -1238,6 +1311,7 @@ def conjure_media(media_spec, duration=15.0, mute=False, _direct=False):
                     proc.kill()
                 except Exception:
                     pass
+        _resume_honeybot_stage_after_weebo(paused_pids)
         if tmp_profile and os.path.isdir(tmp_profile):
             shutil.rmtree(tmp_profile, ignore_errors=True)
 
@@ -1485,7 +1559,14 @@ def dispatch_cue(command, content, env, profile_dir, pace_say=True):
         if not pace_say:
             narrator.media(content)
         else:
-            conjure_media(content)
+            wait_for_voice_or_live_interrupt(env, profile_dir)
+            was_exclusive = narrator.exclusive_mode.is_set()
+            narrator.exclusive_mode.set()
+            try:
+                conjure_media(content)
+            finally:
+                if not was_exclusive:
+                    narrator.exclusive_mode.clear()
 
     elif command == "WINDOW":
         # Grammar: "script.py" | "script.py:seconds" | "script.py:seconds:arg".
@@ -1897,6 +1978,8 @@ def perform_show(script):
                 next_pitch_time = next_slot(start_time, PITCH_INTERVAL, time.time())
 
             dispatch_cue(command, content, env, profile_dir, pace_say=True)
+            if command in ("MEDIA", "IMAGE", "VIDEO"):
+                next_pitch_time = max(next_pitch_time, time.time() + 30.0)
     finally:
         # CLEANUP: Destroy the memory of this session
         try:
@@ -2018,11 +2101,11 @@ def main():
 
 
 if __name__ == "__main__":
+    register_signal_handlers()
     if len(sys.argv) >= 3 and sys.argv[1] == "--conjure-media":
         dur_arg = float(sys.argv[3]) if len(sys.argv) >= 4 else 8.0
         mute_arg = "--mute" in sys.argv[4:]
         conjure_media(sys.argv[2], duration=dur_arg, mute=mute_arg, _direct=True)
         sys.exit(0)
     acquire_singleton_lock()
-    register_signal_handlers()
     main()
