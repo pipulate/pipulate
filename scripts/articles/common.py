@@ -2088,7 +2088,11 @@ def run_youtube_watch(
     prev_comments = persisted.get("comment_count") if same_video else state["comment_count"]
     last_viewer_alert = float(persisted.get("last_viewer_alert") or 0.0) if same_video else 0.0
     alerted_in_run = bool(persisted.get("alerted_in_run")) if (same_video and state["concurrent_viewers"] >= YT_VIEWER_ALERT_MIN) else False
-    weebo_peak_viewers = int(persisted.get("weebo_peak_viewers") or 0) if (same_video and state["concurrent_viewers"] >= YT_VIEWER_ALERT_MIN) else 0
+    prev_viewers = (
+        int(persisted.get("concurrent_viewers"))
+        if (same_video and persisted.get("concurrent_viewers") is not None)
+        else state["concurrent_viewers"]
+    )
     daemon_running = (
         subprocess.run(
             ["tmux", "has-session", "-t", "ytwatch"],
@@ -2137,6 +2141,14 @@ def run_youtube_watch(
         return 0
     for m in state["chat_messages"]:
         seen_ids.add(m["id"])
+    if state["is_live"] and state["concurrent_viewers"] > prev_viewers:
+        print(
+            f"📈 [VIEWER +{state['concurrent_viewers'] - prev_viewers}] "
+            f"{prev_viewers} -> {state['concurrent_viewers']} watching — firing hairline Weebo trigger!",
+            flush=True,
+        )
+        _trigger_ytwatch_weebo()
+    prev_viewers = state["concurrent_viewers"]
     init_ts = time.time()
     dwell_window = [(init_ts, state["concurrent_viewers"])] if state["concurrent_viewers"] >= YT_VIEWER_ALERT_MIN else []
     _save_ytwatch_state({
@@ -2162,10 +2174,14 @@ def run_youtube_watch(
                 continue
             viewers = state["concurrent_viewers"]
             now = time.time()
+            if viewers > prev_viewers:
+                print(
+                    f"📈 [VIEWER +{viewers - prev_viewers}] {prev_viewers} -> {viewers} watching — firing hairline Weebo trigger!",
+                    flush=True,
+                )
+                _trigger_ytwatch_weebo()
+            prev_viewers = viewers
             if viewers >= YT_VIEWER_ALERT_MIN:
-                if viewers > weebo_peak_viewers:
-                    weebo_peak_viewers = viewers
-                    _trigger_ytwatch_weebo()
                 dwell_window.append((poll_ts, viewers))
                 cutoff_ts = poll_ts - max(YT_VIEWER_ALERT_DWELL * 3, int(interval) * 4)
                 dwell_window = [(ts, v) for ts, v in dwell_window if ts >= cutoff_ts]
@@ -2209,7 +2225,6 @@ def run_youtube_watch(
                     )
                 dwell_window.clear()
                 alerted_in_run = False
-                weebo_peak_viewers = 0
             for msg in state["chat_messages"]:
                 if msg["id"] in seen_ids:
                     continue
@@ -2286,7 +2301,6 @@ def run_youtube_watch(
                 "video_id": state["video_id"],
                 "concurrent_viewers": viewers,
                 "peak_viewers": peak_viewers,
-                "weebo_peak_viewers": weebo_peak_viewers,
                 "alerted_in_run": alerted_in_run,
                 "comment_count": cur_comments,
                 "last_viewer_alert": last_viewer_alert,
