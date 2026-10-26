@@ -611,7 +611,8 @@ def apply_search_replace_patch(payload: str) -> bool:
         # ahead of the JSON/Nix/AST validators because a leaked marker also trips
         # those, but with a symptom message that points nowhere near the cause.
         if os.path.basename(filename) not in PROTOCOL_GRAMMAR_FILES:
-            residue = _residual_marker_lines(new_content)
+            check_target = replace_block if filename.endswith('.md') else new_content
+            residue = _residual_marker_lines(check_target)
             if residue:
                 print(f"❌ Error: Patching '{filename}' aborted. "
                       f"Residual patch-protocol marker(s) survived substitution:")
