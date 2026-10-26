@@ -29,15 +29,16 @@ def neutralize_inception_artifacts(content: str) -> str:
     content = re.sub(r'\[(https?://[^\]\s]+)\]\(\1/?\)', r'\1', content)
     content = re.sub(r'\[(www\.[^\]\s]+)\]\(https?://\1/?\)', r'\1', content)
     # 2. Repair inverted bold/inline-code closures (**foo `bar**` -> **foo `bar`**)
+    # Use [^*`\n]+ so the two branches inside (?:...)* are disjoint (O(N), zero backtracking).
     content = re.sub(r'`\*\*([^`*\n]+)`([^`*\n]+)\*\*`', r'`**\1`\2`**`', content)
-    content = re.sub(r'(\*\*(?:[^*\n]|`[^`\n]*`)*`[^`\n]+)\*\*`', r'\1`**', content)
-    # 3. Collapse hard-wrapped newlines inside backticked player-piano cue examples
+    content = re.sub(r'(\*\*(?:[^*`\n]+|`[^`\n]*`)*`[^`\n]+)\*\*`', r'\1`**', content)
+    # 3. Collapse hard-wrapped newlines only inside single-backticked player-piano cue examples
+    # so odd backticks inside code blocks can never pair with closing ``` fences.
     content = re.sub(
-        r'`((?:[^`\n]|\n(?!\s*\n))+)`',
-        lambda m: '`' + ' '.join(m.group(1).split()) + '`'
-        if ('\n' in m.group(1) and ('[[' in m.group(1) or '<!--' in m.group(1)))
-        else m.group(0),
+        r'(?<!`)`(\s*(?:<!--\s*(?:pp4|weebo|media)\b[^`]*?-->|\[{3}\s*(?:weebo|media|image|video|patronus)\s*:[^`]*?\]{3})\s*)`(?!`)',
+        lambda m: '`' + ' '.join(m.group(1).split()) + '`' if '\n' in m.group(1) else m.group(0),
         content,
+        flags=re.IGNORECASE,
     )
     return content
 
@@ -96,6 +97,8 @@ def enforce_fence_contract(content: str) -> str:
     out = []
     problems = []
     in_fence = False
+    open_line = 0
+    open_tag = ""
     neutralized = 0
     healed = 0
     for i, line in enumerate(lines, 1):
@@ -113,16 +116,27 @@ def enforce_fence_contract(content: str) -> str:
                     line = line.rstrip() + 'text'
                     healed += 1
                 in_fence = True
+                open_line = i
+                open_tag = line.strip()
             else:
                 if line.strip() != '```':
                     problems.append(
-                        f"line {i}: labeled fence while a fence is already open "
-                        f"(quoted fence or missing closer above)"
+                        f"line {i} ({line.strip()}): labeled fence while fence from "
+                        f"line {open_line} ({open_tag}) is still open "
+                        f"(jump: vim +{open_line} {ARTICLE_FILE})"
                     )
-                in_fence = False
+                    # Stay in_fence from this new opener so one missing closer
+                    # does not invert every subsequent fence in the file.
+                    open_line = i
+                    open_tag = line.strip()
+                else:
+                    in_fence = False
         out.append(line)
     if in_fence:
-        problems.append("EOF: unclosed fence")
+        problems.append(
+            f"EOF: unclosed fence opened at line {open_line} ({open_tag}) "
+            f"(jump: vim +{open_line} {ARTICLE_FILE})"
+        )
     if neutralized:
         print(f"🧯 Neutralized {neutralized} floating backtick run(s) -> {NEUTRAL_FENCE_TKN}")
     if healed:
