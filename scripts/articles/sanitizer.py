@@ -23,24 +23,30 @@ def strip_prompt_boundary(content: str) -> str:
     return re.sub(r'\n*^--- BEGIN NEW ARTICLE ---$\n*', '\n\n', content, flags=re.MULTILINE)
 
 
+FENCE_SEGMENT_RE = re.compile(r'(^```[^\n]*\n.*?^```[ \t]*$)', re.MULTILINE | re.DOTALL)
+
+
 def neutralize_inception_artifacts(content: str) -> str:
     """Heal web-UI autolinks, inverted bold/code closures, and wrapped backticked cue examples."""
-    # 1. Unwrap self-referential web-UI autolink contamination back to bare URLs
+    # 1. Unwrap self-referential web-UI autolink contamination back to bare URLs (safe everywhere)
     content = re.sub(r'\[(https?://[^\]\s]+)\]\(\1/?\)', r'\1', content)
     content = re.sub(r'\[(www\.[^\]\s]+)\]\(https?://\1/?\)', r'\1', content)
-    # 2. Repair inverted bold/inline-code closures (**foo `bar**` -> **foo `bar`**)
-    # Use [^*`\n]+ so the two branches inside (?:...)* are disjoint (O(N), zero backtracking).
-    content = re.sub(r'`\*\*([^`*\n]+)`([^`*\n]+)\*\*`', r'`**\1`\2`**`', content)
-    content = re.sub(r'(\*\*(?:[^*`\n]+|`[^`\n]*`)*`[^`\n]+)\*\*`', r'\1`**', content)
-    # 3. Collapse hard-wrapped newlines only inside single-backticked player-piano cue examples
-    # so odd backticks inside code blocks can never pair with closing ``` fences.
-    content = re.sub(
-        r'(?<!`)`(\s*(?:<!--\s*(?:pp4|weebo|media)\b[^`]*?-->|\[{3}\s*(?:weebo|media|image|video|patronus)\s*:[^`]*?\]{3})\s*)`(?!`)',
-        lambda m: '`' + ' '.join(m.group(1).split()) + '`' if '\n' in m.group(1) else m.group(0),
-        content,
-        flags=re.IGNORECASE,
-    )
-    return content
+    # Split by fenced code blocks so prose-only repairs never touch code inside fences
+    parts = FENCE_SEGMENT_RE.split(content)
+    for idx in range(0, len(parts), 2):
+        seg = parts[idx]
+        # 2. Repair inverted bold/inline-code closures using flat character classes (zero backtracking)
+        seg = re.sub(r'`\*\*([^`*\n]+)`([^`*\n]+)\*\*`', r'`**\1`\2`**`', seg)
+        seg = re.sub(r'\*\*([^*`\n]*`[^`*\n]+)\*\*`', r'**\1`**', seg)
+        # 3. Collapse hard-wrapped newlines inside single-backticked player-piano cue examples
+        seg = re.sub(
+            r'(?<!`)`(\s*(?:<!--\s*(?:pp4|weebo|media)\b[^`]{1,200}?-->|\[{3}\s*(?:weebo|media|image|video|patronus)\s*:[^`\]]{1,200}?\]{3})\s*)`(?!`)',
+            lambda m: '`' + ' '.join(m.group(1).split()) + '`' if '\n' in m.group(1) else m.group(0),
+            seg,
+            flags=re.IGNORECASE,
+        )
+        parts[idx] = seg
+    return ''.join(parts)
 
 
 def redact_ips(content: str) -> str:
@@ -289,11 +295,11 @@ def sanitize_article(public: bool):
     content = ARTICLE_FILE.read_text()
     original_content = content
 
-    # --- BOTH LANES: strip prompt boundary + loose IPs + inception artifacts ---
+    # --- BOTH LANES: strip prompt boundary + enforce fence contract first + inception artifacts + IPs ---
     content = strip_prompt_boundary(content)
+    content = enforce_fence_contract(content)
     content = neutralize_inception_artifacts(content)
     content = redact_ips(content)
-    content = enforce_fence_contract(content)
 
     if public:
         # --- PUBLIC LANE: drop private fences + scrub names to roles ---
