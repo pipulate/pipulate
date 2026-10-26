@@ -224,9 +224,9 @@ def _build_station_report_panel(mode="overview"):
     tbl = Table(expand=True, show_header=True, header_style="bold cyan", border_style="bright_blue")
     if mode == "bimodal":
         title_str = "⚡ DOM HYDRATION TRAPDOOR vs. 🧠 RFC 9110 MARKDOWN NEGOTIATORS"
-        tbl.add_column("Sensor / Agent", style="bold white", ratio=3)
-        tbl.add_column("Hits", justify="right", style="bold yellow", width=8)
-        tbl.add_column("Share Bar (Horizontal Proportion)", ratio=4)
+        tbl.add_column("Sensor / Agent", style="bold white", ratio=4, no_wrap=True)
+        tbl.add_column("Hits", justify="right", style="bold yellow", width=8, no_wrap=True)
+        tbl.add_column("Share Bar (Horizontal Proportion)", ratio=3, no_wrap=True)
         js_rows = db.get_js_executors(limit=6)
         max_js = max([int(c) for _, c in js_rows] or [1])
         for ua, cnt in js_rows:
@@ -242,9 +242,9 @@ def _build_station_report_panel(mode="overview"):
             tbl.add_row(f"🧠 {badge} {short_ua}", f"{cnt:,}", _bar((cnt / max_md) * 100.0, 28, color))
     elif mode == "rfc9421":
         title_str = "🔷 RFC 9421 WEB BOT AUTH SIGNERS & 🛑 UNMASKED IP CLOAKERS"
-        tbl.add_column("Operator / Signature-Agent", style="bold white", ratio=4)
-        tbl.add_column("Events", justify="right", style="bold deep_sky_blue1", width=8)
-        tbl.add_column("Verification Telemetry", ratio=4)
+        tbl.add_column("Operator / Signature-Agent", style="bold white", ratio=4, no_wrap=True)
+        tbl.add_column("Events", justify="right", style="bold deep_sky_blue1", width=8, no_wrap=True)
+        tbl.add_column("Verification Telemetry", ratio=4, no_wrap=True)
         cur.execute(
             """
             SELECT s.value, ua.value, SUM(r.count) as total
@@ -317,7 +317,7 @@ def _build_station_report_panel(mode="overview"):
         )
 
     footer = Text.from_markup(
-        "\n[bold green]💸 Spending $10,000/mo+ on HTML pre-render?[/bold green] "
+        "[bold green]💸 Spending $10,000/mo+ on HTML pre-render?[/bold green] "
         "RFC 9110, RFC 9111 & RFC 9421 save that spend -> [bold cyan]https://mikelev.in/#consulting[/bold cyan]"
     )
     return Panel(tbl, title=f"[bold bright_cyan]{title_str}[/bold bright_cyan]", subtitle=footer, padding=(1, 2))

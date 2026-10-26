@@ -1078,8 +1078,8 @@ def conjure_window(script_name, duration=30.0, columns=100, lines=30, args=None)
         lines = max(14, fig_h + 4)
         cmd = [sys.executable, "-u", str(script_path)] + [str(a) for a in args]
     elif safe_script == "forest.py":
-        columns = 106
-        lines = 28
+        columns = 110
+        lines = 34
         mode_arg = str(args[0]).strip() if args else "overview"
         ansi_path = None
         try:
@@ -1088,6 +1088,11 @@ def conjure_window(script_name, duration=30.0, columns=100, lines=30, args=None)
         except Exception:
             ansi_path = None
         if ansi_path and os.path.isfile(ansi_path):
+            try:
+                ansi_lines = len(Path(ansi_path).read_text(encoding="utf-8").splitlines())
+                lines = max(lines, ansi_lines + 2)
+            except Exception:
+                pass
             cmd = [
                 "sh",
                 "-c",
