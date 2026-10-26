@@ -2459,7 +2459,7 @@ def reboot_honeybot_stream(sync_only=False, dry_run=False):
         return 0
     print(f"🚀 Syncing Honeybot scripts to {HONEYBOT_SSH_HOST}:~/www/mikelev.in/scripts/...")
     sync_res = subprocess.run(
-        ["rsync", "--delete", "-av", scripts_src, f"{HONEYBOT_SSH_HOST}:~/www/mikelev.in/scripts/"],
+        ["rsync", "--delete", "-aq", scripts_src, f"{HONEYBOT_SSH_HOST}:~/www/mikelev.in/scripts/"],
         check=False,
     )
     if sync_res.returncode != 0:
