@@ -253,25 +253,119 @@ def resolve_media_target(raw_spec, default_duration=8.0, enroll=False):
     return "", duration, "IMAGE"
 
 
-def compute_centered_geometry(img_w, img_h, max_w=1440, max_h=840, screen_w=1920, screen_h=1080):
-    """Compute (win_w, win_h, pos_x, pos_y) at 1:1 native pixel size, downscaling only if > max_w x max_h."""
-    scale = min(1.0, max_w / max(1, img_w), max_h / max(1, img_h))
+def get_screen_dimensions(env=None):
+    """Query live XFCE/X11 desktop geometry (screen_w, screen_h, origin_x, origin_y)."""
+    import re
+    q_env = env if env is not None else os.environ.copy()
+    if not q_env.get("DISPLAY"):
+        q_env["DISPLAY"] = ":0"
+    if shutil.which("xrandr"):
+        try:
+            res = subprocess.run(
+                ["xrandr", "--current"],
+                env=q_env,
+                capture_output=True,
+                text=True,
+                timeout=1.5,
+                check=False,
+            )
+            out = res.stdout or ""
+            m_prim = re.search(r"\bconnected\s+primary\s+(\d+)x(\d+)\+(\d+)\+(\d+)\b", out)
+            if not m_prim:
+                m_prim = re.search(r"\bconnected\s+(\d+)x(\d+)\+(\d+)\+(\d+)\b", out)
+            if m_prim:
+                w, h, ox, oy = (int(m_prim.group(i)) for i in range(1, 5))
+                if w > 0 and h > 0:
+                    return w, h, ox, oy
+        except Exception:
+            pass
+    if shutil.which("wmctrl"):
+        try:
+            res = subprocess.run(
+                ["wmctrl", "-d"],
+                env=q_env,
+                capture_output=True,
+                text=True,
+                timeout=1.5,
+                check=False,
+            )
+            for line in (res.stdout or "").splitlines():
+                if "*" in line:
+                    m_dg = re.search(r"DG:\s*(\d+)x(\d+)", line)
+                    if m_dg:
+                        w, h = int(m_dg.group(1)), int(m_dg.group(2))
+                        if w > 0 and h > 0:
+                            return w, h, 0, 0
+        except Exception:
+            pass
+    if shutil.which("xdotool"):
+        try:
+            res = subprocess.run(
+                ["xdotool", "getdisplaygeometry"],
+                env=q_env,
+                capture_output=True,
+                text=True,
+                timeout=1.5,
+                check=False,
+            )
+            parts = (res.stdout or "").strip().split()
+            if len(parts) >= 2:
+                w, h = int(parts[0]), int(parts[1])
+                if w > 0 and h > 0:
+                    return w, h, 0, 0
+        except Exception:
+            pass
+    try:
+        import ctypes
+        libX11 = ctypes.CDLL(_find_x11_lib("libX11.so.6"))
+        libX11.XOpenDisplay.argtypes = [ctypes.c_char_p]
+        libX11.XOpenDisplay.restype = ctypes.c_void_p
+        libX11.XDefaultScreen.argtypes = [ctypes.c_void_p]
+        libX11.XDefaultScreen.restype = ctypes.c_int
+        libX11.XDisplayWidth.argtypes = [ctypes.c_void_p, ctypes.c_int]
+        libX11.XDisplayWidth.restype = ctypes.c_int
+        libX11.XDisplayHeight.argtypes = [ctypes.c_void_p, ctypes.c_int]
+        libX11.XDisplayHeight.restype = ctypes.c_int
+        libX11.XCloseDisplay.argtypes = [ctypes.c_void_p]
+        dpy = libX11.XOpenDisplay(q_env["DISPLAY"].encode("utf-8"))
+        if dpy:
+            try:
+                scr = libX11.XDefaultScreen(dpy)
+                w = int(libX11.XDisplayWidth(dpy, scr))
+                h = int(libX11.XDisplayHeight(dpy, scr))
+                if w > 0 and h > 0:
+                    return w, h, 0, 0
+            finally:
+                libX11.XCloseDisplay(dpy)
+    except Exception:
+        pass
+    return 1920, 1080, 0, 0
+
+
+def compute_centered_geometry(img_w, img_h, max_w=1440, max_h=840, screen_w=None, screen_h=None, env=None):
+    """Align the center of the image (win_w/2, win_h/2) with the center of the XFCE desktop (screen_w/2, screen_h/2)."""
+    ox, oy = 0, 0
+    if screen_w is None or screen_h is None:
+        screen_w, screen_h, ox, oy = get_screen_dimensions(env=env)
+    eff_max_w = min(max_w, max(256, int(screen_w * 0.85)))
+    eff_max_h = min(max_h, max(256, int(screen_h * 0.85)))
+    scale = min(1.0, eff_max_w / max(1, img_w), eff_max_h / max(1, img_h))
     win_w = max(16, int(round(img_w * scale)))
     win_h = max(16, int(round(img_h * scale)))
-    pos_x = max(0, (screen_w - win_w) // 2)
-    pos_y = max(0, (screen_h - win_h) // 2)
+    pos_x = max(0, (ox + (screen_w // 2)) - (win_w // 2))
+    pos_y = max(0, (oy + (screen_h // 2)) - (win_h // 2))
     return win_w, win_h, pos_x, pos_y
 
 
-def prepare_backbuffer(src_path, max_w=1440, max_h=840, matte=False, out_path=None):
+def prepare_backbuffer(src_path, max_w=1440, max_h=840, matte=False, out_path=None, env=None):
     """Prepare image at native 1:1 resolution (or downscaled if oversized), preserving RGBA alpha by default."""
     if not src_path or src_path.startswith(("http://", "https://", "file://")) or not os.path.isfile(src_path):
-        w, h, x, y = compute_centered_geometry(512, 512, max_w=max_w, max_h=max_h)
+        w, h, x, y = compute_centered_geometry(512, 512, max_w=max_w, max_h=max_h, env=env)
         return src_path, False, w, h, x, y
 
     kind = _classify_ext(src_path)
     img_w, img_h = read_image_dimensions(src_path)
-    win_w, win_h, pos_x, pos_y = compute_centered_geometry(img_w, img_h, max_w=max_w, max_h=max_h)
+    win_w, win_h, pos_x, pos_y = compute_centered_geometry(img_w, img_h, max_w=max_w, max_h=max_h, env=env)
 
     if kind != "IMAGE":
         return src_path, False, win_w, win_h, pos_x, pos_y
@@ -364,9 +458,9 @@ def _build_1bit_alpha_mask(img_path, win_w, win_h, threshold=24):
         return None
 
 
-def _apply_x11_shape_mask(win_id, mask_bytes, win_w, win_h, env):
-    """Apply a 1-bit cookie-cutter XShapeCombineMask to an X11 window ID via libX11 + libXext."""
-    if not win_id or not mask_bytes:
+def _apply_x11_shape_mask(win_id, mask_bytes, win_w, win_h, env, pos_x=None, pos_y=None):
+    """Apply a 1-bit cookie-cutter XShapeCombineMask and exact centered (pos_x, pos_y) to an X11 window ID."""
+    if not win_id:
         return False
     try:
         import ctypes
@@ -374,6 +468,9 @@ def _apply_x11_shape_mask(win_id, mask_bytes, win_w, win_h, env):
         xext_path = _find_x11_lib("libXext.so.6")
         libX11 = ctypes.CDLL(x11_path)
         libXext = ctypes.CDLL(xext_path)
+        libX11.XMoveResizeWindow.argtypes = [
+            ctypes.c_void_p, ctypes.c_ulong, ctypes.c_int, ctypes.c_int, ctypes.c_uint, ctypes.c_uint
+        ]
 
         libX11.XOpenDisplay.argtypes = [ctypes.c_char_p]
         libX11.XOpenDisplay.restype = ctypes.c_void_p
@@ -395,13 +492,15 @@ def _apply_x11_shape_mask(win_id, mask_bytes, win_w, win_h, env):
             return False
         try:
             wid = int(str(win_id).strip(), 0)
-            bmap = libX11.XCreateBitmapFromData(dpy, wid, mask_bytes, int(win_w), int(win_h))
-            if not bmap:
-                return False
-            # ShapeBounding = 0, ShapeClip = 2, ShapeSet = 0
-            libXext.XShapeCombineMask(dpy, wid, 0, 0, 0, bmap, 0)
-            libXext.XShapeCombineMask(dpy, wid, 2, 0, 0, bmap, 0)
-            libX11.XFreePixmap(dpy, bmap)
+            if pos_x is not None and pos_y is not None:
+                libX11.XMoveResizeWindow(dpy, wid, int(pos_x), int(pos_y), int(win_w), int(win_h))
+            if mask_bytes:
+                bmap = libX11.XCreateBitmapFromData(dpy, wid, mask_bytes, int(win_w), int(win_h))
+                if bmap:
+                    # ShapeBounding = 0, ShapeClip = 2, ShapeSet = 0
+                    libXext.XShapeCombineMask(dpy, wid, 0, 0, 0, bmap, 0)
+                    libXext.XShapeCombineMask(dpy, wid, 2, 0, 0, bmap, 0)
+                    libX11.XFreePixmap(dpy, bmap)
             libX11.XFlush(dpy)
             return True
         finally:
@@ -527,22 +626,34 @@ def _find_overlay_window_id(env, attempts=8, delay=0.05):
 
 
 def _pin_above_and_restore_focus(orig_win, pos_x, pos_y, win_w, win_h, env, mask_bytes=None):
-    overlay_wid = _find_overlay_window_id(env) if mask_bytes else ""
+    overlay_wid = _find_overlay_window_id(env)
     if not overlay_wid:
-        time.sleep(0.22)
-        overlay_wid = _find_overlay_window_id(env, attempts=2, delay=0.04) if mask_bytes else ""
-    if overlay_wid and mask_bytes:
-        _apply_x11_shape_mask(overlay_wid, mask_bytes, win_w, win_h, env)
+        time.sleep(0.20)
+        overlay_wid = _find_overlay_window_id(env, attempts=3, delay=0.04)
+    if overlay_wid:
+        _apply_x11_shape_mask(overlay_wid, mask_bytes, win_w, win_h, env, pos_x=pos_x, pos_y=pos_y)
+        if shutil.which("xdotool"):
+            subprocess.run(
+                [
+                    "xdotool", "windowsize", str(overlay_wid), str(win_w), str(win_h),
+                    "windowmove", str(overlay_wid), str(pos_x), str(pos_y),
+                ],
+                env=env,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                check=False,
+            )
     if shutil.which("wmctrl"):
+        target_flag = ["-i", "-r", str(overlay_wid)] if overlay_wid else ["-r", MEDIA_OVERLAY_MARKER]
         subprocess.run(
-            ["wmctrl", "-r", MEDIA_OVERLAY_MARKER, "-e", f"0,{pos_x},{pos_y},{win_w},{win_h}"],
+            ["wmctrl", *target_flag, "-e", f"0,{pos_x},{pos_y},{win_w},{win_h}"],
             env=env,
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
             check=False,
         )
         subprocess.run(
-            ["wmctrl", "-r", MEDIA_OVERLAY_MARKER, "-b", "add,above"],
+            ["wmctrl", *target_flag, "-b", "add,above"],
             env=env,
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
@@ -565,10 +676,13 @@ def pop_weebo(spec, duration=8.0, mute=False, matte=False, display=None, dry_run
         print(f"⚠️ Weebo asset not found: {spec!r} (run `weebol` to list enrolled assets, or pass a file path)", file=sys.stderr)
         return 1
 
+    q_env = os.environ.copy()
+    q_env["DISPLAY"] = display if display else (q_env.get("DISPLAY") or ":0")
+    scr_w, scr_h, scr_ox, scr_oy = get_screen_dimensions(env=q_env)
     img_w, img_h = read_image_dimensions(target) if os.path.isfile(target) else (512, 512)
     alpha = has_alpha_channel(target) and not matte
     alpha_flags = _mpv_alpha_flags() if alpha else []
-    buf_path, temp_created, win_w, win_h, pos_x, pos_y = prepare_backbuffer(target, matte=matte)
+    buf_path, temp_created, win_w, win_h, pos_x, pos_y = prepare_backbuffer(target, matte=matte, env=q_env)
     mask_bytes = _build_1bit_alpha_mask(buf_path, win_w, win_h) if (alpha and kind == "IMAGE") else None
     xshape_ok = bool(mask_bytes and os.path.isfile(_find_x11_lib("libXext.so.6")))
     geom_str = f"{win_w}x{win_h}+{pos_x}+{pos_y}"
@@ -581,7 +695,8 @@ def pop_weebo(spec, duration=8.0, mute=False, matte=False, display=None, dry_run
                 pass
         print(
             f"WEEBO_DRY_RUN: kind={kind} | resolved={target} | "
-            f"native_size={img_w}x{img_h} | alpha={alpha} | xshape_cutout={xshape_ok} | "
+            f"screen={scr_w}x{scr_h}+{scr_ox}+{scr_oy} | native_size={img_w}x{img_h} | "
+            f"alpha={alpha} | xshape_cutout={xshape_ok} | "
             f"alpha_flags={alpha_flags} | geom={geom_str} | duration={dur:.1f}s"
         )
         return 0
@@ -757,10 +872,44 @@ def main():
 
     if args.remote:
         sys.path.insert(0, str(Path(__file__).resolve().parent / "articles"))
-        from common import send_honeybot_live_message
-        if ":" not in spec_arg and dur_val != 8.0:
-            spec_arg = f"{spec_arg}:{dur_val:g}"
-        return send_honeybot_live_message("", media_path=spec_arg, dry_run=args.dry_run)
+        from common import HONEYBOT_SSH_HOST, send_honeybot_live_message
+        import re as _re
+        target, dur, _ = resolve_media_target(spec_arg, default_duration=dur_val, enroll=(not args.dry_run))
+        remote_target = spec_arg
+        local_p = Path(target).resolve() if (target and os.path.isfile(target)) else None
+        if local_p is not None:
+            safe_fname = _re.sub(r"[^A-Za-z0-9._-]", "_", local_p.name)
+            remote_target = f"/home/mike/www/mikelev.in/assets/weebo/{safe_fname}"
+        ssh_cmd = (
+            f"DISPLAY=:10.0 nohup python3 /home/mike/www/mikelev.in/scripts/stream.py "
+            f"--conjure-media {remote_target!r} {dur:.1f} >/dev/null 2>&1 &"
+        )
+        if args.dry_run:
+            print(f"WEEBO_REMOTE_DRY_RUN: host={HONEYBOT_SSH_HOST} | staged={remote_target} | duration={dur:.1f}s | cmd={ssh_cmd}")
+            return 0
+        repo_stream = Path(__file__).resolve().parents[1] / "remotes" / "honeybot" / "scripts" / "stream.py"
+        if repo_stream.is_file():
+            subprocess.run(
+                ["scp", "-q", str(repo_stream), f"{HONEYBOT_SSH_HOST}:/home/mike/www/mikelev.in/scripts/stream.py"],
+                check=False,
+            )
+        if local_p is not None:
+            subprocess.run(
+                ["ssh", HONEYBOT_SSH_HOST, "mkdir", "-p", "/home/mike/www/mikelev.in/assets/weebo"],
+                check=False,
+            )
+            scp_res = subprocess.run(
+                ["scp", "-q", str(local_p), f"{HONEYBOT_SSH_HOST}:{remote_target}"],
+                check=False,
+            )
+            if scp_res.returncode == 0:
+                print(f"🖼️  Staged local media to Honeybot: {local_p.name} -> {remote_target}")
+        res = subprocess.run(["ssh", HONEYBOT_SSH_HOST, ssh_cmd], check=False)
+        if res.returncode == 0:
+            print(f"📡 Popped centered Weebo overlay on Honeybot :10.0: [{Path(remote_target).name} ({dur:g}s)]")
+            return 0
+        remote_spec = f"{spec_arg}:{dur_val:g}" if (":" not in spec_arg and dur_val != 8.0) else spec_arg
+        return send_honeybot_live_message("", media_path=remote_spec, dry_run=False)
 
     return pop_weebo(spec_arg, duration=dur_val, mute=args.mute, matte=args.matte, dry_run=args.dry_run)
 

@@ -1987,6 +1987,37 @@ def _manage_ytwatch_daemon(action, interval=30, channel=None):
     return 0
 
 
+def _trigger_ytwatch_weebo(weebo_spec=None, duration=6.0):
+    """Fire a non-blocking centered Weebo popup on Honeybot :10.0 when ytwatch hits a viewer milestone."""
+    import subprocess
+    cfg_spec = (weebo_spec or _get_vault_var("PIPULATE_YTWATCH_WEEBO") or "auto").strip()
+    if cfg_spec.lower() in ("0", "off", "false", "none"):
+        return
+    repo_root = Path(__file__).resolve().parents[2]
+    weebo_script = repo_root / "scripts" / "weebo.py"
+    if not weebo_script.is_file():
+        return
+    chosen = cfg_spec
+    if chosen.lower() == "auto":
+        chosen = "seal"
+        local_lib = Path.home() / ".local" / "share" / "pipulate" / "weebo"
+        if local_lib.is_dir():
+            for p in sorted(local_lib.iterdir(), key=lambda x: x.stat().st_mtime, reverse=True):
+                if p.is_file() and ("max" in p.stem.lower() or "halloween" in p.stem.lower()):
+                    chosen = p.stem
+                    break
+    try:
+        subprocess.Popen(
+            [sys.executable, str(weebo_script), "--remote", str(chosen), str(duration)],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            start_new_session=True,
+        )
+        print(f"🎭 [WEEBO] Auto-popped '{chosen}' ({duration:g}s) on Honeybot :10.0 for viewer milestone!", flush=True)
+    except Exception:
+        pass
+
+
 def run_youtube_watch(
     channel=None,
     loop=False,
@@ -2135,6 +2166,7 @@ def run_youtube_watch(
                         count=viewers, min_viewers=YT_VIEWER_ALERT_MIN
                     )
                     _play_local_ding(ding, spoken_text=spoken_v)
+                    _trigger_ytwatch_weebo()
                     if resolved_topic:
                         send_ntfy_notification(
                             alert_msg,
