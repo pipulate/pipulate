@@ -9,7 +9,10 @@ import os
 import sys
 import time
 import datetime
-import requests
+try:
+    import requests
+except ImportError:
+    requests = None
 import subprocess
 import threading
 import shutil   # <--- Add this import
@@ -735,11 +738,54 @@ def _build_1bit_alpha_mask_stdlib(img_path, win_w, win_h, threshold=24):
         return None
 
 
+def _hydrate_honeybot_x11_env(env=None):
+    """Ensure DISPLAY=:10.0, NixOS PATH, and XAUTHORITY/XDG_RUNTIME_DIR from live :10.0 session."""
+    q_env = (env.copy() if env is not None else os.environ.copy())
+    extra_bins = "/etc/profiles/per-user/mike/bin:/home/mike/.nix-profile/bin:/run/current-system/sw/bin:/usr/bin:/bin"
+    cur_path = q_env.get("PATH") or ""
+    q_env["PATH"] = f"{extra_bins}:{cur_path}" if cur_path else extra_bins
+    my_pid = str(os.getpid())
+    want_keys = (
+        "DISPLAY", "XAUTHORITY", "XDG_RUNTIME_DIR", "DBUS_SESSION_BUS_ADDRESS",
+        "PULSE_SERVER", "PIPEWIRE_RUNTIME_DIR", "HOME", "USER",
+    )
+    for p in sorted(Path("/proc").glob("[0-9]*/cmdline")):
+        pid_str = p.parent.name
+        if pid_str == my_pid:
+            continue
+        try:
+            raw_cmd = p.read_bytes().replace(b"\x00", b" ").decode("utf-8", errors="ignore")
+            if not any(tok in raw_cmd for tok in ("stream.py", "logs.py", "obs", "xfce4-session")):
+                continue
+            if "--conjure-media" in raw_cmd:
+                continue
+            raw_env = (p.parent / "environ").read_bytes().split(b"\x00")
+            proc_env = {}
+            for item in raw_env:
+                if b"=" in item:
+                    k, v = item.split(b"=", 1)
+                    ks = k.decode("utf-8", errors="ignore")
+                    if ks in want_keys:
+                        proc_env[ks] = v.decode("utf-8", errors="ignore")
+            if proc_env.get("DISPLAY") == ":10.0" or "stream.py" in raw_cmd:
+                for k, v in proc_env.items():
+                    if v and (k in ("XAUTHORITY", "XDG_RUNTIME_DIR", "DBUS_SESSION_BUS_ADDRESS") or not q_env.get(k)):
+                        q_env[k] = v
+                break
+        except Exception:
+            continue
+    q_env["DISPLAY"] = ":10.0"
+    q_env.setdefault("XDG_RUNTIME_DIR", f"/run/user/{os.getuid()}")
+    xauth = Path.home() / ".Xauthority"
+    if not q_env.get("XAUTHORITY") and xauth.is_file():
+        q_env["XAUTHORITY"] = str(xauth)
+    return q_env
+
+
 def _get_honeybot_screen_dimensions(env):
     """Query XFCE / X11 desktop size (screen_w, screen_h, origin_x, origin_y) on Honeybot :10.0."""
     import re
-    q_env = env if env is not None else os.environ.copy()
-    q_env["DISPLAY"] = q_env.get("DISPLAY") or ":10.0"
+    q_env = _hydrate_honeybot_x11_env(env)
     if shutil.which("xrandr"):
         try:
             res = subprocess.run(
@@ -823,9 +869,9 @@ def _get_honeybot_screen_dimensions(env):
     return 1920, 1080, 0, 0
 
 
-def _apply_x11_shape_mask_honeybot(win_id, mask_bytes, win_w, win_h, env, pos_x=None, pos_y=None):
-    """Apply a 1-bit cookie-cutter XShapeCombineMask and centered (pos_x, pos_y) to an X11 window ID on Honeybot."""
-    if not win_id:
+def _apply_x11_shape_mask_honeybot(win_id, mask_bytes, win_w, win_h, env):
+    """Apply a 1-bit cookie-cutter XShapeCombineMask to an X11 window ID on Honeybot."""
+    if not win_id or not mask_bytes:
         return False
     try:
         import ctypes
@@ -833,9 +879,6 @@ def _apply_x11_shape_mask_honeybot(win_id, mask_bytes, win_w, win_h, env, pos_x=
         libXext = ctypes.CDLL(_find_x11_lib("libXext.so.6"))
         libX11.XOpenDisplay.argtypes = [ctypes.c_char_p]
         libX11.XOpenDisplay.restype = ctypes.c_void_p
-        libX11.XMoveResizeWindow.argtypes = [
-            ctypes.c_void_p, ctypes.c_ulong, ctypes.c_int, ctypes.c_int, ctypes.c_uint, ctypes.c_uint
-        ]
         libX11.XCreateBitmapFromData.argtypes = [
             ctypes.c_void_p, ctypes.c_ulong, ctypes.c_char_p, ctypes.c_uint, ctypes.c_uint
         ]
@@ -851,14 +894,12 @@ def _apply_x11_shape_mask_honeybot(win_id, mask_bytes, win_w, win_h, env, pos_x=
             return False
         try:
             wid = int(str(win_id).strip(), 0)
-            if pos_x is not None and pos_y is not None:
-                libX11.XMoveResizeWindow(dpy, wid, int(pos_x), int(pos_y), int(win_w), int(win_h))
-            if mask_bytes:
-                bmap = libX11.XCreateBitmapFromData(dpy, wid, mask_bytes, int(win_w), int(win_h))
-                if bmap:
-                    libXext.XShapeCombineMask(dpy, wid, 0, 0, 0, bmap, 0)
-                    libXext.XShapeCombineMask(dpy, wid, 2, 0, 0, bmap, 0)
-                    libX11.XFreePixmap(dpy, bmap)
+            bmap = libX11.XCreateBitmapFromData(dpy, wid, mask_bytes, int(win_w), int(win_h))
+            if not bmap:
+                return False
+            libXext.XShapeCombineMask(dpy, wid, 0, 0, 0, bmap, 0)
+            libXext.XShapeCombineMask(dpy, wid, 2, 0, 0, bmap, 0)
+            libX11.XFreePixmap(dpy, bmap)
             libX11.XFlush(dpy)
             return True
         finally:
@@ -868,10 +909,10 @@ def _apply_x11_shape_mask_honeybot(win_id, mask_bytes, win_w, win_h, env, pos_x=
 
 
 def _shape_honeybot_overlay_window(mask_bytes, win_w, win_h, env, pos_x=None, pos_y=None):
-    """Find the honeybot_media_overlay window ID via xdotool, apply XShape mask, and center at (pos_x, pos_y)."""
+    """Find the honeybot_media_overlay window ID via xdotool, apply XShape mask, and move to (pos_x, pos_y)."""
     if not shutil.which("xdotool"):
         return ""
-    for _ in range(10):
+    for _ in range(12):
         try:
             res = subprocess.run(
                 ["xdotool", "search", "--name", f"^{MEDIA_OVERLAY_MARKER}$"],
@@ -884,13 +925,11 @@ def _shape_honeybot_overlay_window(mask_bytes, win_w, win_h, env, pos_x=None, po
             lines = [ln.strip() for ln in (res.stdout or "").splitlines() if ln.strip()]
             if lines:
                 wid = lines[-1]
-                _apply_x11_shape_mask_honeybot(wid, mask_bytes, win_w, win_h, env, pos_x=pos_x, pos_y=pos_y)
+                if mask_bytes:
+                    _apply_x11_shape_mask_honeybot(wid, mask_bytes, win_w, win_h, env)
                 if pos_x is not None and pos_y is not None:
                     subprocess.run(
-                        [
-                            "xdotool", "windowsize", str(wid), str(win_w), str(win_h),
-                            "windowmove", str(wid), str(pos_x), str(pos_y),
-                        ],
+                        ["xdotool", "windowmove", str(wid), str(pos_x), str(pos_y)],
                         env=env,
                         stdout=subprocess.DEVNULL,
                         stderr=subprocess.DEVNULL,
@@ -1021,8 +1060,7 @@ def conjure_media(media_spec, duration=15.0, mute=False, _direct=False):
                 return
         except Exception:
             pass
-    env = os.environ.copy()
-    env["DISPLAY"] = env.get("DISPLAY") or ":10.0"
+    env = _hydrate_honeybot_x11_env()
     ext = os.path.splitext(target.split("?", 1)[0])[1].lower()
     is_video = ext in (".mp4", ".webm", ".mkv", ".mov", ".gif")
     scr_w, scr_h, scr_ox, scr_oy = _get_honeybot_screen_dimensions(env)
@@ -1061,40 +1099,37 @@ def conjure_media(media_spec, duration=15.0, mute=False, _direct=False):
                     cmd.append("--mute=yes")
             cmd.append(target)
             proc = subprocess.Popen(cmd, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            wid = _shape_honeybot_overlay_window(None, win_w, win_h, env, pos_x=pos_x, pos_y=pos_y)
-            target_flag = ["-i", "-r", str(wid)] if wid else ["-r", MEDIA_OVERLAY_MARKER]
-            subprocess.run(["wmctrl", *target_flag, "-e", f"0,{pos_x},{pos_y},{win_w},{win_h}"], env=env, check=False)
-            subprocess.run(["wmctrl", *target_flag, "-b", "add,above"], env=env, check=False)
+            time.sleep(0.20)
+            _shape_honeybot_overlay_window(None, win_w, win_h, env, pos_x=pos_x, pos_y=pos_y)
+            subprocess.run(["wmctrl", "-r", MEDIA_OVERLAY_MARKER, "-e", f"0,{pos_x},{pos_y},{win_w},{win_h}"], env=env, check=False)
+            subprocess.run(["wmctrl", "-r", MEDIA_OVERLAY_MARKER, "-b", "add,above"], env=env, check=False)
             proc.wait(timeout=duration + 2.0)
         elif shutil.which("mpv"):
-            alpha_arg = []
-            for cand_flags in (["--gpu-context=x11egl", "--background=none"], ["--alpha=yes"], ["--background=none"]):
-                if subprocess.run(["mpv", "--no-config", *cand_flags, "--version"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False).returncode == 0:
-                    alpha_arg = cand_flags
-                    break
-            cmd = [
+            base_cmd = [
                 "mpv",
                 "--no-config",
                 f"--title={MEDIA_OVERLAY_MARKER}",
                 "--no-border",
                 "--ontop",
-                *alpha_arg,
                 f"--geometry={win_w}x{win_h}+{pos_x}+{pos_y}",
                 f"--image-display-duration={duration:.1f}",
                 "--keep-open=no",
                 "--really-quiet",
-                target,
             ]
             mask_bytes = _build_1bit_alpha_mask_stdlib(target, win_w, win_h) if target.lower().endswith(".png") else None
-            proc = subprocess.Popen(cmd, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            wid = _shape_honeybot_overlay_window(mask_bytes, win_w, win_h, env, pos_x=pos_x, pos_y=pos_y)
-            target_flag = ["-i", "-r", str(wid)] if wid else ["-r", MEDIA_OVERLAY_MARKER]
+            t0 = time.time()
+            proc = subprocess.Popen([*base_cmd, "--vo=x11", target], env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            time.sleep(0.18)
+            if proc.poll() is not None and (time.time() - t0) < 0.8:
+                proc = subprocess.Popen([*base_cmd, target], env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                time.sleep(0.18)
+            _shape_honeybot_overlay_window(mask_bytes, win_w, win_h, env, pos_x=pos_x, pos_y=pos_y)
             subprocess.run(
-                ["wmctrl", *target_flag, "-e", f"0,{pos_x},{pos_y},{win_w},{win_h}"],
+                ["wmctrl", "-r", MEDIA_OVERLAY_MARKER, "-e", f"0,{pos_x},{pos_y},{win_w},{win_h}"],
                 env=env,
                 check=False,
             )
-            subprocess.run(["wmctrl", *target_flag, "-b", "add,above"], env=env, check=False)
+            subprocess.run(["wmctrl", "-r", MEDIA_OVERLAY_MARKER, "-b", "add,above"], env=env, check=False)
             proc.wait(timeout=duration + 2.0)
         elif not is_video and shutil.which("feh") and not target.startswith(("http://", "https://")):
             img_w, img_h = _read_image_dimensions(target) if os.path.isfile(target) else (1440, 810)

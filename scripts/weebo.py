@@ -880,12 +880,8 @@ def main():
         if local_p is not None:
             safe_fname = _re.sub(r"[^A-Za-z0-9._-]", "_", local_p.name)
             remote_target = f"/home/mike/www/mikelev.in/assets/weebo/{safe_fname}"
-        ssh_cmd = (
-            f"DISPLAY=:10.0 nohup python3 /home/mike/www/mikelev.in/scripts/stream.py "
-            f"--conjure-media {remote_target!r} {dur:.1f} >/dev/null 2>&1 &"
-        )
         if args.dry_run:
-            print(f"WEEBO_REMOTE_DRY_RUN: host={HONEYBOT_SSH_HOST} | staged={remote_target} | duration={dur:.1f}s | cmd={ssh_cmd}")
+            print(f"WEEBO_REMOTE_DRY_RUN: host={HONEYBOT_SSH_HOST} | staged={remote_target} | duration={dur:.1f}s | mode=direct_proc_env_verified")
             return 0
         repo_stream = Path(__file__).resolve().parents[1] / "remotes" / "honeybot" / "scripts" / "stream.py"
         if repo_stream.is_file():
@@ -904,10 +900,64 @@ def main():
             )
             if scp_res.returncode == 0:
                 print(f"🖼️  Staged local media to Honeybot: {local_p.name} -> {remote_target}")
-        res = subprocess.run(["ssh", HONEYBOT_SSH_HOST, ssh_cmd], check=False)
-        if res.returncode == 0:
+        remote_launcher = r'''
+import os, pathlib, subprocess, sys, time
+target, dur = sys.argv[1], sys.argv[2]
+sys.path.insert(0, "/home/mike/www/mikelev.in/scripts")
+import stream
+env = stream._hydrate_honeybot_x11_env()
+py_exe = sys.executable
+for p in sorted(pathlib.Path("/proc").glob("[0-9]*/cmdline")):
+    try:
+        raw = p.read_bytes().replace(b"\x00", b" ").decode("utf-8", errors="ignore")
+        if "stream.py" in raw and "--conjure-media" not in raw:
+            exe_cand = os.path.realpath(str(p.parent / "exe"))
+            if os.path.isfile(exe_cand):
+                py_exe = exe_cand
+                break
+    except Exception:
+        pass
+log_f = open("/tmp/honeybot_weebo.log", "w", encoding="utf-8")
+proc = subprocess.Popen(
+    [py_exe, "/home/mike/www/mikelev.in/scripts/stream.py", "--conjure-media", target, dur],
+    env=env,
+    stdin=subprocess.DEVNULL,
+    stdout=log_f,
+    stderr=subprocess.STDOUT,
+    start_new_session=True,
+)
+win_line = ""
+for _ in range(18):
+    time.sleep(0.1)
+    r = subprocess.run(["wmctrl", "-lG"], env=env, capture_output=True, text=True, check=False)
+    for ln in (r.stdout or "").splitlines():
+        if "honeybot_media_overlay" in ln:
+            win_line = ln.strip()
+            break
+    if win_line or proc.poll() is not None:
+        break
+if win_line:
+    print(f"LIVE_X11_WINDOW: {win_line}")
+    sys.exit(0)
+log_f.flush()
+err = pathlib.Path("/tmp/honeybot_weebo.log").read_text(encoding="utf-8", errors="replace").strip()
+print(f"WEEBO_LAUNCH_ERR: poll={proc.poll()} log={err!r}")
+sys.exit(1)
+'''
+        res = subprocess.run(
+            ["ssh", HONEYBOT_SSH_HOST, "python3", "-", remote_target, f"{dur:.1f}"],
+            input=remote_launcher,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        out = (res.stdout or "").strip()
+        if res.returncode == 0 and "LIVE_X11_WINDOW:" in out:
             print(f"📡 Popped centered Weebo overlay on Honeybot :10.0: [{Path(remote_target).name} ({dur:g}s)]")
+            print(f"   ↳ {out}")
             return 0
+        if out or res.stderr:
+            print(f"⚠️ Direct conjure diagnostic: {out} {(res.stderr or '').strip()}", file=sys.stderr)
         remote_spec = f"{spec_arg}:{dur_val:g}" if (":" not in spec_arg and dur_val != 8.0) else spec_arg
         return send_honeybot_live_message("", media_path=remote_spec, dry_run=False)
 
