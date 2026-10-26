@@ -23,6 +23,24 @@ def strip_prompt_boundary(content: str) -> str:
     return re.sub(r'\n*^--- BEGIN NEW ARTICLE ---$\n*', '\n\n', content, flags=re.MULTILINE)
 
 
+def neutralize_inception_artifacts(content: str) -> str:
+    """Heal web-UI autolinks, inverted bold/code closures, and wrapped backticked cue examples."""
+    # 1. Unwrap self-referential web-UI autolink contamination back to bare URLs
+    content = re.sub(r'\[(https?://[^\]\s]+)\]\(\1/?\)', r'\1', content)
+    content = re.sub(r'\[(www\.[^\]\s]+)\]\(https?://\1/?\)', r'\1', content)
+    # 2. Repair inverted bold/inline-code closures (**foo `bar**` -> **foo `bar`**)
+    content = re.sub(r'(\*\*[^*\n]+`[^`\n]+)\*\*`', r'\1`**', content)
+    # 3. Collapse hard-wrapped newlines inside backticked player-piano cue examples
+    content = re.sub(
+        r'`((?:[^`\n]|\n(?!\s*\n))+)`',
+        lambda m: '`' + ' '.join(m.group(1).split()) + '`'
+        if ('\n' in m.group(1) and ('[[' in m.group(1) or '<!--' in m.group(1)))
+        else m.group(0),
+        content,
+    )
+    return content
+
+
 def redact_ips(content: str) -> str:
     """Replace any non-safe IPv4 address with a redaction token (both lanes).
 

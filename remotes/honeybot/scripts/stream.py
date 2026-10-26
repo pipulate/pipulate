@@ -970,17 +970,17 @@ def _probe_mp4_mov_atoms_stdlib(path):
             elif btype == b"mvhd" and len(body) >= 20:
                 ver = body[0]
                 if ver == 0 and len(body) >= 20:
-                    ts, d = struct.unpack(">II", body)
+                    ts, d = struct.unpack_from(">II", body, 12)
                     if ts > 0:
                         dur_sec = float(d) / float(ts)
                 elif ver == 1 and len(body) >= 32:
-                    ts, d = struct.unpack(">IQ", body)
+                    ts, d = struct.unpack_from(">IQ", body, 20)
                     if ts > 0:
                         dur_sec = float(d) / float(ts)
             elif btype == b"tkhd" and len(body) >= 84:
                 ver = body[0]
                 off = 88 if (ver == 1 and len(body) >= 96) else 76
-                rw, rh = struct.unpack(">II", body[off:off + 8])
+                rw, rh = struct.unpack_from(">II", body, off)
                 tw, th = rw >> 16, rh >> 16
                 if tw > 0 and th > 0 and (tw * th) > (w * h):
                     w, h = int(tw), int(th)
@@ -995,10 +995,10 @@ def _probe_mp4_mov_atoms_stdlib(path):
                 head = f.read(16)
                 if len(head) < 8:
                     break
-                sz, btype = struct.unpack(">I4s", head[:8])
+                sz, btype = struct.unpack_from(">I4s", head, 0)
                 hdr = 8
                 if sz == 1 and len(head) >= 16:
-                    sz = struct.unpack(">Q", head)[0]
+                    sz = struct.unpack_from(">Q", head, 8)[0]
                     hdr = 16
                 elif sz == 0:
                     sz = fsize - pos
