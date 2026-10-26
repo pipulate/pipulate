@@ -19,6 +19,8 @@ LAST_PUBLISHED_FILE = CONFIG_DIR / "last_published.json"
 YT_VIEWER_ALERT_MIN = int(os.environ.get("PIPULATE_YT_VIEWER_MIN", "3"))
 YT_VIEWER_ALERT_DWELL = int(os.environ.get("PIPULATE_YT_VIEWER_DWELL", "60"))  # Seconds viewers must stay >= min before alerting
 YT_VIEWER_ALERT_COOLDOWN = int(os.environ.get("PIPULATE_YT_VIEWER_COOLDOWN", "300"))  # Seconds between any two viewer alerts
+YT_VIEWER_FAST_POLL = int(os.environ.get("PIPULATE_YT_FAST_POLL", "5"))  # Seconds between lightweight updated_metadata viewer checks
+YT_WEEBO_CLOBBER_GUARD = int(os.environ.get("PIPULATE_YT_WEEBO_GUARD", "20"))  # Seconds to protect an active Weebo clip from mid-play re-trigger
 
 DEFAULT_POSTS_DIR = Path(
     os.environ.get("PIPULATE_DEFAULT_POSTS_DIR", Path.home() / "repos" / "trimnoir" / "_posts")
@@ -1672,6 +1674,54 @@ def _fetch_yt_chat_messages(continuation):
     return messages
 
 
+def _fetch_yt_concurrent_viewers_fast(video_id):
+    """Lightweight (~1.5 KB) InnerTube updated_metadata poll for live concurrent viewers."""
+    import urllib.request
+    if not video_id:
+        return None
+    url = "https://www.youtube.com/youtubei/v1/updated_metadata?prettyPrint=false"
+    payload = {
+        "context": {
+            "client": {
+                "clientName": "WEB",
+                "clientVersion": "2.20250101.00.00",
+                "hl": "en",
+                "gl": "US",
+            }
+        },
+        "videoId": str(video_id).strip(),
+    }
+    req = urllib.request.Request(
+        url,
+        data=json.dumps(payload).encode("utf-8"),
+        headers={
+            "Content-Type": "application/json",
+            "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/130.0.0.0 Safari/537.36",
+            "Accept-Language": "en-US,en;q=0.9",
+        },
+        method="POST",
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=6) as resp:
+            data = json.loads(resp.read().decode("utf-8", errors="replace"))
+    except Exception:
+        return None
+    for d in _walk_dicts(data):
+        vvc = d.get("videoViewCountRenderer")
+        if not isinstance(vvc, dict):
+            continue
+        vc = vvc.get("viewCount") or {}
+        raw_vc = str(vc.get("simpleText") or "")
+        if not raw_vc and isinstance(vc.get("runs"), list):
+            raw_vc = "".join(str(r.get("text") or "") for r in vc["runs"] if isinstance(r, dict))
+        if not raw_vc:
+            raw_vc = str(vvc.get("originalViewCount") or "")
+        if vvc.get("isLive") or "watching" in raw_vc.lower():
+            digits = re.sub(r"[^\d]", "", str(vvc.get("originalViewCount") or raw_vc))
+            return int(digits) if digits else 0
+    return None
+
+
 def fetch_youtube_live_state(channel_or_url=None):
     """Fetch keyless YouTube Live state (is_live, video_id, viewers, chat_messages)."""
     import urllib.request
@@ -1995,11 +2045,24 @@ def _manage_ytwatch_daemon(action, interval=30, channel=None):
     return 0
 
 
+_last_weebo_trigger_ts = 0.0
+
+
 def _trigger_ytwatch_weebo(weebo_spec=None, duration=None):
-    """Fire an undampened non-blocking centered Weebo popup on Honeybot :10.0 when ytwatch hits a viewer milestone."""
+    """Fire an undampened non-blocking centered Weebo popup on Honeybot :10.0, guarded against mid-clip clobbering."""
+    global _last_weebo_trigger_ts
     import subprocess
+    import time
     cfg_spec = (weebo_spec or _get_vault_var("PIPULATE_YTWATCH_WEEBO") or "auto").strip()
     if cfg_spec.lower() in ("0", "off", "false", "none"):
+        return
+    now_ts = time.time()
+    elapsed = now_ts - _last_weebo_trigger_ts
+    if _last_weebo_trigger_ts > 0 and elapsed < YT_WEEBO_CLOBBER_GUARD:
+        print(
+            f"🛡️ [WEEBO GUARD] Clip already on stage ({elapsed:.1f}s < {YT_WEEBO_CLOBBER_GUARD}s) — skipping overlapping trigger.",
+            flush=True,
+        )
         return
     repo_root = Path(__file__).resolve().parents[2]
     weebo_script = repo_root / "scripts" / "weebo.py"
@@ -2024,6 +2087,7 @@ def _trigger_ytwatch_weebo(weebo_spec=None, duration=None):
                     chosen = p.stem
                     break
     try:
+        _last_weebo_trigger_ts = now_ts
         cmd = [sys.executable, str(weebo_script), "--remote", str(chosen)]
         if duration is not None:
             cmd.append(str(duration))
@@ -2161,11 +2225,32 @@ def run_youtube_watch(
         "seen_ids": list(seen_ids)[-500:],
         "updated_at": int(init_ts),
     })
-    print(f"🔭 Watching {resolved_channel} every {interval}s (dwell={YT_VIEWER_ALERT_DWELL}s)...")
+    fast_step = max(2, int(YT_VIEWER_FAST_POLL))
+    full_interval = max(fast_step, int(interval))
+    sub_polls = max(1, full_interval // fast_step)
+    print(
+        f"🔭 Watching {resolved_channel} (fast viewer pulse every {fast_step}s, "
+        f"full sync every {full_interval}s, dwell={YT_VIEWER_ALERT_DWELL}s)..."
+    )
     print("💡 [HOW TO EXIT TMUX WITHOUT STOPPING]: Press 'q' OR press Ctrl+b, release, then press d")
     try:
         while True:
-            time.sleep(max(5, int(interval)))
+            cur_vid = state.get("video_id") if state.get("is_live") else ""
+            for _ in range(sub_polls - 1):
+                time.sleep(fast_step)
+                if not cur_vid:
+                    break
+                fast_v = _fetch_yt_concurrent_viewers_fast(cur_vid)
+                if fast_v is None:
+                    continue
+                if fast_v > prev_viewers:
+                    print(
+                        f"⚡ [FAST VIEWER +{fast_v - prev_viewers}] {prev_viewers} -> {fast_v} watching ({fast_step}s pulse) — firing hairline Weebo trigger!",
+                        flush=True,
+                    )
+                    _trigger_ytwatch_weebo()
+                prev_viewers = fast_v
+            time.sleep(fast_step)
             poll_ts = time.time()
             try:
                 state = fetch_youtube_live_state(resolved_channel)
