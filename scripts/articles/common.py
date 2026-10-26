@@ -1373,7 +1373,7 @@ def send_honeybot_live_message(
     eff_linger = float(linger)
     if not clean_say and has_visual_override:
         if eff_pre_pause == 3.0:
-            eff_pre_pause = 0.5
+            eff_pre_pause = 0.05
         if media_dur is not None:
             eff_linger = max(eff_linger, float(media_dur))
         elif eff_linger == 2.5:

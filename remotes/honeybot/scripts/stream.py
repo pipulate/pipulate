@@ -661,6 +661,8 @@ def stop_updating_music(proc):
 
 
 MEDIA_OVERLAY_MARKER = "honeybot_media_overlay"
+POST_WEEBO_BUFFER_SEC = 1.0
+_CACHED_SCREEN_GEOM = None
 
 
 def _find_x11_lib(lib_name):
@@ -843,6 +845,9 @@ def _hydrate_honeybot_x11_env(env=None):
 
 def _get_honeybot_screen_dimensions(env):
     """Query XFCE / X11 desktop size (screen_w, screen_h, origin_x, origin_y) on Honeybot :10.0."""
+    global _CACHED_SCREEN_GEOM
+    if _CACHED_SCREEN_GEOM is not None:
+        return _CACHED_SCREEN_GEOM
     import re
     q_env = _hydrate_honeybot_x11_env(env)
     if shutil.which("xrandr"):
@@ -1021,17 +1026,17 @@ def _shape_honeybot_overlay_window(mask_bytes, win_w, win_h, env, pos_x=None, po
     """Find the mapped honeybot_media_overlay window ID via xdotool, apply XShape mask, and raise to top."""
     if not shutil.which("xdotool"):
         return ""
-    for attempt in range(25):
+    for attempt in range(45):
         try:
             search_cmd = ["xdotool", "search", "--onlyvisible", "--name", f"^{MEDIA_OVERLAY_MARKER}$"]
-            if attempt >= 8:
+            if attempt >= 15:
                 search_cmd = ["xdotool", "search", "--name", f"^{MEDIA_OVERLAY_MARKER}$"]
             res = subprocess.run(
                 search_cmd,
                 env=env,
                 capture_output=True,
                 text=True,
-                timeout=1.0,
+                timeout=0.8,
                 check=False,
             )
             lines = [ln.strip() for ln in (res.stdout or "").splitlines() if ln.strip()]
@@ -1043,7 +1048,7 @@ def _shape_honeybot_overlay_window(mask_bytes, win_w, win_h, env, pos_x=None, po
                 return wid
         except Exception:
             pass
-        time.sleep(0.08)
+        time.sleep(0.025)
     return ""
 
 
@@ -1242,13 +1247,8 @@ def _resolve_honeybot_media_target(raw_target):
 
 
 def _pause_honeybot_stage_for_weebo():
-    """Clear competing overlays and SIGSTOP active TTS/director processes while Weebo holds the stage."""
+    """Immediately SIGSTOP active TTS/director processes and clear competing overlays while Weebo holds the stage."""
     paused = []
-    for pat in ("conjure_window_overlay", "patronus_visual_shield"):
-        try:
-            subprocess.run(["pkill", "-f", pat], check=False)
-        except Exception:
-            pass
     my_pid = os.getpid()
     parent_pid = os.getppid()
     lock_pid = 0
@@ -1281,6 +1281,11 @@ def _pause_honeybot_stage_for_weebo():
                 paused.append(pid)
         except Exception:
             continue
+    for pat in ("conjure_window_overlay", "patronus_visual_shield"):
+        try:
+            subprocess.run(["pkill", "-f", pat], check=False)
+        except Exception:
+            pass
     return paused
 
 
@@ -1373,7 +1378,6 @@ def conjure_media(media_spec, duration=15.0, mute=False, _direct=False):
             subprocess.run(["pkill", "-f", MEDIA_OVERLAY_MARKER], check=False)
         except Exception:
             pass
-        paused_pids = _pause_honeybot_stage_for_weebo()
         if is_video and shutil.which("mpv"):
             base_vcmd = [
                 "mpv",
@@ -1401,7 +1405,7 @@ def conjure_media(media_spec, duration=15.0, mute=False, _direct=False):
                 stdout=subprocess.DEVNULL,
                 stderr=err_dest,
             )
-            time.sleep(0.25)
+            wid = _shape_honeybot_overlay_window(None, win_w, win_h, env, pos_x=pos_x, pos_y=pos_y)
             if proc.poll() is not None and (time.time() - t0) < 0.9:
                 proc = subprocess.Popen(
                     [*base_vcmd, "--vo=x11", "--hwdec=no", target],
@@ -1409,9 +1413,8 @@ def conjure_media(media_spec, duration=15.0, mute=False, _direct=False):
                     stdout=subprocess.DEVNULL,
                     stderr=err_dest,
                 )
-                time.sleep(0.25)
-            wid = _shape_honeybot_overlay_window(None, win_w, win_h, env, pos_x=pos_x, pos_y=pos_y)
-            time.sleep(0.35)
+                wid = _shape_honeybot_overlay_window(None, win_w, win_h, env, pos_x=pos_x, pos_y=pos_y)
+            paused_pids = _pause_honeybot_stage_for_weebo()
             _enforce_overlay_z_order(wid, pos_x, pos_y, win_w, win_h, env)
             proc.wait(timeout=duration + 3.0)
         elif shutil.which("mpv"):
@@ -1431,12 +1434,11 @@ def conjure_media(media_spec, duration=15.0, mute=False, _direct=False):
             mask_bytes = _build_1bit_alpha_mask_stdlib(target, win_w, win_h) if target.lower().endswith(".png") else None
             t0 = time.time()
             proc = subprocess.Popen([*base_cmd, "--vo=x11", target], env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            time.sleep(0.18)
+            wid = _shape_honeybot_overlay_window(mask_bytes, win_w, win_h, env, pos_x=pos_x, pos_y=pos_y)
             if proc.poll() is not None and (time.time() - t0) < 0.8:
                 proc = subprocess.Popen([*base_cmd, target], env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-                time.sleep(0.18)
-            wid = _shape_honeybot_overlay_window(mask_bytes, win_w, win_h, env, pos_x=pos_x, pos_y=pos_y)
-            time.sleep(0.20)
+                wid = _shape_honeybot_overlay_window(mask_bytes, win_w, win_h, env, pos_x=pos_x, pos_y=pos_y)
+            paused_pids = _pause_honeybot_stage_for_weebo()
             _enforce_overlay_z_order(wid, pos_x, pos_y, win_w, win_h, env)
             proc.wait(timeout=duration + 2.0)
         elif not is_video and shutil.which("feh") and not target.startswith(("http://", "https://")):
@@ -1458,7 +1460,7 @@ def conjure_media(media_spec, duration=15.0, mute=False, _direct=False):
                 target,
             ]
             proc = subprocess.Popen(cmd, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            time.sleep(0.35)
+            paused_pids = _pause_honeybot_stage_for_weebo()
             subprocess.run(
                 ["wmctrl", "-r", MEDIA_OVERLAY_MARKER, "-e", f"0,{pos_x},{pos_y},{win_w},{win_h}"],
                 env=env,
@@ -1475,7 +1477,7 @@ def conjure_media(media_spec, duration=15.0, mute=False, _direct=False):
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
             )
-            time.sleep(0.8)
+            paused_pids = _pause_honeybot_stage_for_weebo()
             subprocess.run(["wmctrl", "-r", "Mozilla Firefox", "-b", "add,fullscreen,above"], env=env, check=False)
             proc.wait(timeout=duration)
     except subprocess.TimeoutExpired:
@@ -1492,6 +1494,8 @@ def conjure_media(media_spec, duration=15.0, mute=False, _direct=False):
                     proc.kill()
                 except Exception:
                     pass
+        if paused_pids and POST_WEEBO_BUFFER_SEC > 0:
+            time.sleep(POST_WEEBO_BUFFER_SEC)
         _resume_honeybot_stage_after_weebo(paused_pids)
         if tmp_profile and os.path.isdir(tmp_profile):
             shutil.rmtree(tmp_profile, ignore_errors=True)
@@ -1744,7 +1748,7 @@ def dispatch_cue(command, content, env, profile_dir, pace_say=True):
             was_exclusive = narrator.exclusive_mode.is_set()
             narrator.exclusive_mode.set()
             try:
-                conjure_media(content)
+                conjure_media(content, _direct=True)
             finally:
                 if not was_exclusive:
                     narrator.exclusive_mode.clear()

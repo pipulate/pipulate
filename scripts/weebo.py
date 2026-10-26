@@ -939,23 +939,41 @@ def main():
                 f"native_size={w_dim}x{h_dim} | duration={dur:.1f}s | mode=direct_proc_env_verified"
             )
             return 0
+        import json as _json
+        stage_cache_file = Path("/tmp/pipulate_weebo_staged.json")
+        try:
+            stage_cache = _json.loads(stage_cache_file.read_text(encoding="utf-8")) if stage_cache_file.is_file() else {}
+        except Exception:
+            stage_cache = {}
         repo_stream = Path(__file__).resolve().parents[1] / "remotes" / "honeybot" / "scripts" / "stream.py"
         if repo_stream.is_file():
-            subprocess.run(
-                ["scp", "-q", str(repo_stream), f"{HONEYBOT_SSH_HOST}:/home/mike/www/mikelev.in/scripts/stream.py"],
-                check=False,
-            )
+            st_stat = repo_stream.stat()
+            st_sig = [st_stat.st_size, st_stat.st_mtime_ns]
+            if stage_cache.get("__stream_py__") != st_sig:
+                if subprocess.run(
+                    ["scp", "-q", str(repo_stream), f"{HONEYBOT_SSH_HOST}:/home/mike/www/mikelev.in/scripts/stream.py"],
+                    check=False,
+                ).returncode == 0:
+                    stage_cache["__stream_py__"] = st_sig
         if local_p is not None:
-            subprocess.run(
-                ["ssh", HONEYBOT_SSH_HOST, "mkdir", "-p", "/home/mike/www/mikelev.in/assets/weebo"],
-                check=False,
-            )
-            scp_res = subprocess.run(
-                ["scp", "-q", str(local_p), f"{HONEYBOT_SSH_HOST}:{remote_target}"],
-                check=False,
-            )
-            if scp_res.returncode == 0:
-                print(f"🖼️  Staged local media to Honeybot: {local_p.name} -> {remote_target}")
+            lp_stat = local_p.stat()
+            lp_sig = [lp_stat.st_size, lp_stat.st_mtime_ns]
+            if stage_cache.get(remote_target) != lp_sig:
+                subprocess.run(
+                    ["ssh", HONEYBOT_SSH_HOST, "mkdir", "-p", "/home/mike/www/mikelev.in/assets/weebo"],
+                    check=False,
+                )
+                scp_res = subprocess.run(
+                    ["scp", "-q", str(local_p), f"{HONEYBOT_SSH_HOST}:{remote_target}"],
+                    check=False,
+                )
+                if scp_res.returncode == 0:
+                    stage_cache[remote_target] = lp_sig
+                    print(f"🖼️  Staged local media to Honeybot: {local_p.name} -> {remote_target}")
+        try:
+            stage_cache_file.write_text(_json.dumps(stage_cache), encoding="utf-8")
+        except Exception:
+            pass
         remote_launcher = r'''
 import os, pathlib, subprocess, sys, time
 target, dur = sys.argv[1], sys.argv[2]
@@ -983,8 +1001,8 @@ proc = subprocess.Popen(
     start_new_session=True,
 )
 win_line = ""
-for _ in range(35):
-    time.sleep(0.1)
+for _ in range(70):
+    time.sleep(0.04)
     r = subprocess.run(["wmctrl", "-lG"], env=env, capture_output=True, text=True, check=False)
     for ln in (r.stdout or "").splitlines():
         if "honeybot_media_overlay" in ln:
