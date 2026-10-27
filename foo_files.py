@@ -2449,7 +2449,7 @@ MATCHBOOK_CHOP = r"""
 # AGENTS.md  # [1,039 tokens | 4,223 bytes]
 # AUDIT.md  # [2,992 tokens | 13,897 bytes]
 # MANIFEST.in  # [204 tokens | 806 bytes]
-# apps/010_introduction.py  # [2,544 tokens | 11,893 bytes]
+# apps/010_introduction.py  # [2,396 tokens | 11,167 bytes]
 # apps/025_aspect.py  # [1,437 tokens | 6,233 bytes]
 # apps/050_documentation.py  # [30,791 tokens | 143,127 bytes]
 # apps/130_gap_analysis.py  # [9,624 tokens | 48,289 bytes]
