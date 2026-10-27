@@ -142,6 +142,13 @@ def sync_data_to_jekyll(target_path, since=0.0, verbose=False):
         synced.append(sitemap.name)
         if verbose:
             print(f"✅ Synced {sitemap.name} -> {dest}")
+    favicon_src = script_dir.parents[1] / "favicon.ico"
+    favicon_dest = repo_root / "favicon.ico"
+    if favicon_src.is_file() and not favicon_dest.is_file():
+        shutil.copy2(favicon_src, favicon_dest)
+        synced.append("favicon.ico")
+        if verbose:
+            print(f"✅ Seeded missing favicon.ico -> {favicon_dest}")
     if synced and not verbose:
         print(f"📦 Synced {len(synced)} artifact(s) -> {repo_root.name}/")
     if stale:
