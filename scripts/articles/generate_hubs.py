@@ -292,14 +292,19 @@ def main():
     print(f"🚀 Generating Hubs for: {target_repo_root.name}")
     
     update_homepage_recent_posts(posts_dir, target_repo_root, count=10)
-    navgraph_candidates = [
-        NAVGRAPH_FILE,
-        Path(__file__).resolve().parent / "navgraph.json",
-        target_repo_root / "navgraph.json",
-    ]
+    targets = common.load_targets()
+    target_cfg = targets.get(str(args.target), {})
+    uses_kg = "build_knowledge_graph.py" in target_cfg.get("pipeline", [])
+    navgraph_candidates = [target_repo_root / "navgraph.json"]
+    if uses_kg:
+        navgraph_candidates = [
+            NAVGRAPH_FILE,
+            Path(__file__).resolve().parent / "navgraph.json",
+            target_repo_root / "navgraph.json",
+        ]
     navgraph_path = next((p for p in navgraph_candidates if p.is_file()), None)
     if not navgraph_path:
-        print(f"ℹ️  {NAVGRAPH_FILE} not in working dir; recent posts updated (run `preview` for full hub rebuild).")
+        print(f"ℹ️  No navgraph.json for {target_repo_root.name}; recent posts updated.")
         return
 
     with open(navgraph_path, 'r', encoding='utf-8') as f:
