@@ -33,7 +33,15 @@ must not itself contain a colon. Bare labels like "THE ITCH" are fine.
 #   5. The ASCII Art Developing the Running "Forest Through the Trees" Story (PATRONUS + SAY)
 
 WHATS_HAPPENING_BEAT = (
-    "What is happening on your screen right now? You are watching the live Web Bot AI Observatory. If you are not watching the behavior of AI bots and Agents directly on the wire meaning not behind a CDN, then you don't really have a feel for what's going on. You have to watch it for awhile like fish in a fish tank. It's changing and you need to be watching it on a site like this to develop that intuitive feel of the truth rather than repeating what you hear in the social media echo chambers. Round oranges highlight every self-asserted crawler. Blue diamonds mark agents cryptographically signing requests under R F C 9421 Web Bot Auth. Red stop signs unmask crawlers spoofing Googlebot I P addresses. Hit Like and Subscribe right now so you don't lose this telemetry feed, and copy this live stream link and send it to an engineer or technical S E O who can explain the two bottom intelligence panels to you. "
+    "What is happening on your screen right now? "
+    "You are watching the live Web Bot AI Observatory. "
+    "If you are not watching the behavior of AI bots and Agents directly on the wire meaning not behind a CDN, then you don't really have a feel for what's going on. "
+    "You have to watch it for awhile like fish in a fish tank. "
+    "It's changing and you need to be watching it on a site like this to develop that intuitive feel of the truth rather than repeating what you hear in the social media echo chambers. "
+    "Round oranges highlight every self-asserted crawler. "
+    "Blue diamonds mark agents cryptographically signing requests under R F C 9421 Web Bot Auth. "
+    "Red stop signs unmask crawlers spoofing Googlebot I P addresses. "
+    "Hit Like and Subscribe right now so you don't lose this telemetry feed, and copy this live stream link and send it to an engineer or technical S E O who can explain the two bottom intelligence panels to you. "
 )
 
 CURRENT_ARTICLE_BEAT = "{CURRENT_ARTICLE}"
