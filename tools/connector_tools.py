@@ -89,10 +89,10 @@ async def _run_connector(name, params):
 
 
 @auto_tool
-async def botify(params: dict) -> dict:
-    """Registry face of connectors/botify.py; __doc__ is replaced at
+async def jira(params: dict) -> dict:
+    """Registry face of connectors/jira.py; __doc__ is replaced at
     import with that file's own docstring so both arms read one description."""
-    return await _run_connector("botify", params)
+    return await _run_connector("jira", params)
 
 
-botify.__doc__ = _connector_doc("botify")
+jira.__doc__ = _connector_doc("jira")

@@ -8,8 +8,8 @@ looks.
 
 THE PLUG FOR THE ALREADY-WIRED SOCKET: resolve_token() in mcp.py reads
 ~/.config/pipulate/mcp/<host>.json, derived from the server, before falling back to
-BOTIFY_API_TOKEN. The 2026-07-29 flight-one FDR receipt proved that fallback
-is the wrong KIND of credential for mcp.botify.com (HTTP 401 at initialize;
+an environment API token. A receipt proved that fallback
+is the wrong KIND of credential for a server that wants OAuth (HTTP 401 at initialize;
 the server wants a bearer scoped mcp_read_write, per its RFC 9728 document).
 This warmer is the one-shot browser dance that writes the right kind.
 No new dependencies: httpx (declared) plus stdlib.
