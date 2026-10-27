@@ -16,7 +16,7 @@ No new dependencies: httpx (declared) plus stdlib.
 
 Golden path:
 
-  python connectors/mcp_warm.py                      # https://mcp.botify.com/
+  python connectors/mcp_warm.py                     # https://mcp.vendor.com/
   python connectors/mcp_warm.py https://mcp.example.com/
 
 Interactive-only BY DESIGN: it opens a browser and blocks on the redirect,

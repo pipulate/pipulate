@@ -26,7 +26,7 @@ Disambiguation rule (checked in this order):
   - a channel id (C.../G.../D...) or #name   -> LIST that channel's recent messages (conversations.history)
   - anything with whitespace                 -> SEARCH (search.messages)
 
-Auth (bearer_token -- the botify.py shape). THE GOLDEN PATH IS A USER TOKEN, and
+Auth (bearer_token -- the vendor.py shape). THE GOLDEN PATH IS A USER TOKEN, and
 this block is the FIRST thing a reader or a model sees; it named the bot token
 first until 2026-08-27, which is the misdirection that cost a week of cycles.
   SLACK_USER_TOKEN  xoxp-... ; FOUR user scopes and nothing else --

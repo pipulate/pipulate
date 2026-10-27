@@ -39,18 +39,18 @@ client_secret. It learns a slot's state from cheap, local evidence only:
                         SA keys don't hit the 7d cliff, so NO mtime staleness:
                         present is filled, missing is empty. Honest either way.
   bearer_token          is the required env var NAME set in THIS process's
-                        environment? (botify, slack). A "paste" kind.
+                        environment? (vendor, slack). A "paste" kind.
   basic_auth            are the required env var NAMES set? (confluence, jira,
                         gong). Also a "paste" kind.
   browser_session       os.stat() the persistent Chrome profile dir
                         data/uc_profiles/<name> that weblogin.py warms
-                        (botify_browser, semrush) → mtime staleness, because
+                        (vendor_browser, semrush) → mtime staleness, because
                         sites DO expire browser sessions.
   mcp_oauth             os.stat() the DERIVED token file
                         ~/.config/pipulate/mcp/<host>.json that mcp_warm.py
-                        writes (botify_mcp). A refresh rewrites the file, so
+                        writes (vendor_mcp). A refresh rewrites the file, so
                         mtime tracks "last refreshed" exactly as oauth does.
-                        The pre-derivation mcp_botify_token.json is invisible
+                        The pre-derivation mcp_vendor_token.json is invisible
                         to THIS board by rule (scoping it means reading its
                         bytes); the CHECK verb still honors it, scoped.
 
@@ -113,10 +113,10 @@ REPO_ROOT = Path(os.environ.get('PIPULATE_ROOT') or Path(__file__).resolve().par
 # Auth kinds -- these strings MUST match connectors.json exactly.
 _OAUTH_KIND = 'oauth_token_file'       # mint + auto-refresh (gmail, sheets, gsc)
 _SERVICE_KIND = 'service_account_file'  # a key file on disk
-_BEARER_KIND = 'bearer_token'          # paste: single API token (botify, slack)
-_BASIC_KIND = 'basic_auth'             # paste: user + API token (confluence, jira, gong)
-_BROWSER_KIND = 'browser_session'      # weblogin persistent profile (botify_browser, semrush)
-_MCP_KIND = 'mcp_oauth'                # remote MCP bearer; token file DERIVED from defaults.resource (botify_mcp)
+_BEARER_KIND = 'bearer_token'         # paste: single API token (vendor, slack)
+_BASIC_KIND = 'basic_auth'            # paste: user + API token (confluence, jira, gong)
+_BROWSER_KIND = 'browser_session'     # weblogin persistent profile (vendor_browser, semrush)
+_MCP_KIND = 'mcp_oauth'               # remote MCP bearer; token file DERIVED from defaults.resource (vendor_mcp)
 
 _FILE_KINDS = (_OAUTH_KIND, _SERVICE_KIND)
 _ENV_KINDS = (_BEARER_KIND, _BASIC_KIND)
@@ -223,8 +223,8 @@ def load_wallet():
     ABSENT is not BROKEN. The moment boot_menu's door 2 names `warm`, this
     function is what a stranger with zero credentials reaches first -- and a
     terse die() there makes their first thirty seconds a crash rather than a
-    start state. No wallet SEEDS a starter connectors.json (one botify slot,
-    no token) and exits 0, so the newcomer's next `warm botify` has a slot to
+    start state. No wallet SEEDS a starter connectors.json (one vendor slot,
+    no token) and exits 0, so the newcomer's next `warm vendor` has a slot to
     fill instead of a blank file to hand-author. This is the one path where a
     reader writes -- gated on absence, it never overwrites an existing wallet.
     An empty board is the beginning of the game, not a fault in it.
@@ -237,11 +237,11 @@ def load_wallet():
     if not path.exists():
         # SEED, DON'T LECTURE (2026-09-16). The old card told a stranger to
         # hand-author JSON in vim; this writes a starter for them instead --
-        # one botify bearer slot, no token -- so the next `warm botify` has a
+        # one vendor bearer slot, no token -- so the next `warm vendor` has a
         # slot to fill. THE URL RIDES IN THE `env` DESCRIPTION, NEVER IN
         # `defaults`: the README's flake hydrator EXPORTS an env-kind slot's
         # `defaults` entries as environment variables, so a URL parked in
-        # defaults.BOTIFY_API_TOKEN would become the token's VALUE and poison
+        # defaults.VENDOR_API_TOKEN would become the token's VALUE and poison
         # it. The `env` block is documentation-as-data, never exported, and
         # _warm_env already prints it under the prompt -- the safe channel.
         botify_slot = _declared_auth_slot("botify")
@@ -418,7 +418,7 @@ def classify_slot(name, cfg, stale_days):
         return state, kind, detail, pdir or '(no profile declared)'
     if kind == _MCP_KIND:
         # THE STAT IS THE DERIVED FILE ONLY. The pre-derivation
-        # mcp_botify_token.json is invisible here BY RULE: the offline board
+        # mcp_vendor_token.json is invisible here BY RULE: the offline board
         # never opens a token's bytes, and scoping the legacy file to its
         # server requires reading its recorded resource. So a legacy-only
         # credential reads empty on THIS board while `check` -- which shells
@@ -776,7 +776,7 @@ def _warm_browser(name, cfg, assume_yes):
     profile = (cfg.get('paths') or {}).get('profile') or name
     site = (cfg.get('defaults') or {}).get('site')
     if not site:
-        # Never guess a hostname from a slot name (botify_browser is not a domain).
+        # Never guess a hostname from a slot name (vendor_browser is not a domain).
         site = _ask(f"  no defaults.site declared for '{name}' -- site to open (blank skips): ")
         if not site:
             return 'skipped (no site declared)'
@@ -813,7 +813,7 @@ def _warm_mcp(name, cfg, assume_yes):
     (the Cinderella rung). Anything else -- absent, unreadable, or
     refresh-less -- runs the browser PKCE mint, which WRITES the derived
     path. A credential living only in the pre-derivation
-    mcp_botify_token.json therefore migrates on its first warm here, and
+    mcp_vendor_token.json therefore migrates on its first warm here, and
     the offline board's under-reporting of it ends. Reading the token
     file's bytes is legal in THIS verb (warm already handles secret
     values); the offline scoreboard still never does.
@@ -859,12 +859,12 @@ def _warm_mcp(name, cfg, assume_yes):
 
 def _apex_label(url):
     """The per-domain profile NAME the `?` lane resolves, derived from a URL
-    or host: app.botify.com -> botify, botify.atlassian.net -> atlassian.
+    or host: app.vendor.com -> vendor, vendor.atlassian.net -> atlassian.
 
     DUPLICATED, NOT IMPORTED. tools/scraper_tools.py derives its own slug for
     uc_profiles/<apex-label>, and the WET contract forbids reaching into it;
     the two derivations are compared by probe, never trusted. Both browser
-    slots in the wallet (botify, semrush) already obey this rule, which is
+    slots in the wallet (vendor, semrush) already obey this rule, which is
     what lets an ad-hoc URL warm land exactly where a later `?URL` looks.
     Naive on multi-part TLDs exactly as _apex is, and for the same reason.
     """
@@ -1215,7 +1215,7 @@ def check_mcp_slot(name, cfg):
 
     DISPATCH BY KIND, mirroring check_browser_slot: an mcp_oauth slot is a
     remote server plus a derived token file, not a connector module, so the
-    filename lookup would demand a botify_mcp.py that should never exist.
+    filename lookup would demand a vendor_mcp.py that should never exist.
 
     THE CHAIN IS THE CHECK (the combination-lock rule, banked 2026-08-30):
     this credential class mints access tokens shorter-lived than the human

@@ -187,7 +187,7 @@ fi
 # CASE-FOLDED IDENTITY (2026-08-01, two-writer conviction): whitelabel.txt has
 # TWO writers with TWO spellings -- install.sh writes the name it was handed
 # verbatim (lowercase by default), while the flake's runScript writes a
-# capitalized "Pipulate" for any folder whose name lacks "botify". A clone-first
+# capitalized "Pipulate" for any folder whose name lacks "vendor". A clone-first
 # workshop therefore carries the capital, and a case-sensitive compare against
 # the lowercase default could never match it: every discovery on this machine
 # answered from the head -n 1 fallback, which is indistinguishable from a match
@@ -418,7 +418,7 @@ fi
 # grammar is shared/<name>/, and a walk handed to a teammate is copied into
 # their personal tier or promoted to corporate. NAMED LIMITATION: a routed walk
 # runs in the shell this launcher was typed in, so from outside the workshop
-# shell a walk that needs a connector word (jira, botify) refuses by that
+# shell a walk that needs a connector word (jira, vendor) refuses by that
 # word's name; the .#quiet wrap the rider gets below is not yet extended here.
 WALK_SEARCH_DIRS="Workshop/personal/walks Workshop/corporate/walks"
 for WALK_DIR in $WALK_SEARCH_DIRS; do

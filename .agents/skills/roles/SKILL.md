@@ -26,7 +26,7 @@ This dual nature makes it unique - it's both a **workflow management interface**
 ### **Built-in Role Types**
 The system comes with six predefined roles, each serving different user needs:
 - **Core**: Essential system plugins (always available)
-- **Botify Employee**: Internal Botify tools and workflows
+- **Vendor Employee**: Internal Vendor tools and workflows
 - **Tutorial**: Learning workflows and guided examples
 - **Developer**: Development tools and advanced features
 - **Workshop**: Training demos and presentation materials
@@ -95,9 +95,9 @@ Each role displays:
 3. **Progressive disclosure**: Add roles as comfort grows
 4. **Ollama setup**: Optional local AI enhancement
 
-### **For Botify Employees**
-1. **Enable Botify Employee**: Access internal tools
-2. **Add Developer**: Advanced Botify workflows
+### **For Vendor Employees**
+1. **Enable Vendor Employee**: Access internal tools
+2. **Add Developer**: Advanced Vendor workflows
 3. **Lock profile**: Prevent accidental changes during client work
 4. **Custom ordering**: Prioritize most-used plugins
 

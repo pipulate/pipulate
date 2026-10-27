@@ -82,16 +82,16 @@ holds unchanged. The file kinds are the other shape: `mcp_oauth`'s
 out of the JSON by Python, because a token path and a login URL are not things
 a shell should export. Say which shape a new slot is before adding a key to it.
 
-Auth kinds: oauth_token_file (gmail, gsc), bearer_token (botify), basic_auth
-(confluence), service_account_file, browser_session (botify_browser,
+Auth kinds: oauth_token_file (gmail, gsc), bearer_token (vendor), basic_auth
+(confluence), service_account_file, browser_session (vendor_browser,
 semrush -- a persistent Chrome profile under data/uc_profiles/<name>, warmed by
-weblogin.py, not a token), and mcp_oauth (botify_mcp -- a remote MCP bearer
+weblogin.py, not a token), and mcp_oauth (vendor_mcp -- a remote MCP bearer
 whose token file is DERIVED from the slot's defaults.resource and minted or
 refreshed by mcp_warm.py; the durable credential scored is the refresh
 token). Every future connector copies one of these six.
 
 `warm <URL>` needs no slot at all: wallet.py synthesizes a browser_session
-slot from the address -- profile = the host's apex label (`botify.atlassian.net`
+slot from the address -- profile = the host's apex label (`vendor.atlassian.net`
 -> `atlassian`), the same per-domain name the `?URL` lane resolves under
 data/uc_profiles/ -- opens it in weblogin.py, reads the cookie verdict, and
 prints the connectors.json slot to add if the site should stay on the check
@@ -108,7 +108,7 @@ carry an identical `token_path_for()` mapping a resource URL to
 server lives under a path rather than at a host root. Collision is
 unrepresentable, an Nth server costs zero configuration lines, and a bearer
 scoped to one resource can never be handed to another. The pre-derivation file
-`mcp_botify_token.json` is read as a fallback and is never moved by a read path;
+`mcp_vendor_token.json` is read as a fallback and is never moved by a read path;
 the next browser warm writes the derived location and the fallback stops firing.
 Duplicating the derivation rather than sharing it is deliberate -- each connector
 stays self-contained -- so the two copies are compared by probe, not trusted.
@@ -116,7 +116,7 @@ stays self-contained -- so the two copies are compared by probe, not trusted.
 ## Current connectors
 
 - gmail.py       LIST by address / FETCH by hex id or web-URL / SEARCH by "subject" -> full thread(s), --list for snippets (OAuth token file)
-- botify.py      identity walk / org / org/project / org/project/analysis (verdict: status, pages done/known, rate, ETA by cadence, then crawl statistics; a RUNNING crawl is absent from the list and present here) / org/project/<resource>[/<id>] and org/project/<slug>/<sub> drill any raw API path, rendered by shape, --grep narrowing a list or printing every matching leaf path in one object / any app.botify.com URL, reduced to its slug path / BQL query (BOTIFY_API_TOKEN)
+- vendor.py      identity walk / org / org/project / org/project/analysis (verdict: status, pages done/known, rate, ETA by cadence, then crawl statistics; a RUNNING crawl is absent from the list and present here) / org/project/<resource>[/<id>] and org/project/<slug>/<sub> drill any raw API path, rendered by shape, --grep narrowing a list or printing every matching leaf path in one object / any app.vendor.com URL, reduced to its slug path / BQL query (VENDOR_API_TOKEN)
 - confluence.py  spaces / space pages / page id / CQL search (CONFLUENCE_* envs)
 - jira.py        bare = your open issues (the For You tab; any /jira/for-you URL too) / projects / project issues / issue key (PROJ-123; prints populated custom fields, link hrefs, attachments) / raw JQL (basic_auth; JIRA_* first, CONFLUENCE_* as a fallback -- a convenience, never a shared identity)
 - gsc.py         properties / top queries / raw searchanalytics JSON (oauth_token_file; own gsc_token.json, shared Desktop-app OAuth client)
@@ -141,7 +141,7 @@ connector that keeps its template's first line will display the template's
 name in the `sources` roster, which is how `gong.py` came to introduce itself
 as `wallet.py`.
 
-## Drill by shape, find by needle (botify.py, 2026-09-10)
+## Drill by shape, find by needle (vendor.py, 2026-09-10)
 
 Beyond its golden-path modes a connector should let the positional argument
 be a raw API path: `org/project/<resource>[/<id>]` GETs that path and renders
@@ -152,7 +152,7 @@ whose dotted path or value matches. No object path is hardwired (the
 operator's rule): every sub-resource the app's own frame was seen calling,
 and every one it was not, is one argument away, and 667 saved explorers
 become the few about links without anyone reading 667 names. Two limits are
-known and earmarked in botify.py: a string leaf that is itself serialized
+known and earmarked in vendor.py: a string leaf that is itself serialized
 JSON is opaque to the leaf grep, and a subtree that echoes the parent (an
 analysis carries its `previous`) can spend most of a `-n` cap.
 

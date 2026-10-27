@@ -95,15 +95,15 @@ BOARD_RE = re.compile(r'^board:(\d+)$')
 SEARCH_FIELDS = "summary,status,issuetype,priority,assignee,updated"
 # THE LINK LIVES IN THE TEXT (READ 2026-09-27, deed 1626): both custom fields
 # named Project URL counted 0 on SVB (cf[12188] and cf[12189], each is not
-# EMPTY), so a ticket's Botify project, when it names one, is a link in the
+# EMPTY), so a ticket's Vendor project, when it names one, is a link in the
 # summary or the description. The first two path segments are org/project;
-# app.botify.com/tools/... is a product page and never an org.
+# app.vendor.com/tools/... is a product page and never an org.
 BOTIFY_PROJECT_RE = re.compile(r'https?://app\.botify\.com/([A-Za-z0-9_.-]+)/([A-Za-z0-9_.-]+)')
 _NOT_AN_ORG = frozenset({"tools", "admin", "api", "login", "static", "settings"})
 
 
 def _botify_project_link(text):
-    """The first app.botify.com/<org>/<project> URL in text, or ''."""
+    """The first app.vendor.com/<org>/<project> URL in text, or ''."""
     for match in BOTIFY_PROJECT_RE.finditer(text or ""):
         if match.group(1).lower() not in _NOT_AN_ORG:
             return match.group(0)
@@ -111,7 +111,7 @@ def _botify_project_link(text):
 
 
 def _slug_from_url(url):
-    """org/project from an app.botify.com URL, or ''."""
+    """org/project from an app.vendor.com URL, or ''."""
     if not str(url or "").startswith(("http://", "https://")):
         return ""
     parsed = urlparse(url)
@@ -125,12 +125,12 @@ def _slug_from_url(url):
 # 1628: 182 of 185 rows resolved from Project-slug, 0 from the hostname, so
 # the fallback below has never fired on SVB). Titled at deed 1627, when one
 # link in 185 was all the join had: 185 board rows, one
-# app.botify.com link among them, and every open row naming its site in the
-# summary ("JS settings QA - client-g.com"), while a Botify project slug
+# app.vendor.com link among them, and every open row naming its site in the
+# summary ("JS settings QA - client-g.com"), while a Vendor project slug
 # is usually the hostname itself (mikelev.in, client-c.example). A populated
 # field labelled Project-slug on the specimen ticket is the cleaner join and
 # rides first; the summary's hostname is the fallback, resolved against the
-# local corpus so a slug is printed only when botify --rules can answer it.
+# local corpus so a slug is printed only when vendor --rules can answer it.
 HOSTNAME_RE = re.compile(r'\b((?:[a-z0-9-]+\.)+[a-z]{2,})\b', re.IGNORECASE)
 
 
@@ -665,9 +665,9 @@ def list_board_issues(client, base, board_id, max_items):
     field asked for by id. THE COUNTS COME BEFORE ANY ROW, because the
     queue's shape is the question a Solutions Engineer asks first: how
     many issues the filter returns under the -n cap, how many carry a
-    Project URL, how many of those name an app.botify.com org/project, and
-    how many of those have a local pull under data/botify_pulls, so that
-    botify --rules org/project answers for them today. Rows follow, each
+    Project URL, how many of those name an app.vendor.com org/project, and
+    how many of those have a local pull under data/vendor_pulls, so that
+    vendor --rules org/project answers for them today. Rows follow, each
     with its org/project when it has one. The two Atlassian paths
     (/rest/agile/1.0/board/<id>/configuration and /rest/api/3/filter/<id>)
     are from the documentation and UNWITNESSED until the first receipt;
@@ -692,9 +692,9 @@ def list_board_issues(client, base, board_id, max_items):
     READ 2026-09-27 (deed 1627): the filter returns 185 where the board's
     face shows 162, the 23 INFERRED epics and sub-tasks a column never
     counts, so a by-type line rides beside by-status; one row in 185 carried
-    an app.botify.com link and none a Project URL, so the join is the
+    an app.vendor.com link and none a Project URL, so the join is the
     Project-slug field first and the summary's hostname second, resolved
-    against data/botify_pulls, and each row says whether a pull exists.
+    against data/vendor_pulls, and each row says whether a pull exists.
     """
     config = get_json(client, f"{base}/rest/agile/1.0/board/{board_id}/configuration")
     config = config if isinstance(config, dict) else {}

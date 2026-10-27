@@ -172,7 +172,7 @@ def get_service():
 def check():
     """SELECT 1 for the `warm` board: exit 0 GREEN, exit 1 RED (gate-named).
 
-    Modeled on botify.py's two-gate probe. gate1 is "credential present and
+    Modeled on vendor.py's two-gate probe. gate1 is "credential present and
     loadable" -- headless refresh allowed, because the durable credential
     scored is the refresh token, exactly as for every other oauth slot.
     gate2 is "the live API accepted it": one bounded sites().list() call.

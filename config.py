@@ -141,9 +141,9 @@ ROLE_COLORS = {
     }
 }
 
-# Botify API Configuration
+# Vendor API Configuration
 BOTIFY_API = {
-    'MAX_EXPORT_SIZE': 1000000,  # Botify's maximum export size limit (1M rows)
+    'MAX_EXPORT_SIZE': 1000000,  # Vendor's maximum export size limit (1M rows)
     'DEFAULT_EXPORT_SIZE': 1000000,  # Conservative default for testing/development
     'GSC_EXPORT_SIZE': 1000000,  # GSC can handle full export size
     'WEBLOG_EXPORT_SIZE': 1000000,  # Web logs can handle full export size
@@ -282,9 +282,9 @@ INVALID_URL_PATTERNS = [
     'ftp:'
 ]
 
-# Botify API helper functions
+# Vendor API helper functions
 def get_botify_headers(api_token):
-    """Get standard Botify API headers."""
+    """Get standard Vendor API headers."""
     return {
         "Authorization": f"Token {api_token}",
         "Content-Type": "application/json"
@@ -292,11 +292,11 @@ def get_botify_headers(api_token):
 
 
 def get_botify_token():
-    """Canonical accessor for the Botify API token.
+    """Canonical accessor for the Vendor API token.
 
-    Single source of truth: reads BOTIFY_API_TOKEN from the environment,
+    Single source of truth: reads VENDOR_API_TOKEN from the environment,
     falling back to the project-root .env, then the warm vault. Replaces the legacy
-    botify_token.txt file-based system. Returns the token string or None.
+    vendor_token.txt file-based system. Returns the token string or None.
     """
     token = os.environ.get('BOTIFY_API_TOKEN')
     if not token:
@@ -310,15 +310,15 @@ def get_botify_token():
             pass
     if not token:
         # THE VAULT IS THE THIRD PLACE (banked 2026-09-23, witnessed by the
-        # env -u BOTIFY_API_TOKEN straddle: the env var unset, no project-root
-        # .env present, dotenv importable, and get_botify_token still returned
+        # env -u VENDOR_API_TOKEN straddle: the env var unset, no project-root
+        # .env present, dotenv importable, and get_vendor_token still returned
         # config=True -- the only source left was the vault, so the third place
         # is what answered). `warm` writes paste-kind secrets to
         # ~/.config/pipulate/.env (PIPULATE_DOTENV wins, exactly as wallet.py
         # and the flake spell it), and the flake sources that file only at
         # shell entry. So a token warmed after the shell opened was GREEN on
         # the wallet's board, whose _check_env layers the vault under
-        # os.environ for its subprocess, and absent to a bare `botify` in the
+        # os.environ for its subprocess, and absent to a bare `vendor` in the
         # same shell, which reached this function with nothing but os.environ
         # and the project .env. Same file, same precedence, no re-entry: read
         # the one name, values-only, and export nothing else into this process.

@@ -12,7 +12,7 @@ Two golden-path modes, auto-detected from the single positional argument:
 
 Designed to be dropped into foo_files.py as a `!` chisel-strike, e.g.:
 
-  ! python connectors/gmail.py michael.levin@botify.com
+  ! python connectors/gmail.py michael.levin@vendor.com
   ! python connectors/gmail.py 18f4ad923b1c83e2
 
 A subject search and a Gmail web thread URL are also accepted:

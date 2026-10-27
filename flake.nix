@@ -1994,7 +1994,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           }
           # THE CONNECTOR GRAMMAR (idea #7 made literal): tiny Unix commands,
           # one per API, each a self-contained file in connectors/.
-          # Args pass through: `botify org/project`, `confluence ENG`,
+          # Args pass through: `vendor org/project`, `confluence ENG`,
           # `gmail <thread_id>`. Interactive-shell only -- context.txt `!` lines
           # ride as DERIVATIONS in commonPackages above, so the short spelling
           # is legal everywhere -- a router line is now `! jira SWCX-1234`.
@@ -2113,7 +2113,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # THE WORD BJJ (2026-09-27, the operator's ruling: "because Brazilian
           # Jiu Jitsu is objectively the best Kung Fu"). compile with the
           # trusted profile and a fixed reason baked in, for the compile that
-          # must carry client slugs (a botify --rules tail, a jira board) and
+          # must carry client slugs (a vendor --rules tail, a jira board) and
           # was three flags typed by hand until today; --tree is not spelled
           # because the flip of 0bce3aae made it a no-op here. A FUNCTION,
           # typed by a human; -n and any later flag still ride through "$@".

@@ -68,7 +68,7 @@ python helpers/workflow/create_workflow.py \
 **Templates Available:**
 - **`blank`**: Single-step workflow ideal for learning and simple processes
 - **`hello`**: Multi-step demonstration workflow showing helper tool usage
-- **`trifecta`**: Complex 3-phase workflow based on Botify template for data collection
+- **`trifecta`**: Complex 3-phase workflow based on Vendor template for data collection
 
 **What It Creates:**
 - ✅ Complete workflow file with proper class structure
@@ -167,21 +167,21 @@ async def step_01(self, request):
 ```bash
 # Create test version with suffix (safe development)
 python helpers/workflow/workflow_reconstructor.py \
-    --template 400_botify_trifecta \
+    --template 400_vendor_trifecta \
     --source 110_parameter_buster \
     --suffix 5
 # Result: 110_parameter_buster5.py (safe testing)
 
 # Create named variant (new workflow)
 python helpers/workflow/workflow_reconstructor.py \
-    --template 400_botify_trifecta \
+    --template 400_vendor_trifecta \
     --source 110_parameter_buster \
     --target 120_advanced_parameters
 # Result: 120_advanced_parameters.py (new workflow)
 
 # In-place update (production deployment)
 python helpers/workflow/workflow_reconstructor.py \
-    --template 400_botify_trifecta \
+    --template 400_vendor_trifecta \
     --source 110_parameter_buster \
     --target 110_parameter_buster
 # Result: Updates original file (preserves git history)
@@ -270,7 +270,7 @@ python helpers/workflow/manage_class_attributes.py \
 - Educational value for understanding tool integration
 
 #### **🔴 Trifecta Workflow** (Production Path)
-- Complex workflow starting from Botify template
+- Complex workflow starting from Vendor template
 - Advanced data collection and processing scenarios  
 - Production-ready foundation
 
@@ -343,7 +343,7 @@ python helpers/workflow/create_workflow.py 200_parameter_engine.py ParameterEngi
 # [Extensive development and testing]
 
 # 3. Use as atomic source for reconstruction
-python helpers/workflow/workflow_reconstructor.py --template 400_botify_trifecta --source 200_parameter_engine --target 300_advanced_params
+python helpers/workflow/workflow_reconstructor.py --template 400_vendor_trifecta --source 200_parameter_engine --target 300_advanced_params
 
 # 4. Create component library pattern
 mkdir -p apps/components/
@@ -459,7 +459,7 @@ mkdir -p apps/components/
 mv apps/800_parameter_component.py apps/components/
 
 # 4. Use across multiple workflows
-python helpers/workflow/workflow_reconstructor.py --template 400_botify_trifecta --source components/800_parameter_component --target 100_new_param_flow
+python helpers/workflow/workflow_reconstructor.py --template 400_vendor_trifecta --source components/800_parameter_component --target 100_new_param_flow
 python helpers/workflow/workflow_reconstructor.py --template 300_blank_placeholder --source components/800_parameter_component --target 150_simple_param_flow
 ```
 
@@ -469,7 +469,7 @@ Evolve templates with new capabilities:
 
 ```bash
 # 1. Start with proven template
-cp apps/400_botify_trifecta.py apps/410_enhanced_trifecta.py
+cp apps/400_vendor_trifecta.py apps/410_enhanced_trifecta.py
 
 # 2. Add capabilities via reconstruction
 python helpers/workflow/workflow_reconstructor.py --template 410_enhanced_trifecta --source 200_advanced_ui --target 410_enhanced_trifecta

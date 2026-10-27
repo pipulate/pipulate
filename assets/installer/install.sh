@@ -399,7 +399,7 @@ echo "To come back later:  cd ~/${CUSTOM_NAME} && nix develop"
 # have renamed the app Npvg and its databases with it. Now only an
 # explicit argument writes it. A default install leaves the file absent,
 # and the flake's own first-entry fallback names the app, "Pipulate" for
-# any folder without botify in its name. mck.sh always passes its
+# any folder without vendor in its name. mck.sh always passes its
 # whitelabel as the argument, so the launcher's lane is unchanged. The
 # explicit path still announces itself; the default path prints nothing
 # here because it did nothing here.

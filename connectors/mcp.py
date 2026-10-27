@@ -19,7 +19,7 @@ Golden-path modes, auto-detected from positionals:
 
 Designed to be dropped into context.txt as a `!` chisel-strike:
 
-  ! python connectors/mcp.py https://mcp.botify.com --check; echo "exit=$?"
+  ! python connectors/mcp.py https://mcp.vendor.com --check; echo "exit=$?"
 
 THE FOUR-TUPLE RECEIPT: every call prints (server, verb, tool, args) with args
 echoed BYTE-FOR-BYTE from argv -- the raw string as submitted, never a
@@ -31,9 +31,9 @@ clamps to D2 and says so -- a possibly-time-varying result must never be
 mistaken for a reproduction.
 
 Auth: Authorization: <scheme> <token>. The token is resolved from --token-env,
-then MCP_BEARER_TOKEN, then the derived warmed file, then BOTIFY_API_TOKEN. The
+then MCP_BEARER_TOKEN, then the derived warmed file, then VENDOR_API_TOKEN. The
 SCHEME defaults to Bearer and is overridden per call with --auth-scheme, because
-it is a per-SERVER fact and not a per-vendor one: mcp.botify.com wants an OAuth
+it is a per-SERVER fact and not a per-vendor one: mcp.vendor.com wants an OAuth
 Bearer, while a static-token MCP server under the same vendor wants "Token".
 Which token AND which scheme a given server accepts is ITSELF unwitnessed until
 --check says so.
@@ -202,7 +202,7 @@ def resolve_existing_token_file(resource):
     # THE FALLBACK IS SCOPED (convicted 2026-08-29 by this resolver's own
     # probe, which read legacy_fallback=True for a server the legacy file was
     # never minted for). The pre-derivation branch below used to answer for ANY
-    # server whose derived file was absent, so the mcp.botify.com OAuth bearer
+    # server whose derived file was absent, so the mcp.vendor.com OAuth bearer
     # was offered to every other MCP server this client can name -- the exact
     # cross-server hazard the derived path exists to remove, reintroduced by
     # the compatibility branch that carried the migration.
@@ -276,7 +276,7 @@ def resolve_token(token_env=None, server=None):
     If value points to a JSON token file, extracts the access_token field.
     When a server is named, the warmed-file rung is DERIVED from it
     (~/.config/pipulate/mcp/<host>.json) and the pre-derivation
-    mcp_botify_token.json is read only as a fallback, with a note on stderr.
+    mcp_vendor_token.json is read only as a fallback, with a note on stderr.
     """
     from pathlib import Path
     names = ([token_env] if token_env else []) + [
@@ -350,7 +350,7 @@ def identity():
     if token:
         # THE LANE IS PART OF THE CLAIM (convicted 2026-08-29 by this walk's own
         # receipt). The prior string said "env lane resolved from
-        # mcp_botify_token.json" while every env var was unset and the FILE rung
+        # mcp_vendor_token.json" while every env var was unset and the FILE rung
         # had fired -- a label naming a lane that did not run, which is the
         # ATTRIBUTED-VOICE mechanical test failing on the first line a newcomer
         # reads. It was also a REGRESSION: the string it replaced said only
@@ -462,7 +462,7 @@ def initialize(client, server):
     # httpx does not raise on 4xx, so the old bare `except: pass` swallowed a
     # server refusing half the handshake and greened downstream. Convicted by
     # the fault harness's red.notify-rejected scenario (19/20, the one FAIL).
-    # This CANNOT touch the Botify 401 -- that fires at the FIRST initialize
+    # This CANNOT touch the Vendor 401 -- that fires at the FIRST initialize
     # POST, above, before any notification exists.
     try:
         ack = post(client, server, {"jsonrpc": "2.0",

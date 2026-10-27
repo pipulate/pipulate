@@ -548,8 +548,8 @@ def main():
 
     elif args.command == 'db-inspect':
         # SAME FOSSIL, SECOND FILE (2026-08-04). db-inspect opened
-        # data/botifython_dev.db -- last written May 3 -- and printed its tables
-        # under the heading "Tables in botifython_dev.db", so an inspector built
+        # data/vendorthon_dev.db -- last written May 3 -- and printed its tables
+        # under the heading "Tables in vendorthon_dev.db", so an inspector built
         # to show live state was confidently reporting a dead file's contents.
         # Derived from the same identity value as the backup roster next door.
         try:

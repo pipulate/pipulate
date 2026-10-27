@@ -95,7 +95,7 @@ such, not treated as portable defaults.
 
 No secret is committed to source control. Operator secrets live in git-ignored
 files such as `.env`, `secrets.nix`, and equivalent token files, and live reads go
-through a canonical accessor (for example the centralized Botify token reader)
+through a canonical accessor (for example the centralized Vendor token reader)
 rather than scattered ad hoc file reads. Secrets must never appear in generated
 context bundles, logs, notebooks, screenshots, or published article payloads.
 
