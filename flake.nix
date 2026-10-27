@@ -137,11 +137,6 @@
             desc = "the unified core workflow engine";
           }
           {
-            source = "assets/nbs/imports/onboard_sauce.py";
-            dest = "Workshop/personal/Notebooks/imports/onboard_sauce.py";
-            desc = "a local 'onboard_sauce.py' source of secret sauce";
-          }
-          {
             source = "assets/nbs/imports/url_inspect_sauce.py";
             dest = "Workshop/personal/Notebooks/imports/url_inspect_sauce.py";
             desc = "a local 'url_inspect_sauce.py' source of secret sauce";
@@ -160,11 +155,6 @@
             source = "assets/nbs/imports/videditor_sauce.py";
             dest = "Workshop/personal/Notebooks/imports/videditor_sauce.py";
             desc = "a local 'videditor_sauce.py' source of secret sauce";
-          }
-          {
-            source = "assets/nbs/Onboarding.ipynb";
-            dest = "Workshop/personal/Notebooks/Onboarding.ipynb";
-            desc = "the Pipulate initiation rite and setup guide";
           }
           {
             source = "assets/nbs/Advanced_Notebooks/01_URLinspector.ipynb";
@@ -1359,31 +1349,12 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # Conditionally start JupyterLab in background tmux session (default: off)
           if [ "$START_JUPYTER" = "true" ]; then
             tmux kill-session -t jupyter 2>/dev/null || true
-            tmux new-session -d -s jupyter "source .venv/bin/activate && jupyter lab ${jupyterStartupNotebook} --ServerApp.root_dir=Workshop $JUPYTER_BROWSER_FLAG --workspace=\$JUPYTER_WORKSPACE_NAME --NotebookApp.token=\"\" --NotebookApp.password=\"\" --NotebookApp.disable_check_xsrf=True 2>&1 | tee /tmp/jupyter-startup.log"
+            tmux new-session -d -s jupyter "source .venv/bin/activate && jupyter lab --ServerApp.root_dir=Workshop $JUPYTER_BROWSER_FLAG --workspace=\$JUPYTER_WORKSPACE_NAME --NotebookApp.token=\"\" --NotebookApp.password=\"\" --NotebookApp.disable_check_xsrf=True 2>&1 | tee /tmp/jupyter-startup.log"
             sleep 2
           fi
 
-          # 🗣️ THE UNIFIED VOICE TRIGGER (Context-Aware)
-          if [ -f Workshop/personal/Notebooks/data/.onboarded ]; then
-            python -c "import logging; logging.getLogger('piper').setLevel(logging.ERROR); from imports.voice_synthesis import chip_voice_system as cvs; cvs.speak_text('Welcome back to the workshop. JupyterLab will be waiting in the first tab.')" > /dev/null 2>&1 &
-          else
-            if [[ "$(uname -s)" == "Darwin" ]]; then
-              CLOSE_CMD="Command W"
-            else
-              CLOSE_CMD="clicking the X"
-            fi
-            TTS_DIR_NAME=$(basename "$PWD")
-            # THE FOLDER SAID ALOUD (2026-10-02, the operator's ruling 5): Piper
-            # reads a folder name as one word, and qamyai comes out sounding
-            # like cam-ee-eye, so the message spells it a letter at a time with
-            # commas between, the way it already says C, D. A dash, an
-            # underscore and a dot are said as words, because spelled alone
-            # they make no sound. Read through the phonemizer inside
-            # piper-tts 1.6.0 in a sandbox, not heard on a computer here.
-            TTS_DIR_SPELLED=$(printf '%s' "$TTS_DIR_NAME" | sed 's/./&, /g; s/, $//; s/-/dash/g; s/_/underscore/g; s/[.]/dot/g')
-            TTS_MSG="Pipulate is installed. Starting JupyterLab and the server. To quit when you are done, forcibly close this window using $CLOSE_CMD. To run it again later, open a new one, type C, D, space, $TTS_DIR_SPELLED, hit enter, then type nix develop, then J, N. JupyterLab will appear first. Completing the onboarding will unlock the main application tab. Get ready to hit Shift Enter all the way down."
-            python -c "import logging; logging.getLogger('piper').setLevel(logging.ERROR); from imports.voice_synthesis import chip_voice_system as cvs; cvs.speak_text('$TTS_MSG')" > /dev/null 2>&1 &
-          fi
+          # 🗣️ THE UNIFIED VOICE TRIGGER
+          python -c "import logging; logging.getLogger('piper').setLevel(logging.ERROR); from imports.voice_synthesis import chip_voice_system as cvs; cvs.speak_text('Welcome to the workshop.')" > /dev/null 2>&1 &
 
           JUPYTER_STARTED=false
           if [ "$START_JUPYTER" = "true" ]; then
@@ -1392,10 +1363,9 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
                 JUPYTER_STARTED=true
                 echo ""
                 echo "✅ JupyterLab is ready:"
-                echo "   http://localhost:8888/lab/tree/personal/Notebooks/Onboarding.ipynb"
+                echo "   http://localhost:8888/lab"
                 echo ""
-                echo "   Run the notebook top-to-bottom with Shift+Enter."
-                echo "   Completing onboarding unlocks the Pipulate app:"
+                echo "   Pipulate app:"
                 echo "   http://localhost:5001"
                 echo ""
                 break
@@ -1426,18 +1396,10 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
               echo -n "."
             done
             if [ "$SERVER_STARTED" = true ]; then
-              # EXPLICIT-FALSE WINS (2026-09-11): PIPULATE_OPEN_FASTHTML=false
-              # used to lose to the onboarded-marker fallback below, so an
-              # already-onboarded caller (autognome.py, every run) could never
-              # actually suppress this auto-open -- the marker file exists
-              # after the first successful onboarding and stays forever.
-              # Checking for the explicit "false" first lets a caller that
-              # wants to own the browser-open decision itself (see
-              # autognome.py's single-actor browser-open block) actually do so.
               if [ "$OPEN_FASTHTML" = "false" ]; then
                 echo
                 echo "✅ Pipulate server is running at http://localhost:5001 (auto-open suppressed)"
-              elif [ "$OPEN_FASTHTML" = "true" ] || [ -f Workshop/personal/Notebooks/data/.onboarded ]; then
+              elif [ "$OPEN_FASTHTML" = "true" ]; then
                 if [ "${fastHtmlOpenDelay}" -gt 0 ]; then
                   echo "Delaying FastHTML tab by ${fastHtmlOpenDelay} seconds..."
                   sleep ${fastHtmlOpenDelay}
@@ -1450,7 +1412,6 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
               else
                 echo
                 echo "✅ Pipulate server is running at http://localhost:5001"
-                echo "   Finish the Onboarding notebook to unlock it automatically next time."
               fi
             else
               echo
