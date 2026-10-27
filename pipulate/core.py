@@ -2456,7 +2456,7 @@ class Pipulate:
         # Advanced_Notebooks/ and Educational_Notebooks/ subfolders. A folder
         # in the given name is dropped on the source side and honored on the
         # asset side; a bare name is looked up among the assets by filename,
-        # and a name no asset carries lands at the top beside Onboarding.ipynb.
+        # and a name no asset carries lands at the top of assets/nbs/.
         given = Path(notebook_filename)
         assets_nbs = project_root / "assets" / "nbs"
         notebook_source_path = project_root / "Workshop" / "personal" / "Notebooks" / given.name
@@ -3141,76 +3141,6 @@ class Pipulate:
         key_present = self.ensure_credentials(env_var_name, service_name, force_prompt=force_prompt)
             
         return selected_cloud, bool(key_present)
-
-    def execute_onboarding_airlock(self):
-        """
-        The Sentinel-Triggered Airlock.
-        Crosses the domain boundary to extract data from the Jupyter environment
-        and inject it into the FastHTML global state.
-        """
-        import sqlite3
-        import json
-
-        # 1. Explicitly define the path to the Jupyter chrysalis (ignoring current context)
-        jupyter_db_path = self.paths.root / "Workshop" / "personal" / "Notebooks" / "data" / "pipeline.sqlite"
-        sentinel_path = self.paths.root / "Workshop" / "personal" / "Notebooks" / "data" / ".onboarded"
-        
-        # 2. Safety Check: Only proceed if the chrysalis exists
-        if not jupyter_db_path.exists():
-            logger.warning(f"Airlock Aborted: No Jupyter database found at {jupyter_db_path}")
-            return False
-            
-        try:
-            logger.info("🌀 AIRLOCK ENGAGED: Extracting Jupyter Onboarding Data...")
-            
-            # 3. The Surgical Read-Only Extraction
-            # Connect in read-only mode to prevent lock conflicts with any hanging Jupyter kernels
-            uri = f"file:{jupyter_db_path}?mode=ro"
-            conn = sqlite3.connect(uri, uri=True)
-            cursor = conn.cursor()
-            
-            # The data we want is locked inside the 'onboarding_01' pipeline record
-            cursor.execute("SELECT data FROM pipeline WHERE pkey = 'onboarding_01'")
-            result = cursor.fetchone()
-            cursor.execute("SELECT key, value FROM store WHERE key IN ('active_local_model', 'active_cloud_model')")
-            global_store_results = cursor.fetchall()
-            
-            conn.close()
-            
-            if not result:
-                logger.warning("Airlock Empty: No 'onboarding_01' record found.")
-                return False
-                
-            onboarding_state = json.loads(result[0])
-            
-            # 4. The Transformation & Injection
-            
-            # Extract Operator Name from pipeline state
-            if 'operator_name' in onboarding_state:
-                self.db['operator_name'] = onboarding_state['operator_name']
-                logger.info(f"🧬 Injected Operator Name: {onboarding_state['operator_name']}")
-                
-                # Secure it in the subconscious (AI Keychain)
-                try:
-                    from imports.ai_dictdb import keychain_instance
-                    keychain_instance['operator_name'] = onboarding_state['operator_name']
-                except Exception as e:
-                    logger.warning(f"Could not inject to keychain: {e}")
-
-            # Extract AI Preferences from global store results
-            for key, value in global_store_results:
-                self.db[key] = value
-                if key == 'active_local_model':
-                    self.active_local_model = value
-                elif key == 'active_cloud_model':
-                    self.active_cloud_model = value
-                logger.info(f"🧬 Injected {key} from Jupyter store: {value}")
-
-            return True
-
-        except Exception as e:
-            logger.error(f"❌ Airlock Failure: {e}")
-            return False
 
     def copy_button(self, text_to_copy: str, label: str = "Copy Markdown"):
         """
