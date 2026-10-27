@@ -1770,6 +1770,10 @@ def fetch_youtube_live_state(channel_or_url=None):
                     if isinstance(cont.get(k), dict) and cont[k].get("continuation"):
                         chat_continuation = str(cont[k]["continuation"])
                         break
+    if is_live and video_id:
+        fast_vc = _fetch_yt_concurrent_viewers_fast(video_id)
+        if fast_vc is not None:
+            concurrent_viewers = fast_vc
     chat_messages = _fetch_yt_chat_messages(chat_continuation) if (is_live and chat_continuation) else []
     comment_count = None
     yt_api_key = _get_vault_var("YOUTUBE_API_KEY") or load_keys_dict().get("youtube")
