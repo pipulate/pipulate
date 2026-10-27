@@ -2447,7 +2447,7 @@ MATCHBOOK_CHOP = r"""
 # Coverage: 206/282 tracked files claimed. The compiler reads this line back on the next compile and prints the delta beside the live count, so an unclaimed file rings once.
 
 # AGENTS.md  # [1,039 tokens | 4,223 bytes]
-# AUDIT.md  # [2,993 tokens | 13,897 bytes]
+# AUDIT.md  # [2,992 tokens | 13,897 bytes]
 # MANIFEST.in  # [204 tokens | 806 bytes]
 # apps/010_introduction.py  # [2,544 tokens | 11,893 bytes]
 # apps/025_aspect.py  # [1,437 tokens | 6,233 bytes]
