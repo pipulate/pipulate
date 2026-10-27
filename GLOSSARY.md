@@ -573,7 +573,7 @@ Entries are alphabetical, numbers spelled as spoken.
 #       Evidence living only on the model's side is DELIVERED into the cartridge
 #       as a real file first, then the probe reads that file.
 #   (c) A NAME THAT IS NOT A FILE IS NOT A FILE INCLUDE. A remote MCP tool
-#       (html_pageworkers_preview, site_crawler_url_detail) is actuated through
+#       (a vendor's preview or crawl-detail tool) is actuated through
 #       connectors/mcp.py, never listed as a bare path; prompt_foo.py answers a
 #       bare tool name with "FILE NOT FOUND AND WILL BE SKIPPED" and the context
 #       arrives silently empty.
@@ -871,7 +871,7 @@ Entries are alphabetical, numbers spelled as spoken.
 - **The Browser Is Not A Config File** -- *expanded rule; banked 2026-09-28.*
 
 ~~~text
-# - EARMARK: THE BROWSER IS NOT A CONFIG FILE (banked 2026-09-28, the operator's ruling at deed 1642): a per-profile browser mutation, a chrome://flags toggle or a setting, that no flake or equivalent manages is a "works on my machine" mutation and is refused, even when it is the vendor's documented prerequisite; a browser feature reaches this system as a switch on the flake's pinned Chromium, a line in code the same on every machine, or it does not reach it. Conviction: the WebMCP relay's prerequisite, chrome://flags/#enable-webmcp-testing, was absent from Prime's everyday Chrome 150 and would not have been toggled had it been present; the PocketRender render farm is driven from the command line or not at all, and its details land in payload.md or it did not happen (the operator's words). Corollary: a vendor note that says "set these flags" names a per-machine state, and the WORA lanes are the switch, the wire-truth reading of the vendor's own backend calls, or waiting. Sibling of THE STEWARDSHIP RULE (leave the machine unchanged) and of THE MAINTAINER-INVISIBLE LANE (a state one machine holds and no stranger's does).
+# - EARMARK: THE BROWSER IS NOT A CONFIG FILE (banked 2026-09-28, the operator's ruling at deed 1642): a per-profile browser mutation, a chrome://flags toggle or a setting, that no flake or equivalent manages is a "works on my machine" mutation and is refused, even when it is the vendor's documented prerequisite; a browser feature reaches this system as a switch on the flake's pinned Chromium, a line in code the same on every machine, or it does not reach it. Conviction: the WebMCP relay's prerequisite, chrome://flags/#enable-webmcp-testing, was absent from Prime's everyday Chrome 150 and would not have been toggled had it been present; a vendor's render farm is driven from the command line or not at all, and its details land in payload.md or it did not happen (the operator's words). Corollary: a vendor note that says "set these flags" names a per-machine state, and the WORA lanes are the switch, the wire-truth reading of the vendor's own backend calls, or waiting. Sibling of THE STEWARDSHIP RULE (leave the machine unchanged) and of THE MAINTAINER-INVISIBLE LANE (a state one machine holds and no stranger's does).
 ~~~
 
 - **The Caboose-Verdict Corollary** -- (banked 2026-08-01, self-convicted one turn
