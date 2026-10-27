@@ -473,8 +473,7 @@ And then we demonstrate a level of competence like so:
 # captures, one DECANT bundle to the clipboard. That half of the OWES is
 # discharged. STILL OWED: (1) the fence-vs-lean-back discrimination shared with
 # the VARIANCE-SUPPRESSION RULE. DISCHARGED 2026-09-01: (2) the authenticated
-# ride -- jira_for_you captured and decanted a logged-in Jira page on profile
-# default, SETTLE in its non-trivial form, sign-in moment unrecorded.
+# ride, SETTLE in its non-trivial form, sign-in moment unrecorded.
 # § THE SEED REDUCTION (banked 2026-08-01) -- Make a bootstrap survive all four cold-start tests: OFFER and resume on first contact instead of refusing, resolve by tracked marker not folder name, grade germination by N fresh-machine completions not one sprout, and reproduce by pinned graft not moving-channel seed.
 # § THE SHELL-LANE FINDINGS (banked 2026-08-01) -- Treat the quiet shell as a partial bootstrap: populate its venv explicitly, require one plain `nix develop` before relying on magic-cookie git transformation or auto-update, and change Darwin `--impure` only after a receipt from the exact launcher lane.
 # § THE PUBLISH-ROSTER RULE (banked 2026-08-01) -- treat every name in a publish roster as a live actuator: if it must not ship, REMOVE IT FROM THE ROSTER, because warnings beside a mechanism do not gate the mechanism; witness the roster cut and served-surface removal before closing the hazard, and treat off-roster residue as stranded, not shippable.
@@ -864,7 +863,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 
 # THE WEBLOGIN WARMER: sites behind auth need a live logged-in session before
 # a persistent scrape sees anything. Run `weblogin <apex-domain>` (e.g.
-# `weblogin botify.com`) to pop a VISIBLE chromium on the house persistent
+# `weblogin example.com`) to pop a VISIBLE chromium on the house persistent
 # profile at data/uc_profiles/default -- the SAME profile scraper_tools.py
 # uses for persistent=True. Log in, close the window; the session persists so
 # later persistent scrapes inherit the login. Nix-pinned chromium plus
@@ -1307,13 +1306,13 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # corrected at deed 1470 by the flake itself): after the walk a newcomer's
 # whole vocabulary is walk, plan, voice, context, prompt, compile and connect; warm and
 # weblogin settle a login before a ?URL; bot, mcp and webclip are the
-# operator's. THE SEVEN CONNECTOR WORDS (jira, gmail with email as a second
-# spelling, confluence, gsc, sheets, slack, botify) are the THIRD TIER, not
+# operator's. THE CONNECTOR WORDS (gmail with email as a second
+# spelling, confluence, gsc, sheets, slack) are the THIRD TIER, not
 # the first two: connectorCommand in flake.nix mints each as a
 # writeShellScriptBin on PATH (landed 2026-09-16), which is why a census of
 # alias X= and X() { could not see them. INCOMMENSURABLE MEASUREMENTS, the
 # emitter's own probe: it answered which words are aliases or functions and
-# was read as which words exist. So ! jira PROJ-123 is a legal router line
+# was read as which words exist. So a connector word is a legal router line
 # today; mcp is still an alias and warm a function, and only a human types those.
 #
 # THE ROSTER. Each connector's description below is the file's FIRST
