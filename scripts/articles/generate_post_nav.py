@@ -75,8 +75,10 @@ def main():
 
     metadata = lsa.get_holographic_article_data(str(posts_dir))  # newest-first
     if not metadata:
-        print(f"❌ No articles found under {posts_dir}", file=sys.stderr)
-        sys.exit(1)
+        data_dir.mkdir(parents=True, exist_ok=True)
+        output_file.write_text(json.dumps({"_meta": {"total": 0}}, indent=1) + "\n", encoding="utf-8")
+        print(f"ℹ️  0 articles under {posts_dir}; wrote empty {output_file}.")
+        return
 
     # THE FALLBACK'S REACHABILITY, SELF-REPORTING (2026-09-04). article_url
     # above invents "/<slug>/" for a post with no frontmatter permalink, while
