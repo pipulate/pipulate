@@ -2521,4 +2521,4 @@ MATCHBOOK_CHOP = r"""
 # scripts/variance_probe.py  # [967 tokens | 3,913 bytes]
 # tests/test_apply_airlock.py  # [1,636 tokens | 6,925 bytes]
 # tools/advanced_automation_tools.py  # [27,123 tokens | 137,636 bytes]
-# tools/connector_tools.py  # [1,031 tokens | 4,211 bytes]
+# tools/connector_tools.py  # [1,027 tokens | 4,201 bytes]
