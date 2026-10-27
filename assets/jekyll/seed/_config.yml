@@ -1,0 +1,54 @@
+title: "Site Title"
+description: "One-sentence value proposition rendered above the installer and in meta description."
+baseurl: ""
+url: "https://example.org"
+production_url: "https://example.org"
+
+# Homepage & Installer Controls
+recent_posts_limit: 10
+default_post_thumb: ""
+show_installer: true
+installer_url: "https://example.org"
+value_prop: ""
+enable_bot_trapdoor: true
+show_consulting_cta: false
+
+author:
+  name: Mike Levin
+  twitter: miklevin
+  url: "https://mikelev.in/about/"
+twitter:
+  username: miklevin
+  card: summary_large_image
+social:
+  name: Mike Levin
+  links:
+    - "https://x.com/miklevin"
+    - "https://github.com/miklevin"
+    - "https://www.youtube.com/@mikelevin"
+    - "https://www.linkedin.com/in/miklevin/"
+
+plugins: []
+future: false
+permalink: /:slug/
+markdown: kramdown
+
+feed:
+  limit: 10
+  excerpt_only: true
+
+exclude:
+  - "*.db"
+  - "*.db-wal"
+  - "*.db-shm"
+  - scripts/
+  - .venv/
+  - .gem/
+  - .bundle/
+  - .sass-cache/
+  - .jekyll-cache/
+  - Gemfile
+  - Gemfile.lock
+  - flake.nix
+  - flake.lock
+  - .port
