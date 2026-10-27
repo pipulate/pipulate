@@ -2454,7 +2454,7 @@ MATCHBOOK_CHOP = r"""
 # apps/050_documentation.py  # [30,791 tokens | 143,127 bytes]
 # apps/130_gap_analysis.py  # [9,624 tokens | 48,289 bytes]
 # apps/220_roadmap.py  # [1,269 tokens | 6,038 bytes]
-# apps/230_dev_assistant.py  # [25,805 tokens | 124,894 bytes]
+# apps/230_dev_assistant.py  # [25,804 tokens | 124,894 bytes]
 # apps/240_simon_mcp.py  # [8,883 tokens | 44,546 bytes]
 # apps/440_browser_automation.py  # [10,795 tokens | 47,151 bytes]
 # apps/450_stream_simulator.py  # [1,829 tokens | 9,491 bytes]

@@ -1385,7 +1385,7 @@ create_workflow.py               │ └──────┬──────�
 │ 🧹 Systematic Cleanup: Prevents file cruft accumulation                 │
 └─────────────────────────────────────────────────────────────────────────┘
 
-         workflow_reconstructor.py --template botify_trifecta 
+         workflow_reconstructor.py --template vendor_trifecta 
                                        --source parameter_buster
                                        --suffix 5
 ```
