@@ -9,15 +9,15 @@ the human to close the window. Whatever session cookies accumulate persist
 in that profile, so subsequent scrapes with persistent=True inherit the login.
 
 Usage:
-    weblogin botify.com
+    weblogin vendor.com
     weblogin https://app.example.com/login
-    weblogin --profile client_x botify.com
+    weblogin --profile client_x vendor.com
 
 THE PROFILE-NAME TRAP (2026-09-10). The `?URL` lane in prompt_foo.py resolves
-data/uc_profiles/<apex-label> FIRST (app.botify.com -> botify, x.atlassian.net
+data/uc_profiles/<apex-label> FIRST (app.vendor.com -> vendor, x.atlassian.net
 -> atlassian) and falls back to `default` only when that dir is absent. A bare
-`weblogin botify.com` therefore warms `default`, which the crawler stops opening
-for botify.com the moment uc_profiles/botify exists -- a login that persisted
+`weblogin vendor.com` therefore warms `default`, which the crawler stops opening
+for vendor.com the moment uc_profiles/vendor exists -- a login that persisted
 and is never read. `warm <URL>` (connectors/wallet.py) derives the label
 for you and is the front door; pass --profile here only when you mean it.
 """

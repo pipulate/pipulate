@@ -32,7 +32,7 @@ were shell ALIASES, and bash expands an alias only when it is the literal
 first word a parser reads -- never when it arrives through a variable,
 which is what any dispatcher must do. Row 8 (`pu`, a FUNCTION) would have
 run while rows 1-7 printed command-not-found. THAT REASON IS NOW GONE:
-botify, confluence, jira, slack, email and sheets became writeShellScriptBin
+vendor, confluence, jira, slack, email and sheets became writeShellScriptBin
 DERIVATIONS on PATH (THE THREE-TIER AMENDMENT's third tier), and a
 derivation resolves through a variable like any other program on PATH.
 WHAT REPLACED IT IS WORSE. `pu` is still a shell FUNCTION, nothing in this

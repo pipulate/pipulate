@@ -3,7 +3,7 @@
 two_arm.py -- Run the shell-verb vs registry-tool experiment against one connector.
 
 NOT A CONNECTOR. This is the harness for Experiment 1 (invocation grammar):
-Arm S runs connectors/botify.py as a command line; Arm R calls the
+Arm S runs connectors/vendor.py as a command line; Arm R calls the
 same connector through cli.py's registry face (tools/connector_tools.py).
 Same backend, same docstring, same tasks, same oracle. The only variables are
 the invocation grammar and the discovery surface.
@@ -24,7 +24,7 @@ the transcript.
 RUN INSIDE THE QUIET SHELL. Start this program from `nix develop .#quiet` (or
 an already-entered `nix develop`); every RUN executes with bash -c in the
 environment this process inherited, so both arms see the same PATH, the same
-.venv and the same BOTIFY_API_TOKEN. Nothing here spawns nix.
+.venv and the same VENDOR_API_TOKEN. Nothing here spawns nix.
 
 ONE HAND-AUTHORED LINE PER ARM. Each arm's system prompt carries its allowed
 prefix and a one-line Shape (positional/flags for S, --raw --json-args for R).

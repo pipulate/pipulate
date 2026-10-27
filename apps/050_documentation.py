@@ -2951,7 +2951,7 @@ This system provides unprecedented debugging power:
     # ========================================
 
     def parse_botify_api_pages(self, content):
-        """Parse the botify_api.md content into pages separated by 80 hyphens"""
+        """Parse the vendor_api.md content into pages separated by 80 hyphens"""
         pages = []
         current_page = []
         lines = content.split('\n')
@@ -2972,7 +2972,7 @@ This system provides unprecedented debugging power:
         return pages
 
     def extract_botify_api_toc(self, pages):
-        """Extract table of contents from botify_api pages"""
+        """Extract table of contents from vendor_api pages"""
         toc = []
 
         for page_num, page_content in enumerate(pages, 1):
@@ -3003,7 +3003,7 @@ This system provides unprecedented debugging power:
         return toc
 
     async def serve_botify_api_toc(self, request):
-        """Serve the table of contents for botify_api.md"""
+        """Serve the table of contents for vendor_api.md"""
         doc_info = self.DOCS['botify_api']
         file_path = Path(doc_info['file'])
 
@@ -3184,7 +3184,7 @@ This system provides unprecedented debugging power:
             return HTMLResponse(f"Error loading document: {str(e)}", status_code=500)
 
     async def serve_botify_api_page(self, request):
-        """Serve a specific page of botify_api.md"""
+        """Serve a specific page of vendor_api.md"""
         page_num = int(request.path_params.get('page_num', 1))
         doc_info = self.DOCS['botify_api']
         file_path = Path(doc_info['file'])

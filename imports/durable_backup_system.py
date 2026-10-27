@@ -64,11 +64,11 @@ class DurableBackupManager:
         # the maintainer's own box). The app database filename is a pure
         # function of whitelabel.txt: config.py builds data/{APP_NAME.lower()}.db
         # and server.py:322 independently builds the same string. This roster
-        # hardcoded 'botifython'. whitelabel.txt here says Pipulate, so the live
+        # hardcoded 'vendorthon'. whitelabel.txt here says Pipulate, so the live
         # databases are data/pipulate*.db (mtime Jul 30) while the roster kept
-        # copying data/botifython_dev.db (mtime MAY 3) once per server start,
-        # forever. The distinct backup stems were ai_keychain / botifython /
-        # botifython_dev / discussion: the live Profiles/Tasks database had NEVER
+        # copying data/vendorthon_dev.db (mtime MAY 3) once per server start,
+        # forever. The distinct backup stems were ai_keychain / vendorthon /
+        # vendorthon_dev / discussion: the live Profiles/Tasks database had NEVER
         # been backed up, and the two stale files are exactly what hid it --
         # os.path.exists returned True, no warning fired, and the summary table
         # printed a green checkmark beside a file nobody had touched in three

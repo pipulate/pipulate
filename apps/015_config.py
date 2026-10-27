@@ -471,7 +471,7 @@ You're here to make the workflow concepts accessible and help users understand t
             await self.message_queue.add(wand, self.step_messages['finalize']['complete'], verbatim=True)
             # ATTRIBUTED VOICE: the old line claimed "all features requiring AI
             # or an API-key are active" unconditionally, including for someone
-            # who pressed Skip on both cloud and Botify. Nothing here inspects
+            # who pressed Skip on both cloud and Vendor. Nothing here inspects
             # which steps were filled in, so the narration must not assert it.
             self.wand.speak("The workflow is now locked and finalized. You can pull it up again any time with the same key. Whatever you configured is now in effect, and anything you skipped can be added later by unlocking this workflow.", wait=False)
             return wand.run_all_cells(app_name, steps)
@@ -1096,7 +1096,7 @@ You're here to make the workflow concepts accessible and help users understand t
 
     # --- START_STEP_BUNDLE: step_04 ---
     async def step_04(self, request):
-        """Handles GET request for Botify Integration."""
+        """Handles GET request for Vendor Integration."""
         pip, db, steps, app_name = self.pipulate, self.pipulate.db, self.steps, self.app_name
         step_id = "step_04"
         step_index = self.steps_indices[step_id]
@@ -1172,7 +1172,7 @@ You're here to make the workflow concepts accessible and help users understand t
 
 
     async def step_04_submit(self, request):
-        """Process the submission for Botify Integration."""
+        """Process the submission for Vendor Integration."""
         pip, db, steps, app_name = self.pipulate, self.pipulate.db, self.steps, self.app_name
         step_id = "step_04"
         step_index = self.steps_indices[step_id]

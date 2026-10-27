@@ -25,7 +25,7 @@ class WorkflowGenesis:
     Provides three distinct workflow creation paths:
     1. Blank Placeholder: Single-step workflow for learning step management
     2. Hello World Recreation: Multi-step process demonstrating helper tool sequence
-    3. Trifecta Workflow: Complex workflow starting from Botify template
+    3. Trifecta Workflow: Complex workflow starting from Vendor template
 
     Each path provides both individual commands and complete copy-paste sequences.
     """

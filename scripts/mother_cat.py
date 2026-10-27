@@ -20,7 +20,7 @@ actuating side of the Mother Cat Kata:
   ADVANCE                  -- continue only after a successful capture receipt.
 
 Connector execution is deliberately out of scope. This car captures context;
-it does not run Jira, Botify, Gmail, or shell actuators.
+it does not run Jira, Vendor, Gmail, or shell actuators.
 """
 
 import argparse
@@ -726,7 +726,7 @@ def _missing_url_envs(stops):
     TWO LISTS, TWO VERDICTS (2026-09-02). A walk is a linear pipeline and not
     every stop carries the baton. A required stop that is unset refuses the
     whole ride at t=0; an optional stop that is unset is SKIPPED and the ride
-    proceeds. The Jira issue is required; the customer's Botify project is
+    proceeds. The Jira issue is required; the customer's Vendor project is
     not, and a ticket with no project must still be walkable.
     """
     required = []

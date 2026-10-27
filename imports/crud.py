@@ -383,7 +383,7 @@ async def check_ollama_availability():
 # from loguru import logger
 
 # 🌐 API WORKFLOW IMPORTS - For plugins that call external APIs
-# Extended import pattern for Botify/API workflows (copy these lines):
+# Extended import pattern for Vendor/API workflows (copy these lines):
 # import asyncio, json, os, time
 # from datetime import datetime, timedelta
 # from pathlib import Path  

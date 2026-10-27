@@ -75,10 +75,10 @@ kungfu \
 
 # Example using a different template:
 python create_workflow.py \
-036_custom_botify_flow.py \
-MyCustomBotify \
+036_custom_vendor_flow.py \
+MyCustomVendor \
 my_custom_internal \
-"My Custom Botify Flow" \
+"My Custom Vendor Flow" \
 "Welcome to custom flow" \
 "Custom training prompt for LLM" \
 --template trifecta \

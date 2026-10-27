@@ -977,8 +977,8 @@ async def _selenium_capture(params: dict, checkpoint=None, capture_artifacts=Tru
         # scripts and fetches, so the answer is in those bodies, not in
         # source.html, and the browser forgets them when it closes. Kept:
         # Script, XHR and Fetch responses whose host ends in the final URL's
-        # last two labels (app.botify.com and irf.production.botify.com both
-        # end in botify.com; a co.uk-style host takes in more, never less),
+        # last two labels (app.vendor.com and irf.production.vendor.com both
+        # end in vendor.com; a co.uk-style host takes in more, never less),
         # read off the drained ledger with Network.getResponseBody, so nothing
         # is requested twice. Bounds: 60 files, 2 MB each (cut, and marked),
         # 20 MB in all, 120 tries. Only bodies/index.jsonl (address without

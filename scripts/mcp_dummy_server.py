@@ -27,7 +27,7 @@ and check whether the instrument notices.
   Only a server of INDEPENDENT AUTHORSHIP promotes those three to OBSERVED.
   The tunnel measured lift coefficients; it did not fly the airplane.
 
-WHY THE REMOTE 401 IS NOT A CONTROL. mcp.botify.com does AUTH BEFORE PARSING,
+WHY THE REMOTE 401 IS NOT A CONTROL. mcp.vendor.com does AUTH BEFORE PARSING,
 and this compile's receipt says the rejection fired at INITIALIZE -- the first
 request. A reading that cannot vary with the envelope can never confirm one.
 Keep it as a regression canary; never cite it as evidence about the handshake.
@@ -225,7 +225,7 @@ class MCPHandler(BaseHTTPRequestHandler):
         # Auth is checked only when a scenario asks for it, so the default
         # flight has exactly ONE variable removed and no others. When it IS
         # asked for, it fires here -- before body parsing -- which reproduces
-        # the structural shape of the live mcp.botify.com 401.
+        # the structural shape of the live mcp.vendor.com 401.
         if CONFIG["require_token"] is not None:
             if auth != "Bearer " + CONFIG["require_token"]:
                 self._say("401 absent or wrong bearer token")
@@ -248,7 +248,7 @@ class MCPHandler(BaseHTTPRequestHandler):
 
         # PROTOCOL NOTE, deliberately not a gate. See the module docstring:
         # the reading is unsettled and an independent server can adjudicate it
-        # for the cost of one flight. It CANNOT explain the live Botify 401 --
+        # for the cost of one flight. It CANNOT explain the live Vendor 401 --
         # that one died at initialize, before any post-handshake request exists.
         if not self.headers.get("MCP-Protocol-Version"):
             self._note("post-handshake request omits MCP-Protocol-Version "
@@ -357,7 +357,7 @@ def _start(host="127.0.0.1", port=0):
 # Client invocation -- hermetic, so a rig run can never touch a real credential
 # ---------------------------------------------------------------------------
 def _hermetic_env():
-    """Strip every MCP_* and BOTIFY_* name before injecting the stand-in.
+    """Strip every MCP_* and VENDOR_* name before injecting the stand-in.
 
     Without this, mcp.py's resolve_token fallback chain could reach a real
     token file and a harness run could authenticate somewhere real -- or pass
