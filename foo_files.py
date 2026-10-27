@@ -24,10 +24,10 @@ AI_PHOOEY_CHOP = r"""#
 
 # --- START STATS ---
 # There are 1,587 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 29 published in the last 7 days
-# Markdown negotiated: 4,846 reads (0.32% of all responses)
-# DOM hydration: 5116 trapdoor triggers from 40 non-local IPs (top-N sample, self excluded)
-# Honeybot telemetry fetched 2026-10-26T21:39Z
+# Velocity: 27 published in the last 7 days
+# Markdown negotiated: 4,879 reads (0.32% of all responses)
+# DOM hydration: 5121 trapdoor triggers from 40 non-local IPs (top-N sample, self excluded)
+# Honeybot telemetry fetched 2026-10-27T08:38Z
 # --- END STATS ---
 
 # Project Pipulate is known as (and installable from) various domains:
@@ -2498,7 +2498,7 @@ MATCHBOOK_CHOP = r"""
 # - EARMARK: ASCII Art Upgrade Ouroboros -- periodically scan imports/ascii_displays.py for high-quality unused art and register it for Honeybot streams, player-piano visuals, and storytelling. (User 2026-07-17)
 # - SLOGAN candidate: "Myelinated Reproducibility 4 Singularity ~/ Amnesiac Genie" -- find the right home (constitution header? tagline?). (User 2026-07-17)
 # - NEVER put anything in the manifest that the PII system stopped from landing!
-# - EARMARK: PII GREEDY-NAME INCIDENT (banked 2026-07-19): bare given-name rules (\bTaylor\b et al.) mangled innocent prose ("Brave Little Taylor" -> "Brave Little Client Manager"), so pii_substitutions.txt was emptied -- shield DOWN. Fix shipped same day: curated restore keeps full-name/email/domain/Slack rules, retires bare given names. Verify the next few public articles read clean AND still redact, then delete this line.
+# § THE PII GREEDY-NAME INCIDENT (banked 2026-07-19) -- Never ship bare given-name substitution rules; match full names, emails, domains, and Slack handles only, because a common-word name rewrites innocent prose and forces the whole shield off. Value: GLOSSARY.md.
 
 # - TODO (direction, not yet actioned): PURGE the double-click run actuator the
 #   installer writes. Its meaning is ambiguous before and after entering the

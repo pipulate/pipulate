@@ -2765,6 +2765,12 @@ Entries are alphabetical, numbers spelled as spoken.
 # one unwitnessed turn between an amendment and its evidence.
 ~~~
 
+- **The PII Greedy-Name Incident** -- *expanded earmark; banked 2026-07-19.*
+
+~~~text
+# - EARMARK: PII GREEDY-NAME INCIDENT (banked 2026-07-19): bare given-name rules (\bTaylor\b et al.) mangled innocent prose ("Brave Little Taylor" -> "Brave Little Client Manager"), so pii_substitutions.txt was emptied -- shield DOWN. Fix shipped same day: curated restore keeps full-name/email/domain/Slack rules, retires bare given names. Verify the next few public articles read clean AND still redact, then delete this line.
+~~~
+
 - **The Pipeline Ate the Fallback** -- (convicted 2026-09-21, by a probe that could
   not fail). `ls DIR 2>/dev/null | head -5 || echo no_dir` was echoed to report
   a missing directory. It never could: `||` binds to the whole PIPELINE, and a
