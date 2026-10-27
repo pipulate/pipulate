@@ -828,7 +828,7 @@
         # source host, the source folder under its home, and the
         # destination. THE WHITELIST (2026-09-30, the operator's ruling,
         # widened by one the same day): only the repos named leave the house,
-        # six by default, three blogs (botifyml, grimoire, trimnoir), the
+        # six by default, three blogs (vendorml, grimoire, trimnoir), the
         # corporate and personal tiers and the client repo;
         # PIPULATE_MIRROR_REPOS replaces the list and arguments replace
         # it for one run (mirror grimoire); a name the source does not hold
