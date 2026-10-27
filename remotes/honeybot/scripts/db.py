@@ -515,16 +515,68 @@ class HoneyDB:
         )
     """
 
+    # Selective User-Agent rollup tokens: bots that rotate OS platform strings,
+    # minor versions, or URL suffixes across many UA strings and would otherwise
+    # crowd out other distinct bots in the HUD tables.
+    _ROLLUP_BOT_TOKENS = (
+        "meta-externalagent",
+        "GPTBot",
+        "meta-webindexer",
+        "OAI-SearchBot",
+        "Claude-User",
+        "KeenableBot",
+    )
+
+    def _rollup_bot_rows(self, rows, limit=20):
+        """Selectively roll up noisy multi-UA bots into their top UA with a [+N] prefix."""
+        buckets = {}
+        results = []
+        for raw_agent, raw_total in rows:
+            agent_str = str(raw_agent or "")
+            count = int(raw_total or 0)
+            is_spoof = agent_str.startswith("[SPOOFED-IP] ")
+            is_verified = agent_str.startswith("[VERIFIED] ")
+            clean_ua = agent_str
+            for pfx in ("[SPOOFED-IP] ", "[VERIFIED] "):
+                if clean_ua.startswith(pfx):
+                    clean_ua = clean_ua[len(pfx):]
+            matched_token = None
+            clean_lower = clean_ua.lower()
+            for tok in self._ROLLUP_BOT_TOKENS:
+                if tok.lower() in clean_lower:
+                    matched_token = tok.lower()
+                    break
+            if matched_token is None:
+                results.append([agent_str, count, 0, is_spoof, is_verified, clean_ua])
+                continue
+            bkey = (is_spoof, matched_token)
+            if bkey not in buckets:
+                entry = [agent_str, count, 0, is_spoof, is_verified, clean_ua]
+                buckets[bkey] = entry
+                results.append(entry)
+            else:
+                entry = buckets[bkey]
+                entry[1] += count
+                entry[2] += 1
+                if is_verified and not entry[3]:
+                    entry[4] = True
+
+        formatted = []
+        for _, total, extra, is_spoof, is_verified, clean_ua in results:
+            prefix = "[SPOOFED-IP] " if is_spoof else ("[VERIFIED] " if is_verified else "")
+            rollup_tag = f"[+{extra}] " if extra > 0 else ""
+            formatted.append((f"{prefix}{rollup_tag}{clean_ua}", total))
+        formatted.sort(key=lambda item: item[1], reverse=True)
+        return formatted[: int(limit)]
+
     def get_js_executors(self, limit=20): 
         conn = self.get_conn()
         cur = conn.cursor()
         # We explicitly look for the js_confirm.gif trapdoor.
-        # Applies non-local IP filtering, claude-code version rollup, and [SPOOFED-IP] tagging.
+        # Applies non-local IP filtering, [SPOOFED-IP] tagging, and selective bot rollup.
         sql = f"""
             SELECT
                 CASE
-                    WHEN ua.value LIKE 'Claude-User (claude-code/%'
-                    THEN 'Claude-User (claude-code/*; +https://support.anthropic.com/)'
                     WHEN {self._GOOGLEBOT_SPOOF_COND}
                     THEN '[SPOOFED-IP] ' || ua.value
                     WHEN ua.id IN (SELECT ua_id FROM rfc9421_logs)
@@ -543,10 +595,10 @@ class HoneyDB:
               {self._BROWSER_FILTER}  /* Apply Noise Filter */
             GROUP BY agent
             ORDER BY total DESC
-            LIMIT ?
+            LIMIT 500
         """
-        cur.execute(sql, (limit,))
-        return cur.fetchall()
+        cur.execute(sql)
+        return self._rollup_bot_rows(cur.fetchall(), limit=limit)
 
 
     def get_markdown_readers(self, limit=20):
@@ -602,8 +654,6 @@ class HoneyDB:
         sql = f"""
             SELECT
                 CASE
-                    WHEN ua.value LIKE 'Claude-User (claude-code/%'
-                    THEN 'Claude-User (claude-code/*; +https://support.anthropic.com/)'
                     WHEN {self._GOOGLEBOT_SPOOF_COND}
                     THEN '[SPOOFED-IP] ' || ua.value
                     WHEN ua.id IN (SELECT ua_id FROM rfc9421_logs)
@@ -625,10 +675,10 @@ class HoneyDB:
               {self._BROWSER_FILTER}
             GROUP BY agent
             ORDER BY total_reads DESC
-            LIMIT ?
+            LIMIT 500
         """
-        cur.execute(sql, (limit,))
-        return cur.fetchall()
+        cur.execute(sql)
+        return self._rollup_bot_rows(cur.fetchall(), limit=limit)
 
 # Global Instance
 db = HoneyDB()

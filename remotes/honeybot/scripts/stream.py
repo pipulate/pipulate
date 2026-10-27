@@ -353,6 +353,10 @@ class Narrator(threading.Thread):
         """Queue an image or video popup overlay so it fires in voice-order on a daemon thread."""
         self.queue.put(("MEDIA", payload))
 
+    def wait(self, seconds):
+        """Queue a silent pause in voice-order so report overlays linger after speech completes."""
+        self.queue.put(("WAIT", float(seconds)))
+
     def interrupt(self):
         """Preempt the voice: drop everything queued-but-unspoken and kill the
         audio playing RIGHT NOW, so an urgent line plays immediately instead of
@@ -425,6 +429,14 @@ class Narrator(threading.Thread):
                         daemon=True,
                     ).start()
                     time.sleep(0.5)
+                elif isinstance(item, tuple) and item and item[0] == "WAIT":
+                    try:
+                        rem = max(0.0, float(item[1]))
+                    except (TypeError, ValueError):
+                        rem = 1.0
+                    deadline = time.time() + rem
+                    while time.time() < deadline and not self.stop_event.is_set() and not _shutting_down.is_set():
+                        time.sleep(min(0.2, max(0.0, deadline - time.time())))
                 elif isinstance(item, tuple) and item and item[0] == "RAW":
                     self._play_raw_now(item[1])
                 else:
@@ -1774,10 +1786,16 @@ def dispatch_cue(command, content, env, profile_dir, pace_say=True):
             conjure_window(win_script, duration=win_dur, args=win_args)
 
     elif command == "WAIT":
-        try:
-            time.sleep(int(content))
-        except Exception:
-            time.sleep(1)
+        if not pace_say:
+            try:
+                narrator.wait(float(content))
+            except Exception:
+                narrator.wait(1.0)
+        else:
+            try:
+                time.sleep(float(content))
+            except Exception:
+                time.sleep(1)
 
     elif command == "CLOSE":
         try:

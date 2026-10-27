@@ -46,7 +46,7 @@ CONSULTING_CTA_BEAT = (
 )
 
 
-def _make_station_bead(card_label, card_say, capstone_cue, forest_story_lines):
+def _make_station_bead(card_label, card_say, capstone_cue, forest_story_lines, post_linger=None):
     """Assemble a 5-part station identification bead alternating Rich WINDOW reports and PATRONUS art."""
     cues = [
         # 1. Figlet Banner Intro
@@ -63,6 +63,16 @@ def _make_station_bead(card_label, card_say, capstone_cue, forest_story_lines):
     ]
     for line in forest_story_lines:
         cues.append(("SAY", line))
+    if post_linger is None:
+        is_bar_report = (
+            isinstance(capstone_cue, tuple)
+            and len(capstone_cue) >= 2
+            and capstone_cue[0] == "WINDOW"
+            and any(tag in str(capstone_cue[1]) for tag in (":overview", ":bimodal", ":rfc9421"))
+        )
+        post_linger = 6 if is_bar_report else 0
+    if post_linger > 0:
+        cues.append(("WAIT", int(post_linger)))
     return cues
 
 

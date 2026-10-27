@@ -46,6 +46,7 @@ _KEYWORD_BOT_RE = re.compile(
     re.IGNORECASE,
 )
 _LEADING_AGENT_RE = re.compile(r"^([A-Za-z0-9._-]+?)(?:/[\d.]+|\s+\(|\s*$)")
+_ROLLUP_PREFIX_RE = re.compile(r"^\[(\+\d+)\]\s*")
 
 try:
     from db import db  # Import our new database singleton
@@ -199,15 +200,15 @@ class SonarApp(App):
             tok = m.group(1).strip(";/() ")
             if tok and tok.upper() not in ("MSIE", "MOZILLA"):
                 return tok
+        if not s.startswith(("Mozilla/", "AppleWebKit/", "(")):
+            m_lead = _LEADING_AGENT_RE.match(s)
+            if m_lead:
+                return m_lead.group(1).strip()
         m_kw = _KEYWORD_BOT_RE.search(s)
         if m_kw:
             tok = m_kw.group(1).strip(";/() ")
             if tok.lower() not in ("mozilla", "applewebkit", "safari", "chrome", "gecko", "khtml", "mobile"):
                 return tok
-        if not s.startswith("Mozilla/"):
-            m_lead = _LEADING_AGENT_RE.match(s)
-            if m_lead:
-                return m_lead.group(1).strip()
         return None
 
     def stylize_agent(self, agent_str, is_spoof=False, is_verified=False, bot_token=None):
@@ -235,8 +236,13 @@ class SonarApp(App):
         is_verified = raw.startswith(VERIFIED_PREFIX)
         if is_verified:
             raw = raw[len(VERIFIED_PREFIX):].strip()
+        rollup_badge = ""
+        m_rollup = _ROLLUP_PREFIX_RE.match(raw)
+        if m_rollup:
+            rollup_badge = m_rollup.group(1)
+            raw = raw[m_rollup.end():].strip()
+        bot_token = self.detect_bot_token(raw)
         clean_ua = raw.replace("Mozilla/5.0 ", "")
-        bot_token = self.detect_bot_token(clean_ua)
         if not is_spoof and not is_verified and bot_token in getattr(self, "verified_tokens", set()):
             is_verified = True
         if is_spoof:
@@ -256,10 +262,14 @@ class SonarApp(App):
             identity = "👤 Browser/Other"
             identity_style = "dim white"
             sig_style = "dim white"
-        sig_text = Text(clean_ua, style=sig_style)
+        body_text = Text(clean_ua, style=sig_style)
         hl_style = SPOOF_STYLE if is_spoof else (VERIFIED_STYLE if is_verified else BOT_STYLE)
         if bot_token and bot_token in clean_ua:
-            sig_text.highlight_regex(re.escape(bot_token), hl_style)
+            body_text.highlight_regex(re.escape(bot_token), hl_style)
+        if rollup_badge:
+            sig_text = Text.assemble((f"{rollup_badge} ", "bold bright_yellow"), body_text)
+        else:
+            sig_text = body_text
         return Text(identity, style=identity_style), sig_text
 
     def refresh_tables(self):
