@@ -20,7 +20,7 @@ YT_VIEWER_ALERT_MIN = int(os.environ.get("PIPULATE_YT_VIEWER_MIN", "3"))
 YT_VIEWER_ALERT_DWELL = int(os.environ.get("PIPULATE_YT_VIEWER_DWELL", "60"))  # Seconds viewers must stay >= min before alerting
 YT_VIEWER_ALERT_COOLDOWN = int(os.environ.get("PIPULATE_YT_VIEWER_COOLDOWN", "300"))  # Seconds between any two viewer alerts
 YT_VIEWER_FAST_POLL = int(os.environ.get("PIPULATE_YT_FAST_POLL", "5"))  # Seconds between lightweight updated_metadata viewer checks
-YT_WEEBO_CLOBBER_GUARD = int(os.environ.get("PIPULATE_YT_WEEBO_GUARD", "20"))  # Seconds to protect an active Weebo clip from mid-play re-trigger
+YT_WEEBO_CLOBBER_GUARD = int(os.environ.get("PIPULATE_YT_WEEBO_GUARD", "120"))  # Seconds (2m cooldown) between ytwatch Weebo popups
 
 DEFAULT_POSTS_DIR = Path(
     os.environ.get("PIPULATE_DEFAULT_POSTS_DIR", Path.home() / "repos" / "trimnoir" / "_posts")
@@ -1815,6 +1815,9 @@ def _load_ytwatch_state():
 def _save_ytwatch_state(state_obj):
     """Persist ytwatch state to ~/.config/pipulate/ytwatch_state.json."""
     try:
+        last_w = globals().get("_last_weebo_trigger_ts", 0.0)
+        if last_w > 0 and "last_weebo_trigger" not in state_obj:
+            state_obj["last_weebo_trigger"] = last_w
         CONFIG_DIR.mkdir(parents=True, exist_ok=True)
         YTWATCH_STATE_FILE.write_text(json.dumps(state_obj, indent=2) + "\n", encoding="utf-8")
     except OSError:
@@ -2140,10 +2143,12 @@ def _trigger_ytwatch_weebo(weebo_spec=None, duration=None):
     if cfg_spec.lower() in ("0", "off", "false", "none"):
         return
     now_ts = time.time()
+    if _last_weebo_trigger_ts == 0.0:
+        _last_weebo_trigger_ts = float(_load_ytwatch_state().get("last_weebo_trigger") or 0.0)
     elapsed = now_ts - _last_weebo_trigger_ts
     if _last_weebo_trigger_ts > 0 and elapsed < YT_WEEBO_CLOBBER_GUARD:
         print(
-            f"🛡️ [WEEBO GUARD] Clip already on stage ({elapsed:.1f}s < {YT_WEEBO_CLOBBER_GUARD}s) — skipping overlapping trigger.",
+            f"🛡️ [WEEBO GUARD] Cooldown active ({elapsed:.0f}s < {YT_WEEBO_CLOBBER_GUARD}s) — skipping overlapping trigger.",
             flush=True,
         )
         return
@@ -2171,6 +2176,9 @@ def _trigger_ytwatch_weebo(weebo_spec=None, duration=None):
                     break
     try:
         _last_weebo_trigger_ts = now_ts
+        st = _load_ytwatch_state()
+        st["last_weebo_trigger"] = now_ts
+        _save_ytwatch_state(st)
         cmd = [sys.executable, str(weebo_script), "--remote", str(chosen)]
         if duration is not None:
             cmd.append(str(duration))
