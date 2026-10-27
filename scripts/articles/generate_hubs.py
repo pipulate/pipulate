@@ -67,6 +67,18 @@ def update_homepage_recent_posts(posts_dir, target_repo_root, count=10):
     dated = [p for p in posts_dir.glob("*.md") if common._DATED_POST_RE.match(p.name)]
     if not dated:
         return
+    cfg_path = target_repo_root / "_config.yml"
+    site_cfg = {}
+    if cfg_path.is_file():
+        try:
+            site_cfg = yaml.safe_load(cfg_path.read_text(encoding="utf-8", errors="ignore")) or {}
+        except Exception:
+            site_cfg = {}
+    try:
+        count = int(site_cfg.get("recent_posts_limit") or count)
+    except (ValueError, TypeError):
+        pass
+    default_thumb = str(site_cfg.get("default_post_thumb") or "").strip()
     dated.sort(key=common._post_sort_key)
     recent = dated[-count:][::-1]
     cards = ['<div class="recent-posts-grid">']
