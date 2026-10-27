@@ -1305,13 +1305,13 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # corrected at deed 1470 by the flake itself): after the walk a newcomer's
 # whole vocabulary is walk, plan, voice, context, prompt, compile and connect; warm and
 # weblogin settle a login before a ?URL; bot, mcp and webclip are the
-# operator's. THE CONNECTOR WORDS (gmail with email as a second
+# operator's. THE SIX CONNECTOR WORDS (jira, gmail with email as a second
 # spelling, confluence, gsc, sheets, slack) are the THIRD TIER, not
 # the first two: connectorCommand in flake.nix mints each as a
 # writeShellScriptBin on PATH (landed 2026-09-16), which is why a census of
 # alias X= and X() { could not see them. INCOMMENSURABLE MEASUREMENTS, the
 # emitter's own probe: it answered which words are aliases or functions and
-# was read as which words exist. So a connector word is a legal router line
+# was read as which words exist. So ! jira PROJ-123 is a legal router line
 # today; mcp is still an alias and warm a function, and only a human types those.
 #
 # THE ROSTER. Each connector's description below is the file's FIRST
@@ -1332,6 +1332,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # connectors/confluence.py # <-- Bring a Confluence space, page, or search hit into context.
 # connectors/gmail.py      # <-- Bring an email thread or a sender's threads into context.
 # connectors/gsc.py        # <-- Bring Search Console properties or top queries into context.
+# connectors/jira.py       # <-- List your open Jira tickets, or fetch one by key.
 # connectors/sheets.py     # <-- Bring a Google Sheet's tabs and cell data into context.
 # connectors/slack.py      # <-- Bring a Slack channel or message thread into context.
 # connectors/mcp.py        # <-- Replay client for remote MCP servers (Streamable HTTP transport).
