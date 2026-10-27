@@ -25,6 +25,7 @@ from db import db, KNOWN_BOTS  # Import the list
 STRIP_MOZILLA_PREFIX = False  # Set to True to save space in bottom panels
 HUD_TABLE_ROWS = 15           # Visible data rows in both bottom HUD tables (tuned from 17 to 15)
 HUD_PANEL_HEIGHT = HUD_TABLE_ROWS + 4  # +4 rows for top border, panel title, header rule, and column headers
+BOT_IDENTITY_WIDTH = 21       # Emoji (2) + space (1) + 18-char bot name (trims 15 chars for Raw Signature)
 
 # A hidden console to render styles into ANSI codes for the Log widget
 # We set a massive width to prevent the console from hard-wrapping the text before the Log widget gets it
@@ -156,10 +157,14 @@ class SonarApp(App):
         
         # Setup Tables (Now with 3 columns!)
         js_table = self.query_one("#js_table", DataTable)
-        js_table.add_columns("Hits", "Bot Identity", "Raw Signature")
+        js_table.add_column("Hits")
+        js_table.add_column("Bot Identity", width=BOT_IDENTITY_WIDTH)
+        js_table.add_column("Raw Signature")
         
         md_table = self.query_one("#md_table", DataTable)
-        md_table.add_columns("Hits", "Bot Identity", "Raw Signature")
+        md_table.add_column("Hits")
+        md_table.add_column("Bot Identity", width=BOT_IDENTITY_WIDTH)
+        md_table.add_column("Raw Signature")
 
         self.refresh_tables() # Initial load
 
@@ -245,17 +250,18 @@ class SonarApp(App):
         clean_ua = raw.replace("Mozilla/5.0 ", "")
         if not is_spoof and not is_verified and bot_token in getattr(self, "verified_tokens", set()):
             is_verified = True
+        short_bot = (bot_token or "")[:18]
         if is_spoof:
-            label = "Cloaking" if getattr(self, "spoof_flip", False) else (bot_token or "Googlebot")
+            label = "Cloaking" if getattr(self, "spoof_flip", False) else (short_bot or "Googlebot")
             identity = f"🛑 {label}"
             identity_style = SPOOF_STYLE
             sig_style = "red"
         elif is_verified:
-            identity = f"🔷 {bot_token or 'Verified'}"
+            identity = f"🔷 {short_bot or 'Verified'}"
             identity_style = VERIFIED_STYLE
             sig_style = "deep_sky_blue1"
-        elif bot_token:
-            identity = f"🟠 {bot_token}"
+        elif short_bot:
+            identity = f"🟠 {short_bot}"
             identity_style = BOT_STYLE
             sig_style = "dim green"
         else:
@@ -281,7 +287,7 @@ class SonarApp(App):
         try:
             table = self.query_one("#js_table", DataTable)
             table.clear()
-            data = db.get_js_executors(limit=max(50, HUD_TABLE_ROWS))
+            data = db.get_js_executors(limit=HUD_TABLE_ROWS)
             if not data:
                 table.add_row("-", "None", "Waiting for data...")
             else:
@@ -297,7 +303,7 @@ class SonarApp(App):
         try:
             table = self.query_one("#md_table", DataTable)
             table.clear()
-            data = db.get_content_neg_agents(limit=max(50, HUD_TABLE_ROWS))
+            data = db.get_content_neg_agents(limit=HUD_TABLE_ROWS)
             if not data:
                 table.add_row("-", "None", "Waiting for data...")
             else:

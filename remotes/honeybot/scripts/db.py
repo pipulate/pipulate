@@ -525,6 +525,7 @@ class HoneyDB:
         "OAI-SearchBot",
         "Claude-User",
         "KeenableBot",
+        "Bytespider",
     )
 
     def _rollup_bot_rows(self, rows, limit=20):
