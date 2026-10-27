@@ -241,8 +241,12 @@ def sync_observatory_metrics(target_key, target_path, verbose=False):
     sig_events_fmt = f"{sig_events_val:,}"
     sig_horizon_x = min(200.0, max(6.0, round((sig_clients_val / 10.0) * 200.0, 1)))
     fetched_at = str((stats or {}).get("fetched_at") or "unknown")
-    yt_state = common._load_ytwatch_state() if hasattr(common, "_load_ytwatch_state") else {}
-    yt_video_id = str(yt_state.get("video_id") or "oxYe6YQDx5M").strip()
+    yt_video_id = ""
+    if hasattr(common, "sync_live_video_id"):
+        yt_video_id = common.sync_live_video_id(push_remote=False)
+    if not yt_video_id:
+        yt_state = common._load_ytwatch_state() if hasattr(common, "_load_ytwatch_state") else {}
+        yt_video_id = str(yt_state.get("video_id") or "9AE1VmGTlYU").strip()
     payload = {
         "markdown_reads": md_count_fmt,
         "markdown_pct": f"{md_pct_s}%",
@@ -354,8 +358,11 @@ def sync_observatory_metrics(target_key, target_path, verbose=False):
         if n and new_idx != idx_text:
             index_file.write_text(new_idx, encoding="utf-8")
     if (repo_root / ".git").exists():
+        stage_obs = ["_data/observatory.json", "index.md"]
+        if (repo_root / "live_video.json").is_file():
+            stage_obs.append("live_video.json")
         subprocess.run(
-            ["git", "-C", str(repo_root), "add", "--", "_data/observatory.json", "index.md"],
+            ["git", "-C", str(repo_root), "add", "--", *stage_obs],
             capture_output=True,
             text=True,
             check=False,

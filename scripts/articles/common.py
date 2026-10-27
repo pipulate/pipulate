@@ -1258,6 +1258,10 @@ def run_honeybot_obs(mode="status"):
         input=_HONEYBOT_OBS_HELPER,
         text=True,
     )
+    if res.returncode == 0 and mode in ("start", "roll", "bell"):
+        vid = sync_live_video_id(push_remote=True)
+        if vid:
+            print(f"📺 Synced live_video.json -> {vid} (local + Honeybot)")
     return res.returncode
 
 
@@ -1817,6 +1821,85 @@ def _save_ytwatch_state(state_obj):
         pass
 
 
+YT_CHANNEL_ID = "UCd26IHBHcbtxD7pUdnIgiCw"
+
+
+def sync_live_video_id(state=None, push_remote=False):
+    """Resolve current YouTube Live video_id and sync to ytwatch_state.json, trimnoir, and optionally Honeybot."""
+    import subprocess
+    import time
+    persisted = _load_ytwatch_state()
+    if state is None:
+        try:
+            state = fetch_youtube_live_state()
+        except Exception:
+            state = {}
+    vid = str((state or {}).get("video_id") or persisted.get("video_id") or "").strip()
+    if not vid:
+        return ""
+    if (state or {}).get("video_id") and state.get("video_id") != persisted.get("video_id"):
+        persisted["video_id"] = vid
+        persisted["concurrent_viewers"] = int(state.get("concurrent_viewers") or 0)
+        persisted["updated_at"] = int(time.time())
+        _save_ytwatch_state(persisted)
+    live_payload = (
+        json.dumps(
+            {
+                "video_id": vid,
+                "channel_id": YT_CHANNEL_ID,
+                "is_live": bool((state or {}).get("is_live", True)),
+                "title": str((state or {}).get("title") or ""),
+                "updated_at": int(time.time()),
+            },
+            indent=2,
+        )
+        + "\n"
+    )
+    try:
+        t1 = load_targets().get("1", {})
+        posts_p = Path(t1.get("path", "")).expanduser()
+        repo_root = posts_p.parent
+        if repo_root.is_dir():
+            live_file = repo_root / "live_video.json"
+            old_live = live_file.read_text(encoding="utf-8") if live_file.is_file() else ""
+            if old_live != live_payload:
+                live_file.write_text(live_payload, encoding="utf-8")
+            site_dir = repo_root / "_site"
+            if site_dir.is_dir():
+                (site_dir / "live_video.json").write_text(live_payload, encoding="utf-8")
+            obs_file = repo_root / "_data" / "observatory.json"
+            if obs_file.is_file():
+                try:
+                    obs_data = json.loads(obs_file.read_text(encoding="utf-8"))
+                    if obs_data.get("yt_live_video_id") != vid:
+                        obs_data["yt_live_video_id"] = vid
+                        obs_file.write_text(json.dumps(obs_data, indent=2) + "\n", encoding="utf-8")
+                except Exception:
+                    pass
+    except Exception:
+        pass
+    if push_remote:
+        try:
+            subprocess.run(
+                [
+                    "ssh",
+                    "-o",
+                    "BatchMode=yes",
+                    "-o",
+                    "ConnectTimeout=5",
+                    HONEYBOT_SSH_HOST,
+                    "cat > /home/mike/www/mikelev.in/_site/live_video.json",
+                ],
+                input=live_payload,
+                text=True,
+                timeout=8,
+                check=False,
+            )
+        except Exception:
+            pass
+    return vid
+
+
 def _sustained_viewer_count(dwell_window, now_ts, dwell_secs):
     """Return the viewer count continuously sustained for at least dwell_secs, or 0."""
     if not dwell_window:
@@ -2146,6 +2229,8 @@ def run_youtube_watch(
         return 1
     persisted = _load_ytwatch_state()
     same_video = (persisted.get("video_id") == state["video_id"] and bool(state["video_id"]))
+    if state.get("video_id") and not same_video:
+        sync_live_video_id(state=state, push_remote=True)
     seen_ids = set(persisted.get("seen_ids") or []) if same_video else set()
     had_prior_snapshot = bool(same_video and persisted.get("seen_ids") is not None)
     peak_viewers = int(persisted.get("peak_viewers") or 0) if same_video else 0
