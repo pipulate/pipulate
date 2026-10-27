@@ -197,7 +197,7 @@ Entries are alphabetical, numbers spelled as spoken.
   access log as television. The broom after the extinction event.
 - **Human composition ladder** -- *four surfaces for one recurring
   composition, cheapest first.* CLI append (`email <id> >> context.md`,
-  `jira <id> >> context.md`, `botify <bql> >> context.md`), shell script
+  `jira <id> >> context.md`), shell script
   (`./briefing.sh`), Python script (`python scripts/briefing.py`), FastHTML
   app (`apps/050_briefing.py`). Each rung is built from the one below it:
   the app calls the script, the script calls the connectors. Seeded
@@ -581,7 +581,7 @@ Entries are alphabetical, numbers spelled as spoken.
 
 - **The A11Y Outline Describes the Hydrated DOM** -- (convicted 2026-09-21). Four
   probes in a row failed at one question -- what is the querystring parameter
-  behind the Has SW filter -- because the claim being tested came from an
+  behind a filter control -- because the claim being tested came from an
   accessibility semantic outline, and that outline is generated from the page
   AFTER JavaScript runs. `source.html` is what the server sent. They are not
   the same document. A <select> seen in the a11y outline is not evidence of a
@@ -595,7 +595,7 @@ Entries are alphabetical, numbers spelled as spoken.
 
   AMENDED THE SAME DAY, by running that very probe. hydrated_dom.html carried
   NO filter select either: one named <select> (action) and four <input>s, in a
-  page whose a11y outline lists [option] "Has SW". So the outline was never
+  page whose a11y outline lists [option] "Filter". So the outline was never
   describing a hydrated <select>. IT WAS DESCRIBING AN ARIA ROLE. A
   <div role="option"> reports as [option] in an accessibility tree while
   carrying no name attribute and no form semantics at all.
@@ -786,7 +786,7 @@ Entries are alphabetical, numbers spelled as spoken.
 #
 # STILL OWED: a signature over the sealed manifest (a hash buys integrity,
 # never authorship); one witnessed ride on a NON-DEFAULT profile
-# (botify_pageworkers is the shape); the end-to-end seam, which THE
+# (any trail on a non-default profile is the shape); the end-to-end seam, which THE
 # COMPOSITION IS NOT THE PARTS earmark owns -- the walk-to-compiler fixture
 # reported GO with its archive append mocked, and this chapter does not
 # promote it. DISCHARGED 2026-09-15: THE WALK THAT TEACHES WALKS, public_walk on
@@ -1104,7 +1104,7 @@ Entries are alphabetical, numbers spelled as spoken.
 - **The Conf Is in the Link** -- *expanded rule; banked 2026-09-27.*
 
 ~~~text
-# § THE CONF IS IN THE LINK (banked 2026-09-27, read at deed 1628 off SVB-115's two PocketRender links) -- before writing a client for a vendor's API, decode the vendor's own share link: a URL fragment that reproduces a state carries the whole state (PocketRender's #conf= is base64 of zlib-compressed compact JSON at level 6, nine keys), decodable offline with the standard library and diffable without a render; the API is for what the link cannot say, the metrics.
+# § THE CONF IS IN THE LINK (banked 2026-09-27, read at deed 1628 off a vendor's two share links) -- before writing a client for a vendor's API, decode the vendor's own share link: a URL fragment that reproduces a state carries the whole state (one vendor's #conf= is base64 of zlib-compressed compact JSON at level 6, nine keys), decodable offline with the standard library and diffable without a render; the API is for what the link cannot say, the metrics.
 ~~~
 
 - **Consent Cannot Precede Its Object** -- (banked 2026-08-07,
@@ -1197,11 +1197,11 @@ Entries are alphabetical, numbers spelled as spoken.
   ignition. A STATIC credential can be, forever. The first spelling
   generalized one 300-second bearer into a law about the lane, and a live
   compile-lane receipt falsified it: srv2_check_exit=0 and a GREEN line
-  reading protocol=2025-06-18 session=yes tools=56 auth=BOTIFY_API_TOKEN
+  reading protocol=2025-06-18 session=yes tools=56 auth=API_TOKEN
   scheme=Token -- a second MCP server under the same vendor, authenticated by
   a static pre-shared header with no clock to outrun, checked from a `!`
   line. THE CREDENTIAL KIND IS PER-SERVER, NEVER PER-VENDOR, which is the
-  fact that broke the rule. mcp.botify.com is unchanged: its COLOUR is still
+  fact that broke the rule. The first server is unchanged: its COLOUR is still
   a ritual in the compile lane and its MAGNITUDE is not -- 394 versus 680825
   discriminates cleanly between "just refreshed" and "never refreshed" -- so
   witness THAT server by CHAINING in the operator's terminal, refresh then
@@ -2661,7 +2661,7 @@ Entries are alphabetical, numbers spelled as spoken.
 ~~~
 
 - **NIX_DEVELOP_DELAY CONVICTED** -- (2026-07-21, receipts banked): warm hydration of .#quiet measured 12.5s/12.2s hand-run vs 1.0s in-compile -- BIMODAL. CAUSAL CLAIM RETRACTED 2026-08-01: this blamed a gitignored flake.lock and .gitignore carries no flake.lock entry (operator reports the lock is now pinned as intended, and `ndq` is fast enough to run casually). The MEASUREMENT stands; the EXPLANATION is now UNEXPLAINED and must be re-derived before anyone cites it. Conviction shape: a model read this comment and repeated it as a fact about a file while .gitignore sat in the same payload -- THE LAST-INCH RULE with the model as the last inch, and a CVR sentence wearing an FDR's typeface. A 3.5s constant cannot track a bimodal distribution (too slow for hits, catastrophic for misses; Desktop 7's full `nix develop` tabs are strictly slower). SENTINEL RIDE scoped: the TYPED-AHEAD SENTINEL -- autognome types cd X, nix develop .#quiet, and touch /tmp/autognome_ready_N in one burst; all three buffer in the pty and the touch executes only when a live shell drains the queue; poll the file with a timeout. Zero flake edits, arrows point down the ziggurat, and the cure's mechanism IS the pty type-ahead claim -- verify that claim (transcript receipts) before implementing. Known fracture: full-shell tabs end blocked in server.py (no stdin reader), so buffered lines become ghost commands that fire at the next prompt.
-- **NixOS Selenium 127** -- (banked 2026-07-20, receipt-witnessed same day): Selenium Manager auto-downloads an FHS-linked chromedriver into ~/.cache/selenium that dies status-127 on NixOS -- no /lib64 dynamic linker (ldd convicted it: libnss3/libnspr4/libglib "not found"). Fix: resolve the Nix driver via shutil.which('undetected-chromedriver') -- HYPHEN, the exact name scraper_tools.py already uses; bare 'chromedriver' and the UNDERSCORE variant are both MISSING on PATH. Conviction: a helper checking the wrong names is a silent no-op that STILL commits green ("refactor: implement PATH-resolved chromedriver" landed, changed only the log line, and the 127 survived until the hyphen name landed). Same disease as the uvx/Rustkyll stub-ld earmark; browser + driver stay paired because both track one nixpkgs pin (chromium 150 == undetected-chromedriver 150). weblogin.py and all five apps/440 Chrome instantiations now route through this resolution. SECOND CONVICTION 2026-09-27, the lanes swapped: connectors/botify.py's _admin_cookies_inner was written on the Mac during the blackout ride and passed uc.Chrome no driver path, so the first census ever run on Prime died at the downloaded driver's exit 127 in 1.2 s, twice, the second time after exit and ndq, and the refusal blamed a locked profile; the car emitted at deed 1621 resolves the hyphenated driver and the flake's chromium there, prints both before the launch, and makes a 127 name the loader. WITNESSED 2026-09-27 (deed 1622): the compile-lane census read the pair at 150.0.7871.128 both and the downloaded driver at exit 127 with the stub loader's own sentence, and the operator's census printed both store paths and harvested in 7.8 s.
+- **NixOS Selenium 127** -- (banked 2026-07-20, receipt-witnessed same day): Selenium Manager auto-downloads an FHS-linked chromedriver into ~/.cache/selenium that dies status-127 on NixOS -- no /lib64 dynamic linker (ldd convicted it: libnss3/libnspr4/libglib "not found"). Fix: resolve the Nix driver via shutil.which('undetected-chromedriver') -- HYPHEN, the exact name scraper_tools.py already uses; bare 'chromedriver' and the UNDERSCORE variant are both MISSING on PATH. Conviction: a helper checking the wrong names is a silent no-op that STILL commits green ("refactor: implement PATH-resolved chromedriver" landed, changed only the log line, and the 127 survived until the hyphen name landed). Same disease as the uvx/Rustkyll stub-ld earmark; browser + driver stay paired because both track one nixpkgs pin (chromium 150 == undetected-chromedriver 150). weblogin.py and all five apps/440 Chrome instantiations now route through this resolution. SECOND CONVICTION 2026-09-27, the lanes swapped: a connector's admin-cookie helper was written on the Mac during the blackout ride and passed uc.Chrome no driver path, so the first census ever run on Prime died at the downloaded driver's exit 127 in 1.2 s, twice, the second time after exit and ndq, and the refusal blamed a locked profile; the car emitted at deed 1621 resolves the hyphenated driver and the flake's chromium there, prints both before the launch, and makes a 127 name the loader. WITNESSED 2026-09-27 (deed 1622): the compile-lane census read the pair at 150.0.7871.128 both and the downloaded driver at exit 127 with the stub loader's own sentence, and the operator's census printed both store paths and harvested in 7.8 s.
 - **No Heredoc Inside An Interpolated Nix String** -- *expanded rule; banked 2026-08-05.*
 
 ~~~text
@@ -3870,12 +3870,12 @@ Entries are alphabetical, numbers spelled as spoken.
   wire truth to disk are the FDR-class instrument; a model narrating
   hosted-MCP results in prose is the CVR (an UNRELIABLE NARRATOR, not a
   man-in-the-middle: no interposition, just a lossy self-report).
-  CONVICTION: a hosted-MCP session reported "botify_config returned a
+  CONVICTION: a hosted-MCP session reported "the config tool returned a
   permission error for this project" and hypothesized "personal-tier project
   without those products provisioned." Six parameter re-readings:
-  botify_core SUCCEEDS; pageworkers and speedworkers each fail
+  the core tool SUCCEEDS; two product configs each fail
   INDEPENDENTLY; both fail IDENTICALLY on a second org -- killing the
-  project-specific story -- while botify_core itself reports has_pageworkers:
+  project-specific story -- while the core tool itself reports a plan flag:
   true. Plan flag yes, config resolver no, and the deciding layer is
   invisible from inside that lane by construction. The narration was not
   fabricated; it was UNDER-SPECIFIED IN A FLATTERING DIRECTION -- the
@@ -3900,7 +3900,7 @@ Entries are alphabetical, numbers spelled as spoken.
   EXPERIMENTAL airworthiness certificate -- it may fly, it gathers real data,
   it is RESTRICTED from carrying persons for hire. Dispatch it when the cost
   of being wrong is a rerun: breadth recon, shape-finding, cheap D1
-  discrimination (three calls closed the pageworkers question in under a
+  discrimination (three calls closed the config question in under a
   minute, zero setup). Dispatch the connector lane when output leaves the
   machine with our name on it. A's job is to tell B what to build; a tool
   roster read off an injected manifest is a FLIGHT PLAN, never a recording.
