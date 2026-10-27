@@ -1,0 +1,25 @@
+{%- assign show_inst = page.show_installer -%}
+{%- if show_inst == nil -%}
+  {%- assign show_inst = site.show_installer -%}
+{%- endif -%}
+{%- if show_inst -%}
+{%- assign inst_url = page.installer_url | default: site.installer_url | default: site.url -%}
+{%- assign val_prop = page.value_prop | default: site.value_prop | default: site.description -%}
+{%- assign cmd_inspect = "curl -fsSL " | append: inst_url | append: " | less" -%}
+{%- assign cmd_install = "curl -fsSL " | append: inst_url | append: " | bash" -%}
+<section class="installer-hero" aria-label="Quick Install">
+  {%- if val_prop %}
+  <p class="installer-value-prop">{{ val_prop }}</p>
+  {%- endif %}
+  <p class="installer-step-label">1. Inspect the installer first (the airlock):</p>
+  <div class="cmd-box">
+    <pre><code>{{ cmd_inspect }}</code></pre>
+    <button type="button" class="copy-btn" data-copy="{{ cmd_inspect | escape }}" aria-label="Copy inspect command">Copy</button>
+  </div>
+  <p class="installer-step-label">2. Run the installer:</p>
+  <div class="cmd-box">
+    <pre><code>{{ cmd_install }}</code></pre>
+    <button type="button" class="copy-btn" data-copy="{{ cmd_install | escape }}" aria-label="Copy install command">Copy</button>
+  </div>
+</section>
+{%- endif -%}
