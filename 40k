@@ -1,16 +1,42 @@
-# WE BEGIN AT THE BEGINNING AND WILL GO ON TILL WE COME TO THE END, THEN STOP.
-~/repos/nixos/configuration.nix
-~/repos/nixos/services.nix
-~/repos/nixos/packages.nix
-~/repos/nixos/autognome.py
-init.lua
-
-scripts/articles/lsa.py
+# Context 1
+context.txt
 
 ! book
 ! rgxc 30
 ! markov
 ! latest
+scripts/articles/lsa.py
+
+# WE BEGIN AT THE BEGINNING AND WILL GO ON TILL WE COME TO THE END, THEN STOP.
+/home/mike/repos/nixos/configuration.nix
+/home/mike/repos/nixos/hardware-configuration.nix
+/home/mike/repos/nixos/ai-acceleration.nix
+/home/mike/repos/nixos/notes.nix
+/home/mike/repos/nixos/packages.nix
+/home/mike/repos/nixos/services.nix
+/home/mike/repos/nixos/unstable-pin.json
+init.lua
+
+# 3-2-1 NOT QUITE THERE YET BUT WILL BE
+/home/mike/repos/nixos/scripts/backup-essential.py
+/home/mike/repos/nixos/scripts/backup-home.py
+/home/mike/repos/nixos/scripts/backup-force.py
+/home/mike/repos/nixos/scripts/backup-nix.sh
+/home/mike/repos/nixos/scripts/backup-things.py
+
+# JUST BEGINNING TO ORGANIZE MY MEDIA (Leaderboards! Leader folders?)
+/home/mike/repos/nixos/scripts/dedupe.py
+
+# AN OPERATING SYSTEM FOR THIS HUMAN
+/home/mike/repos/nixos/bookmarks.nix
+/home/mike/repos/nixos/bookmarks_harvest.md
+/home/mike/repos/nixos/scripts/chrome_windows.py
+/home/mike/repos/nixos/scripts/nixos-switch.py
+/home/mike/repos/nixos/scripts/bookmarks_sync.py
+/home/mike/repos/nixos/autognome.py
+
+# AND HOW WE PROJECT TO THE WORLD
+/home/mike/repos/nixos/blogs.nix
 
 # THE SOFTWARE VON NEUMANN PROBE
 assets/installer/install.sh
@@ -21,7 +47,6 @@ remotes/honeybot/www/qamy.ai/index.html
 remotes/honeybot/www/qamy.ai/walk/1/index.html
 remotes/honeybot/www/qamy.ai/walk/2/index.html
 remotes/honeybot/www/qamy.ai/walk/3/index.html
-
 
 # THE DATA EVERYONE NEEDS
 remotes/honeybot/queries/trapdoor_ips.sql
@@ -61,32 +86,22 @@ prompt_foo.py
 foo_files.py
 __init__.py
 
-# THE MOTHER CAT KATA
-scripts/boot_menu.py
-walk
-scripts/mother_cat.py
-scripts/walk_compile.py
-scripts/walk.py
-
-# THE LIVE-SERVE ONLY JEKYLL EXAMPLE
-~/repos/grimoire/_config.yml
-~/repos/grimoire/flake.nix
-~/repos/grimoire/Gemfile
-~/repos/grimoire/index.md
-
-# THE NGINX JEKYLL EXAMPLE
+# TRIMNOIR
 ~/repos/trimnoir/_config.yml
 ~/repos/trimnoir/flake.nix
 ~/repos/trimnoir/Gemfile
 ~/repos/trimnoir/index.md
-
-# JEKYLL TEMPLATES
 ~/repos/trimnoir/_layouts/default.html
-~/repos/trimnoir/_layouts/forward.html
 ~/repos/trimnoir/_layouts/home.html
 ~/repos/trimnoir/_layouts/page.html
-~/repos/trimnoir/_layouts/plain.html
-~/repos/trimnoir/_layouts/post.html
+~/repos/trimnoir/assets/main.css
+
+# GRIMOIRE
+~/repos/grimoire/_config.yml
+~/repos/grimoire/flake.nix
+~/repos/grimoire/Gemfile
+~/repos/grimoire/index.md
+/home/mike/repos/grimoire/_layouts/default.html
 
 # /home/mike/repos/pipulate/remotes/honeybot/queries/all_time_popular_paths.sql
 # /home/mike/repos/pipulate/remotes/honeybot/queries/content_neg_agents.sql
@@ -114,3 +129,11 @@ scripts/walk.py
 # /home/mike/repos/pipulate/remotes/honeybot/queries/telemetry_trapdoor_events.sql
 # /home/mike/repos/pipulate/remotes/honeybot/queries/trapdoor_ips.sql
 # /home/mike/repos/pipulate/remotes/honeybot/queries/ua_variants.sql
+#
+# THE MOTHER CAT KATA
+scripts/boot_menu.py
+walk
+scripts/mother_cat.py
+scripts/walk_compile.py
+scripts/walk.py
+
