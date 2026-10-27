@@ -102,15 +102,15 @@ def update_homepage_recent_posts(posts_dir, target_repo_root, count=10):
             summary = summary[:157].rsplit(" ", 1)[0] + "..."
         img_field = fm.get("image")
         if isinstance(img_field, dict):
-            raw_img = str(img_field.get("path") or "")
+            raw_img = str(img_field.get("path") or "").strip()
             raw_alt = str(img_field.get("alt") or title)
         elif isinstance(img_field, str):
-            raw_img = img_field
+            raw_img = img_field.strip()
             raw_alt = title
         else:
-            raw_img = "/assets/images/AI_Readiness_Consultant_RFC_9111.png"
+            raw_img = default_thumb
             raw_alt = title
-        thumb_url = _ensure_post_thumbnail(target_repo_root, raw_img)
+        thumb_url = _ensure_post_thumbnail(target_repo_root, raw_img, fallback_rel=default_thumb) if raw_img else ""
         for rel_candidate in (raw_img, thumb_url):
             clean_rel = (rel_candidate or "").strip().lstrip("/")
             if clean_rel and (target_repo_root / clean_rel).is_file():
@@ -118,9 +118,13 @@ def update_homepage_recent_posts(posts_dir, target_repo_root, count=10):
         esc_title = html.escape(title, quote=True)
         esc_alt = html.escape(raw_alt, quote=True)
         esc_summary = html.escape(summary, quote=True)
+        img_html = (
+            f'    <img class="recent-post-thumb" src="{thumb_url}" alt="{esc_alt}" width="{THUMB_WIDTH}" height="{THUMB_HEIGHT}" loading="lazy">\n'
+            if thumb_url else ""
+        )
         cards.append(
             f'  <a class="recent-post-card" href="{permalink}">\n'
-            f'    <img class="recent-post-thumb" src="{thumb_url}" alt="{esc_alt}" width="{THUMB_WIDTH}" height="{THUMB_HEIGHT}" loading="lazy">\n'
+            f'{img_html}'
             f'    <div class="recent-post-body">\n'
             f'      <span class="recent-post-date">{date_str}</span>\n'
             f'      <strong class="recent-post-title">{esc_title}</strong>\n'
@@ -128,6 +132,7 @@ def update_homepage_recent_posts(posts_dir, target_repo_root, count=10):
             f'    </div>\n'
             f'  </a>'
         )
+    cards.append('  <!-- TODO: Pagination / Archive Horizon Hook (data-next-cursor / stabilized hubs) -->')
     cards.append("</div>")
     block = f"{RECENT_START_MARKER}\n" + "\n".join(cards) + f"\n{RECENT_END_MARKER}"
     idx_text = index_path.read_text(encoding="utf-8")
