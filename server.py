@@ -2094,19 +2094,7 @@ async def home(request):
     menux = normalize_menu_path(url_path)
     logger.debug(f'Selected explore item: {menux}')
 
-    # ---> THE NEW AIRLOCK TRIGGER <---
-    sentinel_path = Path("Workshop/personal/Notebooks/data/.onboarded")
-    # Add the database flag check here:
-    if sentinel_path.exists() and pipulate.db.get('airlock_sealed') != 'true':
-        logger.info("🚨 Sentinel detected and airlock unsealed. Triggering Airlock.")
-        airlock_success = pipulate.execute_onboarding_airlock()
-        if airlock_success:
-            # Seal the airlock virtually so it never fires again
-            pipulate.db['airlock_sealed'] = 'true'
-            
-            if 'temp_message' in db:
-                del pipulate.db['temp_message']
-    # ---> END AIRLOCK TRIGGER <---
+
 
     pipulate.db['last_app_choice'] = menux
     pipulate.db['last_visited_url'] = request.url.path
@@ -2911,10 +2899,10 @@ async def poke_flyout(request):
     )
     
     # 🆕 INJECT THE NEW SURGICAL RESET BUTTON HERE
-    reset_config_button = Button('⚠️ Reset Config & Onboarding',
+    reset_config_button = Button('⚠️ Reset Configuration',
                                  hx_post='/reset-config-onboarding',
                                  hx_target='body',
-                                 hx_confirm='WARNING: This will delete your .onboarded sentinel, wipe your API keys from the .env vault, and clear your configuration state. You will have to run through Onboarding again. Are you sure?',
+                                 hx_confirm='WARNING: This will wipe your API keys from the .env vault and clear your configuration state. Are you sure?',
                                  hx_swap='none',  # Let the server restart trigger the reload
                                  cls='secondary outline dev-button-muted',
                                  **{'hx-on:click': '''
@@ -3738,18 +3726,9 @@ async def backup_now(request):
 
 @rt('/reset-config-onboarding', methods=['POST'])
 async def reset_config_onboarding(request):
-    """Surgically wipe the onboarding and configuration state without touching the rest of the DB."""
-    logger.bind(lifecycle=True).info('RESET_CONFIG: Initiating surgical wipe of onboarding state...')
-    
-    # 1. Wipe the File System Sentinel
-    try:
-        project_root = Path(os.getcwd())
-        sentinel_path = project_root / "Workshop" / "personal" / "Notebooks" / "data" / ".onboarded"
-        if sentinel_path.exists():
-            sentinel_path.unlink()
-            logger.info(f"🗑️ Deleted sentinel file: {sentinel_path}")
-    except Exception as e:
-        logger.error(f"Failed to delete sentinel file: {e}")
+    """Surgically wipe the configuration state without touching the rest of the DB."""
+    logger.bind(lifecycle=True).info('RESET_CONFIG: Initiating surgical wipe of configuration state...')
+    project_root = Path(os.getcwd())
 
     # 2. Wipe the .env Vault
     try:
@@ -3780,8 +3759,7 @@ async def reset_config_onboarding(request):
 
     # 3. Wipe the Database Config State
     try:
-        # Add 'airlock_sealed' to the nuke list
-        keys_to_delete = ['active_local_model', 'active_cloud_model', 'operator_name', 'airlock_sealed']
+        keys_to_delete = ['active_local_model', 'active_cloud_model', 'operator_name']
         for k in keys_to_delete:
             if k in pipulate.db:
                 del pipulate.db[k]
@@ -5504,7 +5482,7 @@ class ServerRestartHandler(FileSystemEventHandler):
         """Check if event should be ignored to prevent unnecessary restarts."""
         if event.is_directory:
             return True
-        ignore_patterns = ['/.', '.onboarded', '__pycache__', '.pyc', '.swp', '.tmp', '.DS_Store', 'README.md', 'prompt_foo.py', 'foo_files.py', 'prompt.md', 'apply.py', 'foo.txt', '/scripts/']
+        ignore_patterns = ['/.', '__pycache__', '.pyc', '.swp', '.tmp', '.DS_Store', 'README.md', 'prompt_foo.py', 'foo_files.py', 'prompt.md', 'apply.py', 'foo.txt', '/scripts/']
         if any((pattern in event.src_path for pattern in ignore_patterns)):
             return True
         return False
