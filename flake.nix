@@ -116,8 +116,7 @@
         # Define a static workspace name to prevent random file generation
         jupyterWorkspaceName = "pipulate-main";
 
-		# Define the default notebook for JupyterLab to open on startup
-		jupyterStartupNotebook = "Workshop/personal/Notebooks/Onboarding.ipynb";
+
 
         # --- 🧠 2ND BRAIN CORPUS CONFIGURATION ---
         defaultPostsDir = "$HOME/repos/trimnoir/_posts";
