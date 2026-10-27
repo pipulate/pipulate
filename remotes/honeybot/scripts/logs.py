@@ -278,6 +278,31 @@ class SonarApp(App):
             sig_text = body_text
         return Text(identity, style=identity_style), sig_text
 
+    def _populate_hud_table(self, table, data):
+        """Populate a HUD DataTable and size Bot Identity to its longest visible entry (+2-space buffer)."""
+        table.clear(columns=True)
+        if not data:
+            table.add_columns("Hits", "Bot Identity", "Raw Signature")
+            table.add_row("-", "None", "Waiting for data...")
+            return
+        styled_rows = []
+        for ua, count in data:
+            display_ua = ua.replace("Mozilla/5.0 ", "") if STRIP_MOZILLA_PREFIX else ua
+            identity, signature = self.extract_and_stylize(display_ua)
+            styled_rows.append((str(count), identity, signature))
+        id_width = min(
+            BOT_IDENTITY_WIDTH,
+            max(
+                len("Bot Identity"),
+                max((ident.cell_len for _, ident, _ in styled_rows), default=0),
+            ),
+        )
+        table.add_column("Hits")
+        table.add_column("Bot Identity", width=id_width)
+        table.add_column("Raw Signature")
+        for count_str, identity, signature in styled_rows:
+            table.add_row(count_str, identity, signature)
+
     def refresh_tables(self):
         """Updates both Intelligence tables from DB."""
         if not db: return
@@ -286,15 +311,8 @@ class SonarApp(App):
         # 1. Update JS Executors (Left)
         try:
             table = self.query_one("#js_table", DataTable)
-            table.clear()
             data = db.get_js_executors(limit=HUD_TABLE_ROWS)
-            if not data:
-                table.add_row("-", "None", "Waiting for data...")
-            else:
-                for ua, count in data:
-                    display_ua = ua.replace("Mozilla/5.0 ", "") if STRIP_MOZILLA_PREFIX else ua
-                    identity, signature = self.extract_and_stylize(display_ua)
-                    table.add_row(str(count), identity, signature)
+            self._populate_hud_table(table, data)
         except Exception as e:
             table.clear()
             table.add_row("ERROR", "None", str(e)[:40])
@@ -302,15 +320,8 @@ class SonarApp(App):
         # 2. Update Markdown Negotiators (Right - strict RFC 9110 Accept: text/markdown)
         try:
             table = self.query_one("#md_table", DataTable)
-            table.clear()
             data = db.get_content_neg_agents(limit=HUD_TABLE_ROWS)
-            if not data:
-                table.add_row("-", "None", "Waiting for data...")
-            else:
-                for ua, count in data:
-                    display_ua = ua.replace("Mozilla/5.0 ", "") if STRIP_MOZILLA_PREFIX else ua
-                    identity, signature = self.extract_and_stylize(display_ua)
-                    table.add_row(str(count), identity, signature)
+            self._populate_hud_table(table, data)
         except Exception as e:
             table.clear()
             table.add_row("ERROR", "None", str(e)[:40])
