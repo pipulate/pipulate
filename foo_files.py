@@ -563,8 +563,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # KEEP EXPANDING THIS FOR BETTER ONGOING CONFLUENCE ARTICLE SANITIZING
 # ~/.config/pipulate/pii_substitutions.txt
 
-# THIS IS PAGEWORKERS TAG FOR MY SITE
-# $https://tags.pw.adn.cloud/YICBBD/activation.js
+
 
 # ADD MORE OF THESE PURELY EDUCATIONAL EXAMPLES
 # assets/nbs/Educational_Notebooks/Truth_Actually.ipynb  # [4,477 tokens | 14,722 bytes]
@@ -848,7 +847,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # tools/scraper_tools.py  # <-- Pop-up desktop browser automation that works consistently across macOS, Windows/WSL and GNOME/KDE/XFCE? You've got to be kidding!
 # apps/911_optics_workflow.py  # <-- 911 LLM Optics: Zero-credential FastHTML spectrometer for RFC 9110/9111 wire truth vs. hydrated DOM with sealed ZIP deed.
 
-# ?https://app.botify.com/michaellevin-org/mikelev.in/
+
 
 # THE CDP FLIGHT RECORDER (Wire Truth): every scrape drains the browser's
 # performance log to browser_cache/<domain>/<slug>/network_log.jsonl -- the
@@ -1255,31 +1254,11 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # XVII. BOTIFY STUFF
 # ============================================================================
 
-# REMEMBER YOU CAN CACHE AND INCLUDE DOCUMENTATION FOR ANYTHING FROM ANYWHERE
-# @https://developers.botify.com/docs/collections
-# @https://developers.botify.com/docs/openapi-specifications
-# @https://developers.botify.com/llms.txt
-# @https://support.botify.com/en/articles/9108743-adding-the-botify-js-snippet-with-google-tag-manager
-# @https://support.botify.com/en/articles/9108745-creating-pageworkers-optimizations
-# @https://support.botify.com/en/articles/9131614-pageworkers-implementation
-# @https://support.botify.com/en/articles/9131625-pageworkers-technical-overview
-# @https://support.botify.com/en/articles/9746147-tech-notes-installing-the-botify-js-snippet
-# @https://support.botify.com/en/collections/10314812-installing-the-botify-js-snippet
-# @https://support.botify.com/en/collections/8589197-botify-activation
-# @https://support.botify.com/en/collections/8589200-pageworkers
 
-# scripts/botify/botify_api_bootcamp.md  # [38,967 tokens | 173,830 bytes]
-# imports/botify/true_schema_discoverer.py  # [2,786 tokens | 14,780 bytes]
 
-# imports/botify_code_generation.py  # [3,231 tokens | 14,614 bytes]
-# imports/botify/__init__.py  # [0 tokens | 0 bytes]
-# imports/botify/code_generators.py  # [4,997 tokens | 25,034 bytes]
-# scripts/botify/botify_api_examples.md  # [21,273 tokens | 86,712 bytes]
-# scripts/botify/make_botify_docs.ipynb  # [61,006 tokens | 224,678 bytes]
-# tools/botify_tools.py  # [3,724 tokens | 17,661 bytes]
-# apps/400_botify_trifecta.py  # [53,083 tokens | 275,728 bytes]
-# apps/110_parameter_buster.py  # [55,573 tokens | 274,005 bytes]
-# apps/120_link_graph.py  # [54,375 tokens | 272,569 bytes]
+
+
+
 
 # ============================================================================
 # XVIII. THE TINY UNIX COMMANDS - One word, one job, stdout is the receipt (the human-callable face)
