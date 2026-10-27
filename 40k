@@ -65,8 +65,10 @@ scripts/articles/build_knowledge_graph.py
 scripts/articles/editing_prompt.txt
 scripts/articles/sanitizer.py
 scripts/articles/contextualizer.py
+scripts/articles/generate_hubs.py
 scripts/articles/generate_llms_txt.py
 scripts/articles/generate_post_nav.py
+assets/jekyll/common-packages.nix
 
 # HOME-HOSTED (NOT BEHIND CDN) NGINX WEBSERVER HONEYBOT AI OBSERVATORY
 nixops.sh
@@ -94,6 +96,7 @@ __init__.py
 ~/repos/trimnoir/_layouts/default.html
 ~/repos/trimnoir/_layouts/home.html
 ~/repos/trimnoir/_layouts/page.html
+~/repos/trimnoir/_layouts/post.html
 ~/repos/trimnoir/assets/main.css
 
 # GRIMOIRE
