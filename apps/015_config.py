@@ -311,12 +311,6 @@ You're here to make the workflow concepts accessible and help users understand t
                 show='Cloud AI Engine',
                 refill=True,
             ),
-            Step(
-                id='step_04',
-                done='botify_config',
-                show='Botify Integration',
-                refill=True,
-            ),
             # --- STEPS_LIST_INSERTION_POINT ---
             Step(id='finalize', done='finalized', show='Finalize', refill=False)
         ]
@@ -797,7 +791,9 @@ You're here to make the workflow concepts accessible and help users understand t
             return Div(
                 Article(
                     H3(f'🧠 {self.wand.fmt(step.id)}: {step.show}'),
-                    P(explanation, cls='text-muted'),
+                    P(explanation, ' ',
+                      A('Get Ollama at ollama.com ↗', href='https://ollama.com/', target='_blank'),
+                      cls='text-muted'),
                     Label(
                         'Local AI (Ollama):',
                         _for='config-step02-local-ai-select',
@@ -986,7 +982,7 @@ You're here to make the workflow concepts accessible and help users understand t
                 Article(
                     H3(f"☁️ {step.show}"),
                     P("Select your preferred Cloud AI engine and provide the corresponding API key. This unlocks advanced capabilities and provides a fallback when the local engine needs help. ",
-                      A("Get your Google AI Studio key here ↗", href="https://aistudio.google.com/", target="_blank"),
+                      A("Get a Gemini API key in Google AI Studio ↗", href="https://aistudio.google.com/app/projects", target="_blank"),
                       cls="text-muted"),
                     form_content
                 ),
@@ -1015,9 +1011,10 @@ You're here to make the workflow concepts accessible and help users understand t
             display_text = "Model: None\nToken: Skipped"
             success_msg = f'{pip.get_ui_constants()["EMOJIS"]["SUCCESS"]} Cloud AI configuration skipped.'
             await self.message_queue.add(pip, success_msg, verbatim=True)
-            pip.speak("Cloud AI skipped. You can stay fully local, or add a key later. If you are a Botify employee or Customer, please enter your Botify API key.", wait=False)
+            pip.speak("Cloud AI skipped. You can stay fully local, or add a key later. Configuration steps complete. Click finalize to lock it in.", wait=False)
             if pip.check_finalize_needed(step_index, steps):
                 await self.message_queue.add(pip, self.step_messages['finalize']['ready'], verbatim=True)
+            self.wand.db['config_finalized'] = 'true'
             widget = Pre(display_text, cls="code-block-container")
             return Div(
                 pip.display_revert_widget(step_id=step_id, app_name=app_name, message=f"{step.show}: Skipped", widget=widget, steps=steps),
@@ -1081,7 +1078,8 @@ You're here to make the workflow concepts accessible and help users understand t
         # Say what happened, and name the first moment it gets tested.
         success_msg = f'{pip.get_ui_constants()["EMOJIS"]["SUCCESS"]} Cloud engine saved: {selected_model}'
         await self.message_queue.add(pip, success_msg, verbatim=True)
-        pip.speak(f"Cloud engine set to {selected_model} and the key is saved. It has not been tested yet; the first real request will confirm it. If you are a Botify employee or customer, please enter your Botify API key next.", wait=False)
+        pip.speak(f"Cloud engine set to {selected_model} and the key is saved. It has not been tested yet; the first real request will confirm it. Configuration steps complete. Click finalize to lock it in.", wait=False)
+        self.wand.db['config_finalized'] = 'true'
         
         if pip.check_finalize_needed(step_index, steps):
             await self.message_queue.add(pip, self.step_messages['finalize']['ready'], verbatim=True)
@@ -1094,151 +1092,6 @@ You're here to make the workflow concepts accessible and help users understand t
         )
     # --- END_STEP_BUNDLE: step_03 ---
 
-    # --- START_STEP_BUNDLE: step_04 ---
-    async def step_04(self, request):
-        """Handles GET request for Vendor Integration."""
-        pip, db, steps, app_name = self.pipulate, self.pipulate.db, self.steps, self.app_name
-        step_id = "step_04"
-        step_index = self.steps_indices[step_id]
-        step = steps[step_index]
-        next_step_id = steps[step_index + 1].id if step_index + 1 < len(steps) else 'finalize'
-        pipeline_id = db.get("pipeline_id", "unknown")
-        state = pip.read_state(pipeline_id)
-        step_data = pip.get_step_data(pipeline_id, step_id, {})
-        
-        current_value = step_data.get(step.done, {}) 
-        finalize_data = pip.get_step_data(pipeline_id, "finalize", {})
-    
-        if "finalized" in finalize_data and current_value:
-            display_text = f"Status: {current_value.get('status')}\nToken: {current_value.get('api_key')}"
-            pip.append_to_history(f"[WIDGET CONTENT] {step.show} (Finalized):\n{display_text}")
-            return Div(
-                Article(H3(f"🔒 {step.show}: Completed"), Pre(display_text, cls="code-block-container")),
-                Div(id=next_step_id, hx_get=f"/{app_name}/{next_step_id}", hx_trigger="load"),
-                id=step_id
-            )
-            
-        elif current_value and state.get("_revert_target") != step_id:
-            display_text = f"Status: {current_value.get('status')}\nToken: {current_value.get('api_key')}"
-            pip.append_to_history(f"[WIDGET CONTENT] {step.show} (Completed):\n{display_text}")
-            widget = Pre(display_text, cls="code-block-container")
-            return Div(
-                pip.display_revert_widget(step_id=step_id, app_name=app_name, message=f"{step.show}: Configured", widget=widget, steps=steps),
-                Div(id=next_step_id, hx_get=f"/{app_name}/{next_step_id}", hx_trigger="load"),
-                id=step_id
-            )
-            
-        else:
-            pip.append_to_history(f"[WIDGET STATE] {step.show}: Showing input form")
-            
-            # --- THE REFILL LOGIC ---
-            refill_key = ""
-            if step.refill:
-                refill_key = pip.load_secrets("BOTIFY_API_TOKEN") or ""
-            
-            form_content = Form(
-                Label("Botify API Key (Optional)", _for=f"{step_id}-api-key"),
-                Div(
-                    Input(
-                        type="password", 
-                        name="botify_token", 
-                        value=refill_key,
-                        id=f"{step_id}-api-key", 
-                        placeholder="Paste your Botify API key here...", 
-                        required=False
-                    ),
-                    Div(
-                        Button("Save Token ▸", type="submit", cls="primary", name="action", value="save"),
-                        Button("Skip ▸", type="submit", cls="secondary outline", name="action", value="skip", formnovalidate=True),
-                        style="display: flex; gap: 0.5rem; margin-top: 0.5rem;"
-                    ),
-                    cls="flex-column"
-                ),
-                hx_post=f"/{app_name}/{step_id}_submit", 
-                hx_target=f"#{step_id}"
-            )
-            
-            return Div(
-                Article(
-                    H3(f"🕷️ {step.show}"),
-                    P("If you are a Botify customer or employee, you can connect your account. ", 
-                      A("Get your API key here ↗", href="https://app.botify.com/account/", target="_blank"),
-                      cls="text-muted"),
-                    form_content
-                ),
-                Div(id=next_step_id),
-                id=step_id
-            )
 
-
-    async def step_04_submit(self, request):
-        """Process the submission for Vendor Integration."""
-        pip, db, steps, app_name = self.pipulate, self.pipulate.db, self.steps, self.app_name
-        step_id = "step_04"
-        step_index = self.steps_indices[step_id]
-        step = steps[step_index]
-        next_step_id = steps[step_index + 1].id if step_index + 1 < len(steps) else 'finalize'
-        pipeline_id = db.get("pipeline_id", "unknown")
-        
-        form_data = await request.form()
-        action = form_data.get("action", "save")
-        raw_key = form_data.get("botify_token", "").strip()
-        
-        if action == "skip" or not raw_key:
-            payload = {"status": "Skipped", "api_key": "None"}
-            display_text = "Status: Skipped\nToken: None"
-            success_msg = f'{pip.get_ui_constants()["EMOJIS"]["SUCCESS"]} Botify Integration skipped.'
-            await self.message_queue.add(pip, success_msg, verbatim=True)
-            pip.speak("Botify integration skipped.", wait=True)
-        else:
-            # 1. Update OS Vault (.env) and Environment
-            import os
-            from pathlib import Path
-            from dotenv import set_key
-            
-            project_root = pip._find_project_root(os.getcwd()) or Path.cwd()
-            env_path = project_root / ".env"
-            env_path.touch(exist_ok=True)
-            
-            env_var_name = 'BOTIFY_API_TOKEN'
-            set_key(str(env_path), env_var_name, raw_key)
-            os.environ[env_var_name] = raw_key
-            
-            # 2. Update Pipeline Record (Obfuscated)
-            masked_key = f"{raw_key[:4]}{'*' * 15}{raw_key[-4:]}" if len(raw_key) > 8 else "****"
-            payload = {
-                "status": "Configured",
-                "api_key": masked_key
-            }
-            display_text = f"Status: Configured\nToken: {masked_key}"
-            
-            # Stored, not validated. Same correction as the cloud step.
-            success_msg = f'{pip.get_ui_constants()["EMOJIS"]["SUCCESS"]} Botify token saved (not yet tested).'
-            await self.message_queue.add(pip, success_msg, verbatim=True)
-            pip.speak("Botify API token saved. It has not been tested yet.", wait=True)
-
-        # Fires on every path through step_04, including double-Skip, so it
-        # cannot claim everything is configured. It CAN claim the steps are done.
-        pip.speak("Configuration steps complete. Click finalize to lock it in.", wait=False)
-            
-        await pip.set_step_data(pipeline_id, step_id, payload, steps)
-        
-        pip.append_to_history(f"[WIDGET CONTENT] {step.show}:\n{display_text}")
-        pip.append_to_history(f"[WIDGET STATE] {step.show}: Step completed")
-        
-        if pip.check_finalize_needed(step_index, steps):
-            await self.message_queue.add(pip, self.step_messages['finalize']['ready'], verbatim=True)
-        
-        # 🪄 LOCK THE LIMBO STATE: Broadcast that config is formally complete
-        self.wand.db['config_finalized'] = 'true'
-        
-        widget = Pre(display_text, cls="code-block-container")
-
-        return Div(
-            pip.display_revert_widget(step_id=step_id, app_name=app_name, message=f"{step.show}: Complete", widget=widget, steps=steps),
-            Div(id=next_step_id, hx_get=f"/{app_name}/{next_step_id}", hx_trigger="load"),
-            id=step_id
-        )
-    # --- END_STEP_BUNDLE: step_04 ---
 
     # --- STEP_METHODS_INSERTION_POINT ---
