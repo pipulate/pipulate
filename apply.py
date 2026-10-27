@@ -178,7 +178,7 @@ def _blank_gap_spans(content: str, search_block: str):
             spans.append((kept[k][0], kept[k + width - 1][0]))
     return spans
 
-# THE INVISIBLE WRITE (convicted 2026-10-02, the PocketRender ride): this
+# THE INVISIBLE WRITE (convicted 2026-10-02, the INVISIBLE WRITE ride): this
 # tool wrote trails into Workshop/personal/, a plain folder the top-level
 # .gitignore hides, and printed CREATED and OVERWROTE while d had nothing to
 # show and m nothing to commit. A tier is a repo of its own, cloned to
