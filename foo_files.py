@@ -2448,7 +2448,7 @@ MATCHBOOK_CHOP = r"""
 # ============================================================================
 # Files tracked by git but not yet mixed into the palette above.
 # Move these into the active chapters to paint them onto the context canvas.
-# Coverage: 207/282 tracked files claimed. The compiler reads this line back on the next compile and prints the delta beside the live count, so an unclaimed file rings once.
+# Coverage: 207/287 tracked files claimed. The compiler reads this line back on the next compile and prints the delta beside the live count, so an unclaimed file rings once.
 
 # AGENTS.md  # [1,039 tokens | 4,223 bytes]
 # AUDIT.md  # [2,992 tokens | 13,897 bytes]
@@ -2471,6 +2471,11 @@ MATCHBOOK_CHOP = r"""
 # apps/820_selenium.py  # [3,430 tokens | 15,032 bytes]
 # assets/jekyll/common-packages.nix  # [100 tokens | 294 bytes]
 # assets/jekyll/consumer-fixture/flake.nix  # [290 tokens | 1,060 bytes]
+# assets/jekyll/seed/_config.yml  # [322 tokens | 1,042 bytes]
+# assets/jekyll/seed/_includes/installer.html  # [357 tokens | 1,251 bytes]
+# assets/jekyll/seed/_layouts/page.html  # [60 tokens | 215 bytes]
+# assets/jekyll/seed/_layouts/post.html  # [918 tokens | 3,278 bytes]
+# assets/jekyll/seed/index.md  # [348 tokens | 1,336 bytes]
 # assets/oz-effect-demo.html  # [3,847 tokens | 16,459 bytes]
 # assets/prompts/find404s.md  # [461 tokens | 2,105 bytes]
 # assets/prompts/llms_header.md  # [1,110 tokens | 5,129 bytes]
