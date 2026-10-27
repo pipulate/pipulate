@@ -38,7 +38,7 @@ class ASTWorkflowReconstructor:
             'step_webogs', 'step_webogs_submit', 'step_webogs_process',
             'step_webogs_complete', 'step_gsc', 'step_gsc_submit', 
             'step_gsc_process', 'step_gsc_complete', 'common_toggle',
-            'update_button_text', 'validate_botify_url', 
+            'update_button_text', 'validate_vendor_url', 
             'check_if_project_has_collection', 'fetch_analyses', 'read_api_token',
             'build_exports', 'poll_job_status', '_execute_qualifier_logic',
             'get_deterministic_filepath', 'check_file_exists', 'ensure_directory_exists',
@@ -920,7 +920,7 @@ Components are transplanted atomically from "Old Workflows" (sources) into "Upda
     )
     
     parser.add_argument('--template', required=True, 
-                       help='Template workflow name (e.g., "400_botify_trifecta") - provides base structure')
+                       help='Template workflow name (e.g., "400_vendor_trifecta") - provides base structure')
     parser.add_argument('--source', required=True,
                        help='Source workflow to extract components from (e.g., "110_parameter_buster") - the Atomic Source')
     

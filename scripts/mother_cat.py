@@ -813,7 +813,7 @@ async def _ride_steps(trail_path, archive, dry_narrate=False, exports_path=None,
     # declares every URL it needs before it opens anything, so the rider can
     # know at t=0 whether it can finish -- and it used to find out one stop at
     # a time. ticket.yaml captured the Jira issue, ADVANCED, and only then
-    # discovered PIPULATE_TRAIL_BOTIFY_URL was unset; on the Mac the first
+    # discovered PIPULATE_TRAIL_VENDOR_URL was unset; on the Mac the first
     # refusal came AFTER a sixty-megabyte voice download and the spoken
     # guidance for a stop that would never open. A walk that can fail at its
     # last stop for a reason knowable at its first wastes the human's

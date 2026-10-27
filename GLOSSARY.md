@@ -2989,7 +2989,7 @@ Entries are alphabetical, numbers spelled as spoken.
 # - EARMARK: THE READ-WRITE PROBE (banked 2026-08-04, specimen-convicted): a
 #   probe that OPENS a database is not read-only, and the damage lands on the
 #   EVIDENCE rather than on the data. sqlite3.connect() defaults to read-write,
-#   so `cli.py db-inspect` touched data/botifython_dev.db and moved its mtime
+#   so `cli.py db-inspect` touched data/vendorthon_dev.db and moved its mtime
 #   from May 3 13:26 to Aug 4 08:43 with its SIZE UNCHANGED at 503808 -- opened,
 #   not written. That mtime was the single cheapest liveness signal separating
 #   the live app database from the three-month-old fossil the backup roster was

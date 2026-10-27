@@ -1705,7 +1705,7 @@ class DevAssistant:
             # Trifecta template option
             Div(
                 H5('🏇 Trifecta Template (Complex Workflow):', style=f'color: {self.UI_CONSTANTS["COLORS"]["ACCENT_PURPLE"]}; margin-bottom: 0.5rem;'),
-                P('Complex 5-step workflow from Botify template for sophisticated data collection scenarios.',
+                P('Complex 5-step workflow from Vendor template for sophisticated data collection scenarios.',
                   style=f'color: {self.UI_CONSTANTS["COLORS"]["BODY_TEXT"]}; font-size: 0.9rem; margin-bottom: 0.5rem;'),
                 Pre(
                     Code(trifecta_cmd, cls='language-bash'),

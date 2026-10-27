@@ -40,7 +40,7 @@ PROJECT_ROOT = find_pipulate_root()
 TEMPLATE_MAP = {
     "blank": PROJECT_ROOT / "apps" / "300_blank_placeholder.py",
     "hello": PROJECT_ROOT / "apps" / "500_hello_workflow.py",
-    "trifecta": PROJECT_ROOT / "apps" / "400_botify_trifecta.py",
+    "trifecta": PROJECT_ROOT / "apps" / "400_vendor_trifecta.py",
     # Future templates can be added here
     # "my_custom_template": PROJECT_ROOT / "apps" / "0XX_my_custom_template.py",
 }
@@ -171,7 +171,7 @@ Examples:
   python create_workflow.py apps/035_kungfu_workflow.py KungfuWorkflow kungfu "Kung Fu Download" "Welcome message" "Training prompt"
   
   # Using different templates:
-  python create_workflow.py 036_botify_custom.py MyBotify my_botify "My Botify Flow" "Welcome" "Training" --template trifecta
+  python create_workflow.py 036_vendor_custom.py MyVendor my_vendor "My Vendor Flow" "Welcome" "Training" --template trifecta
   
   # Setting role for visibility:
   python create_workflow.py 037_my_workflow.py MyWorkflow my_app "My Workflow" "Welcome" "Training" --role Core

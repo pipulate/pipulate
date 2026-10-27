@@ -243,7 +243,7 @@ class WorkflowGenesis:
             },
             'trifecta': {
                 'name': 'Trifecta Workflow',
-                'description': 'Complex workflow starting from Botify template',
+                'description': 'Complex workflow starting from Vendor template',
                 'use_case': 'Building sophisticated data collection workflows with API integration'
             }
         }
@@ -459,7 +459,7 @@ class WorkflowGenesis:
 
         return Div(
             H4("Trifecta Workflow Experience", cls="section-title"),
-            P("Starts with the sophisticated Botify Trifecta template and adds a blank placeholder for your custom step.",
+            P("Starts with the sophisticated Vendor Trifecta template and adds a blank placeholder for your custom step.",
               cls="section-description"),
 
             # Individual commands section
@@ -467,7 +467,7 @@ class WorkflowGenesis:
 
             Div(
                 H6("1. Create Trifecta Workflow", cls="step-heading"),
-                P("Creates complex 5-step workflow from Botify Trifecta template",
+                P("Creates complex 5-step workflow from Vendor Trifecta template",
                   cls="text-description"),
                 Pre(Code(cmd1, cls='language-bash copy-code'),
                     cls="code-block-standard"),
