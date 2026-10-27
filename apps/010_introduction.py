@@ -9,7 +9,7 @@ Features:
 - Auto-advancing narration (if voice enabled)
 - "Encore" button (Volume Icon) to re-speak slides
 - Proper Containerization for HTMX navigation
-- JIT (Just-In-Time) State Evaluation for seamless Notebook-to-App handoffs
+- JIT (Just-In-Time) State Evaluation for seamless workflow handoffs
 """
 
 import time
@@ -47,7 +47,7 @@ class IntroductionPlugin:
         self.ui = pipulate.get_ui_constants()
 
         # We unconditionally define ALL steps here so register_workflow_routes 
-        # binds the endpoints regardless of the user's current onboarding state.
+        # binds the endpoints regardless of the user's current configuration state.
         self.steps = [
             Step(id='step_01', done='intro_viewed', show='Welcome', refill=False),
             Step(id='finalize', done='finalized', show='Hand-off', refill=False)
@@ -60,14 +60,14 @@ class IntroductionPlugin:
     def _get_slide_data(self, step_id: str):
         """
         JIT (Just-In-Time) State Evaluation.
-        Evaluates the hard drive and database at the exact moment of the HTTP request,
-        ensuring the UI perfectly reflects the user's latest actions in the Notebook.
+        Evaluates the database at the exact moment of the HTTP request,
+        ensuring the UI perfectly reflects the user's latest configuration state.
         Returns: (Title, Content/Speech, Next_Step_ID)
         """
 
         if step_id == 'step_01':
-            # Check if we have an operator name (proof the airlock worked)
             operator_name = self.wand.db.get('operator_name')
+            greeting_target = f", {operator_name}" if operator_name else ""
 
             # 🪄 THE DETERMINISTIC STATE MATRIX
             # Robust SSOT check: Does a finalized config pipeline exist?
@@ -86,24 +86,14 @@ class IntroductionPlugin:
             dynamic_app_name = self.wand.get_config().APP_NAME
             active_model = self.wand.db.get('active_local_model', 'not yet selected')
 
-            if not operator_name:
-                # STATE 1: The Doorway (Airlock has not fired)
-                # ATTRIBUTED VOICE: the first thing a stranger hears must say
-                # what is producing it. This is Piper reading a fixed string,
-                # so it says so, and it does not borrow a persona to do it.
-                msg = (
-                    "This voice is Piper, a speech synthesizer running entirely on your machine, "
-                    "reading a fixed script to provided a guided tour. There is no language model "
-                    "behind it yet."
-                )
-                return "Onboarding Not Finished 🔒", msg, None
 
-            elif not has_configured:
-                # STATE 2: The Guide (Airlock fired, but Configuration is pending)
+
+            if not has_configured:
+                # STATE 1: The Guide (Configuration is pending)
                 # The demo is a scripted scenario driven by player-piano.js, so
                 # it is a tour OF THE SYSTEM, never of anyone's "capabilities."
                 msg = (
-                    f"Welcome to {dynamic_app_name}, {operator_name}. This voice is still a local "
+                    f"Welcome to {dynamic_app_name}{greeting_target}. This voice is a local "
                     "speech synthesizer reading a script, not a language model. The thinking "
                     "engines, local and cloud, get wired up next in Configuration. For a scripted "
                     "tour of the interface, press ",
@@ -113,12 +103,12 @@ class IntroductionPlugin:
                 return "Welcome", msg, 'finalize'
                 
             else:
-                # STATE 3: The Veteran (Config workflow is finalized)
+                # STATE 2: The Veteran (Config workflow is finalized)
                 # Even here the narration stays scripted. The model name is a
                 # receipt, so it is spoken only about the engine, never as a
                 # claim about the speaker.
                 msg = (
-                    f"Welcome back to {dynamic_app_name}, {operator_name}. This narration is still "
+                    f"Welcome back to {dynamic_app_name}{greeting_target}. This narration is "
                     f"scripted speech, not inference. Your local engine is {active_model}. Anything "
                     "a model actually generates from here on will name the model that generated it."
                 )
