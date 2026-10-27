@@ -1,0 +1,80 @@
+---
+layout: default
+---
+{%- assign nav = site.data.post_nav[page.url] -%}
+{%- capture post_nav -%}
+{%- if nav %}
+<nav class="post-navigation" aria-label="Post navigation">
+  {%- if nav.prev %}
+  <a class="nav-prev" href="{{ nav.prev.url | relative_url }}" rel="prev">
+    <span class="nav-label">← Previous Post</span>
+    <span class="nav-title">{{ nav.prev.title | escape }}</span>
+  </a>
+  {%- else %}
+  <span class="nav-prev placeholder"></span>
+  {%- endif %}
+  <a class="nav-home" href="{{ "/" | relative_url }}">Home</a>
+  {%- if nav.next %}
+  <a class="nav-next" href="{{ nav.next.url | relative_url }}" rel="next">
+    <span class="nav-label">Next Post →</span>
+    <span class="nav-title">{{ nav.next.title | escape }}</span>
+  </a>
+  {%- else %}
+  <span class="nav-next placeholder"></span>
+  {%- endif %}
+</nav>
+{%- elsif page.previous or page.next %}
+<nav class="post-navigation" aria-label="Post navigation">
+  {%- if page.previous %}
+  <a class="nav-prev" href="{{ page.previous.url | relative_url }}" rel="prev">
+    <span class="nav-label">← Previous Post</span>
+    <span class="nav-title">{{ page.previous.title | escape }}</span>
+  </a>
+  {%- else %}
+  <span class="nav-prev placeholder"></span>
+  {%- endif %}
+  <a class="nav-home" href="{{ "/" | relative_url }}">Home</a>
+  {%- if page.next %}
+  <a class="nav-next" href="{{ page.next.url | relative_url }}" rel="next">
+    <span class="nav-label">Next Post →</span>
+    <span class="nav-title">{{ page.next.title | escape }}</span>
+  </a>
+  {%- else %}
+  <span class="nav-next placeholder"></span>
+  {%- endif %}
+</nav>
+{%- endif %}
+{%- endcapture -%}
+<article itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    <h1 itemprop="name headline">{{ page.title | escape }}</h1>
+    <p>
+      <time datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">
+        {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
+        {{ page.date | date: date_format }}
+      </time>
+      {%- assign post_author = page.author | default: site.author.name | default: site.author -%}
+      {%- if post_author -%}
+        • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span itemprop="name">{{ post_author }}</span></span>
+      {%- endif -%}
+    </p>
+  </header>
+
+  <div style="text-align: center; margin-top: 1.5rem; font-size: 0.85em; opacity: 0.8;">
+    <a href="{{ page.url | relative_url }}index.md?src=a+href" rel="alternate" type="text/markdown">🤖 Read Raw Markdown</a>
+    {%- if page.gdoc_url %}
+    • <a href="{{ page.gdoc_url }}" rel="alternate" type="application/vnd.google-apps.document">📄 Google Doc</a>
+    {%- endif %}
+  </div>
+  {{ post_nav }}
+  <div itemprop="articleBody">
+    {{ content }}
+  </div>
+  {{ post_nav }}
+
+  {%- assign post_banner = page.image.path | default: page.image | default: site.og_image -%}
+  {%- if post_banner and post_banner != "" -%}
+  {%- assign post_banner_alt = page.image.alt | default: page.title | default: site.og_image_alt | default: site.title -%}
+  <p><a href="{{ "/" | relative_url }}"><img class="post-hero-banner" src="{{ post_banner | relative_url }}" alt="{{ post_banner_alt | escape }}" width="1200" height="630" loading="lazy"></a></p>
+  {%- endif -%}
+</article>
