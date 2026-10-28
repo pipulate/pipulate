@@ -26,6 +26,110 @@ def strip_prompt_boundary(content: str) -> str:
 FENCE_SEGMENT_RE = re.compile(r'(^```[^\n]*\n.*?^```[ \t]*$)', re.MULTILINE | re.DOTALL)
 
 
+def _is_single_dollar_mathjax(masked_line: str, s_pos: int, e_pos: int) -> bool:
+    """True when a single-dollar $...$ span is TeX/MathJax, False for currency or shell."""
+    expr = masked_line[s_pos + 1 : e_pos]
+    if not (1 <= len(expr) <= 120):
+        return False
+    if expr[0].isspace() or expr[-1].isspace():
+        return False
+    prev_ch = masked_line[s_pos - 1] if s_pos > 0 else ""
+    next_ch = masked_line[e_pos + 1] if e_pos + 1 < len(masked_line) else ""
+    if prev_ch and (prev_ch.isalnum() or prev_ch in "\\$"):
+        return False
+    if next_ch and (next_ch.isalnum() or next_ch == "$"):
+        return False
+    if re.match(r"^\d[\d,.]*/[A-Za-z]{2,}", expr) or re.match(r"^\d[\d,.]*[kKmMbB]?\s+[A-Za-z]{2,}", expr):
+        return False
+    if "\\" in expr:
+        return True
+    if re.search(r"[\^_=<>&+]", expr):
+        return True
+    if re.match(r"^(?:[A-Za-z]'?|\d+/\d+|[A-Za-z]/[A-Za-z])$", expr):
+        return True
+    if re.match(r"^[A-Za-z]+\([^()]*\)$", expr):
+        return True
+    if re.match(r"^[A-Za-z0-9_]+\s*[-+*/]\s*[A-Za-z0-9_]+$", expr):
+        return True
+    return False
+
+
+def _double_single_dollar_mathjax_line(line: str) -> tuple[str, int]:
+    """Upgrade single-dollar $...$ MathJax spans on one line to $$...$$."""
+    if '$' not in line or line.startswith(('    ', '\t')):
+        return line, 0
+    shadow = re.sub(r'`+[^`]*`+', lambda m: '#' * len(m.group(0)), line)
+    shadow = re.sub(r'\$\$[\s\S]*?\$\$', lambda m: '#' * len(m.group(0)), shadow)
+    shadow = re.sub(r'\$\$+', lambda m: '#' * len(m.group(0)), shadow)
+    positions = [m.start() for m in re.finditer(r'\$', shadow)]
+    if len(positions) < 2:
+        return line, 0
+    matches = []
+    idx = 0
+    while idx + 1 < len(positions):
+        s_pos, e_pos = positions[idx], positions[idx + 1]
+        if _is_single_dollar_mathjax(shadow, s_pos, e_pos):
+            matches.append((s_pos, e_pos))
+            idx += 2
+        else:
+            idx += 1
+    if not matches:
+        return line, 0
+    out = []
+    cursor = 0
+    for s_pos, e_pos in matches:
+        out.append(line[cursor:s_pos])
+        out.append(f"$${line[s_pos + 1 : e_pos]}$$")
+        cursor = e_pos + 1
+    out.append(line[cursor:])
+    return "".join(out), len(matches)
+
+
+def double_single_dollar_mathjax(content: str) -> tuple[str, int]:
+    """Double single-dollar MathJax spans outside fenced code blocks. Returns (new_content, count)."""
+    parts = FENCE_SEGMENT_RE.split(content)
+    total = 0
+    for idx in range(0, len(parts), 2):
+        lines = parts[idx].split('\n')
+        for li, ln in enumerate(lines):
+            new_ln, n = _double_single_dollar_mathjax_line(ln)
+            if n:
+                lines[li] = new_ln
+                total += n
+        parts[idx] = '\n'.join(lines)
+    return ''.join(parts), total
+
+
+def heal_corpus_mathjax(posts_dir: Path, dry_run: bool = False) -> tuple[int, int]:
+    """Batch-upgrade single-dollar MathJax spans across dated *.md posts while preserving frontmatter and mtime."""
+    import os
+    files_changed = 0
+    spans_changed = 0
+    for md_path in sorted(posts_dir.glob("*.md")):
+        if not md_path.name[:4].isdigit():
+            continue
+        raw = md_path.read_text(encoding="utf-8", errors="ignore")
+        if raw.startswith("---\n"):
+            fm_parts = raw.split("\n---\n", 1)
+            if len(fm_parts) == 2:
+                head, body = fm_parts[0] + "\n---\n", fm_parts[1]
+            else:
+                head, body = "", raw
+        else:
+            head, body = "", raw
+        new_body, count = double_single_dollar_mathjax(body)
+        if count > 0 and new_body != body:
+            files_changed += 1
+            spans_changed += count
+            if not dry_run:
+                st = md_path.stat()
+                md_path.write_text(head + new_body, encoding="utf-8")
+                os.utime(md_path, (st.st_atime, st.st_mtime))
+    mode = "DRY RUN" if dry_run else "HEALED"
+    print(f"🧮 MathJax Corpus [{mode}]: {spans_changed} span(s) across {files_changed} post(s) in {posts_dir}.")
+    return files_changed, spans_changed
+
+
 def neutralize_inception_artifacts(content: str) -> str:
     """Heal web-UI autolinks, inverted bold/code closures, and wrapped backticked cue examples."""
     # 1. Unwrap self-referential web-UI autolink contamination back to bare URLs (safe everywhere)
@@ -45,7 +149,11 @@ def neutralize_inception_artifacts(content: str) -> str:
             seg,
             flags=re.IGNORECASE,
         )
-        parts[idx] = seg
+        lines = seg.split('\n')
+        for li, ln in enumerate(lines):
+            new_ln, _ = _double_single_dollar_mathjax_line(ln)
+            lines[li] = new_ln
+        parts[idx] = '\n'.join(lines)
     return ''.join(parts)
 
 
@@ -369,6 +477,21 @@ def main():
 
     # Data-driven routing: the target's 'lane' in blogs.json decides,
     # unless an explicit flag overrides. Fail closed toward public scrub.
+    parser.add_argument(
+        '--heal-mathjax', action='store_true',
+        help="Batch-upgrade single-dollar $...$ MathJax spans to $$...$$ across the target _posts directory."
+    )
+    parser.add_argument(
+        '--dry-run', action='store_true',
+        help="Report how many posts/spans --heal-mathjax would update without writing to disk."
+    )
+    args = parser.parse_args()
+
+    if args.heal_mathjax:
+        posts_dir = common.get_target_path(args)
+        heal_corpus_mathjax(posts_dir, dry_run=args.dry_run)
+        return
+
     sanitize_article(public=resolve_lane(args))
 
 

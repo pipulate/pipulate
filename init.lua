@@ -718,9 +718,6 @@ local function is_mathjax_span(masked_line, s_pos, e_pos)
     if expr:match("^%d[%d,%.]*/%a%a+") or expr:match("^%d[%d,%.]*[kKmMbB]?%s+%a%a+") then
         return false
     end
-    if expr == "\\rightarrow" then
-        return false
-    end
     if expr:find("\\", 1, true) then
         return true
     end
