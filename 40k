@@ -48,11 +48,29 @@ remotes/honeybot/www/qamy.ai/walk/1/index.html
 remotes/honeybot/www/qamy.ai/walk/2/index.html
 remotes/honeybot/www/qamy.ai/walk/3/index.html
 
+# HAND-CRANKED AGENTIC FRAMEWORK & CONTEXT COMPILER
+prompt_foo.py
+foo_files.py
+__init__.py
+
 # THE DATA EVERYONE NEEDS
 remotes/honeybot/queries/trapdoor_ips.sql
 ! echo "--- WHO HYDRATES THE DOM ---" && cat remotes/honeybot/queries/trapdoor_ips.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
 remotes/honeybot/queries/content_neg_agents.sql
 ! echo "--- WHO NEGOTIATES MARKDOWN ---" && cat remotes/honeybot/queries/content_neg_agents.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+
+# HOME-HOSTED (NOT BEHIND CDN) NGINX WEBSERVER HONEYBOT AI OBSERVATORY
+nixops.sh
+remotes/honeybot/hooks/post-receive
+remotes/honeybot/nixos/configuration.nix
+remotes/honeybot/scripts/stream.py
+remotes/honeybot/scripts/score.py
+remotes/honeybot/scripts/card.py
+remotes/honeybot/scripts/forest.py
+remotes/honeybot/scripts/test_forest.py
+remotes/honeybot/scripts/logs.py
+remotes/honeybot/scripts/content_loader.py
+remotes/honeybot/scripts/db.py
 
 # THE JEKYLL BLOG LIKE A HACKER (INVENTED SKILL.md & AGENTS.md FORMAT) PUBLISHING PIPELINE
 ~/repos/nixos/blogs.nix
@@ -69,24 +87,6 @@ scripts/articles/generate_hubs.py
 scripts/articles/generate_llms_txt.py
 scripts/articles/generate_post_nav.py
 assets/jekyll/common-packages.nix
-
-# HOME-HOSTED (NOT BEHIND CDN) NGINX WEBSERVER HONEYBOT AI OBSERVATORY
-nixops.sh
-remotes/honeybot/hooks/post-receive
-remotes/honeybot/nixos/configuration.nix
-remotes/honeybot/scripts/stream.py
-remotes/honeybot/scripts/score.py
-remotes/honeybot/scripts/card.py
-remotes/honeybot/scripts/forest.py
-remotes/honeybot/scripts/test_forest.py
-remotes/honeybot/scripts/logs.py
-remotes/honeybot/scripts/content_loader.py
-remotes/honeybot/scripts/db.py
-
-# HAND-CRANKED AGENTIC FRAMEWORK & CONTEXT COMPILER
-prompt_foo.py
-foo_files.py
-__init__.py
 
 # TRIMNOIR
 ~/repos/trimnoir/_config.yml
