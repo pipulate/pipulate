@@ -41,7 +41,7 @@ def _reap_orphaned_tts_and_overlays():
             if "--conjure-media" in raw:
                 continue
             if (
-                ("aplay" in raw and ("22050" in raw or "honeybot_tts" in raw or "tick.wav" in raw))
+                ("aplay" in raw and ("-t raw" in raw or "honeybot_tts" in raw or "tick.wav" in raw))
                 or ("piper" in raw and "output_raw" in raw)
             ):
                 os.kill(pid, signal.SIGKILL)
@@ -216,6 +216,7 @@ except ImportError:
 # --- Configuration ---
 MODEL_DIR = Path.home() / ".local/share/piper_voices"
 MODEL_NAME = "en_US-amy-low.onnx"
+TTS_SAMPLE_RATE = int(os.environ.get("HONEYBOT_TTS_RATE", "22050"))
 
 
 def run_tui_app(script_name, duration=None):
@@ -468,7 +469,7 @@ class Narrator(threading.Thread):
                     )
                     p1.stdout.close()
                     p3 = subprocess.Popen(
-                        ["aplay", "-r", "22050", "-f", "S16_LE", "-t", "raw"],
+                        ["aplay", "-r", str(TTS_SAMPLE_RATE), "-f", "S16_LE", "-t", "raw"],
                         stdin=p2.stdout,
                         stderr=subprocess.DEVNULL,
                     )
@@ -502,7 +503,7 @@ class Narrator(threading.Thread):
             try:
                 with self._proc_lock:
                     p_play = subprocess.Popen(
-                        ["aplay", "-r", "22050", "-f", "S16_LE", "-t", "raw", str(raw_path)],
+                        ["aplay", "-r", str(TTS_SAMPLE_RATE), "-f", "S16_LE", "-t", "raw", str(raw_path)],
                         stdout=subprocess.DEVNULL,
                         stderr=subprocess.DEVNULL,
                     )
@@ -1286,7 +1287,7 @@ def _pause_honeybot_stage_for_weebo():
             if "--conjure-media" in raw:
                 continue
             if (
-                ("aplay" in raw and ("22050" in raw or "honeybot_tts" in raw or "tick.wav" in raw))
+                ("aplay" in raw and ("-t raw" in raw or "honeybot_tts" in raw or "tick.wav" in raw))
                 or ("piper" in raw and "output_raw" in raw)
             ):
                 os.kill(pid, signal.SIGSTOP)
@@ -1323,7 +1324,7 @@ def _resume_honeybot_stage_after_weebo(paused_pids):
             if pid in resumed:
                 continue
             raw = p.read_bytes().replace(b"\x00", b" ").decode("utf-8", errors="ignore")
-            if ("aplay" in raw and "22050" in raw) or ("piper" in raw and "output_raw" in raw):
+            if ("aplay" in raw and ("-t raw" in raw or "honeybot_tts" in raw)) or ("piper" in raw and "output_raw" in raw):
                 os.kill(pid, signal.SIGCONT)
         except Exception:
             continue

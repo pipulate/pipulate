@@ -2695,7 +2695,7 @@ for old in $old_pids; do
         kill -KILL "$old" 2>/dev/null || true
     fi
 done
-pkill -9 -f "aplay.*22050|honeybot_tts|piper.*output_raw" 2>/dev/null || true
+pkill -9 -f "aplay.*-t raw|honeybot_tts|piper.*output_raw" 2>/dev/null || true
 rm -f /tmp/honeybot_tts_*.raw 2>/dev/null || true
 pkill -f "/home/mike/www/mikelev[.]in/scripts/logs[.]py" 2>/dev/null || true
 pkill -f "tail -f /var/log/nginx/access[.]log" 2>/dev/null || true
@@ -2728,13 +2728,92 @@ exit 1
     return res.returncode
 
 
-def run_honeybot_outro(action="play", tick=True, dry_run=False):
-    """Audition, edit, sync, or reboot the Honeybot deploy-standby outro speech on Pipulate Prime."""
+VOICE_LAB_PRESETS = {
+    "chipmunk": {"rate": 22050, "length_scale": 1.0, "noise_scale": 0.667, "noise_w": 0.8},
+    "natural": {"rate": 16000, "length_scale": 1.0, "noise_scale": 0.667, "noise_w": 0.8},
+    "calm-sprite": {"rate": 22050, "length_scale": 1.378, "noise_scale": 0.667, "noise_w": 0.8},
+    "brisk-human": {"rate": 16000, "length_scale": 0.725, "noise_scale": 0.667, "noise_w": 0.8},
+}
+
+
+def _synthesize_piper_lab_wav(
+    piper_bin,
+    model_path,
+    text,
+    wav_path,
+    rate=22050,
+    length_scale=1.0,
+    noise_scale=0.667,
+    noise_w=0.8,
+):
+    """Synthesize text with custom VITS parameters and stamp target sample rate into WAV header."""
+    import subprocess
+    import wave
+    cfg_src = Path(f"{model_path}.json")
+    tmp_cfg = Path(f"/tmp/pipulate_piper_cfg_{os.getpid()}.json")
+    cmd = [piper_bin, "--model", str(model_path), "--output_file", str(wav_path)]
+    try:
+        if cfg_src.is_file():
+            cfg_data = json.loads(cfg_src.read_text(encoding="utf-8"))
+            inf = dict(cfg_data.get("inference") or {})
+            inf["length_scale"] = float(length_scale)
+            inf["noise_scale"] = float(noise_scale)
+            inf["noise_w"] = float(noise_w)
+            cfg_data["inference"] = inf
+            tmp_cfg.write_text(json.dumps(cfg_data), encoding="utf-8")
+            cmd.extend(["--config", str(tmp_cfg)])
+        subprocess.run(
+            cmd,
+            input=str(text).encode("utf-8"),
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=False,
+        )
+        if Path(wav_path).is_file() and int(rate) > 0:
+            with wave.open(str(wav_path), "rb") as rf:
+                nch = rf.getnchannels()
+                sw = rf.getsampwidth()
+                frames = rf.readframes(rf.getnframes())
+            with wave.open(str(wav_path), "wb") as wf:
+                wf.setnchannels(nch)
+                wf.setsampwidth(sw)
+                wf.setframerate(int(rate))
+                wf.writeframes(frames)
+        return Path(wav_path).is_file()
+    finally:
+        try:
+            tmp_cfg.unlink(missing_ok=True)
+        except Exception:
+            pass
+
+
+def run_honeybot_outro(
+    action="play",
+    tick=True,
+    dry_run=False,
+    rate=None,
+    length_scale=None,
+    noise_scale=None,
+    noise_w=None,
+    preset=None,
+    custom_text=None,
+):
+    """Audition, edit, sync, or reboot the Honeybot deploy-standby outro & Piper Voice Lab on Pipulate Prime."""
+    import math
     import os
     import shutil
     import signal
     import subprocess
     act = (action or "play").strip().lower()
+    if act in VOICE_LAB_PRESETS:
+        preset = preset or act
+        act = "play"
+    base_p = VOICE_LAB_PRESETS.get(preset or "chipmunk", VOICE_LAB_PRESETS["chipmunk"])
+    eff_rate = int(rate if rate is not None else base_p["rate"])
+    eff_length = float(length_scale if length_scale is not None else base_p["length_scale"])
+    eff_noise = float(noise_scale if noise_scale is not None else base_p["noise_scale"])
+    eff_noise_w = float(noise_w if noise_w is not None else base_p["noise_w"])
+    preset_lbl = preset if preset in VOICE_LAB_PRESETS else ("natural" if eff_rate == 16000 and eff_length == 1.0 else "chipmunk" if eff_rate == 22050 and eff_length == 1.0 else "custom")
     intro, loop_lines, stream_path = _load_standby_speech_from_stream()
     if act in ("edit", "vim", "nvim"):
         editor = shutil.which("nvim") or shutil.which("vim") or "vi"
@@ -2748,8 +2827,18 @@ def run_honeybot_outro(action="play", tick=True, dry_run=False):
         return reboot_honeybot_stream(sync_only=True, dry_run=dry_run)
     if act in ("reboot", "restart"):
         return reboot_honeybot_stream(sync_only=False, dry_run=dry_run)
-    all_lines = [intro, *loop_lines]
+    all_lines = [str(custom_text).strip()] if (custom_text and str(custom_text).strip()) else [intro, *loop_lines]
+    native_rate = 16000
+    speed_ratio = eff_rate / native_rate
+    semitones = 12.0 * math.log2(max(0.1, speed_ratio))
+    net_tempo = speed_ratio / max(0.1, eff_length)
     bar = "=" * 72
+    print(
+        f"🎚️  Voice Lab Telemetry [{preset_lbl}]: rate={eff_rate}Hz "
+        f"(native={native_rate}Hz, pitch={semitones:+.2f}st, raw_speed={speed_ratio:.4f}x) | "
+        f"length_scale={eff_length:g} (net_tempo={net_tempo:.3f}x) | "
+        f"noise_scale={eff_noise:g} | noise_w={eff_noise_w:g}"
+    )
     print(f"\n{bar}")
     print(f"🎙️  HONEYBOT DEPLOY-STANDBY OUTRO ({stream_path})")
     print("-" * 72)
@@ -2791,12 +2880,15 @@ def run_honeybot_outro(action="play", tick=True, dry_run=False):
                 start_new_session=True,
             )
         for seg in all_lines:
-            subprocess.run(
-                [piper_bin, "--model", str(model_path), "--output_file", str(wav_path)],
-                input=seg.encode("utf-8"),
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
-                check=False,
+            _synthesize_piper_lab_wav(
+                piper_bin,
+                model_path,
+                seg,
+                wav_path,
+                rate=eff_rate,
+                length_scale=eff_length,
+                noise_scale=eff_noise,
+                noise_w=eff_noise_w,
             )
             if wav_path.is_file():
                 active_proc = subprocess.Popen(
@@ -2960,6 +3052,46 @@ if __name__ == "__main__":
         help="Verify reciprocal Honeybot access.log and Wayback CDX receipts for --broadcast pebble.",
     )
     parser.add_argument(
+        "-r", "--rate",
+        type=int,
+        default=None,
+        help="Playback sample rate in Hz for ytoutro Voice Lab (22050=chipmunk 1.378x, 16000=natural 1.0x).",
+    )
+    parser.add_argument(
+        "--natural",
+        action="store_true",
+        help="Play ytoutro at native 16000 Hz (1.0x human pitch/speed).",
+    )
+    parser.add_argument(
+        "--chipmunk",
+        action="store_true",
+        help="Play ytoutro at Honeybot 22050 Hz (1.378x speed, +5.56 semitones).",
+    )
+    parser.add_argument(
+        "-l", "--length-scale",
+        type=float,
+        default=None,
+        help="VITS phoneme length_scale (<1.0 faster without pitch shift, >1.0 slower; default 1.0).",
+    )
+    parser.add_argument(
+        "-n", "--noise-scale",
+        type=float,
+        default=None,
+        help="VITS generator noise_scale for vocal expressiveness (default 0.667).",
+    )
+    parser.add_argument(
+        "--noise-w",
+        type=float,
+        default=None,
+        help="VITS duration predictor noise_w for cadence variability (default 0.8).",
+    )
+    parser.add_argument(
+        "--preset",
+        choices=tuple(VOICE_LAB_PRESETS.keys()),
+        default=None,
+        help="Named Voice Lab preset (chipmunk|natural|calm-sprite|brisk-human).",
+    )
+    parser.add_argument(
         "message",
         nargs="*",
         help="Spoken message words for say, push body for ping, or optional interval/channel for watch.",
@@ -3048,11 +3180,38 @@ if __name__ == "__main__":
     if cli_args.broadcast == "reboot":
         sys.exit(reboot_honeybot_stream(sync_only=False, dry_run=cli_args.dry_run))
     if cli_args.broadcast == "outro":
-        outro_act = cli_args.message[0].strip().lower() if cli_args.message else "play"
-        use_tick = not (cli_args.no_tick or cli_args.no_ding or outro_act in ("voice", "notick"))
+        tokens = list(cli_args.message or [])
+        outro_act = tokens[0].strip().lower() if tokens else "play"
+        chosen_preset = cli_args.preset
+        if cli_args.natural:
+            chosen_preset = chosen_preset or "natural"
+        elif cli_args.chipmunk:
+            chosen_preset = chosen_preset or "chipmunk"
+        if outro_act in VOICE_LAB_PRESETS:
+            chosen_preset = chosen_preset or outro_act
+            tokens.pop(0)
+            outro_act = tokens[0].strip().lower() if tokens else "play"
+        custom_say = None
+        if outro_act == "say":
+            tokens.pop(0)
+            custom_say = " ".join(tokens).strip() or "Listen my friends and you shall notice, this article read by a chipmunk voice."
+            outro_act = "play"
+        use_tick = not (cli_args.no_tick or cli_args.no_ding or outro_act in ("voice", "notick") or bool(custom_say))
         if outro_act in ("voice", "notick"):
             outro_act = "play"
-        sys.exit(run_honeybot_outro(action=outro_act, tick=use_tick, dry_run=cli_args.dry_run))
+        sys.exit(
+            run_honeybot_outro(
+                action=outro_act,
+                tick=use_tick,
+                dry_run=cli_args.dry_run,
+                rate=cli_args.rate,
+                length_scale=cli_args.length_scale,
+                noise_scale=cli_args.noise_scale,
+                noise_w=cli_args.noise_w,
+                preset=chosen_preset,
+                custom_text=custom_say,
+            )
+        )
     if cli_args.broadcast in ("status", "bell", "stop", "start", "roll", "enable-ws"):
         sys.exit(run_honeybot_obs(cli_args.broadcast))
     sys.exit(print_broadcast_kit(cli_args.target, cli_args.broadcast, slug_match=cli_args.slug))
