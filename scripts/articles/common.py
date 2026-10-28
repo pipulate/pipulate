@@ -470,7 +470,7 @@ def get_broadcast_kit(target_key="1", slug_match=None):
     yt_title = format_youtube_title(title)
     desc_parts = [
         f"📖 Read the full article: {canonical_url}?src=youtube",
-        f"💸 Spending $10,000/mo+ on HTML pre-render? RFC 9110/9111/9421 Consulting: {base_url}/?src=youtube#consulting (Email: {CONTACT_EMAIL} with [RFC9111] in subject)",
+        f"💸 Spending $15,000/mo+ on HTML pre-render? RFC 9110/9111/9421 Consulting: {base_url}/?src=youtube#consulting (Email: {CONTACT_EMAIL} with [RFC9111] in subject)",
         f"🧪 Test RFC 9110 in your terminal: curl -sI -H \"Accept: text/markdown\" {canonical_url}?src=rfc9110",
         "",
         f"🎙️ Now reading live on the Web Bot AI Observatory: \"{title}\"",
