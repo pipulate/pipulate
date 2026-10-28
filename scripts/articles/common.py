@@ -2839,15 +2839,19 @@ def run_honeybot_outro(
         f"length_scale={eff_length:g} (net_tempo={net_tempo:.3f}x) | "
         f"noise_scale={eff_noise:g} | noise_w={eff_noise_w:g}"
     )
-    print(f"\n{bar}")
-    print(f"🎙️  HONEYBOT DEPLOY-STANDBY OUTRO ({stream_path})")
-    print("-" * 72)
-    print(f"  [Intro] {intro}")
-    for idx, ln in enumerate(loop_lines, 1):
-        print(f"  [{idx}/{len(loop_lines)}]   {ln}")
-    print("-" * 72)
-    print("🎛️  Subcommands: ytoutro (play) | ytoutro --no-tick | ytoutro show | ytoutro edit | ytoutro sync | ytreboot")
-    print(bar)
+    has_custom = bool(custom_text and str(custom_text).strip())
+    if has_custom:
+        print(f"🎙️  PIPER VOICE LAB SAY [{preset_lbl}]: {all_lines[0]!r}")
+    else:
+        print(f"\n{bar}")
+        print(f"🎙️  HONEYBOT DEPLOY-STANDBY OUTRO ({stream_path})")
+        print("-" * 72)
+        print(f"  [Intro] {intro}")
+        for idx, ln in enumerate(loop_lines, 1):
+            print(f"  [{idx}/{len(loop_lines)}]   {ln}")
+        print("-" * 72)
+        print("🎛️  Subcommands: ytoutro [chipmunk|natural|calm-sprite|brisk-human] [say \"...\"] | ytoutro edit | ytoutro sync | ytreboot")
+        print(bar)
     if dry_run or act in ("show", "text", "print"):
         if dry_run:
             print(f"🗣️  [DRY RUN] Outro audition ready ({len(all_lines)} spoken segments, tick={tick}).")
