@@ -274,6 +274,162 @@ def get_playlist(recent_n=10, include_archive=True):
         print(f"Librarian Error: {e}", file=sys.stderr)
         return []
 
+_TEX_SPOKEN_MAP = (
+    (r'\\(?:long)?rightarrow\b|\\to\b|\\(?:Long)?Rightarrow\b', ' right arrow '),
+    (r'\\(?:long)?leftarrow\b|\\(?:Long)?Leftarrow\b', ' left arrow '),
+    (r'\\(?:long)?leftrightarrow\b|\\(?:Long)?Leftrightarrow\b|\\iff\b', ' left right arrow '),
+    (r'\\times\b', ' times '),
+    (r'\\cdot\b', ' dot '),
+    (r'\\(?:le|leq)\b', ' less than or equal to '),
+    (r'\\(?:ge|geq)\b', ' greater than or equal to '),
+    (r'\\(?:ne|neq)\b', ' not equal to '),
+    (r'\\approx\b', ' approximately '),
+    (r'\\infty\b', ' infinity '),
+    (r'\\pm\b', ' plus or minus '),
+    (r'\\Sigma\b|\\sum\b', ' sum '),
+    (r'\\Delta\b', ' delta '),
+)
+
+_KNOWN_DOMAIN_DIRS = frozenset({
+    "mikelev.in", "qamy.ai", "npvg.org", "levinix.org", "levinix.com",
+    "levinux.com", "sunpug.io", "guerillatech.com", "rfc9110.org",
+    "rfc9111.io", "rfc9111.com", "pipulate.com",
+})
+
+_FILEPATH_RE = re.compile(
+    r'(?<![:\w])'
+    r'(?:'
+    r'(?:~|\.{1,2})?(?:/\.?[A-Za-z0-9_~-]+(?:\.[A-Za-z0-9_-]+)*){2,}/?'
+    r'|\b[A-Za-z0-9_~-]+(?:\.[A-Za-z0-9_-]+)*(?:/\.?[A-Za-z0-9_~-]+(?:\.[A-Za-z0-9_-]+)*){2,}/?'
+    r'|\b[A-Za-z0-9_~-]+(?:\.[A-Za-z0-9_-]+)*/\.?[A-Za-z0-9_~-]+\.[A-Za-z0-9]{1,10}\b'
+    r')'
+)
+
+
+def _truncate_after_editorial_take(text):
+    """Keep the article through 'Ai/AI Editorial Take' and drop subsequent Book Analysis sections."""
+    m_take = re.search(
+        r'^#{1,6}[ \t]*ai[ \t]+editorial[ \t]+take\b[^\n]*\n',
+        text,
+        flags=re.IGNORECASE | re.MULTILINE,
+    )
+    if m_take:
+        m_next = re.search(r'^#{1,6}[ \t]', text[m_take.end():], flags=re.MULTILINE)
+        if m_next:
+            text = text[: m_take.end() + m_next.start()]
+    m_tweet = re.search(
+        r'^#{1,6}[ \t]*(?:🐦[ \t]*)?x\.com[ \t]+promo[ \t]+tweet\b',
+        text,
+        flags=re.IGNORECASE | re.MULTILINE,
+    )
+    if m_tweet:
+        text = text[: m_tweet.start()]
+    return text
+
+
+def _humanize_tex_expr(expr):
+    """Convert inner TeX/MathJax math into natural speech without dollar signs or raw backslashes."""
+    s = expr.strip()
+    s = re.sub(r'\\frac\{([^{}]*)\}\{([^{}]*)\}', r' \1 over \2 ', s)
+    s = re.sub(r'\\(?:text|mathrm|mathbf|mathcal|mathit|texttt|operatorname)\{([^{}]*)\}', r'\1', s)
+    for pat, repl in _TEX_SPOKEN_MAP:
+        s = re.sub(pat, repl, s)
+    s = re.sub(r'\\([A-Za-z]+)', r' \1 ', s)
+    s = s.replace('{', ' ').replace('}', ' ')
+    s = re.sub(r'\s+', ' ', s).strip()
+    return f" {s} " if s else " "
+
+
+def _is_single_dollar_mathjax(masked_line, s_pos, e_pos):
+    """Port of init.lua's is_mathjax_span: true when $...$ is TeX/MathJax, false for currency/shell."""
+    expr = masked_line[s_pos + 1 : e_pos]
+    if not (1 <= len(expr) <= 120):
+        return False
+    if expr[0].isspace() or expr[-1].isspace():
+        return False
+    prev_ch = masked_line[s_pos - 1] if s_pos > 0 else ""
+    next_ch = masked_line[e_pos + 1] if e_pos + 1 < len(masked_line) else ""
+    if prev_ch and (prev_ch.isalnum() or prev_ch in "\\$"):
+        return False
+    if next_ch and (next_ch.isalnum() or next_ch == "$"):
+        return False
+    if re.match(r"^\d[\d,.]*/[A-Za-z]{2,}", expr) or re.match(r"^\d[\d,.]*[kKmMbB]?\s+[A-Za-z]{2,}", expr):
+        return False
+    if "\\" in expr:
+        return True
+    if re.search(r"[\^_=<>&+]", expr):
+        return True
+    if re.match(r"^(?:[A-Za-z]'?|\d+/\d+|[A-Za-z]/[A-Za-z])$", expr):
+        return True
+    if re.match(r"^[A-Za-z]+\([^()]*\)$", expr):
+        return True
+    if re.match(r"^[A-Za-z0-9_]+\s*[-+*/]\s*[A-Za-z0-9_]+$", expr):
+        return True
+    return False
+
+
+def _strip_single_dollar_mathjax_line(line):
+    """Unwrap single-dollar MathJax spans on a single line while preserving currency and inline code."""
+    if '$' not in line:
+        return line
+    shadow = re.sub(r'`+[^`]*`+', lambda m: '#' * len(m.group(0)), line)
+    shadow = re.sub(r'\$\$+', lambda m: '#' * len(m.group(0)), shadow)
+    positions = [m.start() for m in re.finditer(r'\$', shadow)]
+    if len(positions) < 2:
+        return line
+    matches = []
+    idx = 0
+    while idx + 1 < len(positions):
+        s_pos, e_pos = positions[idx], positions[idx + 1]
+        if _is_single_dollar_mathjax(shadow, s_pos, e_pos):
+            matches.append((s_pos, e_pos))
+            idx += 2
+        else:
+            idx += 1
+    if not matches:
+        return line
+    out = []
+    cursor = 0
+    for s_pos, e_pos in matches:
+        out.append(line[cursor:s_pos])
+        out.append(_humanize_tex_expr(line[s_pos + 1 : e_pos]))
+        cursor = e_pos + 1
+    out.append(line[cursor:])
+    return "".join(out)
+
+
+def _strip_mathjax_for_tts(text):
+    """Strip $$...$$ and collision-safe $...$ MathJax delimiters and humanize TeX for Piper TTS."""
+    text = re.sub(r'\$\$([\s\S]+?)\$\$', lambda m: _humanize_tex_expr(m.group(1)), text)
+    text = re.sub(r'\\\(([\s\S]+?)\\\)', lambda m: _humanize_tex_expr(m.group(1)), text)
+    text = re.sub(r'\\\[([\s\S]+?)\\\]', lambda m: _humanize_tex_expr(m.group(1)), text)
+    return "\n".join(_strip_single_dollar_mathjax_line(ln) for ln in text.splitlines())
+
+
+def _simplify_filepath_match(match):
+    """Speak the filename with extension if present, else collapse multi-slash paths to 'file path'."""
+    raw = match.group(0)
+    clean = raw.rstrip('/')
+    segments = [seg for seg in clean.split('/') if seg]
+    if not segments:
+        return raw
+    if all(seg.isdigit() for seg in segments):
+        return raw
+    if raw.endswith('/'):
+        return "file path"
+    basename = segments[-1]
+    if basename.lower() in _KNOWN_DOMAIN_DIRS:
+        return "file path"
+    if '.' in basename[1:] and re.match(r'^\.?[A-Za-z0-9_~-]+(?:\.[A-Za-z0-9_-]+)+$', basename):
+        return basename
+    return "file path"
+
+
+def _simplify_filepaths_for_tts(text):
+    """Replace slash-heavy filesystem paths with their filename.ext or 'file path'."""
+    return _FILEPATH_RE.sub(_simplify_filepath_match, text)
+
+
 def clean_markdown(text, label=None, census=True):
     """Sanitizes Markdown for the Piper TTS engine.
 
@@ -368,6 +524,7 @@ def clean_markdown(text, label=None, census=True):
     # Strip fenced code blocks (line-anchored first so stray inline backticks cannot
     # invert fences) and disarm backticked inline-code examples (including Vim gq
     # hard-wrapped spans) BEFORE capturing standalone live player-piano cues.
+    text = _truncate_after_editorial_take(text)
     CODE_SENTINEL = '\x00CODEBLOCK\x00'
     text = re.sub(r'^```[^\n]*\n.*?^```[ \t]*$', f' {CODE_SENTINEL} ', text, flags=re.MULTILINE | re.DOTALL)
     text = re.sub(r'```.*?```', f' {CODE_SENTINEL} ', text, flags=re.DOTALL)
@@ -418,6 +575,9 @@ def clean_markdown(text, label=None, census=True):
     if text.count(spoken) > 1:
         idx = text.index(spoken)
         text = text[:idx + len(spoken)] + text[idx + len(spoken):].replace(spoken, '')
+
+    # Strip $$...$$ and single-dollar $...$ MathJax before backticks and underscores are removed
+    text = _strip_mathjax_for_tts(text)
 
     # Remove Inline Code
     text = re.sub(r'`([^`]+)`', r'\1', text)
@@ -489,6 +649,8 @@ def clean_markdown(text, label=None, census=True):
 
     # Remove HTML tags
     text = re.sub(r'<[^>]+>', '', text)
+    # Simplify slash-heavy file paths to filename.ext or "file path" before stripping underscores
+    text = _simplify_filepaths_for_tts(text)
     # Remove Headers/Bold/Italic markers
     text = re.sub(r'[*_#]', '', text)
 
