@@ -48,7 +48,7 @@ WHATS_HAPPENING_BEAT = (
     "Round oranges highlight every self-asserted crawler. "
     "Blue diamonds mark agents cryptographically signing requests under R F C 9421 Web Bot Auth. "
     "Red stop signs unmask crawlers spoofing Googlebot I P addresses. "
-    "Purple highlights User-Agents triggering the DOM hydration JavaScript trap-door. "
+    "Big purple bars are bots falling into the JavaScript DOM hydration trap-door. I guess one or two are still humans with browsers. Visit my site and see. "
     "Hit Like and Subscribe right now so you don't lose this telemetry feed, and copy this live stream link and send it to an engineer or technical S E O who can explain the two bottom intelligence panels to you. "
 )
 
