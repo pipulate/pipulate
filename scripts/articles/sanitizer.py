@@ -87,17 +87,28 @@ def _double_single_dollar_mathjax_line(line: str) -> tuple[str, int]:
 
 def double_single_dollar_mathjax(content: str) -> tuple[str, int]:
     """Double single-dollar MathJax spans outside fenced code blocks. Returns (new_content, count)."""
-    parts = FENCE_SEGMENT_RE.split(content)
+    lines = content.split('\n')
+    in_fence = False
+    fence_char = ""
     total = 0
-    for idx in range(0, len(parts), 2):
-        lines = parts[idx].split('\n')
-        for li, ln in enumerate(lines):
-            new_ln, n = _double_single_dollar_mathjax_line(ln)
-            if n:
-                lines[li] = new_ln
-                total += n
-        parts[idx] = '\n'.join(lines)
-    return ''.join(parts), total
+    for i, ln in enumerate(lines):
+        m_fence = re.match(r'^\s*(`{3,}|~{3,})', ln)
+        if m_fence:
+            ch = m_fence.group(1)[0]
+            if not in_fence:
+                in_fence = True
+                fence_char = ch
+            elif ch == fence_char and re.match(r'^\s*(`{3,}|~{3,})\s*$', ln):
+                in_fence = False
+                fence_char = ""
+            continue
+        if in_fence:
+            continue
+        new_ln, n = _double_single_dollar_mathjax_line(ln)
+        if n:
+            lines[i] = new_ln
+            total += n
+    return '\n'.join(lines), total
 
 
 def heal_corpus_mathjax(posts_dir: Path, dry_run: bool = False) -> tuple[int, int]:
@@ -473,7 +484,6 @@ def main():
         help="Explicit override: light lane (strip prompt boundary + IPs only; keep fences and names)."
     )
     common.add_standard_arguments(parser)
-    args = parser.parse_args()
 
     # Data-driven routing: the target's 'lane' in blogs.json decides,
     # unless an explicit flag overrides. Fail closed toward public scrub.
