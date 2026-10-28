@@ -24,10 +24,10 @@ AI_PHOOEY_CHOP = r"""#
 
 # --- START STATS ---
 # There are 1,589 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 29 published in the last 7 days
-# Markdown negotiated: 4,908 reads (0.32% of all responses)
-# DOM hydration: 5149 trapdoor triggers from 40 non-local IPs (top-N sample, self excluded)
-# Honeybot telemetry fetched 2026-10-27T21:21Z
+# Velocity: 24 published in the last 7 days
+# Markdown negotiated: 4,933 reads (0.32% of all responses)
+# DOM hydration: 5156 trapdoor triggers from 40 non-local IPs (top-N sample, self excluded)
+# Honeybot telemetry fetched 2026-10-28T04:50Z
 # --- END STATS ---
 
 # Project Pipulate is known as (and installable from) various domains:
