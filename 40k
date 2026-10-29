@@ -4,36 +4,36 @@ context.txt
 ! book
 ! rgxc 30
 ! markov
-! latest
-scripts/articles/lsa.py
+# ! latest
+# scripts/articles/lsa.py
 
 # WE BEGIN AT THE BEGINNING AND WILL GO ON TILL WE COME TO THE END, THEN STOP.
-/home/mike/repos/nixos/configuration.nix
-/home/mike/repos/nixos/hardware-configuration.nix
-/home/mike/repos/nixos/ai-acceleration.nix
-/home/mike/repos/nixos/notes.nix
-/home/mike/repos/nixos/packages.nix
-/home/mike/repos/nixos/services.nix
-/home/mike/repos/nixos/unstable-pin.json
-init.lua
+# /home/mike/repos/nixos/configuration.nix
+# /home/mike/repos/nixos/hardware-configuration.nix
+# /home/mike/repos/nixos/ai-acceleration.nix
+# /home/mike/repos/nixos/notes.nix
+# /home/mike/repos/nixos/packages.nix
+# /home/mike/repos/nixos/services.nix
+# /home/mike/repos/nixos/unstable-pin.json
+# init.lua
 
 # 3-2-1 NOT QUITE THERE YET BUT WILL BE
-/home/mike/repos/nixos/scripts/backup-essential.py
-/home/mike/repos/nixos/scripts/backup-home.py
-/home/mike/repos/nixos/scripts/backup-force.py
-/home/mike/repos/nixos/scripts/backup-nix.sh
-/home/mike/repos/nixos/scripts/backup-things.py
+# /home/mike/repos/nixos/scripts/backup-essential.py
+# /home/mike/repos/nixos/scripts/backup-home.py
+# /home/mike/repos/nixos/scripts/backup-force.py
+# /home/mike/repos/nixos/scripts/backup-nix.sh
+# /home/mike/repos/nixos/scripts/backup-things.py
 
 # JUST BEGINNING TO ORGANIZE MY MEDIA (Leaderboards! Leader folders?)
-/home/mike/repos/nixos/scripts/dedupe.py
+# /home/mike/repos/nixos/scripts/dedupe.py
 
 # AN OPERATING SYSTEM FOR THIS HUMAN
-/home/mike/repos/nixos/bookmarks.nix
-/home/mike/repos/nixos/bookmarks_harvest.md
-/home/mike/repos/nixos/scripts/chrome_windows.py
-/home/mike/repos/nixos/scripts/nixos-switch.py
-/home/mike/repos/nixos/scripts/bookmarks_sync.py
-/home/mike/repos/nixos/autognome.py
+# /home/mike/repos/nixos/bookmarks.nix
+# /home/mike/repos/nixos/bookmarks_harvest.md
+# /home/mike/repos/nixos/scripts/chrome_windows.py
+# /home/mike/repos/nixos/scripts/nixos-switch.py
+# /home/mike/repos/nixos/scripts/bookmarks_sync.py
+# /home/mike/repos/nixos/autognome.py
 
 # AND HOW WE PROJECT TO THE WORLD
 /home/mike/repos/nixos/blogs.nix
@@ -41,7 +41,7 @@ init.lua
 # THE SOFTWARE VON NEUMANN PROBE
 assets/installer/install.sh
 flake.nix
-release.py
+# release.py
 ~/repos/nixos/blogs.nix
 remotes/honeybot/www/qamy.ai/index.html
 remotes/honeybot/www/qamy.ai/walk/1/index.html
@@ -49,9 +49,9 @@ remotes/honeybot/www/qamy.ai/walk/2/index.html
 remotes/honeybot/www/qamy.ai/walk/3/index.html
 
 # HAND-CRANKED AGENTIC FRAMEWORK & CONTEXT COMPILER
-prompt_foo.py
-foo_files.py
-__init__.py
+# prompt_foo.py
+# foo_files.py
+# __init__.py
 
 # THE DATA EVERYONE NEEDS
 remotes/honeybot/queries/trapdoor_ips.sql
@@ -70,22 +70,22 @@ remotes/honeybot/scripts/forest.py
 remotes/honeybot/scripts/test_forest.py
 remotes/honeybot/scripts/logs.py
 remotes/honeybot/scripts/content_loader.py
-remotes/honeybot/scripts/db.py
+# remotes/honeybot/scripts/db.py
 
 # THE JEKYLL BLOG LIKE A HACKER (INVENTED SKILL.md & AGENTS.md FORMAT) PUBLISHING PIPELINE
 ~/repos/nixos/blogs.nix
 ~/.config/pipulate/blogs.json
-scripts/articles/publishizer.py
+# scripts/articles/publishizer.py
 scripts/articles/common.py
-scripts/articles/articleizer.py
-scripts/articles/link_injector.py
-scripts/articles/build_knowledge_graph.py
+# scripts/articles/articleizer.py
+# scripts/articles/link_injector.py
+# scripts/articles/build_knowledge_graph.py
 scripts/articles/editing_prompt.txt
 scripts/articles/sanitizer.py
 scripts/articles/contextualizer.py
-scripts/articles/generate_hubs.py
-scripts/articles/generate_llms_txt.py
-scripts/articles/generate_post_nav.py
+# scripts/articles/generate_hubs.py
+# scripts/articles/generate_llms_txt.py
+# scripts/articles/generate_post_nav.py
 assets/jekyll/common-packages.nix
 
 # TRIMNOIR
@@ -139,4 +139,3 @@ walk
 scripts/mother_cat.py
 scripts/walk_compile.py
 scripts/walk.py
-
