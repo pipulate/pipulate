@@ -917,13 +917,14 @@ end
 -- cross-nested bold/italic + inline-code spans (**`code**`, **text `code**`,
 -- *text `code*`, `**code`**), and mismatched **token* spans, plus locates
 -- any remaining unbalanced single backtick on a prose line.
-local function classify_markdown_fences(lines)
+function classify_markdown_fences(lines)
     local state = {}
     local in_fence = false
     local fence_char = nil
     for i, line in ipairs(lines) do
-        local bt_run, bt_lang = line:match("^%s*(\96\96\96+)([^%s\96]*)%s*$")
-        local tl_run, tl_lang = line:match("^%s*(~~~+)([^%s~]*)%s*$")
+        local stripped = line:gsub("^%s*>+%s*", "")
+        local bt_run, bt_lang = stripped:match("^%s*(\96\96\96+)([^\96]-)%s*$")
+        local tl_run, tl_lang = stripped:match("^%s*(~~~+)([^~]-)%s*$")
         local run = bt_run or tl_run
         local lang = bt_run and bt_lang or tl_lang
         if run and #run == 3 then
@@ -940,6 +941,10 @@ local function classify_markdown_fences(lines)
                 state[i] = "closer"
                 in_fence = false
                 fence_char = nil
+            elseif ch == fence_char and lang and lang ~= "" then
+                -- Self-heal fence parity if an earlier fence was left unclosed
+                state[i] = "opener"
+                in_fence = true
             else
                 state[i] = "inside"
             end
