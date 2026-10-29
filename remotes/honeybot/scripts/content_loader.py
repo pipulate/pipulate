@@ -307,7 +307,35 @@ _FILEPATH_RE = re.compile(
 
 
 def _truncate_after_editorial_take(text):
-    """Keep the article through 'Ai/AI Editorial Take' and drop subsequent Book Analysis sections."""
+    """Strip Notary Beat prompt/gobbledygook, keep 5. CLOSING and Ai/AI Editorial Take, and drop trailing sections."""
+    # 1. Strip the Notary Beat deliverable prompt boilerplate (straight or curly apostrophe, non-greedy bounded)
+    text = re.sub(
+        r'(?:^\*\*5:\s*DELIVERABLE\*\*:[ \t]*\n+)?'
+        r'^[ \t]*["\u201c\u201d\']?Hop off the ride\.\s*This ride[\'\u2018\u2019]s stated goal is reached\b'
+        r'[\s\S]{1,4500}?'
+        r'an archive entry,\s*not an open thread\.["\u201c\u201d\']?[ \t]*\n?',
+        '\n',
+        text,
+        flags=re.IGNORECASE | re.MULTILINE,
+    )
+    # 2. Strip Notary Beat sections (0. TL;DR, 1. VERIFY, 2. BANK, 3. DANGLING, 4. SEED) down to 5. CLOSING
+    text = re.sub(
+        r'^(?:#{1,6}[ \t]+|\*\*)(?:0\.[ \t]*\*?\*?TL;DR|1\.[ \t]*\*?\*?VERIFY)\b'
+        r'(?:(?!^\*\*(?:MikeLev\.in|Me|Gemini[^*\n]*)\*\*:)[\s\S])*?'
+        r'(?=^(?:#{1,6}[ \t]+|\*\*)?5\.[ \t]*\*?\*?CLOSING\b)',
+        '',
+        text,
+        flags=re.IGNORECASE | re.MULTILINE,
+    )
+    # 3. Strip 6. NOTARIZE (token/byte ledger and SHA-256 deed) between 5. CLOSING and Book Analysis / Ai Editorial Take
+    text = re.sub(
+        r'^(?:#{1,6}[ \t]+|\*\*)?6\.[ \t]*\*?\*?NOTARIZE\b'
+        r'[\s\S]*?'
+        r'(?=^#{1,6}[ \t]*(?:Book[ \t]+Analysis|Ai[ \t]+Editorial[ \t]+Take)\b|\Z)',
+        '',
+        text,
+        flags=re.IGNORECASE | re.MULTILINE,
+    )
     m_take = re.search(
         r'^#{1,6}[ \t]*ai[ \t]+editorial[ \t]+take\b[^\n]*\n',
         text,
