@@ -905,6 +905,7 @@ def print_broadcast_kit(target_key="1", mode="card", slug_match=None):
         print(" 13. ytwatch           👀 Check live viewers & chat (`ytwatch start|log|status|stop`)")
         print("     ytlog             📺 Watch live notification stream (`q` or `Ctrl+b d` to exit)")
         print(" 14. ytsay \"text\"      🎙️ Break in LIVE on-air (`-c \"CARD\"` `-p white_rabbit` `-m IMG`)")
+        print("     ytticker \"text\"   📟 Update 3-row LED side-band ticker (`--small` `--reset` `status`)")
         print(" 15. ytapp / ytvim     🖥️ Project local FastHTML (:5001) or live Vim onto stream")
         print("     ytmedia <path>    🖼️ Pop up an image or video on Honeybot :10.0 (`ytsay -m`)")
         print(" 16. ytping \"text\"     📲 Send ntfy.sh push notification to your phone")
@@ -991,7 +992,7 @@ def print_broadcast_kit(target_key="1", mode="card", slug_match=None):
     if yt_thumb:
         print(thin)
         print(f"📺 YT STUDIO THUMBNAIL (1280x720 16:9): {yt_thumb} (Checklist: Upload thumb + Enable DVR)")
-    print("🎛️  Quick Words:  yt (help) | ythero | ytyaml | tweet | linkedin | ytpebble | yttitle | ytdesc | ytcard | yttop | ytoutro | ytreboot | ytsay | ytwatch | ytping | ytroll | ytbell | ytstatus")
+    print("🎛️  Quick Words:  yt (help) | ythero | ytyaml | tweet | linkedin | ytpebble | yttitle | ytdesc | ytcard | yttop | ytoutro | ytreboot | ytsay | ytticker | ytwatch | ytping | ytroll | ytbell | ytstatus")
     print(thin)
     print(f"🔗 Preview URL:   {kit['preview_url']}")
     print(f"✏️  Edit Command:  vim {kit['path']}")
@@ -1287,6 +1288,67 @@ tmp.write_text(raw, encoding="utf-8")
 tmp.replace(p)
 print(f"📡 Live break-in queued on Honeybot: {p}")
 '''
+
+_HONEYBOT_TICKER_HELPER = r'''
+import base64, pathlib, sys
+
+action = sys.argv[1] if len(sys.argv) > 1 else "status"
+p = pathlib.Path("/tmp/honeybot_ticker.txt")
+if action == "reset":
+    p.unlink(missing_ok=True)
+    print("📟 Cleared /tmp/honeybot_ticker.txt (reverted to default LED marquee).")
+elif action == "set":
+    raw = base64.b64decode(sys.argv[2].encode("ascii")).decode("utf-8")
+    tmp = p.with_suffix(".tmp")
+    tmp.write_text(raw + "\n", encoding="utf-8")
+    tmp.replace(p)
+    print(f"📟 Updated Honeybot #ticker_bar ({p}): {raw}")
+else:
+    if p.is_file():
+        print(f"📟 Active Honeybot ticker ({p}): {p.read_text(encoding='utf-8').strip()}")
+    else:
+        print("📟 Honeybot ticker: DEFAULT_TICKER_MESSAGE active (/tmp/honeybot_ticker.txt absent).")
+'''
+
+
+def send_honeybot_ticker(message="", small=False, reset=False, dry_run=False):
+    """Update, inspect, or reset the live /tmp/honeybot_ticker.txt marquee on Honeybot over SSH."""
+    import base64
+    import subprocess
+    clean = " ".join((message or "").split()).strip()
+    low = clean.lower()
+    if reset or low in ("reset", "clear", "default", "off"):
+        if dry_run:
+            print("📟 [DRY RUN] Would remove /tmp/honeybot_ticker.txt on Honeybot (reset to default).")
+            return 0
+        res = subprocess.run(
+            ["ssh", HONEYBOT_SSH_HOST, "python3", "-", "reset"],
+            input=_HONEYBOT_TICKER_HELPER,
+            text=True,
+        )
+        return res.returncode
+    if not clean or low == "status":
+        if dry_run:
+            print("📟 [DRY RUN] Would query /tmp/honeybot_ticker.txt status on Honeybot.")
+            return 0
+        res = subprocess.run(
+            ["ssh", HONEYBOT_SSH_HOST, "python3", "-", "status"],
+            input=_HONEYBOT_TICKER_HELPER,
+            text=True,
+        )
+        return res.returncode
+    if small and not clean.upper().startswith(("SMALL:", "1ROW:")):
+        clean = f"SMALL: {clean}"
+    if dry_run:
+        print(f"📟 [DRY RUN] Honeybot ticker payload -> /tmp/honeybot_ticker.txt: {clean!r}")
+        return 0
+    b64 = base64.b64encode(clean.encode("utf-8")).decode("ascii")
+    res = subprocess.run(
+        ["ssh", HONEYBOT_SSH_HOST, "python3", "-", "set", b64],
+        input=_HONEYBOT_TICKER_HELPER,
+        text=True,
+    )
+    return res.returncode
 
 
 def send_honeybot_live_message(
@@ -2929,9 +2991,19 @@ if __name__ == "__main__":
     add_standard_arguments(parser)
     parser.add_argument(
         "--broadcast",
-        choices=("help", "card", "summary", "hero", "yaml", "tweet", "linkedin", "pebble", "title", "desc", "top", "outro", "reboot", "status", "bell", "stop", "start", "roll", "enable-ws", "say", "ping", "watch"),
+        choices=("help", "card", "summary", "hero", "yaml", "tweet", "linkedin", "pebble", "title", "desc", "top", "outro", "reboot", "status", "bell", "stop", "start", "roll", "enable-ws", "say", "ticker", "ping", "watch"),
         default="card",
-        help="Print/copy broadcast kit or control Honeybot (help|card|summary|hero|yaml|tweet|linkedin|pebble|title|desc|top|outro|reboot|status|bell|stop|start|roll|enable-ws|say|ping|watch).",
+        help="Print/copy broadcast kit or control Honeybot (help|card|summary|hero|yaml|tweet|linkedin|pebble|title|desc|top|outro|reboot|status|bell|stop|start|roll|enable-ws|say|ticker|ping|watch).",
+    )
+    parser.add_argument(
+        "--small",
+        action="store_true",
+        help="Render #ticker_bar in 1-row small text mode instead of the 3-row solid-block LED matrix.",
+    )
+    parser.add_argument(
+        "--reset",
+        action="store_true",
+        help="Reset /tmp/honeybot_ticker.txt on Honeybot back to DEFAULT_TICKER_MESSAGE.",
     )
     parser.add_argument(
         "--no-tick",
@@ -3101,6 +3173,16 @@ if __name__ == "__main__":
         help="Spoken message words for say, push body for ping, or optional interval/channel for watch.",
     )
     cli_args = parser.parse_args()
+    if cli_args.broadcast == "ticker":
+        msg_text = _read_from_clipboard() if cli_args.clip else " ".join(cli_args.message)
+        sys.exit(
+            send_honeybot_ticker(
+                msg_text,
+                small=cli_args.small,
+                reset=cli_args.reset,
+                dry_run=cli_args.dry_run,
+            )
+        )
     if cli_args.broadcast == "say":
         msg_text = _read_from_clipboard() if cli_args.clip else " ".join(cli_args.message)
         sys.exit(

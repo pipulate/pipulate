@@ -23,9 +23,51 @@ from db import db, KNOWN_BOTS  # Import the list
 
 # --- Configuration ---
 STRIP_MOZILLA_PREFIX = False  # Set to True to save space in bottom panels
-HUD_TABLE_ROWS = 15           # Visible data rows in both bottom HUD tables (tuned from 17 to 15)
+HUD_TABLE_ROWS = 13           # Visible data rows in both bottom HUD tables (freed 2 rows for #ticker_bar)
 HUD_PANEL_HEIGHT = HUD_TABLE_ROWS + 4  # +4 rows for top border, panel title, header rule, and column headers
 BOT_IDENTITY_WIDTH = 21       # Emoji (2) + space (1) + 18-char bot name (trims 15 chars for Raw Signature)
+TICKER_FILE_PATH = "/tmp/honeybot_ticker.txt"
+DEFAULT_TICKER_MESSAGE = (
+    "HEY DONT SURF AWAY SO FAST! * WELCOME TO HONEYBOT LIVE AI OBSERVATORY * "
+    "WHY THE CHIPMUNK VOICE? 16KHZ PIPER TTS PLAYED AT 22.05KHZ (+5.5 SEMITONES) * "
+    "REAL-TIME NGINX WIRE LOGS (NO CDN) * RFC 9110 MARKDOWN + RFC 9421 WEB BOT AUTH * "
+    "DROP A COMMENT IN CHAT TO RING THE OFFICE BELL * MIKELEV.IN * "
+)
+
+# 3-Row Solid-Block (█ ▀ ▄) LED Matrix Font (3 cols wide per glyph + 1 space col = 4 cols/char)
+LED_FONT_3X3 = {
+    "A": ("▄█▄", "███", "█ █"), "B": ("██▄", "██▄", "██▀"), "C": ("▄██", "█  ", "▀██"),
+    "D": ("██▄", "█ █", "██▀"), "E": ("███", "██ ", "███"), "F": ("███", "██ ", "█  "),
+    "G": ("▄██", "█▄█", "▀██"), "H": ("█ █", "███", "█ █"), "I": ("███", " █ ", "███"),
+    "J": (" ██", "  █", "▀█▀"), "K": ("█▄█", "██ ", "█ █"), "L": ("█  ", "█  ", "███"),
+    "M": ("█▄█", "███", "█ █"), "N": ("██▄", "█ █", "█ █"), "O": ("▄█▄", "█ █", "▀█▀"),
+    "P": ("██▄", "██▀", "█  "), "Q": ("▄█▄", "█▄█", "▀██"), "R": ("██▄", "██▀", "█ █"),
+    "S": ("▄██", "▀█▄", "██▀"), "T": ("███", " █ ", " █ "), "U": ("█ █", "█ █", "▀█▀"),
+    "V": ("█ █", "█ █", " ▀ "), "W": ("█ █", "███", "▀▄▀"), "X": ("█ █", " █ ", "█ █"),
+    "Y": ("█ █", " █ ", " █ "), "Z": ("███", "▄█ ", "███"), "0": ("▄█▄", "█ █", "▀█▀"),
+    "1": ("▄█ ", " █ ", "███"), "2": ("▀▀█", "▄█▀", "███"), "3": ("▀▀█", " ▀█", "██▀"),
+    "4": ("█ █", "███", "  █"), "5": ("███", "▀▀█", "██▀"), "6": ("▄██", "██▄", "▀█▀"),
+    "7": ("███", "  █", "  █"), "8": ("▄█▄", "███", "▀█▀"), "9": ("▄█▄", "▀██", "██▀"),
+    " ": ("   ", "   ", "   "), "!": (" █ ", " █ ", " ▀ "), "?": ("▀▀█", " ▄▀", " ▀ "),
+    ".": ("   ", "   ", " ▄ "), ",": ("   ", "   ", " ▄▀"), "-": ("   ", "███", "   "),
+    "+": (" ▄ ", "███", " ▀ "), ":": (" ▄ ", "   ", " ▄ "), "/": ("  █", " █ ", "█  "),
+    "*": ("▀▄▀", " █ ", "▄▀▄"), "'": (" █ ", "   ", "   "), '"': ("█ █", "   ", "   "),
+    "$": ("▄█▄", "███", "▀█▀"), "%": ("█  ", " █ ", "  █"), "&": ("▄█▄", "▄██", "▀█▄"),
+    "(": (" ▄█", " █ ", " ▀█"), ")": ("█▄ ", " █ ", "█▀ "), "@": ("▄██", "█▄█", "▀██"),
+    "#": ("█ █", "███", "█ █"), "=": ("▀▀▀", "   ", "▀▀▀"),
+}
+
+
+def render_led_3x3(text: str):
+    """Render an uppercase string into three equal-length rows of 3x3 solid-block (█ ▀ ▄) glyphs."""
+    clean = (text or "").upper()
+    r0, r1, r2 = [], [], []
+    for ch in clean:
+        g0, g1, g2 = LED_FONT_3X3.get(ch, ("   ", "   ", "   "))
+        r0.append(g0 + " ")
+        r1.append(g1 + " ")
+        r2.append(g2 + " ")
+    return "".join(r0), "".join(r1), "".join(r2)
 
 # A hidden console to render styles into ANSI codes for the Log widget
 # We set a massive width to prevent the console from hard-wrapping the text before the Log widget gets it
@@ -83,6 +125,18 @@ class SonarApp(App):
         min-width: 100%;
     }
 
+    /* MIDDLE SECTION: Eye-Level Giant LED Marquee Ticker (for squinting viewers) */
+    #ticker_bar {
+        height: 4;
+        width: 100%;
+        background: #140826;
+        color: #ffd700;
+        text-style: bold;
+        border-top: solid #ff8c00;
+        padding: 0 1;
+        overflow: hidden;
+    }
+
     /* BOTTOM SECTION: The Intelligence Panel (sized in unison by HUD_TABLE_ROWS) */
     #intelligence_panel {
         height: __HUD_PANEL_HEIGHT__;
@@ -131,6 +185,7 @@ class SonarApp(App):
         # RichLog handles wrapping and styling natively. 
         # wrap=True ensures lines don't get cut off.
         yield RichLog(id="log_stream", highlight=False, wrap=True)
+        yield Static("", id="ticker_bar")
         
         # --- NEW: The Dual Intelligence Panel ---
         with Container(id="intelligence_panel"):
@@ -176,8 +231,87 @@ class SonarApp(App):
             self.start_time = time.time()
             self.duration_mins = 15
             
+        self.ticker_offset = 0
+        self.ticker_mtime = None
+        self.ticker_tick_count = 0
+        self.ticker_small_mode = False
+        self.ticker_raw_text = ""
+        self.ticker_led_rows = ("", "", "")
+        self._reload_ticker_source(force=True)
+        self.set_interval(0.08, self.tick_marquee)
         self.set_interval(1, self.update_countdown)
         self.set_interval(5, self.refresh_tables)
+
+    def _reload_ticker_source(self, force=False):
+        """Check /tmp/honeybot_ticker.txt mtime and rebuild the LED matrix buffer only when changed."""
+        try:
+            st_mtime = os.stat(TICKER_FILE_PATH).st_mtime if os.path.exists(TICKER_FILE_PATH) else -1.0
+        except OSError:
+            st_mtime = -1.0
+        if not force and st_mtime == self.ticker_mtime:
+            return
+        self.ticker_mtime = st_mtime
+        raw = ""
+        if st_mtime > 0:
+            try:
+                with open(TICKER_FILE_PATH, "r", encoding="utf-8", errors="replace") as tf:
+                    lines = [ln.strip() for ln in tf.read().splitlines() if ln.strip()]
+                raw = " * ".join(lines)
+            except OSError:
+                raw = ""
+        if not raw:
+            raw = DEFAULT_TICKER_MESSAGE
+        small_mode = False
+        if raw.upper().startswith(("SMALL:", "1ROW:")):
+            small_mode = True
+            raw = raw.split(":", 1)[1].strip() or DEFAULT_TICKER_MESSAGE
+        elif raw.upper().startswith("BIG:"):
+            raw = raw.split(":", 1)[1].strip() or DEFAULT_TICKER_MESSAGE
+        if not raw.endswith("* "):
+            raw = raw.rstrip() + " * "
+        self.ticker_small_mode = small_mode
+        self.ticker_raw_text = raw
+        self.ticker_led_rows = render_led_3x3(raw)
+        try:
+            bar = self.query_one("#ticker_bar", Static)
+            preview = raw.replace(" * ", " · ").strip(" ·")
+            if len(preview) > 110:
+                preview = preview[:107] + "..."
+            bar.border_title = f"📡 LIVE SIDE-BAND TICKER — {preview}"
+        except Exception:
+            pass
+
+    def tick_marquee(self):
+        """Advance the 3-row solid-block LED marquee by 1 column (12.5 FPS)."""
+        self.ticker_tick_count += 1
+        if self.ticker_tick_count % 10 == 0:
+            self._reload_ticker_source(force=False)
+        try:
+            bar = self.query_one("#ticker_bar", Static)
+            width = max(40, (bar.size.width or 160) - 2)
+        except Exception:
+            return
+        if self.ticker_small_mode:
+            base = self.ticker_raw_text or DEFAULT_TICKER_MESSAGE
+            n = max(1, len(base))
+            off = self.ticker_offset % n
+            repeats = (width // n) + 3
+            doubled = base * repeats
+            win = doubled[off : off + width]
+            bar.update(Text("\n" + win + "\n", style="bold bright_yellow"))
+            self.ticker_offset = (off + 1) % n
+            return
+        r0, r1, r2 = self.ticker_led_rows
+        if not r0:
+            return
+        n = len(r0)
+        off = self.ticker_offset % n
+        repeats = (width // n) + 3
+        w0 = (r0 * repeats)[off : off + width]
+        w1 = (r1 * repeats)[off : off + width]
+        w2 = (r2 * repeats)[off : off + width]
+        bar.update(Text(f"{w0}\n{w1}\n{w2}", style="bold #ffd700"))
+        self.ticker_offset = (off + 1) % n
 
     def is_spoofed_bot(self, ip_str, ua_str):
         """True when a request claims Googlebot from outside Google's crawler IP blocks."""
