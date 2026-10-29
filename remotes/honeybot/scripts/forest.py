@@ -32,6 +32,15 @@ must not itself contain a colon. Bare labels like "THE ITCH" are fine.
 #   4. Consulting Call-to-Action ($10,000/mo HTML pre-render savings via RFC 9110/9111/9421)
 #   5. The ASCII Art Developing the Running "Forest Through the Trees" Story (PATRONUS + SAY)
 
+# --- Station-Break Report Timing Constants ---
+# REPORT_POST_LINGER_SECONDS: How long (in seconds) a Rich telemetry report stays
+# on screen AFTER its spoken commentary finishes (~20s speech + 25s linger = ~45s
+# total on-screen time, 3x the original 15s preview without excessive dead air).
+# REPORT_WINDOW_CAP_SECONDS: Safety ceiling for the Alacritty overlay window;
+# run_station_break() closes the window deterministically once post_linger ends.
+REPORT_POST_LINGER_SECONDS = 25
+REPORT_WINDOW_CAP_SECONDS = 90
+
 WHATS_HAPPENING_BEAT = (
     "What is happening on your screen right now? "
     "You are watching the live Web Bot AI Observatory. "
@@ -86,7 +95,7 @@ def _make_station_bead(card_label, card_say, capstone_cue, forest_story_lines, p
             and capstone_cue[0] == "WINDOW"
             and any(tag in str(capstone_cue[1]) for tag in (":overview", ":bimodal", ":rfc9421", ":doors"))
         )
-        post_linger = 45 if is_window_report else 0
+        post_linger = REPORT_POST_LINGER_SECONDS if is_window_report else 0
     if post_linger > 0:
         cues.append(("WAIT", int(post_linger)))
     return cues
@@ -100,7 +109,7 @@ STATION_SEGMENTS = [
             "Hello, and welcome to the Web Bot A I Observatory on Honeybot. "
             "What you are looking at is the unmediated, bare-metal heartbeat of a Nix O S web server hosted from home."
         ),
-        ("WINDOW", "forest.py:120:overview"),
+        ("WINDOW", f"forest.py:{REPORT_WINDOW_CAP_SECONDS}:overview"),
         [
             "This live telemetry card pulls straight from our SQLite wire ledger.",
             "The first horizontal bar tracks R F C 9110 Markdown adoption along our zero to twenty percent horizon.",
@@ -126,7 +135,7 @@ STATION_SEGMENTS = [
         (
             "Which A I crawlers execute client-side JavaScript, and which negotiate directly for clean Markdown?"
         ),
-        ("WINDOW", "forest.py:120:bimodal"),
+        ("WINDOW", f"forest.py:{REPORT_WINDOW_CAP_SECONDS}:bimodal"),
         [
             "This report compares our two primary ingestion sensors in real time.",
             "On top are the bots firing our JavaScript DOM hydration trapdoor, led by Meta External Agent, Open A I's SearchBot, and GPTBot.",
@@ -151,7 +160,7 @@ STATION_SEGMENTS = [
         (
             "How do you tell a cryptographically signed A I agent from an unmasked IP cloaker?"
         ),
-        ("WINDOW", "forest.py:120:rfc9421"),
+        ("WINDOW", f"forest.py:{REPORT_WINDOW_CAP_SECONDS}:rfc9421"),
         [
             "This report shows our three-shape bot identity taxonomy in action.",
             "Blue diamonds mark operators sending R F C 9421 Signature-Agent headers on the wire, including Exa Search Bot, Exa User, Ahrefs Bot, and Desearch Bot.",
@@ -178,7 +187,7 @@ STATION_SEGMENTS = [
             "Why does one home-hosted Nix O S head-end broadcast across eight distinct domain names? "
             "Because saying more requires saying less to each audience."
         ),
-        ("WINDOW", "forest.py:120:doors"),
+        ("WINDOW", f"forest.py:{REPORT_WINDOW_CAP_SECONDS}:doors"),
         [
             "Each door on this frequency dial scratches one specific engineering itch using the same underlying Software Von Neumann Probe.",
             "Sun Pug dot eye oh frees your A I discussions from disposable browser tabs into portable plain text. "
@@ -464,7 +473,7 @@ def prerender_station_report_ansi(mode="overview", width=136, out_path=None):
     return str(target)
 
 
-def render_station_report(mode="overview", hold_seconds=120.0):
+def render_station_report(mode="overview", hold_seconds=REPORT_WINDOW_CAP_SECONDS):
     """Render a live Python Rich horizontal bar-chart report in an Alacritty overlay window."""
     import time
     from rich.console import Console
@@ -478,4 +487,4 @@ def render_station_report(mode="overview", hold_seconds=120.0):
 if __name__ == "__main__":
     import sys as _sys
     _mode = _sys.argv[1] if len(_sys.argv) > 1 else "overview"
-    render_station_report(mode=_mode, hold_seconds=120.0)
+    render_station_report(mode=_mode, hold_seconds=REPORT_WINDOW_CAP_SECONDS)
