@@ -80,13 +80,13 @@ def _make_station_bead(card_label, card_say, capstone_cue, forest_story_lines, p
     for line in forest_story_lines:
         cues.append(("SAY", line))
     if post_linger is None:
-        is_bar_report = (
+        is_window_report = (
             isinstance(capstone_cue, tuple)
             and len(capstone_cue) >= 2
             and capstone_cue[0] == "WINDOW"
-            and any(tag in str(capstone_cue[1]) for tag in (":overview", ":bimodal", ":rfc9421"))
+            and any(tag in str(capstone_cue[1]) for tag in (":overview", ":bimodal", ":rfc9421", ":doors"))
         )
-        post_linger = 6 if is_bar_report else 0
+        post_linger = 45 if is_window_report else 0
     if post_linger > 0:
         cues.append(("WAIT", int(post_linger)))
     return cues
@@ -100,7 +100,7 @@ STATION_SEGMENTS = [
             "Hello, and welcome to the Web Bot A I Observatory on Honeybot. "
             "What you are looking at is the unmediated, bare-metal heartbeat of a Nix O S web server hosted from home."
         ),
-        ("WINDOW", "forest.py:65:overview"),
+        ("WINDOW", "forest.py:120:overview"),
         [
             "This live telemetry card pulls straight from our SQLite wire ledger.",
             "The first horizontal bar tracks R F C 9110 Markdown adoption along our zero to twenty percent horizon.",
@@ -126,7 +126,7 @@ STATION_SEGMENTS = [
         (
             "Which A I crawlers execute client-side JavaScript, and which negotiate directly for clean Markdown?"
         ),
-        ("WINDOW", "forest.py:65:bimodal"),
+        ("WINDOW", "forest.py:120:bimodal"),
         [
             "This report compares our two primary ingestion sensors in real time.",
             "On top are the bots firing our JavaScript DOM hydration trapdoor, led by Meta External Agent, Open A I's SearchBot, and GPTBot.",
@@ -151,7 +151,7 @@ STATION_SEGMENTS = [
         (
             "How do you tell a cryptographically signed A I agent from an unmasked IP cloaker?"
         ),
-        ("WINDOW", "forest.py:65:rfc9421"),
+        ("WINDOW", "forest.py:120:rfc9421"),
         [
             "This report shows our three-shape bot identity taxonomy in action.",
             "Blue diamonds mark operators sending R F C 9421 Signature-Agent headers on the wire, including Exa Search Bot, Exa User, Ahrefs Bot, and Desearch Bot.",
@@ -178,7 +178,7 @@ STATION_SEGMENTS = [
             "Why does one home-hosted Nix O S head-end broadcast across eight distinct domain names? "
             "Because saying more requires saying less to each audience."
         ),
-        ("WINDOW", "forest.py:65:doors"),
+        ("WINDOW", "forest.py:120:doors"),
         [
             "Each door on this frequency dial scratches one specific engineering itch using the same underlying Software Von Neumann Probe.",
             "Sun Pug dot eye oh frees your A I discussions from disposable browser tabs into portable plain text. "
@@ -312,26 +312,18 @@ def _build_station_report_panel(mode="overview"):
     conn = db.get_conn()
     cur = conn.cursor()
 
-    cur.execute("SELECT COALESCE(SUM(count), 0) FROM daily_logs")
-    total_hits = int((cur.fetchone() or [1])[0] or 1)
-
-    cur.execute("SELECT COALESCE(SUM(l.count), 0) FROM daily_logs l JOIN paths p ON l.path_id = p.id WHERE p.value LIKE '%.md%'")
-    md_reads = int((cur.fetchone() or [0])[0] or 0)
-    md_pct = round((md_reads / max(1, total_hits)) * 100.0, 2)
-    md_horizon_pct = min(100.0, round((md_pct / 20.0) * 100.0, 1))
-
-    cur.execute("SELECT COALESCE(SUM(l.count), 0) FROM daily_logs l JOIN paths p ON l.path_id = p.id WHERE p.value LIKE '%js_confirm.gif%'")
-    js_hits = int((cur.fetchone() or [0])[0] or 0)
-    bimodal_total = max(1, js_hits + md_reads)
-    js_share = round((js_hits / bimodal_total) * 100.0, 1)
-    md_share = round(100.0 - js_share, 1)
-
-    sig_clients, sig_events = db.get_rfc9421_summary()
-    cneg_rows = db.get_content_neg_agents(limit=30)
-    spoof_md = sum(int(c) for u, c in cneg_rows if str(u).startswith("[SPOOFED-IP]"))
-    total_cneg = max(1, sum(int(c) for _, c in cneg_rows))
-    spoof_pct = round((spoof_md / total_cneg) * 100.0, 1)
-    auth_pct = round(100.0 - spoof_pct, 1)
+    cneg_rows = []
+    spoof_md = 0
+    total_cneg = 1
+    spoof_pct = 0.0
+    auth_pct = 100.0
+    if mode in ("overview", "bimodal", "rfc9421"):
+        cneg_limit = 7 if mode == "bimodal" else 30
+        cneg_rows = db.get_content_neg_agents(limit=cneg_limit)
+        spoof_md = sum(int(c) for u, c in cneg_rows if str(u).startswith("[SPOOFED-IP]"))
+        total_cneg = max(1, sum(int(c) for _, c in cneg_rows))
+        spoof_pct = round((spoof_md / total_cneg) * 100.0, 1)
+        auth_pct = round(100.0 - spoof_pct, 1)
 
     tbl = Table(expand=True, show_header=True, header_style="bold cyan", border_style="bright_blue")
     if mode == "bimodal":
@@ -398,6 +390,21 @@ def _build_station_report_panel(mode="overview"):
             domain_str = f"{d_name}.{d_tld}"
             tbl.add_row(f"🚪 {domain_str}", d_folder, d_pitch)
     else:
+        cur.execute("SELECT COALESCE(SUM(count), 0) FROM daily_logs")
+        total_hits = int((cur.fetchone() or [1])[0] or 1)
+
+        cur.execute("SELECT COALESCE(SUM(l.count), 0) FROM daily_logs l JOIN paths p ON l.path_id = p.id WHERE p.value LIKE '%.md%'")
+        md_reads = int((cur.fetchone() or [0])[0] or 0)
+        md_pct = round((md_reads / max(1, total_hits)) * 100.0, 2)
+        md_horizon_pct = min(100.0, round((md_pct / 20.0) * 100.0, 1))
+
+        cur.execute("SELECT COALESCE(SUM(l.count), 0) FROM daily_logs l JOIN paths p ON l.path_id = p.id WHERE p.value LIKE '%js_confirm.gif%'")
+        js_hits = int((cur.fetchone() or [0])[0] or 0)
+        bimodal_total = max(1, js_hits + md_reads)
+        js_share = round((js_hits / bimodal_total) * 100.0, 1)
+        md_share = round(100.0 - js_share, 1)
+
+        sig_clients, sig_events = db.get_rfc9421_summary()
         title_str = "🔭 WEB BOT AI OBSERVATORY — LIVE SQLITE WIRE TELEMETRY (MIKELEV.IN)"
         tbl.add_column("Web AI Standard Metric", style="bold white", ratio=3)
         tbl.add_column("Reading", justify="right", style="bold cyan", width=18)
@@ -457,7 +464,7 @@ def prerender_station_report_ansi(mode="overview", width=136, out_path=None):
     return str(target)
 
 
-def render_station_report(mode="overview", hold_seconds=65.0):
+def render_station_report(mode="overview", hold_seconds=120.0):
     """Render a live Python Rich horizontal bar-chart report in an Alacritty overlay window."""
     import time
     from rich.console import Console
@@ -471,4 +478,4 @@ def render_station_report(mode="overview", hold_seconds=65.0):
 if __name__ == "__main__":
     import sys as _sys
     _mode = _sys.argv[1] if len(_sys.argv) > 1 else "overview"
-    render_station_report(mode=_mode, hold_seconds=65.0)
+    render_station_report(mode=_mode, hold_seconds=120.0)

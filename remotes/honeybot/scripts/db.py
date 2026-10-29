@@ -170,6 +170,12 @@ class HoneyDB:
             )
         """)
 
+        # 4. Performance Indexes for Sub-Second Station-Break Reports & 5s HUD Refreshes
+        cur.execute("CREATE INDEX IF NOT EXISTS idx_daily_logs_path_id ON daily_logs(path_id)")
+        cur.execute("CREATE INDEX IF NOT EXISTS idx_daily_logs_ua_id ON daily_logs(ua_id)")
+        cur.execute("CREATE INDEX IF NOT EXISTS idx_telemetry_served_md ON telemetry(served_md, accept_id, path_id)")
+        cur.execute("CREATE INDEX IF NOT EXISTS idx_rfc9421_logs_ua_id ON rfc9421_logs(ua_id)")
+
         conn.commit()
         self.backfill_rfc9421_from_access_log()
         self.backfill_dns_audit()
