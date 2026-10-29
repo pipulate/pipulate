@@ -163,6 +163,7 @@ table {
   width: 100%;
   text-align: left;
   color: var(--text-color);
+  background-color: var(--bg-color);
   border-collapse: collapse;
   border: 1px solid var(--border-color);
 }
@@ -175,6 +176,7 @@ table th, table td {
 }
 table th {
   background-color: var(--card-bg);
+  color: var(--text-color);
   font-weight: 600;
 }
 
