@@ -910,6 +910,213 @@ function double_mathjax_dollars()
     vim.api.nvim_buf_set_lines(0, first - 1, last, false, lines)
     vim.notify(string.format("mathjax: %d expression(s) doubled across %d line(s)", hits, changed_lines), vim.log.levels.INFO)
 end
+
+-- THE MARKDOWN NESTING & FENCE HYGIENE TOOL (\f in normal & visual mode):
+-- Finds and heals the Markdown syntax glitches that break Neovim's @Spell
+-- highlighting: naked opening triple-backtick fences, 4+ backtick runs,
+-- cross-nested bold/italic + inline-code spans (**`code**`, **text `code**`,
+-- *text `code*`, `**code`**), and mismatched **token* spans, plus locates
+-- any remaining unbalanced single backtick on a prose line.
+local function classify_markdown_fences(lines)
+    local state = {}
+    local in_fence = false
+    local fence_char = nil
+    for i, line in ipairs(lines) do
+        local bt_run, bt_lang = line:match("^%s*(\96\96\96+)([^%s\96]*)%s*$")
+        local tl_run, tl_lang = line:match("^%s*(~~~+)([^%s~]*)%s*$")
+        local run = bt_run or tl_run
+        local lang = bt_run and bt_lang or tl_lang
+        if run and #run == 3 then
+            local ch = run:sub(1, 1)
+            if not in_fence then
+                in_fence = true
+                fence_char = ch
+                if ch == "\96" and (not lang or lang == "") then
+                    state[i] = "naked_opener"
+                else
+                    state[i] = "opener"
+                end
+            elseif ch == fence_char and (not lang or lang == "") then
+                state[i] = "closer"
+                in_fence = false
+                fence_char = nil
+            else
+                state[i] = "inside"
+            end
+        elseif in_fence then
+            state[i] = "inside"
+        else
+            state[i] = "prose"
+        end
+    end
+    return state
+end
+
+function transform_markdown_glitch_line(line, fence_state)
+    local hits = 0
+    local notes = {}
+    if fence_state == "inside" or fence_state == "opener" or fence_state == "closer" then
+        return line, hits, notes, nil
+    end
+    if fence_state == "naked_opener" then
+        local indent, ticks = line:match("^(%s*)(\96\96\96+)%s*$")
+        if ticks then
+            return indent .. "\96\96\96text", 1, {"naked fence -> \96\96\96text"}, #indent + 1
+        end
+    end
+    local out = line
+    local first_col = nil
+
+    -- 1. Replace 4+ backtick runs with [N-backticks]
+    local q_pos = out:find("\96\96\96\96+")
+    if q_pos then
+        if not first_col or q_pos < first_col then first_col = q_pos end
+        out = out:gsub("\96\96\96\96+", function(m)
+            hits = hits + 1
+            local repl = string.format("[%d-backticks]", #m)
+            table.insert(notes, repl)
+            return repl
+        end)
+    end
+
+    -- 2. Fix bold + inline-code right-boundary cross-nesting: **`code**` and **text `code**`
+    local b1 = out:find("%*%*\96[^\96*\n]+%*%*\96")
+    if b1 then
+        if not first_col or b1 < first_col then first_col = b1 end
+        out = out:gsub("%*%*(\96[^\96*\n]+)%*%*\96", function(code)
+            hits = hits + 1
+            table.insert(notes, "**\96...\96**")
+            return "**" .. code .. "\96**"
+        end)
+    end
+    local b2 = out:find("%*%*[^\96*\n]-\96[^\96*\n]+%*%*\96")
+    if b2 then
+        if not first_col or b2 < first_col then first_col = b2 end
+        out = out:gsub("(%*%*[^\96*\n]-)(\96[^\96*\n]+)%*%*\96", function(head, code)
+            hits = hits + 1
+            table.insert(notes, "**...\96...\96**")
+            return head .. code .. "\96**"
+        end)
+    end
+
+    -- 3. Fix bold + inline-code left-boundary cross-nesting: `**code`**
+    local b3 = out:find("\96%*%*[^\96*\n]+\96%*%*")
+    if b3 then
+        if not first_col or b3 < first_col then first_col = b3 end
+        out = out:gsub("\96%*%*([^\96*\n]+)\96%*%*", function(inner)
+            hits = hits + 1
+            table.insert(notes, "**\96...\96**")
+            return "**\96" .. inner .. "\96**"
+        end)
+    end
+
+    -- 4. Fix italic + inline-code right-boundary cross-nesting: *text `code*` -> *text `code`*
+    local outside_code = out:gsub("\96+[^\96]*\96+", function(m) return string.rep(" ", #m) end)
+    local outside_no_bold = outside_code:gsub("%*%*+", function(m) return string.rep(" ", #m) end)
+    outside_no_bold = outside_no_bold:gsub("^%s*%*%s+", function(m) return string.rep(" ", #m) end)
+    local _, single_stars = outside_no_bold:gsub("%*", "")
+    if single_stars % 2 == 1 then
+        local i1 = out:find("\96[^\96*\n]+%*\96")
+        if i1 then
+            if not first_col or i1 < first_col then first_col = i1 end
+            out = out:gsub("\96([^\96*\n]+)%*\96", function(inner)
+                hits = hits + 1
+                table.insert(notes, "*...\96...\96*")
+                return "\96" .. inner .. "\96*"
+            end, 1)
+        end
+    end
+
+    -- 5. Fix mismatched **token* -> *token* (e.g. (PIE **h2r-ti-*))
+    local m_pos = out:find("%*%*[^%*\96%s]+%*[%)%].,;:!?%s]")
+    if m_pos then
+        if not first_col or m_pos < first_col then first_col = m_pos end
+        out = out:gsub("%*%*([^%*\96%s]+)%*([%)%].,;:!?%s])", function(inner, tail)
+            hits = hits + 1
+            table.insert(notes, "**...* -> *...*")
+            return "*" .. inner .. "*" .. tail
+        end)
+    end
+
+    -- 6. Detect any remaining unbalanced single backtick on a prose line
+    local stripped_pairs = out:gsub("\96+[^\96]+\96+", function(m) return string.rep(" ", #m) end)
+    local stray_pos = stripped_pairs:find("\96")
+    if stray_pos then
+        if not first_col or stray_pos < first_col then first_col = stray_pos end
+        table.insert(notes, "unbalanced \96")
+    end
+
+    return out, hits, notes, first_col
+end
+
+function find_next_markdown_glitch()
+    local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+    local total = #lines
+    if total == 0 then return end
+    local states = classify_markdown_fences(lines)
+    local cur_pos = vim.api.nvim_win_get_cursor(0)
+    local cur_line = cur_pos[1]
+
+    for offset = 1, total do
+        local lnum = ((cur_line - 1 + offset) % total) + 1
+        local _, hits, notes, col = transform_markdown_glitch_line(lines[lnum], states[lnum])
+        if hits > 0 or #notes > 0 then
+            local wrapped = lnum <= cur_line and " [wrapped]" or ""
+            vim.api.nvim_win_set_cursor(0, {lnum, math.max(0, (col or 1) - 1)})
+            vim.cmd('normal! zz')
+            vim.notify(string.format("md-glitch: %s on line %d%s -- V then \\f to fix", table.concat(notes, ", "), lnum, wrapped), vim.log.levels.INFO)
+            return
+        end
+    end
+    vim.notify("md-glitch: 0 Markdown nesting/fence glitches found in buffer", vim.log.levels.INFO)
+end
+
+function fix_markdown_glitches()
+    local first = vim.fn.line("'<")
+    local last = vim.fn.line("'>")
+    if first == 0 or last == 0 or last < first then
+        vim.notify("md-glitch: no visual selection found", vim.log.levels.WARN)
+        return
+    end
+    local all_lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+    local states = classify_markdown_fences(all_lines)
+    local lines = vim.api.nvim_buf_get_lines(0, first - 1, last, false)
+    local total_hits = 0
+    local changed_lines = 0
+    local unfixed_lnum = nil
+    local unfixed_col = nil
+
+    for i, line in ipairs(lines) do
+        local buf_lnum = first + i - 1
+        local new_line, hits, notes, col = transform_markdown_glitch_line(line, states[buf_lnum])
+        if hits > 0 then
+            lines[i] = new_line
+            total_hits = total_hits + hits
+            changed_lines = changed_lines + 1
+        end
+        if not unfixed_lnum then
+            for _, n in ipairs(notes) do
+                if n == "unbalanced \96" then
+                    unfixed_lnum = buf_lnum
+                    unfixed_col = col or 1
+                end
+            end
+        end
+    end
+
+    if total_hits > 0 then
+        vim.api.nvim_buf_set_lines(0, first - 1, last, false, lines)
+    end
+    if unfixed_lnum then
+        vim.api.nvim_win_set_cursor(0, {unfixed_lnum, math.max(0, unfixed_col - 1)})
+        vim.cmd('normal! zz')
+        vim.notify(string.format("md-glitch: fixed %d glitch(es) across %d line(s); jumped to unbalanced \96 on line %d", total_hits, changed_lines, unfixed_lnum), vim.log.levels.WARN)
+    elseif total_hits == 0 then
+        vim.notify("md-glitch: 0 Markdown glitches found in selection", vim.log.levels.WARN)
+    else
+        vim.notify(string.format("md-glitch: %d glitch(es) healed across %d line(s)", total_hits, changed_lines), vim.log.levels.INFO)
+    end
+end
 function sync_to_prompt()
     -- Yank the visual selection
     vim.cmd('normal! gvy')
@@ -1061,6 +1268,7 @@ map('n', '<leader>s', '<cmd>lua correct_misspelling()<CR>', opts)  -- Spell corr
 map('n', '<leader>q', '<cmd>lua escape_html_tags()<CR>', opts)  -- HTML tag escaping
 map('n', '<leader>r', '<cmd>lua add_liquid_raw_tags()<CR>', opts)  -- Add Liquid raw tags
 map('n', '<leader>d', '<cmd>lua find_next_mathjax_candidate()<CR>', opts)  -- Find next single-dollar MathJax candidate
+map('n', '<leader>f', '<cmd>lua find_next_markdown_glitch()<CR>', opts)  -- Find next Markdown nesting/fence glitch
 
 -- Dialogue Labelers
 map('n', '<leader>b', '<cmd>lua bold_dialogue_speaker()<CR>', opts)  -- Bold dialogue speaker
@@ -1097,6 +1305,7 @@ vim.api.nvim_set_keymap('v', '<leader>p', '<cmd>lua sync_to_prompt()<CR>', { nor
 -- 'normal! gvy' to reselect; a line-range edit has no such escape.
 vim.api.nvim_set_keymap('v', '<leader>x', ':<C-u>lua scrub_oauth()<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('v', '<leader>d', ':<C-u>lua double_mathjax_dollars()<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('v', '<leader>f', ':<C-u>lua fix_markdown_glitches()<CR>', { noremap = true, silent = true })
 
 -- Print a message to confirm init.lua is loaded
 print("init.lua loaded successfully!")
@@ -1114,6 +1323,8 @@ print("init.lua loaded successfully!")
 -- <leader>r - Add Liquid {% raw %}/{% endraw %} tags around {{ content
 -- <leader>d - Jump to next single-dollar MathJax candidate (skips code fences, double-dollar, and currency)
 -- <leader>d (visual) - Convert single-dollar MathJax to double-dollar in selection (no double-doubling)
+-- <leader>f - Jump to next Markdown nesting/fence glitch (naked fences, 4+ backticks, **/` cross-nesting, unbalanced `)
+-- <leader>f (visual) - Heal Markdown nesting/fence glitches across selection and jump to any unbalanced `
 -- <leader>t - Toggle textwidth 0 <-> 80 (the Margin Release; also F5)
 -- <F2> - Reload init.lua configuration
 -- <F3> - Toggle spell check on/off
