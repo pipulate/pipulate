@@ -129,7 +129,7 @@ STATION_SEGMENTS = [
         ("WINDOW", "forest.py:65:bimodal"),
         [
             "This report compares our two primary ingestion sensors in real time.",
-            "On top are the bots firing our JavaScript DOM hydration trapdoor, led by Open A I's SearchBot, Meta External Agent, and GPTBot.",
+            "On top are the bots firing our JavaScript DOM hydration trapdoor, led by Meta External Agent, Open A I's SearchBot, and GPTBot.",
             "On the bottom are the R F C 9110 Markdown negotiators requesting clean text at wire speed without spinning up a headless browser.",
         ],
     ),
@@ -214,6 +214,92 @@ def _bar(pct, width=32, fill_color="cyan"):
     return f"[{fill_color}]{'█' * filled}[/{fill_color}][dim]{'░' * empty}[/dim]"
 
 
+import re as _re
+
+_COMPAT_BOT_RE = _re.compile(r"compatible;\s*([A-Za-z0-9._-]+)", _re.IGNORECASE)
+_KEYWORD_BOT_RE = _re.compile(
+    r"\b([A-Za-z0-9._-]*(?:bot|spider|crawler|agent|radar|worker|mcp|research|scraper|fetcher|inspector|archiver|httpx|requests|axios|curl|wget|aiohttp|urllib|go-http-client|python)[A-Za-z0-9._-]*)",
+    _re.IGNORECASE,
+)
+_LEADING_AGENT_RE = _re.compile(r"^([A-Za-z0-9._-]+?)(?:/[\d.]+|\s+\(|\s*$)")
+_ROLLUP_PREFIX_RE = _re.compile(r"^\[(\+\d+)\]\s*")
+_VERIFIED_TOKENS = {"ExaSearchBot", "AhrefsBot", "DesearchBot", "ShapBot"}
+
+
+def _detect_bot_token(ua_str, known_bots=()):
+    """Extract the self-identifying bot/agent token from a User-Agent string (matching logs.py)."""
+    s = (ua_str or "").strip()
+    if not s or s == "-":
+        return None
+    for bot_name in sorted(known_bots, key=len, reverse=True):
+        if bot_name in s:
+            m_ext = _re.search(rf"({_re.escape(bot_name)}[A-Za-z0-9._-]*)", s)
+            return m_ext.group(1).strip(";/() ") if m_ext else bot_name
+    for m in _COMPAT_BOT_RE.finditer(s):
+        tok = m.group(1).strip(";/() ")
+        if tok and tok.upper() not in ("MSIE", "MOZILLA"):
+            return tok
+    if not s.startswith(("Mozilla/", "AppleWebKit/", "(")):
+        m_lead = _LEADING_AGENT_RE.match(s)
+        if m_lead:
+            return m_lead.group(1).strip()
+    m_kw = _KEYWORD_BOT_RE.search(s)
+    if m_kw:
+        tok = m_kw.group(1).strip(";/() ")
+        if tok.lower() not in ("mozilla", "applewebkit", "safari", "chrome", "gecko", "khtml", "mobile"):
+            return tok
+    return None
+
+
+def _format_bot_identity_and_sig(ua_str, known_bots=(), max_sig_len=58):
+    """Return (badge, identity_text, sig_text) matching the lower HUD tables in logs.py."""
+    from rich.text import Text
+    raw = (ua_str or "").strip()
+    is_spoof = raw.startswith("[SPOOFED-IP] ")
+    if is_spoof:
+        raw = raw[len("[SPOOFED-IP] "):].strip()
+    is_verified = raw.startswith("[VERIFIED] ")
+    if is_verified:
+        raw = raw[len("[VERIFIED] "):].strip()
+    rollup_badge = ""
+    m_rollup = _ROLLUP_PREFIX_RE.match(raw)
+    if m_rollup:
+        rollup_badge = m_rollup.group(1)
+        raw = raw[m_rollup.end():].strip()
+    bot_token = _detect_bot_token(raw, known_bots=known_bots)
+    if not is_spoof and not is_verified and bot_token in _VERIFIED_TOKENS:
+        is_verified = True
+    short_bot = (bot_token or "Browser/Other")[:18]
+    if is_spoof:
+        badge = "🛑"
+        identity_str = f"🛑 {short_bot[:11]} (Cloak)"
+        id_style = "bold red"
+        sig_style = "red"
+    elif is_verified:
+        badge = "🔷"
+        identity_str = f"🔷 {short_bot}"
+        id_style = "bold deep_sky_blue1"
+        sig_style = "deep_sky_blue1"
+    else:
+        badge = "🟠"
+        identity_str = f"🟠 {short_bot}"
+        id_style = "bold orange1"
+        sig_style = "dim green"
+    clean_ua = raw.replace("Mozilla/5.0 ", "")
+    clean_ua = _re.sub(r"AppleWebKit/[\d.]+\s*\(KHTML,\s*like\s*Gecko\)\s*;?\s*", "... ", clean_ua)
+    budget = max(20, max_sig_len - (len(rollup_badge) + 1 if rollup_badge else 0))
+    if len(clean_ua) > budget:
+        clean_ua = clean_ua[: budget - 1] + "…"
+    body_text = Text(clean_ua, style=sig_style)
+    if bot_token and bot_token in clean_ua:
+        body_text.highlight_regex(_re.escape(bot_token), id_style)
+    if rollup_badge:
+        sig_text = Text.assemble((f"{rollup_badge} ", "bold bright_yellow"), body_text)
+    else:
+        sig_text = body_text
+    return badge, Text(identity_str, style=id_style), sig_text
+
+
 def _build_station_report_panel(mode="overview"):
     """Query honeybot.db in read-only fast mode and return a Rich Panel renderable."""
     import os
@@ -221,7 +307,7 @@ def _build_station_report_panel(mode="overview"):
     from rich.panel import Panel
     from rich.table import Table
     from rich.text import Text
-    from db import db
+    from db import db, KNOWN_BOTS
 
     conn = db.get_conn()
     cur = conn.cursor()
@@ -249,28 +335,30 @@ def _build_station_report_panel(mode="overview"):
 
     tbl = Table(expand=True, show_header=True, header_style="bold cyan", border_style="bright_blue")
     if mode == "bimodal":
-        title_str = "⚡ DOM HYDRATION TRAPDOOR vs. 🧠 RFC 9110 MARKDOWN NEGOTIATORS"
-        tbl.add_column("Sensor / Agent", style="bold white", ratio=4, no_wrap=True)
-        tbl.add_column("Hits", justify="right", style="bold yellow", width=8, no_wrap=True)
-        tbl.add_column("Share Bar (Horizontal Proportion)", ratio=3, no_wrap=True)
-        js_rows = db.get_js_executors(limit=6)
+        title_str = "⚡ DOM HYDRATION TRAPDOOR (Top) vs. 🧠 RFC 9110 MARKDOWN NEGOTIATORS (Bottom)"
+        tbl.add_column("Hits", justify="right", style="bold yellow", width=7, no_wrap=True)
+        tbl.add_column("Bot Identity", style="bold white", width=24, no_wrap=True)
+        tbl.add_column("Raw Signature", ratio=4, no_wrap=True)
+        tbl.add_column("Share Bar", width=26, no_wrap=True)
+        js_rows = db.get_js_executors(limit=7)
         max_js = max([int(c) for _, c in js_rows] or [1])
         for ua, cnt in js_rows:
-            badge = "🛑" if "[SPOOFED-IP]" in ua else ("🔷" if "[VERIFIED]" in ua else "🟠")
-            short_ua = ua.replace("[SPOOFED-IP] ", "").replace("[VERIFIED] ", "").replace("Mozilla/5.0 ", "")[:34]
-            tbl.add_row(f"⚡ {badge} {short_ua}", f"{cnt:,}", _bar((cnt / max_js) * 100.0, 28, "yellow"))
+            _, ident_txt, sig_txt = _format_bot_identity_and_sig(ua, known_bots=KNOWN_BOTS, max_sig_len=56)
+            sensor_ident = Text.assemble(("⚡ ", "bold yellow"), ident_txt)
+            tbl.add_row(f"{cnt:,}", sensor_ident, sig_txt, _bar((cnt / max_js) * 100.0, 24, "yellow"))
         tbl.add_section()
-        max_md = max([int(c) for _, c in cneg_rows[:6]] or [1])
-        for ua, cnt in cneg_rows[:6]:
-            badge = "🛑" if "[SPOOFED-IP]" in ua else ("🔷" if "[VERIFIED]" in ua else "🟠")
-            short_ua = ua.replace("[SPOOFED-IP] ", "").replace("[VERIFIED] ", "").replace("Mozilla/5.0 ", "")[:34]
+        max_md = max([int(c) for _, c in cneg_rows[:7]] or [1])
+        for ua, cnt in cneg_rows[:7]:
+            badge, ident_txt, sig_txt = _format_bot_identity_and_sig(ua, known_bots=KNOWN_BOTS, max_sig_len=56)
+            sensor_ident = Text.assemble(("🧠 ", "bold cyan"), ident_txt)
             color = "red" if badge == "🛑" else ("deep_sky_blue1" if badge == "🔷" else "cyan")
-            tbl.add_row(f"🧠 {badge} {short_ua}", f"{cnt:,}", _bar((cnt / max_md) * 100.0, 28, color))
+            tbl.add_row(f"{cnt:,}", sensor_ident, sig_txt, _bar((cnt / max_md) * 100.0, 24, color))
     elif mode == "rfc9421":
         title_str = "🔷 RFC 9421 WEB BOT AUTH SIGNERS & 🛑 UNMASKED IP CLOAKERS"
-        tbl.add_column("Operator / Signature-Agent", style="bold white", ratio=4, no_wrap=True)
-        tbl.add_column("Events", justify="right", style="bold deep_sky_blue1", width=8, no_wrap=True)
-        tbl.add_column("Verification Telemetry", ratio=4, no_wrap=True)
+        tbl.add_column("Events", justify="right", style="bold deep_sky_blue1", width=7, no_wrap=True)
+        tbl.add_column("Bot Identity", style="bold white", width=22, no_wrap=True)
+        tbl.add_column("Signature-Agent / Raw Signature", ratio=4, no_wrap=True)
+        tbl.add_column("Verification Telemetry", width=34, no_wrap=True)
         cur.execute(
             """
             SELECT s.value, ua.value, SUM(r.count) as total
@@ -285,18 +373,21 @@ def _build_station_report_panel(mode="overview"):
         sig_rows = cur.fetchall()
         max_sig = max([int(r[2]) for r in sig_rows] or [1])
         for sig_val, ua_val, cnt in sig_rows:
-            short_ua = ua_val.replace("Mozilla/5.0 ", "")[:26]
-            tbl.add_row(f"🔷 {sig_val} ({short_ua})", f"{cnt:,}", _bar((cnt / max_sig) * 100.0, 28, "deep_sky_blue1"))
+            _, ident_txt, sig_txt = _format_bot_identity_and_sig(f"[VERIFIED] {ua_val}", known_bots=KNOWN_BOTS, max_sig_len=36)
+            combined_sig = Text.assemble((f"{sig_val} ", "bold deep_sky_blue1"), sig_txt)
+            tbl.add_row(f"{cnt:,}", ident_txt, combined_sig, _bar((cnt / max_sig) * 100.0, 26, "deep_sky_blue1"))
         tbl.add_section()
         tbl.add_row(
-            "🛑 Unmasked Googlebot IP Cloakers",
             f"{spoof_md:,}",
-            f"{_bar(spoof_pct, 28, 'red')} [bold red]{spoof_pct}%[/bold red]",
+            Text("🛑 Googlebot (Cloak)", style="bold red"),
+            Text("Unmasked scrapers failing Google IP / FCrDNS verification", style="red"),
+            f"{_bar(spoof_pct, 26, 'red')} [bold red]{spoof_pct}%[/bold red]",
         )
         tbl.add_row(
-            "🟠 Authentic Self-Asserted Markdown Bots",
             f"{total_cneg - spoof_md:,}",
-            f"{_bar(auth_pct, 28, 'dark_orange')} [bold orange1]{auth_pct}%[/bold orange1]",
+            Text("🟠 Authentic Bot UAs", style="bold orange1"),
+            Text("Self-asserted RFC 9110 Markdown negotiators", style="dim green"),
+            f"{_bar(auth_pct, 26, 'dark_orange')} [bold orange1]{auth_pct}%[/bold orange1]",
         )
     elif mode == "doors":
         title_str = "🎙️ THE 8-DOOR HONEYBOT FREQUENCY DIAL (CURL -fsSL <DOOR> | LESS)"
@@ -346,10 +437,10 @@ def _build_station_report_panel(mode="overview"):
         "[bold green]💸 Spending $15,000/mo+ on HTML pre-render?[/bold green] "
         "RFC 9110, RFC 9111 & RFC 9421 save that spend -> [bold cyan]https://mikelev.in/#consulting[/bold cyan]"
     )
-    return Panel(tbl, title=f"[bold bright_cyan]{title_str}[/bold bright_cyan]", subtitle=footer, padding=(1, 2))
+    return Panel(tbl, title=f"[bold bright_cyan]{title_str}[/bold bright_cyan]", subtitle=footer, padding=(0, 1))
 
 
-def prerender_station_report_ansi(mode="overview", width=104, out_path=None):
+def prerender_station_report_ansi(mode="overview", width=136, out_path=None):
     """Pre-render the station report to an ANSI file BEFORE Alacritty opens so frame 1 is populated."""
     import io
     from pathlib import Path
