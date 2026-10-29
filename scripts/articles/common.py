@@ -905,7 +905,7 @@ def print_broadcast_kit(target_key="1", mode="card", slug_match=None):
         print(" 13. ytwatch           👀 Check live viewers & chat (`ytwatch start|log|status|stop`)")
         print("     ytlog             📺 Watch live notification stream (`q` or `Ctrl+b d` to exit)")
         print(" 14. ytsay \"text\"      🎙️ Break in LIVE on-air (`-c \"CARD\"` `-p white_rabbit` `-m IMG`)")
-        print("     ytticker \"text\"   📟 Update 3-row LED side-band ticker (`--small` `--reset` `status`)")
+        print("     ytticker \"text\"   📟 Update 3-row LED side-band (`|` cards, `--scroll`, `--small`, `--reset`)")
         print(" 15. ytapp / ytvim     🖥️ Project local FastHTML (:5001) or live Vim onto stream")
         print("     ytmedia <path>    🖼️ Pop up an image or video on Honeybot :10.0 (`ytsay -m`)")
         print(" 16. ytping \"text\"     📲 Send ntfy.sh push notification to your phone")
@@ -1311,7 +1311,7 @@ else:
 '''
 
 
-def send_honeybot_ticker(message="", small=False, reset=False, dry_run=False):
+def send_honeybot_ticker(message="", small=False, scroll=False, reset=False, dry_run=False):
     """Update, inspect, or reset the live /tmp/honeybot_ticker.txt marquee on Honeybot over SSH."""
     import base64
     import subprocess
@@ -1339,6 +1339,8 @@ def send_honeybot_ticker(message="", small=False, reset=False, dry_run=False):
         return res.returncode
     if small and not clean.upper().startswith(("SMALL:", "1ROW:")):
         clean = f"SMALL: {clean}"
+    elif scroll and not clean.upper().startswith(("SCROLL:", "MARQUEE:")):
+        clean = f"SCROLL: {clean}"
     if dry_run:
         print(f"📟 [DRY RUN] Honeybot ticker payload -> /tmp/honeybot_ticker.txt: {clean!r}")
         return 0
@@ -3001,6 +3003,11 @@ if __name__ == "__main__":
         help="Render #ticker_bar in 1-row small text mode instead of the 3-row solid-block LED matrix.",
     )
     parser.add_argument(
+        "--scroll",
+        action="store_true",
+        help="Render #ticker_bar in continuous horizontal scrolling marquee mode instead of centered flip-cards.",
+    )
+    parser.add_argument(
         "--reset",
         action="store_true",
         help="Reset /tmp/honeybot_ticker.txt on Honeybot back to DEFAULT_TICKER_MESSAGE.",
@@ -3179,6 +3186,7 @@ if __name__ == "__main__":
             send_honeybot_ticker(
                 msg_text,
                 small=cli_args.small,
+                scroll=cli_args.scroll,
                 reset=cli_args.reset,
                 dry_run=cli_args.dry_run,
             )

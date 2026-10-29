@@ -27,11 +27,12 @@ HUD_TABLE_ROWS = 13           # Visible data rows in both bottom HUD tables (fre
 HUD_PANEL_HEIGHT = HUD_TABLE_ROWS + 4  # +4 rows for top border, panel title, header rule, and column headers
 BOT_IDENTITY_WIDTH = 21       # Emoji (2) + space (1) + 18-char bot name (trims 15 chars for Raw Signature)
 TICKER_FILE_PATH = "/tmp/honeybot_ticker.txt"
+CARD_HOLD_TICKS = 56  # 56 * 0.08s = ~4.5s still hold per card (0% CPU during hold)
+CARD_STYLES = ("bold #ffd700", "bold #00ffff", "bold #ffae42")
 DEFAULT_TICKER_MESSAGE = (
-    "HEY DONT SURF AWAY SO FAST! * WELCOME TO HONEYBOT LIVE AI OBSERVATORY * "
-    "WHY THE CHIPMUNK VOICE? 16KHZ PIPER TTS PLAYED AT 22.05KHZ (+5.5 SEMITONES) * "
-    "REAL-TIME NGINX WIRE LOGS (NO CDN) * RFC 9110 MARKDOWN + RFC 9421 WEB BOT AUTH * "
-    "DROP A COMMENT IN CHAT TO RING THE OFFICE BELL * MIKELEV.IN * "
+    "HOLD TIGHT! MAX POPS IN TO SAY HI | "
+    "LEAVE A COMMENT TO SUMMON THE HUMAN | "
+    "LIVE AI BOT LOGS * MIKELEV.IN"
 )
 
 # 3-Row Solid-Block (█ ▀ ▄) LED Matrix Font (3 cols wide per glyph + 1 space col = 4 cols/char)
@@ -68,6 +69,46 @@ def render_led_3x3(text: str):
         r1.append(g1 + " ")
         r2.append(g2 + " ")
     return "".join(r0), "".join(r1), "".join(r2)
+
+
+def _split_into_fitting_cards(raw_text: str, max_chars: int):
+    """Split '|' delimited text into short uppercase cards that each fit within max_chars."""
+    max_c = max(12, max_chars)
+    segments = [seg.strip() for seg in re.split(r"\|", raw_text or "") if seg.strip()]
+    if len(segments) == 1 and " * " in segments[0] and len(segments[0]) > max_c:
+        segments = [seg.strip() for seg in segments[0].split(" * ") if seg.strip()]
+    cards = []
+    for seg in segments:
+        words = seg.upper().split()
+        cur = ""
+        for w in words:
+            if len(w) > max_c:
+                if cur:
+                    cards.append(cur)
+                    cur = ""
+                cards.append(w[:max_c])
+            elif not cur:
+                cur = w
+            elif len(cur) + 1 + len(w) <= max_c:
+                cur = f"{cur} {w}"
+            else:
+                cards.append(cur)
+                cur = w
+        if cur:
+            cards.append(cur)
+    return cards or ["HOLD TIGHT! MAX POPS IN TO SAY HI"]
+
+
+def _center_led_rows(card_str: str, width: int):
+    """Render card_str in 3x3 LED blocks and center-pad each row to exact terminal width."""
+    r0, r1, r2 = render_led_3x3(card_str)
+    r0, r1, r2 = r0.rstrip(), r1.rstrip(), r2.rstrip()
+    glyph_w = len(r0)
+    if glyph_w >= width:
+        return r0[:width], r1[:width], r2[:width]
+    left_pad = " " * ((width - glyph_w) // 2)
+    right_pad = " " * (width - glyph_w - len(left_pad))
+    return left_pad + r0 + right_pad, left_pad + r1 + right_pad, left_pad + r2 + right_pad
 
 # A hidden console to render styles into ANSI codes for the Log widget
 # We set a massive width to prevent the console from hard-wrapping the text before the Log widget gets it
@@ -234,16 +275,75 @@ class SonarApp(App):
         self.ticker_offset = 0
         self.ticker_mtime = None
         self.ticker_tick_count = 0
-        self.ticker_small_mode = False
+        self.ticker_mode = "billboard"  # "billboard" (default still+flip) | "scroll" | "small"
         self.ticker_raw_text = ""
         self.ticker_led_rows = ("", "", "")
+        self.ticker_cards = []
+        self.ticker_card_idx = 0
+        self.ticker_hold_ticks = 0
+        self.ticker_flip_step = 0
+        self.ticker_cached_width = 0
+        self.ticker_last_mono = time.monotonic()
+        self.ticker_recent_dts = []
         self._reload_ticker_source(force=True)
         self.set_interval(0.08, self.tick_marquee)
         self.set_interval(1, self.update_countdown)
         self.set_interval(5, self.refresh_tables)
 
+    def _rebuild_billboard_cache(self, width: int):
+        """Pre-render double-buffered Rich.Text still cards and 2-step vertical split-flap frames."""
+        self.ticker_cached_width = width
+        max_chars = max(12, (width + 1) // 4)
+        card_strings = _split_into_fitting_cards(self.ticker_raw_text, max_chars)
+        raw_rows = [_center_led_rows(cs, width) for cs in card_strings]
+        total = len(card_strings)
+        built = []
+        for idx, cs in enumerate(card_strings):
+            c_r0, c_r1, c_r2 = raw_rows[idx]
+            nxt_idx = (idx + 1) % total
+            n_r0, n_r1, n_r2 = raw_rows[nxt_idx]
+            style_cur = CARD_STYLES[idx % len(CARD_STYLES)]
+            style_nxt = CARD_STYLES[nxt_idx % len(CARD_STYLES)]
+            still_txt = Text(f"{c_r0}\n{c_r1}\n{c_r2}", style=style_cur)
+            # Frame 1 of vertical split-flap roll: old rows 1-2 shift up, blank separator at bottom
+            flip_1 = Text.assemble(
+                (c_r1 + "\n", style_cur),
+                (c_r2 + "\n", style_cur),
+                (" " * width, style_cur),
+            )
+            # Frame 2 of vertical split-flap roll: old row 2 at top, new rows 0-1 rising from bottom
+            flip_2 = Text.assemble(
+                (c_r2 + "\n", style_cur),
+                (n_r0 + "\n", style_nxt),
+                (n_r1, style_nxt),
+            )
+            built.append({
+                "text": cs,
+                "title": f"📡 LIVE SIDE-BAND [{idx + 1}/{total}] — {cs}  (💬 Chat to summon Mike live!)",
+                "still": still_txt,
+                "flip_1": flip_1,
+                "flip_2": flip_2,
+            })
+        self.ticker_cards = built
+        self.ticker_card_idx = 0
+        self.ticker_hold_ticks = 0
+        self.ticker_flip_step = 0
+        try:
+            bar = self.query_one("#ticker_bar", Static)
+            if built:
+                bar.border_title = built[0]["title"]
+                bar.update(built[0]["still"])
+        except Exception:
+            pass
+
+    def _is_window_clear_for_smooth_flip(self) -> bool:
+        """True when recent event-loop ticks had low jitter (<115ms) and no active Piper synthesis lock."""
+        if len(self.ticker_recent_dts) >= 4 and max(self.ticker_recent_dts[-6:]) > 0.115:
+            return False
+        return True
+
     def _reload_ticker_source(self, force=False):
-        """Check /tmp/honeybot_ticker.txt mtime and rebuild the LED matrix buffer only when changed."""
+        """Check /tmp/honeybot_ticker.txt mtime and rebuild the double-buffered LED frames only when changed."""
         try:
             st_mtime = os.stat(TICKER_FILE_PATH).st_mtime if os.path.exists(TICKER_FILE_PATH) else -1.0
         except OSError:
@@ -256,33 +356,55 @@ class SonarApp(App):
             try:
                 with open(TICKER_FILE_PATH, "r", encoding="utf-8", errors="replace") as tf:
                     lines = [ln.strip() for ln in tf.read().splitlines() if ln.strip()]
-                raw = " * ".join(lines)
+                raw = " | ".join(lines)
             except OSError:
                 raw = ""
         if not raw:
             raw = DEFAULT_TICKER_MESSAGE
-        small_mode = False
-        if raw.upper().startswith(("SMALL:", "1ROW:")):
-            small_mode = True
+        mode = "billboard"
+        up = raw.upper()
+        if up.startswith(("SMALL:", "1ROW:")):
+            mode = "small"
             raw = raw.split(":", 1)[1].strip() or DEFAULT_TICKER_MESSAGE
-        elif raw.upper().startswith("BIG:"):
+        elif up.startswith(("SCROLL:", "MARQUEE:")):
+            mode = "scroll"
             raw = raw.split(":", 1)[1].strip() or DEFAULT_TICKER_MESSAGE
-        if not raw.endswith("* "):
-            raw = raw.rstrip() + " * "
-        self.ticker_small_mode = small_mode
-        self.ticker_raw_text = raw
-        self.ticker_led_rows = render_led_3x3(raw)
-        try:
-            bar = self.query_one("#ticker_bar", Static)
-            preview = raw.replace(" * ", " · ").strip(" ·")
-            if len(preview) > 110:
-                preview = preview[:107] + "..."
-            bar.border_title = f"📡 LIVE SIDE-BAND TICKER — {preview}"
-        except Exception:
-            pass
+        elif up.startswith(("BILLBOARD:", "CARDS:", "BIG:", "STILL:")):
+            mode = "billboard"
+            raw = raw.split(":", 1)[1].strip() or DEFAULT_TICKER_MESSAGE
+        self.ticker_mode = mode
+        if mode in ("scroll", "small"):
+            scroll_raw = raw.replace(" | ", " * ")
+            if not scroll_raw.endswith("* "):
+                scroll_raw = scroll_raw.rstrip() + " * "
+            self.ticker_raw_text = scroll_raw
+            self.ticker_led_rows = render_led_3x3(scroll_raw)
+            try:
+                bar = self.query_one("#ticker_bar", Static)
+                preview = scroll_raw.replace(" * ", " · ").strip(" ·")
+                if len(preview) > 110:
+                    preview = preview[:107] + "..."
+                bar.border_title = f"📡 LIVE SIDE-BAND TICKER — {preview}"
+            except Exception:
+                pass
+        else:
+            self.ticker_raw_text = raw
+            try:
+                bar = self.query_one("#ticker_bar", Static)
+                width = max(40, (bar.size.width or 160) - 2)
+            except Exception:
+                width = 160
+            self._rebuild_billboard_cache(width)
 
     def tick_marquee(self):
-        """Advance the 3-row solid-block LED marquee by 1 column (12.5 FPS)."""
+        """Drive #ticker_bar: 0% CPU during 4.5s still-card hold, with idle-gated 2-frame split-flap flip."""
+        now_mono = time.monotonic()
+        dt = now_mono - self.ticker_last_mono
+        self.ticker_last_mono = now_mono
+        self.ticker_recent_dts.append(dt)
+        if len(self.ticker_recent_dts) > 12:
+            self.ticker_recent_dts.pop(0)
+
         self.ticker_tick_count += 1
         if self.ticker_tick_count % 10 == 0:
             self._reload_ticker_source(force=False)
@@ -291,7 +413,39 @@ class SonarApp(App):
             width = max(40, (bar.size.width or 160) - 2)
         except Exception:
             return
-        if self.ticker_small_mode:
+
+        if self.ticker_mode == "billboard":
+            if width != self.ticker_cached_width or not self.ticker_cards:
+                self._rebuild_billboard_cache(width)
+            cards = self.ticker_cards
+            if not cards or len(cards) == 1:
+                return
+            cur_card = cards[self.ticker_card_idx % len(cards)]
+            if self.ticker_flip_step == 0:
+                self.ticker_hold_ticks += 1
+                if self.ticker_hold_ticks < CARD_HOLD_TICKS:
+                    return  # 0% CPU still-frame hold
+                self.ticker_hold_ticks = 0
+                if self._is_window_clear_for_smooth_flip():
+                    self.ticker_flip_step = 1
+                    bar.update(cur_card["flip_1"])
+                else:
+                    self.ticker_card_idx = (self.ticker_card_idx + 1) % len(cards)
+                    nxt_card = cards[self.ticker_card_idx]
+                    bar.border_title = nxt_card["title"]
+                    bar.update(nxt_card["still"])
+            elif self.ticker_flip_step == 1:
+                self.ticker_flip_step = 2
+                bar.update(cur_card["flip_2"])
+            else:
+                self.ticker_flip_step = 0
+                self.ticker_card_idx = (self.ticker_card_idx + 1) % len(cards)
+                nxt_card = cards[self.ticker_card_idx]
+                bar.border_title = nxt_card["title"]
+                bar.update(nxt_card["still"])
+            return
+
+        if self.ticker_mode == "small":
             base = self.ticker_raw_text or DEFAULT_TICKER_MESSAGE
             n = max(1, len(base))
             off = self.ticker_offset % n
@@ -301,6 +455,7 @@ class SonarApp(App):
             bar.update(Text("\n" + win + "\n", style="bold bright_yellow"))
             self.ticker_offset = (off + 1) % n
             return
+
         r0, r1, r2 = self.ticker_led_rows
         if not r0:
             return
