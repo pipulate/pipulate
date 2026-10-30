@@ -905,7 +905,7 @@ def print_broadcast_kit(target_key="1", mode="card", slug_match=None):
         print(" 13. ytwatch           👀 Check live viewers & chat (`ytwatch start|log|status|stop`)")
         print("     ytlog             📺 Watch live notification stream (`q` or `Ctrl+b d` to exit)")
         print(" 14. ytsay \"text\"      🎙️ Break in LIVE on-air (`-c \"CARD\"` `-p white_rabbit` `-m IMG`)")
-        print("     ytticker \"text\"   📟 Update 3-row LED side-band (`|` cards, `--scroll`, `--small`, `--reset`)")
+        print("     ytticker \"text\"   📟 Update 5-row LED side-band (`|` cards, `--scroll`, `--small`, `--reset`)")
         print(" 15. ytapp / ytvim     🖥️ Project local FastHTML (:5001) or live Vim onto stream")
         print("     ytmedia <path>    🖼️ Pop up an image or video on Honeybot :10.0 (`ytsay -m`)")
         print(" 16. ytping \"text\"     📲 Send ntfy.sh push notification to your phone")
@@ -3091,7 +3091,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--small",
         action="store_true",
-        help="Render #ticker_bar in 1-row small text mode instead of the 3-row solid-block LED matrix.",
+        help="Render #ticker_bar in 1-row small text mode instead of the 5-row full-block LED matrix.",
     )
     parser.add_argument(
         "--scroll",
