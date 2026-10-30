@@ -23,6 +23,7 @@ patch
 *.wav
 # the walk's two CC0 sounds ship in the repo; assets/sounds/README.md names their sources
 !assets/sounds/*.wav
+assets/sounds/dripulate.wav
 *.tsv
 # end temp
 

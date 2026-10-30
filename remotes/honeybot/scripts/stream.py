@@ -41,8 +41,10 @@ def _reap_orphaned_tts_and_overlays():
             if "--conjure-media" in raw:
                 continue
             if (
-                ("aplay" in raw and ("-t raw" in raw or "honeybot_tts" in raw or "tick.wav" in raw))
+                ("aplay" in raw and ("-t raw" in raw or "honeybot_tts" in raw or "tick.wav" in raw or "dripulate.wav" in raw))
                 or ("piper" in raw and "output_raw" in raw)
+                or ("honeybot-storytime-bgm" in raw)
+                or ("honeybot-updating-music" in raw)
             ):
                 os.kill(pid, signal.SIGKILL)
         except Exception:
@@ -673,6 +675,70 @@ def stop_updating_music(proc):
         pass
 
 
+# --- The Storytime Ambient Background Loop (dripulate.wav) ---
+_BGM_CANDIDATES = (
+    Path(__file__).resolve().parents[1] / "assets/sounds/dripulate.wav",
+    Path(__file__).resolve().parents[3] / "assets/sounds/dripulate.wav",
+    Path(__file__).resolve().parents[3] / "dripulate.wav",
+)
+BGM_FILE = next((p for p in _BGM_CANDIDATES if p.exists()), _BGM_CANDIDATES[0])
+BGM_MARKER = "honeybot-storytime-bgm"
+_bgm_proc = None
+
+
+def stop_storytime_bgm(proc=None):
+    """Idempotently kill any running Storytime BGM loop (tracked process group + /proc sweep)."""
+    global _bgm_proc
+    for target_p in (proc, _bgm_proc):
+        if target_p is not None:
+            try:
+                os.killpg(os.getpgid(target_p.pid), signal.SIGKILL)
+            except Exception:
+                try:
+                    target_p.kill()
+                except Exception:
+                    pass
+    _bgm_proc = None
+    my_pid = os.getpid()
+    for p in sorted(Path("/proc").glob("[0-9]*/cmdline")):
+        try:
+            pid = int(p.parent.name)
+            if pid == my_pid:
+                continue
+            raw = p.read_bytes().replace(b"\x00", b" ").decode("utf-8", errors="ignore")
+            if BGM_MARKER in raw or ("aplay" in raw and "dripulate.wav" in raw):
+                try:
+                    os.killpg(os.getpgid(pid), signal.SIGKILL)
+                except Exception:
+                    pass
+                try:
+                    os.kill(pid, signal.SIGKILL)
+                except Exception:
+                    pass
+        except Exception:
+            continue
+
+
+def start_storytime_bgm():
+    """Kill any prior BGM instance, then start a single fresh low-volume ambient loop."""
+    global _bgm_proc
+    stop_storytime_bgm()
+    bgm_path = next((p for p in _BGM_CANDIDATES if p.exists()), BGM_FILE)
+    if not bgm_path.exists():
+        return None
+    try:
+        _bgm_proc = subprocess.Popen(
+            ["sh", "-c", f'while :; do aplay -q -D default "{bgm_path}"; sleep 0.2; done # {BGM_MARKER}'],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            preexec_fn=os.setsid,
+        )
+        return _bgm_proc
+    except Exception:
+        _bgm_proc = None
+        return None
+
+
 MEDIA_OVERLAY_MARKER = "honeybot_media_overlay"
 POST_WEEBO_BUFFER_SEC = 1.0
 _CACHED_SCREEN_GEOM = None
@@ -1287,7 +1353,7 @@ def _pause_honeybot_stage_for_weebo():
             if "--conjure-media" in raw:
                 continue
             if (
-                ("aplay" in raw and ("-t raw" in raw or "honeybot_tts" in raw or "tick.wav" in raw))
+                ("aplay" in raw and ("-t raw" in raw or "honeybot_tts" in raw or "tick.wav" in raw or "dripulate.wav" in raw))
                 or ("piper" in raw and "output_raw" in raw)
             ):
                 os.kill(pid, signal.SIGSTOP)
@@ -1324,7 +1390,7 @@ def _resume_honeybot_stage_after_weebo(paused_pids):
             if pid in resumed:
                 continue
             raw = p.read_bytes().replace(b"\x00", b" ").decode("utf-8", errors="ignore")
-            if ("aplay" in raw and ("-t raw" in raw or "honeybot_tts" in raw)) or ("piper" in raw and "output_raw" in raw):
+            if ("aplay" in raw and ("-t raw" in raw or "honeybot_tts" in raw or "dripulate.wav" in raw)) or ("piper" in raw and "output_raw" in raw):
                 os.kill(pid, signal.SIGCONT)
         except Exception:
             continue
@@ -1750,6 +1816,12 @@ def dispatch_cue(command, content, env, profile_dir, pace_say=True):
         except Exception:
             pass
 
+    elif command == "BGM":
+        if str(content).strip().upper() in ("STOP", "OFF", "0"):
+            stop_storytime_bgm()
+        else:
+            start_storytime_bgm()
+
     elif command == "PATRONUS":
         narrator.patronus(content)
 
@@ -2044,6 +2116,7 @@ def perform_show(script):
         subprocess.run(["pkill", "-f", MUSIC_MARKER], check=False)
     except Exception:
         pass
+    stop_storytime_bgm()
 
     # Define the environment for the browser once
     env = os.environ.copy()
@@ -2099,6 +2172,7 @@ def perform_show(script):
                 updating_card = None
                 music_proc = None
                 try:
+                    stop_storytime_bgm()
                     narrator.interrupt()  # cut current audio + flush the backlog
                     narrator.say(standby_intro_line)
                     for line in standby_loop_lines:
@@ -2157,6 +2231,7 @@ def perform_show(script):
             # A fresh push rang the bell; return "BREAKING" (not False) so the director
             # leads the NEXT cycle straight with the newest article, no station-ID spiel.
             if check_for_updates():
+                stop_storytime_bgm()
                 narrator.interrupt()  # cut current audio + flush backlog, then preempt
                 narrator.say("Breaking news detected.")
                 # Close browser just in case
@@ -2188,6 +2263,7 @@ def perform_show(script):
             if command in ("MEDIA", "IMAGE", "VIDEO"):
                 next_pitch_time = max(next_pitch_time, time.time() + 30.0)
     finally:
+        stop_storytime_bgm()
         # CLEANUP: Destroy the memory of this session
         try:
             shutil.rmtree(profile_dir)

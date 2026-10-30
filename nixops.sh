@@ -46,6 +46,9 @@ ssh $TARGET "chmod +x ~/git/mikelev.in.git/hooks/post-receive && mkdir -p ~/www/
 rsync --delete $RSYNC_OPTS remotes/honeybot/scripts/ $TARGET:~/www/mikelev.in/scripts/
 rsync $RSYNC_OPTS imports/ascii_displays.py $TARGET:~/www/mikelev.in/imports/
 rsync $RSYNC_OPTS assets/sounds/tick.wav $TARGET:~/www/mikelev.in/assets/sounds/tick.wav
+if [ -f "assets/sounds/dripulate.wav" ]; then
+  rsync $RSYNC_OPTS assets/sounds/dripulate.wav $TARGET:~/www/mikelev.in/assets/sounds/dripulate.wav
+fi
 
 echo "🚀 Syncing 8 Domain Doors & Installer..."
 for door in npvg.org qamy.ai levinix.org sunpug.io guerillatech.com rfc9110.org rfc9111.io; do

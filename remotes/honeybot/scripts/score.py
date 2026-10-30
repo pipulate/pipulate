@@ -57,8 +57,10 @@ def _append_article_performance(script, article, is_latest=True):
             "say": f"{lead} Title: {article['title']}.",
         },
     ))
+    script.append(("BGM", "START"))
     script.append(("SAY", "Reading entry..."))
     append_article_content(script, article)
+    script.append(("BGM", "STOP"))
     script.append((
         "CARD",
         {
