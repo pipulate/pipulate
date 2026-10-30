@@ -408,10 +408,10 @@ def _build_station_report_panel(mode="overview"):
     elif mode == "schism":
         title_str = "⚔️ THE 3-CAMP AI CRAWLER SCHISM (BUDGET MYTH-BUSTER) & 🆕 SPECIES RADAR"
         tbl.add_column("Hits", justify="right", style="bold white", width=9, no_wrap=True)
-        tbl.add_column("AI Crawler Camp / Debut", style="bold bright_white", width=28, no_wrap=True)
-        tbl.add_column("⚡ JS Execs", justify="right", style="bold yellow", width=13, no_wrap=True)
-        tbl.add_column("🧠 MD Reads", justify="right", style="bold cyan", width=11, no_wrap=True)
-        tbl.add_column("🔷 RFC 9421", justify="right", style="bold deep_sky_blue1", width=11, no_wrap=True)
+        tbl.add_column("AI Crawler Camp / Debut", style="bold bright_white", width=26, no_wrap=True)
+        tbl.add_column("⚡ JS Execs", justify="right", style="bold yellow", width=14, no_wrap=True)
+        tbl.add_column("🧠 MD Reads", justify="right", style="bold cyan", width=12, no_wrap=True)
+        tbl.add_column("🔷 RFC 9421", justify="right", style="bold deep_sky_blue1", width=12, no_wrap=True)
         tbl.add_column("Wire Verdict & Budget Strategy", ratio=4, no_wrap=True)
         cur.execute(
             """
@@ -578,7 +578,7 @@ def prerender_station_report_ansi(mode="overview", width=136, out_path=None):
     target = Path(out_path) if out_path else Path(f"/tmp/honeybot_report_{safe_mode}.ansi")
     buf = io.StringIO()
     panel = _build_station_report_panel(mode=safe_mode)
-    console = Console(file=buf, force_terminal=True, color_system="truecolor", width=int(width))
+    console = Console(file=buf, force_terminal=True, color_system="truecolor", width=int(width), height=36)
     console.print(panel)
     tmp = target.with_suffix(".tmp")
     tmp.write_text(buf.getvalue(), encoding="utf-8")
