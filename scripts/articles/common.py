@@ -2741,6 +2741,12 @@ def reboot_honeybot_stream(sync_only=False, dry_run=False):
         ["rsync", "-aq", f"{repo_root}/assets/sounds/tick.wav", f"{HONEYBOT_SSH_HOST}:~/www/mikelev.in/assets/sounds/tick.wav"],
         check=False,
     )
+    bgm_asset = repo_root / "assets" / "sounds" / "dripulate.wav"
+    if bgm_asset.is_file():
+        subprocess.run(
+            ["rsync", "-aq", str(bgm_asset), f"{HONEYBOT_SSH_HOST}:~/www/mikelev.in/assets/sounds/dripulate.wav"],
+            check=False,
+        )
     if sync_only:
         print("✅ Honeybot scripts synced (stream.py left running; new standby text will load on next .deploy_standby).")
         return 0
@@ -2790,6 +2796,90 @@ exit 1
 """
     res = subprocess.run(["ssh", HONEYBOT_SSH_HOST, "sh", "-s"], input=remote_sh, text=True)
     return res.returncode
+
+
+def tune_storytime_bgm(arg="status", lpf=8000, dry_run=False):
+    """Rapidly re-bake dripulate.wav volume, rsync to Honeybot, and hot-swap live playback."""
+    import math
+    import subprocess
+    repo_root = Path(__file__).resolve().parents[2]
+    src_wav = repo_root / "dripulate.wav"
+    dest_wav = repo_root / "assets" / "sounds" / "dripulate.wav"
+    token = str(arg or "status").strip().lower()
+    if token in ("off", "stop", "mute", "kill"):
+        if dry_run:
+            print("🔇 [DRY RUN] Would stop honeybot-storytime-bgm loop on Honeybot.")
+            return 0
+        subprocess.run(
+            ["ssh", HONEYBOT_SSH_HOST, "pkill -f 'honeybot-storytime-bgm|aplay.*dripulate.wav' || true"],
+            check=False,
+        )
+        print("🔇 Stopped Storytime BGM on Honeybot.")
+        return 0
+    if token in ("on", "start", "play"):
+        if dry_run:
+            print("🎵 [DRY RUN] Would start/restart honeybot-storytime-bgm loop on Honeybot.")
+            return 0
+        remote_cmd = (
+            "pkill -f 'honeybot-storytime-bgm|aplay.*dripulate.wav' 2>/dev/null || true; "
+            "nohup sh -c 'while :; do aplay -q -D default \"$HOME/www/mikelev.in/assets/sounds/dripulate.wav\"; sleep 0.2; done # honeybot-storytime-bgm' "
+            ">/dev/null 2>&1 &"
+        )
+        subprocess.run(["ssh", HONEYBOT_SSH_HOST, remote_cmd], check=False)
+        print("🎵 Started Storytime BGM loop on Honeybot.")
+        return 0
+    if token == "status":
+        if dry_run:
+            print(f"🎵 [DRY RUN] Would check BGM status (src={src_wav.is_file()}, asset={dest_wav.is_file()}).")
+            return 0
+        res = subprocess.run(
+            ["ssh", HONEYBOT_SSH_HOST, "pgrep -af 'dripulate.wav' || true"],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        playing = bool((res.stdout or "").strip())
+        print(f"🎵 Honeybot BGM: {'PLAYING' if playing else 'IDLE'} | asset={dest_wav} (exists={dest_wav.is_file()})")
+        return 0
+    try:
+        vol = float(token)
+    except ValueError:
+        print("Usage: ytbgm [VOL_FLOAT | status | on | off]  (e.g. `ytbgm 0.35`, `ytbgm 0.25`, `ytbgm off`)")
+        return 1
+    vol = max(0.01, min(3.0, vol))
+    gain_db = 20.0 * math.log10(vol)
+    af_chain = f"lowpass=f={int(lpf)},volume={vol:g},afade=t=in:st=0:d=0.15"
+    if dry_run:
+        print(f"🎵 [DRY RUN] ffmpeg -i {src_wav} -af '{af_chain}' ({gain_db:+.1f} dB) -> {dest_wav} + rsync + hot-swap")
+        return 0
+    if not src_wav.is_file():
+        print(f"❌ Source file not found: {src_wav}")
+        return 1
+    dest_wav.parent.mkdir(parents=True, exist_ok=True)
+    ff_res = subprocess.run(
+        [
+            "ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error", "-y",
+            "-i", str(src_wav), "-vn", "-af", af_chain,
+            "-acodec", "pcm_s16le", "-ar", "22050", "-ac", "2", str(dest_wav),
+        ],
+        check=False,
+    )
+    if ff_res.returncode != 0:
+        print(f"❌ ffmpeg failed with exit code {ff_res.returncode}")
+        return ff_res.returncode
+    rs_res = subprocess.run(
+        ["rsync", "-aq", str(dest_wav), f"{HONEYBOT_SSH_HOST}:~/www/mikelev.in/assets/sounds/dripulate.wav"],
+        check=False,
+    )
+    if rs_res.returncode != 0:
+        print(f"❌ rsync to {HONEYBOT_SSH_HOST} failed (exit {rs_res.returncode})")
+        return rs_res.returncode
+    subprocess.run(
+        ["ssh", HONEYBOT_SSH_HOST, "pkill -f 'aplay.*dripulate.wav' || true"],
+        check=False,
+    )
+    print(f"✅ BGM volume set to {vol:g} ({gain_db:+.1f} dB, LPF={int(lpf)}Hz) & hot-swapped live on Honeybot!")
+    return 0
 
 
 VOICE_LAB_PRESETS = {
@@ -2993,9 +3083,9 @@ if __name__ == "__main__":
     add_standard_arguments(parser)
     parser.add_argument(
         "--broadcast",
-        choices=("help", "card", "summary", "hero", "yaml", "tweet", "linkedin", "pebble", "title", "desc", "top", "outro", "reboot", "status", "bell", "stop", "start", "roll", "enable-ws", "say", "ticker", "ping", "watch"),
+        choices=("help", "card", "summary", "hero", "yaml", "tweet", "linkedin", "pebble", "title", "desc", "top", "outro", "bgm", "reboot", "status", "bell", "stop", "start", "roll", "enable-ws", "say", "ticker", "ping", "watch"),
         default="card",
-        help="Print/copy broadcast kit or control Honeybot (help|card|summary|hero|yaml|tweet|linkedin|pebble|title|desc|top|outro|reboot|status|bell|stop|start|roll|enable-ws|say|ticker|ping|watch).",
+        help="Print/copy broadcast kit or control Honeybot (help|card|summary|hero|yaml|tweet|linkedin|pebble|title|desc|top|outro|bgm|reboot|status|bell|stop|start|roll|enable-ws|say|ticker|ping|watch).",
     )
     parser.add_argument(
         "--small",
@@ -3271,6 +3361,9 @@ if __name__ == "__main__":
         if cli_args.verify or first_pebble_arg in ("verify", "check", "status"):
             sys.exit(verify_pebble_receipts(cli_args.target, slug_match=cli_args.slug))
         sys.exit(drop_pebble_pings(cli_args.target, slug_match=cli_args.slug, dry_run=cli_args.dry_run))
+    if cli_args.broadcast == "bgm":
+        bgm_arg = cli_args.message[0] if cli_args.message else "status"
+        sys.exit(tune_storytime_bgm(arg=bgm_arg, dry_run=cli_args.dry_run))
     if cli_args.broadcast == "reboot":
         sys.exit(reboot_honeybot_stream(sync_only=False, dry_run=cli_args.dry_run))
     if cli_args.broadcast == "outro":

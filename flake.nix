@@ -2623,6 +2623,7 @@ print('AI:\n', r.ai)
           yttop()    { "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/articles/common.py" --broadcast top   "$@"; }
           ytmedia()  { "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/articles/common.py" --broadcast say -m "$@"; }
           ytoutro()  { "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/articles/common.py" --broadcast outro  "$@"; }
+          ytbgm()    { "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/articles/common.py" --broadcast bgm    "$@"; }
           ytreboot() { "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/articles/common.py" --broadcast reboot "$@"; }
           ytticker() { "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/articles/common.py" --broadcast ticker "$@"; }
           ytapp()    { "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/ytstage.py" app "$@"; }
