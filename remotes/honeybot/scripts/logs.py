@@ -23,92 +23,132 @@ from db import db, KNOWN_BOTS  # Import the list
 
 # --- Configuration ---
 STRIP_MOZILLA_PREFIX = False  # Set to True to save space in bottom panels
-HUD_TABLE_ROWS = 13           # Visible data rows in both bottom HUD tables (freed 2 rows for #ticker_bar)
+HUD_TABLE_ROWS = 12           # Visible data rows in both bottom HUD tables (freed 3 rows for 5-row #ticker_bar)
 HUD_PANEL_HEIGHT = HUD_TABLE_ROWS + 4  # +4 rows for top border, panel title, header rule, and column headers
 BOT_IDENTITY_WIDTH = 21       # Emoji (2) + space (1) + 18-char bot name (trims 15 chars for Raw Signature)
 TICKER_FILE_PATH = "/tmp/honeybot_ticker.txt"
 CARD_HOLD_TICKS = 56  # 56 * 0.08s = ~4.5s still hold per card (0% CPU during hold)
 CARD_STYLES = ("bold #ffd700", "bold #00ffff", "bold #ffae42")
 DEFAULT_TICKER_MESSAGE = (
-    "HOLD TIGHT! MAX ME POPS IN TO SAY HI | "
-    "LEAVE A COMMENT TO SUMMON THE HUMAN | "
-    "LIVE AI BOT LOGS * MIKELEV.IN"
+    "JUST GIVE 30 SECS | "
+    "YOU'LL SEE MAX ME! | "
+    "VISIT SUNPUG.IO | "
+    "CHAT SUMMONS MIKE! | "
+    "AI LOGS * MIKELEV.IN"
 )
 
-# 3-Row Solid-Block (█ ▀ ▄) LED Matrix Font (3 cols wide per glyph + 1 space col = 4 cols/char)
+# 5-Row Full-Block (█) LED Matrix Font (satisfies 3-bar + 2-gap vertical Nyquist limit)
 LED_FONT_3X3 = {
-    "A": ("▄█▄", "███", "█ █"), "B": ("██▄", "██▄", "██▀"), "C": ("▄██", "█  ", "▀██"),
-    "D": ("██▄", "█ █", "██▀"), "E": ("███", "██ ", "███"), "F": ("███", "██ ", "█  "),
-    "G": ("▄██", "█▄█", "▀██"), "H": ("█ █", "███", "█ █"), "I": ("███", " █ ", "███"),
-    "J": (" ██", "  █", "▀█▀"), "K": ("█▄█", "██ ", "█ █"), "L": ("█  ", "█  ", "███"),
-    "M": ("█▄█", "███", "█ █"), "N": ("██▄", "█ █", "█ █"), "O": ("▄█▄", "█ █", "▀█▀"),
-    "P": ("██▄", "██▀", "█  "), "Q": ("▄█▄", "█▄█", "▀██"), "R": ("██▄", "██▀", "█ █"),
-    "S": ("▄██", "▀█▄", "██▀"), "T": ("███", " █ ", " █ "), "U": ("█ █", "█ █", "▀█▀"),
-    "V": ("█ █", "█ █", " ▀ "), "W": ("█ █", "███", "▀▄▀"), "X": ("█ █", " █ ", "█ █"),
-    "Y": ("█ █", " █ ", " █ "), "Z": ("███", "▄█ ", "███"), "0": ("▄█▄", "█ █", "▀█▀"),
-    "1": ("▄█ ", " █ ", "███"), "2": ("▀▀█", "▄█▀", "███"), "3": ("▀▀█", " ▀█", "██▀"),
-    "4": ("█ █", "███", "  █"), "5": ("███", "▀▀█", "██▀"), "6": ("▄██", "██▄", "▀█▀"),
-    "7": ("███", "  █", "  █"), "8": ("▄█▄", "███", "▀█▀"), "9": ("▄█▄", "▀██", "██▀"),
-    " ": ("   ", "   ", "   "), "!": (" █ ", " █ ", " ▀ "), "?": ("▀▀█", " ▄▀", " ▀ "),
-    ".": ("   ", "   ", " ▄ "), ",": ("   ", "   ", " ▄▀"), "-": ("   ", "███", "   "),
-    "+": (" ▄ ", "███", " ▀ "), ":": (" ▄ ", "   ", " ▄ "), "/": ("  █", " █ ", "█  "),
-    "*": ("▀▄▀", " █ ", "▄▀▄"), "'": (" █ ", "   ", "   "), '"': ("█ █", "   ", "   "),
-    "$": ("▄█▄", "███", "▀█▀"), "%": ("█  ", " █ ", "  █"), "&": ("▄█▄", "▄██", "▀█▄"),
-    "(": (" ▄█", " █ ", " ▀█"), ")": ("█▄ ", " █ ", "█▀ "), "@": ("▄██", "█▄█", "▀██"),
-    "#": ("█ █", "███", "█ █"), "=": ("▀▀▀", "   ", "▀▀▀"),
+    "A": (" ██ ", "█  █", "████", "█  █", "█  █"),
+    "B": ("███ ", "█  █", "███ ", "█  █", "███ "),
+    "C": (" ███", "█   ", "█   ", "█   ", " ███"),
+    "D": ("███ ", "█  █", "█  █", "█  █", "███ "),
+    "E": ("████", "█   ", "███ ", "█   ", "████"),
+    "F": ("████", "█   ", "███ ", "█   ", "█   "),
+    "G": (" ███", "█   ", "█ ██", "█  █", " ███"),
+    "H": ("█  █", "█  █", "████", "█  █", "█  █"),
+    "I": ("███", " █ ", " █ ", " █ ", "███"),
+    "J": (" ███", "   █", "   █", "█  █", " ██ "),
+    "K": ("█  █", "█ █ ", "██  ", "█ █ ", "█  █"),
+    "L": ("█   ", "█   ", "█   ", "█   ", "████"),
+    "M": ("█   █", "██ ██", "█ █ █", "█   █", "█   █"),
+    "N": ("█   █", "██  █", "█ █ █", "█  ██", "█   █"),
+    "O": (" ██ ", "█  █", "█  █", "█  █", " ██ "),
+    "P": ("███ ", "█  █", "███ ", "█   ", "█   "),
+    "Q": (" ██ ", "█  █", "█  █", "█ ██", " ███"),
+    "R": ("███ ", "█  █", "███ ", "█ █ ", "█  █"),
+    "S": (" ███", "█   ", " ██ ", "   █", "███ "),
+    "T": ("███", " █ ", " █ ", " █ ", " █ "),
+    "U": ("█  █", "█  █", "█  █", "█  █", " ██ "),
+    "V": ("█   █", "█   █", "█   █", " █ █ ", "  █  "),
+    "W": ("█   █", "█   █", "█ █ █", "██ ██", "█   █"),
+    "X": ("█   █", " █ █ ", "  █  ", " █ █ ", "█   █"),
+    "Y": ("█   █", " █ █ ", "  █  ", "  █  ", "  █  "),
+    "Z": ("████", "  █ ", " █  ", "█   ", "████"),
+    "0": (" ██ ", "█  █", "█  █", "█  █", " ██ "),
+    "1": (" █ ", "██ ", " █ ", " █ ", "███"),
+    "2": ("███ ", "   █", " ██ ", "█   ", "████"),
+    "3": ("███ ", "   █", " ██ ", "   █", "███ "),
+    "4": ("█  █", "█  █", "████", "   █", "   █"),
+    "5": ("████", "█   ", "███ ", "   █", "███ "),
+    "6": (" ███", "█   ", "███ ", "█  █", " ██ "),
+    "7": ("████", "   █", "  █ ", " █  ", " █  "),
+    "8": (" ██ ", "█  █", " ██ ", "█  █", " ██ "),
+    "9": (" ██ ", "█  █", " ███", "   █", "███ "),
+    " ": ("  ", "  ", "  ", "  ", "  "),
+    "!": ("█", "█", "█", " ", "█"),
+    "?": ("███ ", "   █", " ██ ", "    ", " █  "),
+    ".": (" ", " ", " ", " ", "█"),
+    ",": ("  ", "  ", "  ", " █", "█ "),
+    "-": ("   ", "   ", "███", "   ", "   "),
+    "+": ("   ", " █ ", "███", " █ ", "   "),
+    ":": (" ", "█", " ", "█", " "),
+    "/": ("  █", "  █", " █ ", "█  ", "█  "),
+    "*": ("   ", "█ █", " █ ", "█ █", "   "),
+    "'": ("█", "█", " ", " ", " "),
+    '"': ("█ █", "█ █", "   ", "   ", "   "),
+    "$": (" ███", "█ █ ", " ██ ", " █ █", "███ "),
+    "%": ("██  █", "   █ ", "  █  ", " █   ", "█  ██"),
+    "&": (" ██ ", "█  █", " ██ ", "█ █ ", " ███"),
+    "(": (" █", "█ ", "█ ", "█ ", " █"),
+    ")": ("█ ", " █", " █", " █", "█ "),
+    "@": (" ███ ", "█   █", "█ ███", "█    ", " ████"),
+    "#": (" █ █ ", "█████", " █ █ ", "█████", " █ █ "),
+    "=": ("   ", "███", "   ", "███", "   "),
 }
 
 
 def render_led_3x3(text: str):
-    """Render an uppercase string into three equal-length rows of 3x3 solid-block (█ ▀ ▄) glyphs."""
+    """Render an uppercase string into five equal-length rows of 5-row full-block (█) glyphs."""
     clean = (text or "").upper()
-    r0, r1, r2 = [], [], []
+    rows = [[], [], [], [], []]
+    fallback = ("   ", "   ", "   ", "   ", "   ")
     for ch in clean:
-        g0, g1, g2 = LED_FONT_3X3.get(ch, ("   ", "   ", "   "))
-        r0.append(g0 + " ")
-        r1.append(g1 + " ")
-        r2.append(g2 + " ")
-    return "".join(r0), "".join(r1), "".join(r2)
+        glyph = LED_FONT_3X3.get(ch, fallback)
+        for i in range(5):
+            rows[i].append(glyph[i] + " ")
+    return tuple("".join(r) for r in rows)
 
 
-def _split_into_fitting_cards(raw_text: str, max_chars: int):
-    """Split '|' delimited text into short uppercase cards that each fit within max_chars."""
-    max_c = max(12, max_chars)
+def _led_rendered_width(text: str) -> int:
+    """Return the exact rendered column width of text in the 5-row LED font."""
+    if not text:
+        return 0
+    return max(0, len(render_led_3x3(text)[0]) - 1)
+
+
+def _split_into_fitting_cards(raw_text: str, max_width_cols: int):
+    """Split '|' delimited text into uppercase cards whose rendered LED width fits within max_width_cols."""
+    avail_cols = max(48, int(max_width_cols))
     segments = [seg.strip() for seg in re.split(r"\|", raw_text or "") if seg.strip()]
-    if len(segments) == 1 and " * " in segments[0] and len(segments[0]) > max_c:
+    if len(segments) == 1 and " * " in segments[0] and _led_rendered_width(segments[0]) > avail_cols:
         segments = [seg.strip() for seg in segments[0].split(" * ") if seg.strip()]
     cards = []
     for seg in segments:
         words = seg.upper().split()
         cur = ""
         for w in words:
-            if len(w) > max_c:
-                if cur:
-                    cards.append(cur)
-                    cur = ""
-                cards.append(w[:max_c])
-            elif not cur:
+            if not cur:
                 cur = w
-            elif len(cur) + 1 + len(w) <= max_c:
+            elif _led_rendered_width(f"{cur} {w}") <= avail_cols:
                 cur = f"{cur} {w}"
             else:
                 cards.append(cur)
                 cur = w
         if cur:
             cards.append(cur)
-    return cards or ["HOLD TIGHT! MAX POPS IN TO SAY HI"]
+    return cards or ["VISIT SUNPUG.IO"]
 
 
 def _center_led_rows(card_str: str, width: int):
-    """Render card_str in 3x3 LED blocks and center-pad each row to exact terminal width."""
-    r0, r1, r2 = render_led_3x3(card_str)
-    r0, r1, r2 = r0.rstrip(), r1.rstrip(), r2.rstrip()
-    glyph_w = len(r0)
+    """Render card_str in 5-row LED blocks and center-pad each row to exact terminal width."""
+    raw_rows = [r[:-1] if r.endswith(" ") else r for r in render_led_3x3(card_str)]
+    glyph_w = len(raw_rows[0]) if raw_rows else 0
     if glyph_w >= width:
-        return r0[:width], r1[:width], r2[:width]
+        return tuple(r[:width] for r in raw_rows)
     left_pad = " " * ((width - glyph_w) // 2)
     right_pad = " " * (width - glyph_w - len(left_pad))
-    return left_pad + r0 + right_pad, left_pad + r1 + right_pad, left_pad + r2 + right_pad
+    return tuple(left_pad + r + right_pad for r in raw_rows)
 
 # A hidden console to render styles into ANSI codes for the Log widget
 # We set a massive width to prevent the console from hard-wrapping the text before the Log widget gets it
