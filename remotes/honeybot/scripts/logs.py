@@ -206,14 +206,13 @@ class SonarApp(App):
         min-width: 100%;
     }
 
-    /* MIDDLE SECTION: Eye-Level Giant LED Marquee Ticker (for squinting viewers) */
+    /* MIDDLE SECTION: Eye-Level Giant 5-Row LED Marquee Ticker (borderless, 100% signage) */
     #ticker_bar {
-        height: 4;
+        height: 5;
         width: 100%;
         background: #140826;
         color: #ffd700;
         text-style: bold;
-        border-top: solid #ff8c00;
         padding: 0 1;
         overflow: hidden;
     }
