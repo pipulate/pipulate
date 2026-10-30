@@ -910,9 +910,10 @@ def print_broadcast_kit(target_key="1", mode="card", slug_match=None):
         print("     ytmedia <path>    🖼️ Pop up an image or video on Honeybot :10.0 (`ytsay -m`)")
         print(" 16. ytping \"text\"     📲 Send ntfy.sh push notification to your phone")
         print(" 17. yttop [N]          📊 Keyless YouTube channel top videos & streams radar")
-        print(" 18. ytoutro            🔊 Hear deploy-standby outro locally (`ytoutro edit|sync|reboot`)")
-        print("     ytreboot           🔄 Sync Honeybot scripts + restart stream.py watchdog child")
-        print(" 19. ytcard             📇 Reprint the full Broadcast Kit for the latest post")
+        print(" 18. ytoutro           🔊 Hear deploy-standby outro locally (`ytoutro edit|sync|reboot`)")
+        print("     ytbgm [VOL]       🎵 Tune Storytime BGM volume live (`ytbgm 0.35`, `off`, `on`, `status`)")
+        print("     ytreboot          🔄 Sync Honeybot scripts + restart stream.py watchdog child")
+        print(" 19. ytcard            📇 Reprint the full Broadcast Kit for the latest post")
         if kit:
             print(thin)
             print(f"📄 Latest Post:   {Path(kit['path']).name}")
