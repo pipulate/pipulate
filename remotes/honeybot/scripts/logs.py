@@ -316,7 +316,7 @@ class SonarApp(App):
         self.ticker_tick_count = 0
         self.ticker_mode = "billboard"  # "billboard" (default still+flip) | "scroll" | "small"
         self.ticker_raw_text = ""
-        self.ticker_led_rows = ("", "", "")
+        self.ticker_led_rows = ("", "", "", "", "")
         self.ticker_cards = []
         self.ticker_card_idx = 0
         self.ticker_hold_ticks = 0
@@ -330,35 +330,37 @@ class SonarApp(App):
         self.set_interval(5, self.refresh_tables)
 
     def _rebuild_billboard_cache(self, width: int):
-        """Pre-render double-buffered Rich.Text still cards and 2-step vertical split-flap frames."""
+        """Pre-render double-buffered 5-row Rich.Text still cards and 2-step vertical split-flap frames."""
         self.ticker_cached_width = width
-        max_chars = max(12, (width + 1) // 4)
-        card_strings = _split_into_fitting_cards(self.ticker_raw_text, max_chars)
+        card_strings = _split_into_fitting_cards(self.ticker_raw_text, width)
         raw_rows = [_center_led_rows(cs, width) for cs in card_strings]
         total = len(card_strings)
         built = []
         for idx, cs in enumerate(card_strings):
-            c_r0, c_r1, c_r2 = raw_rows[idx]
+            c_r0, c_r1, c_r2, c_r3, c_r4 = raw_rows[idx]
             nxt_idx = (idx + 1) % total
-            n_r0, n_r1, n_r2 = raw_rows[nxt_idx]
+            n_r0, n_r1, n_r2, n_r3, n_r4 = raw_rows[nxt_idx]
             style_cur = CARD_STYLES[idx % len(CARD_STYLES)]
             style_nxt = CARD_STYLES[nxt_idx % len(CARD_STYLES)]
-            still_txt = Text(f"{c_r0}\n{c_r1}\n{c_r2}", style=style_cur)
-            # Frame 1 of vertical split-flap roll: old rows 1-2 shift up, blank separator at bottom
+            still_txt = Text(f"{c_r0}\n{c_r1}\n{c_r2}\n{c_r3}\n{c_r4}", style=style_cur)
+            # Frame 1 of 5-row split-flap roll (stride 2): old rows 2-4 shift up, blank gap, new row 0 enters
             flip_1 = Text.assemble(
-                (c_r1 + "\n", style_cur),
                 (c_r2 + "\n", style_cur),
-                (" " * width, style_cur),
+                (c_r3 + "\n", style_cur),
+                (c_r4 + "\n", style_cur),
+                (" " * width + "\n", style_cur),
+                (n_r0, style_nxt),
             )
-            # Frame 2 of vertical split-flap roll: old row 2 at top, new rows 0-1 rising from bottom
+            # Frame 2 of 5-row split-flap roll (stride 4): old row 4 at top, blank gap, new rows 0-2 rise
             flip_2 = Text.assemble(
-                (c_r2 + "\n", style_cur),
+                (c_r4 + "\n", style_cur),
+                (" " * width + "\n", style_cur),
                 (n_r0 + "\n", style_nxt),
-                (n_r1, style_nxt),
+                (n_r1 + "\n", style_nxt),
+                (n_r2, style_nxt),
             )
             built.append({
                 "text": cs,
-                "title": f"📡 LIVE SIDE-BAND [{idx + 1}/{total}] — {cs}  (💬 Chat to summon Mike live!)",
                 "still": still_txt,
                 "flip_1": flip_1,
                 "flip_2": flip_2,
@@ -370,7 +372,6 @@ class SonarApp(App):
         try:
             bar = self.query_one("#ticker_bar", Static)
             if built:
-                bar.border_title = built[0]["title"]
                 bar.update(built[0]["still"])
         except Exception:
             pass
