@@ -96,7 +96,7 @@ PITCH_INTERVAL = 600        # Seconds between "Station Identification" (Bumped t
 
 # Spoken over tick.wav when `publish "msg"` rings .deploy_standby on Honeybot.
 # Edit with `ytoutro edit` and audition locally on Prime with `ytoutro`.
-STANDBY_INTRO_LINE = "Receiving updates. This broadcast is coming to an end."
+STANDBY_INTRO_LINE = "Receiving updates. A new broadcast is coming up."
 
 STANDBY_LOOP_LINES = (
     "To hear the next article, visit YouTube dot com slash M I K E L E V I N slash live. "

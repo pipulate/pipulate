@@ -2696,7 +2696,7 @@ def _load_standby_speech_from_stream():
     import ast
     repo_root = Path(__file__).resolve().parents[2]
     stream_path = repo_root / "remotes" / "honeybot" / "scripts" / "stream.py"
-    intro = "Receiving updates. This broadcast is coming to an end."
+    intro = "Receiving updates. A new broadcast is coming up."
     loop_lines = ()
     if stream_path.is_file():
         try:
