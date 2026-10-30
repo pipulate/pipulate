@@ -93,7 +93,7 @@ def _make_station_bead(card_label, card_say, capstone_cue, forest_story_lines, p
             isinstance(capstone_cue, tuple)
             and len(capstone_cue) >= 2
             and capstone_cue[0] == "WINDOW"
-            and any(tag in str(capstone_cue[1]) for tag in (":overview", ":bimodal", ":rfc9421", ":doors"))
+            and any(tag in str(capstone_cue[1]) for tag in (":overview", ":bimodal", ":schism", ":rfc9421", ":doors"))
         )
         post_linger = REPORT_POST_LINGER_SECONDS if is_window_report else 0
     if post_linger > 0:
@@ -197,6 +197,21 @@ STATION_SEGMENTS = [
             "R F C 9110 dot org demonstrates native Markdown content negotiation, "
             "and R F C 9111 dot eye oh retires wasteful headless pre-render clusters. "
             "Inspect any door safely in your terminal with curl pipe less.",
+        ],
+    ),
+    # Bead 7 (Myth-Buster -> The 3-Camp AI Crawler Schism & Primary-Key Species Radar: schism)
+    _make_station_bead(
+        "AI CRAWLER\nSCHISM",
+        (
+            "Common S E O wisdom claims Open A I crawlers cannot execute JavaScript. "
+            "Our bare-metal wire telemetry proves that myth is dead wrong."
+        ),
+        ("WINDOW", f"forest.py:{REPORT_WINDOW_CAP_SECONDS}:schism"),
+        [
+            "This report divides the seven major crawler camps by what they actually execute and negotiate on the wire.",
+            "Camp one is Open A I, acting like a mini Google: O A I SearchBot and G P T Bot have fired our eight hundred millisecond JavaScript trapdoor over four thousand times while reading zero Markdown files.",
+            "Camp two is the Markdown Vanguard, led by Exa dot A I, Parallel dot A I's ShapBot, and Anthropic's Claude User, bypassing the headless browser tax via R F C 9110 Markdown negotiation and R F C 9421 cryptographic signatures.",
+            "Camp three is the bulk HTML hose-pullers, Meta and Amazonbot, while the bottom rows show our SQLite primary-key tripwire catching brand-new crawler species the second they debut on the wire.",
         ],
     ),
 ]
@@ -390,6 +405,104 @@ def _build_station_report_panel(mode="overview"):
             Text("Self-asserted RFC 9110 Markdown negotiators", style="dim green"),
             f"{_bar(auth_pct, 26, 'dark_orange')} [bold orange1]{auth_pct}%[/bold orange1]",
         )
+    elif mode == "schism":
+        title_str = "⚔️ THE 3-CAMP AI CRAWLER SCHISM (BUDGET MYTH-BUSTER) & 🆕 SPECIES RADAR"
+        tbl.add_column("Hits", justify="right", style="bold white", width=9, no_wrap=True)
+        tbl.add_column("AI Crawler Camp / Debut", style="bold bright_white", width=28, no_wrap=True)
+        tbl.add_column("⚡ JS Execs", justify="right", style="bold yellow", width=13, no_wrap=True)
+        tbl.add_column("🧠 MD Reads", justify="right", style="bold cyan", width=11, no_wrap=True)
+        tbl.add_column("🔷 RFC 9421", justify="right", style="bold deep_sky_blue1", width=11, no_wrap=True)
+        tbl.add_column("Wire Verdict & Budget Strategy", ratio=4, no_wrap=True)
+        cur.execute(
+            """
+            WITH camp_map AS (
+                SELECT id AS ua_id,
+                    CASE
+                        WHEN value LIKE '%GPTBot%' OR value LIKE '%OAI-SearchBot%' OR value LIKE '%ChatGPT-User%' THEN '1_openai'
+                        WHEN value LIKE '%ExaSearchBot%' OR value LIKE '%ExaUser%' THEN '2_exa'
+                        WHEN value LIKE '%ShapBot%' THEN '3_parallel'
+                        WHEN value LIKE '%Claude%' OR value LIKE '%anthropic%' THEN '4_anthropic'
+                        WHEN value LIKE '%meta-externalagent%' OR value LIKE '%meta-webindexer%' OR value LIKE '%facebookexternalhit%' THEN '5_meta'
+                        WHEN value LIKE '%Amazonbot%' THEN '6_amazon'
+                        WHEN value LIKE '%Googlebot%' THEN '7_google'
+                    END AS camp
+                FROM user_agents
+            ),
+            dl AS (
+                SELECT c.camp, SUM(l.count) AS total_hits
+                FROM daily_logs l
+                JOIN camp_map c ON l.ua_id = c.ua_id
+                WHERE c.camp IS NOT NULL
+                GROUP BY c.camp
+            ),
+            js AS (
+                SELECT c.camp, SUM(l.count) AS js_triggers
+                FROM paths p
+                JOIN daily_logs l ON l.path_id = p.id
+                JOIN camp_map c ON l.ua_id = c.ua_id
+                WHERE c.camp IS NOT NULL AND p.value LIKE '%js_confirm.gif%'
+                GROUP BY c.camp
+            ),
+            md AS (
+                SELECT c.camp, SUM(t.count) AS md_reads
+                FROM telemetry t
+                JOIN camp_map c ON t.ua_id = c.ua_id
+                WHERE c.camp IS NOT NULL AND t.served_md = 1
+                GROUP BY c.camp
+            ),
+            sig AS (
+                SELECT c.camp, SUM(r.count) AS signed_hits
+                FROM rfc9421_logs r
+                JOIN camp_map c ON r.ua_id = c.ua_id
+                WHERE c.camp IS NOT NULL
+                GROUP BY c.camp
+            )
+            SELECT dl.camp,
+                   dl.total_hits,
+                   COALESCE(js.js_triggers, 0),
+                   COALESCE(md.md_reads, 0),
+                   COALESCE(sig.signed_hits, 0)
+            FROM dl
+            LEFT JOIN js ON js.camp = dl.camp
+            LEFT JOIN md ON md.camp = dl.camp
+            LEFT JOIN sig ON sig.camp = dl.camp
+            ORDER BY dl.camp
+            """
+        )
+        camp_meta = {
+            "1_openai": ("⚡ OpenAI (GPT/OAI-Search)", "bold yellow", "Mini-Google: Hydrates JS (OAI=215%); 0 MD"),
+            "2_exa": ("🔷 Exa.ai (ExaSearch/User)", "bold deep_sky_blue1", "$2.2B AI Search: 94.5% Native MD + Signed"),
+            "3_parallel": ("🔷 Parallel.ai (ShapBot)", "bold deep_sky_blue1", "Agentic Web API: 67.9% Native MD + Signed"),
+            "4_anthropic": ("🧠 Anthropic (Claude/User)", "bold cyan", "ClaudeBot scrapes HTML; Claude-User pulls MD"),
+            "5_meta": ("⚡ Meta (externalagent)", "bold orange1", "Bulk Hose-Puller: 1.5% JS sample; testing 9421"),
+            "6_amazon": ("🟠 Amazon (Amazonbot)", "bold orange1", "Pure Static HTML Scraper: 0 JS, 0 MD"),
+            "7_google": ("🛑 Googlebot (All Claims)", "bold red", "Spoof Alert: 99% of 'Googlebot' MD is Fake IP!"),
+        }
+        for camp_key, tot, js_cnt, md_cnt, sig_cnt in cur.fetchall():
+            label, c_style, verdict = camp_meta.get(camp_key, (camp_key, "white", ""))
+            tot_i = max(1, int(tot or 0))
+            js_pct = round((int(js_cnt or 0) / tot_i) * 100.0, 1)
+            tbl.add_row(
+                f"{int(tot or 0):,}",
+                Text(label, style=c_style),
+                f"{int(js_cnt or 0):,} ({js_pct}%)",
+                f"{int(md_cnt or 0):,}",
+                f"{int(sig_cnt or 0):,}",
+                Text(verdict, style=c_style),
+            )
+        tbl.add_section()
+        for ua_id, ua_val, first_seen, hits in db.get_new_user_agents_since(0, limit=3):
+            tok = _detect_bot_token(ua_val, known_bots=KNOWN_BOTS) or "NewAgent"
+            fs_str = str(first_seen or "")
+            clean_ua = str(ua_val or "").replace("Mozilla/5.0 ", "")[:44]
+            tbl.add_row(
+                f"{int(hits or 0):,}",
+                Text(f"🆕 #{ua_id} {tok[:18]}", style="bold bright_green"),
+                fs_str[:10] or "NEW",
+                fs_str[11:19] or "DEBUT",
+                "PK RADAR",
+                Text(clean_ua, style="dim green"),
+            )
     elif mode == "doors":
         title_str = "🎙️ THE 8-DOOR HONEYBOT FREQUENCY DIAL (CURL -fsSL <DOOR> | LESS)"
         tbl.add_column("Door / Frequency", style="bold bright_white", width=20)
