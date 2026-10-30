@@ -472,7 +472,6 @@ class SonarApp(App):
                 else:
                     self.ticker_card_idx = (self.ticker_card_idx + 1) % len(cards)
                     nxt_card = cards[self.ticker_card_idx]
-                    bar.border_title = nxt_card["title"]
                     bar.update(nxt_card["still"])
             elif self.ticker_flip_step == 1:
                 self.ticker_flip_step = 2
@@ -481,7 +480,6 @@ class SonarApp(App):
                 self.ticker_flip_step = 0
                 self.ticker_card_idx = (self.ticker_card_idx + 1) % len(cards)
                 nxt_card = cards[self.ticker_card_idx]
-                bar.border_title = nxt_card["title"]
                 bar.update(nxt_card["still"])
             return
 
@@ -492,11 +490,11 @@ class SonarApp(App):
             repeats = (width // n) + 3
             doubled = base * repeats
             win = doubled[off : off + width]
-            bar.update(Text("\n" + win + "\n", style="bold bright_yellow"))
+            bar.update(Text("\n\n" + win + "\n\n", style="bold bright_yellow"))
             self.ticker_offset = (off + 1) % n
             return
 
-        r0, r1, r2 = self.ticker_led_rows
+        r0, r1, r2, r3, r4 = self.ticker_led_rows
         if not r0:
             return
         n = len(r0)
@@ -505,7 +503,9 @@ class SonarApp(App):
         w0 = (r0 * repeats)[off : off + width]
         w1 = (r1 * repeats)[off : off + width]
         w2 = (r2 * repeats)[off : off + width]
-        bar.update(Text(f"{w0}\n{w1}\n{w2}", style="bold #ffd700"))
+        w3 = (r3 * repeats)[off : off + width]
+        w4 = (r4 * repeats)[off : off + width]
+        bar.update(Text(f"{w0}\n{w1}\n{w2}\n{w3}\n{w4}", style="bold #ffd700"))
         self.ticker_offset = (off + 1) % n
 
     def is_spoofed_bot(self, ip_str, ua_str):
