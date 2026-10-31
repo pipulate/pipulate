@@ -1073,6 +1073,12 @@ Entries are alphabetical, numbers spelled as spoken.
   newcomer reads them and a model that purges the word by the letter breaks
   the flake. Sibling of THE BLANK STARE RULE (the word is the plain name) and
   HALT ONLY OUT OF BOUNDS (a rule names where it must not fire).
+- **Commented Context Stiles** -- *expanded rule; banked 2026-10-30.*
+
+~~~text
+# § COMMENTED CONTEXT STILES (banked 2026-10-30, deed 501) -- Preserve prior-turn context.txt stanzas as commented '# Context N' blocks above the active stanza and include context.txt itself on line 1, so only the active stanza's shell probes execute during compilation while any stateless model reading the payload sees the full sequence of prior questions like stiles over a pasture fence.
+~~~
+
 - **The Compiled Trail** -- *sealed is machine cargo, authored is not.* Banked
   2026-08-08, source-witnessed. A trail has TWO legitimate forms, and
   conflating them is the whole confusion. The SEALED form -- trail.yaml inside
