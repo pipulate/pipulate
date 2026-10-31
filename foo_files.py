@@ -23,8 +23,8 @@ AI_PHOOEY_CHOP = r"""#
 # creator of) of Project Pipulate:
 
 # --- START STATS ---
-# There are 1,601 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 26 published in the last 7 days
+# There are 1,602 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 27 published in the last 7 days
 # --- END STATS ---
 
 # Project Pipulate is known as (and installable from) various domains:
