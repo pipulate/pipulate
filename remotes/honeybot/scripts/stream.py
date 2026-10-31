@@ -209,11 +209,13 @@ sys.path.append(str(Path(__file__).parent))
 
 try:
     import score
-    from content_loader import check_for_updates, check_standby, trigger_is_fresh, check_live_message
+    from content_loader import check_for_updates, check_standby, trigger_is_fresh, check_live_message, has_pending_update
 except ImportError:
     score = None
     def check_live_message():
         return None
+    def has_pending_update():
+        return False
 
 # --- Configuration ---
 MODEL_DIR = Path.home() / ".local/share/piper_voices"
@@ -1325,7 +1327,7 @@ def _resolve_honeybot_media_target(raw_target):
     return s
 
 
-def _pause_honeybot_stage_for_weebo():
+def _pause_honeybot_stage_for_weebo(pause_audio=True):
     """Immediately SIGSTOP active TTS/director processes and clear competing overlays while Weebo holds the stage."""
     paused = []
     my_pid = os.getpid()
@@ -1338,28 +1340,29 @@ def _pause_honeybot_stage_for_weebo():
                 lock_pid = int(raw_lp)
     except Exception:
         lock_pid = 0
-    if lock_pid and lock_pid not in (my_pid, parent_pid):
+    if pause_audio and lock_pid and lock_pid not in (my_pid, parent_pid):
         try:
             os.kill(lock_pid, signal.SIGSTOP)
             paused.append(lock_pid)
         except Exception:
             pass
-    for p in sorted(Path("/proc").glob("[0-9]*/cmdline")):
-        try:
-            pid = int(p.parent.name)
-            if pid in (my_pid, parent_pid) or pid in paused:
+    if pause_audio:
+        for p in sorted(Path("/proc").glob("[0-9]*/cmdline")):
+            try:
+                pid = int(p.parent.name)
+                if pid in (my_pid, parent_pid) or pid in paused:
+                    continue
+                raw = p.read_bytes().replace(b"\x00", b" ").decode("utf-8", errors="ignore")
+                if "--conjure-media" in raw:
+                    continue
+                if (
+                    ("aplay" in raw and ("-t raw" in raw or "honeybot_tts" in raw or "tick.wav" in raw or "dripulate.wav" in raw))
+                    or ("piper" in raw and "output_raw" in raw)
+                ):
+                    os.kill(pid, signal.SIGSTOP)
+                    paused.append(pid)
+            except Exception:
                 continue
-            raw = p.read_bytes().replace(b"\x00", b" ").decode("utf-8", errors="ignore")
-            if "--conjure-media" in raw:
-                continue
-            if (
-                ("aplay" in raw and ("-t raw" in raw or "honeybot_tts" in raw or "tick.wav" in raw or "dripulate.wav" in raw))
-                or ("piper" in raw and "output_raw" in raw)
-            ):
-                os.kill(pid, signal.SIGSTOP)
-                paused.append(pid)
-        except Exception:
-            continue
     for pat in ("conjure_window_overlay", "patronus_visual_shield"):
         try:
             subprocess.run(["pkill", "-f", pat], check=False)
@@ -1416,8 +1419,11 @@ def conjure_media(media_spec, duration=15.0, mute=False, _direct=False):
     target = _resolve_honeybot_media_target(raw_target)
     if not target:
         return
+    if not target.startswith(("http://", "https://", "file://")) and not os.path.isfile(target):
+        return
     ext = os.path.splitext(target.split("?", 1)[0])[1].lower()
     is_video = ext in (".mp4", ".webm", ".mkv", ".mov", ".gif")
+    should_pause_audio = not (not is_video or ext == ".gif")
     if is_video and ext != ".gif" and os.path.isfile(target):
         _, _, vdur = _probe_video_metadata_honeybot(target)
         if vdur > 0 and (abs(duration - 15.0) < 0.01 or abs(duration - 8.0) < 0.01):
@@ -1517,7 +1523,7 @@ def conjure_media(media_spec, duration=15.0, mute=False, _direct=False):
             if proc.poll() is not None and (time.time() - t0) < 0.8:
                 proc = subprocess.Popen([*base_cmd, target], env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                 wid = _shape_honeybot_overlay_window(mask_bytes, win_w, win_h, env, pos_x=pos_x, pos_y=pos_y)
-            paused_pids = _pause_honeybot_stage_for_weebo()
+            paused_pids = _pause_honeybot_stage_for_weebo(pause_audio=should_pause_audio)
             _enforce_overlay_z_order(wid, pos_x, pos_y, win_w, win_h, env)
             proc.wait(timeout=duration + 2.0)
         elif not is_video and shutil.which("feh") and not target.startswith(("http://", "https://")):
@@ -1762,6 +1768,9 @@ def dispatch_cue(command, content, env, profile_dir, pace_say=True):
             raw_path = narrator.prep_raw(content)
             if raw_path is not None:
                 wait_for_voice_or_live_interrupt(env, profile_dir)
+                if has_pending_update():
+                    narrator._cleanup_item(("RAW", raw_path))
+                    return
                 narrator.play_raw(raw_path, fallback_text=content)
             else:
                 narrator.say(content)
@@ -2004,6 +2013,9 @@ def wait_for_voice_or_live_interrupt(env, profile_dir):
             live_msg = check_live_message()
             if live_msg:
                 run_live_message(live_msg, env, profile_dir)
+            if has_pending_update():
+                narrator.interrupt()
+                return
         with narrator.queue.all_tasks_done:
             if narrator.queue.unfinished_tasks == 0:
                 return
@@ -2285,6 +2297,11 @@ def start_director_track():
     breaking = trigger_is_fresh() if score else False
     while True:
         if score:
+            try:
+                import importlib
+                importlib.reload(score)
+            except Exception:
+                pass
             # Generate a fresh script. On a breaking-news restart we request a minimal
             # script that leads straight with the newest article, skipping the station-ID
             # preamble so a just-pushed piece is heard immediately.

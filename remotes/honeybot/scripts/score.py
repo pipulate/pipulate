@@ -43,8 +43,11 @@ def append_article_content(script, article):
             script.append(("SAY", chunk))
 
 
+HERO_IMAGE_DURATION = 8.0
+
+
 def _append_article_performance(script, article, is_latest=True):
-    """Emit a voice-synchronized Figlet title card followed by the article body."""
+    """Emit a voice-synchronized Figlet title card, hero image popup, and article body."""
     lead = (
         f"Reading the latest entry from {article['date']}."
         if is_latest
@@ -58,6 +61,9 @@ def _append_article_performance(script, article, is_latest=True):
         },
     ))
     script.append(("BGM", "START"))
+    image_path = str(article.get("image") or "").strip()
+    if image_path:
+        script.append(("MEDIA", {"path": image_path, "duration": HERO_IMAGE_DURATION}))
     script.append(("SAY", "Reading entry..."))
     append_article_content(script, article)
     script.append(("BGM", "STOP"))

@@ -103,6 +103,26 @@ def trigger_is_fresh(max_age_seconds=900):
     except (FileNotFoundError, OSError):
         return False
 
+
+def has_pending_update():
+    """Non-consuming peek: True when .deploy_standby or .reading_trigger changed on disk."""
+    try:
+        cur_standby = STANDBY_FILE.read_text().strip()
+    except FileNotFoundError:
+        cur_standby = None
+    if _last_standby != "__UNINIT__" and cur_standby is not None and cur_standby != _last_standby:
+        return True
+    if _last_scan_time == 0:
+        return False
+    try:
+        cur_trig = TRIGGER_FILE.read_text().strip()
+    except FileNotFoundError:
+        cur_trig = None
+    if cur_trig is not None and cur_trig != _last_trigger:
+        return True
+    return False
+
+
 def check_for_updates():
     """
     Checks if the _posts directory has changed since the last playlist generation.
@@ -233,11 +253,22 @@ def get_playlist(recent_n=10, include_archive=True):
                 census=include_archive and (datetime.now().date() - post_date).days <= 7,
             )
             
+            fm_image = frontmatter.get('image')
+            image_path = ""
+            image_alt = ""
+            if isinstance(fm_image, dict):
+                image_path = str(fm_image.get('path') or '').strip()
+                image_alt = str(fm_image.get('alt') or '').strip()
+            elif isinstance(fm_image, str):
+                image_path = fm_image.strip()
+
             all_articles.append({
                 'date': post_date,
                 'sort_order': sort_order, # Added for secondary sort key
                 'title': frontmatter.get('title', slug.replace('-', ' ')),
                 'url': url,
+                'image': image_path,
+                'image_alt': image_alt,
                 'content': clean_text
             })
             if not include_archive and len(all_articles) >= recent_n and cutoff_date is None:
@@ -266,6 +297,12 @@ def get_playlist(recent_n=10, include_archive=True):
                 _last_trigger = None
         except: pass
         
+        if "score" in sys.modules:
+            try:
+                import importlib
+                importlib.reload(sys.modules["score"])
+            except Exception:
+                pass
         if not include_archive:
             return recent_articles
         return recent_articles + archive_articles
