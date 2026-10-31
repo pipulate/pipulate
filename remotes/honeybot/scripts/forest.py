@@ -64,11 +64,11 @@ WHATS_HAPPENING_BEAT = (
 CURRENT_ARTICLE_BEAT = "{CURRENT_ARTICLE}"
 
 CONSULTING_CTA_BEAT = (
-    "Still doing View-Source S E O while A I Overviews eat your clicks? "
-    "Stop building generative slop cannons and learn to read the wire directly. "
-    "Your website is already your feed when you master R F C 9110 Markdown negotiation, "
-    "R F C 9111 edge caching, and R F C 9421 Web Bot Auth. "
-    "Transition from S E O to A I Readiness at Mike L E V dot eye N, or inspect Sun Pug dot eye oh with curl pipe less."
+    "Do you have the S E O blues while A I Overviews eat your clicks? "
+    "S E O isn't dead. Just like Mobile First gave us Responsive Web Design, "
+    "the Agentic Web is moving S E O to the Edge so one U R L serves H T M L to browsers and clean Markdown to A I bots. "
+    "Your site is already your feed. "
+    "Step into Edge S E O and A I Readiness at Mike L E V dot eye N, or inspect Sun Pug dot eye oh with curl pipe less."
 )
 
 
@@ -564,8 +564,8 @@ def _build_station_report_panel(mode="overview"):
         )
 
     footer = Text.from_markup(
-        "[bold green]🔭 Still doing View-Source SEO?[/bold green] "
-        "Your site is your feed (RFC 9110 / 9111 / 9421): [bold cyan]curl -fsSL https://sunpug.io | less[/bold cyan] · [bold cyan]https://mikelev.in/#consulting[/bold cyan]"
+        "[bold green]🔭 Got the SEO Blues?[/bold green] "
+        "SEO moved to the Edge — your site is your feed: [bold cyan]curl -fsSL https://sunpug.io | less[/bold cyan] · [bold cyan]https://mikelev.in/#consulting[/bold cyan]"
     )
     return Panel(tbl, title=f"[bold bright_cyan]{title_str}[/bold bright_cyan]", subtitle=footer, padding=(0, 1))
 

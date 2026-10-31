@@ -488,7 +488,7 @@ def get_broadcast_kit(target_key="1", slug_match=None):
     yt_title = format_youtube_title(title)
     desc_parts = [
         f"📖 Read the full article: {canonical_url}?src=youtube",
-        f"🔭 Still doing View-Source SEO? Pivot to Wire-Truth AI-Readiness (RFC 9110/9111/9421): {base_url}/?src=youtube#consulting | Inspect workshop: curl -fsSL https://sunpug.io | less (Email: {CONTACT_EMAIL})",
+        f"🔭 Got the SEO Blues? SEO moved to the Edge — Your Site Is Your Feed: {base_url}/?src=youtube#consulting | Inspect workshop: curl -fsSL https://sunpug.io | less (Email: {CONTACT_EMAIL})",
         f"🧪 Test RFC 9110 in your terminal: curl -sI -H \"Accept: text/markdown\" {canonical_url}?src=rfc9110",
         "",
         f"🎙️ Now reading live on the Web Bot AI Observatory: \"{title}\"",
@@ -532,7 +532,7 @@ def get_broadcast_kit(target_key="1", slug_match=None):
         "",
         f"🎙️ Rather listen than read? Tune into the 24/7 Honeybot Storytime live stream ({yt_live_vanity}) where the latest article is read aloud alongside real-time AI bot telemetry.",
         f"🧪 Test RFC 9110 in your terminal: curl -sI -H \"Accept: text/markdown\" {canonical_url}?src=rfc9110",
-        f"🔭 Still doing View-Source SEO? Your site is your feed (RFC 9110/9111/9421 AI-Readiness): {base_url}/?src=linkedin#consulting",
+        f"🔭 Got the SEO Blues? SEO moved to the Edge — Your Site Is Your Feed: {base_url}/?src=linkedin#consulting",
     ])
     if tags:
         li_parts.extend(["", tags])
