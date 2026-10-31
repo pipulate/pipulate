@@ -94,7 +94,6 @@ assets/jekyll/common-packages.nix
 ~/repos/trimnoir/Gemfile
 ~/repos/trimnoir/index.md
 ~/repos/trimnoir/_layouts/default.html
-~/repos/trimnoir/_layouts/home.html
 ~/repos/trimnoir/_layouts/page.html
 ~/repos/trimnoir/_layouts/post.html
 ~/repos/trimnoir/assets/main.css
