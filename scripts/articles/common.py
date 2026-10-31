@@ -519,7 +519,7 @@ def get_broadcast_kit(target_key="1", slug_match=None):
     li_parts = [
         f"🚀 {title}",
         "",
-        f"📖 Full article & code receipts (1st for hero preview): {canonical_url}?src=linkedin",
+        f"📖 Full article & code receipts: {canonical_url}?src=linkedin",
         f"🔴 Watch/Listen 24/7 on Honeybot Storytime: {yt_live_vanity}",
     ]
     if li_imprint:
