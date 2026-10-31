@@ -58,6 +58,7 @@ WHATS_HAPPENING_BEAT = (
     "Blue diamonds mark agents cryptographically signing requests under R F C 9421 Web Bot Auth. "
     "Red stop signs unmask crawlers spoofing Googlebot I P addresses. "
     "Big purple bars are bots falling into the JavaScript DOM hydration trap-door. I guess one or two are still humans with browsers. Visit my site and see. "
+    "If you want your Ah-Ha moment, do this one small thing: stay and listen to this broadcast from one Article Intro all the way through to the next Article Intro just one time. "
     "Hit Like and Subscribe right now so you don't lose this telemetry feed, and copy this live stream link and send it to an engineer or technical S E O who can explain the two bottom intelligence panels to you. "
 )
 
