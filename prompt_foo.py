@@ -2609,8 +2609,7 @@ def update_readme_md_in_place():
         # same thing" by a thing nobody had asked it of. The honest witnesses
         # are the two "workspace tree regenerated" lines, which fire only when
         # bytes actually change, and they are unaffected here.
-        # RENDERING STAYS LIVE, only PRINTING is silenced: result.drift is
-        # still read below, so the seal is still checked on this path.
+
         # AGENTS.md went dark too on 2026-09-06: the first console recording
         # read its panel at 18 of 88 lines, the largest block after the
         # ledger, so neither splice paints a panel now and the two

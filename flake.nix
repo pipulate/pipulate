@@ -1850,9 +1850,8 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # probe, so neither needs to be a packaged derivation.
           # THE BLANK STARE RULE (2026-09-28): the word the menu prints is the
           # plain name of the thing, connect; conn is the abbreviation behind
-          # it. about prints the sealed workspace tree and the three tier
-          # sentences. reseal rewrites the art ledger after a hand edits the
-          # art (imports/ascii_displays.py --reseal). FUNCTIONS, all three:
+          # it. about prints the workspace tree and the three tier
+          # sentences. FUNCTIONS, both:
           # typed by a human, witnessed in the generated hook text.
           connect() {
             if [ -f "$PIPULATE_ROOT/scripts/sources_menu.py" ]; then
