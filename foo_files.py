@@ -1791,190 +1791,16 @@ MATCHBOOK_CHOP = r"""
 # § THE FOUR STAGES OF THE HARNESS (banked 2026-09-28) -- Teach every new tool through literacy, automaticity, prosody, and fluency, with each change guarded, diff-read, receipt-graded, and git-banked so practice becomes mastery one reversible car at a time.
 # - TODO (2026-09-28, THE EMBEDDED REPO; read at deed 1636): the personal repo's git add -A took Workshop/personal/Client_Work, which carries its own .git (INFERRED its remote is ~/git-repos/clients.git), as a gitlink with no .gitmodules, and the flat Notebooks/ carried three .mp4 files into 5218d29; the push was Ctrl+C'd (INFERRED mid-pack on the videos), so origin/main is unread and personal_porcelain reads 1 (INFERRED the gitlink reporting modified or untracked content). The one hand line, in the operator's own repo: cd Workshop/personal, git rm --cached Client_Work, add Client_Work/ and *.mp4 to its .gitignore, commit or amend (nothing is pushed yet), push. Gate: git -C Workshop/personal status --porcelain empty and git log -1 origin/main at the new commit. READ 2026-09-28 (deed 1638): porcelain reads M Client_Work and origin/main reads 890983a, the first commit, so the second commit with the videos never reached the bare remote and the gitlink still reports modified; 1636's INFERRED state is OBSERVED, and the hand line stands. READ 2026-09-30 (deed 1733): Workshop/personal reads [ahead 1] dirty=1 against personal.git, so the unpushed commit stands two days on, and the Mac's ~/repos/personal (cloned from its tape at deed 1733, newest commit 2026-09-28 02:33:13) is the first commit alone: THE TAPE IS NOT THE WORK, its second instance, under a DONE line.
 # - TODO (2026-09-28, THE WORKSHOP IS THREE FOLDERS; the operator's ruling at 1:30 AM): Workshop/ holds corporate/, personal/ and shared/ (lowercase) and nothing else; the flake's twelve canon files land under Workshop/personal/Notebooks/ (Advanced_ and Educational_ flattened into one folder beside imports/ and Onboarding.ipynb; the notebooks' own import path read off the assets/nbs census first), Client_Work/, Deliverables/ and data/.onboarded under personal/; .agents/skills/ (tracked, read by apps/030_roles.py) to the repo root beside AGENTS.md unless ruled otherwise; JupyterLab's root passed explicitly on the tmux line (--ServerApp.root_dir) so the browser opens on the three tiers wherever the startup notebook lives; the menu words become connect (conn stays a spelling) and about (the workspace_tree panel plus: corporate manages corporate, you manage personal, each person shares into shared; personal -> shared when the person says so, shared -> corporate when corporate says so; nothing leaves personal unless you copy it to YOUR shared folder), plus a reseal word; the art follows the disk in the same train, resealed by --reseal. Readers, every one in the payload before a line moves: flake.nix, .gitignore, pipulate/core.py, pipulate/__init__.py, server.py, apps/030_roles.py, assets/installer/mck.sh, scripts/bookmark_import.py, scripts/boot_menu.py, scripts/sources_menu.py, imports/ascii_displays.py, GLOSSARY.md (the Three-tier entry's capitals), ~/repos/nixos/autognome.py, ~/repos/nixos/configuration.nix (the c alias), AGENTS.md prose, the assets/nbs notebooks by hand. Gate: ls -A Workshop reads corporate personal shared and nothing else; git status clean after a compile; jupyter's Serving line names Workshop; Onboarding.ipynb runs top to bottom from its new folder. EMITTED 2026-09-28 (deed 1634's train): personal/Notebooks/ is the old Workshop folder moved whole (the notebooks flattened beside imports/, data/, browser_cache/ and .env, because core.py's base and the sauce's browser_cache derivation both name the folder that holds imports/; every data/.onboarded reader follows), Client_Work/ and Deliverables/ one level up under personal/, .agents/ to the repo root, corporate/ created empty by the flake so the file browser shows the same three choices on every machine, and Workshop/ tracks nothing (the __init__.py package marker becomes a file the copy loop creates; .gitattributes rides untracked into personal/Notebooks/). Gate, added: git ls-files Workshop prints nothing. UNREAD: nbup (core.py ~2440, ~2539) may mirror a notebook's relative path into assets/nbs/, which the flatten would break for the four Advanced notebooks; the sed receipt of the next compile rules it. READ 2026-09-28 (deed 1636): LANDED, the gate met by receipt (ls -A Workshop exactly corporate personal shared; git ls-files Workshop 0 and .agents 4; Workshop/data/.onboarded absent and personal/Notebooks/data/.onboarded present, the real data/ moved; jupyter_root_entries three and Onboarding 200 by its relative path after jn; porcelain 3, all three the compiler's own). Two corrections against this line: Deliverables sits UNDER personal/Notebooks/ beside data/ and browser_cache/, because core.py:234 derives it from base (read off the census before a byte moved; the flake's THREE TIERS comment and WELCOME.md heredoc followed, 4c651327), and Client_Work alone sits beside Notebooks/; and nbup DID mirror the name into assets/nbs/ (2539 and 2540 by hand), so 4cdc4d3a looks a bare name up among the assets by filename and drops any folder from the source side. The first move fence died on git mv -q (a switch git mv does not have), moved nothing, and nix develop built the new tree empty beside the old; the respelled fence (deed 1636's Car 1) moved the flake's copy aside to ~/.local/state/pipulate/stale/ and the real tree in, printing GO over eight staged git lines. STILL UNWITNESSED: Onboarding.ipynb run top to bottom from its new folder (opened, 200; no cell ran).
-# - TODO (2026-09-28, THE SERVER OUTLIVED ITS ROOT; INFERRED until the 09-28 BEFORE tap reads): http://localhost:8888 shows Directory not found: "" because jupyter sets root_dir to the startup notebook's folder when the notebook is a positional argument, the tmux jupyter session was launched at the 09-27 morning init with root_dir Notebooks/, the evening rename moved the folder under it, and nothing since restarted it (ndq never touches jupyter; only run-script's start path does). Probe: the Serving-notebooks line in /tmp/jupyter-startup.log beside the HTTP code of /api/contents/ (Notebooks and 404 stale, Workshop and 200 restarted). Cure: kill the tmux session and relaunch. Standing fix: the explicit root_dir in the three-folder TODO. Delete this line when the AFTER reads 200. READ 2026-09-28 (deed 1634): BEFORE Notebooks, 404, a Sunday 11:48:11 start beside the 19:16:52 rename; AFTER Workshop, 200, 02:33:19, after Car 5. The inference held both ways; the standing fix (root_dir said out loud) rides the same deed's flake car. Done; the next forget ride fades this line. READ 2026-09-28 (deed 1636): the standing fix witnessed, 04:08:45 after jn with Serving Workshop under --ServerApp.root_dir=Workshop and personal/Notebooks/Onboarding.ipynb 200.
 # § THE BLANK STARE RULE (banked 2026-09-28) -- Name every newcomer-facing command with the plain word for the thing it does and keep abbreviations only as aliases behind it; when the system seems unusual, answer with the object's ordinary name instead of explaining machinery.
 # § THE COMMAND LINE (banked 2026-10-01) -- Call the place where a newcomer types the command line and the thing on screen a window; reserve CLI, terminal, and shell for technical context, and exempt code names so the prose rule cannot break code.
 # - LANDED 2026-09-28, THE RESEAL: python imports/ascii_displays.py --check reads every art's seal beside its live CRC32 and exits 1 on drift; --reseal rewrites the drifted FIGURATE_LEDGER lines in place (trailing comments kept, unsealed art given a line) and exits 0. THE THREE-REGION ART EDIT keeps its regions; its ordering is author, --reseal, figurate reads Drift: 0. The seal still detects; only the hand that types --reseal moves the number. The reseal word in flake.nix rides the three-folder train. READ 2026-09-28 (deed 1634): --check reads 13 art(s), 0 to reseal, check_exit=0 in the compile lane against a bare check_exit=0 by hand before Car 1; the workspace_tree car of the same deed is the first drifted reseal. READ 2026-09-28 (deed 1636): typed as the word reseal at a (nix) prompt (a flake function, hook 3): twelve ok rows, one DRIFT row, 545211116 -> 2337471735 RESEALED, resealed 1 line(s); bca7b276 the one-line ledger commit; --check ok and figurate drift 0 in the compile lane, AGENTS.md's and README.md's trees regenerated by the same compile. The seal covers the AI string, so the title's emoji leaving (4a2efe1c) moved no number. The first drifted reseal is witnessed.
 # - TODO (2026-09-28, the tiers and the daily commit): corporate/ and personal/ are local repos with bare remotes under ~/git-repos/, so b2's Working Repos and Git Bare Repos sweeps carry both today with no change; commit_and_push_blogs reads blogs.json only, so they are committed by hand until backup-home.py grows a second list of repo roots (or blogs.nix grows a sibling attrset) and the same per-repo line prints for each. Gate: the midnight journal shows corporate and personal beside the blogs.
-# - TODO (2026-09-27, the qamy.ai door; the operator's ruling at the dismount: today): the domain names the method (QA My AI, the proof straddle's public face) and serves one page until it says more. The door is the npvg.org door with one token changed: a virtualHosts entry in remotes/honeybot/nixos/configuration.nix (this repo, chapter IX) beside npvg.org, HTTP-only until the name resolves, then forceSSL plus enableACME on the shared acme-challenge webroot (THE ACME CAR), and the installer's sub_filter stamp only if the installer is to be served there (THE DOOR NAMES THE FOLDER: its own placeholder, never a hostname rewrite); the body a page of its own under remotes/honeybot/www/qamy.ai, rsynced by nixops.sh, no rebuild for a body-only change and one rebuild on Honeybot for the vhost. THE ONE STEP NO REPO MAKES comes first, by hand, because propagation is the slow part: an A record at the registrar to the address npvg.org already carries (dig +short npvg.org is the value; dig +short qamy.ai empty is the BEFORE, the address is the AFTER), TTL 300, and it joins the 2026-09-13 debt, a third static A record on one public address with the DDNS heartbeat on mikelev.in alone, and the favicon 404 line. Order: the record now; the vhost car with configuration.nix and nixops.sh in the payload; the deploy; the cellular witness with a tag minted in the caboose (THE OUT-OF-BAND STEP RULE). Gate: curl -sI https://qamy.ai from outside reads 200 with a Let's Encrypt issuer, and the tag sits in its access log. A RECORD MADE 2026-09-27 (the operator's paste at deed 1626: A at the apex, TTL 1 min, a www CNAME to the apex): dig +short qamy.ai reads the public address from inside the LAN while dig +short npvg.org reads the LAN address, so the house's split DNS carries no qamy.ai line and a browser inside the house will hairpin or fail until the resolver that answers npvg.org internally gets the same line for qamy.ai (where that resolver lives is unread: the router, or a hosts entry in the NixOS config; it rides the vhost car's compile). THE RECEIPT CARRIED THE ADDRESS BARE: two ! dig lines seeded at deed 1625 put the home's public address into a trusted payload the operator's own paste had redacted; a pii_substitutions.txt line for it is the HALT of deed 1626, and every DNS probe since prints a verdict word, never the value. READ 2026-09-27 (deed 1627): from 1.1.1.1 the answer for qamy.ai differs from mikelev.in's or is empty; three worlds print that word (a negative answer cached before the record existed; a value that is not npvg.org's; npvg.org's static A drifted off mikelev.in's DDNS address, the 2026-09-13 debt come due, with qamy.ai a copy of the stale number and the pad dark from outside), and four verdict probes ride deed 1628 to split them: the answer count at 1.1.1.1 and at the zone's own nameserver, qamy.ai against npvg.org, npvg.org against mikelev.in. READ 2026-09-27 (deed 1628): qamy_public_answers=1 and qamy_authoritative_answers=1 via dns1.registrar-servers.com, so the record exists and 1.1.1.1 holds it; qamy_matches_npvg_public; npvg_differs_from_mikelevin_public. On 2026-09-13 the ACME challenge for npvg.org reached the pad, so the two names agreed then; the DDNS unit moves mikelev.in and nothing moves npvg.org, and outside traffic has reached mikelev.in since the 2026-09-24 outage (the hydration count moved), so the reading is npvg.org stale since the WAN address changed, qamy.ai a copy of the stale number, the pad dark from outside and npvg.org's December renewal set to fail, INFERRED until the egress probe of deed 1629 prints mikelevin_current_npvg_and_qamy_stale. Deed 1627's caboose pre-committed a HALT to a word two worlds print (THE CABOOSE-VERDICT COROLLARY), so the registrar step rides deed 1629's HALT with one action once the word is read; the standing fix is the DDNS unit covering all three names, the 2026-09-13 line, a services.nix car. READ 2026-09-27 (deed 1629): mikelevin_current_npvg_and_qamy_stale, the forecast word; the operator set npvg.org's and qamy.ai's A records at the registrar by hand before the reply landed (the loss of power to the building changed the WAN address and only mikelev.in's DDNS followed it), so no HALT rode and the AFTER is the same probe reading all_three_current once the TTLs pass (qamy.ai one minute, npvg.org's unread). The address rode this article bare in the operator's own paste and appears in no probe and no reply; the pii_substitutions.txt line covers the publish lane, and under --profile trusted substitutions are OFF by design (deed 1627's terminal: substitutions=OFF), so the HALT of deed 1626 named the wrong lane for a bjj payload, a miss of mine, and verdict words were the right cure. Still owed: the DDNS unit for all three names, then the vhost car. READ 2026-09-27 (deed 1630): all_three_current.  THIRD RECORD 2026-09-29: qamy.ai, static, the same address; on the next move two doors go dark, not one. LANDED 2026-09-29 (deeds 1667 through 1672, 1669 and 1670 compiles that rode no turn, INFERRED; commits dd11304a the vhost and the map comment, a5f26614 the body, 92262307 the walk pages, d954de2e the sync, ef894a17 the operator's hand bank; ignition nixops then nixos-rebuild switch on Honeybot, 35 derivations, nginx restarted, acme-qamy.ai.service, its order unit and acme-renew-qamy.ai.timer started): eleven of twelve lines in band at deed 1671: config census 0 -> 4 and vhosts 4 -> 5 in the repo, 0 -> 4 on the box; ~/www gained qamy.ai; the nixops grep 8 -> 11 with the config sync at 39; loopback for qamy.ai read a Let's Encrypt issuer (CN=YE1 where the default server's certificate had read YE2), HTTP/2 200 and text/x-shellscript; the UA pair 000/000 -> 200 text/x-shellscript then 200 text/html; the page grep 0 -> 2; the round trip held, the served body with its stamp reversed hashing to install.sh at f3181426 with the control at 0. THE MISS, the probe's: "SSL certificate verify ok." never printed under the grep, so the fourth line was the content-type the prediction had cut; at deed 1672 the number read verify=0 http=2 code=200 for the apex and the www alias alike. WITNESSED 2026-09-29 (deed 1672): a cellular Safari visit to https://qamy.ai/?acme-qamy-1668 with Wi-Fi off, no warning, the NPvg page served, and the tag reading 2 in qamy.access.log, the 2026-09-13 shape (the page and the favicon 404 carrying the tag as referer). The door stamps qamy, so its one-liner lands in ~/qamy; the body is its own tree with the two command lines changed; title, heading and walk pages still read NPvg and npvg.org (the divergence TODO); the LAN verdict still reads differs (the split-DNS TODO). The hand bank at ef894a17 pasted the two TODO lines, put the THIRD RECORD sentence on this line instead of the 2026-09-13 DDNS line, and left this tail unpasted, which the bank census read as 0 0 1: the census was the probe that caught it. This line's job is done; the next forget ride fades it.
-# - TODO (2026-09-27, AGENTS.md and AI_CONTEXT.md must name the specification; the operator's words, its own ride): a stranger's model, or an IT department come to forbid it, reading AGENTS.md or AI_CONTEXT.md must see on the first screen that this repository is an Agent Skill under https://agentskills.io/specification (a SKILL.md folder with YAML frontmatter and progressive disclosure, AGENTS.md as the nearest-ancestor signpost; Notebooks/.agents/skills already conforms, THREE-STANDARDS SUPERPOSITION), and that every tool call it teaches is forced onto localhost under the fifty-year POSIX conventions (a command, stdin, stdout, an exit code) so that it lands in the flight data recorder: a cloud tool call that cannot be reconstructed locally is non-reproducible, non-portable and cannot be compiled into a cartridge, and is out of scope by that rule and not by taste. The ride needs AGENTS.md, AI_CONTEXT.md and !https://agentskills.io/specification in the payload, the specification read before a word is written and the wording checked against it. Gate: a fresh chat handed AGENTS.md alone names the specification and the localhost rule in its first two sentences. THE ORDER, ruled at the 2026-09-27 dismount: after the first ticket, the deliverable and the render farm, and before the Workshop tree; with that tree landed under Notebooks (the command-stop TODO), the repository is the worked example the specification's readers can run on localhost, the operator's stated aim, "the quintessential and prototypical example". READ 2026-09-28 (deed 1661): the URL rides AGENTS.md's Skills line since daed3d78, half the gate; the localhost sentence is still owed, worded after the specification is read into a payload, and it rides the install skill's second-reading turn. LANDED 2026-09-28 (deed 1662): the first paragraph names the specification in its first sentence and the localhost rule in its second, the old paragraph kept beneath with its duplicate clause cut; the gate (a fresh chat handed AGENTS.md alone) is a hand step, one paste into any chat window, and its receipt is the model's first two sentences back. READ 2026-09-28 (deed 1665): the gate passed by hand in ChatGPT 6 Extra High, the file alone with one line above it: the first sentence read localhost-first and Agent Skills with foo.zip cartridges and executable code as the source of truth, the second SEARCH/REPLACE patches applied by apply.py under the notebook and validation rules; the specification's URL was not echoed, its name was, and whether the URL must be is unruled. This line's job is done; the next forget ride fades it.
 # - TODO (2026-09-27, the first tree ride): annotate_tree_with_tokens in prompt_foo.py stamps a count by basename, so the three README.md lines in the File Tree (root, assets/sounds, connectors) all read connectors/README.md's 2,742 tokens; match on a path the tree's indentation can reconstruct, or stamp nothing on a basename that occurs twice. In the same car, the placeholder "generation failed or was skipped" is two worlds in one label: say which. One car when a ride owns it.
 # - TODO (2026-09-27, the m that answers on Prime; RULED by hand at the dismount: type m at a (nix) prompt read "m is aliased to" the configuration.nix line, and not-found in the compile lane by construction): inside the nix shell, `m` printed "❌ ai.py returned empty message" with no ", aborting.", which is configuration.nix's environment.shellAliases m and not flake.nix's m() function; bash expands an alias before it looks for a function of the same name, so on this machine the flake's git add -A, the router hint and the Error:* guard have never run under `m`, and the alias's label is false on a clean tree (git commit -am with nothing to commit prints "empty message"). One line either way: `unalias m` at the top of the flake's m() region, or delete the system alias; the Mac has no system alias and is unaffected. Gate: `type m` at a (nix) prompt on Prime reads "m is a function". SPECIMEN 2026-09-28 (deeds 1659-1660): d printed "m will stage these" over the new .agents/skills/journal/SKILL.md, m answered "ai.py returned empty message" with no ", aborting.", and git add by hand landed it; the d label is the flake's m() promising what Prime's alias does not do.
 # - TODO (2026-09-27, patch and app share a directory; convicted twice in one sitting): `patch` writes ./patch and `app` reads ./patch, both where you stand (flake.nix, SPLIT VERDICT), so `patch`, `n`, `app` read a stale ~/repos/nixos/patch from an earlier ride, printed six ALREADY APPLIED lines for one file, and the operator asked what he was missing. The tell was the wording: the stale run said "replacement block" six times for blogs.nix; this ride's blocks say "inserted block" for its three insertions. Cheapest cure is a reading, not a rule: `app` prints the patch file's directory and age on its first line before applying, so a days-old file names itself. flake.nix, one line, when a ride owns it. READ 2026-09-28 (deed 1641, twice by the operator's hand): app typed inside Workshop/corporate/ refused two Targets ("Target file not found") that exist at the repo root, and the operator cd'd back ("too much cd'ing around and having to know to p first"); Targets are root-relative by convention and apply.py resolved them from the cwd. Deed 1642's apply.py car changes to PIPULATE_ROOT when the shell exports it, printing one line when it moved, so app works from any folder and a WRITE_FILE typed elsewhere cannot create its path under that folder; the patch file's own location (./patch, the cwd) is still the flake's line above. Also swept: the patch file written in corporate/ was left untracked there, d showed it, m did not stage it, and Car 5's git add -A committed it as 68c3eb5 (INFERRED from the commit's existence; deed 1643's show --stat reads it); deed 1642's hand car removes it and ignores it with pipulate's own .gitignore line. READ 2026-09-28 (deed 1643): the sweep OBSERVED (68c3eb5 is one file, patch, 22 insertions, Car 4's two blocks) and 59cd1cb removed and ignored it (ls-files reads .gitignore alone); the /tmp straddle read Target file not found by hand and the resolved-from line then SEARCH block not found in 'foo_files.py' after, PIPULATE_ROOT 0 -> 3; pytest is not in the venv (No module named pytest on both taps), so tests/test_apply_airlock.py cannot run here and the /tmp straddle is the car's only witness. The patch file's own location stays the flake's line. READ 2026-09-28 (deed 1644): the root-relative Target witnessed live three times at 1643, app typed in Workshop/corporate printing the resolved-from line and landing two files at their root paths ("Yay I was able to apply this without changing back to the pipulate root"); d and m there see the corporate repo, which is right; the .venv spelling still needs the root (bash: .venv/bin/python: No such file or directory from the folder), cured by the word on PATH, p until then.
 # - TODO (2026-09-27, the confabulation ledger; SQLite or a text file, undecided by the operator): the axis-ledger precedent rules it, a tracked JSONL appended by hand with no generator, because a ledger a cartridge cannot carry cannot be forwarded. One line per catch: date, the deed holding the AFTER, the claim verbatim in one sentence, the probe, before, after, the engine named. Count is line count; forwarding is the line plus the deed name; an entry without its straddle is a voice recording of someone saying they caught something, so the straddle is the admission ticket. Gate: assets/confabulation_ledger.jsonl with its first record, one this system caught.
 # - TODO (2026-09-27, the foil's handle, ruling owed): Dogma Luddite (the operator's) or The Left Seat (deference to the confident narrator whose instrument has failed; Korean Air Cargo 8509, Stansted, 22 December 1999, AAIB 2003). The Luddites knew what the machine did, and the captain at Stansted was senior with a failed instrument, not incompetent. One GLOSSARY.md entry or none.
 # - TODO (2026-09-27, the template, dry): the draft with Reading before, Reading after, The change, Activation, Next question and Outside the repository sits in the 2026-09-27 Grimoire article (rgx -t grim "Reading, before"); init.lua carries the template, and g in flake.nix carries the two "left-hand causal boundary" sentences, which take the NIST word, baseline. Two cars when the operator says so.
-#   SPECIMENS 2026-09-27 (pipulate and nixos, same m alias): 4bce4e0b ADDED
-#   one TODO line (+1/-0) under "chore: Remove TODO comments regarding
-#   Grimoire configuration and file management", the sign read backwards
-#   again; nixos 50f070d renumbered three blogs and renamed an alias under
-#   "chore: Update nixos-unstable pin", two files where d had shown one,
-#   +3/-3 by subtraction against the +40/-30 the diff printed, the second
-#   file already staged when d ran and so invisible to it, INFERRED the
-#   pin record nr writes, committed because the index carried it.
-#   SPECIMEN 2026-09-27, the dismount (pipulate, same m alias): 01a61424,
-#   the operator banking these lines by hand (+13/-0), under "chore: Add
-#   TODO comments and remove redundant code", the second clause a deletion
-#   that did not happen.
-#   SPECIMEN 2026-09-27, the daily commit (nixos, same m alias): a47ced8,
-#   three files under "chore: Update blogs.nix to include git path and
-#   backup_commit flag", where blogs.nix carries only the flag and the git
-#   path lives in configuration.nix and backup-home.py; one file named for
-#   three, the way 50f070d named the pin for the renumber.
-#   SPECIMEN 2026-09-27, the specimen's own commit (pipulate, same m
-#   alias): 62392405 ADDED the five lines above (+5/-0) under "chore:
-#   Update documentation and remove redundant code", the clause 01a61424
-#   got for +13/-0, on a diff that removed nothing.
-#   SPECIMENS 2026-09-27, the tree ride (pipulate, same m alias): 5b702861
-#   amended two TODO lines in foo_files.py alone (+2/-2) under "chore:
-#   Update deliverable.html and foo_files.py with detailed TODOs and
-#   Rustkyll test instructions", naming a file that does not exist, the
-#   TODO's subject read as a path; 0bce3aae dropped --no-tree from ahc, a
-#   default flipped, under "chore: Refactor flake.nix and foo_files.py for
-#   clarity and consistency"; c7f3a90e got "feat: implement local rules
-#   extraction", true, the ride's one exact subject.
-#   SPECIMENS 2026-09-27, the eza ride (pipulate, same m alias): bc684672
-#   "chore: Update prompt_foo.py with path argument for eza command",
-#   true; 3b854463 amended two comment regions in foo_files.py (+9/-1)
-#   under "chore: Update documentation and remove redundant code", the
-#   third commit of the day to get that clause for a diff that removed
-#   no code.
-#   SPECIMENS 2026-09-27, the driver ride (pipulate, same m alias):
-#   8fa260fc "chore: Add driver path resolution logic", true (+34/-3);
-#   a7660762 amended three comment regions (+8/-2) under "chore: Update
-#   documentation and remove redundant code", the fourth commit of the
-#   day to get that clause for a diff that removed no code.
-#   SPECIMENS 2026-09-27, the three-words ride (pipulate, same m alias):
-#   2351c981 "add: Introduce --sw argument for a census
-#   cohort.", true under a type word the convention does not have;
-#   5410ddbe true; 0774293e "Refactor _text_lines" for a function the
-#   commit added; 151bb058 rewrote comment regions (+32/-11) under
-#   "chore: Update documentation and remove redundant code", the fifth
-#   of the day, this once with deletions in the diff and none of them code.
-#   SPECIMENS 2026-09-27, the bjj ride (pipulate, same m alias): 266b5e18
-#   "chore: Introduce bjj function with trusted profile and reason", true;
-#   4dbdb230 amended comment regions in foo_files.py alone (+23/-2) under
-#   "feat: Introduce --sw argument for a census cohort", the
-#   subject 2351c981 had earned an hour earlier, for a commit that touched
-#   no connector: a quoted diff read as the change, the 6f09e025 shape.
-#   SPECIMENS 2026-09-27, the board ride (pipulate, same m alias): 19b6c05e
-#   "feat: Enhance Jira Connector with Probe Economy and Project URL
-#   Handling", the docstring's rule names read as the change where the
-#   diff's verbs were paging and a text link, roughly true; 64226b9b "fix:
-#   add jira board query for board 453" for a foo_files.py-only comment
-#   bank (+12/-5) that added no query, the TODO's subject read as the change.
-#   SPECIMENS 2026-09-27, the join ride (pipulate, same m alias): c8db6dca
-#   "feat: introduce slug resolution from url and hostname", true; 95326f00
-#   "feat: Enhance Jira Connector with Probe Economy and Project URL
-#   Handling" for a foo_files.py-only bank (+13/-6), the subject 19b6c05e
-#   earned two commits earlier, reused for a commit that touched no
-#   connector: the 4dbdb230 shape a second time in one afternoon.
-#   SPECIMENS 2026-09-27, the tier ride (pipulate, same m alias): 2f5d3a63
-#   "chore: Update .gitignore with corporate tier note", true; 9e290f7a
-#   "chore: Refactor JIRA connector for hostname fallback" for a comment
-#   retitled (+4/-1), a refactor that moved no code; 74372860 "feat:
-#   introduce slug resolution from url and hostname" for a foo_files.py-only
-#   bank (+17/-7), the subject c8db6dca earned, reused for a commit that
-#   touched no connector: the 4dbdb230 shape a THIRD time in one afternoon.
-#   SPECIMENS 2026-09-27, the render ride (pipulate, same m alias): 623bf116
-#   "chore: Implement decode, diff, and mint share links",
-#   true, a new file called a chore; 9785ceaa "feat: Add PullAbsentError
-#   for handling missing activation apps", true; be8aa4f8 "fix: introduce
-#   section_match function for section URLs", a feature called
-#   a fix; 3588c387 "feat: Introduce slug resolution from url and hostname"
-#   for a foo_files.py-only bank (+16/-7), c8db6dca's subject a second time:
-#   the 4dbdb230 shape a FOURTH time in one afternoon.
-#   SPECIMENS 2026-09-27, the rename train (pipulate, same m alias): 87c7bdeb
-#   "chore: Rename tracked files to reflect workshop structure" for a
-#   .gitignore-only +29 that renamed nothing (the comment's own words read
-#   as the verb); 9433adaf "refactor: Rename Notebooks to Workshop directory
-#   structure", true, and it carried the eight renames the hand step had
-#   staged along with flake.nix's 36 lines, because d after the move printed
-#   nothing and no m rode between (nine files, one commit, harmless);
-#   6b2b57c1 and 6734ede0 true; d042b067 "Update paths to Workshop
-#   directories in core.py and notebook_init.py" naming a file that does not
-#   exist for six that do; 4d43bc45 "Update directory paths in Notebooks and
-#   Workshop" for seven documentation strings, roughly; 008f38b0 "Update
-#   documentation and agent skill definitions" for the router's seven paths
-#   and ten READ appends, no skill defined; bda3e82f "feat: Add
-#   PullAbsentError for handling missing activation apps" for a
-#   foo_files.py-only bank (+13/-1), 9785ceaa's subject reused: the 4dbdb230
-#   shape a FIFTH time in one day; 4e77292d "Update connectorCommand
-#   definitions in flake.nix", true.
-#   SPECIMENS 2026-09-27, the seal ride (pipulate, same m alias): 11286aa2
-#   "chore: Update Workshop names and descriptions in ascii_displays.py",
-#   true and blind to the seal (the CRC 2408173560 -> 545211116 was the
-#   commit); 1c3a60fe "chore: Update "Three-tier workspace" definition in
-#   GLOSSARY.md", true; a82a4f3d "chore: Remove shared README content" for
-#   a deletion the hand step had staged plus a foo_files.py bank (+24/-21
-#   across two files), the deletion named and the bank unnamed: the
-#   4dbdb230 shape's mirror, a subject true for the smaller half.
-#   SPECIMENS 2026-09-28, the first ticket (pipulate and corporate, same m
-#   alias): 5da91d32 "feat: add TODO comments for context and guiding the
-#   operator to the next actions, with a focus on the underlying system
-#   configurations and mechanisms;" a subject that runs on to a semicolon;
-#   7ee4d146 "chore: Update relay command and relay initialization logic"
-#   for +277/-7 that CREATED the relay lanes; corporate a4a6516
-#   "docs(TICKET-1): Implement JS settings and robots.txt Allow for
-#   client-a.example" for a deliverable.md that implements nothing and asks
-#   the client for the Allow; c261065 "Update Context Template" for a file
-#   created; 36c27626 and 974713d true.
-#   SPECIMENS 2026-09-28, the 1641 train (pipulate and corporate, same m
-#   alias): 33592a66 "feat: Add TODO comments for context and guiding the
-#   operator to the next actions, with a focus on the underlying system
-#   configurations and mechanisms" for a foo_files.py-only bank, 5da91d32's
-#   subject minus its semicolon, the IDENTICAL-subject shape; d6b20b8c
-#   "refactor: clarify relay initialization details (deed 1641)" true, and
-#   the first subject to name a deed; corporate 2d3b033 "chore: Update
-#   robot.txt configuration for client-a.example crawl" for a deliverable that
-#   changes no configuration and asks the client for one; 5721c45 true;
-#   68c3eb5 written by hand.
-#   SPECIMENS 2026-09-28, the 1642 train (pipulate and corporate, same m
-#   alias): 9781c83c "feat: Rename foo.zip to qamy.ai.zip and manage file
-#   naming scheme" for a foo_files.py-only bank (+16/-5) that renamed
-#   nothing, the deed-rename TODO's subject read as the commit's verb (the
-#   6e4af6ee shape); ec91785a true; af4b2c86 "chore: Refactor mcp_render.py
-#   for improved clarity and documentation # tab explanation",
-#   a subject carrying a shell comment; corporate f95a1ac roughly true;
-#   fca4d89 "chore: Update a script to lay the board" for a file CREATED;
-#   e202914 "Update deliverable.md with detailed render farm analysis" for
-#   two files, the reference unnamed; 59cd1cb written by hand.
-#   SPECIMENS 2026-09-28, the 1643 train (pipulate and corporate, same m
-#   alias): bc637221 "feat: Rename foo.zip to qamy.ai.zip and manage file
-#   naming scheme" for a foo_files.py-only bank (+15/-4), 9781c83c's
-#   subject a SECOND time for a second commit that renamed nothing (the
-#   IDENTICAL-subject shape wearing the 6e4af6ee shape); corporate 11f3e3b
-#   "chore: Update Context Template with Prompt Details" true; 8d55f23
-#   "fix: Add a prompt template content" for two files, +118/-16, the
-#   prompt CREATED and the script's --prompt and --fresh lanes unnamed, a
-#   feature called a fix; e86363d "Update minirules-reference.md with
-#   detailed deed 1643 analysis and deliverable documentation" for two
-#   files, both named, true.
-#   SPECIMENS 2026-10-01, the door ride (pipulate, same m alias): 43006cba
-#   "chore: Update test_install_doors.sh for door table testing" for three
-#   files (+181/-4) that CREATED the test, the door table in install.sh
-#   and the .gitignore entry unnamed; 3f09904d, a GLOSSARY.md-only +38/-3,
-#   got a two-sentence subject whose list ends on "the purpose of the
-#   dotfile-blind probe", the entry under the insertion read as the change
-#   (the 0b472c12 shape); 46118ec0 "chore: Remove unused test
-#   script" for a foo_files.py-only +6/-1 that CLAIMED the new test and
-#   added five TODOs, the sign read backwards; 34bbaa4b, the 2.74 bump,
-#   true; 30dcbaec "chore: Update journal index with new references", true
-#   for one file of two, pyproject.toml's 2.73 to 2.74 unnamed.
-#   SPECIMENS 2026-10-01, the door ride's second train (pipulate, same m
-#   alias): d5085d68, the boundary before the cars, foo_files.py-only and
-#   +1/-1 (the Coverage counter), got the subject flake.nix's router hint
-#   prescribes, word for word, true; 868425bd "feat: add .door read and
-#   first_contact() implementation" true; 869637dc "chore: Update Nix
-#   version reading and voice welcome message" roughly true, osb unnamed;
-#   daaac215 "chore: Update stick_bug.py with more detailed explanations
-#   and improvements" for a file CREATED (+234/-0); 8149a74c named "Stick
-#   Bug" truly and "The Dotfile-Blind Probe", the entry under the door
-#   insertion, as the change, as 3f09904d had earlier the same evening (the
-#   0b472c12 shape twice in one ride); 5dce5740, foo_files.py-only like
-#   d5085d68 but carrying TODO text, got "chore: Implement tests for door
-#   table testing in install.sh", the specimen it added quoting
-#   43006cba's subject read as the change (the 6f09e025 shape).
 # - TODO (2026-09-27, THE NAME IS THE KEY; what stayed hardwired after -t grim landed): (a) base_url and preview_port must agree for a blog served on nixos.local and live as two lines, so the 2026-09-27 renumber moved one and not the other until a car caught it (the Grimoire's canonical_url would have pointed at the Vault); either derive base_url from preview_port for local lanes (one function over the attrset in blogs.nix) or make materializeBlogsJson refuse a local base_url whose port disagrees with preview_port. Gate: a deliberate mismatch makes nr refuse, or the json agrees without a hand edit. (b) generate_ai_context.py reads -t through its own parser and lsa.load_targets, numbers only; release runs it with -t 1, one line when it rides. (c) The Mac shadow json numbers its lanes 1, 3, 4 with no vault; with names the numbering stops mattering, and `vault` there refuses with the roster until flake.nix's Darwin template grows a fourth lane and a fourth shadow folder. (d) ~/repos/Pipulate.com/.port still reads 4002 from before that blog left the matrix; nothing tends it, harmless until jes runs there. (e) blogs.nix's materializePortFiles is why the three hand-typed .port echoes of 2026-09-27 were a no-op: the switch writes them, only when they differ; nothing to build, one thing to stop doing.
 # - TODO (2026-09-26, THE EMPTY REPLACE ATE THE NEXT CAR; convicted at deed 1596): apply.py's block_pattern closes with an optional body group that is greedy-optional, so a deletion block written as adjacent DIVIDER and REPLACE markers parses as empty only when it is the LAST block in its payload; with a block behind it, the lazy body expands to that block's REPLACE marker and the deletion's replacement becomes the next car's whole text, markers included. The residual-marker airlock refused the write (publishizer.py at lines 29, 32 and 35) and the file was untouched, so the 2026-09-26 amendment held by the airlock and not by the grammar. CURE, one character: make the group lazy-optional, a second question mark after its closing parenthesis, so the adjacent marker is tried first and a non-empty body still backtracks into the group; witness it on a two-block throwaway payload whose first block is a deletion, BEFORE the refusal and AFTER two APPLIED lines, then re-emit the publishizer.py cut Car 2 of the shard ride still owes (def prune_orphan_shards through its "No orphan shards." line, and the call at 172), with the deletion block LAST in its fence until the fix lands. Gate: rg -n orphan_shards scripts/articles/publishizer.py prints nothing. CURE EMITTED 2026-10-01 (deed 1750's train, Car 6: the optional group is ??, so the empty replacement is tried first); the deletion_first probe reads rc=1 file=a|b| before and rc=0 file=|B| after; the publishizer.py cut stays owed.
 # - TODO (2026-09-26, the renumber pass; the census that named it, deed 1595: key 3 {'Starts Late': 9, 'Gap': 9}, key 5 {'Gap': 4, 'Starts Late': 2}, no Duplicate on either side): moving 53 posts out of the Grimoire left nine days there opening late or holed and six days in the Vault the same, and the first post to arrive in the Vault from a second source makes the first Duplicate. The gauge is posts -t N -g (lsa.py, wired 2026-09-26); the actuator is a file of its own, never a --fix on the gauge: per blog and per day, order by sort_order, then git-add epoch with untracked last (incumbent wins; mv preserves mtime, so mtime cannot say who arrived), then filename; write 1..n into frontmatter only where the value changes, one line touched and mtime preserved (common.stamp_frontmatter_value is the writer); print date, slug, old -> new per rewrite; dry-run by default; agree with articleizer.py, which assigns max+1 for the day at birth; declared per blog in the blogs.nix pipeline so preview runs it. Gate: both dicts read {} after one run, and a Duplicate manufactured by a move reads {} after the next.
@@ -2148,99 +1974,15 @@ MATCHBOOK_CHOP = r"""
 # § THE PROBE THAT ATE ITS SIBLINGS (banked 2026-08-04) -- Run every probe that changes directory inside a subshell and isolate or restore any other shell-state changes, including cleanup, so pasting the whole probe block cannot break subsequent probes.
 # § THE MAINTAINER-INVISIBLE LANE (banked 2026-08-04) -- Budget scheduled fresh-user and foreign-platform checks for lanes whose users cannot report bugs, including missing destination files and freshly copied indexes, rather than judging those lanes from the maintainer's historically populated machine.
 
-# - TODO (banked 2026-08-03, THIRD conviction in one ride series): ai.py's
-#   get_change_analysis() falls to an all-zero stub in the `m` lane, because
-#   nothing sets PIPULATE_CHANGE_ANALYSIS outside release.py -- receipt: rg
-#   found it ONLY at scripts/ai.py:169, absent from flake.nix. The prompt then
-#   shouts "BE VERY CAREFUL to distinguish ADDITIONS from DELETIONS" over
-#   "+0 / -0", so the model guesses polarity and guesses wrong: 046aba41 says
-#   "Remove" for +19/-0, f48db1aa says "Remove excessive comments" for +20/-0,
-#   and c658a5d0 carries a ~700-character subject from head -1 on a long line.
-#   FIX: when the env var is absent, derive counts from `git diff --staged
-#   --numstat` plus `--name-status`, reusing the staged-then-unstaged fallback
-#   get_staged_diff() already implements. COST: it edits the actuator that
-#   commits it, so the straddle is `git log -1 --format=%s` plus diffstat
-#   across one real commit, and it then runs on every `m` forever. Own ride.
-#   SPECIMEN 2026-09-08 (nixos repo, same m alias): bccc8ee carried three
-#   cars -- bookmarks.nix rewritten as pure data, configuration.nix ceasing
-#   to import it, bookmarks_sync.py gaining nix-instantiate evaluation,
-#   os.kill liveness and Local State labels (3 files, +164/-80) -- under the
-#   subject "chore: Update bookmarks.nix to a more streamlined configuration".
-#   SPECIMEN 2026-09-15 (pipulate, same m alias): 64760e84 replaced a 151-line
-#   chapter with a 120-line one (+110/-139) under the subject "refactor:
-#   VIII-b. The Mother Cat Kata - Enhance the walk description and clarity",
-#   naming the title the commit deleted and calling a consolidation an
-#   enhancement.
-#   SPECIMEN 2026-09-15 (pipulate, same m alias): faae28ed CLAIMED four
-#   pages in the router (+7/-1) under "chore: unlink npvg.org pages and
-#   update trail definitions" with its body run into the subject, reading
-#   the added comment's own word UNLINKED as the commit's verb.
-#   SPECIMEN 2026-09-17 (pipulate, same m alias): 004291f1 added ONE line,
-#   the coverage-gauge TODO, under "chore: Update foo_files.py comments with
-#   shadow publishing details" -- the subject names the earmark on the NEXT
-#   line, a context row of the hunk, not the added row. +1/-0, and the model
-#   still read the diff's context as the change.
-#   SPECIMEN 2026-09-17, an hour later (pipulate, same m alias): a0e12c6a
-#   rewrote the gauge TODO and added the specimen above (+6/-1) under the
-#   IDENTICAL subject, "chore: Update foo_files.py comments with shadow
-#   publishing details" -- two commits, two diffs, one sentence. The SHADOW
-#   earmark is the context row under the todo region's head, and the model
-#   names the context row every time; numstat alone will not cure that.
-#   SPECIMEN 2026-09-18 (pipulate, same m alias): 8f49879f deleted the sigil
-#   when/switch table from the adhoc template, thirty-five comment lines
-#   holding no URL, under "refactor: remove commented-out URL definitions":
-#   the model read the sigils !URL and ?URL as URLs and a lesson as
-#   definitions.
-#   SPECIMEN 2026-09-18, an hour later (pipulate, same m alias): 6f09e025
-#   ADDED the five lines above (+5/-0) and received 8f49879f's subject back
-#   nearly verbatim, "refactor: Remove commented-out URL definitions from
-#   template": the diff quoted a wrong subject and the model read the
-#   quotation as the change.
-#   SPECIMEN 2026-09-18, the folder ride (pipulate, same m alias): 0dbd90e1
-#   changed ONE roster line (+1/-1, mcp_warm's description) under "chore:
-#   Remove unused mcp_warm.py file", a deletion that never happened; 91b9b719
-#   rewrote the roster paragraph under "docs: Update README with connector
-#   documentation details", a file the commit never touched; c3e03e06 added
-#   the specimen above and got "refactor: Remove commented-out URL definitions
-#   from template" a THIRD time. The ride's one accurate subject was
-#   efd85e1d, "Rename connector scripts to 'connectors' directory", where
-#   git's own rename lines carried the story into the diff.
-#   SPECIMEN 2026-09-19 (pipulate, same m alias): 6e4af6ee rewrote ONE
-#   TODO line and added another (+2/-1, foo_files.py only) under "fix: add
-#   cc0 sound files for prompt": no file was added, no sound file has ever
-#   been tracked, and the subject reads the TODO's nouns as the commit's verb.
-#   SPECIMENS 2026-09-21, the blackout ride (pipulate, same m alias, Gemma 3
-#   through Ollama on the Mac): 4e9087c added one untracked file named 1!
-#   (+158/-0) under "chore: Update documentation and clarify AI context
-#   usage", and 1420df1 deleted it (+0/-158) under "chore: Update README
-#   with revised AI-readiness workflow and context explanation", a file the
-#   commit never touched. For the record, the same model wrote plain and
-#   accurate subjects for a2548dd, fe087da and 41d4e45 the same night.
-#   SPECIMEN 2026-09-26 (pipulate, same m alias): 017b9c96 ADDED 366 lines
-#   to foo_files.py and nothing else (+366/-0, the constitution moved in
-#   from apply.py) under "chore: Remove obsolete comments and
-#   documentation", the verb of the ride's other car; that car, 67bdedc8
-#   (+0/-365), got "Remove redundant comments and improve clarity in
-#   apply.py", and cdd7689c got "Add prose-only growth checks for apply.py",
-#   two true subjects in one ride beside one that read the sign backwards.
-#   SPECIMENS 2026-09-26 (the vault, same m alias): the first m on a
-#   48-file, +53,581-line initial commit returned an empty message and
-#   aborted, the guard holding; the retry got "Okay, that's a substantial
-#   document, but it's a really, really interesting one. Let's break down
-#   the key elements and consider where the journey takes us." as
-#   1b87328's subject, the model answering the diff as a document instead
-#   of naming it, k=2 with the second sample winning; and 3f14c83 before
-#   it carries "## The Grimoire:  A Tactical Overview", a heading read off
-#   the first moved post. The Error:* guard cannot see either shape; a
-#   subject longer than 72 characters or opening without a type word is
-#   the cheap refusal, in m() beside the Error:* case, when a ride owns it.
-#   SPECIMENS 2026-09-26, the dismount (pipulate, same m alias): 0b472c12
-#   touched foo_files.py alone (+13/-1) under "refactor: Improve clarity and
-#   reduce redundancy in apply.py and related comments", apply.py being the
-#   context row above the inserted specimen; d96f6908 ADDED seven lines
-#   (+7/-0, a guard and its comment) under "chore: Remove redundant orphan
-#   shard check logic in contextualizer.py", the comment's "the twin is cut"
-#   read as the commit's verb.
+# - TODO (2026-08-03, ai.py get_change_analysis + m() subject guard): derive counts from `git diff --staged --numstat` plus `--name-status` when PIPULATE_CHANGE_ANALYSIS is unset, and refuse subjects >72 chars or missing a conventional type prefix; Gate: `git log -1 --format=%s` plus diffstat across one real commit.
+#   SPECIMEN (sign read backwards): 046aba41 "+19/-0" -> "Remove"; 017b9c96 "+366/-0" -> "chore: Remove obsolete comments and documentation".
+#   SPECIMEN (context row read as change): 004291f1 "+1/-0" named the neighboring shadow-publishing earmark; 3f09904d named "the dotfile-blind probe" below the insertion.
+#   SPECIMEN (one subject for two commits): a0e12c6a repeated 004291f1's exact subject ("chore: Update foo_files.py comments with shadow publishing details") on a different diff.
+#   SPECIMEN (earlier subject reused for router-only bank): 4dbdb230, 95326f00, 74372860, 3588c387, bda3e82f reused an earlier connector commit's subject on a foo_files.py-only comment bank.
+#   SPECIMEN (untouched or nonexistent file named): 91b9b719 named README on a foo_files.py-only diff; 5b702861 named nonexistent deliverable.html; d042b067 named nonexistent notebook_init.py.
+#   SPECIMEN (diff answered as a document): 1b87328 got "Okay, that's a substantial document, but it's a really, really interesting one..." (~700-char conversational reply).
+#   SPECIMEN (run-on or comment-carrying subject): 5da91d32 ran on to a semicolon; af4b2c86 carried a literal `# tab explanation` shell comment in the subject.
+#   SPECIMEN (wrong or missing type word): 2351c981 opened with `add:`; 3f14c83 opened with markdown heading `## The Grimoire:  A Tactical Overview`.
 # § THE THREE-REGION ART EDIT (banked 2026-08-03) -- Register figurate art in all three regions, rendering function, CRC32 ledger, and registry, compute its CRC only after authoring the art, and run figurate <name> to witness Drift: 0 for every art edit.
 # § THE LANE-EXCLUSIVE BRANCH (banked 2026-08-03) -- Witness lane-exclusive branches by planting a controlled failure in the lane that owns them, label that scope explicitly, and remove the canary after its receipt so it cannot become routine warning noise.
 # - TODO (BANKED 2026-08-03 AT OPERATOR REQUEST, DELIBERATELY NOT RIDDEN):
