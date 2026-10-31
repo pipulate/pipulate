@@ -8,8 +8,10 @@ from pathlib import Path
 from datetime import datetime
 from urllib.parse import urlparse
 
-# Path to your Jekyll posts on the Honeybot
-POSTS_DIR = Path("/home/mike/www/mikelev.in/_posts")
+# Path to your Jekyll posts on the Honeybot (with local workstation fallback for probes)
+_HONEYBOT_POSTS_DIR = Path("/home/mike/www/mikelev.in/_posts")
+_LOCAL_POSTS_DIR = Path.home() / "repos" / "trimnoir" / "_posts"
+POSTS_DIR = _HONEYBOT_POSTS_DIR if _HONEYBOT_POSTS_DIR.is_dir() else _LOCAL_POSTS_DIR
 BASE_URL = "https://mikelev.in"
 
 # ... existing imports ...
@@ -301,6 +303,27 @@ def get_playlist(recent_n=10, include_archive=True):
             try:
                 import importlib
                 importlib.reload(sys.modules["score"])
+            except Exception:
+                pass
+        main_mod = sys.modules.get("__main__")
+        if main_mod is not None and hasattr(main_mod, "narrator") and hasattr(main_mod, "resolve_current_article_line"):
+            try:
+                def _live_resolve_current_article_line(enqueue_media=True, _arts=recent_articles, _m=main_mod):
+                    title = "our latest technical journal entry"
+                    image_path = ""
+                    if _arts:
+                        if _arts[0].get("title"):
+                            title = str(_arts[0]["title"])
+                        if _arts[0].get("image"):
+                            image_path = str(_arts[0]["image"]).strip()
+                    if enqueue_media and image_path:
+                        _m.narrator.media({"path": image_path, "duration": 14.0})
+                    return (
+                        f"The article currently being read on this broadcast is titled: {title}. "
+                        "To read the full article text and inspect the raw code receipts at your own pace, "
+                        "visit Mike L E V dot eye N slash latest."
+                    )
+                main_mod.resolve_current_article_line = _live_resolve_current_article_line
             except Exception:
                 pass
         if not include_archive:

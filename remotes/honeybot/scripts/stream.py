@@ -431,6 +431,7 @@ class Narrator(threading.Thread):
                     threading.Thread(
                         target=conjure_media,
                         args=(item[1],),
+                        kwargs={"_direct": True},
                         daemon=True,
                     ).start()
                     time.sleep(0.5)
@@ -1300,6 +1301,8 @@ def _resolve_honeybot_media_target(raw_target):
         site_root / s.lstrip("/"),
         Path("/home/mike/www/mikelev.in/_site") / s.lstrip("/"),
         Path("/home/mike/www/mikelev.in") / s.lstrip("/"),
+        Path.home() / "repos" / "trimnoir" / "_site" / s.lstrip("/"),
+        Path.home() / "repos" / "trimnoir" / s.lstrip("/"),
     ]
     for c in candidates:
         if c.is_file():
@@ -1545,7 +1548,7 @@ def conjure_media(media_spec, duration=15.0, mute=False, _direct=False):
                 target,
             ]
             proc = subprocess.Popen(cmd, env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            paused_pids = _pause_honeybot_stage_for_weebo()
+            paused_pids = _pause_honeybot_stage_for_weebo(pause_audio=should_pause_audio)
             subprocess.run(
                 ["wmctrl", "-r", MEDIA_OVERLAY_MARKER, "-e", f"0,{pos_x},{pos_y},{win_w},{win_h}"],
                 env=env,
@@ -1562,7 +1565,7 @@ def conjure_media(media_spec, duration=15.0, mute=False, _direct=False):
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
             )
-            paused_pids = _pause_honeybot_stage_for_weebo()
+            paused_pids = _pause_honeybot_stage_for_weebo(pause_audio=should_pause_audio)
             subprocess.run(["wmctrl", "-r", "Mozilla Firefox", "-b", "add,fullscreen,above"], env=env, check=False)
             proc.wait(timeout=duration)
     except subprocess.TimeoutExpired:
@@ -1579,9 +1582,10 @@ def conjure_media(media_spec, duration=15.0, mute=False, _direct=False):
                     proc.kill()
                 except Exception:
                     pass
-        if paused_pids and POST_WEEBO_BUFFER_SEC > 0:
-            time.sleep(POST_WEEBO_BUFFER_SEC)
-        _resume_honeybot_stage_after_weebo(paused_pids)
+        if paused_pids:
+            if POST_WEEBO_BUFFER_SEC > 0:
+                time.sleep(POST_WEEBO_BUFFER_SEC)
+            _resume_honeybot_stage_after_weebo(paused_pids)
         if tmp_profile and os.path.isdir(tmp_profile):
             shutil.rmtree(tmp_profile, ignore_errors=True)
 
@@ -1686,6 +1690,10 @@ def show_card(label, max_hold=60.0):
     """Display a transient Figlet title card window on Honeybot until dismiss_card(handle)."""
     if not label:
         return None
+    try:
+        subprocess.run(["pkill", "-f", MEDIA_OVERLAY_MARKER], check=False)
+    except Exception:
+        pass
     global _card_seq
     _card_seq += 1
     stop_file = f"/tmp/honeybot_card_{os.getpid()}_{_card_seq}.stop"
@@ -1728,21 +1736,37 @@ def dismiss_card(handle):
             pass
 
 
-def resolve_current_article_line():
-    """Return the spoken Beat 3 announcement naming the article currently being read."""
+STATION_HERO_IMAGE_DURATION = 14.0
+
+
+def resolve_current_article_info():
+    """Return (spoken_line, image_path) for the article currently being read."""
     title = "our latest technical journal entry"
+    image_path = ""
     try:
         from content_loader import get_playlist
         articles = get_playlist(recent_n=1, include_archive=False)
-        if articles and articles[0].get("title"):
-            title = str(articles[0]["title"])
+        if articles:
+            if articles[0].get("title"):
+                title = str(articles[0]["title"])
+            if articles[0].get("image"):
+                image_path = str(articles[0]["image"]).strip()
     except Exception:
         pass
-    return (
+    spoken_line = (
         f"The article currently being read on this broadcast is titled: {title}. "
         "To read the full article text and inspect the raw code receipts at your own pace, "
         "visit Mike L E V dot eye N slash latest."
     )
+    return spoken_line, image_path
+
+
+def resolve_current_article_line(enqueue_media=True):
+    """Return the spoken Beat 3 announcement and queue the article's hero image non-blockingly."""
+    spoken_line, image_path = resolve_current_article_info()
+    if enqueue_media and image_path:
+        narrator.media({"path": image_path, "duration": STATION_HERO_IMAGE_DURATION})
+    return spoken_line
 
 
 def dispatch_cue(command, content, env, profile_dir, pace_say=True):
