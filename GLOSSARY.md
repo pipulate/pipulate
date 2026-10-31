@@ -1779,6 +1779,12 @@ Entries are alphabetical, numbers spelled as spoken.
   assignment, the stray paren riding the second -- two drafts of one line
   shipped together. Dead code beside a syntax error is the signature of an
   emitter that changed its mind mid-file and shipped both minds.
+- **The Five-Row Nyquist Aspect Ratio** -- *expanded rule; banked 2026-10-30.*
+
+~~~text
+# § THE FIVE-ROW NYQUIST ASPECT RATIO (banked 2026-10-30, deed 482) -- Because terminal character cells are approximately 1:2 width-to-height rectangles and H.264 4:2:0 chroma subsampling blurs sub-cell half-blocks, render broadcast LED matrices with five vertical full-block rows (three horizontal bars plus two interior counters) and six-to-seven horizontal columns across shared basis-stroke families so round bowls and multi-stem diagonals preserve square pixel proportions.
+~~~
+
 - **The Flag Went Cold** -- *expanded rule; banked 2026-09-17.*
 
 ~~~text
