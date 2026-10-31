@@ -999,6 +999,12 @@ Entries are alphabetical, numbers spelled as spoken.
 ~~~
 
 - **The Churning-Key Rule** -- (banked 2026-07-31, receipt-witnessed): an aggregate grouped by a key the SUBJECT CONTROLS AND REVS systematically under-counts every subject that revs it, and the under-count is INVISIBLE because the survivors look like a complete list. Conviction: hydration_rate.sql grouped by ua_id and Googlebot never appeared in its top twenty -- not because Googlebot does not crawl, but because it ships 20+ distinct UA strings on this site (bare Googlebot, GoogleBot/2.1, -Image, -News, -Video, -Mobile, the classic +http form, and one Chrome-smartphone variant PER RELEASE: 117, 125, 126, 141, 143 x2, 144 x2, 145 x2, 146 x3), so every fragment fell below the html_hits floor. claude-code ships ~41 strings and vanished the same way; meta-externalagent split three ways and PetalBot two. THE FLOOR DID NOT FAIL, THE KEY DID -- and the resulting ranking was silently biased toward crawlers with STABLE UA strings (bingbot, Amazonbot), which is the opposite of a finding. STANDING CONSEQUENCE: before reading any GROUP BY, ask whether the subject controls the grouping key and whether it changes it; if so, roll up to a family before quoting any ranking, and keep an Unclassified bucket, because a rollup with no residue is a rollup that is hiding something. Sibling of THE LAST-INCH RULE: that one is the RENDER destroying identity after the group; this one is the KEY destroying identity before it.
+- **The Cited Rule Is Not an Applied Rule** -- *expanded rule; banked 2026-09-06.*
+
+~~~text
+# § THE CITED RULE IS NOT AN APPLIED RULE (banked 2026-09-06) -- naming a rule in a sentence is not running it against the case in hand, and the two feel identical from the inside; the VHOST CENSUS earmark closed by citing THE PROSE-INFLATED COUNTER as its sibling while its own body had already guessed three SYNTACTIC worlds and never once considered that a comment would match, which is exactly what the cited rule predicts and exactly what the enumeration then printed. STANDING CONSEQUENCE: when a ruling names a sibling rule, apply that sibling to THIS reading before shipping the ruling, out loud, as its own sentence -- the citation is the cheapest possible signal that the answer is already on the shelf, and reaching past it is the cheapest possible miss. Corollary for a model: a rule you can quote is not a rule you have used.
+~~~
+
 - **The Coachman's Veto** -- *expanded rule; banked 2026-07-20.*
 
 ~~~text
@@ -2374,6 +2380,12 @@ Entries are alphabetical, numbers spelled as spoken.
   this rule's foreign-transport instance) and an instance of THE
   DISCRIMINATION QUESTION (a label that cannot distinguish two agents prints
   identically in both worlds).
+- **The LaTeX Transport Collision** -- *expanded rule; banked 2026-10-14.*
+
+~~~text
+# § THE LATEX TRANSPORT COLLISION (banked 2026-10-14, convicted by commit 06f55cae; second conviction 2026-10-21 at deed 127 when an odd positional parameter in SEARCH paired with a PID variable in REPLACE across DIVIDER) -- Never emit literal double-dollar strings, odd counts of shell positional parameters, or unescaped dollar-percent spans inside code patches crossing a web chat UI, because the browser's LaTeX post-processor can strip newlines between dollar pairs and rewrite pipes as \vert{}; prefer `sys.executable -c` with `sys.argv` and `os.getpid()` or encode dollar signs as language-native byte escapes (`\36` in Lua, `\x24` in Python).
+~~~
+
 - **The Ledger-Separation Rule** -- *expanded rule; banked 2026-07-22.*
 
 ~~~text
@@ -2556,6 +2568,41 @@ Entries are alphabetical, numbers spelled as spoken.
 # - EARMARK: THE MODEL FOLLOWS THE MAP RULE (banked 2026-07-22, blind-test witnessed): capability prose is actuation. A summoned model that invokes a nonexistent tool named by our onboarding map is following instructions correctly; the map is defective. Every first-turn capability name must be generated from or mechanically validated against current source before shipping.
 ~~~
 
+- **The Mother Cat Kata (MCK)** -- *expanded rule; banked 2026-07-28.*
+
+~~~text
+# THE MOTHER CAT KATA (MCK) (earmark-seeded 2026-07-28): the record-and-playback
+# session that carries the human by the scruff -- bookmark to bookmark, a popped
+# browser and a Piper voice -- instead of offering a menu of twelve doors. FOUR
+# primitive moves (the key `MCK` in the store points HERE):
+#   SETTLE (the punch)    -- human-only, non-deterministic. Pop the persistent
+#     profile (weblogin's data/uc_profiles/default), let the human clear the
+#     auth / CAPTCHA / 2FA gate; state lands on disk. Passive antibody transfer:
+#     the machine never synthesizes auth, it INHERITS settled state.
+#   CAPTURE (the kick)    -- machine-only, deterministic. Snapshot hydrated DOM +
+#     CDP wire ledger to browser_cache. The reproducible artifact: ground truth
+#     no model can flatter (the element is on the page or it is not).
+#   NARRATE/FENCE (block) -- Piper announces the next move and REFUSES to advance
+#     until the human's CAPTURE receipt exists. The variance-suppressor deployed
+#     FOR you: it puts the human on the hook for exactly ONE move and fences that
+#     move so it cannot be fumbled.
+#   ADVANCE (the step)    -- walk to the next bookmarked URL and repeat.
+# PREMISE, corrected: the multi-step setup is NOT a combination lock (no partial
+# credit, silent multiplicative failure). It is an assembly line with ONE manual
+# station. The odds do not stack against every step -- they concentrate at the
+# single human gate. The MCK does not cut the STEP count; it cuts the count of
+# steps the HUMAN owns to exactly one (SETTLE) and fences it. Operation Stick Bug
+# (So'wI' yIchu' -- "engage the cloaking device") is the same move seen from
+# outside: the instrument vanishes; the human sees only a browser and a voice.
+# Ref: /futureproof/dayton-wind-tunnel-auth-capture-mother-cat/.
+# FIRST WALKTHROUGH SHIPPED 2026-08-01: assets/trails/public_walk.yaml rode
+# green end to end -- three stops, three CAPTURE fences, three wire-provenance
+# captures, one DECANT bundle to the clipboard. That half of the OWES is
+# discharged. STILL OWED: (1) the fence-vs-lean-back discrimination shared with
+# the VARIANCE-SUPPRESSION RULE. DISCHARGED 2026-09-01: (2) the authenticated
+# ride, SETTLE in its non-trivial form, sign-in moment unrecorded.
+~~~
+
 - **The Mount** -- *expanded rule; banked 2026-07-19.*
 
 ~~~text
@@ -2567,6 +2614,12 @@ Entries are alphabetical, numbers spelled as spoken.
 # Witness: receipt shows def@568 + map@663, "Probe:" literal migrated to
 # 574 (once), clean headless load. \j cuts the slate, \m mounts, \k
 # dismounts: three keys bracketing Probe, Patch, Prompt.
+~~~
+
+- **The Multi-Line Probe Cannot Be Echoed** -- *expanded rule; banked 2026-09-04.*
+
+~~~text
+# § THE MULTI-LINE PROBE CANNOT BE ECHOED (banked 2026-09-04, reconvicted 2026-09-26) -- the ! executor spawns a NON-interactive sh -c, so a probe spanning newlines inside quotes runs clean by hand and dies at "unexpected EOF" in the compile lane; context.txt then reads its continuation lines as separate paths and warns about de-prefixed commands. THE PROBE ECHO INVARIANT therefore demands ONE LINE per probe: write it as a single semicolon-joined -c string, or as a real file invoked by path. The 2026-09-26 parser-hardening AFTER tried to echo a Python heredoc and reproduced the failure exactly: only the opener executed and the continuation became router debris. The fix is not a multiline context grammar; collapse the probe or put the program in a file. A probe that cannot survive its own echo is not echoable, and the operator lane becomes its only witness.
 ~~~
 
 - **The Name Is Not The Value** -- *expanded rule; banked 2026-08-28.*
@@ -2819,6 +2872,12 @@ Entries are alphabetical, numbers spelled as spoken.
   because main() returns 2 for "plan not ready" and argparse returns 2 for bad
   arguments. One number, two worlds. Read stderr or read plan["ready"]; never
   grade that one on the exit code alone.
+- **The Placeholder That Rides Into a Probe** -- *expanded rule; banked 2026-09-13.*
+
+~~~text
+# § THE PLACEHOLDER THAT RIDES INTO A PROBE (banked 2026-09-13) -- a redaction placeholder quoted from a published article into a paste-ready command dies at argument parsing (curl 49, both lanes, twice) and the real address is not the cure, because the next publish scrubs it and the next model re-quotes it; derive the address, route through a name, or print a verdict token instead of a value, so the probe survives every lane it will be read in. Checklist item 6 was already the rule; the emitter broke it and the instrument caught it. Sibling of NO PLACEHOLDERS IN PASTE-READY LINES.
+~~~
+
 - **The Pre-Compile Actuator Rule** -- *expanded rule; banked 2026-09-01.*
 
 ~~~text
