@@ -282,7 +282,7 @@ def sync_observatory_metrics(target_key, target_path, verbose=False):
             '      <span class="kpi-eyebrow">WEB BOT AI OBSERVATORY · WIRE TRUTH</span>\n'
             f'      <span class="kpi-sub">No CDN · Direct Nginx SQLite Telemetry · <code>{fetched_at}</code></span>\n'
             '    </div>\n'
-            '    <a class="kpi-live-pill" href="https://www.youtube.com/@MikeLevin/live" target="_blank" rel="noopener">🔴 Watch Live HUD ↗</a>\n'
+            '    <a class="kpi-live-pill" href="https://www.youtube.com/MikeLevin/live" target="_blank" rel="noopener">🔴 Watch Live HUD ↗</a>\n'
             '  </div>\n'
             '  <div class="kpi-grid">\n'
             '    <div class="kpi-card">\n'
