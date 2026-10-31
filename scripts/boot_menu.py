@@ -92,7 +92,7 @@ def print_about() -> None:
     """The sealed workspace tree, then the tier sentences and the Q/A line.
 
     A failed import prints why and still prints the sentences, so `about`
-    never reads as an empty screen. A drifted seal is said out loud.
+    never reads as an empty screen.
     """
     import logging
     import shutil

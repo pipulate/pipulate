@@ -28,7 +28,7 @@ THE DISCIPLINE THIS FILE ENCODES (read before "fixing" it)
 
 WHAT IT VALIDATES
     Content fidelity: art fits its panel, borders close, figlet cards render,
-    CRC wax seals are intact (drift flagged), and the bead story reads in order.
+    and the bead story reads in order.
 
 WHAT IT DOES NOT VALIDATE
     X11 popup geometry, window centering, borderless rendering, z-order. Those

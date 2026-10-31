@@ -429,7 +429,7 @@ def measure_figlet(label: str, font: str = "standard") -> tuple:
 # FIGURATE_COLOR_BITS: The color-bits player piano dictionary.
 # Maps named tokens to Rich style strings.
 # Usage in art strings: [[[TokenName]]] expands to styled text for humans,
-# and strips to plain TokenName for AI context and CRC hashing.
+# and strips to plain TokenName for AI context.
 FIGURATE_COLOR_BITS: dict = {
     "NPvg": "bold bright_blue",
     "Pipulate": "bold bright_cyan",
@@ -442,7 +442,7 @@ FIGURATE_COLOR_BITS: dict = {
 # config.py, because nixops.sh rsyncs only this single file to Honeybot -- a
 # `from config import COLOR_MAP` would be the parents[1] divergence trap one layer
 # over: green locally, ImportError on the server. The AI path still strips these
-# tags, so the wax-seal CRC is untouched. This also de-inflates the human render
+# tags. This also de-inflates the human render
 # width to match columns_needed, which is the actual cause of the popup wrap.
 FIGURATE_SEMANTIC_TOKENS: dict = {
     "key": "yellow", "value": "white", "error": "red",
@@ -458,8 +458,8 @@ def _expand_color_bits_human(text: str) -> str:
       2. ESCAPE: rich.markup.escape() everything else, so stray [brackets]
          in the art survive as literal glyphs inside the Panel.
       3. REINSERT: swap the sentinels back for their real Rich markup.
-    The AI path (_expand_color_bits_ai) and thus the CRC wax seals are
-    untouched -- this repairs the projection, not the master.
+    The AI path (_expand_color_bits_ai) is untouched -- this repairs
+    the projection, not the master.
     """
     import re
     from rich.markup import escape
@@ -487,7 +487,7 @@ def _expand_color_bits_human(text: str) -> str:
 
 
 def _expand_color_bits_ai(text: str) -> str:
-    """Strip [[[Token]]] markers to plain text for AI context and CRC hashing."""
+    """Strip [[[Token]]] markers to plain text for AI context."""
     import re
     text = re.sub(r'\[\[\[([^\]]+)\]\]\]', r'\1', text)
     return re.sub(r'<[^>]+>', '', text)
