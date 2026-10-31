@@ -1283,6 +1283,12 @@ Entries are alphabetical, numbers spelled as spoken.
   the refusal now says so itself: patterns in SECRET_TRIPWIRES, exemptions in
   TRIPWIRE_FIXTURE_MARKERS, both module-level in prompt_foo.py; scan_secrets
   is the CONSUMER and is edited only to change matching logic.
+- **Decoupled Host Discovery** -- *expanded rule; banked 2026-10-17.*
+
+~~~text
+# § DECOUPLED HOST DISCOVERY (banked 2026-10-17, deed 4) -- Never hardcode a single repository checkout path in parent OS configuration or desktop automation when the guest flake can be installed under multiple door names (pipulate, npvg, qamyai, qamy) or parent directories (~/repos, ~/); resolve the active root dynamically by probing candidate paths for qualifying markers (.venv/bin/python3 and init.lua) and anchor heavy downloaded assets (such as Piper TTS models) in ~/.config/pipulate/ so workspace moves and renames never strand the host.
+~~~
+
 - **Delta-Not-Absolute Counter Rule** -- *predict a count as a delta, never as
   an absolute.* Banked 2026-07-20. A grep -c probe predicts reliably only as a
   DELTA straddling the patch; its absolute value requires a hand-run baseline
