@@ -2007,56 +2007,7 @@ MATCHBOOK_CHOP = r"""
 #   personal data living in the mechanism lane.
 # § THE RECEIPT-PLUS-LANE TABLE (banked 2026-08-02) -- Report pass/fail rulings in Item, Colour, Receipt, and Lane columns, distinguishing witnessed success, witnessed failure, and attempted-but-unverified or VOID so an inaccessible probe or unverified success message cannot count as evidence.
 # § THE TEST-RIG PROVENANCE RULE (banked 2026-08-02) -- State each test rig's provenance in every ruling, distinguish pristine published-artifact tests from current-code tests, and use separate rigs rather than treating a frozen clone or hand-carried patch as evidence that the update lane works.
-# - TODO: CUT THE GHOST-DRIVER BODY BRANCHES (seeded 2026-07-26, receipt-convicted):
-#   assets/scenarios/introduction.json's branch_llm_body_chain_reaction,
-#   branch_llm_body_test_results, and branch_dom_visualizer_intro stack THREE
-#   failures: (1) they teach a stranger to hand-type
-#   [local_llm_read_file file_path="browser_automation/looking_at/simple_dom.html"],
-#   naming a function that exists at mcp_tools.py:947 but carries no @auto_tool
-#   and is therefore absent from the live 21-tool roster; (2) browser_automation/
-#   is the RETIRED cache path -- mcp_tools.py:3302 already writes
-#   browser_cache/looking_at/; (3) "I'm going to give you a body" and "You now
-#   have a body" are persona-and-capability claims of exactly the kind the
-#   ATTRIBUTED-VOICE ride removed everywhere else. RULING: CUT, do not repoint.
-#   Repointing polishes an instruction that should not be given at minute four
-#   of a first session, and a scenario naming a REAL tool with WRONG params is
-#   worse than one naming a fake tool. The honest ending already exists at
-#   branch_dev_reset_no. ORDERING: the JSON airlock (apply.py) lands FIRST --
-#   this is the surgery that needs it. Sibling debt: mcp_tools.py:4271's
-#   hand-authored public_tool_names list names the orphan, which is
-#   GENERATED-NOT-AUTHORED wearing a different hat; replace with a generated
-#   roster or delete the orphan outright.
-#   CUT LANDED 2026-07-26. Two findings banked at the cut, both from
-#   assets/player-piano.js and neither previously known:
-#   (1) THE BRANCHES WERE ALREADY UNREACHABLE, twice over. 07_first_trick's
-#       ctrl+alt+y path `return false`s out of executeStepsWithBranching before
-#       branch_dev_reset_yes runs inline; after the restart, continueDemoFromState
-#       searches demoScript.STEPS (top level: only 01 and 02) for a '09_' id,
-#       finds none, and lands on "ready for manual testing". 08's message is
-#       duplicated as a hardcoded string in that function, which is why nobody
-#       noticed. The cut therefore removed ZERO working behavior.
-#   (2) input_type "chat" IS NOT IMPLEMENTED and hangs. The dispatch is
-#       unconditional -- `if (step.wait_for_input && step.branches)` calls
-#       waitForKeyboardInput(step.valid_keys) -- so a chat step arrives with
-#       validKeys undefined and the first keystroke throws inside the listener.
-#       The promise never resolves. STANDING CONSEQUENCE: no scenario may set
-#       input_type "chat" until player-piano.js grows a chat-input path; a
-#       keyboard branch or end_demo are the only two safe terminators.
-#   REFUSAL LANDED 2026-07-26 (PENDING witness): the bracket lane in
-#   imports/stream_orchestrator.py used to fall THROUGH to _handle_llm_stream()
-#   when a name missed ALIAS_REGISTRY -- silently, no refusal -- so a dead tool
-#   call became a chat prompt and the model narrated a file it never opened.
-#   FABRICATED TOOL OUTPUT WEARING A RECEIPT'S CLOTHES: the worst
-#   ATTRIBUTED-VOICE failure this ride found, while cli.py had been refusing
-#   correctly on identical input the whole time. The else-branch now names what
-#   it cannot run and prints an alias list GENERATED from the live registry.
-#   WITNESS OWED: a compiled receipt plus one human typing [bogus_name] into
-#   chat and reading a refusal instead of an answer.
-#   DELIBERATELY NOT CHANGED: dispatch resolves aliases only, never bare
-#   registry names. The param builder special-cases three tools and dumps
-#   everything else into params['args'], so bare-name dispatch would call real
-#   tools with wrong argument shapes -- louder, still wrong. The refusal points
-#   at cli.py instead of guessing a shape.
+# - TODO (2026-07-26, REFUSAL WITNESS OWED): the Ghost-Driver body branches are cut; imports/stream_orchestrator.py's bracket lane now refuses an unknown tool name and prints an alias list generated from the live registry. Gate: a compiled receipt plus one human typing [bogus_name] into chat and reading a refusal instead of an answer.
 # - TODO: THE REAL ENDING IS HARDCODED IN JAVASCRIPT (convicted 2026-07-26, the
 #   largest defect leaving the ATTRIBUTED-VOICE ride): continueDemoFromState()
 #   in assets/player-piano.js duplicates step 08's text as a JS string literal,

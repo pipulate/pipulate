@@ -2153,6 +2153,14 @@ Entries are alphabetical, numbers spelled as spoken.
   turn only when every car is already justified by evidence present when the
   answer is written. Never say "if this prints X, apply the next patch." That is
   an uncompiled conditional handed to a tired person.
+- **The Idle-Gated Split-Flap** -- *expanded rule; banked 2026-10-29.*
+
+~~~text
+# § THE IDLE-GATED SPLIT-FLAP (banked 2026-10-29, deed 467) -- On CPU-constrained broadcast appliances where neural TTS synthesis and SQLite queries periodically starve the UI event loop, default to zero-CPU pre-rendered centered still cards over continuous horizontal scrolling and gate multi-frame transitions on recent frame-time deltas so starvation degrades to an atomic swap rather than visible stutter.
+~~~
+
+Mechanism, from the deed 467 receipts: the #ticker_bar in remotes/honeybot/scripts/logs.py rebuilds a double-buffered billboard cache (_rebuild_billboard_cache) and holds each centered card for 56 ticks (4.5 s) at 0% CPU. The two-frame vertical split-flap runs only when _is_window_clear_for_smooth_flip reads event-loop jitter under 0.115 s; otherwise the card swaps atomically. The rule predicts that a starved loop produces a swap and never a stutter, and that continuous scrolling on the same appliance would stutter at every TTS synthesis.
+
 - **Ignition Is A Sentence** -- *expanded rule; banked 2026-09-24.*
 
 ~~~text
