@@ -500,7 +500,7 @@ def _expand_color_bits_ai(text: str) -> str:
 def _figurate_white_rabbit():
     """Render white_rabbit as (human, ai) tuple for FIGURATE_REGISTRY."""
     art = r"""
-                    ( Do you put your name on it because Claude said so? )
+                             Built on a "No Problem" framework
                                           O        /)  __
                                            o /)\__//  /  \
                                          ___(/_ 0 0  |    |
