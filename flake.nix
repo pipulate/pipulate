@@ -1869,7 +1869,6 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
               echo "about: scripts/boot_menu.py has not landed in this checkout."
             fi
           }
-          reseal() { "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/imports/ascii_displays.py" --reseal; }
           # OPERATION STICK BUG (2026-10-02, the operator's ask: the letters
           # osb on a menu, a dull name over a loud screen). The one word that
           # is a blank stare on purpose, THE BLANK STARE RULE's single
@@ -2568,7 +2567,6 @@ print(max(1, n))
 from pipulate import wand
 r = wand.figurate('$name')
 print('Name:', r.name)
-print('Drift:', r.drift)
 print('AI:\n', r.ai)
 "
           }
