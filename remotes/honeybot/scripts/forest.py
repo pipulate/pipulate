@@ -64,10 +64,11 @@ WHATS_HAPPENING_BEAT = (
 CURRENT_ARTICLE_BEAT = "{CURRENT_ARTICLE}"
 
 CONSULTING_CTA_BEAT = (
-    "Are you spending ten to twenty thousand dollars a month and up on H T M L pre-rendering? "
-    "Did you know that fully implemented new web standards, including R F C 9110 Markdown content negotiation, "
-    "R F C 9111 edge cache partitioning, and R F C 9421 Web Bot Auth, can save you that money? "
-    "Contact Mike Levin at Mike L E V dot eye N for a consultation."
+    "Still doing View-Source S E O while A I Overviews eat your clicks? "
+    "Stop building generative slop cannons and learn to read the wire directly. "
+    "Your website is already your feed when you master R F C 9110 Markdown negotiation, "
+    "R F C 9111 edge caching, and R F C 9421 Web Bot Auth. "
+    "Transition from S E O to A I Readiness at Mike L E V dot eye N, or inspect Sun Pug dot eye oh with curl pipe less."
 )
 
 
@@ -80,8 +81,8 @@ def _make_station_bead(card_label, card_say, capstone_cue, forest_story_lines, p
         ("SAY", WHATS_HAPPENING_BEAT),
         # 3. What Article Is Being Read & How to Read It in Full
         ("SAY", CURRENT_ARTICLE_BEAT),
-        # 4. Consulting Call-to-Action ($10k/mo HTML Pre-Render Hook)
-        ("CARD", {"label": "$15K/MO\nPRE-RENDER?", "say": CONSULTING_CTA_BEAT}),
+        # 4. Practitioner Call-to-Action (View-Source SEO -> Wire-Truth AI-Readiness)
+        ("CARD", {"label": "YOUR SITE\nIS YOUR FEED", "say": CONSULTING_CTA_BEAT}),
         # 5. Visual Capstone: Alternates between a Rich Data Report (WINDOW) and Forest ASCII Art (PATRONUS)
         capstone_cue,
         ("WAIT", 2),
@@ -563,8 +564,8 @@ def _build_station_report_panel(mode="overview"):
         )
 
     footer = Text.from_markup(
-        "[bold green]💸 Spending $15,000/mo+ on HTML pre-render?[/bold green] "
-        "RFC 9110, RFC 9111 & RFC 9421 save that spend -> [bold cyan]https://mikelev.in/#consulting[/bold cyan]"
+        "[bold green]🔭 Still doing View-Source SEO?[/bold green] "
+        "Your site is your feed (RFC 9110 / 9111 / 9421): [bold cyan]curl -fsSL https://sunpug.io | less[/bold cyan] · [bold cyan]https://mikelev.in/#consulting[/bold cyan]"
     )
     return Panel(tbl, title=f"[bold bright_cyan]{title_str}[/bold bright_cyan]", subtitle=footer, padding=(0, 1))
 
