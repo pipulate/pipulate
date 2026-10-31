@@ -66,7 +66,6 @@ ALL_WORDS = (
     ("brief", "compile this workshop into your clipboard for an AI."),
     ("jn", "start JupyterLab and Pipulate, JupyterLab first."),
     ("pu", "start the Pipulate server."),
-    ("reseal", "fix the ASCII art checksums after you edit the art."),
     # OPERATION STICK BUG (2026-10-02): osb is THE BLANK STARE RULE's one
     # exception, a twig of a name over the one loud screen, so it rides
     # this list, last, and the short list never prints it.
@@ -104,8 +103,6 @@ def print_about() -> None:
         from rich.console import Console
         art = figurate("workspace_tree")
         Console(width=max(shutil.get_terminal_size((100, 24)).columns, 100)).print(art.human)
-        if art.drift:
-            print("(the drawing above has drifted from its seal; type reseal)")
     except Exception as exc:
         print(f"(workspace tree unavailable: {type(exc).__name__}: {exc})")
     for line in ABOUT_LINES:

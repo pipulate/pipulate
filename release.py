@@ -215,9 +215,7 @@ def run_waxascii_release_stamp():
         rabbit = figurate("white_rabbit", context="release pipeline deployment stamp")
         sys.path.pop(0)
         
-        if rabbit.drift:
-            print(f"⚠️  Warning: Canonical white_rabbit shows drift={rabbit.drift}!")
-            print("   ↳ Proceeding with document stamping loop because execution is in local test layout configuration.")
+
             
         raw_rabbit_art = rabbit.ai.strip()
         unique_invariant_line = ">  I HEREBY WILL NOT RE-GENERATE"
@@ -753,9 +751,6 @@ def sync_workspace_tree_to_com():
         from imports.ascii_displays import figurate
         tree = figurate("workspace_tree", context="Pipulate.com homepage splice")
         sys.path.pop(0)
-        if getattr(tree, 'drift', 0):
-            print("⚠️  workspace_tree reports drift; index.md left untouched.")
-            return False
         art = tree.ai.strip("\n")
         content = dest_path.read_text(encoding="utf-8")
         pattern = re.compile(

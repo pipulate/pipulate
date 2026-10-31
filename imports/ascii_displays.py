@@ -46,7 +46,7 @@ console = Console()
 
 
 
-FigurateResult = namedtuple('FigurateResult', ['name', 'human', 'ai', 'drift'])
+FigurateResult = namedtuple('FigurateResult', ['name', 'human', 'ai'])
 
 
 def figurate(name: str, context: Optional[str] = None) -> FigurateResult:
@@ -67,20 +67,18 @@ def figurate(name: str, context: Optional[str] = None) -> FigurateResult:
     entry = FIGURATE_REGISTRY.get(name)
     if entry is None:
         fallback = f"[figurate: '{name}' not yet registered]"
-        return FigurateResult(name=name, human=fallback, ai=fallback, drift=0)
+        return FigurateResult(name=name, human=fallback, ai=fallback)
     
     render_fn: Callable = entry.get("render")
     if render_fn is None:
         fallback = f"[figurate: '{name}' has no render function]"
-        return FigurateResult(name=name, human=fallback, ai=fallback, drift=0)
+        return FigurateResult(name=name, human=fallback, ai=fallback)
     
     # render_fn must return (human_renderable, ai_plain_str)
     human_out, ai_out = render_fn()
     
-    drift = 0
-    
     if context:
-        logger.info(f"🎨 FIGURATE: {name} | {context} | drift={drift}")
+        logger.info(f"🎨 FIGURATE: {name} | {context}")
     
     # Guaranteed AI visibility through the unified logging pipeline when active
     figurate_logger.info(f"🎨 FINDER_TOKEN: ASCII_ART_FIGURATE - {name}\n{ai_out}")
@@ -88,7 +86,7 @@ def figurate(name: str, context: Optional[str] = None) -> FigurateResult:
     # Also use the existing share function for full AI transparency
     share_ascii_with_ai(ai_out, f"figurate('{name}') called", "🎨")
     
-    return FigurateResult(name=name, human=human_out, ai=ai_out, drift=drift)
+    return FigurateResult(name=name, human=human_out, ai=ai_out)
 
 
 

@@ -103,11 +103,8 @@ def _render_card_inline(label: str) -> None:
 
 
 def _render_patronus_inline(key: str) -> None:
-    """Render a registered figurate asset inline, surfacing CRC drift loudly."""
+    """Render a registered figurate asset inline."""
     art = figurate(key)
-    if art.drift:
-        print(f"  ⚠️  DRIFT DETECTED in '{key}': wax-seal CRC mismatch -- "
-              f"the art changed but FIGURATE_LEDGER was not updated.")
     safe_console_print(art.human)
 
 
