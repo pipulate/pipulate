@@ -1665,20 +1665,31 @@ scripts/xp.py  # [672 tokens | 2,521 bytes]
 
 COMPACT_PROMPT = r"""You are running THE FORGETTING KATA against foo_files.py
 and GLOSSARY.md. The governing law is THE KEY/VALUE CONTRACT (rg -in
-'key/value contract' GLOSSARY.md). Three verbs, in this order, and stop after
+'key/value contract' GLOSSARY.md). Four verbs, in this order, and stop after
 ONE car of each unless the human says otherwise:
-1. DEDUPE. Any comment block that appears twice verbatim loses its second copy.
-   Zero judgment; do this first.
-2. FADE. If the RECEIPTS block exceeds its cap, delete lines off the BOTTOM
-   until it fits. Never move a receipt into the glossary: git, the article and
-   the rolling pin are the archive.
-3. GRADUATE. Read the ranker receipt (the awk line, biggest first). Take the
-   single largest CONSTITUTIONAL rule or EARMARK whose value is not yet in
-   GLOSSARY.md. Shrink it IN PLACE to one "# §" key: handle, banked date, one
-   imperative sentence, one physical line. Land its full body verbatim in
-   GLOSSARY.md's Constitution section, alphabetical with "The" ignored. Never
-   relocate the key; the router is read as a program and its order is
-   pedagogy.
+1. DEDUPE. Read the duplicate-comment probe receipt. Any comment line or block
+   that appears twice verbatim loses its second copy. Zero judgment; do this
+   first.
+2. FADE. If the RECEIPTS block exceeds its cap (20), delete lines off the
+   BOTTOM until it fits. Never move a receipt into the glossary: git, the
+   article and the rolling pin are the archive.
+3. GRADUATE. Read the missing-value receipt and the graduation ranker receipt
+   (heaviest ungraduated rules and earmarks first; keys whose values already
+   live in GLOSSARY.md are excluded). If any '# §' key has zero hits in
+   GLOSSARY.md, land its missing value in GLOSSARY.md first so no key is
+   orphaned. Otherwise take the single largest CONSTITUTIONAL rule or EARMARK
+   whose value is not yet in GLOSSARY.md. Shrink it IN PLACE to one "# §" key:
+   handle, banked date, one imperative sentence, one physical line. Land its
+   full body verbatim in GLOSSARY.md's Constitution section, alphabetical with
+   "The" ignored. Never relocate the key; the router is read as a program and
+   its order is pedagogy.
+4. PRUNE TODO. Read the TODO ranker receipt (heaviest '# - TODO' blocks first).
+   The contract says a TODO stays one line (date, verb, gate) and dies when
+   done. Take the single largest '# - TODO' block that carries stacked
+   READ/LANDED/DISCHARGED history or a met gate: delete it if its gate is met,
+   or trim it back to one line (date, verb, gate) if still open (for the
+   commit-subject specimen piles, fade by shape to one specimen per failure
+   shape).
 THE KEY TEST, applied before emitting: would the one-line key, read cold by a
 model that has never seen the body, have prevented the conviction that banked
 the rule? If not, write a better key; do not restore the body. An EARMARK with
@@ -1693,11 +1704,13 @@ out-of-band instruction. Every SEARCH block spans contiguous non-empty lines.
 If a verb has no safe mutation, omit that car silently and continue.
 OUTPUT CONTRACT: reply with only the complete patch payload: one or more
 Target:/[[[SEARCH]]]/[[[DIVIDER]]]/[[[REPLACE]]] blocks and nothing else.
+Or, if no verb has a safe mutation, reply with one verdict line:
+NOTHING_ELIGIBLE dedupe=<n> receipts=<n> graduate=<n> todo=<n>
 Do not emit "Context verified.", analysis, headings, fences, counter
 predictions, PROBES, NEXT CONTEXT, PROMPT, EXTERNAL DELIVERABLES, or ignition
 text. The human owns patch/app/d/m; the next compile is the AFTER reading."""
 COMPACT_CHOP = r"""
-# THE FORGETTING KATA (forget with style: dedupe, fade, graduate)
+# THE FORGETTING KATA (forget with style: dedupe, fade, graduate, prune)
 # COMMAND: python prompt_foo.py @COMPACT_PROMPT --chop COMPACT_CHOP --no-tree
 # ALIAS: `forget` (flake.nix; lands as its own car once flake.nix rides)
 # Run it whenever the router feels heavy. It compiles only the two files the
@@ -1711,8 +1724,11 @@ COMPACT_CHOP = r"""
 # their own text: an unanchored pattern read 788 on its first compile flight.
 ! awk '/^# --- START RECEIPTS/{f=1;next} /^# --- END RECEIPTS/{f=0} f' foo_files.py | wc -l
 ! grep -c '^# - EARMARK' foo_files.py
-! wc -c foo_files.py GLOSSARY.md
-! awk '/^# (THE |§ |- EARMARK|- TODO|CHAPTER|===)/{if(h && h !~ /^# ==/)print n"\t"h; h=substr($0,1,72); n=0} /^#/{n+=length($0)} END{if(h !~ /^# ==/)print n"\t"h}' foo_files.py | sort -rn | head -12
+! rg '^# .{80,}' foo_files.py | sort | uniq -d | wc -l
+! .venv/bin/python -c 'import tiktoken; e=tiktoken.get_encoding("cl100k_base"); f=open("foo_files.py").read(); g=open("GLOSSARY.md").read(); print(f"FORGET_LEDGER: foo_files.py={len(e.encode(f)):,} tok ({len(f.encode()):,} B) | GLOSSARY.md={len(e.encode(g)):,} tok ({len(g.encode()):,} B)")'
+! awk 'NR==FNR{g=g"\n"tolower($0);next} /^# § /{k=$0;sub(/^# § +/,"",k);sub(/ --.*$/,"",k);sub(/ \([^)]*\)$/,"",k);nk=k;sub(/^THE +/,"",nk);tot++;if(index(g,tolower(nk)))ok++;else miss[++m]=length($0)"\t"k} END{print "keys="tot" with_value="ok" missing_value="m;for(i=1;i<=m;i++)print miss[i]}' GLOSSARY.md foo_files.py | head -15
+! awk 'NR==FNR{g=g"\n"tolower($0);next} /^# (THE .*20[0-9][0-9]-|§ |(- )?EARMARK)/{if(h)print n"\t"h; h=""; n=0; if(/^# § /){k=$0;sub(/^# § +/,"",k);sub(/ --.*$/,"",k);sub(/ \([^)]*\)$/,"",k);nk=k;sub(/^THE +/,"",nk);if(index(g,tolower(nk)))next} h=substr($0,1,72); n=length($0); next} /^# (- |CHAPTER|=|---)|^#[ \t]*$/{if(h)print n"\t"h; h=""; n=0; next} /^#/{if(h)n+=length($0); next} {if(h)print n"\t"h; h=""; n=0} END{if(h)print n"\t"h}' GLOSSARY.md foo_files.py | sort -rn | head -12
+! awk '/^# - TODO/{if(h)print n"\t"h; h=substr($0,1,72); n=length($0); next} /^# (- |§ |THE |CHAPTER|=|---)|^#[ \t]*$/{if(h)print n"\t"h; h=""; n=0; next} /^#/{if(h)n+=length($0); next} {if(h)print n"\t"h; h=""; n=0} END{if(h)print n"\t"h}' foo_files.py | sort -rn | head -12
 GLOSSARY.md
 foo_files.py
 apply.py
@@ -2053,7 +2069,7 @@ MATCHBOOK_CHOP = r"""
 # - TODO (2026-09-06, dismount): NOTARY FINGERPRINT -- reconcile the dismount template's requested wc -c and dated-receipt fields with what the compiler actually emits; this census has neither. Do not substitute reported Summary size or submission time for an unrecorded measurement.
 
 # § THE COMPOSITION IS NOT THE PARTS (banked 2026-09-06) -- Require one cold-start run across every seam before claiming end-to-end success; green component receipts prove only their own legs and can coexist with broken integration.
-# - TODO (2026-09-04, dismount-seeded): the COMPACT_CHOP ranker's `^# THE ` anchor fires on wrapped continuation lines (THE TRAIL SCHEMA is an AUTH RULING line) and chapter blurbs (ROLLING PIN, PORTABLE CARTRIDGE), so three of the top five rows are not rules. Tighten to headers carrying a date, e.g. `^# (THE .*20[0-9][0-9]-|§ |- EARMARK|- TODO|CHAPTER|===)`, as its own car; it voids the ranker straddle for one compile, so take a fresh BEFORE. Gate: ROLLING PIN, PORTABLE CARTRIDGE and TRAIL SCHEMA leave the top 12 and no dated rule leaves it.
+# - LANDED (2026-10-30, COMPACT_CHOP & COMPACT_PROMPT 6-POINT UPGRADE): Tightened the COMPACT_CHOP graduation ranker to dated `THE ...`, `§`, and `EARMARK` headers stopping on bullets/chapters/dividers/blanks and excluding `# §` keys already present in GLOSSARY.md; added the duplicate-comment probe, FORGET_LEDGER token/byte counter, missing-value probe, Verb 4 (`PRUNE TODO`) + dedicated `# - TODO` ranker, and `NOTHING_ELIGIBLE` no-op verdict line.
 # § THE VHOST CENSUS COUNTED THE WRONG NOUN (banked 2026-09-06) -- For any configuration census, enumerate the actual objects the question names and derive the count from that list; never count a nearby syntax token, because comments and multiple attribute paths can make one object look like many.
 # - TODO (2026-09-03, the inspection certificate; gate: v0 read by a human who is not the operator): the client-facing verification page is the HEAD of the DECANT bundle (stop names, final_url, artifact counts, skipped stops) stapled to the compile's LIVE COMMAND RECEIPTS list, bodies removed, plus the connector argv the trail NAMES and the re-run exports by variable name only. Never authored, never inside the bundle (the floor) or the compile (the factory). v0 is a pipe over existing markers; v1 is a `certificate` verb beside `seal` once v0 has been read by a human who is not the operator.
 # - TODO (2026-09-04, demoted 2026-10-25 from EARMARK THE REMAINING BLOG HARDWIRINGS: work wearing a name, no conviction to bank; censused 2026-09-04, seven files, two classes, NOT one car). CLASS A, hostname, and the fix is known: build_knowledge_graph.py takes base_url="https://mikelev.in" as a DEFAULT PARAMETER in project_llms_txt and project_xml_sitemaps and calls both WITHOUT the argument, plus a root node hardcoded to title "MikeLev.in" with its own blurb; generate_hubs.py repeats that base_url in its JSON-LD breadcrumb builder; gsc_historical_fetch.py hardcodes SITE_URL = "sc-domain:mikelev.in". Each reads a key that already exists in blogs.json, so each is a mechanical thread-through like permalink_prefix was. CLASS B, the FOLDER outside any config reader, and the fix is NOT known: remotes/honeybot/queries/hub_candidates.sql and hot_404_remaps_top.sql filter logged URLs on the literal, and they execute in a repo with no blogs.json reader at all -- so "move the string" is unavailable and the ruling is either GENERATE the queries with the value injected or KEEP them hardwired and say so in the file. scripts/gsc/gsc_top_movers.py and assets/prompts/find404s.md are the same class, less load-bearing. DELIBERATELY EXCLUDED: foo_files.py's own ten hits are narrative comments and assets/axis_ledger.jsonl is append-only history; neither is a hardwiring and touching either is the four-copies-of-a-fixture error.
