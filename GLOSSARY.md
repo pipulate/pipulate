@@ -1174,6 +1174,12 @@ Entries are alphabetical, numbers spelled as spoken.
   is Linux and WSL only -- Nix normalizes the userland, not the kernel, and
   macOS has no procfs. Use `ps`/`lsof` there.
   DISCHARGES (corrected 2026-07-31): rung 4 pays the refresh-on-expiry chisel owed since 2026-07-29, but NOT in resolve_token. A resolver that silently re-mints is a resolver whose failures stop being visible, so the debt splits: READ half in mcp.py::_expiry_note (landed, witnessed -- EXPIRED 155871s ago printed to stderr on the live receipt), WRITE half in mcp_warm.py --refresh (landed, gate6 UNWITNESSED). Pedagogy and plumbing pay each other; the sensor and the actuator stay in separate files.
+- **The Copy-Button Delimiter Inversion** -- *expanded rule; banked 2026-10-29.*
+
+~~~text
+# § THE COPY-BUTTON DELIMITER INVERSION (banked 2026-10-29, deed 461) -- Web chat HTML-to-Markdown copy serializers invert adjacent closing tags (**text \x60code**\x60) and collapse spaced inline-backtick escapes (\x60\x60 \x60 \x60\x60 -> \x60\x60\x60), trapping Neovim's syntax/markdown.vim in unclosed non-@Spell regions; never end a bold or italic span on an inline code boundary or emit literal backtick-escape spans in prose, and use <leader>f (\f in init.lua) to locate and heal cross-nested spans and naked fences.
+~~~
+
 - **The Copy-If-Absent Delivery** -- *expanded rule; banked 2026-10-23.*
 
 ~~~text
