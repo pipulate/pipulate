@@ -2537,9 +2537,6 @@ def update_agents_md_in_place():
         # passes below; the seal is still read, and the "regenerated" line
         # is still the only witness that anything changed.
         result = wand.figurate("workspace_tree", console_output=False)
-        if getattr(result, 'drift', 0):
-            logger.print("⚠️  workspace_tree reports drift; AGENTS.md left untouched.")
-            return
         art = result.ai.strip("\n")
 
         with open(agents_path, 'r', encoding='utf-8') as f:
@@ -2622,9 +2619,6 @@ def update_readme_md_in_place():
         # diff between these two IS the helper's specification, and it gets
         # written when a THIRD surface arrives, not before.
         result = wand.figurate("workspace_tree", console_output=False)
-        if getattr(result, 'drift', 0):
-            logger.print("⚠️  workspace_tree reports drift; README.md left untouched.")
-            return
         art = result.ai.strip("\n")
 
         with open(readme_path, 'r', encoding='utf-8') as f:
@@ -2984,10 +2978,8 @@ def main():
     args = parser.parse_args()
     VERBOSE = args.verbose
 
-    # Check the seal every run; display the illustration only when requested.
-    rabbit = wand.figurate("white_rabbit", console_output=VERBOSE)
-    if getattr(rabbit, "drift", 0):
-        logger.print("Warning: white_rabbit artwork seal drift detected.")
+    # Display the illustration only when requested.
+    wand.figurate("white_rabbit", console_output=VERBOSE)
 
     # 💥 NEW: Parse --arg into a dictionary
     format_kwargs = {}
