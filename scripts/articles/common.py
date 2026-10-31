@@ -424,11 +424,29 @@ def get_broadcast_kit(target_key="1", slug_match=None):
         raw_tweet = tweet_match.group(1).strip()
     else:
         raw_tweet = f"{title}\n\n{canonical_url}"
+    yt_live_vanity = "https://www.youtube.com/MikeLevin/live"
     url_token = "__CANONICAL_ARTICLE_URL__"
     tweet_masked = raw_tweet.replace(canonical_url, url_token) if canonical_url else raw_tweet
     tweet = _defang_prose_domains(tweet_masked).replace(url_token, canonical_url)
     if canonical_url in tweet and f"{canonical_url}?" not in tweet:
         tweet = tweet.replace(canonical_url, f"{canonical_url}?src=x")
+    if "youtube.com/MikeLevin/live" not in tweet and "youtube.com/@MikeLevin/live" not in tweet:
+        tagged_art_url = f"{canonical_url}?src=x" if f"{canonical_url}?src=x" in tweet else canonical_url
+        if tagged_art_url and tagged_art_url in tweet:
+            if f"Article: {tagged_art_url}" not in tweet and f"📖 {tagged_art_url}" not in tweet:
+                tweet = tweet.replace(
+                    tagged_art_url,
+                    f"📖 Article: {tagged_art_url}\n🔴 Live 24/7: {yt_live_vanity}",
+                    1,
+                )
+            else:
+                tweet = tweet.replace(
+                    tagged_art_url,
+                    f"{tagged_art_url}\n🔴 Live 24/7: {yt_live_vanity}",
+                    1,
+                )
+        else:
+            tweet = f"{tweet}\n📖 Article: {canonical_url}?src=x\n🔴 Live 24/7: {yt_live_vanity}"
     slug = re.sub(r"^\d{4}-\d{2}-\d{2}-", "", post_path.stem)
     hero_match = re.search(
         r"###\s*🎨\s*Hero Banner Image Prompt\s*\n```[a-zA-Z0-9]*\n(.*?)\n```",
@@ -501,7 +519,8 @@ def get_broadcast_kit(target_key="1", slug_match=None):
     li_parts = [
         f"🚀 {title}",
         "",
-        f"📖 Full article & code receipts: {canonical_url}?src=linkedin",
+        f"📖 Full article & code receipts (1st for hero preview): {canonical_url}?src=linkedin",
+        f"🔴 Watch/Listen 24/7 on Honeybot Storytime: {yt_live_vanity}",
     ]
     if li_imprint:
         li_parts.extend(["", li_imprint])
@@ -511,8 +530,9 @@ def get_broadcast_kit(target_key="1", slug_match=None):
         li_parts.extend(["", f"TL;DR: {li_meta}"])
     li_parts.extend([
         "",
+        f"🎙️ Rather listen than read? Tune into the 24/7 Honeybot Storytime live stream ({yt_live_vanity}) where the latest article is read aloud alongside real-time AI bot telemetry.",
         f"🧪 Test RFC 9110 in your terminal: curl -sI -H \"Accept: text/markdown\" {canonical_url}?src=rfc9110",
-        f"💸 Spending \x2410,000/mo+ on HTML pre-render? {base_url}/?src=linkedin#consulting",
+        f"💸 Spending \x2415,000/mo+ on HTML pre-render? {base_url}/?src=linkedin#consulting",
     ])
     if tags:
         li_parts.extend(["", tags])
@@ -1508,7 +1528,7 @@ def send_honeybot_live_message(
 
 VAULT_ENV_FILE = CONFIG_DIR / ".env"
 YTWATCH_STATE_FILE = CONFIG_DIR / "ytwatch_state.json"
-DEFAULT_YT_LIVE_URL = "https://www.youtube.com/@MikeLevin/live"
+DEFAULT_YT_LIVE_URL = "https://www.youtube.com/MikeLevin/live"
 
 
 def _load_vault_env():
