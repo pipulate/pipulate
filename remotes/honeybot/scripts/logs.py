@@ -31,7 +31,7 @@ CARD_HOLD_TICKS = 56  # 56 * 0.08s = ~4.5s still hold per card (0% CPU during ho
 CARD_STYLES = ("bold #ffd700", "bold #00ffff", "bold #ffae42")
 DEFAULT_TICKER_MESSAGE = (
     "JUST GIVE 30 SECS | "
-    "YOU'LL SEE MAX ME | "
+    "HONEYBOT STORYTIME | "
     "VISIT SUNPUG.IO | "
     "CHAT SUMMONS MIKE | "
     "AI LOGS * MIKELEV.IN"
