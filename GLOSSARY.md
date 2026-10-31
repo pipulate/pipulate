@@ -2271,6 +2271,14 @@ Mechanism, from the deed 467 receipts: the #ticker_bar in remotes/honeybot/scrip
 # - EARMARK: THE INSTRUMENT DECIDES THE STATE (banked 2026-09-08, operator-convicted: "I'm so confused. Do I have Chrome open? Do I close it?"): when a fence REPORTS the world (RUNNING, STOPPED, STALE_LOCK) and ends in a verdict token, the operator's loop contains no question about the world; it is run, read the last line, do what the verdict names, run again. An instruction that asks the human to STAGE the world ("with a Chrome window visibly open") is witness choreography for the record, the one-time act that observes both branches of a fence owed under REFUSAL-ONLY WITNESS, and it must be labeled as such and retired the compile after the receipt lands, or the operator reads the staging as the standing procedure and a fence built to remove a decision has added one. STANDING CONSEQUENCE for any hand-run process an article hands over: write it as verdict -> action pairs (REFUSED_CHROME_RUNNING means quit Chrome and run again; IN_SYNC means nothing to do) and never as preconditions the human establishes before typing the command. Sibling of THE GATE SPEAKS A VERDICT (the gate says a word, not a number) and of THE BARNEY RESET RULE (confusion in the human is the trigger, and it fired here).
 ~~~
 
+- **The Intake Ratchet** -- *expanded rule; banked 2026-10-28.*
+
+~~~text
+# § THE INTAKE RATCHET (banked 2026-10-28, deed 435) -- Pair every archive-wide cleanup with an automated intake gate in sanitizer.py and a speech-hygiene filter in content_loader.py so a formatting or acoustic defect healed across the corpus can never re-enter through future articles.
+~~~
+
+Mechanism, from the deed 435 receipts: heal_corpus_mathjax() (--heal-mathjax [--dry-run]) in scripts/articles/sanitizer.py healed 907 single-dollar MathJax spans across 123 posts to 0 and preserved mtimes. The same doubler now runs on every new article at intake, so the healed state is a ratchet and not a one-time sweep. content_loader.py's _strip_mathjax_for_tts, _simplify_filepaths_for_tts and _truncate_after_editorial_take keep the same class of defect from being spoken on air. A cleanup with no intake gate is a pawl with no click: the archive heals once and the next article reintroduces the defect.
+
 - **The Join Is the Field, the Hostname Its Fallback** -- *expanded rule; banked 2026-09-27.*
 
 ~~~text
