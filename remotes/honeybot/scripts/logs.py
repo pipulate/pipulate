@@ -30,7 +30,7 @@ TICKER_FILE_PATH = "/tmp/honeybot_ticker.txt"
 CARD_HOLD_TICKS = 56  # 56 * 0.08s = ~4.5s still hold per card (0% CPU during hold)
 CARD_STYLES = ("bold #ffd700", "bold #00ffff", "bold #ffae42")
 DEFAULT_TICKER_MESSAGE = (
-    "JUST GIVE 30 SECS | "
+    "JUST GIVE 30 SECS... | "
     "HONEYBOT STORYTIME | "
     "VISIT SUNPUG.IO | "
     "CHAT SUMMONS MIKE | "
