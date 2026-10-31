@@ -503,12 +503,12 @@ def _figurate_white_rabbit():
     """Render white_rabbit as (human, ai) tuple for FIGURATE_REGISTRY."""
     art = r"""
                     ( Do you put your name on it because Claude said so? )
-                                          O        /)  __     
->  Do you think the Aviation industry      o /)\__//  /  \   "What Claude said" is a Cockpit
->  vibe-codes without checking for       ___(/_ 0 0  |    |  Voice Recorder (CVR) hear-say of a
->  confident hallucinations? So then   *(    ==(_T_)== QA |  subcontractor. This tool is a Flight
->  why should you? If anyone relies on   \  )   ""\  |    |  Data Recorder (FDR) for High Reliability
->  your work then you should Q/A it.      |__>-\_>_>  \__/   Organizations (HROs). Use when it matters.
+                                          O        /)  __
+                                           o /)\__//  /  \
+                                         ___(/_ 0 0  |    |
+                                       *(    ==(_T_)==NPvg|
+                                         \  )   ""\  |    |
+                                          |__>-\_>_>  \__/
     """
     ai_art = _expand_color_bits_ai(art)
     human_art = _expand_color_bits_human(art)
