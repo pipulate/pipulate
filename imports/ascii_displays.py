@@ -38,18 +38,11 @@ console = Console()
 # ============================================================================
 
 # FigurateResult: The immutable bag of attributes returned by wand.figurate().
-# .drift is 0 when the ASCII art matches its registered CRC32; 1 if corrupted.
 # patronus = wand.figurate("white_rabbit")
 # patronus.human → Rich Panel for the terminal
 # patronus.ai    → plain text for logs and LLM context
-# patronus.drift → 0 means the wax seal is intact
 
-# FIGURATE_LEDGER: Maps art name → expected CRC32 of its raw ai string.
-# This is the wax seal registry. A drift of 1 means something touched the painting.
-# To add a new entry: print(binascii.crc32(your_art_string.encode('utf-8')))
-# FIGURATE_LEDGER: Maps art name → expected CRC32 of its raw ai string.
-# This is the wax seal registry. A drift of 1 means something touched the painting.
-# To add a new entry: print(binascii.crc32(your_art_string.encode('utf-8')))
+
 
 
 
@@ -787,8 +780,8 @@ def _figurate_workspace_tree():
     personal/Notebooks/), shared/ is the single deliberate outbound surface
     with one folder per person; flake.nix's THE THREE TIERS block rules and
     this drawing follows it. Authored with no .strip() so
-    the leading newline is preserved (the honeybot_pipeline convention), which
-    the FIGURATE_LEDGER seal must match. No color-bit or angle-tag markers, so
+    the leading newline is preserved (the honeybot_pipeline convention).
+    No color-bit or angle-tag markers, so
     _expand_color_bits_ai leaves it untouched and ai_art == art.
     """
     art = r"""
@@ -819,10 +812,8 @@ def _figurate_forcing_pair():
     things that do not exist yet.
 
     Authored with NO .strip() so the leading newline is preserved (the
-    honeybot_pipeline / workspace_tree convention), which the FIGURATE_LEDGER
-    seal must match. No [[[color bits]]] and no <angle tags>, so
-    _expand_color_bits_ai leaves it untouched and ai_art == art. Seal deferred:
-    the CRC cannot be known until these bytes exist, so it lands next turn.
+    honeybot_pipeline / workspace_tree convention). No [[[color bits]]] and no
+    <angle tags>, so _expand_color_bits_ai leaves it untouched and ai_art == art.
     """
     art = r"""
    THE FORCING PAIR -- 30-and-3 finds the clump; the AXIS outlaws it
