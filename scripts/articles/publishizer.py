@@ -460,6 +460,9 @@ def main():
     brand_markdown_files(target_path, verbose=args.verbose)
     prune_orphan_shards(target_path, verbose=args.verbose)
     common.ensure_indexnow_key_file(target_key)
+    yt_thumb = common.ensure_latest_yt_studio_thumbnail(target_key)
+    if yt_thumb:
+        print(f"📺 Ready 1280x720 (16:9) YouTube Studio Thumbnail: {yt_thumb}")
     sync_observatory_metrics(target_key, target_path, verbose=args.verbose)
 
     # 2. Run the sequence

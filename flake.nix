@@ -2680,6 +2680,7 @@ print('AI:\n', r.ai)
             
             echo "🚀 [1/5] Payload Delivery: Committing and Pushing $TARGET_REPO..."
             "$PIPULATE_ROOT/.venv/bin/python" -c "import sys; sys.path.insert(0, '$PIPULATE_ROOT/scripts/articles'); import common; common.ensure_indexnow_key_file('1')" || true
+            "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/articles/common.py" --broadcast summary || true
             # Pre-sync Honeybot stream scripts BEFORE git push rings .deploy_standby
             # so any edits to STANDBY_LOOP_LINES in stream.py are on disk when standby begins.
             rsync -aq "$PIPULATE_ROOT/remotes/honeybot/scripts/" mike@192.168.10.100:~/www/mikelev.in/scripts/ 2>/dev/null || true

@@ -893,6 +893,16 @@ def _ensure_yt_studio_thumbnail(hero_img_path):
         return None
 
 
+def ensure_latest_yt_studio_thumbnail(target_key="1", slug_match=None):
+    """Resolve the latest post for target_key and build ~/Downloads/yt_thumb_latest.jpg if its hero image exists."""
+    if str(target_key) != "1":
+        return None
+    kit = get_broadcast_kit(target_key, slug_match=slug_match)
+    if not kit:
+        return None
+    return _ensure_yt_studio_thumbnail(kit.get("hero_img_dest"))
+
+
 def print_broadcast_kit(target_key="1", mode="card", slug_match=None):
     """Print or copy the broadcast kit (mode: help | card | hero | yaml | tweet | linkedin | title | desc)."""
     bar = "=" * 72
@@ -944,9 +954,9 @@ def print_broadcast_kit(target_key="1", mode="card", slug_match=None):
     if not kit:
         print("⚠️ No published post found for broadcast kit.")
         return 1
+    yt_thumb = _ensure_yt_studio_thumbnail(kit["hero_img_dest"])
     if mode == "hero":
         copied = _copy_to_clipboard(kit["hero_prompt"])
-        yt_thumb = _ensure_yt_studio_thumbnail(kit["hero_img_dest"])
         print(kit["hero_prompt"])
         print(f"\n{'📋 Copied Hero Banner Image Prompt to clipboard!' if copied else 'ℹ️  (Non-TTY: printed only)'}")
         print(f"🖼️  Save/resize 1200x630 (<500 KB) to: {kit['hero_img_dest']}")
@@ -958,6 +968,8 @@ def print_broadcast_kit(target_key="1", mode="card", slug_match=None):
         copied = _copy_to_clipboard(kit["hero_yaml"])
         print(kit["hero_yaml"])
         print(f"\n{'📋 Copied YAML Frontmatter Image Override to clipboard!' if copied else 'ℹ️  (Non-TTY: printed only)'}")
+        if yt_thumb:
+            print(f"📺 Ready 1280x720 (16:9) YouTube Studio Thumbnail: {yt_thumb}")
         print(f"✏️  Paste into frontmatter: vim {kit['path']}")
         return 0
     if mode == "tweet":
@@ -974,6 +986,8 @@ def print_broadcast_kit(target_key="1", mode="card", slug_match=None):
         copied = _copy_to_clipboard(kit["yt_title"])
         print(kit["yt_title"])
         print(f"\n{'📋 Copied YouTube Live Title' if copied else 'ℹ️  YouTube Live Title'} ({len(kit['yt_title'])}/{YT_TITLE_LIMIT} chars)")
+        if yt_thumb:
+            print(f"📺 Ready 1280x720 (16:9) YouTube Studio Thumbnail: {yt_thumb}")
         return 0
     if mode == "desc":
         copied = _copy_to_clipboard(kit["yt_description"])
@@ -981,7 +995,6 @@ def print_broadcast_kit(target_key="1", mode="card", slug_match=None):
         print(f"\n{'📋 Copied YouTube Live Description to clipboard!' if copied else 'ℹ️  (Non-TTY: printed only)'}")
         return 0
     if mode == "summary":
-        yt_thumb = _ensure_yt_studio_thumbnail(kit["hero_img_dest"])
         print(f"📡 Broadcast Kit Ready ({Path(kit['path']).name}):")
         print(f"   • Live URL   : {kit['canonical_url']}")
         if yt_thumb:
