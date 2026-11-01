@@ -320,10 +320,7 @@ class SonarApp(App):
         self.ticker_cards = []
         self.ticker_card_idx = 0
         self.ticker_hold_ticks = 0
-        self.ticker_flip_step = 0
         self.ticker_cached_width = 0
-        self.ticker_last_mono = time.monotonic()
-        self.ticker_recent_dts = []
         self._reload_ticker_source(force=True)
         self.set_interval(0.08, self.tick_marquee)
         self.set_interval(1, self.update_countdown)
@@ -346,7 +343,6 @@ class SonarApp(App):
         self.ticker_cards = built
         self.ticker_card_idx = 0
         self.ticker_hold_ticks = 0
-        self.ticker_flip_step = 0
         try:
             bar = self.query_one("#ticker_bar", Static)
             if built:
@@ -354,11 +350,7 @@ class SonarApp(App):
         except Exception:
             pass
 
-    def _is_window_clear_for_smooth_flip(self) -> bool:
-        """True when recent event-loop ticks had low jitter (<115ms) and no active Piper synthesis lock."""
-        if len(self.ticker_recent_dts) >= 4 and max(self.ticker_recent_dts[-6:]) > 0.115:
-            return False
-        return True
+
 
     def _reload_ticker_source(self, force=False):
         """Check /tmp/honeybot_ticker.txt mtime and rebuild the double-buffered LED frames only when changed."""
@@ -424,7 +416,7 @@ class SonarApp(App):
             self._reload_ticker_source(force=False)
 
         self.ticker_tick_count += 1
-        if self.ticker_tick_count % 10 == 0:
+        if self.ticker_mode != "billboard" and self.ticker_tick_count % 10 == 0:
             self._reload_ticker_source(force=False)
         try:
             bar = self.query_one("#ticker_bar", Static)
