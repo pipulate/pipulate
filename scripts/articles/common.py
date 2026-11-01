@@ -952,7 +952,8 @@ def print_broadcast_kit(target_key="1", mode="card", slug_match=None):
         print(" 18. ytoutro           🔊 Hear deploy-standby outro locally (`ytoutro edit|sync|reboot`)")
         print("     ytbgm [VOL]       🎵 Tune Storytime BGM volume live (`ytbgm 0.35`, `off`, `on`, `status`)")
         print("     ytreboot          🔄 Sync Honeybot scripts + restart stream.py watchdog child")
-        print(" 19. ytcard            📇 Reprint the full Broadcast Kit for the latest post")
+        print(" 19. ytfeature [slug]   📌 List `storytime: false` backfill queue, promote a post, or `--vod URL`")
+        print(" 20. ytcard            📇 Reprint the full Broadcast Kit for the latest post")
         if kit:
             print(thin)
             print(f"📄 Latest Post:   {Path(kit['path']).name}")

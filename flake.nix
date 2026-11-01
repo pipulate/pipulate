@@ -2788,6 +2788,7 @@ print('AI:\n', r.ai)
             # shadow json carries no vault lane yet, so that word refuses
             # here with the roster until the template above grows one.
             alias article='write_post article'
+            alias aside='write_post article --aside'
             alias grim='write_post grim'
             alias pip='write_post pip'
             alias levinix='write_post levinix'
