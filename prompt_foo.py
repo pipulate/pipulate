@@ -1048,8 +1048,8 @@ SECRET_TRIPWIRES = [
     # credential. Quoted literals and plausible unquoted dotenv values remain
     # covered; calls, attribute access with parentheses, and other expressions
     # do not.
-    r"(?m)^[A-Z0-9_]*(?:SECRE[T]|TOKE[N]|PASSWOR[D]|API_KE[Y])[A-Z0-9_]*"
-    r"\s*=\s*(?:\"[^\"\s]{12,}\"|'[^'\s]{12,}'|[A-Za-z0-9_./+=:@-]{20,})"
+    r"(?m)^[A-Z0-9_]*(?:SECRE[T]|TOKE[N]|PASSWOR[D]|API_KE[Y])[A-Z0-9_]*(?<!_FILE)(?<!_PATH)(?<!_DIR)"
+    r"\s*=\s*(?![\"']?(?:/|~/))(?:\"[^\"\s]{12,}\"|'[^'\s]{12,}'|[A-Za-z0-9_./+=:@-]{20,})"
     r"\s*(?:#.*)?$",
     # ADMIN-FORM LABEL ANCHOR (convicted 2026-09-11, cartridge foo-d5dfdb65-1342.zip).
     # A `?URL` scrape of a Django admin page renders a credential as a BARE VALUE
