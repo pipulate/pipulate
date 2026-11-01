@@ -1047,7 +1047,11 @@ SECRET_TRIPWIRES = [
     # such as an environment lookup was indistinguishable from a hardcoded
     # credential. Quoted literals and plausible unquoted dotenv values remain
     # covered; calls, attribute access with parentheses, and other expressions
-    # do not.
+    # do not. A path is not a credential (convicted 2026-11-01, deed 596, by
+    # HF_TOKEN_FILE = "/home/mike/.cache/huggingface/token" in imagine.nix,
+    # which fired 4 hits and invited a temporary `secret_hits = False` disarm):
+    # `_(FILE|PATH|DIR)` variable suffixes and `/` or `~/` path values are
+    # excluded so the gate stays armed.
     r"(?m)^[A-Z0-9_]*(?:SECRE[T]|TOKE[N]|PASSWOR[D]|API_KE[Y])[A-Z0-9_]*(?<!_FILE)(?<!_PATH)(?<!_DIR)"
     r"\s*=\s*(?![\"']?(?:/|~/))(?:\"[^\"\s]{12,}\"|'[^'\s]{12,}'|[A-Za-z0-9_./+=:@-]{20,})"
     r"\s*(?:#.*)?$",
