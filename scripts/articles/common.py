@@ -372,8 +372,17 @@ def _latest_post_for_target(target_key="1", slug_match=None):
     recorded = get_last_published(target_key)
     if recorded and Path(recorded).is_file():
         rec_path = Path(recorded)
-        if _DATED_POST_RE.match(rec_path.name) and rec_path.name[:10] >= max_date:
-            return rec_path, tcfg
+        if _DATED_POST_RE.match(rec_path.name):
+            eff_rec_date = rec_path.name[:10]
+            try:
+                head = rec_path.read_text(encoding="utf-8")[:2048]
+                m_feat = re.search(r"^storytime_featured:\s*['\"]?(\d{4}-\d{2}-\d{2})", head, re.MULTILINE)
+                if m_feat and m_feat.group(1) > eff_rec_date:
+                    eff_rec_date = m_feat.group(1)
+            except Exception:
+                pass
+            if eff_rec_date >= max_date:
+                return rec_path, tcfg
     same_day = [p for p in dated if p.name[:10] == max_date]
     same_day.sort(key=_post_sort_key)
     return same_day[-1], tcfg
@@ -913,7 +922,7 @@ def print_broadcast_kit(target_key="1", mode="card", slug_match=None):
         print("🚲 GO-GO-GADGET BROADCAST BICYCLE (Step-by-Step Muscle Memory)")
         print(thin)
         print("PHASE 1: ARTICLEIZE & HERO BANNER TLC (Before `publish`)")
-        print("  1. article          Sanitize clipboard + generate Jekyll post & prompts")
+        print("  1. article / aside  Generate Jekyll post (`aside` stamps storytime: false)")
         print("  2. ythero           📋 Copy AI Hero Banner Prompt -> generate 16:9 image")
         print("  3. ytyaml           📋 Copy YAML `image:` override -> paste into post")
         print("                      frontmatter while moving **TL;DR**: to top in vim")
@@ -3112,14 +3121,233 @@ def run_honeybot_outro(
             pass
 
 
+def _normalize_vod_url(raw_vod):
+    """Normalize a YouTube URL, 11-char video ID, or 'live' keyword into a canonical watch URL."""
+    s = (raw_vod or "").strip()
+    if not s:
+        return ""
+    if s.lower() == "live":
+        st = _load_ytwatch_state()
+        vid = str(st.get("video_id") or "").strip()
+        if not vid:
+            vid = sync_live_video_id(push_remote=False)
+        return f"https://www.youtube.com/watch?v={vid}" if vid else ""
+    if re.match(r"^[A-Za-z0-9_-]{11}$", s):
+        return f"https://www.youtube.com/watch?v={s}"
+    m = re.search(r"(?:v=|youtu\.be/|/live/|/shorts/)([A-Za-z0-9_-]{11})", s)
+    if m:
+        return f"https://www.youtube.com/watch?v={m.group(1)}"
+    return s
+
+
+def manage_storytime_feature(
+    target_key="1",
+    slug_match=None,
+    vod_url=None,
+    set_aside=False,
+    dry_run=False,
+):
+    """List Storytime backfill queue (`storytime: false`), promote a post to active Storytime, or stamp `vod_url`."""
+    import subprocess
+    import yaml
+    targets = load_targets()
+    tcfg = targets.get(str(target_key), targets.get("1", DEFAULT_TARGETS["1"]))
+    posts_dir = Path(tcfg["path"]).expanduser()
+    repo_root = posts_dir.parent
+    if not posts_dir.is_dir():
+        print(f"⚠️ Posts directory not found: {posts_dir}")
+        return 1
+    dated = sorted(
+        [p for p in posts_dir.glob("*.md") if _DATED_POST_RE.match(p.name)],
+        key=lambda p: p.name,
+        reverse=True,
+    )
+    if not slug_match and not vod_url and not set_aside:
+        backfill = []
+        vod_posts = []
+        best_active = None
+        for p in dated[:120]:
+            try:
+                head = p.read_text(encoding="utf-8")[:4096]
+            except OSError:
+                continue
+            fm = {}
+            if head.startswith("---"):
+                parts = head.split("---", 2)
+                if len(parts) >= 3:
+                    try:
+                        fm = yaml.safe_load(parts[1]) or {}
+                    except Exception:
+                        fm = {}
+            title = str(fm.get("title") or p.stem[11:])
+            st_val = fm.get("storytime", True)
+            is_aside = (fm.get("aside") is True) or (st_val is False) or (str(st_val).strip().lower() in ("false", "0", "no", "off", "aside"))
+            date_s = p.name[:10]
+            try:
+                s_ord = int(fm.get("sort_order", 0))
+            except (ValueError, TypeError):
+                s_ord = 0
+            eff_date_s = str(fm.get("storytime_featured") or date_s)[:10]
+            try:
+                eff_ord = int(fm.get("storytime_order", s_ord))
+            except (ValueError, TypeError):
+                eff_ord = s_ord
+            if is_aside:
+                backfill.append((date_s, s_ord, p.name, title))
+            else:
+                cand = (eff_date_s, eff_ord, p.name, title, date_s)
+                if best_active is None or cand > best_active:
+                    best_active = cand
+            if fm.get("vod_url"):
+                vod_posts.append((date_s, p.name, title, str(fm.get("vod_url"))))
+        print("=" * 72)
+        print("🎙️  HONEYBOT STORYTIME QUEUE & BACKFILL RADAR")
+        print("-" * 72)
+        if best_active:
+            print(f"🔴 ACTIVE ON STORYTIME : {best_active[2]} (broadcast slot: {best_active[0]} #{best_active[1]})")
+            print(f"   Title               : {best_active[3]}")
+        else:
+            print("🔴 ACTIVE ON STORYTIME : (none found)")
+        print("-" * 72)
+        print(f"⏳ COMING SOON / ASIDE BACKFILL QUEUE (`storytime: false` — {len(backfill)} post(s)):")
+        if backfill:
+            for idx, (d_s, s_o, fname, t_s) in enumerate(backfill[:20], 1):
+                slug_s = fname[11:].removesuffix(".md")
+                print(f"  {idx:2d}. [{d_s} #{s_o}] {t_s}")
+                print(f"      ↳ Promote to Storytime: ytfeature {slug_s}")
+        else:
+            print("  (No `storytime: false` aside posts waiting in queue. Publish one with `aside` or `article --aside`!)")
+        if vod_posts:
+            print("-" * 72)
+            print(f"🎬 ARCHIVED YOUTUBE VOD EPISODES ({len(vod_posts)} stamped):")
+            for d_s, fname, t_s, v_u in vod_posts[:8]:
+                print(f"  • [{d_s}] {t_s} -> {v_u}")
+        print("=" * 72)
+        return 0
+
+    post_path, _ = _latest_post_for_target(target_key, slug_match=slug_match)
+    if not post_path or not post_path.is_file():
+        print(f"❌ No post matched slug: {slug_match!r}")
+        return 1
+
+    if vod_url:
+        norm_vod = _normalize_vod_url(vod_url)
+        if not norm_vod:
+            print(f"❌ Could not resolve a valid YouTube VOD URL from: {vod_url!r}")
+            return 1
+        if dry_run:
+            print(f"🎬 [DRY RUN] Would stamp vod_url: {norm_vod} into {post_path.name}")
+            return 0
+        status = stamp_frontmatter_value(post_path, "vod_url", norm_vod, preserve_mtime=True)
+        if (repo_root / ".git").exists():
+            subprocess.run(["git", "-C", str(repo_root), "add", "--", str(post_path)], check=False)
+        print(f"🎬 [{status}] Stamped vod_url in {post_path.name} -> {norm_vod}")
+        if not set_aside and not slug_match:
+            return 0
+
+    if set_aside:
+        if dry_run:
+            print(f"📌 [DRY RUN] Would stamp storytime: false (aside) on {post_path.name}")
+            return 0
+        st_res = stamp_frontmatter_value(post_path, "storytime", "false", preserve_mtime=True)
+        st_json = repo_root / "_data" / "storytime.json"
+        if st_json.is_file():
+            try:
+                cur_st = json.loads(st_json.read_text(encoding="utf-8"))
+                if cur_st.get("filename") == post_path.name:
+                    st_json.unlink()
+            except Exception:
+                pass
+        if (repo_root / ".git").exists():
+            subprocess.run(["git", "-C", str(repo_root), "add", "--", str(post_path)], check=False)
+        print(f"📌 [{st_res}] Marked {post_path.name} as an Aside (`storytime: false` — queued for future Storytime).")
+        return 0
+
+    if slug_match:
+        current_date = datetime.now().strftime("%Y-%m-%d")
+        max_order = 0
+        for p in posts_dir.glob("*.md"):
+            if not _DATED_POST_RE.match(p.name):
+                continue
+            try:
+                head = p.read_text(encoding="utf-8")[:4096]
+            except OSError:
+                continue
+            if not head.startswith("---"):
+                continue
+            parts = head.split("---", 2)
+            if len(parts) < 3:
+                continue
+            try:
+                fm = yaml.safe_load(parts[1]) or {}
+            except Exception:
+                fm = {}
+            if p.name[:10] == current_date:
+                try:
+                    max_order = max(max_order, int(fm.get("sort_order", 0)))
+                except (ValueError, TypeError):
+                    pass
+            if str(fm.get("storytime_featured") or "")[:10] == current_date:
+                try:
+                    max_order = max(max_order, int(fm.get("storytime_order", 0)))
+                except (ValueError, TypeError):
+                    pass
+        next_order = max_order + 1
+        slug_clean = post_path.stem[11:]
+        if dry_run:
+            print(
+                f"🎙️ [DRY RUN] Would promote {post_path.name} -> storytime: true | "
+                f"storytime_featured: {current_date} | storytime_order: {next_order}"
+            )
+            return 0
+        stamp_frontmatter_value(post_path, "storytime", "true", preserve_mtime=False)
+        stamp_frontmatter_value(post_path, "storytime_featured", current_date, preserve_mtime=False)
+        stamp_frontmatter_value(post_path, "storytime_order", str(next_order), preserve_mtime=False)
+        data_dir = repo_root / "_data"
+        data_dir.mkdir(parents=True, exist_ok=True)
+        st_json = data_dir / "storytime.json"
+        st_payload = {
+            "filename": post_path.name,
+            "slug": slug_clean,
+            "featured_date": current_date,
+            "featured_order": next_order,
+            "promoted_at": datetime.now().isoformat(timespec="seconds"),
+        }
+        st_json.write_text(json.dumps(st_payload, indent=2) + "\n", encoding="utf-8")
+        if (repo_root / ".git").exists():
+            subprocess.run(
+                ["git", "-C", str(repo_root), "add", "--", str(post_path), str(st_json)],
+                check=False,
+            )
+        record_last_published(target_key, post_path, tcfg.get("name"))
+        print(
+            f"🚀 Promoted {post_path.name} to Active Storytime! "
+            f"(storytime_featured: {current_date}, storytime_order: {next_order})"
+        )
+        print_broadcast_kit(target_key, mode="summary", slug_match=slug_clean)
+        print(f"👉 Next step: run `preview && publish \"Feature {slug_clean} on Honeybot Storytime\"`")
+    return 0
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Pipulate article common utilities & broadcast kit.")
     add_standard_arguments(parser)
     parser.add_argument(
         "--broadcast",
-        choices=("help", "card", "summary", "hero", "yaml", "tweet", "linkedin", "pebble", "title", "desc", "top", "outro", "bgm", "reboot", "status", "bell", "stop", "start", "roll", "enable-ws", "say", "ticker", "ping", "watch"),
+        choices=("help", "card", "summary", "hero", "yaml", "tweet", "linkedin", "pebble", "title", "desc", "top", "outro", "bgm", "reboot", "feature", "status", "bell", "stop", "start", "roll", "enable-ws", "say", "ticker", "ping", "watch"),
         default="card",
-        help="Print/copy broadcast kit or control Honeybot (help|card|summary|hero|yaml|tweet|linkedin|pebble|title|desc|top|outro|bgm|reboot|status|bell|stop|start|roll|enable-ws|say|ticker|ping|watch).",
+        help="Print/copy broadcast kit or control Honeybot (help|card|summary|hero|yaml|tweet|linkedin|pebble|title|desc|top|outro|bgm|reboot|feature|status|bell|stop|start|roll|enable-ws|say|ticker|ping|watch).",
+    )
+    parser.add_argument(
+        "--vod",
+        type=str,
+        default=None,
+        help="Stamp a YouTube VOD URL, 11-char video ID, or 'live' into a post's frontmatter via --broadcast feature.",
+    )
+    parser.add_argument(
+        "--aside",
+        action="store_true",
+        help="Mark a post as `storytime: false` (aside backfill queue) via --broadcast feature.",
     )
     parser.add_argument(
         "--small",
@@ -3400,6 +3628,26 @@ if __name__ == "__main__":
         sys.exit(tune_storytime_bgm(arg=bgm_arg, dry_run=cli_args.dry_run))
     if cli_args.broadcast == "reboot":
         sys.exit(reboot_honeybot_stream(sync_only=False, dry_run=cli_args.dry_run))
+    if cli_args.broadcast == "feature":
+        feat_slug = cli_args.slug
+        feat_vod = cli_args.vod
+        feat_aside = cli_args.aside
+        tokens = list(cli_args.message or [])
+        if tokens and tokens[0].lower() in ("list", "status", "queue"):
+            tokens.pop(0)
+        if tokens and not feat_slug:
+            feat_slug = tokens.pop(0)
+        if tokens and not feat_vod:
+            feat_vod = tokens.pop(0)
+        sys.exit(
+            manage_storytime_feature(
+                target_key=cli_args.target,
+                slug_match=feat_slug,
+                vod_url=feat_vod,
+                set_aside=feat_aside,
+                dry_run=cli_args.dry_run,
+            )
+        )
     if cli_args.broadcast == "outro":
         tokens = list(cli_args.message or [])
         outro_act = tokens[0].strip().lower() if tokens else "play"

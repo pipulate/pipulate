@@ -199,8 +199,44 @@ def _is_storytime_enabled(frontmatter):
     return str(val).strip().lower() not in ('false', '0', 'no', 'off', 'aside')
 
 
+def _storytime_effective_rank(post_date, sort_order, frontmatter):
+    """Return (eff_date, eff_order) honoring storytime_featured and storytime_order overrides."""
+    eff_date = post_date
+    eff_order = sort_order
+    if isinstance(frontmatter, dict):
+        feat_raw = str(frontmatter.get('storytime_featured') or '').strip()[:10]
+        if feat_raw:
+            try:
+                eff_date = datetime.strptime(feat_raw, '%Y-%m-%d').date()
+            except ValueError:
+                eff_date = post_date
+        if frontmatter.get('storytime_order') is not None:
+            try:
+                eff_order = int(frontmatter['storytime_order'])
+            except (ValueError, TypeError):
+                eff_order = sort_order
+    return eff_date, eff_order
+
+
+def _get_pinned_storytime_file():
+    """Return Path to the post named in _data/storytime.json if present on disk."""
+    try:
+        st_file = POSTS_DIR.parent / "_data" / "storytime.json"
+        if st_file.is_file():
+            import json
+            data = json.loads(st_file.read_text(encoding='utf-8'))
+            fname = str((data or {}).get('filename') or '').strip()
+            if fname:
+                cand = POSTS_DIR / fname
+                if cand.is_file():
+                    return cand
+    except Exception:
+        pass
+    return None
+
+
 def get_featured_article_id():
-    """Return (date_str, sort_order, filename) of the newest Storytime-eligible post on disk."""
+    """Return (eff_date_str, eff_order, filename) of the active Storytime-eligible post on disk."""
     best = None
     try:
         files = sorted(
@@ -208,16 +244,17 @@ def get_featured_article_id():
             key=lambda p: p.name,
             reverse=True,
         )
-        cutoff_date = None
-        for filepath in files:
+        pinned = _get_pinned_storytime_file()
+        scan_list = list(files[:35])
+        if pinned is not None and pinned not in scan_list:
+            scan_list.append(pinned)
+        for filepath in scan_list:
             filename = filepath.name
             try:
                 date_str = filename[:10]
                 post_date = datetime.strptime(date_str, '%Y-%m-%d').date()
             except ValueError:
                 continue
-            if cutoff_date is not None and post_date < cutoff_date:
-                break
             try:
                 head = filepath.read_text(encoding='utf-8')[:4096]
             except OSError:
@@ -236,10 +273,10 @@ def get_featured_article_id():
                 sort_order = int(frontmatter.get('sort_order', 0))
             except (ValueError, TypeError):
                 sort_order = 0
-            cand = (date_str, sort_order, filename)
+            eff_date, eff_order = _storytime_effective_rank(post_date, sort_order, frontmatter)
+            cand = (eff_date.strftime('%Y-%m-%d'), eff_order, filename)
             if best is None or cand > best:
                 best = cand
-            cutoff_date = post_date
     except Exception:
         return None
     return best
@@ -260,6 +297,9 @@ def get_playlist(recent_n=10, include_archive=True):
             key=lambda p: p.name,
             reverse=True,
         )
+        pinned = _get_pinned_storytime_file()
+        if pinned is not None and not include_archive:
+            files = [pinned] + [p for p in files if p != pinned]
         cutoff_date = None
         
         for filepath in files:
@@ -325,21 +365,26 @@ def get_playlist(recent_n=10, include_archive=True):
             elif isinstance(fm_image, str):
                 image_path = fm_image.strip()
 
+            eff_date, eff_order = _storytime_effective_rank(post_date, sort_order, frontmatter)
             all_articles.append({
                 'date': post_date,
                 'sort_order': sort_order, # Added for secondary sort key
+                'eff_date': eff_date,
+                'eff_order': eff_order,
                 'title': frontmatter.get('title', slug.replace('-', ' ')),
                 'url': url,
                 'image': image_path,
                 'image_alt': image_alt,
                 'content': clean_text
             })
-            if not include_archive and len(all_articles) >= recent_n and cutoff_date is None:
+            if not include_archive and len(all_articles) >= max(recent_n, 15) and cutoff_date is None:
                 cutoff_date = post_date
 
-        # Sort ALL by date first, then by sort_order (both Descending/Reverse)
-        # Tuple comparison works element by element: (2026-01-01, 2) > (2026-01-01, 1)
-        all_articles.sort(key=lambda x: (x['date'], x['sort_order']), reverse=True)
+        # Sort ALL by effective Storytime date/order first, then chronological date/sort_order
+        all_articles.sort(
+            key=lambda x: (x['eff_date'], x['eff_order'], x['date'], x['sort_order']),
+            reverse=True,
+        )
         
         # Split the lists
         recent_articles = all_articles[:recent_n]

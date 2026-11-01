@@ -2623,8 +2623,9 @@ print('AI:\n', r.ai)
           ytbgm()    { "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/articles/common.py" --broadcast bgm    "$@"; }
           ytreboot() { "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/articles/common.py" --broadcast reboot "$@"; }
           ytticker() { "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/articles/common.py" --broadcast ticker "$@"; }
-          ytapp()    { "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/ytstage.py" app "$@"; }
-          ytvim()    { "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/ytstage.py" vim "$@"; }
+          ytapp()     { "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/ytstage.py" app "$@"; }
+          ytvim()     { "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/ytstage.py" vim "$@"; }
+          ytfeature() { "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/articles/common.py" --broadcast feature "$@"; }
 
           # The true 'publish' command (Atomic Cross-Domain Deployment)
           # It requires a commit message as an argument.
@@ -2861,6 +2862,7 @@ print('AI:\n', r.ai)
             # number blogs.json gives it today, so a renumber in blogs.nix
             # touches nothing in this file.
             alias article='write_post article'
+            alias aside='write_post article --aside'
             alias grim='write_post grim'
             alias pip='write_post pip'
             alias levinix='write_post levinix'

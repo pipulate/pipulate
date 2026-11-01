@@ -226,7 +226,7 @@ def build_book_spine(entries, full_detail_count=SPINE_FULL_DETAIL_COUNT):
     return "\n".join(lines)
 
 def create_jekyll_post(article_content, instructions, output_dir, preview_port, base_url="",
-                       *, target_config=None):
+                       *, target_config=None, aside=False):
     """
     Assembles and writes a Jekyll post file from the article content and
     structured AI-generated instructions.
@@ -256,15 +256,27 @@ def create_jekyll_post(article_content, instructions, output_dir, preview_port, 
                         parts = content.split('---', 2)
                         if len(parts) >= 3:
                             front_matter = yaml.safe_load(parts[1])
-                            if front_matter and 'sort_order' in front_matter:
-                                try:
-                                    order = int(front_matter['sort_order'])
-                                    if order > max_order:
-                                        max_order = order
-                                except (ValueError, TypeError):
-                                    continue
+                            if front_matter:
+                                for k_ord in ('sort_order', 'storytime_order'):
+                                    if k_ord in front_matter:
+                                        try:
+                                            order = int(front_matter[k_ord])
+                                            if order > max_order:
+                                                max_order = order
+                                        except (ValueError, TypeError):
+                                            continue
                 except Exception as e:
                     print(f"Warning checking sort_order in {post_file.name}: {e}")
+            st_json = target_path.parent / "_data" / "storytime.json"
+            if st_json.is_file():
+                try:
+                    st_data = json.loads(st_json.read_text(encoding='utf-8'))
+                    if str(st_data.get('featured_date') or '') == current_date:
+                        st_ord = int(st_data.get('featured_order') or 0)
+                        if st_ord > max_order:
+                            max_order = st_ord
+                except Exception:
+                    pass
             
             if max_order > 0:
                 next_sort_order = max_order + 1
@@ -324,6 +336,9 @@ def create_jekyll_post(article_content, instructions, output_dir, preview_port, 
         'layout': 'post',
         'sort_order': next_sort_order
     }
+    if aside:
+        new_yaml_data['storytime'] = False
+        print("📌 Aside mode (--aside): stamped 'storytime: false' (queued for Storytime backfill; live broadcast will resume in place).")
 
 
     # 3. Assemble Content
@@ -531,6 +546,11 @@ def main():
         '--web', action='store_true',
         help="Skip the API: the editing prompt goes to the clipboard, you paste it into any AI "
              "chat in a browser, copy the reply, press Enter here, and the post is built from it."
+    )
+    parser.add_argument(
+        '--aside', action='store_true',
+        help="Publish as a public aside: stamps 'storytime: false' in YAML frontmatter so Honeybot "
+             "Storytime resumes the current article after maintenance and queues this post for backfill."
     )
     args = parser.parse_args()
 
@@ -873,7 +893,7 @@ def main():
             base_url = target_config.get("url", "https://mikelev.in")
         saved_path = create_jekyll_post(
             article_text, instructions, output_dir, preview_port, base_url,
-            target_config=target_config)
+            target_config=target_config, aside=args.aside)
         if saved_path:
             common.record_last_published(args.target, saved_path, target_config.get("name"))
             common.print_broadcast_kit(args.target, mode="card")

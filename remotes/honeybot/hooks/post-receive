@@ -9,7 +9,7 @@ echo "🎯 [Hook] Received Push. Deploying..."
 
 # 0. Force Checkout to the Web Root FIRST (~10ms on local SSD) so _posts/*.md
 # is already updated on disk when stream.py inspects get_featured_article_id()
-# on the .deploy_standby bell to decide Maintenance Resume vs. New Broadcast.
+# on the standby bell to decide Maintenance Resume vs. New Broadcast.
 git --work-tree=$WORK_TREE --git-dir=$GIT_DIR checkout -q -f main
 
 # 1. The Stand-By Bell: signal the live stream to gracefully announce that
