@@ -1645,18 +1645,28 @@ def conjure_window(script_name, duration=30.0, columns=100, lines=30, args=None)
         cmd = [sys.executable, "-u", str(script_path)] + [str(a) for a in args]
     elif safe_script == "forest.py":
         columns = 138
-        lines = 28
+        lines = 38
         mode_arg = str(args[0]).strip() if args else "overview"
         ansi_path = None
         try:
-            from forest import prerender_station_report_ansi
-            ansi_path = prerender_station_report_ansi(mode=mode_arg, width=columns - 2)
+            from forest import (
+                REPORT_WINDOW_COLUMNS,
+                REPORT_WINDOW_LINES,
+                prerender_station_report_ansi,
+            )
+            columns = REPORT_WINDOW_COLUMNS
+            lines = REPORT_WINDOW_LINES
+            ansi_path = prerender_station_report_ansi(
+                mode=mode_arg,
+                width=columns,
+                height=lines,
+            )
         except Exception:
             ansi_path = None
         if ansi_path and os.path.isfile(ansi_path):
             try:
                 ansi_lines = len(Path(ansi_path).read_text(encoding="utf-8").splitlines())
-                lines = min(36, max(22, ansi_lines + 2))
+                lines = max(lines, ansi_lines)
             except Exception:
                 pass
             cmd = [

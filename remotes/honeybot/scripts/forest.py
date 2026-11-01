@@ -40,6 +40,10 @@ must not itself contain a colon. Bare labels like "THE ITCH" are fine.
 # run_station_break() closes the window deterministically once post_linger ends.
 REPORT_POST_LINGER_SECONDS = 25
 REPORT_WINDOW_CAP_SECONDS = 90
+REPORT_WINDOW_COLUMNS = 138
+REPORT_WINDOW_LINES = 38
+REPORT_H_MARGIN = 3
+REPORT_V_MARGIN = 2
 
 WHATS_HAPPENING_BEAT = (
     "What is happening on your screen right now? "
@@ -329,7 +333,7 @@ def _format_bot_identity_and_sig(ua_str, known_bots=(), max_sig_len=58):
     return badge, Text(identity_str, style=id_style), sig_text
 
 
-def _build_station_report_panel(mode="overview"):
+def _build_station_report_panel(mode="overview", panel_width=None):
     """Query honeybot.db in read-only fast mode and return a Rich Panel renderable."""
     import os
     os.environ.setdefault("HONEYBOT_DB_READONLY", "1")
@@ -569,24 +573,42 @@ def _build_station_report_panel(mode="overview"):
 
     footer = Text.from_markup(
         "[bold green]🔭 Got the SEO Blues?[/bold green] "
-        "SEO moved to the Edge — your site is your feed: [bold cyan]curl -fsSL https://sunpug.io | less[/bold cyan] · [bold cyan]https://mikelev.in/#consulting[/bold cyan]"
+        "SEO moved to the Edge — your site is your feed: [bold cyan]curl -fsSL sunpug.io | less[/bold cyan] · [bold cyan]mikelev.in/#consulting[/bold cyan]"
     )
-    return Panel(tbl, title=f"[bold bright_cyan]{title_str}[/bold bright_cyan]", subtitle=footer, padding=(0, 1))
+    panel_kwargs = {"title": f"[bold bright_cyan]{title_str}[/bold bright_cyan]", "subtitle": footer, "padding": (0, 1)}
+    if panel_width is not None:
+        panel_kwargs["width"] = int(panel_width)
+    return Panel(tbl, **panel_kwargs)
 
 
-def prerender_station_report_ansi(mode="overview", width=136, out_path=None):
-    """Pre-render the station report to an ANSI file BEFORE Alacritty opens so frame 1 is populated."""
+def prerender_station_report_ansi(
+    mode="overview",
+    width=REPORT_WINDOW_COLUMNS,
+    height=REPORT_WINDOW_LINES,
+    out_path=None,
+):
+    """Pre-render the station report centered horizontally and vertically in the Alacritty frame."""
     import io
     from pathlib import Path
+    from rich.align import Align
     from rich.console import Console
     safe_mode = "".join(c for c in str(mode or "overview") if c.isalnum() or c in ("_", "-")) or "overview"
     target = Path(out_path) if out_path else Path(f"/tmp/honeybot_report_{safe_mode}.ansi")
+    term_w = max(80, int(width))
+    term_h = max(24, int(height))
+    panel_w = max(60, term_w - (2 * REPORT_H_MARGIN))
+    panel = _build_station_report_panel(mode=safe_mode, panel_width=panel_w)
+    measure_buf = io.StringIO()
+    measure_console = Console(file=measure_buf, force_terminal=True, color_system="truecolor", width=panel_w)
+    measure_console.print(panel)
+    panel_lines = len(measure_buf.getvalue().splitlines())
+    eff_h = max(term_h, panel_lines + (2 * REPORT_V_MARGIN))
     buf = io.StringIO()
-    panel = _build_station_report_panel(mode=safe_mode)
-    console = Console(file=buf, force_terminal=True, color_system="truecolor", width=int(width), height=36)
-    console.print(panel)
+    console = Console(file=buf, force_terminal=True, color_system="truecolor", width=term_w, height=eff_h)
+    centered = Align.center(panel, vertical="middle", width=term_w, height=eff_h)
+    console.print(centered, end="")
     tmp = target.with_suffix(".tmp")
-    tmp.write_text(buf.getvalue(), encoding="utf-8")
+    tmp.write_text(buf.getvalue().rstrip("\n"), encoding="utf-8")
     tmp.replace(target)
     return str(target)
 
@@ -594,11 +616,15 @@ def prerender_station_report_ansi(mode="overview", width=136, out_path=None):
 def render_station_report(mode="overview", hold_seconds=REPORT_WINDOW_CAP_SECONDS):
     """Render a live Python Rich horizontal bar-chart report in an Alacritty overlay window."""
     import time
+    from rich.align import Align
     from rich.console import Console
-    panel = _build_station_report_panel(mode=mode)
     console = Console()
+    term_w = console.size.width or REPORT_WINDOW_COLUMNS
+    term_h = console.size.height or REPORT_WINDOW_LINES
+    panel_w = max(60, term_w - (2 * REPORT_H_MARGIN))
+    panel = _build_station_report_panel(mode=mode, panel_width=panel_w)
     console.clear()
-    console.print(panel)
+    console.print(Align.center(panel, vertical="middle", width=term_w, height=term_h), end="")
     time.sleep(max(1.0, float(hold_seconds)))
 
 
