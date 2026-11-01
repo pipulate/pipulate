@@ -187,6 +187,64 @@ def check_for_updates():
         return False
 
 
+def _is_storytime_enabled(frontmatter):
+    """True unless frontmatter explicitly opts out via storytime: false or aside: true."""
+    if not isinstance(frontmatter, dict):
+        return True
+    if frontmatter.get('aside') is True:
+        return False
+    val = frontmatter.get('storytime', True)
+    if isinstance(val, bool):
+        return val
+    return str(val).strip().lower() not in ('false', '0', 'no', 'off', 'aside')
+
+
+def get_featured_article_id():
+    """Return (date_str, sort_order, filename) of the newest Storytime-eligible post on disk."""
+    best = None
+    try:
+        files = sorted(
+            list(POSTS_DIR.glob("*.md")) + list(POSTS_DIR.glob("*.markdown")),
+            key=lambda p: p.name,
+            reverse=True,
+        )
+        cutoff_date = None
+        for filepath in files:
+            filename = filepath.name
+            try:
+                date_str = filename[:10]
+                post_date = datetime.strptime(date_str, '%Y-%m-%d').date()
+            except ValueError:
+                continue
+            if cutoff_date is not None and post_date < cutoff_date:
+                break
+            try:
+                head = filepath.read_text(encoding='utf-8')[:4096]
+            except OSError:
+                continue
+            frontmatter = {}
+            if head.startswith('---'):
+                try:
+                    parts = head.split('---', 2)
+                    if len(parts) >= 3:
+                        frontmatter = yaml.safe_load(parts[1]) or {}
+                except yaml.YAMLError:
+                    pass
+            if not _is_storytime_enabled(frontmatter):
+                continue
+            try:
+                sort_order = int(frontmatter.get('sort_order', 0))
+            except (ValueError, TypeError):
+                sort_order = 0
+            cand = (date_str, sort_order, filename)
+            if best is None or cand > best:
+                best = cand
+            cutoff_date = post_date
+    except Exception:
+        return None
+    return best
+
+
 def get_playlist(recent_n=10, include_archive=True):
     """
     Returns a playlist: Recent N (sorted date desc + sort_order desc) + optional Rest (shuffled).
@@ -231,6 +289,9 @@ def get_playlist(recent_n=10, include_archive=True):
                         body_text = parts[2]
                 except yaml.YAMLError:
                     pass
+
+            if not _is_storytime_enabled(frontmatter):
+                continue
 
             # 3. Extract Sort Order (Default to 0)
             try:

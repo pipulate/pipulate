@@ -98,6 +98,10 @@ PITCH_INTERVAL = 600        # Seconds between "Station Identification" (Bumped t
 # Edit with `ytoutro edit` and audition locally on Prime with `ytoutro`.
 STANDBY_INTRO_LINE = "Receiving updates. A new broadcast is coming up."
 
+STANDBY_MAINTENANCE_LINE = (
+    "Minor maintenance is occurring and this article will continue reading in a moment..."
+)
+
 STANDBY_LOOP_LINES = (
     "To hear the next article, visit YouTube dot com slash M I K E L E V I N slash live. "
     "If you want someone else to hear something totally new along with you, this is when you should forward it to them."
@@ -138,6 +142,25 @@ def load_standby_speech(stream_file=None):
     except Exception:
         pass
     return intro, loop_lines
+
+
+def load_maintenance_line(stream_file=None):
+    """Read STANDBY_MAINTENANCE_LINE fresh from stream.py on disk via AST."""
+    import ast
+    line = STANDBY_MAINTENANCE_LINE
+    target = Path(stream_file) if stream_file else Path(__file__).resolve()
+    try:
+        tree = ast.parse(target.read_text(encoding="utf-8"))
+        for node in tree.body:
+            if isinstance(node, ast.Assign):
+                for t in node.targets:
+                    if isinstance(t, ast.Name) and t.id == "STANDBY_MAINTENANCE_LINE":
+                        val = ast.literal_eval(node.value)
+                        if isinstance(val, str) and val.strip():
+                            line = val.strip()
+    except Exception:
+        pass
+    return line
 
 PITCH_TEXT = (
     "If you are tuning in and wondering what this cascading wall of code is... welcome to Honeybot. "
@@ -209,13 +232,22 @@ sys.path.append(str(Path(__file__).parent))
 
 try:
     import score
-    from content_loader import check_for_updates, check_standby, trigger_is_fresh, check_live_message, has_pending_update
+    from content_loader import (
+        check_for_updates,
+        check_standby,
+        trigger_is_fresh,
+        check_live_message,
+        has_pending_update,
+        get_featured_article_id,
+    )
 except ImportError:
     score = None
     def check_live_message():
         return None
     def has_pending_update():
         return False
+    def get_featured_article_id():
+        return None
 
 # --- Configuration ---
 MODEL_DIR = Path.home() / ".local/share/piper_voices"
@@ -2181,6 +2213,7 @@ def perform_show(script):
     next_pitch_time = next_slot(start_time, PITCH_INTERVAL, start_time)
 
     profile_dir = tempfile.mkdtemp(prefix="honeybot_fx_")
+    active_article_id = get_featured_article_id()
 
     try:
         for command, content in script:
@@ -2195,72 +2228,73 @@ def perform_show(script):
 
             # --- The Deploy Stand-By Handshake ---
             # A fresh push rings the standby bell BEFORE the multi-second build.
-            # Announce calmly ONCE, cut the current narration, and HOLD (silent) until
-            # the completion bell rings -- so the TTS doesn't thrash through the deploy.
+            # If the featured Storytime article on disk changed, announce a new
+            # broadcast and return "BREAKING"; if the featured article is unchanged
+            # (an aside publish or maintenance push), speak STANDBY_MAINTENANCE_LINE
+            # over tick.wav and resume the current article at this exact cue.
             if check_standby():
                 standby_intro_line, standby_loop_lines = load_standby_speech()
+                maintenance_line = load_maintenance_line()
+                new_featured_id = get_featured_article_id()
+                is_new_show = (
+                    active_article_id is not None
+                    and new_featured_id is not None
+                    and new_featured_id != active_article_id
+                )
+                bgm_was_active = (_bgm_proc is not None)
                 was_exclusive = narrator.exclusive_mode.is_set()
                 narrator.exclusive_mode.set()
-                # The outer `duration` here is a generous LAST-RESORT ceiling, not
-                # the thing that's supposed to close this window. The deterministic
-                # close is the pkill below, fired the instant check_for_updates()
-                # proves the deploy is actually done -- never a guessed elapsed time.
-                #
-                # CRITICAL: launch on a DAEMON THREAD. conjure_window() (in
-                # imports/ascii_displays.py) is BLOCKING -- it bottoms out in
-                # proc.wait(timeout=duration). Called inline, it froze this entire
-                # loop for the full duration, starving the check_for_updates() poll
-                # below and leaving the UPDATING banner stuck on screen (narration
-                # silent) until the self-cap expired -- the "never resumes without
-                # --reboot" bug. Threaded, the poll keeps running and the pkill
-                # tears the card down the instant the completion bell rings: pkill
-                # ends card.py, alacritty exits, proc.wait returns, the thread dies.
                 updating_card = None
                 music_proc = None
                 try:
                     stop_storytime_bgm()
                     narrator.interrupt()  # cut current audio + flush the backlog
-                    narrator.say(standby_intro_line)
-                    for line in standby_loop_lines:
-                        narrator.say(line)
+                    if is_new_show:
+                        narrator.say(standby_intro_line)
+                        for line in standby_loop_lines:
+                            narrator.say(line)
+                    else:
+                        narrator.say(maintenance_line)
                     updating_card = show_card("UPDATING", max_hold=270.0)
-                    # Card up -> music up. Born at the same instant as the
-                    # UPDATING figlet; dies at the same deterministic teardown
-                    # below. PipeWire mixes it under the standby announcement,
-                    # broadcast-style.
                     music_proc = start_updating_music()
                     try:
                         subprocess.run(["pkill", "firefox"], check=False)
                     except Exception:
                         pass
-                    # Hold narration until the deploy finishes (completion bell rings)
-                    # or we time out gracefully, refilling the standby speech queue
-                    # whenever it drains so the message genuinely loops until teardown.
                     deadline = time.time() + 240
                     bell_rang = False
+                    last_maint_remind = time.time()
                     while time.time() < deadline:
                         if check_for_updates():
                             bell_rang = True
                             break
-                        if narrator.queue.unfinished_tasks == 0:
-                            for line in standby_loop_lines:
-                                narrator.say(line)
-                        time.sleep(2)
-                    # If the trigger bell rang, hold the UPDATING card up while Jekyll/dye/
-                    # Nix activity fully settles. The card disappears exactly when the article
-                    # starts reading, with nothing competing for CPU/disk.
-                    # Tune SETTLE_SECONDS upward if nixos-rebuild switch is still thrashing.
-                    SETTLE_SECONDS = 45
-                    if bell_rang:
-                        settle_deadline = time.time() + SETTLE_SECONDS
-                        while time.time() < settle_deadline:
+                        if is_new_show:
                             if narrator.queue.unfinished_tasks == 0:
                                 for line in standby_loop_lines:
                                     narrator.say(line)
+                        elif (time.time() - last_maint_remind) >= 35 and narrator.queue.unfinished_tasks == 0:
+                            narrator.say(maintenance_line)
+                            last_maint_remind = time.time()
+                        time.sleep(2)
+                    SETTLE_SECONDS = 45
+                    if bell_rang:
+                        latest_after_bell = get_featured_article_id()
+                        if (
+                            active_article_id is not None
+                            and latest_after_bell is not None
+                            and latest_after_bell != active_article_id
+                        ):
+                            is_new_show = True
+                        settle_deadline = time.time() + SETTLE_SECONDS
+                        while time.time() < settle_deadline:
+                            if is_new_show and narrator.queue.unfinished_tasks == 0:
+                                for line in standby_loop_lines:
+                                    narrator.say(line)
+                            elif (not is_new_show) and (time.time() - last_maint_remind) >= 35 and narrator.queue.unfinished_tasks == 0:
+                                narrator.say(maintenance_line)
+                                last_maint_remind = time.time()
                             time.sleep(1)
                 finally:
-                    # Tear down the dead-air cover and cut any in-flight standby
-                    # speech deterministically the moment we exit standby.
                     narrator.interrupt()
                     stop_updating_music(music_proc)
                     dismiss_card(updating_card)
@@ -2270,7 +2304,12 @@ def perform_show(script):
                         subprocess.run(["pkill", "-f", "card.py.*UPDATING"], check=False)
                     except Exception:
                         pass
-                return "BREAKING"
+                if is_new_show:
+                    return "BREAKING"
+                if bgm_was_active:
+                    start_storytime_bgm()
+                narrator.say("Resuming storytime.")
+                wait_for_voice_or_live_interrupt(env, profile_dir)
 
             # --- The Breaking News Interrupt ---
             # We check before every command.
