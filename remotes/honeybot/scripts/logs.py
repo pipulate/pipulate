@@ -330,40 +330,18 @@ class SonarApp(App):
         self.set_interval(5, self.refresh_tables)
 
     def _rebuild_billboard_cache(self, width: int):
-        """Pre-render double-buffered 5-row Rich.Text still cards and 2-step vertical split-flap frames."""
+        """Pre-render 5-row Rich.Text still cards for zero-jitter instant cuts."""
         self.ticker_cached_width = width
         card_strings = _split_into_fitting_cards(self.ticker_raw_text, width)
         raw_rows = [_center_led_rows(cs, width) for cs in card_strings]
-        total = len(card_strings)
         built = []
         for idx, cs in enumerate(card_strings):
             c_r0, c_r1, c_r2, c_r3, c_r4 = raw_rows[idx]
-            nxt_idx = (idx + 1) % total
-            n_r0, n_r1, n_r2, n_r3, n_r4 = raw_rows[nxt_idx]
             style_cur = CARD_STYLES[idx % len(CARD_STYLES)]
-            style_nxt = CARD_STYLES[nxt_idx % len(CARD_STYLES)]
             still_txt = Text(f"{c_r0}\n{c_r1}\n{c_r2}\n{c_r3}\n{c_r4}", style=style_cur)
-            # Frame 1 of 5-row split-flap roll (stride 2): old rows 2-4 shift up, blank gap, new row 0 enters
-            flip_1 = Text.assemble(
-                (c_r2 + "\n", style_cur),
-                (c_r3 + "\n", style_cur),
-                (c_r4 + "\n", style_cur),
-                (" " * width + "\n", style_cur),
-                (n_r0, style_nxt),
-            )
-            # Frame 2 of 5-row split-flap roll (stride 4): old row 4 at top, blank gap, new rows 0-2 rise
-            flip_2 = Text.assemble(
-                (c_r4 + "\n", style_cur),
-                (" " * width + "\n", style_cur),
-                (n_r0 + "\n", style_nxt),
-                (n_r1 + "\n", style_nxt),
-                (n_r2, style_nxt),
-            )
             built.append({
                 "text": cs,
                 "still": still_txt,
-                "flip_1": flip_1,
-                "flip_2": flip_2,
             })
         self.ticker_cards = built
         self.ticker_card_idx = 0
@@ -437,13 +415,13 @@ class SonarApp(App):
             self._rebuild_billboard_cache(width)
 
     def tick_marquee(self):
-        """Drive #ticker_bar: 0% CPU during 4.5s still-card hold, with idle-gated 2-frame split-flap flip."""
-        now_mono = time.monotonic()
-        dt = now_mono - self.ticker_last_mono
-        self.ticker_last_mono = now_mono
-        self.ticker_recent_dts.append(dt)
-        if len(self.ticker_recent_dts) > 12:
-            self.ticker_recent_dts.pop(0)
+        """Drive #ticker_bar: fast-pathed 4.5s still-card hold with instant atomic card cuts."""
+        if self.ticker_mode == "billboard" and self.ticker_cards:
+            self.ticker_hold_ticks += 1
+            if self.ticker_hold_ticks < CARD_HOLD_TICKS:
+                return
+            self.ticker_hold_ticks = 0
+            self._reload_ticker_source(force=False)
 
         self.ticker_tick_count += 1
         if self.ticker_tick_count % 10 == 0:
@@ -460,27 +438,8 @@ class SonarApp(App):
             cards = self.ticker_cards
             if not cards or len(cards) == 1:
                 return
-            cur_card = cards[self.ticker_card_idx % len(cards)]
-            if self.ticker_flip_step == 0:
-                self.ticker_hold_ticks += 1
-                if self.ticker_hold_ticks < CARD_HOLD_TICKS:
-                    return  # 0% CPU still-frame hold
-                self.ticker_hold_ticks = 0
-                if self._is_window_clear_for_smooth_flip():
-                    self.ticker_flip_step = 1
-                    bar.update(cur_card["flip_1"])
-                else:
-                    self.ticker_card_idx = (self.ticker_card_idx + 1) % len(cards)
-                    nxt_card = cards[self.ticker_card_idx]
-                    bar.update(nxt_card["still"])
-            elif self.ticker_flip_step == 1:
-                self.ticker_flip_step = 2
-                bar.update(cur_card["flip_2"])
-            else:
-                self.ticker_flip_step = 0
-                self.ticker_card_idx = (self.ticker_card_idx + 1) % len(cards)
-                nxt_card = cards[self.ticker_card_idx]
-                bar.update(nxt_card["still"])
+            self.ticker_card_idx = (self.ticker_card_idx + 1) % len(cards)
+            bar.update(cards[self.ticker_card_idx]["still"])
             return
 
         if self.ticker_mode == "small":
