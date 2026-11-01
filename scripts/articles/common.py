@@ -1035,7 +1035,7 @@ def print_broadcast_kit(target_key="1", mode="card", slug_match=None):
     if yt_thumb:
         print(thin)
         print(f"📺 YT STUDIO THUMBNAIL (1280x720 16:9): {yt_thumb} (Checklist: Upload thumb + Enable DVR)")
-    print("🎛️  Quick Words:  yt (help) | ythero | ytyaml | tweet | linkedin | ytpebble | yttitle | ytdesc | ytcard | yttop | ytoutro | ytreboot | ytsay | ytticker | ytwatch | ytping | ytroll | ytbell | ytstatus")
+    print("🎛️  Quick Words:  yt (help) | ythero | ytyaml | tweet | linkedin | ytpebble | yttitle | ytdesc | ytfeature | ytcard | yttop | ytoutro | ytreboot | ytsay | ytticker | ytwatch | ytping | ytroll | ytbell | ytstatus")
     print(thin)
     print(f"🔗 Preview URL:   {kit['preview_url']}")
     print(f"✏️  Edit Command:  vim {kit['path']}")
@@ -2793,15 +2793,27 @@ def reboot_honeybot_stream(sync_only=False, dry_run=False):
     if sync_only:
         print("✅ Honeybot scripts synced (stream.py left running; new standby text will load on next .deploy_standby).")
         return 0
-    print(f"🔄 Restarting Honeybot stream.py child on {HONEYBOT_SSH_HOST}...")
+    print(f"🔄 Signaling Honeybot stream.py on {HONEYBOT_SSH_HOST} for graceful SCHEDULED REBOOT announcement...")
     remote_sh = r"""
 pattern="/home/mike/www/mikelev[.]in/scripts/stream[.]py"
 old_pids=$(pgrep -f -- "$pattern" || true)
 for old in $old_pids; do
-    echo "   stopping old stream.py pid=$old"
+    echo "   signaling stream.py pid=$old for graceful reboot announcement..."
     kill -TERM "$old" 2>/dev/null || true
 done
-sleep 1
+for wait_s in $(seq 1 25); do
+    still_alive=0
+    for old in $old_pids; do
+        if kill -0 "$old" 2>/dev/null; then
+            still_alive=1
+            break
+        fi
+    done
+    if [ "$still_alive" -eq 0 ]; then
+        break
+    fi
+    sleep 1
+done
 for old in $old_pids; do
     if kill -0 "$old" 2>/dev/null; then
         echo "   force-killing stubborn stream.py pid=$old"

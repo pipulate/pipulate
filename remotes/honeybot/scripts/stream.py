@@ -27,6 +27,7 @@ from pathlib import Path
 STREAM_LOCK_PATH = "/tmp/honeybot-stream.py.lock"
 _stream_lock_handle = None
 _shutting_down = threading.Event()
+_graceful_reboot_requested = False
 
 
 def _reap_orphaned_tts_and_overlays():
@@ -84,10 +85,13 @@ def acquire_singleton_lock():
 
 
 def register_signal_handlers():
-    """Convert incoming SIGTERM signals into a KeyboardInterrupt to execute try-finally blocks."""
+    """Convert incoming SIGTERM/SIGUSR1 into a graceful reboot KeyboardInterrupt."""
     def _handler(signum, frame):
+        global _graceful_reboot_requested
+        _graceful_reboot_requested = True
         raise KeyboardInterrupt
     signal.signal(signal.SIGTERM, _handler)
+    signal.signal(signal.SIGUSR1, _handler)
 
 
 # --- Configuration ---
@@ -486,13 +490,13 @@ class Narrator(threading.Thread):
 
     def _speak_now(self, text):
         """Internal method to actually generate and play audio."""
-        if self.stop_event.is_set() or _shutting_down.is_set():
+        if self.stop_event.is_set():
             return
         model_path = MODEL_DIR / MODEL_NAME
         if not model_path.exists():
             return
         with self._play_lock:
-            if self.stop_event.is_set() or _shutting_down.is_set():
+            if self.stop_event.is_set():
                 return
             p1 = p2 = p3 = None
             try:
@@ -529,7 +533,7 @@ class Narrator(threading.Thread):
         """Play a pre-synthesized .raw file immediately via aplay and unlink when done."""
         if not raw_path or not os.path.exists(raw_path):
             return
-        if self.stop_event.is_set() or _shutting_down.is_set():
+        if self.stop_event.is_set():
             try:
                 os.remove(raw_path)
             except OSError:
@@ -2148,12 +2152,13 @@ _reboot_announced = False
 def announce_scheduled_reboot():
     """Announce the 4-hour memory-purging restart with a Figlet card and blocking TTS before exiting."""
     global _reboot_announced
-    if _reboot_announced or _shutting_down.is_set():
+    if _reboot_announced:
         return
     _reboot_announced = True
     _shutting_down.set()
     narrator.exclusive_mode.set()
     try:
+        stop_storytime_bgm()
         narrator.interrupt()
         for pat in ("conjure_window_overlay", "patronus_visual_shield", MEDIA_OVERLAY_MARKER, "firefox"):
             try:
@@ -2478,9 +2483,10 @@ def main():
         run_tui_app("logs.py", duration=SHOW_DURATION_MINUTES)
     except KeyboardInterrupt:
         interrupted = True
-        _shutting_down.set()
+        if not _graceful_reboot_requested:
+            _shutting_down.set()
     finally:
-        if not interrupted:
+        if (not interrupted) or _graceful_reboot_requested:
             announce_scheduled_reboot()
         _shutting_down.set()
         narrator.stop()

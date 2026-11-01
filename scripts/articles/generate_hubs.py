@@ -80,7 +80,26 @@ def update_homepage_recent_posts(posts_dir, target_repo_root, count=10):
         pass
     default_thumb = str(site_cfg.get("default_post_thumb") or "").strip()
     dated.sort(key=common._post_sort_key)
-    recent = dated[-count:][::-1]
+    recent = list(dated[-count:][::-1])
+    seen_recent = {p.name for p in recent}
+    for cand_p in dated[-60:][::-1]:
+        if cand_p.name in seen_recent:
+            continue
+        try:
+            c_head = cand_p.read_text(encoding="utf-8", errors="ignore")[:4096]
+        except OSError:
+            continue
+        if c_head.startswith("---"):
+            c_parts = c_head.split("---", 2)
+            if len(c_parts) >= 3:
+                try:
+                    c_fm = yaml.safe_load(c_parts[1]) or {}
+                except Exception:
+                    c_fm = {}
+                c_st = c_fm.get("storytime", True)
+                if (c_fm.get("aside") is True) or (c_st is False) or (str(c_st).strip().lower() in ("false", "0", "no", "off", "aside")):
+                    recent.append(cand_p)
+                    seen_recent.add(cand_p.name)
     cards = ['<div class="recent-posts-grid">']
     stage_rel_paths = ["index.md"]
     for post_path in recent:
@@ -100,6 +119,21 @@ def update_homepage_recent_posts(posts_dir, target_repo_root, count=10):
         summary = str(fm.get("meta_description") or fm.get("excerpt") or fm.get("description") or "").strip()
         if len(summary) > 160:
             summary = summary[:157].rsplit(" ", 1)[0] + "..."
+        st_val = fm.get("storytime", True)
+        is_aside = (
+            (fm.get("aside") is True)
+            or (st_val is False)
+            or (str(st_val).strip().lower() in ("false", "0", "no", "off", "aside"))
+        )
+        vod_url = str(fm.get("vod_url") or "").strip()
+        card_cls = "recent-post-card"
+        badge_html = ""
+        if is_aside:
+            card_cls = "recent-post-card is-coming-soon"
+            badge_html = '<span class="recent-post-badge badge-coming-soon">⏳ Coming Soon on YouTube Live Storytime</span>'
+        elif vod_url:
+            card_cls = "recent-post-card has-vod"
+            badge_html = '<span class="recent-post-badge badge-vod">🎬 Watch YouTube VOD</span>'
         img_field = fm.get("image")
         if isinstance(img_field, dict):
             raw_img = str(img_field.get("path") or "").strip()
@@ -122,11 +156,19 @@ def update_homepage_recent_posts(posts_dir, target_repo_root, count=10):
             f'    <img class="recent-post-thumb" src="{thumb_url}" alt="{esc_alt}" width="{THUMB_WIDTH}" height="{THUMB_HEIGHT}" loading="lazy">\n'
             if thumb_url else ""
         )
+        meta_html = (
+            f'      <div class="recent-post-meta">\n'
+            f'        <span class="recent-post-date">{date_str}</span>\n'
+            f'        {badge_html}\n'
+            f'      </div>\n'
+            if badge_html
+            else f'      <span class="recent-post-date">{date_str}</span>\n'
+        )
         cards.append(
-            f'  <a class="recent-post-card" href="{permalink}">\n'
+            f'  <a class="{card_cls}" href="{permalink}">\n'
             f'{img_html}'
             f'    <div class="recent-post-body">\n'
-            f'      <span class="recent-post-date">{date_str}</span>\n'
+            f'{meta_html}'
             f'      <strong class="recent-post-title">{esc_title}</strong>\n'
             f'      <span class="recent-post-desc">{esc_summary}</span>\n'
             f'    </div>\n'
