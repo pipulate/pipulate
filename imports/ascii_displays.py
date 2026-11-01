@@ -1544,3 +1544,11 @@ Rich console blocked on Mac (Error: {e}), using fallback display.
 #         history grows, context accumulates, human directs
 # ```
 
+#   /run/current-system/sw/bin (NixOS Immutable Store)
+#          / \
+#         /   \     ╔═══════════════════════════════════════════╗
+#    ◄───┼─────┼───►║   THE EUNUCHS pkill-ABLE PENTAGRAM        ║
+#       / \   / \   ║   • Zero-Agent Airlock (stream.py)        ║
+#      /   \ /   \  ║   • Deterministic Piper VITS Player Piano ║
+#     ▼─────▼─────▼ ║   • SIGTERM -> Figlet Card -> Watchdog    ║
+#    pkill  |  flock╚═══════════════════════════════════════════╝
