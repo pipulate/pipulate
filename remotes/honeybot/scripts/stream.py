@@ -1676,8 +1676,8 @@ def conjure_window(script_name, duration=30.0, columns=100, lines=30, args=None)
     # ones.
     if safe_script == "card.py" and args:
         fig_w, fig_h = measure_figlet(str(args[0]))
-        columns = max(60, fig_w + 8)
-        lines = max(14, fig_h + 4)
+        columns = max(68, fig_w + 16)
+        lines = max(18, fig_h + 10)
         cmd = [sys.executable, "-u", str(script_path)] + [str(a) for a in args]
     elif safe_script == "forest.py":
         columns = 138
@@ -1732,6 +1732,29 @@ def conjure_window(script_name, duration=30.0, columns=100, lines=30, args=None)
 _card_seq = 0
 
 
+class _CardHandle(dict):
+    """Dict-compatible card handle with .is_alive() checking the underlying Alacritty thread."""
+    def is_alive(self) -> bool:
+        th = self.get("thread")
+        return bool(th and th.is_alive())
+
+
+def _media_overlay_active() -> bool:
+    """True while an out-of-band media overlay (weeboh / conjure_media) holds the stage."""
+    if _in_live_message:
+        return True
+    try:
+        res = subprocess.run(
+            ["pgrep", "-f", MEDIA_OVERLAY_MARKER],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=False,
+        )
+        return res.returncode == 0
+    except Exception:
+        return False
+
+
 def show_card(label, max_hold=60.0):
     """Display a transient Figlet title card window on Honeybot until dismiss_card(handle)."""
     if not label:
@@ -1758,7 +1781,7 @@ def show_card(label, max_hold=60.0):
 
     th = threading.Thread(target=_run, daemon=True)
     th.start()
-    return {"stop_file": stop_file, "thread": th}
+    return _CardHandle(stop_file=stop_file, thread=th)
 
 
 def dismiss_card(handle):
@@ -2273,6 +2296,15 @@ def perform_show(script):
                         if check_for_updates():
                             bell_rang = True
                             break
+                        live_msg = check_live_message()
+                        if live_msg:
+                            stop_updating_music(music_proc)
+                            dismiss_card(updating_card)
+                            run_live_message(live_msg, env, profile_dir)
+                            music_proc = start_updating_music()
+                            updating_card = show_card("UPDATING", max_hold=max(60.0, deadline - time.time() + 60.0))
+                        elif (updating_card is None or not updating_card.is_alive()) and not _media_overlay_active():
+                            updating_card = show_card("UPDATING", max_hold=max(60.0, deadline - time.time() + 60.0))
                         if is_new_show:
                             if narrator.queue.unfinished_tasks == 0:
                                 for line in standby_loop_lines:
@@ -2292,6 +2324,15 @@ def perform_show(script):
                             is_new_show = True
                         settle_deadline = time.time() + SETTLE_SECONDS
                         while time.time() < settle_deadline:
+                            live_msg = check_live_message()
+                            if live_msg:
+                                stop_updating_music(music_proc)
+                                dismiss_card(updating_card)
+                                run_live_message(live_msg, env, profile_dir)
+                                music_proc = start_updating_music()
+                                updating_card = show_card("UPDATING", max_hold=max(60.0, settle_deadline - time.time() + 30.0))
+                            elif (updating_card is None or not updating_card.is_alive()) and not _media_overlay_active():
+                                updating_card = show_card("UPDATING", max_hold=max(60.0, settle_deadline - time.time() + 30.0))
                             if is_new_show and narrator.queue.unfinished_tasks == 0:
                                 for line in standby_loop_lines:
                                     narrator.say(line)

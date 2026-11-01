@@ -31,6 +31,7 @@ except Exception:
 try:
     from rich.console import Console
     from rich.align import Align
+    from rich.panel import Panel
     from rich.text import Text
     _console = Console()
 except Exception:
@@ -49,8 +50,21 @@ def render(label: str):
 
     if _console is not None:
         try:
+            term_w = _console.size.width or 80
+            term_h = _console.size.height or 20
+            clean_banner = banner.rstrip("\n")
+            panel = Panel(
+                Align.center(Text(clean_banner, style="bold bright_cyan")),
+                border_style="bright_cyan",
+                padding=(1, 3),
+                expand=False,
+            )
             _console.clear()
-            _console.print(Align.center(Text(banner), vertical="middle"))
+            _console.print(
+                Align.center(panel, vertical="middle", width=term_w, height=term_h),
+                end="",
+            )
+            sys.stdout.flush()
             return
         except Exception:
             pass
