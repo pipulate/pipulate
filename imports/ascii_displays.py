@@ -89,15 +89,6 @@ def figurate(name: str, context: Optional[str] = None) -> FigurateResult:
     return FigurateResult(name=name, human=human_out, ai=ai_out)
 
 
-
-
-
-
-
-
-
-
-
 def _x11_screen_geometry(env):
     """Return (width, height) in pixels for the active X display, or None.
 
@@ -500,13 +491,13 @@ def _expand_color_bits_ai(text: str) -> str:
 def _figurate_white_rabbit():
     """Render white_rabbit as (human, ai) tuple for FIGURATE_REGISTRY."""
     art = r"""
-                             Built on a "No Problem" framework
-                                          O        /)  __
-                                           o /)\__//  /  \
-                                         ___(/_ 0 0  |    |
-                                       *(    ==(_T_)==NPvg|
-                                         \  )   ""\  |    |
-                                          |__>-\_>_>  \__/
+Built on a "No Problem" framework
+           O        /)  ____
+            o /)\__//  /    \
+          ___(/_ 0 0  |      |
+        *(    ==(_T_)== NPvg |
+          \  )   ""\  |      |
+           |__>-\_>_>  \____/
     """
     ai_art = _expand_color_bits_ai(art)
     human_art = _expand_color_bits_human(art)
