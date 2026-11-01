@@ -349,7 +349,7 @@ def conjure_window(command, duration: float = 30.0, columns: int = 100, lines: i
         "--class", safe_class,
         "-o", "window.decorations='none'",
         "-o", f"window.dimensions={{columns={int(columns)}, lines={int(lines)}}}",
-        "-o", "window.position={x=200, y=150}",
+        "-o", "window.position={x=20, y=20}",
         "-e", *launch_cmd,
     ]
 

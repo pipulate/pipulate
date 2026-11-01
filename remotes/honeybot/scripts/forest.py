@@ -342,8 +342,15 @@ def _build_station_report_panel(mode="overview", panel_width=None):
     from rich.text import Text
     from db import db, KNOWN_BOTS
 
-    conn = db.get_conn()
-    cur = conn.cursor()
+    from pathlib import Path
+    if mode != "doors":
+        if not Path(db.db_path).exists():
+            db.db_path = ":memory:"
+            db.init_db()
+        conn = db.get_conn()
+        cur = conn.cursor()
+    else:
+        conn = cur = None
 
     cneg_rows = []
     spoof_md = 0
