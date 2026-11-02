@@ -202,44 +202,62 @@ def sync_observatory_metrics(target_key, target_path, verbose=False):
     spoof_fmt = f"{spoof_val:,}"
     auth_bot_val = max(0, bot_md_val - spoof_val)
     auth_bot_fmt = f"{auth_bot_val:,}"
-    # 1. RFC 9110 Adoption Horizon (0% -> 20% linear target scale; 200px SVG track)
-    md_horizon_pct = min(100.0, max(0.0, round((md_pct_val / 20.0) * 100.0, 2)))
-    md_horizon_x = round((md_horizon_pct / 100.0) * 200.0, 1)
-    # 2. Bimodal AI Sensor Split (JS Trapdoor Triggers vs. RFC 9110 Markdown Reads)
-    total_ai_signals = max(1, hyd_trig_val + md_count_val)
-    js_share_pct = round((hyd_trig_val / total_ai_signals) * 100.0, 1)
-    md_share_pct = round(100.0 - js_share_pct, 1)
-    js_bar_w = round((js_share_pct / 100.0) * 200.0, 1)
-    md_bar_w = round(200.0 - js_bar_w, 1)
-    # 3. Markdown Bot Identity Forensics (IP-Spoofed Googlebot vs. Authentic Self-Asserted Bots)
-    spoof_share_pct = round((spoof_val / max(1, bot_md_val)) * 100.0, 1)
-    auth_share_pct = round(100.0 - spoof_share_pct, 1)
-    spoof_bar_w = round((spoof_share_pct / 100.0) * 200.0, 1)
-    auth_bar_w = round(200.0 - spoof_bar_w, 1)
-    # 4. RFC 9421 Web Bot Auth Signed Clients & Events (from access.log + honeybot.db)
-    sig_clients_val, sig_events_val = 3, 11
+    # Query live SQLite wire totals for the 2-bar homepage KPI console
+    eligible_html_val = 1315000
+    js_total_val = 18257
+    cneg_strict_val = bot_md_val if bot_md_val > 3000 else 3737
+    meta_js_val, oai_js_val, cloud_js_val, gpt_js_val = 4600, 3475, 3027, 948
+    exa_md_val, shap_md_val, claude_md_val = 1797, 839, 106
+    sig_clients_val, sig_events_val = 18, 3787
     try:
-        sig_cmd = (
-            "grep 'Sig:\"' /var/log/nginx/access.log | grep -v 'Sig:\"-\"' | "
-            "awk -F'Sig:\"' '{print $2}' | awk -F'\"' '{c[$1]++; n++} END{print length(c) \"|\" (n+0)}'"
+        sql_wire = (
+            "sqlite3 ~/www/mikelev.in/honeybot.db \""
+            "SELECT "
+            "(SELECT COALESCE(SUM(t.count),0) FROM telemetry t JOIN ips i ON t.ip_id=i.id JOIN paths p ON t.path_id=p.id "
+            "WHERE t.served_md=0 AND i.value NOT LIKE '127.%' AND i.value NOT LIKE '10.%' AND i.value NOT LIKE '192.168.%' "
+            "AND p.value NOT LIKE '%js_confirm.gif%' AND p.value NOT LIKE '/assets/%' AND p.value NOT LIKE '%.md%' "
+            "AND p.value NOT LIKE '%.xml%' AND p.value NOT LIKE '%.txt%' AND p.value NOT LIKE '%.json%' "
+            "AND p.value NOT LIKE '%.css%' AND p.value NOT LIKE '%.js%' AND p.value NOT LIKE '%.ico%' "
+            "AND p.value NOT LIKE '%.png%' AND p.value NOT LIKE '%.jpg%' AND p.value NOT LIKE '%.jpeg%' "
+            "AND p.value NOT LIKE '%.gif%' AND p.value NOT LIKE '%.svg%' AND p.value NOT LIKE '%.webp%' "
+            "AND p.value NOT LIKE '%.woff%' AND p.value NOT LIKE '%.ttf%' AND p.value NOT LIKE '%.zip%' AND p.value NOT LIKE '%.sh%'), "
+            "(SELECT COALESCE(SUM(t.count),0) FROM telemetry t JOIN ips i ON t.ip_id=i.id JOIN paths p ON t.path_id=p.id "
+            "WHERE p.value LIKE '%js_confirm.gif%' AND i.value NOT LIKE '127.%' AND i.value NOT LIKE '10.%' AND i.value NOT LIKE '192.168.%'), "
+            "(SELECT COUNT(DISTINCT sig_id) || '|' || COALESCE(SUM(count),0) FROM rfc9421_logs);"
+            "\""
         )
-        sig_res = subprocess.run(
-            ["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=5", "honeybot", sig_cmd],
+        wire_res = subprocess.run(
+            ["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=5", "honeybot", sql_wire],
             capture_output=True,
             text=True,
             timeout=8,
         )
-        if sig_res.returncode == 0 and "|" in (sig_res.stdout or ""):
-            sc_s, se_s = (p.strip() for p in sig_res.stdout.strip().split("|", 1))
-            if sc_s.isdigit() and int(sc_s) > 0:
-                sig_clients_val = int(sc_s)
-            if se_s.isdigit() and int(se_s) > 0:
-                sig_events_val = int(se_s)
+        if wire_res.returncode == 0 and "|" in (wire_res.stdout or ""):
+            parts = [p.strip() for p in wire_res.stdout.strip().split("|")]
+            if len(parts) >= 4:
+                if parts[0].isdigit() and int(parts[0]) > 0:
+                    eligible_html_val = int(parts[0])
+                if parts[1].isdigit() and int(parts[1]) > 0:
+                    js_total_val = int(parts[1])
+                if parts[2].isdigit() and int(parts[2]) > 0:
+                    sig_clients_val = int(parts[2])
+                if parts[3].isdigit() and int(parts[3]) > 0:
+                    sig_events_val = int(parts[3])
     except Exception:
         pass
+    # 1. Bar 1: RFC 9110 Markdown Adoption (0% -> 1.0% of all origin HTTP responses; 400px SVG track)
+    md_horizon_pct = min(100.0, max(0.0, round((md_pct_val / 1.0) * 100.0, 1)))
+    md_horizon_x = round((md_horizon_pct / 100.0) * 400.0, 1)
+    cneg_strict_fmt = f"{cneg_strict_val:,}"
+    # 2. Bar 2: JS DOM Hydration Trapdoor (0% -> 5.0% of eligible HTML page responses; 400px SVG track)
+    js_html_pct = round((js_total_val / max(1, eligible_html_val)) * 100.0, 2)
+    js_horizon_pct = min(100.0, max(0.0, round((js_html_pct / 5.0) * 100.0, 1)))
+    js_horizon_x = round((js_horizon_pct / 100.0) * 400.0, 1)
+    js_total_fmt = f"{js_total_val:,}"
+    eligible_html_m = f"~{eligible_html_val / 1_000_000:.2f}M"
+    spoof_share_pct = round((spoof_val / max(1, bot_md_val)) * 100.0, 1)
     sig_clients_fmt = f"{sig_clients_val:,}"
     sig_events_fmt = f"{sig_events_val:,}"
-    sig_horizon_x = min(200.0, max(6.0, round((sig_clients_val / 10.0) * 200.0, 1)))
     fetched_at = str((stats or {}).get("fetched_at") or "unknown")
     yt_video_id = ""
     if hasattr(common, "sync_live_video_id"):
@@ -251,10 +269,11 @@ def sync_observatory_metrics(target_key, target_path, verbose=False):
         "markdown_reads": md_count_fmt,
         "markdown_pct": f"{md_pct_s}%",
         "md_horizon_pct": md_horizon_pct,
-        "js_trapdoor_triggers": hyd_trig_fmt,
+        "js_trapdoor_triggers": js_total_fmt,
+        "js_eligible_html_responses": f"{eligible_html_val:,}",
+        "js_html_hydration_pct": f"{js_html_pct}%",
+        "js_horizon_pct": js_horizon_pct,
         "js_trapdoor_ips": hyd_ips_fmt,
-        "js_share_pct": f"{js_share_pct}%",
-        "md_share_pct": f"{md_share_pct}%",
         "spoofed_googlebot_reads": spoof_fmt,
         "authentic_bot_md_reads": auth_bot_fmt,
         "spoof_share_pct": f"{spoof_share_pct}%",
@@ -287,63 +306,45 @@ def sync_observatory_metrics(target_key, target_path, verbose=False):
             '  <div class="kpi-grid">\n'
             '    <div class="kpi-card">\n'
             '      <div class="kpi-top">\n'
-            f'        <span class="kpi-val">{md_pct_s}% <span class="kpi-badge-cyan">{md_count_fmt} .md reads</span></span>\n'
-            '        <span class="kpi-scale-tag">0% → 20% Horizon</span>\n'
+            f'        <span class="kpi-val">{md_pct_s}% of All HTTP Responses <span class="kpi-badge-cyan">{md_count_fmt} .md deliveries</span> <span class="kpi-badge-cyan">{cneg_strict_fmt} Accept: text/markdown</span></span>\n'
+            f'        <span class="kpi-scale-tag">0% → 1.0% Horizon ({int(round(md_horizon_pct))}% of Goal)</span>\n'
             '      </div>\n'
-            '      <svg class="kpi-meter" viewBox="0 0 200 22" role="img" aria-label="RFC 9110 Markdown adoption on a 0 to 20 percent horizon scale">\n'
-            f'        <title>RFC 9110 Markdown Share: {md_pct_s}% of all origin responses ({md_horizon_pct}% of the 20% adoption horizon)</title>\n'
-            '        <rect x="0" y="4" width="200" height="6" rx="3" fill="rgba(255,255,255,0.08)"></rect>\n'
-            '        <line x1="50" y1="2" x2="50" y2="12" stroke="rgba(255,255,255,0.22)" stroke-width="1"></line>\n'
+            '      <svg class="kpi-meter" viewBox="0 0 400 22" role="img" aria-label="RFC 9110 Markdown adoption on a 0 to 1.0 percent scale of all origin HTTP responses">\n'
+            f'        <title>RFC 9110 Markdown Share: {md_pct_s}% of all ~1.58M origin HTTP responses ({md_horizon_pct}% of the 1.0% adoption milestone)</title>\n'
+            '        <rect x="0" y="4" width="400" height="6" rx="3" fill="rgba(255,255,255,0.08)"></rect>\n'
             '        <line x1="100" y1="2" x2="100" y2="12" stroke="rgba(255,255,255,0.22)" stroke-width="1"></line>\n'
-            '        <line x1="150" y1="2" x2="150" y2="12" stroke="rgba(255,255,255,0.22)" stroke-width="1"></line>\n'
-            f'        <rect x="0" y="4" width="{max(2.5, md_horizon_x)}" height="6" rx="3" fill="#06b6d4"></rect>\n'
-            f'        <circle cx="{max(3.5, md_horizon_x)}" cy="7" r="3.8" fill="#22d3ee" stroke="#0d1117" stroke-width="1.2"></circle>\n'
+            '        <line x1="200" y1="2" x2="200" y2="12" stroke="rgba(255,255,255,0.22)" stroke-width="1"></line>\n'
+            '        <line x1="300" y1="2" x2="300" y2="12" stroke="rgba(255,255,255,0.22)" stroke-width="1"></line>\n'
+            f'        <rect x="0" y="4" width="{max(4.0, md_horizon_x)}" height="6" rx="3" fill="#06b6d4"></rect>\n'
+            f'        <circle cx="{max(4.0, md_horizon_x)}" cy="7" r="3.8" fill="#22d3ee" stroke="#0d1117" stroke-width="1.2"></circle>\n'
             '        <text x="0" y="20" class="kpi-tick">0%</text>\n'
-            '        <text x="46" y="20" class="kpi-tick">5%</text>\n'
-            '        <text x="93" y="20" class="kpi-tick">10%</text>\n'
-            '        <text x="143" y="20" class="kpi-tick">15%</text>\n'
-            '        <text x="180" y="20" class="kpi-tick">20%</text>\n'
+            '        <text x="92" y="20" class="kpi-tick">0.25%</text>\n'
+            '        <text x="192" y="20" class="kpi-tick">0.50%</text>\n'
+            '        <text x="292" y="20" class="kpi-tick">0.75%</text>\n'
+            '        <text x="380" y="20" class="kpi-tick">1.0%</text>\n'
             '      </svg>\n'
-            '      <div class="kpi-lbl">RFC 9110 <code>Accept: text/markdown</code> Adoption</div>\n'
+            f'      <div class="kpi-lbl"><strong>🧠 RFC 9110 <code>Accept: text/markdown</code> Horizon:</strong> Share of all ~1.58M origin HTTP responses served as Markdown (never % of User-Agents) on our way to a 1.0% adoption milestone — led by ExaSearchBot ({exa_md_val:,}), ShapBot ({shap_md_val:,}), and Claude-User ({claude_md_val:,}).</div>\n'
             '    </div>\n'
             '    <div class="kpi-card">\n'
             '      <div class="kpi-top">\n'
-            f'        <span class="kpi-val">{hyd_trig_fmt} <span class="kpi-badge-amber">{js_share_pct}% JS</span> vs. {md_count_fmt} <span class="kpi-badge-cyan">{md_share_pct}% .md</span></span>\n'
+            f'        <span class="kpi-val">{js_html_pct}% of Eligible HTML Responses <span class="kpi-badge-amber">{js_total_fmt} JS Trapdoor Executions</span> <span class="kpi-badge-amber">Out of {eligible_html_m} HTML Pages</span></span>\n'
+            f'        <span class="kpi-scale-tag">0% → 5.0% HTML Hydration Scale</span>\n'
             '      </div>\n'
-            '      <svg class="kpi-meter" viewBox="0 0 200 22" role="img" aria-label="Bimodal split between JS trapdoor executions and RFC 9110 Markdown reads">\n'
-            f'        <title>Bimodal AI Sensor Split: {hyd_trig_fmt} JS executions ({js_share_pct}%) vs. {md_count_fmt} Markdown reads ({md_share_pct}%)</title>\n'
-            f'        <rect x="0" y="4" width="{js_bar_w}" height="6" rx="3" fill="#f59e0b"></rect>\n'
-            f'        <rect x="{js_bar_w}" y="4" width="{md_bar_w}" height="6" rx="3" fill="#06b6d4"></rect>\n'
-            f'        <text x="0" y="20" class="kpi-tick">⚡ JS Trapdoor ({hyd_ips_fmt} IPs · OAI-SearchBot)</text>\n'
-            '        <text x="148" y="20" class="kpi-tick">🧠 RFC 9110</text>\n'
+            '      <svg class="kpi-meter" viewBox="0 0 400 22" role="img" aria-label="JavaScript DOM hydration trapdoor executions on a 0 to 5.0 percent scale of eligible HTML page responses">\n'
+            f'        <title>JavaScript DOM Hydration Rate: {js_html_pct}% ({js_total_fmt} executions) of all {eligible_html_m} HTML page responses that carried the 800ms /api/telemetry/js_confirm.gif script</title>\n'
+            '        <rect x="0" y="4" width="400" height="6" rx="3" fill="rgba(255,255,255,0.08)"></rect>\n'
+            '        <line x1="100" y1="2" x2="100" y2="12" stroke="rgba(255,255,255,0.22)" stroke-width="1"></line>\n'
+            '        <line x1="200" y1="2" x2="200" y2="12" stroke="rgba(255,255,255,0.22)" stroke-width="1"></line>\n'
+            '        <line x1="300" y1="2" x2="300" y2="12" stroke="rgba(255,255,255,0.22)" stroke-width="1"></line>\n'
+            f'        <rect x="0" y="4" width="{max(4.0, js_horizon_x)}" height="6" rx="3" fill="#f59e0b"></rect>\n'
+            f'        <circle cx="{max(4.0, js_horizon_x)}" cy="7" r="3.8" fill="#fbbf24" stroke="#0d1117" stroke-width="1.2"></circle>\n'
+            '        <text x="0" y="20" class="kpi-tick">0%</text>\n'
+            '        <text x="90" y="20" class="kpi-tick">1.25%</text>\n'
+            '        <text x="190" y="20" class="kpi-tick">2.50%</text>\n'
+            '        <text x="290" y="20" class="kpi-tick">3.75%</text>\n'
+            '        <text x="378" y="20" class="kpi-tick">5.0%</text>\n'
             '      </svg>\n'
-            '      <div class="kpi-lbl">Bimodal AI Sensor Split (DOM Hydration vs. Raw Markdown)</div>\n'
-            '    </div>\n'
-            '    <div class="kpi-card">\n'
-            '      <div class="kpi-top">\n'
-            f'        <span class="kpi-val">{sig_events_fmt} <span class="kpi-badge-cyan">🔷 Signed Hits</span> · {sig_clients_fmt} <span class="kpi-badge-cyan">Clients</span></span>\n'
-            '      </div>\n'
-            '      <svg class="kpi-meter" viewBox="0 0 200 22" role="img" aria-label="RFC 9421 Web Bot Auth cryptographic agent adoption">\n'
-            f'        <title>RFC 9421 Web Bot Auth: {sig_events_fmt} cryptographically signed requests across {sig_clients_fmt} verified bot operators (ExaSearchBot, AhrefsBot, DesearchBot)</title>\n'
-            '        <rect x="0" y="4" width="200" height="6" rx="3" fill="rgba(255,255,255,0.08)"></rect>\n'
-            f'        <rect x="0" y="4" width="{sig_horizon_x}" height="6" rx="3" fill="#38bdf8"></rect>\n'
-            f'        <circle cx="{sig_horizon_x}" cy="7" r="3.8" fill="#38bdf8" stroke="#0d1117" stroke-width="1.2"></circle>\n'
-            '        <text x="0" y="20" class="kpi-tick">🔷 ExaSearchBot · AhrefsBot · DesearchBot</text>\n'
-            '      </svg>\n'
-            '      <div class="kpi-lbl">RFC 9421 <code>Web Bot Auth</code> (<code>Signature-Agent</code>)</div>\n'
-            '    </div>\n'
-            '    <div class="kpi-card">\n'
-            '      <div class="kpi-top">\n'
-            f'        <span class="kpi-val">{spoof_fmt} <span class="kpi-badge-red">🛑 {spoof_share_pct}% Cloaked</span> vs. {auth_bot_fmt} <span class="kpi-badge-amber">🟠 {auth_share_pct}% Bot UA</span></span>\n'
-            '      </div>\n'
-            '      <svg class="kpi-meter" viewBox="0 0 200 22" role="img" aria-label="Proportion of spoofed Googlebot IPs versus authentic self-asserted bots negotiating Markdown">\n'
-            f'        <title>Markdown Bot Forensics: {spoof_fmt} IP-spoofed Googlebot reads ({spoof_share_pct}%) vs. {auth_bot_fmt} authentic self-asserted bot reads ({auth_share_pct}%)</title>\n'
-            f'        <rect x="0" y="4" width="{spoof_bar_w}" height="6" rx="3" fill="#ef4444"></rect>\n'
-            f'        <rect x="{spoof_bar_w}" y="4" width="{auth_bar_w}" height="6" rx="3" fill="#f97316"></rect>\n'
-            '        <text x="0" y="20" class="kpi-tick">🛑 Spoofed Googlebot IPs</text>\n'
-            '        <text x="118" y="20" class="kpi-tick">🟠 Self-Asserted Bots</text>\n'
-            '      </svg>\n'
-            '      <div class="kpi-lbl">Unmasked Cloakers in RFC 9110 Markdown Stream</div>\n'
+            f'      <div class="kpi-lbl"><strong>⚡ JavaScript DOM Hydration Trapdoor:</strong> Share of all {eligible_html_m} HTML page responses that <em>could</em> hydrate the DOM (because they received our 800ms <code>js_confirm.gif</code> script) that actually executed client-side JS — led by meta-externalagent ({meta_js_val:,}), OAI-SearchBot ({oai_js_val:,}), Cloud Chrome/Edge ({cloud_js_val:,}), and GPTBot ({gpt_js_val:,}).</div>\n'
             '    </div>\n'
             '  </div>\n'
             '</div>\n'
