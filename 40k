@@ -6,26 +6,28 @@ context.txt
 ! markov
 # ! latest
 # scripts/articles/lsa.py
-
-# WE BEGIN AT THE BEGINNING AND WILL GO ON TILL WE COME TO THE END, THEN STOP.
-# /home/mike/repos/nixos/configuration.nix
-# /home/mike/repos/nixos/hardware-configuration.nix
-# /home/mike/repos/nixos/ai-acceleration.nix
-# /home/mike/repos/nixos/notes.nix
-# /home/mike/repos/nixos/packages.nix
-# /home/mike/repos/nixos/services.nix
-# /home/mike/repos/nixos/unstable-pin.json
-# init.lua
+#
+# # WE BEGIN AT THE BEGINNING AND WILL GO ON TILL WE COME TO THE END, THEN STOP.
+/home/mike/repos/nixos/configuration.nix
+/home/mike/repos/nixos/hardware-configuration.nix
+/home/mike/repos/nixos/ai-acceleration.nix
+/home/mike/repos/nixos/notes.nix
+/home/mike/repos/nixos/packages.nix
+/home/mike/repos/nixos/services.nix
+/home/mike/repos/nixos/imagine.nix
+/home/mike/repos/nixos/unstable-pin.json
+init.lua
 
 # 3-2-1 NOT QUITE THERE YET BUT WILL BE
-# /home/mike/repos/nixos/scripts/backup-essential.py
-# /home/mike/repos/nixos/scripts/backup-home.py
-# /home/mike/repos/nixos/scripts/backup-force.py
-# /home/mike/repos/nixos/scripts/backup-nix.sh
-# /home/mike/repos/nixos/scripts/backup-things.py
+/home/mike/repos/nixos/scripts/backup-essential.py
+/home/mike/repos/nixos/scripts/backup-home.py
+/home/mike/repos/nixos/scripts/backup-force.py
+/home/mike/repos/nixos/scripts/backup-nix.sh
+/home/mike/repos/nixos/scripts/backup-things.py
 
-# JUST BEGINNING TO ORGANIZE MY MEDIA (Leaderboards! Leader folders?)
-# /home/mike/repos/nixos/scripts/dedupe.py
+# ORGANIZATION
+/home/mike/repos/nixos/scripts/drivemon.py
+/home/mike/repos/nixos/scripts/dedupe.py
 
 # AN OPERATING SYSTEM FOR THIS HUMAN
 # /home/mike/repos/nixos/bookmarks.nix
