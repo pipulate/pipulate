@@ -158,7 +158,7 @@ STATION_SEGMENTS = [
             "Look first at the single amber bar across the very top of this report.",
             "That top bar merely shows the percentage of eligible H T M L page responses -- the requests that actually received our script tag and could have hydrated the D O M -- that executed client-side JavaScript and fired our eight-hundred-millisecond J S confirm dot gif sensor, plotted on a zero to five percent scale.",
             "Now look at the stacked horizontal bars below the divider, which break those eighteen thousand plus JavaScript executions from above out by grouped User-Agent and cloud renderer fleet.",
-            "Meta's External Agent leads at four thousand six hundred D O M hydrations, followed by Open A I's SearchBot at three thousand four hundred seventy-five, unbadged Google Cloud Chrome and Edge renderers across over one hundred I P addresses, Open A I's G P T Bot, Meta Web Indexer, Bytespider, and Headless Chrome.",
+            "Meta's External Agent leads at four thousand six hundred D O M hydrations, followed by Open A I's SearchBot at three thousand four hundred seventy-five, unbadged Google Cloud Chrome and Edge renderers across over one hundred I P addresses, Open A I's G P T Bot, Meta Web Indexer, Bytespider, Anthropic's ClaudeBot, and Headless Chrome.",
         ],
     ),
     # Bead 3 (ODD -> Patronus ASCII Art: ai_pachinko)
@@ -437,13 +437,34 @@ def _build_station_report_panel(mode="overview", panel_width=None):
         )
         cloud_row = cur.fetchone() or (0, 0)
         cloud_triggers, cloud_ips = int(cloud_row[0] or 0), int(cloud_row[1] or 0)
+        cur.execute(
+            """
+            SELECT COALESCE(SUM(t.count), 0), COUNT(DISTINCT i.id)
+            FROM telemetry t
+            JOIN ips i ON t.ip_id = i.id
+            JOIN user_agents ua ON t.ua_id = ua.id
+            JOIN paths p ON t.path_id = p.id
+            WHERE p.value LIKE '%js_confirm.gif%'
+              AND ua.value LIKE '%ClaudeBot%'
+              AND i.value NOT LIKE '127.%'
+              AND i.value NOT LIKE '10.%'
+              AND i.value NOT LIKE '192.168.%'
+            """
+        )
+        claude_row = cur.fetchone() or (0, 0)
+        claude_triggers, claude_ips = int(claude_row[0] or 0), int(claude_row[1] or 0)
         js_rows = list(db.get_js_executors(limit=25))
         if cloud_triggers > 0:
             js_rows.append((
                 f"[+{max(0, cloud_ips - 1)}] Mozilla/5.0 Chrome/135.0.0.0 Edg/135.0.0.0 (Stealth Cloud Renderers: 34.*/35.* GCP & 136.65.*)",
                 cloud_triggers,
             ))
-            js_rows.sort(key=lambda item: int(item[1]), reverse=True)
+        if claude_triggers > 0 and not any("ClaudeBot" in str(u) for u, _ in js_rows):
+            js_rows.append((
+                f"[+{max(0, claude_ips - 1)}] Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Chrome/131.0.0.0 Safari/537.36; ClaudeBot/1.0 (+claudebot@anthropic.com)",
+                claude_triggers,
+            ))
+        js_rows.sort(key=lambda item: int(item[1]), reverse=True)
         total_js_execs = max(1, sum(int(c) for _, c in js_rows))
         js_horizon_hits = js_telem_hits if js_telem_hits > 0 else total_js_execs
         js_pct = round((js_horizon_hits / max(1, eligible_html_hits)) * 100.0, 2)
