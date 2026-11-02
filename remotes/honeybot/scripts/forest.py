@@ -146,19 +146,19 @@ STATION_SEGMENTS = [
             "Pipulate sits where A I assistance meets local hardware ownership. You do not need a multi-tenant cloud subscription to command your own stack.",
         ],
     ),
-    # Bead 2 (EVEN -> Rich Horizontal-Bar Telemetry Report: JS DOM Hydration Trapdoor 0-1% Horizon + Executor Breakdown)
+    # Bead 2 (EVEN -> Rich Horizontal-Bar Telemetry Report: JS DOM Hydration Trapdoor 0-5% Eligible HTML Horizon + Executor Breakdown)
     _make_station_bead(
         "DOM TRAPDOOR\nJS EXECS",
         (
             "Conventional S E O wisdom claims A I crawlers only scrape static H T M L and never execute client-side JavaScript. "
-            "So we wired an eight-hundred-millisecond JavaScript trapdoor into our pages to measure the truth on the wire."
+            "So we wired an eight-hundred-millisecond JavaScript trapdoor into our H T M L pages to measure the truth on the wire."
         ),
         ("WINDOW", f"forest.py:{REPORT_WINDOW_CAP_SECONDS}:bimodal"),
         [
             "Look first at the single amber bar across the very top of this report.",
-            "That top bar merely shows the share of all H T T P responses that execute client-side JavaScript and trigger our eight-hundred-millisecond J S confirm dot gif trapdoor, plotted on the same zero to one percent horizon.",
-            "Now look at the stacked horizontal bars below the divider, which break that JavaScript execution activity from above out by grouped User-Agent and cloud renderer fleet.",
-            "Open A I's SearchBot and G P T Bot, Meta's External Agent, unbadged Google Cloud Chrome renderers, and Headless Chrome are caught red-handed hydrating the D O M thousands of times.",
+            "That top bar merely shows the percentage of eligible H T M L page responses -- the requests that actually received our script tag and could have hydrated the D O M -- that executed client-side JavaScript and fired our eight-hundred-millisecond J S confirm dot gif sensor, plotted on a zero to five percent scale.",
+            "Now look at the stacked horizontal bars below the divider, which break those eighteen thousand plus JavaScript executions from above out by grouped User-Agent and cloud renderer fleet.",
+            "Meta's External Agent leads at four thousand six hundred D O M hydrations, followed by Open A I's SearchBot at three thousand four hundred seventy-five, unbadged Google Cloud Chrome and Edge renderers across over one hundred I P addresses, Open A I's G P T Bot, Meta Web Indexer, Bytespider, and Headless Chrome.",
         ],
     ),
     # Bead 3 (ODD -> Patronus ASCII Art: ai_pachinko)
@@ -261,7 +261,7 @@ import re as _re
 
 _COMPAT_BOT_RE = _re.compile(r"compatible;\s*([A-Za-z0-9._-]+)", _re.IGNORECASE)
 _KEYWORD_BOT_RE = _re.compile(
-    r"\b([A-Za-z0-9._-]*(?:bot|spider|crawler|agent|radar|worker|mcp|research|scraper|fetcher|inspector|archiver|httpx|requests|axios|curl|wget|aiohttp|urllib|go-http-client|python)[A-Za-z0-9._-]*)",
+    r"\b([A-Za-z0-9._-]*(?:headlesschrome|bot|spider|crawler|agent|radar|worker|mcp|research|scraper|fetcher|inspector|archiver|httpx|requests|axios|curl|wget|aiohttp|urllib|go-http-client|python)[A-Za-z0-9._-]*)",
     _re.IGNORECASE,
 )
 _LEADING_AGENT_RE = _re.compile(r"^([A-Za-z0-9._-]+?)(?:/[\d.]+|\s+\(|\s*$)")
@@ -377,8 +377,38 @@ def _build_station_report_panel(mode="overview", panel_width=None):
 
     tbl = Table(expand=True, show_header=True, header_style="bold cyan", border_style="bright_blue")
     if mode in ("bimodal", "trapdoor"):
-        cur.execute("SELECT COALESCE(SUM(count), 0) FROM daily_logs")
-        total_hits = int((cur.fetchone() or [1])[0] or 1)
+        cur.execute(
+            """
+            SELECT COALESCE(SUM(t.count), 0)
+            FROM telemetry t
+            JOIN ips i ON t.ip_id = i.id
+            JOIN paths p ON t.path_id = p.id
+            WHERE t.served_md = 0
+              AND i.value NOT LIKE '127.%'
+              AND i.value NOT LIKE '10.%'
+              AND i.value NOT LIKE '192.168.%'
+              AND p.value NOT LIKE '%js_confirm.gif%'
+              AND p.value NOT LIKE '/assets/%'
+              AND p.value NOT LIKE '%.md%'
+              AND p.value NOT LIKE '%.xml%'
+              AND p.value NOT LIKE '%.txt%'
+              AND p.value NOT LIKE '%.json%'
+              AND p.value NOT LIKE '%.css%'
+              AND p.value NOT LIKE '%.js%'
+              AND p.value NOT LIKE '%.ico%'
+              AND p.value NOT LIKE '%.png%'
+              AND p.value NOT LIKE '%.jpg%'
+              AND p.value NOT LIKE '%.jpeg%'
+              AND p.value NOT LIKE '%.gif%'
+              AND p.value NOT LIKE '%.svg%'
+              AND p.value NOT LIKE '%.webp%'
+              AND p.value NOT LIKE '%.woff%'
+              AND p.value NOT LIKE '%.ttf%'
+              AND p.value NOT LIKE '%.zip%'
+              AND p.value NOT LIKE '%.sh%'
+            """
+        )
+        eligible_html_hits = int((cur.fetchone() or [1])[0] or 1)
         cur.execute(
             """
             SELECT COALESCE(SUM(t.count), 0)
@@ -416,22 +446,22 @@ def _build_station_report_panel(mode="overview", panel_width=None):
             js_rows.sort(key=lambda item: int(item[1]), reverse=True)
         total_js_execs = max(1, sum(int(c) for _, c in js_rows))
         js_horizon_hits = js_telem_hits if js_telem_hits > 0 else total_js_execs
-        js_pct = round((js_horizon_hits / max(1, total_hits)) * 100.0, 2)
-        js_horizon_1pct = min(100.0, round((js_pct / 1.0) * 100.0, 1))
+        js_pct = round((js_horizon_hits / max(1, eligible_html_hits)) * 100.0, 2)
+        js_horizon_5pct = min(100.0, round((js_pct / 5.0) * 100.0, 1))
 
-        title_str = "⚡ JAVASCRIPT DOM HYDRATION TRAPDOOR (0% → 1.0% OF ALL HTTP RESPONSES) & EXECUTOR BREAKDOWN"
+        title_str = "⚡ JAVASCRIPT DOM HYDRATION TRAPDOOR (0% → 5.0% OF ELIGIBLE HTML RESPONSES) & EXECUTOR BREAKDOWN"
         tbl.add_column("Execs", justify="right", style="bold yellow", width=8, no_wrap=True)
         tbl.add_column("Horizon / Bot Identity", style="bold white", width=25, no_wrap=True)
         tbl.add_column("Denominator Key / Grouped Executor Signature", ratio=4, no_wrap=True)
         tbl.add_column("Horizontal Bar & Share", width=38, no_wrap=True)
         tbl.add_row(
             f"{js_horizon_hits:,}",
-            Text("🎯 0% → 1.0% HORIZON", style="bold bright_yellow"),
+            Text("🎯 0% → 5.0% HTML HORIZON", style="bold bright_yellow"),
             Text(
-                f"Share of all {total_hits:,} HTTP responses firing 800ms js_confirm.gif (not % of UAs)",
+                f"Share of {eligible_html_hits:,} HTML responses that could hydrate DOM (fired 800ms js_confirm.gif)",
                 style="bold white",
             ),
-            f"{_bar(js_horizon_1pct, 22, 'yellow')} [bold bright_yellow]{js_pct}% / 1.0%[/bold bright_yellow]",
+            f"{_bar(js_horizon_5pct, 22, 'yellow')} [bold bright_yellow]{js_pct}% / 5.0%[/bold bright_yellow]",
         )
         tbl.add_section()
         max_js = max([int(c) for _, c in js_rows[:10]] or [1])
@@ -597,7 +627,16 @@ def _build_station_report_panel(mode="overview", panel_width=None):
             domain_str = f"{d_name}.{d_tld}"
             tbl.add_row(f"🚪 {domain_str}", d_folder, d_pitch)
     else:
-        cur.execute("SELECT COALESCE(SUM(count), 0) FROM daily_logs")
+        cur.execute(
+            """
+            SELECT COALESCE(SUM(t.count), 0)
+            FROM telemetry t
+            JOIN ips i ON t.ip_id = i.id
+            WHERE i.value NOT LIKE '127.%'
+              AND i.value NOT LIKE '10.%'
+              AND i.value NOT LIKE '192.168.%'
+            """
+        )
         total_hits = int((cur.fetchone() or [1])[0] or 1)
 
         cur.execute(
