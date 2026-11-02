@@ -102,7 +102,7 @@ def _make_station_bead(card_label, card_say, capstone_cue, forest_story_lines, p
             isinstance(capstone_cue, tuple)
             and len(capstone_cue) >= 2
             and capstone_cue[0] == "WINDOW"
-            and any(tag in str(capstone_cue[1]) for tag in (":overview", ":bimodal", ":schism", ":rfc9421", ":doors"))
+            and any(tag in str(capstone_cue[1]) for tag in (":overview", ":markdown", ":bimodal", ":schism", ":rfc9421", ":doors"))
         )
         post_linger = REPORT_POST_LINGER_SECONDS if is_window_report else 0
     if post_linger > 0:
@@ -111,18 +111,20 @@ def _make_station_bead(card_label, card_say, capstone_cue, forest_story_lines, p
 
 
 STATION_SEGMENTS = [
-    # Bead 0 (EVEN -> Rich Horizontal-Bar Telemetry Report: Overview)
+    # Bead 0 (EVEN -> Rich Horizontal-Bar Telemetry Report: RFC 9110 Markdown 0-1% Horizon + UA Breakdown)
     _make_station_bead(
-        "WEB BOT AI\nOBSERVATORY",
+        "RFC 9110\nMARKDOWN",
         (
             "Hello, and welcome to the Web Bot A I Observatory on Honeybot. "
-            "What you are looking at is the unmediated, bare-metal heartbeat of a Nix O S web server hosted from home."
+            "Like Benjamin Franklin dropping a thermometer into the Gulf Stream or Wilhelm Roentgen mailing Lord Kelvin an X-ray plate, "
+            "we measure A I crawler behavior directly on the bare-metal wire."
         ),
         ("WINDOW", f"forest.py:{REPORT_WINDOW_CAP_SECONDS}:overview"),
         [
-            "This live telemetry card pulls straight from our SQLite wire ledger.",
-            "The first horizontal bar tracks R F C 9110 Markdown adoption along our zero to twenty percent horizon.",
-            "The second bar compares DOM hydration JavaScript executions against raw Markdown reads, while the bottom bars track R F C 9421 cryptographic bot signatures and unmasked Googlebot cloakers.",
+            "Look first at the single cyan bar across the very top of this report.",
+            "That top bar merely shows the share of all H T T P responses served as Markdown on a scale from zero to one percent -- not a percentage of User-Agents, which version churn distorts, but point three three percent of all one point five eight million origin responses, already one third of the way to our one percent milestone.",
+            "Now look at the stacked horizontal bars below the divider, which break that Markdown activity from above out by individual User-Agent, with version-spinning agents like Claude Code grouped into a single row.",
+            "Exa Search Bot leads at nearly half of all negotiated Markdown reads, followed by Parallel dot A I's ShapBot, unmasked Googlebot I P cloakers, Keenable Bot, SleepBot, CorpusBot, and Anthropic's Claude User.",
         ],
     ),
     # Bead 1 (ODD -> Patronus ASCII Art: white_rabbit)
@@ -357,7 +359,7 @@ def _build_station_report_panel(mode="overview", panel_width=None):
     total_cneg = 1
     spoof_pct = 0.0
     auth_pct = 100.0
-    if mode in ("overview", "bimodal", "rfc9421"):
+    if mode in ("overview", "markdown", "bimodal", "rfc9421"):
         cneg_limit = 7 if mode == "bimodal" else 30
         cneg_rows = db.get_content_neg_agents(limit=cneg_limit)
         spoof_md = sum(int(c) for u, c in cneg_rows if str(u).startswith("[SPOOFED-IP]"))
@@ -534,49 +536,35 @@ def _build_station_report_panel(mode="overview", panel_width=None):
         cur.execute("SELECT COALESCE(SUM(l.count), 0) FROM daily_logs l JOIN paths p ON l.path_id = p.id WHERE p.value LIKE '%.md%'")
         md_reads = int((cur.fetchone() or [0])[0] or 0)
         md_pct = round((md_reads / max(1, total_hits)) * 100.0, 2)
-        md_horizon_pct = min(100.0, round((md_pct / 20.0) * 100.0, 1))
+        md_horizon_1pct = min(100.0, round((md_pct / 1.0) * 100.0, 1))
 
-        cur.execute("SELECT COALESCE(SUM(l.count), 0) FROM daily_logs l JOIN paths p ON l.path_id = p.id WHERE p.value LIKE '%js_confirm.gif%'")
-        js_hits = int((cur.fetchone() or [0])[0] or 0)
-        bimodal_total = max(1, js_hits + md_reads)
-        js_share = round((js_hits / bimodal_total) * 100.0, 1)
-        md_share = round(100.0 - js_share, 1)
-
-        sig_clients, sig_events = db.get_rfc9421_summary()
-        title_str = "🔭 WEB BOT AI OBSERVATORY — LIVE SQLITE WIRE TELEMETRY (MIKELEV.IN)"
-        tbl.add_column("Web AI Standard Metric", style="bold white", ratio=3)
-        tbl.add_column("Reading", justify="right", style="bold cyan", width=18)
-        tbl.add_column("Horizontal Gauge", ratio=4)
+        title_str = "🧠 RFC 9110 MARKDOWN ADOPTION (0% → 1.0% OF ALL HTTP RESPONSES) & USER-AGENT BREAKDOWN"
+        tbl.add_column("Reads", justify="right", style="bold cyan", width=8, no_wrap=True)
+        tbl.add_column("Horizon / Bot Identity", style="bold white", width=25, no_wrap=True)
+        tbl.add_column("Denominator Key / Grouped User-Agent Signature", ratio=4, no_wrap=True)
+        tbl.add_column("Horizontal Bar & Share", width=38, no_wrap=True)
         tbl.add_row(
-            "1. RFC 9110 Markdown Horizon (0% → 20%)",
-            f"{md_pct}% ({md_reads:,} .md)",
-            f"{_bar(md_horizon_pct, 28, 'cyan')} [cyan]{md_horizon_pct}% of 20%[/cyan]",
+            f"{md_reads:,}",
+            Text("🎯 0% → 1.0% HORIZON", style="bold bright_cyan"),
+            Text(
+                f"Share of all {total_hits:,} HTTP responses (not % of UAs · {total_cneg:,} strict Accept: text/markdown)",
+                style="bold white",
+            ),
+            f"{_bar(md_horizon_1pct, 22, 'bright_cyan')} [bold bright_cyan]{md_pct}% / 1.0%[/bold bright_cyan]",
         )
-        tbl.add_row(
-            "2a. ⚡ DOM Hydration Trapdoor (JS Execs)",
-            f"{js_hits:,} ({js_share}%)",
-            _bar(js_share, 28, "yellow"),
-        )
-        tbl.add_row(
-            "2b. 🧠 RFC 9110 Raw Markdown Delivery",
-            f"{md_reads:,} ({md_share}%)",
-            _bar(md_share, 28, "cyan"),
-        )
-        tbl.add_row(
-            "3. 🔷 RFC 9421 Web Bot Auth (Signed)",
-            f"{sig_events:,} hits · {sig_clients} clients",
-            _bar(min(100.0, sig_clients * 12.0), 28, "deep_sky_blue1"),
-        )
-        tbl.add_row(
-            "4a. 🛑 Unmasked Cloakers (Spoofed IP)",
-            f"{spoof_md:,} ({spoof_pct}%)",
-            _bar(spoof_pct, 28, "red"),
-        )
-        tbl.add_row(
-            "4b. 🟠 Authentic Self-Asserted Bot UAs",
-            f"{total_cneg - spoof_md:,} ({auth_pct}%)",
-            _bar(auth_pct, 28, "dark_orange"),
-        )
+        tbl.add_section()
+        max_md = max([int(c) for _, c in cneg_rows[:10]] or [1])
+        for ua, cnt in cneg_rows[:10]:
+            badge, ident_txt, sig_txt = _format_bot_identity_and_sig(ua, known_bots=KNOWN_BOTS, max_sig_len=50)
+            sensor_ident = Text.assemble(("🧠 ", "bold cyan"), ident_txt)
+            color = "red" if badge == "🛑" else ("deep_sky_blue1" if badge == "🔷" else "cyan")
+            share_of_md = round((int(cnt) / max(1, total_cneg)) * 100.0, 1)
+            tbl.add_row(
+                f"{int(cnt):,}",
+                sensor_ident,
+                sig_txt,
+                f"{_bar((int(cnt) / max_md) * 100.0, 22, color)} [{color}]{share_of_md:>4.1f}% of MD[/{color}]",
+            )
 
     footer = Text.from_markup(
         "[bold green]🔭 Got the SEO Blues?[/bold green] "
