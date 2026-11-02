@@ -2,6 +2,14 @@ SELECT
     CASE
         WHEN ua.value LIKE 'Claude-User (claude-code/%'
         THEN 'Claude-User (claude-code/*; +https://support.anthropic.com/)'
+        WHEN ua.value LIKE '%ShapBot/%'
+        THEN 'Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko); compatible; ShapBot/0.1.0 (+https://parallel.ai)'
+        WHEN ua.value LIKE '%KeenableBot/%'
+        THEN 'Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; KeenableBot/1.0; +https://keenable.ai/)'
+        WHEN ua.value LIKE '%ExaUser/%'
+        THEN 'Mozilla/5.0 (compatible; ExaUser/1.0; +https://crawler.exa.ai/exauser)'
+        WHEN ua.value LIKE 'axios/%'
+        THEN 'axios/* (Node.js HTTP client)'
         WHEN ua.value LIKE '%Googlebot%'
          AND i.value NOT LIKE '66.249.%'
          AND i.value NOT LIKE '64.233.%'
@@ -17,7 +25,7 @@ SELECT
          AND i.value NOT LIKE '209.85.%'
          AND i.value NOT LIKE '216.58.%'
          AND i.value NOT LIKE '216.239.%'
-        THEN '[SPOOFED-IP] ' || ua.value
+        THEN '[SPOOFED-IP] Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'
         ELSE ua.value
     END as agent, 
     SUM(t.count) as total_reads
