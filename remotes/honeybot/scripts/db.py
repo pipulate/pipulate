@@ -450,6 +450,7 @@ class HoneyDB:
         AND NOT (
             ua.value LIKE 'Mozilla%' 
             AND ua.value NOT LIKE '%compatible%' 
+            AND ua.value NOT LIKE '%HeadlessChrome%'
             AND (
                 ua.value LIKE '%Windows NT%' OR 
                 ua.value LIKE '%Macintosh%' OR 
@@ -533,6 +534,7 @@ class HoneyDB:
         "ShapBot",
         "KeenableBot",
         "ExaUser",
+        "HeadlessChrome",
         "Bytespider",
         "axios",
         "Googlebot/",

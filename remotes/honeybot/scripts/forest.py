@@ -102,7 +102,7 @@ def _make_station_bead(card_label, card_say, capstone_cue, forest_story_lines, p
             isinstance(capstone_cue, tuple)
             and len(capstone_cue) >= 2
             and capstone_cue[0] == "WINDOW"
-            and any(tag in str(capstone_cue[1]) for tag in (":overview", ":markdown", ":bimodal", ":schism", ":rfc9421", ":doors"))
+            and any(tag in str(capstone_cue[1]) for tag in (":overview", ":markdown", ":bimodal", ":trapdoor", ":schism", ":rfc9421", ":doors"))
         )
         post_linger = REPORT_POST_LINGER_SECONDS if is_window_report else 0
     if post_linger > 0:
@@ -140,17 +140,19 @@ STATION_SEGMENTS = [
             "Pipulate sits where A I assistance meets local hardware ownership. You do not need a multi-tenant cloud subscription to command your own stack.",
         ],
     ),
-    # Bead 2 (EVEN -> Rich Horizontal-Bar Telemetry Report: Bimodal JS vs Markdown)
+    # Bead 2 (EVEN -> Rich Horizontal-Bar Telemetry Report: JS DOM Hydration Trapdoor 0-1% Horizon + Executor Breakdown)
     _make_station_bead(
-        "BIMODAL\nWIRE TRUTH",
+        "DOM TRAPDOOR\nJS EXECS",
         (
-            "Which A I crawlers execute client-side JavaScript, and which negotiate directly for clean Markdown?"
+            "Conventional S E O wisdom claims A I crawlers only scrape static H T M L and never execute client-side JavaScript. "
+            "So we wired an eight-hundred-millisecond JavaScript trapdoor into our pages to measure the truth on the wire."
         ),
         ("WINDOW", f"forest.py:{REPORT_WINDOW_CAP_SECONDS}:bimodal"),
         [
-            "This report compares our two primary ingestion sensors in real time.",
-            "On top are the bots firing our JavaScript DOM hydration trapdoor, led by Meta External Agent, Open A I's SearchBot, and GPTBot.",
-            "On the bottom are the R F C 9110 Markdown negotiators requesting clean text at wire speed without spinning up a headless browser.",
+            "Look first at the single amber bar across the very top of this report.",
+            "That top bar merely shows the share of all H T T P responses that execute client-side JavaScript and trigger our eight-hundred-millisecond J S confirm dot gif trapdoor, plotted on the same zero to one percent horizon.",
+            "Now look at the stacked horizontal bars below the divider, which break that JavaScript execution activity from above out by grouped User-Agent and cloud renderer fleet.",
+            "Open A I's SearchBot and G P T Bot, Meta's External Agent, unbadged Google Cloud Chrome renderers, and Headless Chrome are caught red-handed hydrating the D O M thousands of times.",
         ],
     ),
     # Bead 3 (ODD -> Patronus ASCII Art: ai_pachinko)
@@ -368,25 +370,84 @@ def _build_station_report_panel(mode="overview", panel_width=None):
         auth_pct = round(100.0 - spoof_pct, 1)
 
     tbl = Table(expand=True, show_header=True, header_style="bold cyan", border_style="bright_blue")
-    if mode == "bimodal":
-        title_str = "⚡ DOM HYDRATION TRAPDOOR (Top) vs. 🧠 RFC 9110 MARKDOWN NEGOTIATORS (Bottom)"
-        tbl.add_column("Hits", justify="right", style="bold yellow", width=7, no_wrap=True)
-        tbl.add_column("Bot Identity", style="bold white", width=24, no_wrap=True)
-        tbl.add_column("Raw Signature", ratio=4, no_wrap=True)
-        tbl.add_column("Share Bar", width=26, no_wrap=True)
-        js_rows = db.get_js_executors(limit=7)
-        max_js = max([int(c) for _, c in js_rows] or [1])
-        for ua, cnt in js_rows:
-            _, ident_txt, sig_txt = _format_bot_identity_and_sig(ua, known_bots=KNOWN_BOTS, max_sig_len=56)
-            sensor_ident = Text.assemble(("⚡ ", "bold yellow"), ident_txt)
-            tbl.add_row(f"{cnt:,}", sensor_ident, sig_txt, _bar((cnt / max_js) * 100.0, 24, "yellow"))
+    if mode in ("bimodal", "trapdoor"):
+        cur.execute("SELECT COALESCE(SUM(count), 0) FROM daily_logs")
+        total_hits = int((cur.fetchone() or [1])[0] or 1)
+        cur.execute(
+            """
+            SELECT COALESCE(SUM(t.count), 0)
+            FROM telemetry t
+            JOIN ips i ON t.ip_id = i.id
+            JOIN paths p ON t.path_id = p.id
+            WHERE p.value LIKE '%js_confirm.gif%'
+              AND i.value NOT LIKE '127.%'
+              AND i.value NOT LIKE '10.%'
+              AND i.value NOT LIKE '192.168.%'
+            """
+        )
+        js_telem_hits = int((cur.fetchone() or [0])[0] or 0)
+        cur.execute(
+            """
+            SELECT COALESCE(SUM(t.count), 0), COUNT(DISTINCT i.id)
+            FROM telemetry t
+            JOIN ips i ON t.ip_id = i.id
+            JOIN user_agents ua ON t.ua_id = ua.id
+            JOIN paths p ON t.path_id = p.id
+            WHERE p.value LIKE '%js_confirm.gif%'
+              AND (i.value LIKE '34.%' OR i.value LIKE '35.%' OR i.value LIKE '136.65.%')
+              AND ua.value LIKE 'Mozilla%'
+              AND ua.value NOT LIKE '%compatible%'
+            """
+        )
+        cloud_row = cur.fetchone() or (0, 0)
+        cloud_triggers, cloud_ips = int(cloud_row[0] or 0), int(cloud_row[1] or 0)
+        js_rows = list(db.get_js_executors(limit=25))
+        if cloud_triggers > 0:
+            js_rows.append((
+                f"[+{max(0, cloud_ips - 1)}] Mozilla/5.0 Chrome/135.0.0.0 Edg/135.0.0.0 (Stealth Cloud Renderers: 34.*/35.* GCP & 136.65.*)",
+                cloud_triggers,
+            ))
+            js_rows.sort(key=lambda item: int(item[1]), reverse=True)
+        total_js_execs = max(1, sum(int(c) for _, c in js_rows))
+        js_horizon_hits = js_telem_hits if js_telem_hits > 0 else total_js_execs
+        js_pct = round((js_horizon_hits / max(1, total_hits)) * 100.0, 2)
+        js_horizon_1pct = min(100.0, round((js_pct / 1.0) * 100.0, 1))
+
+        title_str = "⚡ JAVASCRIPT DOM HYDRATION TRAPDOOR (0% → 1.0% OF ALL HTTP RESPONSES) & EXECUTOR BREAKDOWN"
+        tbl.add_column("Execs", justify="right", style="bold yellow", width=8, no_wrap=True)
+        tbl.add_column("Horizon / Bot Identity", style="bold white", width=25, no_wrap=True)
+        tbl.add_column("Denominator Key / Grouped Executor Signature", ratio=4, no_wrap=True)
+        tbl.add_column("Horizontal Bar & Share", width=38, no_wrap=True)
+        tbl.add_row(
+            f"{js_horizon_hits:,}",
+            Text("🎯 0% → 1.0% HORIZON", style="bold bright_yellow"),
+            Text(
+                f"Share of all {total_hits:,} HTTP responses firing 800ms js_confirm.gif (not % of UAs)",
+                style="bold white",
+            ),
+            f"{_bar(js_horizon_1pct, 22, 'yellow')} [bold bright_yellow]{js_pct}% / 1.0%[/bold bright_yellow]",
+        )
         tbl.add_section()
-        max_md = max([int(c) for _, c in cneg_rows[:7]] or [1])
-        for ua, cnt in cneg_rows[:7]:
-            badge, ident_txt, sig_txt = _format_bot_identity_and_sig(ua, known_bots=KNOWN_BOTS, max_sig_len=56)
-            sensor_ident = Text.assemble(("🧠 ", "bold cyan"), ident_txt)
-            color = "red" if badge == "🛑" else ("deep_sky_blue1" if badge == "🔷" else "cyan")
-            tbl.add_row(f"{cnt:,}", sensor_ident, sig_txt, _bar((cnt / max_md) * 100.0, 24, color))
+        max_js = max([int(c) for _, c in js_rows[:10]] or [1])
+        for ua, cnt in js_rows[:10]:
+            if "Stealth Cloud Renderers" in str(ua):
+                badge = "🟠"
+                ident_txt = Text("🟠 Cloud Chrome/Edge", style="bold orange1")
+                sig_txt = Text.assemble(
+                    (f"+{max(0, cloud_ips - 1)} IPs ", "bold bright_yellow"),
+                    ("Unbadged GCP 34.*/35.* & 136.65.* headless Chrome/Edge fleet", "dim green"),
+                )
+            else:
+                badge, ident_txt, sig_txt = _format_bot_identity_and_sig(ua, known_bots=KNOWN_BOTS, max_sig_len=50)
+            sensor_ident = Text.assemble(("⚡ ", "bold yellow"), ident_txt)
+            color = "red" if badge == "🛑" else ("deep_sky_blue1" if badge == "🔷" else "yellow")
+            share_of_js = round((int(cnt) / max(1, total_js_execs)) * 100.0, 1)
+            tbl.add_row(
+                f"{int(cnt):,}",
+                sensor_ident,
+                sig_txt,
+                f"{_bar((int(cnt) / max_js) * 100.0, 22, color)} [{color}]{share_of_js:>4.1f}% of JS[/{color}]",
+            )
     elif mode == "rfc9421":
         title_str = "🔷 RFC 9421 WEB BOT AUTH SIGNERS & 🛑 UNMASKED IP CLOAKERS"
         tbl.add_column("Events", justify="right", style="bold deep_sky_blue1", width=7, no_wrap=True)
@@ -533,7 +594,17 @@ def _build_station_report_panel(mode="overview", panel_width=None):
         cur.execute("SELECT COALESCE(SUM(count), 0) FROM daily_logs")
         total_hits = int((cur.fetchone() or [1])[0] or 1)
 
-        cur.execute("SELECT COALESCE(SUM(l.count), 0) FROM daily_logs l JOIN paths p ON l.path_id = p.id WHERE p.value LIKE '%.md%'")
+        cur.execute(
+            """
+            SELECT COALESCE(SUM(t.count), 0)
+            FROM telemetry t
+            JOIN ips i ON t.ip_id = i.id
+            WHERE t.served_md = 1
+              AND i.value NOT LIKE '127.%'
+              AND i.value NOT LIKE '10.%'
+              AND i.value NOT LIKE '192.168.%'
+            """
+        )
         md_reads = int((cur.fetchone() or [0])[0] or 0)
         md_pct = round((md_reads / max(1, total_hits)) * 100.0, 2)
         md_horizon_1pct = min(100.0, round((md_pct / 1.0) * 100.0, 1))
