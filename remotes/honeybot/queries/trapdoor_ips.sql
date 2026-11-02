@@ -15,6 +15,8 @@ SELECT
         THEN 'meta-webindexer/1.1 (+https://developers.facebook.com/docs/sharing/webmasters/crawler)'
         WHEN ua.value LIKE '%Bytespider%'
         THEN 'Bytespider (+https://zhanzhang.toutiao.com/)'
+        WHEN ua.value LIKE '%ClaudeBot%'
+        THEN 'ClaudeBot/1.0 (+claudebot@anthropic.com)'
         WHEN ua.value LIKE '%HeadlessChrome%'
         THEN 'HeadlessChrome/* (X11; Linux x86_64)'
         WHEN ua.value LIKE '%TikTokSpider%'
@@ -51,6 +53,18 @@ WHERE p.value LIKE '%js_confirm.gif%'
   AND i.value NOT LIKE '192.168.%'
   AND ua.value NOT LIKE '%Ubuntu%'
   AND ua.value NOT LIKE '%iPad%'
+  AND NOT (
+      ua.value LIKE 'Mozilla%'
+      AND ua.value NOT LIKE '%compatible%'
+      AND ua.value NOT LIKE '%Bot%'
+      AND ua.value NOT LIKE '%Spider%'
+      AND ua.value NOT LIKE '%Crawler%'
+      AND ua.value NOT LIKE '%agent%'
+      AND ua.value NOT LIKE '%HeadlessChrome%'
+      AND i.value NOT LIKE '34.%'
+      AND i.value NOT LIKE '35.%'
+      AND i.value NOT LIKE '136.65.%'
+  )
 GROUP BY agent
 ORDER BY triggers DESC
 LIMIT 25;
