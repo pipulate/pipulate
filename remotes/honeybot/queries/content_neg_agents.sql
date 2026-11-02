@@ -49,6 +49,10 @@ WHERE t.served_md = 1
   AND NOT (
       ua.value LIKE 'Mozilla%'
       AND ua.value NOT LIKE '%compatible%'
+      AND ua.value NOT LIKE '%Bot%'
+      AND ua.value NOT LIKE '%Spider%'
+      AND ua.value NOT LIKE '%Crawler%'
+      AND ua.value NOT LIKE '%Claude%'
       AND (
           ua.value LIKE '%Windows NT%' OR
           ua.value LIKE '%Macintosh%' OR
