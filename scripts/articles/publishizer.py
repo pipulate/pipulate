@@ -344,7 +344,7 @@ def sync_observatory_metrics(target_key, target_path, verbose=False):
             '        <text x="290" y="20" class="kpi-tick">3.75%</text>\n'
             '        <text x="378" y="20" class="kpi-tick">5.0%</text>\n'
             '      </svg>\n'
-            f'      <div class="kpi-lbl"><strong>⚡ JavaScript DOM Hydration Trapdoor:</strong> Share of all {eligible_html_m} HTML page responses that <em>could</em> hydrate the DOM (because they received our 800ms <code>js_confirm.gif</code> script) that actually executed client-side JS — led by meta-externalagent ({meta_js_val:,}), OAI-SearchBot ({oai_js_val:,}), Cloud Chrome/Edge ({cloud_js_val:,}), and GPTBot ({gpt_js_val:,}).</div>\n'
+            f'      <div class="kpi-lbl"><strong>⚡ JavaScript DOM Hydration Trapdoor:</strong> Share of all {eligible_html_m} HTML page responses that <em>could</em> hydrate the DOM (because they received our 800ms <code>js_confirm.gif</code> script) that actually executed client-side JS — led by meta-externalagent ({meta_js_val:,}), OAI-SearchBot ({oai_js_val:,}), Cloud Chrome/Edge ({cloud_js_val:,}), GPTBot ({gpt_js_val:,}), and ClaudeBot (159).</div>\n'
             '    </div>\n'
             '  </div>\n'
             '</div>\n'
