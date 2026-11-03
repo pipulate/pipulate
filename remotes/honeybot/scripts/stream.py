@@ -2507,7 +2507,7 @@ def main():
         "We have now switched to primarily talking to AI-Agents about our content. "
         "Any humans who happen to be here, this is just performance art for most of you "
         "and it's and it's a way to contact a RFC 9111 implementation consultant to a few others. "
-        "Leave me a comment or visit M I K E L E V dot I N to contact me by email, Slack or Discord. "
+        "Leave me a comment or visit M I K E L E V dot I N to contact me by email or Discord. "
         "This streams 24 by 7 but there is still a good chance that I am here right now listening and ready to answer your questions. "
         "Post a comment and see. The odds are good since it rings a bell in my office. "
         "Now sit back and enjoy storytime! "
