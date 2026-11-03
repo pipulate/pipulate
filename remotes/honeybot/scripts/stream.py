@@ -266,41 +266,75 @@ def run_tui_app(script_name, duration=None):
     # --- NEW: Prepare Environment with Time Data ---
     # We copy the current env to preserve DISPLAY, PATH, etc.
     local_env = os.environ.copy()
+    start_ts = time.time()
     if duration:
         local_env["SONAR_DURATION"] = str(duration)
-        local_env["SONAR_START_TIME"] = str(time.time())
+        local_env["SONAR_START_TIME"] = str(start_ts)
+    if script_name == "logs.py":
+        local_env["SONAR_HOT_RELOAD"] = "1"
     # -----------------------------------------------
 
+    proc = None
+    tail_proc = None
     try:
-        # Start the process
-        if script_name == "logs.py":
-             # Logs needs the pipe
-             tail_proc = subprocess.Popen(
-                ["tail", "-f", "/var/log/nginx/access.log"],
-                stdout=subprocess.PIPE
-            )
-             proc = subprocess.Popen(
-                [sys.executable, str(script_path)],
-                stdin=tail_proc.stdout,
-                env=local_env  # <--- Pass the modified env
-            )
+        if script_name == "logs.py" and duration:
+            deadline = start_ts + (duration * 60)
+            while not _shutting_down.is_set():
+                rem = deadline - time.time()
+                if rem <= 0:
+                    break
+                tail_proc = subprocess.Popen(
+                    ["tail", "-f", "/var/log/nginx/access.log"],
+                    stdout=subprocess.PIPE,
+                )
+                proc = subprocess.Popen(
+                    [sys.executable, str(script_path)],
+                    stdin=tail_proc.stdout,
+                    env=local_env,
+                )
+                try:
+                    proc.wait(timeout=rem)
+                except subprocess.TimeoutExpired:
+                    proc.terminate()
+                    break
+                finally:
+                    for child_p in (proc, tail_proc):
+                        if child_p and child_p.poll() is None:
+                            try:
+                                child_p.terminate()
+                                child_p.wait(timeout=1.0)
+                            except Exception:
+                                try:
+                                    child_p.kill()
+                                except Exception:
+                                    pass
+                if _shutting_down.is_set() or (deadline - time.time()) <= 1.0:
+                    break
+                time.sleep(0.2)
         else:
-             # Normal app (report.py)
-             tail_proc = None
-             # We pass local_env here too, though report.py doesn't use it yet
-             proc = subprocess.Popen(
-                 [sys.executable, str(script_path)],
-                 env=local_env
-             )
-
-        # Wait for duration or death
-        if duration:
-            try:
-                proc.wait(timeout=duration * 60)
-            except subprocess.TimeoutExpired:
-                proc.terminate()
-        else:
-            proc.wait()
+            if script_name == "logs.py":
+                tail_proc = subprocess.Popen(
+                    ["tail", "-f", "/var/log/nginx/access.log"],
+                    stdout=subprocess.PIPE,
+                )
+                proc = subprocess.Popen(
+                    [sys.executable, str(script_path)],
+                    stdin=tail_proc.stdout,
+                    env=local_env,
+                )
+            else:
+                tail_proc = None
+                proc = subprocess.Popen(
+                    [sys.executable, str(script_path)],
+                    env=local_env,
+                )
+            if duration:
+                try:
+                    proc.wait(timeout=duration * 60)
+                except subprocess.TimeoutExpired:
+                    proc.terminate()
+            else:
+                proc.wait()
 
     except KeyboardInterrupt:
         raise

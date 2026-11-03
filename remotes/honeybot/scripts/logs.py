@@ -196,7 +196,7 @@ def _cells_to_rich_text(grid_rows, fallback_style: str) -> Text:
 
 
 def _bake_doom_fire_timeline(led_rows, width: int, base_style: str, effect: str, still_txt: Text, seed: int = 0):
-    """Pre-bake a 56-tick timeline using PSX DOOM cellular automata (fire[i - decay] = below - decay)."""
+    """Pre-bake a 56-tick timeline with bilateral PSX DOOM fire (12 entry ticks + 32 still ticks + 12 exit ticks)."""
     if effect not in ("subtle", "dramatic") or width <= 0 or len(led_rows) != 5:
         return (still_txt,) * CARD_HOLD_TICKS
     active_xs = [x for r in led_rows for x, ch in enumerate(r[:width]) if ch == "█"]
@@ -205,69 +205,76 @@ def _bake_doom_fire_timeline(led_rows, width: int, base_style: str, effect: str,
     fire_min_x = max(0, min(active_xs) - 2)
     fire_max_x = min(width - 1, max(active_xs) + 2)
     rng = random.Random(1337 + seed)
-    fire = [0] * (5 * width)
-    frames = []
-    if effect == "subtle":
-        for step in range(FIRE_TICKS):
-            cooling_phase = step >= (FIRE_TICKS - 4)
+
+    # 1. ENTRY FIRE (12 ticks): Flames rise from the ember bed and forge/summon the LED card IN
+    fire_in = [0] * (5 * width)
+    entry_frames = []
+    for step in range(FIRE_TICKS):
+        cooling_phase = step >= (FIRE_TICKS - 4)
+        reveal_top_y = max(0, 4 - step) if effect == "subtle" else (max(0, 4 - (step // 2)) if step < 8 else 0)
+        for x in range(fire_min_x, fire_max_x + 1):
+            if cooling_phase:
+                fire_in[4 * width + x] = max(0, fire_in[4 * width + x] - rng.randint(1, 3))
+            elif led_rows[4][x] == "█" or led_rows[3][x] == "█":
+                fire_in[4 * width + x] = rng.choice((5, 6, 7)) if effect == "dramatic" else rng.choice((4, 5, 6, 7))
+            else:
+                fire_in[4 * width + x] = rng.choice((2, 4, 5, 6)) if effect == "dramatic" else rng.choice((0, 2, 3, 4, 5))
+        prop_rows = range(4) if effect == "dramatic" else (1, 2, 3)
+        for y in prop_rows:
             for x in range(fire_min_x, fire_max_x + 1):
-                if cooling_phase:
-                    fire[4 * width + x] = max(0, fire[4 * width + x] - rng.randint(1, 3))
-                elif led_rows[4][x] == "█" or led_rows[3][x] == "█":
-                    fire[4 * width + x] = rng.choice((4, 5, 6, 7))
-                else:
-                    fire[4 * width + x] = rng.choice((0, 2, 3, 4, 5))
-            for y in (2, 3):
-                for x in range(fire_min_x, fire_max_x + 1):
-                    i = y * width + x
-                    below = fire[i + width]
-                    decay = int(rng.random() * 3)
-                    dst = max(y * width, i - decay)
-                    cool = decay + (1 if y == 2 else 0)
-                    fire[dst] = max(0, below - cool)
-            grid = []
-            for y in range(5):
-                row_cells = []
-                for x in range(width):
-                    if led_rows[y][x] == "█":
-                        heat = fire[y * width + x]
-                        if y >= 3 and heat >= 6:
-                            row_cells.append(("█", "bold #ffffff"))
-                        elif y >= 3 and heat >= 4:
-                            row_cells.append(("█", "bold #ffff00"))
-                        else:
-                            row_cells.append(("█", base_style))
+                i = y * width + x
+                below = fire_in[i + width]
+                decay = int(rng.random() * 3)
+                dst = max(y * width, i - decay)
+                cool = decay + (1 if (effect == "subtle" and y <= 2) else 0)
+                fire_in[dst] = max(0, below - cool)
+        grid = []
+        for y in range(5):
+            row_cells = []
+            for x in range(width):
+                if y >= reveal_top_y and led_rows[y][x] == "█":
+                    heat = fire_in[y * width + x]
+                    if y == reveal_top_y and step < 6:
+                        row_cells.append(("█", "bold #ffffff"))
+                    elif y >= 3 and heat >= 6:
+                        row_cells.append(("█", "bold #ffffff"))
+                    elif y >= 3 and heat >= 4:
+                        row_cells.append(("█", "bold #ffff00"))
                     else:
-                        heat = fire[y * width + x] if y >= 2 else 0
-                        if heat > 0:
-                            row_cells.append(DOOM_FIRE_PALETTE[min(7, heat)])
-                        else:
-                            row_cells.append((" ", base_style))
-                grid.append(row_cells)
-            frames.append(_cells_to_rich_text(grid, base_style))
-        rem = max(0, CARD_HOLD_TICKS - len(frames))
-        return tuple(frames) + (still_txt,) * rem
+                        row_cells.append(("█", base_style))
+                else:
+                    heat = fire_in[y * width + x] if (effect == "dramatic" or y >= 1) else 0
+                    if heat > 0:
+                        row_cells.append(DOOM_FIRE_PALETTE[min(7, heat)])
+                    else:
+                        row_cells.append((" ", base_style))
+            grid.append(row_cells)
+        entry_frames.append(_cells_to_rich_text(grid, base_style))
+
+    # 2. EXIT FIRE (12 ticks): Card catches fire and burns down to rising embers as it goes away
+    fire_out = [0] * (5 * width)
+    exit_frames = []
     for y in range(5):
         for x in range(width):
             if led_rows[y][x] == "█":
-                fire[y * width + x] = 7
+                fire_out[y * width + x] = 7
     for step in range(FIRE_TICKS):
         solid_cutoff = 3 - step
         if step < 9:
             for x in range(fire_min_x, fire_max_x + 1):
                 if led_rows[4][x] == "█" or led_rows[3][x] == "█" or rng.random() < 0.35:
-                    fire[4 * width + x] = rng.randint(5, 7) if step < 4 else rng.randint(2, 5)
+                    fire_out[4 * width + x] = rng.randint(5, 7) if step < 4 else rng.randint(2, 5)
         else:
             for x in range(fire_min_x, fire_max_x + 1):
-                fire[4 * width + x] = max(0, fire[4 * width + x] - rng.randint(1, 2))
+                fire_out[4 * width + x] = max(0, fire_out[4 * width + x] - rng.randint(1, 2))
         for y in range(4):
             for x in range(fire_min_x, fire_max_x + 1):
                 i = y * width + x
-                below = fire[i + width]
+                below = fire_out[i + width]
                 decay = int(rng.random() * 3)
                 dst = max(y * width, i - decay)
                 step_cool = decay if step < 7 else max(1, decay)
-                fire[dst] = max(0, below - step_cool)
+                fire_out[dst] = max(0, below - step_cool)
         grid = []
         for y in range(5):
             row_cells = []
@@ -276,15 +283,16 @@ def _bake_doom_fire_timeline(led_rows, width: int, base_style: str, effect: str,
                     st = "bold #ffffff" if y == solid_cutoff else base_style
                     row_cells.append(("█", st))
                 else:
-                    heat = fire[y * width + x]
+                    heat = fire_out[y * width + x]
                     if heat > 0:
                         row_cells.append(DOOM_FIRE_PALETTE[min(7, heat)])
                     else:
                         row_cells.append((" ", base_style))
             grid.append(row_cells)
-        frames.append(_cells_to_rich_text(grid, base_style))
-    hold_lead = max(0, CARD_HOLD_TICKS - len(frames))
-    return (still_txt,) * hold_lead + tuple(frames)
+        exit_frames.append(_cells_to_rich_text(grid, base_style))
+
+    still_hold = max(1, CARD_HOLD_TICKS - len(entry_frames) - len(exit_frames))
+    return tuple(entry_frames) + (still_txt,) * still_hold + tuple(exit_frames)
 
 # A hidden console to render styles into ANSI codes for the Log widget
 # We set a massive width to prevent the console from hard-wrapping the text before the Log widget gets it
@@ -461,6 +469,10 @@ class SonarApp(App):
         self.is_fire_burning = False
         self.pending_log_buffer = deque(maxlen=64)
         self.pending_table_refresh = False
+        try:
+            self.script_mtime = os.stat(__file__).st_mtime
+        except OSError:
+            self.script_mtime = None
         self._reload_ticker_source(force=True)
         self.set_interval(0.08, self.tick_marquee)
         self.set_interval(1, self.update_countdown)
@@ -504,7 +516,14 @@ class SonarApp(App):
 
 
     def _reload_ticker_source(self, force=False):
-        """Check /tmp/honeybot_ticker.txt mtime and rebuild the double-buffered LED frames only when changed."""
+        """Check /tmp/honeybot_ticker.txt mtime (and logs.py mtime for hot-reload) and rebuild frames when changed."""
+        if not force and getattr(self, "script_mtime", None) is not None and os.environ.get("SONAR_HOT_RELOAD") == "1":
+            try:
+                if os.stat(__file__).st_mtime != self.script_mtime:
+                    self.exit()
+                    return
+            except OSError:
+                pass
         try:
             st_mtime = os.stat(TICKER_FILE_PATH).st_mtime if os.path.exists(TICKER_FILE_PATH) else -1.0
         except OSError:
@@ -955,10 +974,11 @@ class SonarApp(App):
         if getattr(self, "is_fire_burning", False):
             self.pending_log_buffer.append(text)
             return
-        log = self.query_one(RichLog)
         if getattr(self, "pending_log_buffer", None):
-            while self.pending_log_buffer:
-                log.write(self.pending_log_buffer.popleft())
+            self.pending_log_buffer.append(text)
+            self._flush_fire_hold_queues()
+            return
+        log = self.query_one(RichLog)
         log.write(text)
 
     def format_log_line(self, data):
