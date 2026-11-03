@@ -1878,9 +1878,12 @@ def fetch_youtube_live_state(channel_or_url=None):
                     if isinstance(cont.get(k), dict) and cont[k].get("continuation"):
                         chat_continuation = str(cont[k]["continuation"])
                         break
+    html_viewers = concurrent_viewers
+    api_viewers = None
     if is_live and video_id:
         fast_vc = _fetch_yt_concurrent_viewers_fast(video_id)
         if fast_vc is not None:
+            api_viewers = fast_vc
             concurrent_viewers = fast_vc
     chat_messages = _fetch_yt_chat_messages(chat_continuation) if (is_live and chat_continuation) else []
     comment_count = None
@@ -1907,6 +1910,8 @@ def fetch_youtube_live_state(channel_or_url=None):
         "title": title,
         "author": author,
         "concurrent_viewers": concurrent_viewers,
+        "html_viewers": html_viewers,
+        "api_viewers": api_viewers,
         "chat_messages": chat_messages,
         "comment_count": comment_count,
     }
@@ -2246,6 +2251,11 @@ def _manage_ytwatch_daemon(action, interval=30, channel=None):
 _last_weebo_trigger_ts = 0.0
 
 
+def _ytlog_ts():
+    """Return local YYYY-MM-DD HH:MM:SS timestamp for ytlog telemetry lines."""
+    return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+
 def _trigger_ytwatch_weebo(weebo_spec=None, duration=None):
     """Fire an undampened non-blocking centered Weebo popup on Honeybot :10.0, guarded against mid-clip clobbering."""
     global _last_weebo_trigger_ts
@@ -2260,7 +2270,7 @@ def _trigger_ytwatch_weebo(weebo_spec=None, duration=None):
     elapsed = now_ts - _last_weebo_trigger_ts
     if _last_weebo_trigger_ts > 0 and elapsed < YT_WEEBO_CLOBBER_GUARD:
         print(
-            f"🛡️ [WEEBO GUARD] Cooldown active ({elapsed:.0f}s < {YT_WEEBO_CLOBBER_GUARD}s) — skipping overlapping trigger.",
+            f"[{_ytlog_ts()}] 🛡️ [WEEBO GUARD] Cooldown active ({elapsed:.0f}s < {YT_WEEBO_CLOBBER_GUARD}s) — skipping overlapping trigger.",
             flush=True,
         )
         return
@@ -2301,7 +2311,7 @@ def _trigger_ytwatch_weebo(weebo_spec=None, duration=None):
             start_new_session=True,
         )
         dur_lbl = f"{duration:g}s" if duration is not None else "full-clip"
-        print(f"🎭 [WEEBO] Auto-popped '{chosen}' ({dur_lbl}) on Honeybot :10.0 for viewer arrival!", flush=True)
+        print(f"[{_ytlog_ts()}] 🎭 [WEEBO] Auto-popped '{chosen}' ({dur_lbl}) on Honeybot :10.0 for viewer arrival!", flush=True)
     except Exception:
         pass
 
@@ -2371,9 +2381,10 @@ def run_youtube_watch(
     )
     c_str = f" | comments={state['comment_count']}" if state["comment_count"] is not None else ""
     d_str = " | daemon=RUNNING" if daemon_running else ""
+    v_src = f"api={state.get('api_viewers')}, html={state.get('html_viewers')}"
     print(
-        f"📡 YouTube Watch: LIVE={'yes' if state['is_live'] else 'no'} | "
-        f"video={state['video_id'] or 'NONE'} | viewers={state['concurrent_viewers']} (alert>={YT_VIEWER_ALERT_MIN} for {YT_VIEWER_ALERT_DWELL}s) | "
+        f"[{_ytlog_ts()}] 📡 YouTube Watch: LIVE={'yes' if state['is_live'] else 'no'} | "
+        f"video={state['video_id'] or 'NONE'} | viewers={state['concurrent_viewers']} ({v_src}; alert>={YT_VIEWER_ALERT_MIN} for {YT_VIEWER_ALERT_DWELL}s) | "
         f"chat_items={len(state['chat_messages'])}{c_str}{d_str} | title={state['title']!r}"
     )
     if not loop:
@@ -2412,7 +2423,7 @@ def run_youtube_watch(
         seen_ids.add(m["id"])
     if state["is_live"] and state["concurrent_viewers"] > prev_viewers:
         print(
-            f"📈 [VIEWER +{state['concurrent_viewers'] - prev_viewers}] "
+            f"[{_ytlog_ts()}] 📈 [VIEWER +{state['concurrent_viewers'] - prev_viewers}] "
             f"{prev_viewers} -> {state['concurrent_viewers']} watching — firing hairline Weebo trigger!",
             flush=True,
         )
@@ -2434,10 +2445,58 @@ def run_youtube_watch(
     full_interval = max(fast_step, int(interval))
     sub_polls = max(1, full_interval // fast_step)
     print(
-        f"🔭 Watching {resolved_channel} (fast viewer pulse every {fast_step}s, "
-        f"full sync every {full_interval}s, dwell={YT_VIEWER_ALERT_DWELL}s)..."
+        f"[{_ytlog_ts()}] 🔭 Watching {resolved_channel} (fast InnerTube pulse every {fast_step}s, "
+        f"full HTML+chat sync every {full_interval}s, dwell={YT_VIEWER_ALERT_DWELL}s)..."
     )
-    print("💡 [HOW TO EXIT TMUX WITHOUT STOPPING]: Press 'q' OR press Ctrl+b, release, then press d")
+    print(f"[{_ytlog_ts()}] 💡 [HOW TO EXIT TMUX WITHOUT STOPPING]: Press 'q' OR press Ctrl+b, release, then press d")
+
+    def _check_dwell(v_now, ts_now):
+        nonlocal dwell_window, alerted_in_run, peak_viewers, last_viewer_alert
+        if v_now >= YT_VIEWER_ALERT_MIN:
+            dwell_window.append((ts_now, v_now))
+            cutoff_ts = ts_now - max(YT_VIEWER_ALERT_DWELL * 3, int(interval) * 4)
+            dwell_window = [(ts, v) for ts, v in dwell_window if ts >= cutoff_ts]
+            if len(dwell_window) == 1 and YT_VIEWER_ALERT_DWELL > 0:
+                print(
+                    f"[{_ytlog_ts()}] ⏳ [VIEWER DWELL] {v_now} watching (min={YT_VIEWER_ALERT_MIN}) — "
+                    f"holding {YT_VIEWER_ALERT_DWELL}s to confirm they stick around...",
+                    flush=True,
+                )
+            sustained = _sustained_viewer_count(dwell_window, ts_now, YT_VIEWER_ALERT_DWELL)
+            cooldown_ok = (ts_now - last_viewer_alert) > YT_VIEWER_ALERT_COOLDOWN
+            if sustained >= YT_VIEWER_ALERT_MIN and (not alerted_in_run or sustained > peak_viewers) and cooldown_ok:
+                alerted_in_run = True
+                peak_viewers = max(peak_viewers, sustained)
+                last_viewer_alert = ts_now
+                dwell_elapsed = int(round(ts_now - dwell_window[0][0]))
+                alert_msg = (
+                    f"{v_now} watching now (sustained >={dwell_elapsed}s, min={YT_VIEWER_ALERT_MIN}) — "
+                    f"{state['title']}"
+                )
+                print(f"[{_ytlog_ts()}] 👀 [VIEWER] {alert_msg}", flush=True)
+                spoken_v = SPOKEN_ALERT_TABLE["viewers_threshold"].format(
+                    count=v_now, min_viewers=YT_VIEWER_ALERT_MIN
+                )
+                _play_local_ding(ding, spoken_text=spoken_v)
+                if resolved_topic:
+                    send_ntfy_notification(
+                        alert_msg,
+                        title="👀 Honeybot Live Viewer",
+                        priority="default",
+                        tags="eyes",
+                        topic=resolved_topic,
+                    )
+        else:
+            if dwell_window and not alerted_in_run and YT_VIEWER_ALERT_DWELL > 0:
+                dwell_elapsed = int(round(ts_now - dwell_window[0][0]))
+                print(
+                    f"[{_ytlog_ts()}] 💨 [VIEWER DWELL] Dropped to {v_now} after {dwell_elapsed}s "
+                    f"(<{YT_VIEWER_ALERT_DWELL}s dwell) — notification suppressed.",
+                    flush=True,
+                )
+            dwell_window.clear()
+            alerted_in_run = False
+
     try:
         while True:
             cur_vid = state.get("video_id") if state.get("is_live") else ""
@@ -2448,73 +2507,50 @@ def run_youtube_watch(
                 fast_v = _fetch_yt_concurrent_viewers_fast(cur_vid)
                 if fast_v is None:
                     continue
+                fast_ts = time.time()
                 if fast_v > prev_viewers:
                     print(
-                        f"⚡ [FAST VIEWER +{fast_v - prev_viewers}] {prev_viewers} -> {fast_v} watching ({fast_step}s pulse) — firing hairline Weebo trigger!",
+                        f"[{_ytlog_ts()}] ⚡ [FAST VIEWER +{fast_v - prev_viewers}] {prev_viewers} -> {fast_v} watching ({fast_step}s InnerTube pulse) — firing hairline Weebo trigger!",
                         flush=True,
                     )
                     _trigger_ytwatch_weebo()
+                elif fast_v < prev_viewers:
+                    print(
+                        f"[{_ytlog_ts()}] 📉 [FAST VIEWER -{prev_viewers - fast_v}] {prev_viewers} -> {fast_v} watching ({fast_step}s InnerTube pulse)",
+                        flush=True,
+                    )
                 prev_viewers = fast_v
+                _check_dwell(fast_v, fast_ts)
             time.sleep(fast_step)
             poll_ts = time.time()
             try:
                 state = fetch_youtube_live_state(resolved_channel)
             except Exception as exc:
-                print(f"⚠️ Poll error: {exc}")
+                print(f"[{_ytlog_ts()}] ⚠️ Poll error: {exc}", flush=True)
                 continue
             viewers = state["concurrent_viewers"]
             now = time.time()
+            src_cmp = f"api={state.get('api_viewers')}, html={state.get('html_viewers')}"
             if viewers > prev_viewers:
                 print(
-                    f"📈 [VIEWER +{viewers - prev_viewers}] {prev_viewers} -> {viewers} watching — firing hairline Weebo trigger!",
+                    f"[{_ytlog_ts()}] 📈 [VIEWER +{viewers - prev_viewers}] {prev_viewers} -> {viewers} watching ({src_cmp}) — firing hairline Weebo trigger!",
                     flush=True,
                 )
                 _trigger_ytwatch_weebo()
-            prev_viewers = viewers
-            if viewers >= YT_VIEWER_ALERT_MIN:
-                dwell_window.append((poll_ts, viewers))
-                cutoff_ts = poll_ts - max(YT_VIEWER_ALERT_DWELL * 3, int(interval) * 4)
-                dwell_window = [(ts, v) for ts, v in dwell_window if ts >= cutoff_ts]
-                if len(dwell_window) == 1 and YT_VIEWER_ALERT_DWELL > 0:
-                    print(
-                        f"⏳ [VIEWER DWELL] {viewers} watching (min={YT_VIEWER_ALERT_MIN}) — "
-                        f"holding {YT_VIEWER_ALERT_DWELL}s to confirm they stick around...",
-                        flush=True,
-                    )
-                sustained = _sustained_viewer_count(dwell_window, poll_ts, YT_VIEWER_ALERT_DWELL)
-                cooldown_ok = (now - last_viewer_alert) > YT_VIEWER_ALERT_COOLDOWN
-                if sustained >= YT_VIEWER_ALERT_MIN and (not alerted_in_run or sustained > peak_viewers) and cooldown_ok:
-                    alerted_in_run = True
-                    peak_viewers = max(peak_viewers, sustained)
-                    last_viewer_alert = now
-                    dwell_elapsed = int(round(poll_ts - dwell_window[0][0]))
-                    alert_msg = (
-                        f"{viewers} watching now (sustained >={dwell_elapsed}s, min={YT_VIEWER_ALERT_MIN}) — "
-                        f"{state['title']}"
-                    )
-                    print(f"👀 [VIEWER] {alert_msg}", flush=True)
-                    spoken_v = SPOKEN_ALERT_TABLE["viewers_threshold"].format(
-                        count=viewers, min_viewers=YT_VIEWER_ALERT_MIN
-                    )
-                    _play_local_ding(ding, spoken_text=spoken_v)
-                    if resolved_topic:
-                        send_ntfy_notification(
-                            alert_msg,
-                            title="👀 Honeybot Live Viewer",
-                            priority="default",
-                            tags="eyes",
-                            topic=resolved_topic,
-                        )
+            elif viewers < prev_viewers:
+                print(
+                    f"[{_ytlog_ts()}] 📉 [VIEWER -{prev_viewers - viewers}] {prev_viewers} -> {viewers} watching ({src_cmp})",
+                    flush=True,
+                )
             else:
-                if dwell_window and not alerted_in_run and YT_VIEWER_ALERT_DWELL > 0:
-                    dwell_elapsed = int(round(poll_ts - dwell_window[0][0]))
-                    print(
-                        f"💨 [VIEWER DWELL] Dropped to {viewers} after {dwell_elapsed}s "
-                        f"(<{YT_VIEWER_ALERT_DWELL}s dwell) — notification suppressed.",
-                        flush=True,
-                    )
-                dwell_window.clear()
-                alerted_in_run = False
+                dwell_s = int(round(poll_ts - dwell_window[0][0])) if dwell_window else 0
+                dwell_tag = f", dwell={dwell_s}s/{YT_VIEWER_ALERT_DWELL}s" if dwell_window else ""
+                print(
+                    f"[{_ytlog_ts()}] 💓 [PULSE] viewers={viewers} ({src_cmp}, peak={peak_viewers}{dwell_tag}) | chat={len(state['chat_messages'])} | video={state['video_id'] or 'NONE'}",
+                    flush=True,
+                )
+            prev_viewers = viewers
+            _check_dwell(viewers, poll_ts)
             for msg in state["chat_messages"]:
                 if msg["id"] in seen_ids:
                     continue
@@ -2522,7 +2558,7 @@ def run_youtube_watch(
                 if _is_self_chat_author(msg["author"], state.get("author")):
                     continue
                 chat_line = f"{msg['author']}: {msg['text']}"
-                print(f"💬 [CHAT] {chat_line}", flush=True)
+                print(f"[{_ytlog_ts()}] 💬 [CHAT] {chat_line}", flush=True)
                 print(f"   ↳ Reply on-air: ytsay \"Hey {msg['author']}, thanks for tuning in!\"", flush=True)
                 _play_local_ding(
                     ding,
@@ -2540,7 +2576,7 @@ def run_youtube_watch(
             if prev_comments is not None and cur_comments is not None and cur_comments > prev_comments:
                 diff = cur_comments - prev_comments
                 c_msg = f"+{diff} new comment(s) on {state['title']} (total: {cur_comments})"
-                print(f"📝 [COMMENT] {c_msg}", flush=True)
+                print(f"[{_ytlog_ts()}] 📝 [COMMENT] {c_msg}", flush=True)
                 _play_local_ding(
                     ding,
                     spoken_text=SPOKEN_ALERT_TABLE["live_comment"].format(author="a viewer"),
@@ -2574,7 +2610,7 @@ def run_youtube_watch(
                     if rts > last_ref_ts and rsrc in SPOKEN_ALERT_TABLE:
                         max_ref_ts = max(max_ref_ts, rts)
                         ref_msg = f"Inbound click ({rsrc}) -> {rpath}"
-                        print(f"🔗 [REFERRAL] {ref_msg}", flush=True)
+                        print(f"[{_ytlog_ts()}] 🔗 [REFERRAL] {ref_msg}", flush=True)
                         _play_local_ding(ding, spoken_text=SPOKEN_ALERT_TABLE[rsrc])
                         if resolved_topic:
                             send_ntfy_notification(
