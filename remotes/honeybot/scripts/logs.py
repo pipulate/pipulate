@@ -253,20 +253,20 @@ def _bake_doom_fire_timeline(led_rows, width: int, base_style: str, effect: str,
                 fire[y * width + x] = 7
     for step in range(FIRE_TICKS):
         solid_cutoff = 3 - step
-        if step < 6:
+        if step < 9:
             for x in range(fire_min_x, fire_max_x + 1):
                 if led_rows[4][x] == "█" or led_rows[3][x] == "█" or rng.random() < 0.35:
-                    fire[4 * width + x] = rng.randint(5, 7) if step < 3 else rng.randint(3, 5)
+                    fire[4 * width + x] = rng.randint(5, 7) if step < 4 else rng.randint(2, 5)
         else:
             for x in range(fire_min_x, fire_max_x + 1):
-                fire[4 * width + x] = max(0, fire[4 * width + x] - rng.randint(2, 3))
+                fire[4 * width + x] = max(0, fire[4 * width + x] - rng.randint(1, 2))
         for y in range(4):
             for x in range(fire_min_x, fire_max_x + 1):
                 i = y * width + x
                 below = fire[i + width]
                 decay = int(rng.random() * 3)
                 dst = max(y * width, i - decay)
-                step_cool = decay if step < 4 else max(1, decay)
+                step_cool = decay if step < 7 else max(1, decay)
                 fire[dst] = max(0, below - step_cool)
         grid = []
         for y in range(5):
@@ -557,16 +557,18 @@ class SonarApp(App):
                 width = 160
             self._rebuild_billboard_cache(width)
 
-    def _flush_fire_hold_queues(self):
-        """Flush any log lines or table refreshes deferred while DOOM fire was burning."""
+    def _flush_fire_hold_queues(self, max_lines: int = 12):
+        """Flush deferred log lines in bounded chunks and run deferred table refresh after card paint."""
         if getattr(self, "pending_log_buffer", None):
             try:
                 log = self.query_one(RichLog)
-                while self.pending_log_buffer:
+                flushed = 0
+                while self.pending_log_buffer and flushed < max_lines:
                     log.write(self.pending_log_buffer.popleft())
+                    flushed += 1
             except Exception:
                 pass
-        if getattr(self, "pending_table_refresh", False):
+        if not getattr(self, "pending_log_buffer", None) and getattr(self, "pending_table_refresh", False):
             self.refresh_tables()
 
     def tick_marquee(self):
@@ -580,7 +582,6 @@ class SonarApp(App):
                     still_frame = cur_card.get("still")
                     next_frame = timeline[self.ticker_hold_ticks % len(timeline)]
                     frame_changed = next_frame is not self.ticker_last_frame
-                    was_burning = self.is_fire_burning
                     self.is_fire_burning = (next_frame is not still_frame) or frame_changed
                     if frame_changed:
                         self.ticker_last_frame = next_frame
@@ -588,7 +589,7 @@ class SonarApp(App):
                             self.query_one("#ticker_bar", Static).update(next_frame)
                         except Exception:
                             pass
-                    elif was_burning and not self.is_fire_burning:
+                    elif not self.is_fire_burning and (self.pending_log_buffer or self.pending_table_refresh):
                         self._flush_fire_hold_queues()
                 return
             self.ticker_hold_ticks = 0
@@ -615,8 +616,6 @@ class SonarApp(App):
             self.is_fire_burning = first_frame is not next_card.get("still")
             self.ticker_last_frame = first_frame
             bar.update(first_frame)
-            if not self.is_fire_burning:
-                self._flush_fire_hold_queues()
             return
         self.is_fire_burning = False
 
