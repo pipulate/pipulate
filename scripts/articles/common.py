@@ -2366,7 +2366,8 @@ def run_youtube_watch(
     peak_viewers = int(persisted.get("peak_viewers") or 0) if same_video else 0
     prev_comments = persisted.get("comment_count") if same_video else state["comment_count"]
     last_viewer_alert = float(persisted.get("last_viewer_alert") or 0.0) if same_video else 0.0
-    alerted_in_run = bool(persisted.get("alerted_in_run")) if (same_video and state["concurrent_viewers"] >= YT_VIEWER_ALERT_MIN) else False
+    cooldown_active = (time.time() - last_viewer_alert) <= YT_VIEWER_ALERT_COOLDOWN
+    alerted_in_run = bool(persisted.get("alerted_in_run")) if (same_video and state["concurrent_viewers"] >= YT_VIEWER_ALERT_MIN and cooldown_active) else False
     prev_viewers = (
         int(persisted.get("concurrent_viewers"))
         if (same_video and persisted.get("concurrent_viewers") is not None)
@@ -2543,8 +2544,15 @@ def run_youtube_watch(
                     flush=True,
                 )
             else:
-                dwell_s = int(round(poll_ts - dwell_window[0][0])) if dwell_window else 0
-                dwell_tag = f", dwell={dwell_s}s/{YT_VIEWER_ALERT_DWELL}s" if dwell_window else ""
+                if alerted_in_run:
+                    dwell_tag = f", alerted@peak={peak_viewers}"
+                elif dwell_window:
+                    dwell_s = int(round(poll_ts - dwell_window[0][0]))
+                    cd_rem = max(0, int(round(YT_VIEWER_ALERT_COOLDOWN - (now - last_viewer_alert))))
+                    cd_str = f", cooldown={cd_rem}s" if (cd_rem > 0 and dwell_s >= YT_VIEWER_ALERT_DWELL) else ""
+                    dwell_tag = f", dwell={dwell_s}s/{YT_VIEWER_ALERT_DWELL}s{cd_str}"
+                else:
+                    dwell_tag = ""
                 print(
                     f"[{_ytlog_ts()}] 💓 [PULSE] viewers={viewers} ({src_cmp}, peak={peak_viewers}{dwell_tag}) | chat={len(state['chat_messages'])} | video={state['video_id'] or 'NONE'}",
                     flush=True,
