@@ -7,6 +7,7 @@ Tracks both Javascript Execution (Rendering) and Semantic Reading (Source).
 import sys
 import re
 import hashlib
+import random
 from datetime import datetime
 from collections import Counter
 import os 
@@ -28,7 +29,18 @@ HUD_PANEL_HEIGHT = HUD_TABLE_ROWS + 4  # +4 rows for top border, panel title, he
 BOT_IDENTITY_WIDTH = 21       # Emoji (2) + space (1) + 18-char bot name (trims 15 chars for Raw Signature)
 TICKER_FILE_PATH = "/tmp/honeybot_ticker.txt"
 CARD_HOLD_TICKS = 56  # 56 * 0.08s = ~4.5s still hold per card (0% CPU during hold)
+FIRE_TICKS = 12       # 12 * 0.08s = ~0.96s pre-baked PSX DOOM fire sequence
 CARD_STYLES = ("bold #ffd700", "bold #00ffff", "bold #ffae42")
+DOOM_FIRE_PALETTE = (
+    (" ", ""),               # 0: Cooled sky (background #140826)
+    ("░", "#570707"),        # 1: Charcoal ash (25% block)
+    ("░", "#8f1707"),        # 2: Dying ember (25% block)
+    ("▒", "#b71707"),        # 3: Deep DOOM red flame (50% block)
+    ("▒", "#df5707"),        # 4: Bright flame orange (50% block)
+    ("▓", "#df8707"),        # 5: Molten gold/amber (75% block)
+    ("▓", "#ffff00"),        # 6: Yellow-hot core (75% block)
+    ("█", "bold #ffffff"),   # 7: White-hot ignition (100% block)
+)
 DEFAULT_TICKER_MESSAGE = (
     "JUST GIVE 30 SECS... | "
     "HONEYBOT STORYTIME | "
@@ -149,6 +161,130 @@ def _center_led_rows(card_str: str, width: int):
     left_pad = " " * ((width - glyph_w) // 2)
     right_pad = " " * (width - glyph_w - len(left_pad))
     return tuple(left_pad + r + right_pad for r in raw_rows)
+
+
+def _classify_card_fire(card_text: str) -> str:
+    """Return 'dramatic', 'subtle', or 'none' for a 5-row LED billboard card."""
+    up = (card_text or "").upper()
+    if any(k in up for k in ("30 SECS", "GIVE 30", "BURN", "FIRE", "ASH")):
+        return "dramatic"
+    if any(k in up for k in ("SUMMON", "CHAT SUMMONS", "MIKE")):
+        if "MIKELEV" not in up:
+            return "subtle"
+    return "none"
+
+
+def _cells_to_rich_text(grid_rows, fallback_style: str) -> Text:
+    """Pack a 5-row grid of (char, style) pairs into a run-length-grouped Rich.Text."""
+    txt = Text()
+    for r_idx, row in enumerate(grid_rows):
+        if r_idx > 0:
+            txt.append("\n")
+        if not row:
+            continue
+        cur_chars = [row[0][0]]
+        cur_style = row[0][1]
+        for ch, st in row[1:]:
+            if st == cur_style:
+                cur_chars.append(ch)
+            else:
+                txt.append("".join(cur_chars), style=cur_style or fallback_style)
+                cur_chars = [ch]
+                cur_style = st
+        txt.append("".join(cur_chars), style=cur_style or fallback_style)
+    return txt
+
+
+def _bake_doom_fire_timeline(led_rows, width: int, base_style: str, effect: str, still_txt: Text, seed: int = 0):
+    """Pre-bake a 56-tick timeline using PSX DOOM cellular automata (fire[i - decay] = below - decay)."""
+    if effect not in ("subtle", "dramatic") or width <= 0 or len(led_rows) != 5:
+        return (still_txt,) * CARD_HOLD_TICKS
+    active_xs = [x for r in led_rows for x, ch in enumerate(r[:width]) if ch == "█"]
+    if not active_xs:
+        return (still_txt,) * CARD_HOLD_TICKS
+    fire_min_x = max(0, min(active_xs) - 2)
+    fire_max_x = min(width - 1, max(active_xs) + 2)
+    rng = random.Random(1337 + seed)
+    fire = [0] * (5 * width)
+    frames = []
+    if effect == "subtle":
+        for step in range(FIRE_TICKS):
+            cooling_phase = step >= (FIRE_TICKS - 4)
+            for x in range(fire_min_x, fire_max_x + 1):
+                if cooling_phase:
+                    fire[4 * width + x] = max(0, fire[4 * width + x] - rng.randint(1, 3))
+                elif led_rows[4][x] == "█" or led_rows[3][x] == "█":
+                    fire[4 * width + x] = rng.choice((4, 5, 6, 7))
+                else:
+                    fire[4 * width + x] = rng.choice((0, 2, 3, 4, 5))
+            for y in (2, 3):
+                for x in range(fire_min_x, fire_max_x + 1):
+                    i = y * width + x
+                    below = fire[i + width]
+                    decay = int(rng.random() * 3)
+                    dst = max(y * width, i - decay)
+                    cool = decay + (1 if y == 2 else 0)
+                    fire[dst] = max(0, below - cool)
+            grid = []
+            for y in range(5):
+                row_cells = []
+                for x in range(width):
+                    if led_rows[y][x] == "█":
+                        heat = fire[y * width + x]
+                        if y >= 3 and heat >= 6:
+                            row_cells.append(("█", "bold #ffffff"))
+                        elif y >= 3 and heat >= 4:
+                            row_cells.append(("█", "bold #ffff00"))
+                        else:
+                            row_cells.append(("█", base_style))
+                    else:
+                        heat = fire[y * width + x] if y >= 2 else 0
+                        if heat > 0:
+                            row_cells.append(DOOM_FIRE_PALETTE[min(7, heat)])
+                        else:
+                            row_cells.append((" ", base_style))
+                grid.append(row_cells)
+            frames.append(_cells_to_rich_text(grid, base_style))
+        rem = max(0, CARD_HOLD_TICKS - len(frames))
+        return tuple(frames) + (still_txt,) * rem
+    for y in range(5):
+        for x in range(width):
+            if led_rows[y][x] == "█":
+                fire[y * width + x] = 7
+    for step in range(FIRE_TICKS):
+        solid_cutoff = 3 - step
+        if step < 6:
+            for x in range(fire_min_x, fire_max_x + 1):
+                if led_rows[4][x] == "█" or led_rows[3][x] == "█" or rng.random() < 0.35:
+                    fire[4 * width + x] = rng.randint(5, 7) if step < 3 else rng.randint(3, 5)
+        else:
+            for x in range(fire_min_x, fire_max_x + 1):
+                fire[4 * width + x] = max(0, fire[4 * width + x] - rng.randint(2, 3))
+        for y in range(4):
+            for x in range(fire_min_x, fire_max_x + 1):
+                i = y * width + x
+                below = fire[i + width]
+                decay = int(rng.random() * 3)
+                dst = max(y * width, i - decay)
+                step_cool = decay if step < 4 else max(1, decay)
+                fire[dst] = max(0, below - step_cool)
+        grid = []
+        for y in range(5):
+            row_cells = []
+            for x in range(width):
+                if y <= solid_cutoff and led_rows[y][x] == "█":
+                    st = "bold #ffffff" if y == solid_cutoff else base_style
+                    row_cells.append(("█", st))
+                else:
+                    heat = fire[y * width + x]
+                    if heat > 0:
+                        row_cells.append(DOOM_FIRE_PALETTE[min(7, heat)])
+                    else:
+                        row_cells.append((" ", base_style))
+            grid.append(row_cells)
+        frames.append(_cells_to_rich_text(grid, base_style))
+    hold_lead = max(0, CARD_HOLD_TICKS - len(frames))
+    return (still_txt,) * hold_lead + tuple(frames)
 
 # A hidden console to render styles into ANSI codes for the Log widget
 # We set a massive width to prevent the console from hard-wrapping the text before the Log widget gets it
@@ -321,32 +457,43 @@ class SonarApp(App):
         self.ticker_card_idx = 0
         self.ticker_hold_ticks = 0
         self.ticker_cached_width = 0
+        self.ticker_last_frame = None
         self._reload_ticker_source(force=True)
         self.set_interval(0.08, self.tick_marquee)
         self.set_interval(1, self.update_countdown)
         self.set_interval(5, self.refresh_tables)
 
     def _rebuild_billboard_cache(self, width: int):
-        """Pre-render 5-row Rich.Text still cards for zero-jitter instant cuts."""
+        """Pre-render 5-row Rich.Text still cards and pre-baked PSX DOOM fire timelines."""
         self.ticker_cached_width = width
         card_strings = _split_into_fitting_cards(self.ticker_raw_text, width)
         raw_rows = [_center_led_rows(cs, width) for cs in card_strings]
         built = []
         for idx, cs in enumerate(card_strings):
-            c_r0, c_r1, c_r2, c_r3, c_r4 = raw_rows[idx]
+            led_rows = raw_rows[idx]
+            c_r0, c_r1, c_r2, c_r3, c_r4 = led_rows
             style_cur = CARD_STYLES[idx % len(CARD_STYLES)]
             still_txt = Text(f"{c_r0}\n{c_r1}\n{c_r2}\n{c_r3}\n{c_r4}", style=style_cur)
+            effect = _classify_card_fire(cs)
+            timeline = _bake_doom_fire_timeline(
+                led_rows, width, style_cur, effect, still_txt, seed=idx
+            )
             built.append({
                 "text": cs,
                 "still": still_txt,
+                "effect": effect,
+                "timeline": timeline,
             })
         self.ticker_cards = built
         self.ticker_card_idx = 0
         self.ticker_hold_ticks = 0
+        self.ticker_last_frame = None
         try:
             bar = self.query_one("#ticker_bar", Static)
             if built:
-                bar.update(built[0]["still"])
+                first_frame = built[0]["timeline"][0]
+                self.ticker_last_frame = first_frame
+                bar.update(first_frame)
         except Exception:
             pass
 
@@ -407,10 +554,20 @@ class SonarApp(App):
             self._rebuild_billboard_cache(width)
 
     def tick_marquee(self):
-        """Drive #ticker_bar: fast-pathed 4.5s still-card hold with instant atomic card cuts."""
+        """Drive #ticker_bar: fast-pathed 4.5s still-card hold with pre-baked DOOM fire frames."""
         if self.ticker_mode == "billboard" and self.ticker_cards:
             self.ticker_hold_ticks += 1
             if self.ticker_hold_ticks < CARD_HOLD_TICKS:
+                cur_card = self.ticker_cards[self.ticker_card_idx % len(self.ticker_cards)]
+                timeline = cur_card.get("timeline")
+                if timeline:
+                    next_frame = timeline[self.ticker_hold_ticks % len(timeline)]
+                    if next_frame is not self.ticker_last_frame:
+                        self.ticker_last_frame = next_frame
+                        try:
+                            self.query_one("#ticker_bar", Static).update(next_frame)
+                        except Exception:
+                            pass
                 return
             self.ticker_hold_ticks = 0
             self._reload_ticker_source(force=False)
@@ -428,10 +585,13 @@ class SonarApp(App):
             if width != self.ticker_cached_width or not self.ticker_cards:
                 self._rebuild_billboard_cache(width)
             cards = self.ticker_cards
-            if not cards or len(cards) == 1:
+            if not cards:
                 return
             self.ticker_card_idx = (self.ticker_card_idx + 1) % len(cards)
-            bar.update(cards[self.ticker_card_idx]["still"])
+            next_card = cards[self.ticker_card_idx]
+            first_frame = next_card["timeline"][0] if next_card.get("timeline") else next_card["still"]
+            self.ticker_last_frame = first_frame
+            bar.update(first_frame)
             return
 
         if self.ticker_mode == "small":
