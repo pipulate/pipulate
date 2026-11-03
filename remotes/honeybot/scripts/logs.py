@@ -9,7 +9,7 @@ import re
 import hashlib
 import random
 from datetime import datetime
-from collections import Counter
+from collections import Counter, deque
 import os 
 import time
 
@@ -458,6 +458,9 @@ class SonarApp(App):
         self.ticker_hold_ticks = 0
         self.ticker_cached_width = 0
         self.ticker_last_frame = None
+        self.is_fire_burning = False
+        self.pending_log_buffer = deque(maxlen=64)
+        self.pending_table_refresh = False
         self._reload_ticker_source(force=True)
         self.set_interval(0.08, self.tick_marquee)
         self.set_interval(1, self.update_countdown)
@@ -488,6 +491,7 @@ class SonarApp(App):
         self.ticker_card_idx = 0
         self.ticker_hold_ticks = 0
         self.ticker_last_frame = None
+        self.is_fire_burning = bool(built and built[0]["timeline"][0] is not built[0]["still"])
         try:
             bar = self.query_one("#ticker_bar", Static)
             if built:
@@ -553,6 +557,18 @@ class SonarApp(App):
                 width = 160
             self._rebuild_billboard_cache(width)
 
+    def _flush_fire_hold_queues(self):
+        """Flush any log lines or table refreshes deferred while DOOM fire was burning."""
+        if getattr(self, "pending_log_buffer", None):
+            try:
+                log = self.query_one(RichLog)
+                while self.pending_log_buffer:
+                    log.write(self.pending_log_buffer.popleft())
+            except Exception:
+                pass
+        if getattr(self, "pending_table_refresh", False):
+            self.refresh_tables()
+
     def tick_marquee(self):
         """Drive #ticker_bar: fast-pathed 4.5s still-card hold with pre-baked DOOM fire frames."""
         if self.ticker_mode == "billboard" and self.ticker_cards:
@@ -561,13 +577,19 @@ class SonarApp(App):
                 cur_card = self.ticker_cards[self.ticker_card_idx % len(self.ticker_cards)]
                 timeline = cur_card.get("timeline")
                 if timeline:
+                    still_frame = cur_card.get("still")
                     next_frame = timeline[self.ticker_hold_ticks % len(timeline)]
-                    if next_frame is not self.ticker_last_frame:
+                    frame_changed = next_frame is not self.ticker_last_frame
+                    was_burning = self.is_fire_burning
+                    self.is_fire_burning = (next_frame is not still_frame) or frame_changed
+                    if frame_changed:
                         self.ticker_last_frame = next_frame
                         try:
                             self.query_one("#ticker_bar", Static).update(next_frame)
                         except Exception:
                             pass
+                    elif was_burning and not self.is_fire_burning:
+                        self._flush_fire_hold_queues()
                 return
             self.ticker_hold_ticks = 0
             self._reload_ticker_source(force=False)
@@ -590,9 +612,13 @@ class SonarApp(App):
             self.ticker_card_idx = (self.ticker_card_idx + 1) % len(cards)
             next_card = cards[self.ticker_card_idx]
             first_frame = next_card["timeline"][0] if next_card.get("timeline") else next_card["still"]
+            self.is_fire_burning = first_frame is not next_card.get("still")
             self.ticker_last_frame = first_frame
             bar.update(first_frame)
+            if not self.is_fire_burning:
+                self._flush_fire_hold_queues()
             return
+        self.is_fire_burning = False
 
         if self.ticker_mode == "small":
             base = self.ticker_raw_text or DEFAULT_TICKER_MESSAGE
@@ -744,8 +770,12 @@ class SonarApp(App):
             table.add_row(count_str, identity, signature)
 
     def refresh_tables(self):
-        """Updates both Intelligence tables from DB."""
+        """Updates both Intelligence tables from DB (deferred while DOOM fire is burning)."""
         if not db: return
+        if getattr(self, "is_fire_burning", False):
+            self.pending_table_refresh = True
+            return
+        self.pending_table_refresh = False
         self.spoof_flip = not getattr(self, "spoof_flip", False)
         
         # 1. Update JS Executors (Left)
@@ -767,7 +797,9 @@ class SonarApp(App):
             table.add_row("ERROR", "None", str(e)[:40])
 
     def update_countdown(self):
-        """Ticks the clock and updates the Sub-Title."""
+        """Ticks the clock and updates the Sub-Title (paused while DOOM fire is burning)."""
+        if getattr(self, "is_fire_burning", False):
+            return
         elapsed = time.time() - self.start_time
         total_seconds = self.duration_mins * 60
         remaining = total_seconds - elapsed
@@ -837,6 +869,10 @@ class SonarApp(App):
     def stream_logs(self) -> None:
         hits = 0
         for line in sys.stdin:
+            wait_ticks = 0
+            while getattr(self, "is_fire_burning", False) and wait_ticks < 16:
+                time.sleep(0.08)
+                wait_ticks += 1
             clean_line = ANSI_ESCAPE.sub('', line).strip()
             if not clean_line or " - - [" not in clean_line: continue
 
@@ -916,9 +952,14 @@ class SonarApp(App):
                 self.call_from_thread(self.write_log, rich_text)
 
     def write_log(self, text):
-        """Write the Rich Text object directly to the RichLog widget."""
-        # Note: We query RichLog now, not Log
+        """Write the Rich Text object directly to the RichLog widget (buffered during fire)."""
+        if getattr(self, "is_fire_burning", False):
+            self.pending_log_buffer.append(text)
+            return
         log = self.query_one(RichLog)
+        if getattr(self, "pending_log_buffer", None):
+            while self.pending_log_buffer:
+                log.write(self.pending_log_buffer.popleft())
         log.write(text)
 
     def format_log_line(self, data):
