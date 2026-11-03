@@ -46,7 +46,7 @@ DEFAULT_TICKER_MESSAGE = (
     "HONEYBOT STORYTIME | "
     "VISIT SUNPUG.IO | "
     "CHAT SUMMONS MIKE | "
-    "AI LOGS * MIKELEV.IN"
+    "AI's LIVE @ MIKELEV.IN"
 )
 
 # 5-Row Full-Block (█) LED Matrix Font (6-col round bowls + 7-col M/W wide basis strokes)
