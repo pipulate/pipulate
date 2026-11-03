@@ -763,10 +763,16 @@ class SonarApp(App):
         return Text(identity, style=identity_style), sig_text
 
     def _populate_hud_table(self, table, data):
-        """Populate a HUD DataTable and size Bot Identity to its longest visible entry (+2-space buffer)."""
+        """Populate a HUD DataTable with explicit column widths so Textual never clips to header length before Idle."""
         table.clear(columns=True)
+        panel_w = table.size.width or max(80, (self.size.width // 2) - 1)
         if not data:
-            table.add_columns("Hits", "Bot Identity", "Raw Signature")
+            hits_w = len("Hits")
+            id_w = len("Bot Identity")
+            sig_w = max(len("Raw Signature"), len("Waiting for data..."), panel_w - hits_w - id_w - 6)
+            table.add_column("Hits", width=hits_w)
+            table.add_column("Bot Identity", width=id_w)
+            table.add_column("Raw Signature", width=sig_w)
             table.add_row("-", "None", "Waiting for data...")
             return
         styled_rows = []
@@ -774,6 +780,10 @@ class SonarApp(App):
             display_ua = ua.replace("Mozilla/5.0 ", "") if STRIP_MOZILLA_PREFIX else ua
             identity, signature = self.extract_and_stylize(display_ua)
             styled_rows.append((str(count), identity, signature))
+        hits_width = max(
+            len("Hits"),
+            max((len(cnt) for cnt, _, _ in styled_rows), default=0),
+        )
         id_width = min(
             BOT_IDENTITY_WIDTH,
             max(
@@ -781,9 +791,14 @@ class SonarApp(App):
                 max((ident.cell_len for _, ident, _ in styled_rows), default=0),
             ),
         )
-        table.add_column("Hits")
+        avail_sig_width = max(len("Raw Signature"), panel_w - hits_width - id_width - 6)
+        sig_width = max(
+            avail_sig_width,
+            max((sig.cell_len for _, _, sig in styled_rows), default=0),
+        )
+        table.add_column("Hits", width=hits_width)
         table.add_column("Bot Identity", width=id_width)
-        table.add_column("Raw Signature")
+        table.add_column("Raw Signature", width=sig_width)
         for count_str, identity, signature in styled_rows:
             table.add_row(count_str, identity, signature)
 
