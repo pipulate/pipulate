@@ -2165,7 +2165,7 @@ def run_station_break(env, profile_dir):
 
 
 REBOOT_ANNOUNCEMENT_TEXT = (
-    "Scheduled four hour station reset. "
+    "Scheduled station reset. "
     "Honeybot is about to perform a routine five second memory refresh and restart the broadcast loop. "
     "Do not adjust your set. The live stream will stay connected and storytime will resume in just a few seconds."
 )
