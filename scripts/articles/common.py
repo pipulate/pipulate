@@ -21,6 +21,9 @@ YT_VIEWER_ALERT_DWELL = int(os.environ.get("PIPULATE_YT_VIEWER_DWELL", "60"))  #
 YT_VIEWER_ALERT_COOLDOWN = int(os.environ.get("PIPULATE_YT_VIEWER_COOLDOWN", "300"))  # Seconds between any two viewer alerts
 YT_VIEWER_FAST_POLL = int(os.environ.get("PIPULATE_YT_FAST_POLL", "5"))  # Seconds between lightweight updated_metadata viewer checks
 YT_WEEBO_CLOBBER_GUARD = int(os.environ.get("PIPULATE_YT_WEEBO_GUARD", "120"))  # Seconds (2m cooldown) between ytwatch Weebo popups
+DISCORD_INVITE_CODE = os.environ.get("PIPULATE_DISCORD_INVITE", "YVsBnxuHBt")
+DISCORD_FOUNDING_GOAL = int(os.environ.get("PIPULATE_DISCORD_GOAL", "1000"))
+DEFAULT_DISCORD_INVITE_URL = "https\x3a//discord\x2egg/" + DISCORD_INVITE_CODE
 
 DEFAULT_POSTS_DIR = Path(
     os.environ.get("PIPULATE_DEFAULT_POSTS_DIR", Path.home() / "repos" / "trimnoir" / "_posts")
@@ -497,6 +500,7 @@ def get_broadcast_kit(target_key="1", slug_match=None):
     yt_title = format_youtube_title(title)
     desc_parts = [
         f"📖 Read the full article: {canonical_url}?src=youtube",
+        f"🟣 Join the Founding 1,000 Discord (1,000 members + 8 wks = Google-indexed community): {DEFAULT_DISCORD_INVITE_URL}",
         f"🔭 Got the SEO Blues? SEO moved to the Edge — Your Site Is Your Feed: {base_url}/?src=youtube#consulting | Inspect workshop: curl -fsSL https://sunpug.io | less (Email: {CONTACT_EMAIL})",
         f"🧪 Test RFC 9110 in your terminal: curl -sI -H \"Accept: text/markdown\" {canonical_url}?src=rfc9110",
         "",
@@ -530,6 +534,7 @@ def get_broadcast_kit(target_key="1", slug_match=None):
         "",
         f"📖 Full article & code receipts: {canonical_url}?src=linkedin",
         f"🔴 Watch/Listen 24/7 on Honeybot Storytime: {yt_live_vanity}",
+        f"🟣 Join the Founding 1,000 on Discord: {DEFAULT_DISCORD_INVITE_URL}",
     ]
     if li_imprint:
         li_parts.extend(["", li_imprint])
@@ -1834,6 +1839,42 @@ def _fetch_yt_concurrent_viewers_fast(video_id):
     return None
 
 
+def fetch_discord_invite_state(invite_code=None):
+    """Fetch keyless Discord invite metadata (member_count, online_count, guild_name) via API v10."""
+    import urllib.request
+    raw_code = (invite_code or _get_vault_var("PIPULATE_DISCORD_INVITE") or DISCORD_INVITE_CODE).strip()
+    if "/" in raw_code:
+        raw_code = raw_code.rstrip("/").rsplit("/", 1)[-1]
+    if not raw_code:
+        return None
+    api_url = f"https\x3a//discord\x2ecom/api/v10/invites/{raw_code}?with_counts=true"
+    req = urllib.request.Request(
+        api_url,
+        headers={
+            "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/130.0.0.0 Safari/537.36",
+            "Accept": "application/json",
+        },
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=8) as resp:
+            data = json.loads(resp.read().decode("utf-8", errors="replace"))
+        if not isinstance(data, dict):
+            return None
+        guild = data.get("guild") if isinstance(data.get("guild"), dict) else {}
+        members = int(data.get("approximate_member_count") or 0)
+        online = int(data.get("approximate_presence_count") or 0)
+        return {
+            "code": str(data.get("code") or raw_code),
+            "url": f"https\x3a//discord\x2egg/{raw_code}",
+            "guild_name": str(guild.get("name") or "Founding 1,000"),
+            "member_count": members,
+            "online_count": online,
+            "goal": DISCORD_FOUNDING_GOAL,
+        }
+    except Exception:
+        return None
+
+
 def fetch_youtube_live_state(channel_or_url=None):
     """Fetch keyless YouTube Live state (is_live, video_id, viewers, chat_messages)."""
     import urllib.request
@@ -1914,6 +1955,7 @@ def fetch_youtube_live_state(channel_or_url=None):
         "api_viewers": api_viewers,
         "chat_messages": chat_messages,
         "comment_count": comment_count,
+        "discord": fetch_discord_invite_state(),
     }
 
 
@@ -2038,6 +2080,9 @@ SPOKEN_ALERT_TABLE = {
     "viewers_threshold": "Web Bot Observatory alert. YouTube concurrent viewers reached {count}, meeting the summon threshold of {min_viewers}.",
     "viewers_above_2": "Web Bot Observatory alert. YouTube concurrent viewers climbed above two, now at {count}.",
     "live_comment": "Web Bot Observatory alert. A new comment was posted on the live stream by {author}.",
+    "discord_member": "Web Bot Observatory alert. A new founding member joined the Discord server, now at {count} of {goal}.",
+    "discord_invite": "Web Bot Observatory alert. A visitor just clicked the Discord invite link.",
+    "src=discord": "Web Bot Observatory alert. A link was followed from Discord.",
     "src=youtube": "Web Bot Observatory alert. A link was followed from YouTube.",
     "src=linkedin": "Web Bot Observatory alert. A link was followed from LinkedIn.",
     "src=x": "Web Bot Observatory alert. A link was followed from X dot com.",
@@ -2350,7 +2395,11 @@ def run_youtube_watch(
         parsed = _extract_yt_json(sample, "ytInitialPlayerResponse =")
         ok = (parsed.get("videoDetails") or {}).get("videoId") == "test1234567"
         t_label = "configured" if resolved_topic else "unconfigured"
-        print(f"📡 [DRY RUN] YouTube Watch: channel={resolved_channel} | min_viewers={YT_VIEWER_ALERT_MIN} | dwell={YT_VIEWER_ALERT_DWELL}s | ntfy={t_label} | parser_ok={ok}")
+        print(
+            f"📡 [DRY RUN] YouTube Watch: channel={resolved_channel} | min_viewers={YT_VIEWER_ALERT_MIN} | "
+            f"dwell={YT_VIEWER_ALERT_DWELL}s | discord={DISCORD_INVITE_CODE} (goal={DISCORD_FOUNDING_GOAL}) | "
+            f"ntfy={t_label} | parser_ok={ok}"
+        )
         return 0 if ok else 1
     try:
         state = fetch_youtube_live_state(resolved_channel)
@@ -2380,13 +2429,25 @@ def run_youtube_watch(
             stderr=subprocess.DEVNULL,
         ).returncode == 0
     )
+    disc_init = state.get("discord") or {}
+    cur_discord_members = disc_init.get("member_count")
+    prev_discord_members = (
+        int(persisted.get("discord_members"))
+        if persisted.get("discord_members") is not None
+        else cur_discord_members
+    )
+    disc_str = (
+        f" | discord={cur_discord_members}/{disc_init.get('goal', DISCORD_FOUNDING_GOAL)} (online={disc_init.get('online_count', 0)})"
+        if cur_discord_members is not None
+        else ""
+    )
     c_str = f" | comments={state['comment_count']}" if state["comment_count"] is not None else ""
     d_str = " | daemon=RUNNING" if daemon_running else ""
     v_src = f"api={state.get('api_viewers')}, html={state.get('html_viewers')}"
     print(
         f"[{_ytlog_ts()}] 📡 YouTube Watch: LIVE={'yes' if state['is_live'] else 'no'} | "
         f"video={state['video_id'] or 'NONE'} | viewers={state['concurrent_viewers']} ({v_src}; alert>={YT_VIEWER_ALERT_MIN} for {YT_VIEWER_ALERT_DWELL}s) | "
-        f"chat_items={len(state['chat_messages'])}{c_str}{d_str} | title={state['title']!r}"
+        f"chat_items={len(state['chat_messages'])}{c_str}{disc_str}{d_str} | title={state['title']!r}"
     )
     if not loop:
         recent = state["chat_messages"][-5:]
@@ -2553,8 +2614,14 @@ def run_youtube_watch(
                     dwell_tag = f", dwell={dwell_s}s/{YT_VIEWER_ALERT_DWELL}s{cd_str}"
                 else:
                     dwell_tag = ""
+                disc_now = state.get("discord") or {}
+                disc_pulse = (
+                    f" | discord={disc_now['member_count']}/{disc_now.get('goal', DISCORD_FOUNDING_GOAL)}"
+                    if disc_now.get("member_count") is not None
+                    else ""
+                )
                 print(
-                    f"[{_ytlog_ts()}] 💓 [PULSE] viewers={viewers} ({src_cmp}, peak={peak_viewers}{dwell_tag}) | chat={len(state['chat_messages'])} | video={state['video_id'] or 'NONE'}",
+                    f"[{_ytlog_ts()}] 💓 [PULSE] viewers={viewers} ({src_cmp}, peak={peak_viewers}{dwell_tag}) | chat={len(state['chat_messages'])}{disc_pulse} | video={state['video_id'] or 'NONE'}",
                     flush=True,
                 )
             prev_viewers = viewers
@@ -2598,6 +2665,38 @@ def run_youtube_watch(
                         topic=resolved_topic,
                     )
             prev_comments = cur_comments
+            disc_info = state.get("discord") or {}
+            cur_disc = disc_info.get("member_count")
+            if cur_disc is not None:
+                if prev_discord_members is not None and cur_disc > prev_discord_members:
+                    d_diff = cur_disc - prev_discord_members
+                    d_goal = disc_info.get("goal", DISCORD_FOUNDING_GOAL)
+                    d_msg = (
+                        f"+{d_diff} new Founding Member(s) -> {cur_disc}/{d_goal} "
+                        f"(online={disc_info.get('online_count', 0)})"
+                    )
+                    print(f"[{_ytlog_ts()}] 🟣 [DISCORD +{d_diff}] {d_msg}", flush=True)
+                    _trigger_ytwatch_weebo()
+                    _play_local_ding(
+                        ding,
+                        spoken_text=SPOKEN_ALERT_TABLE["discord_member"].format(
+                            count=cur_disc, goal=d_goal
+                        ),
+                    )
+                    if resolved_topic:
+                        send_ntfy_notification(
+                            d_msg,
+                            title="🟣 Honeybot Discord Founding 1,000",
+                            priority="high",
+                            tags="tada",
+                            topic=resolved_topic,
+                        )
+                elif prev_discord_members is not None and cur_disc < prev_discord_members:
+                    print(
+                        f"[{_ytlog_ts()}] 📉 [DISCORD -{prev_discord_members - cur_disc}] {prev_discord_members} -> {cur_disc}/{disc_info.get('goal', DISCORD_FOUNDING_GOAL)}",
+                        flush=True,
+                    )
+                prev_discord_members = cur_disc
             try:
                 last_ref_ts = int(persisted.get("last_referral_ts") or int(now))
                 ref_res = subprocess.run(
@@ -2637,6 +2736,7 @@ def run_youtube_watch(
                 "peak_viewers": peak_viewers,
                 "alerted_in_run": alerted_in_run,
                 "comment_count": cur_comments,
+                "discord_members": prev_discord_members,
                 "last_viewer_alert": last_viewer_alert,
                 "seen_ids": list(seen_ids)[-500:],
                 "updated_at": int(now),

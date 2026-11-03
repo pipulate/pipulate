@@ -44,6 +44,7 @@ DOOM_FIRE_PALETTE = (
 DEFAULT_TICKER_MESSAGE = (
     "JUST GIVE 30 SECS... | "
     "HONEYBOT STORYTIME | "
+    "JOIN DISCORD | "
     "VISIT SUNPUG.IO | "
     "CHAT SUMMONS MIKE | "
     "AI's LIVE AT MIKELEV.IN"
@@ -928,7 +929,7 @@ class SonarApp(App):
                             base_path, qs = raw_path.split('?', 1)
                             if qs in (
                                 'src=a+href', 'src=llms.txt', 'src=link+rel',
-                                'src=youtube', 'src=linkedin', 'src=x', 'src=twitter',
+                                'src=youtube', 'src=linkedin', 'src=x', 'src=twitter', 'src=discord',
                             ):
                                 clean_path = raw_path
                             else:
@@ -966,14 +967,20 @@ class SonarApp(App):
                             sig_agent=clean_sig,
                         )
                         db.increment_counter("global_hits")
-                        if '?' in clean_path and not str(data['ip']).startswith(('127.', '10.', '192.168.')):
-                            _, qs_part = clean_path.split('?', 1)
-                            if qs_part in ('src=youtube', 'src=linkedin', 'src=x', 'src=twitter'):
+                        if not str(data['ip']).startswith(('127.', '10.', '192.168.')):
+                            ref_src = None
+                            if clean_path == '/discord' or clean_path.startswith(('/discord?', '/discord/')):
+                                ref_src = 'discord_invite'
+                            elif '?' in clean_path:
+                                _, qs_part = clean_path.split('?', 1)
+                                if qs_part in ('src=youtube', 'src=linkedin', 'src=x', 'src=twitter', 'src=discord'):
+                                    ref_src = qs_part
+                            if ref_src:
                                 import json as _json
                                 with open('/tmp/honeybot_referrals.jsonl', 'a', encoding='utf-8') as rf:
                                     rf.write(_json.dumps({
                                         'ts': int(time.time()),
-                                        'src': qs_part,
+                                        'src': ref_src,
                                         'path': clean_path,
                                     }) + '\n')
                     except: pass
@@ -1042,7 +1049,14 @@ class SonarApp(App):
         text.append("  ") # Just space
         if data.get('md') == '1':
             text.append("[RFC9110:MD] ", style="bold black on green")
-        for ref_tag, ref_label in (("src=youtube", "YOUTUBE"), ("src=linkedin", "LINKEDIN"), ("src=x", "X.COM"), ("src=twitter", "X.COM")):
+        for ref_tag, ref_label in (
+            ("src=youtube", "YOUTUBE"),
+            ("src=linkedin", "LINKEDIN"),
+            ("src=x", "X.COM"),
+            ("src=twitter", "X.COM"),
+            ("src=discord", "DISCORD"),
+            ("/discord", "DISCORD"),
+        ):
             if ref_tag in path:
                 text.append(f"[REF:{ref_label}] ", style="bold white on magenta")
                 break

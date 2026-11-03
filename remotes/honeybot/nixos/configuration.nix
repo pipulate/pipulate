@@ -698,6 +698,13 @@
       locations."= /brain.zip" = {
         extraConfig = "alias /home/mike/www/qamy.ai/brain.zip;";
       };
+      # THE DISCORD DOOR: logs a first-party wire receipt before 302-redirecting to the Founding 1,000 invite
+      locations."= /discord" = {
+        return = "302 https://" + "discord" + ".gg/YVsBnxuHBt";
+      };
+      locations."= /discord/" = {
+        return = "302 https://" + "discord" + ".gg/YVsBnxuHBt";
+      };
     };
   };
 
