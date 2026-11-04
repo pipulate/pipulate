@@ -6,8 +6,8 @@ context.txt
 ! markov
 # ! latest
 # scripts/articles/lsa.py
-#
-# # WE BEGIN AT THE BEGINNING AND WILL GO ON TILL WE COME TO THE END, THEN STOP.
+
+# WE BEGIN AT THE BEGINNING AND WILL GO ON TILL WE COME TO THE END, THEN STOP.
 /home/mike/repos/nixos/configuration.nix
 /home/mike/repos/nixos/hardware-configuration.nix
 /home/mike/repos/nixos/ai-acceleration.nix
@@ -25,17 +25,15 @@ init.lua
 /home/mike/repos/nixos/scripts/backup-nix.sh
 /home/mike/repos/nixos/scripts/backup-things.py
 
-# ORGANIZATION
+# AN OPERATING SYSTEM FOR THIS HUMAN
+/home/mike/repos/nixos/bookmarks.nix
+/home/mike/repos/nixos/bookmarks_harvest.md
+/home/mike/repos/nixos/scripts/chrome_windows.py
+/home/mike/repos/nixos/scripts/nixos-switch.py
+/home/mike/repos/nixos/scripts/bookmarks_sync.py
 /home/mike/repos/nixos/scripts/drivemon.py
 /home/mike/repos/nixos/scripts/dedupe.py
-
-# AN OPERATING SYSTEM FOR THIS HUMAN
-# /home/mike/repos/nixos/bookmarks.nix
-# /home/mike/repos/nixos/bookmarks_harvest.md
-# /home/mike/repos/nixos/scripts/chrome_windows.py
-# /home/mike/repos/nixos/scripts/nixos-switch.py
-# /home/mike/repos/nixos/scripts/bookmarks_sync.py
-# /home/mike/repos/nixos/autognome.py
+/home/mike/repos/nixos/autognome.py
 
 # AND HOW WE PROJECT TO THE WORLD
 /home/mike/repos/nixos/blogs.nix
