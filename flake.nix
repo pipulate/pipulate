@@ -2658,11 +2658,14 @@ print('AI:\n', r.ai)
             # uses. A missing marker is non-fatal: googledocizer exits 1, the
             # guard below warns, and the site still ships.
             local REBOOT=0
+            local IAC=0
             local GDOCS_SCOPE="--latest"
             local MSG=""
             for arg in "$@"; do
               if [ "$arg" = "--reboot" ]; then
                 REBOOT=1
+              elif [ "$arg" = "--iac" ]; then
+                IAC=1
               elif [ "$arg" = "--sweep" ]; then
                 GDOCS_SCOPE=""
               elif [ -z "$MSG" ]; then
@@ -2672,7 +2675,7 @@ print('AI:\n', r.ai)
 
             if [ -z "$MSG" ]; then
               echo "❌ Error: Please provide a commit message."
-              echo "Usage: publish \"Your commit message here\" [--reboot] [--sweep]"
+              echo "Usage: publish \"Your commit message here\" [--reboot] [--iac] [--sweep]"
               return 1
             fi
             
@@ -2726,11 +2729,15 @@ print('AI:\n', r.ai)
                     echo "⚠️  Google Docs sync failed; continuing deployment anyway."
                 fi
                 echo "🚀 [3/5] Infrastructure: Synchronizing Server Configurations..."
-                # Back in the Pipulate root bounded context
-                if [ -f "./nixops.sh" ]; then
-                    ./nixops.sh
-                    echo "🚀 [4/5] The Capstone: Rebuilding Nginx Routes..."
-                    ssh -t mike@192.168.10.100 'sudo cp ~/nixos-config-staged/* /etc/nixos/ && sudo nixos-rebuild switch'
+                # Run nixops.sh from PIPULATE_ROOT regardless of caller's current directory
+                if [ -f "$PIPULATE_ROOT/nixops.sh" ]; then
+                    (cd "$PIPULATE_ROOT" && ./nixops.sh)
+                    if [ "$IAC" -eq 1 ] || ! ssh -o BatchMode=yes -o ConnectTimeout=5 mike@192.168.10.100 'cmp -s ~/nixos-config-staged/configuration.nix /etc/nixos/configuration.nix'; then
+                        echo "🚀 [4/5] The Capstone: NixOS config changed (or --iac passed) — Rebuilding Honeybot IaC..."
+                        ssh -t mike@192.168.10.100 'sudo cp ~/nixos-config-staged/* /etc/nixos/ && sudo nixos-rebuild switch'
+                    else
+                        echo "⏭️  [4/5] Skipped -- /etc/nixos/configuration.nix unchanged on Honeybot (pass --iac to force nixos-rebuild)."
+                    fi
                     if [ "$REBOOT" -ne 1 ]; then
                         echo "⏭️  [5/5] Skipped -- stream.py left running. Pass --reboot to force the restart now."
                         echo "✅ Atomic Deployment Complete (stream untouched)."
