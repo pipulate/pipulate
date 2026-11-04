@@ -100,6 +100,7 @@ def update_homepage_recent_posts(posts_dir, target_repo_root, count=10):
                 if (c_fm.get("aside") is True) or (c_st is False) or (str(c_st).strip().lower() in ("false", "0", "no", "off", "aside")):
                     recent.append(cand_p)
                     seen_recent.add(cand_p.name)
+    recent.sort(key=common._post_sort_key, reverse=True)
     cards = ['<div class="recent-posts-grid">']
     stage_rel_paths = ["index.md"]
     for post_path in recent:

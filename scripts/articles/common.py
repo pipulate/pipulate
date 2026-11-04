@@ -339,9 +339,11 @@ def _post_sort_key(md_path):
     date_part = md_path.name[:10]
     sort_order = 0
     try:
-        head = md_path.read_text(encoding="utf-8")[:2048]
+        head = md_path.read_text(encoding="utf-8", errors="ignore")[:4096]
         if head.startswith("---"):
-            m = re.search(r"^sort_order:\s*(\d+)", head, re.MULTILINE)
+            parts = head.split("---", 2)
+            fm_block = parts[1] if len(parts) >= 3 else head
+            m = re.search(r"^\s*sort_order:\s*['\"]?(-?\d+)['\"]?", fm_block, re.MULTILINE)
             if m:
                 sort_order = int(m.group(1))
     except Exception:
