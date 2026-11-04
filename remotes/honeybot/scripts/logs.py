@@ -521,12 +521,30 @@ class SonarApp(App):
 
     def _reload_ticker_source(self, force=False):
         """Check /tmp/honeybot_ticker.txt mtime (and logs.py mtime for hot-reload) and rebuild frames when changed."""
-        if not force and getattr(self, "script_mtime", None) is not None and os.environ.get("SONAR_HOT_RELOAD") == "1":
+        global DEFAULT_TICKER_MESSAGE
+        if not force and getattr(self, "script_mtime", None) is not None:
             try:
-                if os.stat(__file__).st_mtime != self.script_mtime:
-                    self.exit()
-                    return
-            except OSError:
+                cur_script_mtime = os.stat(__file__).st_mtime
+                if cur_script_mtime != self.script_mtime:
+                    self.script_mtime = cur_script_mtime
+                    import ast as _ast
+                    with open(__file__, "r", encoding="utf-8") as _sf:
+                        _tree = _ast.parse(_sf.read())
+                    _new_default = None
+                    for _node in _tree.body:
+                        if isinstance(_node, _ast.Assign):
+                            for _t in _node.targets:
+                                if isinstance(_t, _ast.Name) and _t.id == "DEFAULT_TICKER_MESSAGE":
+                                    _val = _ast.literal_eval(_node.value)
+                                    if isinstance(_val, str) and _val.strip():
+                                        _new_default = _val
+                    if _new_default and _new_default != DEFAULT_TICKER_MESSAGE:
+                        DEFAULT_TICKER_MESSAGE = _new_default
+                        force = True
+                    elif os.environ.get("SONAR_HOT_RELOAD") == "1":
+                        self.exit()
+                        return
+            except Exception:
                 pass
         try:
             st_mtime = os.stat(TICKER_FILE_PATH).st_mtime if os.path.exists(TICKER_FILE_PATH) else -1.0

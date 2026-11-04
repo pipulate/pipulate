@@ -197,9 +197,27 @@ PITCH_TEXT = (
 # through the shared dispatch_cue (the cathedral-of-one collapse).
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 try:
-    from forest import STATION_SEGMENTS
+    import forest as _forest_mod
+    STATION_SEGMENTS = _forest_mod.STATION_SEGMENTS
 except ImportError:
+    _forest_mod = None
     STATION_SEGMENTS = []
+
+
+def _reload_forest_module():
+    """Hot-reload forest.py from disk so station-break edits take effect without restarting stream.py."""
+    global _forest_mod, STATION_SEGMENTS
+    try:
+        import importlib
+        if _forest_mod is None:
+            import forest as _forest_mod
+        else:
+            _forest_mod = importlib.reload(_forest_mod)
+        STATION_SEGMENTS = getattr(_forest_mod, "STATION_SEGMENTS", [])
+    except Exception:
+        pass
+    return _forest_mod
+
 
 # Advances on each station break; wraps with modulo over STATION_SEGMENTS.
 _station_index = 0
@@ -1719,6 +1737,7 @@ def conjure_window(script_name, duration=30.0, columns=100, lines=30, args=None)
         mode_arg = str(args[0]).strip() if args else "overview"
         ansi_path = None
         try:
+            _reload_forest_module()
             from forest import (
                 REPORT_WINDOW_COLUMNS,
                 REPORT_WINDOW_LINES,
@@ -2158,6 +2177,7 @@ def run_station_break(env, profile_dir):
     article. No-ops gracefully if the forest module failed to import.
     """
     global _station_index
+    _reload_forest_module()
     if not STATION_SEGMENTS:
         return
     bead = STATION_SEGMENTS[_station_index % len(STATION_SEGMENTS)]
