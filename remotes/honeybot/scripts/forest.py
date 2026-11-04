@@ -70,7 +70,9 @@ WHATS_HAPPENING_BEAT = (
     "Blue diamonds mark agents cryptographically signing requests under R F C 9421 Web Bot Auth. "
     "Red stop signs unmask crawlers spoofing Googlebot I P addresses. "
     "Big purple bars are bots falling into the JavaScript DOM hydration trap-door. I guess one or two are still humans with browsers. Visit my site and see. "
-    "Reach out to me to become one of the first thousand grandfathered into my Discord with Discord about to become SEO-searchable. "
+    "And when you see the ticker say Join Discord for S E O, here is what that really means: as Reddit and Quora lock down behind paywalls, Discord is opening one-thousand-member servers to the Free and Open Web on November sixteenth and mid-December. "
+    "Who cares about Google ten blue links anymore? Every frontier A I crawler on this screen will harvest those public Discord Server Web Pages, automated Channel Summaries, and Channel Messages straight into the parametric memory and weights of future frontier models. "
+    "Visit Mike L E V dot eye N slash discord right now to claim one of the first one thousand spots before that invite cap locks. "
     "If you want your Ah-Ha moment, do this one small thing: stay and listen to this broadcast from one Article Intro all the way through to the next Article Intro just one time. "
     "Hit Like and Subscribe right now so you don't lose this telemetry feed, and copy this live stream link and send it to an engineer or technical S E O who can explain the two bottom intelligence panels to you. "
 )

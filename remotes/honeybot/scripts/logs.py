@@ -44,7 +44,8 @@ DOOM_FIRE_PALETTE = (
 DEFAULT_TICKER_MESSAGE = (
     "JUST GIVE 30 SECS... | "
     "HONEYBOT STORYTIME | "
-    "JOIN DISCORD | "
+    "JOIN DISCORD 4-SEO! | "
+    "1ST 1000 -> AI MEMORY | "
     "VISIT SUNPUG.IO | "
     "CHAT SUMMONS MIKE | "
     "AI's LIVE AT MIKELEV.IN"
@@ -108,6 +109,8 @@ LED_FONT_3X3 = {
     "@": (" ████ ", "█    █", "█ ██ █", "█ ███ ", " ████ "),
     "#": (" █  █ ", "██████", " █  █ ", "██████", " █  █ "),
     "=": ("    ", "████", "    ", "████", "    "),
+    "<": ("   █", "  █ ", " █  ", "  █ ", "   █"),
+    ">": ("█   ", " █  ", "  █ ", " █  ", "█   "),
 }
 
 
