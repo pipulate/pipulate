@@ -891,34 +891,44 @@ class SonarApp(App):
             return "???", request_str
 
     def format_host_domain(self, raw_host):
-        """Normalize Nginx $host into the registered domain name without leaking raw IP headers."""
+        """Normalize Nginx $host into a Proper-Noun display domain with trailing slash without leaking raw IP headers."""
         h = (raw_host or "").strip().lower().split(":", 1)[0].rstrip(".")
         if h.startswith("www."):
             h = h[4:]
         if not h or h == "-" or h == "localhost" or h.endswith(".local"):
-            return "mikelev.in"
+            return "MikeLev.in/"
         if re.match(r"^\d+(\.\d+)+$", h) or ":" in h:
-            return "mikelev.in"
-        for known in (
-            "mikelev.in", "qamy.ai", "npvg.org", "sunpug.io",
-            "levinix.org", "levinix.com", "levinux.com",
-            "pipulate.com", "guerillatech.com", "rfc9110.org", "rfc9111.io", "rfc9111.com",
-        ):
+            return "MikeLev.in/"
+        host_display_map = {
+            "mikelev.in": "MikeLev.in/",
+            "qamy.ai": "QAmy.ai/",
+            "npvg.org": "NPvg.org/",
+            "sunpug.io": "SunPug.io/",
+            "levinix.org": "Levinix.org/",
+            "levinix.com": "Levinix.com/",
+            "levinux.com": "Levinux.com/",
+            "pipulate.com": "Pipulate.com/",
+            "guerillatech.com": "GuerillaTech.com/",
+            "rfc9110.org": "RFC9110.org/",
+            "rfc9111.io": "RFC9111.io/",
+            "rfc9111.com": "RFC9111.com/",
+        }
+        for known, label in host_display_map.items():
             if h == known or h.endswith("." + known):
-                return known
+                return label
         if "qamy" in h:
-            return "qamy.ai"
+            return "QAmy.ai/"
         if "npvg" in h:
-            return "npvg.org"
+            return "NPvg.org/"
         if "sunpug" in h:
-            return "sunpug.io"
+            return "SunPug.io/"
         if "levinix" in h:
-            return "levinix.org"
+            return "Levinix.org/"
         if "levinux" in h:
-            return "levinux.com"
+            return "Levinux.com/"
         if re.match(r"^[a-z0-9-]+(\.[a-z0-9-]+)+$", h):
-            return h
-        return "mikelev.in"
+            return f"{h[:1].upper()}{h[1:]}/"
+        return "MikeLev.in/"
 
     @work(thread=True)
     def stream_logs(self) -> None:
@@ -1064,7 +1074,7 @@ class SonarApp(App):
         except: text.append("[TIME] ", style="dim")
 
         domain_label = self.format_host_domain(data.get('host'))
-        text.append(f"[{domain_label}] ", style="bold bright_white")
+        text.append(f"{domain_label} ", style="bold bright_white")
 
         text.append(ip_display)
         text.append("  ") # Just space
