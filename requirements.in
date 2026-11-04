@@ -113,6 +113,7 @@ pyyaml  # DIRECT: scripts/walk.py reads every trail with it (2026-10-04).
 python-dotenv
 loguru
 rich
+textual
 watchdog
 pyfiglet
 pydot

@@ -18,6 +18,8 @@ DB_PATH = Path("/home/mike/www/mikelev.in/honeybot.db")
 class HoneyDB:
     def __init__(self, db_path=DB_PATH, read_only=False):
         import os
+        if db_path != ":memory:" and not Path(db_path).parent.exists():
+            db_path = ":memory:"
         self.db_path = db_path
         self.conn = None
         if not read_only and os.environ.get("HONEYBOT_DB_READONLY") != "1":

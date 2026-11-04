@@ -992,6 +992,9 @@
           ruff                         # Fast Python linter (native Nix binary)
           (python312.withPackages (ps: with ps; [
             nbstripout
+            rich
+            pyfiglet
+            textual
           ]))
           nbstripout
           figlet                       # For creating ASCII art welcome messages

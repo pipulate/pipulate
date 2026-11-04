@@ -856,6 +856,8 @@ terminado==0.18.1
     # via
     #   jupyter-server
     #   jupyter-server-terminals
+textual
+    # via -r requirements.in
 threadpoolctl==3.6.0
     # via scikit-learn
 tiktoken==0.13.0
