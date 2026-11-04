@@ -1,6 +1,6 @@
-# Sun Pug (sunpug.io): The Friendly Software Von Neumann Probe
+# Sun Pug (sunpug.io): The Software Von Neumann Probe & True WORA
 
-In vampire lore, a creature of the night cannot cross your threshold unless you invite it in. In software, running `curl | bash` blind is throwing open the bedroom window in the dark.
+Good engineering governance never pipes an uninspected script into a shell. Before provisioning anything, audit the entire bootstrap contract in your terminal pager.
 
 Look through the glass first with `less`:
 
@@ -8,17 +8,23 @@ Look through the glass first with `less`:
 
 Nothing runs. Nothing touches your disk. Put your right hand on the home row: press `j` to scroll down, `k` to scroll up, and `q` to step back out to your command line.
 
-When you have read the contract and are ready to invite the Sun Pug in:
+When you have verified the contract and are ready to provision the workspace:
 
     curl -fsSL sunpug.io | bash
 
-## Why Sun Pug? (SVNPvg -> SUNPug -> pug.io)
+## What Is a Software Von Neumann Probe? (SVNPvg -> SUNPug)
 
-Take a human-actuated **Software Von Neumann Probe** (`SVNP`) built on the timeless four-letter bedrock of **Nix, Python, vim, and git** (`NPvg`). Overlap the shared `NP` to get `SVNPvg`, soften the Classical Latin `V`s into `U`s, and you get **SUNPug**—with the Latin *pugio* (`pug.io`, the Roman legionary's sidearm dagger) hidden in the domain.
+John von Neumann described a self-contained probe engineered to land on raw substrate and build a complete operational facility from local resources. A **Software Von Neumann Probe** (`SVNP`) does the same on any host machine: a single auditable text script that bootstraps a reproducible engineering workbench on the durable four-letter bedrock of **Nix, Python, vim, and git** (`NPvg`). Overlap the shared `NP` (`SVNP` + `NPvg` -> `SVNPvg`) and vocalize the Classical Latin `V`s as `U`s to get **SUNPug** (`sunpug.io`).
 
-## The Vampire Value Proposition: Portable AI Discussions
+## The Tech Industry That Cried "WORA"—And Why It Is Finally True
 
-Every cloud chatbot tab is an energy vampire that drains your focus and forgets your project the moment the window closes. Sun Pug moves your AI workflow out of disposable browser tabs and onto your local disk as plain text:
+For decades, the software industry cried **"Write Once, Run Anywhere" (WORA)**. From 1990s bytecode VMs to heavyweight container layers and fragile virtual environments, every wave promised portability while quietly breaking on host OS drift, C-library ABI mismatches, and dependency rot. After ages of false alarms, C-Suite leaders and principal engineers were desensitized—conditioned to treat true cross-platform reproducibility as a myth.
+
+**Nix flakes** solved the underlying physics. By cryptographically pinning the entire dependency graph down to system libraries across Linux, macOS, and Windows WSL, *Write Once, Run Anywhere* is functionally true for the first time—which is why a real Software Von Neumann Probe is finally possible now.
+
+## The Engineering Value Proposition: Portable Plain-Text AI Context
+
+Cloud chat tabs are ephemeral silos that lose institutional context the moment a browser window closes. Sun Pug moves human-AI collaboration onto your local disk as checkable, version-controlled plain text:
 
 - `x` (`context`) — list the exact files and live `!` commands the model should see.
 - `p` (`prompt`) — capture your question from the clipboard.
