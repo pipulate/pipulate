@@ -1,0 +1,166 @@
+{
+  "demo_script": {
+    "name": "911 LLM Optics Full Spectrometer Test",
+    "description": "Hands-free Ghost Driver demonstration of RFC 9110 wire truth vs. hydrated DOM, ASCII layout boxes, Link Lens, and sealed SHA-256 ZIP deed.",
+    "trigger_message": "Engaging 911 LLM Optics Spectrometer...",
+    "steps": [
+      {
+        "step_id": "00_voice_intro",
+        "type": "mcp_tool_call",
+        "tool_name": "voice_synthesis",
+        "tool_args": {
+          "text": "Engaging 911 L L M Optics. Initializing a new optical diffraction run."
+        },
+        "timing": {
+          "delay_before": 400
+        },
+        "description": "🎤 Announcing 911 Optics initialization"
+      },
+      {
+        "step_id": "00b_flash_key",
+        "type": "mcp_tool_call",
+        "tool_name": "ui_flash_element",
+        "tool_args": {
+          "selector": "input[name='pipeline_id']",
+          "color": "gold",
+          "duration": 1000
+        },
+        "timing": {
+          "delay_before": 200
+        },
+        "description": "✨ Highlight pipeline key input"
+      },
+      {
+        "step_id": "01_submit_key",
+        "type": "dom_action",
+        "action": "submit_form",
+        "selector": "form[hx-post='/optics/init']",
+        "read_value_from": "input[name='pipeline_id']",
+        "message_template": "✅ **Optics Initialized:** Run Key `{value}`",
+        "timing": {
+          "delay_before": 800
+        },
+        "description": "Submit optics pipeline ID"
+      },
+      {
+        "step_id": "02_flash_url",
+        "type": "mcp_tool_call",
+        "tool_name": "ui_flash_element",
+        "tool_args": {
+          "selector": "#optics-step01-url-input",
+          "color": "gold",
+          "duration": 1000
+        },
+        "timing": {
+          "wait_for_selector": "#optics-step01-url-input",
+          "timeout": 15000,
+          "delay_before": 500
+        },
+        "description": "✨ Highlight Target URL input"
+      },
+      {
+        "step_id": "03_set_url",
+        "type": "dom_action",
+        "action": "set_value",
+        "selector": "#optics-step01-url-input",
+        "value": "https://mikelev.in/",
+        "message_template": "🎯 **Target Locked:** `https://mikelev.in/`",
+        "timing": {
+          "delay_before": 600
+        },
+        "description": "Set target URL for optical inspection"
+      },
+      {
+        "step_id": "04_submit_url",
+        "type": "dom_action",
+        "action": "submit_form",
+        "selector": "#optics-step01-form",
+        "timing": {
+          "delay_before": 500
+        },
+        "description": "Submit Target URL form"
+      },
+      {
+        "step_id": "05_flash_sift_btn",
+        "type": "mcp_tool_call",
+        "tool_name": "ui_flash_element",
+        "tool_args": {
+          "selector": "#optics-step02-btn",
+          "color": "gold",
+          "duration": 1200
+        },
+        "timing": {
+          "wait_for_selector": "#optics-step02-btn",
+          "timeout": 15000,
+          "delay_before": 600
+        },
+        "description": "✨ Highlight Engage Optics SIFT button"
+      },
+      {
+        "step_id": "06_engage_sift",
+        "type": "dom_action",
+        "action": "submit_form",
+        "selector": "#optics-step02-form",
+        "message_template": "👁️ **SIFT Engaged:** Draining CDP wire log, source HTML, hydrated DOM, and 16 optical lenses...",
+        "timing": {
+          "delay_before": 800
+        },
+        "description": "Trigger browser capture and SIFT subprocess"
+      },
+      {
+        "step_id": "07_open_boxes_lens",
+        "type": "dom_action",
+        "action": "click",
+        "selector": "#optics-boxes-summary",
+        "message_template": "📦 **Lens Opened:** Inspecting Hydrated ASCII Layout Boxes & Hierarchy Diff.",
+        "timing": {
+          "wait_for_selector": "#optics-step03-accept-btn",
+          "timeout": 45000,
+          "delay_before": 1200
+        },
+        "description": "Expand Hydrated ASCII Layout Boxes details"
+      },
+      {
+        "step_id": "08_accept_findings",
+        "type": "dom_action",
+        "action": "submit_form",
+        "selector": "#optics-step03-form",
+        "message_template": "✅ **Findings Accepted:** Proceeding to cryptographic deed seal.",
+        "timing": {
+          "delay_before": 1500
+        },
+        "description": "Accept optical analysis findings"
+      },
+      {
+        "step_id": "09_seal_deed",
+        "type": "dom_action",
+        "action": "submit_form",
+        "selector": "#optics-finalize-form",
+        "message_template": "🔒 **Sealing Deed:** Bundling 12 optical artifacts into `optics_deed.zip`...",
+        "timing": {
+          "wait_for_selector": "#optics-finalize-btn",
+          "timeout": 15000,
+          "delay_before": 1000
+        },
+        "description": "Finalize and seal the ZIP deed"
+      },
+      {
+        "step_id": "10_verify_deed_sealed",
+        "type": "mcp_tool_call",
+        "tool_name": "ui_flash_element",
+        "tool_args": {
+          "selector": "#optics-download-deed-btn",
+          "color": "gold",
+          "duration": 2000
+        },
+        "timing": {
+          "wait_for_selector": "#optics-download-deed-btn",
+          "timeout": 15000,
+          "delay_before": 800
+        },
+        "description": "✨ Flash sealed Optics Deed download button",
+        "end_demo": true
+      }
+    ]
+  }
+}
