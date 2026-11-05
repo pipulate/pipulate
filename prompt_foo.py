@@ -1566,6 +1566,31 @@ def clipboard_egress_allowed(profile: dict, no_clipboard: bool) -> bool:
     )
 
 
+def _check_probe_command(cmd: str) -> Optional[str]:
+    """Refuse bash loops (for/while/until ... do) and broken python -c syntax in '! ' probes."""
+    import ast
+    import shlex
+    unquoted = re.sub(r"'[^']*'|\"(?:\\.|[^\"\\])*\"", "", cmd)
+    if re.search(r"(?:^|[;&|()\s])(?:for|while|until)\b.*\bdo\b", unquoted):
+        return (
+            "bash loops (for/while/until ... do ... done) are forbidden in context.txt '! ' probes; "
+            "use a single command or a python -c list comprehension."
+        )
+    try:
+        tokens = shlex.split(cmd)
+    except ValueError as e:
+        return f"shell quote error: {e}"
+    for i, tok in enumerate(tokens[:-1]):
+        base = os.path.basename(tok)
+        if (base == "python" or base.startswith("python3")) and tokens[i + 1] == "-c":
+            if i + 2 < len(tokens):
+                try:
+                    ast.parse(tokens[i + 2])
+                except SyntaxError as e:
+                    return f"python -c SyntaxError: {e.msg} (line {e.lineno}, offset {e.offset})"
+    return None
+
+
 def check_dependencies():
     logger.print("Checking for required external dependencies...")
     dependencies = {
@@ -1910,7 +1935,7 @@ Before addressing the user's prompt, perform the following verification steps:
 9.  **THE TARGET ADJACENCY RULE:** Every `[[[SEARCH]]]` marker must be immediately preceded by `Target: filename` on the line directly above it -- no blank lines, no fences, no prose between the Target line and the marker. The filename in the Target line is what `apply.py` uses to find the file; omitting it or separating it with blank lines causes a fatal "Missing target filename" error. Example: `Target: scripts/articles/lsa.py` or `Target: /home/mike/repos/pipulate/scripts/articles/lsa.py`. Both relative and absolute paths work.
 10.  **THE WHOLE-FILE WRITE ESCAPE HATCH:** For a genuine top-to-bottom rewrite of a single file (not a surgical edit), you MAY skip the SEARCH block entirely. Emit a `Target: filename` line, then on the next line a `[[[WRITE_FILE]]]` marker, then the complete new file body, then a `[[[END_WRITE_FILE]]]` marker -- all wrapped in a single fenced text block exactly as the SEARCH/REPLACE protocol requires. `apply.py` writes the body verbatim, overwriting the file if it exists or creating it (and any missing parent directories) if it does not, runs the same Python AST safety check before saving, and normalizes a single trailing newline. Use this ONLY when you are replacing essentially the entire file; for every smaller change the SEARCH/REPLACE protocol with its exact-match interlock remains mandatory, because that exact match is what proves the edit is landing in the right place.
 11.  **THE ACTIONABLE RESPONSE CONTRACT (TURN SHAPE / THE PATCH TRAIN):** Every substantive answer must END with a numbered next-actions plan in this exact order: (1) PROBES -- ONE paste-ready fenced block of bare, read-only commands; all annotation (what each proves or falsifies, what it gates) lives in prose outside the block, never inline. Probes are read-only: patch application is never a probe. (2) NEXT CONTEXT -- the exact context.txt lines and file paths for the next compile; probe echoes are copy-symmetric with (1): identical commands, each adding only the leading "! ". (3) PATCHES -- SEARCH/REPLACE blocks ONLY against raw source actually present in this context (mutating shell actuators such as sed belong here, ridden as their own train car -- never in PROBES); if no repo patch is needed, state "No repo patches required" explicitly rather than inventing one. (4) PROMPT -- the CABOOSE COPY: the prompt.md text for the next turn, in its own fenced block, riding last so it sits under the operator's cursor when the train stops. (5) EXTERNAL DELIVERABLES -- artifacts living outside this repo (PageWorkers JavaScript, CMS settings, dashboards), clearly labeled as manual-paste and never wrapped in patch markers. Actuation choreography is the train itself: patch, app, d, m per car; blast (or git push) as the caboose. Analysis that does not close with this plan is an incomplete answer.
-12.  **THE PROBE ECHO INVARIANT (Before/After Symmetry):** Every command recommended in (1) PROBES MUST also appear verbatim as a `!` chisel-strike line in (2) NEXT CONTEXT. The operator's hand-run is the BEFORE reading, taken prior to applying any patch; the identical line baked into context.txt re-executes automatically at the next compile, producing the AFTER reading as a live receipt. One probe, two receipts, straddling the patch -- a binary-search causal boundary that removes all probe-before-patch / patch-then-probe ordering ambiguity. A probe too heavy or unbounded to echo into the next compile (see THE PROBE ECONOMY RULE) is too heavy to recommend: cap it first, then echo it. THE STRADDLE BRACKETS EXECUTION, NOT THE COMMIT: if the patched code will not run on its own before the next compile -- a shellHook, a daemon, a cached artifact, anything read once at entry -- then (3) PATCHES MUST close by NAMING the IGNITION (the exact command that makes it run, e.g. `exit` then `nix develop`, or `<F2>` for init.lua) or by stating "no ignition required" because the probe's own command loads the patched file at call time. Ignition is not a fourth beat; it completes PATCH. An AFTER tap taken without ignition is a stale BEFORE wearing the AFTER's label.
+12.  **THE PROBE ECHO INVARIANT (Before/After Symmetry):** Every command recommended in (1) PROBES MUST also appear verbatim as a `!` chisel-strike line in (2) NEXT CONTEXT. The operator's hand-run is the BEFORE reading, taken prior to applying any patch; the identical line baked into context.txt re-executes automatically at the next compile, producing the AFTER reading as a live receipt. One probe, two receipts, straddling the patch -- a binary-search causal boundary that removes all probe-before-patch / patch-then-probe ordering ambiguity. A probe too heavy or unbounded to echo into the next compile (see THE PROBE ECONOMY RULE) is too heavy to recommend: cap it first, then echo it. **NO BASH LOOPS OR BACKSLASH-QUOTED F-STRINGS IN PROBES:** NEVER use bash loops (`for`, `while`, `until ... do ... done`) in (1) PROBES or (2) NEXT CONTEXT (`context.txt` `! ` lines), and NEVER place backslash-escaped quotes (`\"`) inside single-quoted `python -c '...'` f-string expressions (`prompt_foo.py` and `apply.py` AST-check and refuse both). THE STRADDLE BRACKETS EXECUTION, NOT THE COMMIT: if the patched code will not run on its own before the next compile -- a shellHook, a daemon, a cached artifact, anything read once at entry -- then (3) PATCHES MUST close by NAMING the IGNITION (the exact command that makes it run, e.g. `exit` then `nix develop`, or `<F2>` for init.lua) or by stating "no ignition required" because the probe's own command loads the patched file at call time. Ignition is not a fourth beat; it completes PATCH. An AFTER tap taken without ignition is a stale BEFORE wearing the AFTER's label.
 13.  **THE MACHINE IS NAMED BY ITS PROMPT:** Every fenced command block is preceded by one line naming the terminal it runs in, by the prompt string the operator sees there (`(nix) pipulate $` on the workbench; the Mac's own user@host prompt on the Mac), never by a nickname ("the desk", "the box", "locally"), and that line is repeated on every block, every turn, never abbreviated after first use. (1) PROBES always run where `compile` runs, because only that machine executes `!` lines; a command for any other machine is a WITNESS, rides in (5) EXTERNAL DELIVERABLES under that machine's own prompt, and comes back as a paste. A step in a web console (a router, a registrar, a vendor's admin) is a numbered list: the address to open, the menu path, each field with the value to type, the Save and Apply clicks, and a picture of what the screen shows when it is done. Convicted 2026-09-29: "run on the desk" sent the operator to both terminals.
 14.  **HALT ONLY OUT OF BOUNDS:** RULED 2026-09-29 (deed 1703, the operator's words): "NEVER use HALT inside the 5-Car Train. ALWAYS use HALT for OOB things that need my attention outside the 5-Car Train." A hand step the train needs (a git mv, a walk typed by hand, a reseal) is a plain numbered car in (3) PATCHES with one fence under its prompt line and no banner. The operator's own habits (patch, app, d, m, git push, the paste into context.txt, prompt, bff) are never written at all, because the operator does them unasked and a written one costs a re-read to learn whether something changed. The banner rides ABOVE the train, once, only for the one step no terminal can take (a web console, a phone, a registrar, the other machine when the turn cannot proceed without it), and it is the block-letter glyph below, five lines in its own text fence, never the word in capitals: a signal repeated where the eyes already go is a signal the eyes learn to skip, so it fails at the one place it exists for (the boy who cried wolf). Every rule that adds an attention signal names, in the same sentence, where it must not fire, or the model grants the wish by the letter.
     ██   ██  █████  ██   █████
@@ -3109,6 +3134,15 @@ def main():
         # HANDLE DYNAMIC COMMANDS (The ! Chisel-Strike)
         if path.startswith('! '):
             raw_command = path[2:].strip()
+            probe_err = _check_probe_command(raw_command)
+            if probe_err:
+                refusal_msg = f"# PROBE REFUSED BY COMPILER AIRLOCK: {probe_err}"
+                logger.print(f"   -> ⛔ Refused probe: {raw_command:50} ({probe_err})")
+                processed_files_data.append({
+                    "path": f"! {raw_command}", "comment": comment, "content": refusal_msg,
+                    "tokens": count_tokens(refusal_msg), "words": count_words(refusal_msg), "lang": "text"
+                })
+                continue
             
             # Pragmatic Templating: Replace {{filename.ext}} with local file contents
             def inject_file(match):

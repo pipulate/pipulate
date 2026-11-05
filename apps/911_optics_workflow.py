@@ -76,6 +76,12 @@ class OpticsWorkflow:
                     'complete': f'{self.ui["EMOJIS"]["SUCCESS"]} {step.show} complete. Proceed to next step.'
                 }
 
+        @self.app.get('/optics_workflow')
+        async def redirect_optics_workflow(request):
+            from starlette.responses import RedirectResponse
+            qs = f"?{request.url.query}" if request.url.query else ""
+            return RedirectResponse(url=f'/redirect/{self.app_name}{qs}', status_code=302)
+
         # Dedicated route for downloading verified ZIP deed
         @self.app.get(f'/{self.app_name}/download/{{pipeline_id}}')
         async def download_deed(pipeline_id: str):
@@ -571,8 +577,18 @@ class OpticsWorkflow:
             links_text = "No link lens found."
             provenance = "unknown"
             rfc_headers_text = "No RFC 9110/9111 headers captured."
+            src_bytes = 0
+            hyd_bytes = 0
+            hydration_only_links = "0 anchor(s)"
+            has_vary_accept = False
 
             if out_dir and out_dir.exists():
+                src_file = out_dir / "source.html"
+                hyd_file = out_dir / "hydrated_dom.html"
+                if src_file.exists():
+                    src_bytes = src_file.stat().st_size
+                if hyd_file.exists():
+                    hyd_bytes = hyd_file.stat().st_size
                 diff_path = out_dir / "diff_simple_dom.txt"
                 if not diff_path.exists():
                     diff_path = out_dir / "diff_hierarchy.txt"
@@ -593,7 +609,12 @@ class OpticsWorkflow:
 
                 links_path = out_dir / "links.md"
                 if links_path.exists():
-                    links_text = links_path.read_text(encoding='utf-8')[:2500]
+                    full_links = links_path.read_text(encoding='utf-8')
+                    links_text = full_links[:2500]
+                    for ln in full_links.splitlines():
+                        if "present only after hydration:" in ln:
+                            hydration_only_links = ln.split("present only after hydration:", 1)[1].strip()
+                            break
 
                 headers_path = out_dir / "headers.json"
                 if headers_path.exists():
@@ -602,6 +623,7 @@ class OpticsWorkflow:
                         provenance = h_data.get("source_provenance") or h_data.get("header_selection") or "wire"
                         hdr_source = h_data.get("headers") or h_data.get("response_headers") or {}
                         raw_hdrs = {str(k).lower(): v for k, v in hdr_source.items()}
+                        has_vary_accept = "accept" in str(raw_hdrs.get("vary", "")).lower()
                         meta_lines = []
                         if "status" in h_data:
                             meta_lines.append(f"status: {h_data['status']}")
@@ -621,10 +643,19 @@ class OpticsWorkflow:
                     except Exception:
                         pass
 
+            vary_badge = "✅ Vary: Accept (Bimodal Ready)" if has_vary_accept else "⚠️ Single-Mode Origin (No Vary: Accept)"
             return Div(
                 Article(
                     H3(f'{self.ui["EMOJIS"]["GREETING"]} {self.wand.fmt(step.id)}: {step.show}'),
                     P(f"Wire Truth Provenance: {provenance.upper()}", cls='text-muted'),
+                    Div(
+                        Strong("📊 Executive AI-Readiness Verdict: "),
+                        Span(f"Wire HTML: {src_bytes:,} B vs. Hydrated DOM: {hyd_bytes:,} B | "),
+                        Span(f"JS-Only Links: {hydration_only_links} | "),
+                        Span(vary_badge),
+                        id='optics-executive-verdict',
+                        style='background: #161b22; color: #f0f6fc; border: 1px solid #30363d; border-left: 4px solid #50fa7b; padding: 0.75rem 1rem; border-radius: 6px; margin-bottom: 1rem; font-size: 0.85rem;'
+                    ),
                     H4("1. RFC 9110 / 9111 Wire Headers (Semantics & Caching)"),
                     Pre(
                         Code(rfc_headers_text, cls='language-yaml'),

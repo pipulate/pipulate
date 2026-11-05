@@ -736,10 +736,31 @@ def _has_unclosed_shell_quote_or_backslash(s: str) -> bool:
     return in_sq or in_dq or escaped
 
 
+def _check_probe_command(cmd: str) -> str | None:
+    """Return an error description if a '! ' probe uses a bash loop or invalid python -c syntax."""
+    import ast
+    import shlex
+    unquoted = re.sub(r"'[^']*'|\"(?:\\.|[^\"\\])*\"", "", cmd)
+    if re.search(r"(?:^|[;&|()\s])(?:for|while|until)\b.*\bdo\b", unquoted):
+        return "bash loops (for/while/until ... do ... done) are forbidden in context.txt '! ' probes"
+    try:
+        tokens = shlex.split(cmd)
+    except ValueError as e:
+        return f"shell quote error: {e}"
+    for i, tok in enumerate(tokens[:-1]):
+        base = os.path.basename(tok)
+        if (base == 'python' or base.startswith('python3')) and tokens[i + 1] == '-c':
+            if i + 2 < len(tokens):
+                try:
+                    ast.parse(tokens[i + 2])
+                except SyntaxError as e:
+                    return f"python -c SyntaxError: {e.msg} (line {e.lineno}, offset {e.offset})"
+    return None
+
+
 def _warn_multiline_context_probes(ctx_path: str = 'context.txt') -> None:
-    """Warn when context.txt contains a '! ' probe split across multiple lines.
-    prompt_foo.py parses context.txt line-by-line; a multiline '! ' block leaves
-    an unclosed quote on line 1 (bash exit 2) and orphan lines below it."""
+    """Warn when context.txt contains a '! ' probe split across multiple lines,
+    a bash loop, or a 'python -c' one-liner with invalid Python syntax."""
     if not os.path.isfile(ctx_path):
         return
     try:
@@ -749,9 +770,15 @@ def _warn_multiline_context_probes(ctx_path: str = 'context.txt') -> None:
             s = raw.strip()
             if not s or s.startswith('#'):
                 continue
-            if s.startswith('! ') and _has_unclosed_shell_quote_or_backslash(s[2:].strip()):
-                print(f"⚠ Warning: {ctx_path}:{idx} has an unclosed quote or backslash in a '! ' probe.")
-                print("   prompt_foo.py executes '! ' lines one line at a time; collapse probes to a single line.")
+            if s.startswith('! '):
+                cmd = s[2:].strip()
+                if _has_unclosed_shell_quote_or_backslash(cmd):
+                    print(f"⚠ Warning: {ctx_path}:{idx} has an unclosed quote or backslash in a '! ' probe.")
+                    print("   prompt_foo.py executes '! ' lines one line at a time; collapse probes to a single line.")
+                else:
+                    probe_err = _check_probe_command(cmd)
+                    if probe_err:
+                        print(f"⚠ Warning: {ctx_path}:{idx} invalid '! ' probe: {probe_err}")
     except OSError:
         pass
 

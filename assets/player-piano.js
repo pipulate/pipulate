@@ -3181,4 +3181,18 @@ document.addEventListener('DOMContentLoaded', () => {
     if (tempMessage && !tempMessageSent) {
         setTimeout(sendTempMessageWhenReady, 1000);
     }
+
+    // Auto-trigger Ghost Driver when ?demo=1 is passed (e.g. via ytapp on Honeybot)
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('demo') === '1') {
+        sessionStorage.setItem('pipulate_auto_demo', '1');
+    }
+    if (sessionStorage.getItem('pipulate_auto_demo') === '1' && document.querySelector('[id$="-container"]')) {
+        sessionStorage.removeItem('pipulate_auto_demo');
+        setTimeout(() => {
+            if (typeof window.triggerContextAwareDemo === 'function') {
+                window.triggerContextAwareDemo();
+            }
+        }, 1500);
+    }
 });
