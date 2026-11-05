@@ -3193,7 +3193,8 @@ def redirect_handler(request):
         logger.debug(f"Prepared endpoint message for {path}. Skipping temp_message to prevent echo.")
 
     build_endpoint_training(path)
-    return Redirect(f'/{path}')
+    qs = f"?{request.url.query}" if request.url.query else ""
+    return Redirect(f'/{path}{qs}')
 
 
 @rt('/poke', methods=['POST'])
@@ -4331,6 +4332,8 @@ async def serve_scenario_config(request):
 
     try:
         scenario_path = Path('assets/scenarios') / filename
+        if not scenario_path.exists() and filename == 'optics_workflow_test.json':
+            scenario_path = Path('assets/scenarios/optics_test.json')
         if scenario_path.exists():
             with open(scenario_path, 'r') as f:
                 config_data = json.load(f)

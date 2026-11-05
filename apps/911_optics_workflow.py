@@ -76,11 +76,11 @@ class OpticsWorkflow:
                     'complete': f'{self.ui["EMOJIS"]["SUCCESS"]} {step.show} complete. Proceed to next step.'
                 }
 
-        @self.app.get('/optics_workflow')
-        async def redirect_optics_workflow(request):
+        @self.app.get('/optics')
+        async def redirect_optics_alias(request):
             from starlette.responses import RedirectResponse
             qs = f"?{request.url.query}" if request.url.query else ""
-            return RedirectResponse(url=f'/redirect/{self.app_name}{qs}', status_code=302)
+            return RedirectResponse(url=f'/optics_workflow{qs}', status_code=302)
 
         # Dedicated route for downloading verified ZIP deed
         @self.app.get(f'/{self.app_name}/download/{{pipeline_id}}')

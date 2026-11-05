@@ -44,14 +44,20 @@ def _tunnel_pids() -> list[str]:
     return [p.strip() for p in (res.stdout or "").splitlines() if p.strip()]
 
 
-def run_ytapp(action: str, subpath: str = "/", say_text: str = "", dry_run: bool = False) -> int:
+def run_ytapp(
+    action: str,
+    subpath: str = "/",
+    say_text: str = "",
+    dry_run: bool = False,
+    freeze_hud: bool = True,
+) -> int:
     clean_path = "/" + (subpath or "").lstrip("/")
     stage_url = f"http://127.0.0.1:{REMOTE_TUNNEL_PORT}{clean_path}"
 
     if dry_run:
         print(
             f"🎬 [DRY RUN] ytapp action={action} | local=127.0.0.1:{LOCAL_PORT} -> "
-            f"{HONEYBOT_HOST}:{stage_url} | say={bool(say_text)}"
+            f"{HONEYBOT_HOST}:{stage_url} | freeze_hud={freeze_hud} | say={bool(say_text)}"
         )
         return 0
 
@@ -74,7 +80,7 @@ def run_ytapp(action: str, subpath: str = "/", say_text: str = "", dry_run: bool
         print(
             f"📡 ytapp tunnel (15001->5001): {'RUNNING pid=' + ','.join(pids) if pids else 'STOPPED'}"
         )
-        print(f"📺 Honeybot :10.0 stage     : {(rem.stdout or '').strip()}")
+        print(f"📺 Honeybot :10.0 stage      : {(rem.stdout or '').strip()}")
         return 0
 
     if action == "stop":
@@ -86,13 +92,13 @@ def run_ytapp(action: str, subpath: str = "/", say_text: str = "", dry_run: bool
                 "-o",
                 "ConnectTimeout=5",
                 HONEYBOT_HOST,
-                f"pkill -f '{STAGE_PROFILE_DIR}' 2>/dev/null || true",
+                f"pkill -f '{STAGE_PROFILE_DIR}' 2>/dev/null || true; pkill -CONT -f 'logs[.]py' 2>/dev/null || true",
             ],
             check=False,
         )
         for pid in _tunnel_pids():
             subprocess.run(["kill", pid], check=False)
-        print("🛑 Dismissed Honeybot FastHTML stage window & closed SSH reverse tunnel.")
+        print("🛑 Dismissed Honeybot FastHTML stage window, resumed logs.py (SIGCONT), & closed SSH reverse tunnel.")
         return 0
 
     # action == "start"
@@ -144,6 +150,8 @@ def run_ytapp(action: str, subpath: str = "/", say_text: str = "", dry_run: bool
 import os, subprocess, time
 env = os.environ.copy()
 env["DISPLAY"] = ":10.0"
+if {freeze_hud}:
+    subprocess.run(["pkill", "-STOP", "-f", "logs[.]py"], check=False)
 subprocess.run(["pkill", "-f", "{STAGE_PROFILE_DIR}"], check=False)
 subprocess.run(["mkdir", "-p", "{STAGE_PROFILE_DIR}"], check=False)
 subprocess.Popen(
@@ -213,11 +221,11 @@ def run_ytvim(action: str, dry_run: bool = False) -> int:
                 "-o",
                 "ConnectTimeout=5",
                 HONEYBOT_HOST,
-                f"pkill -f 'HONEYBOT_LIVE_VIM' 2>/dev/null || true; rm -f {VIM_ANSI_FIFO}",
+                f"pkill -f 'HONEYBOT_LIVE_VIM' 2>/dev/null || true; pkill -CONT -f 'logs[.]py' 2>/dev/null || true; rm -f {VIM_ANSI_FIFO}",
             ],
             check=False,
         )
-        print("🛑 Dismissed Honeybot Live Neovim stage window.")
+        print("🛑 Dismissed Honeybot Live Neovim stage window & resumed logs.py (SIGCONT).")
         return 0
 
     # action == "start"
@@ -225,6 +233,7 @@ def run_ytvim(action: str, dry_run: bool = False) -> int:
 import os, pathlib, subprocess, time
 env = os.environ.copy()
 env["DISPLAY"] = ":10.0"
+subprocess.run(["pkill", "-STOP", "-f", "logs[.]py"], check=False)
 subprocess.run(["pkill", "-f", "HONEYBOT_LIVE_VIM"], check=False)
 p = pathlib.Path("{VIM_ANSI_FIFO}")
 p.write_text("\\033[2J\\033[H🔴 LIVE TERMINAL / NEOVIM STREAM FROM PIPULATE PRIME...\\r\\n", encoding="utf-8")
@@ -279,7 +288,9 @@ print("YTVIM_STAGE_READY")
 def main() -> int:
     parser = argparse.ArgumentParser(description="Project Pipulate FastHTML App or Neovim onto Honeybot :10.0.")
     parser.add_argument("mode", choices=("app", "vim"), help="Stage mode: 'app' (FastHTML browser) or 'vim' (terminal/Neovim).")
-    parser.add_argument("args", nargs="*", help="Action (start|stop|status) and optional URL path for app.")
+    parser.add_argument("args", nargs="*", help="Action (start|stop|status) and optional URL path or 'optics' preset.")
+    parser.add_argument("--optics-demo", action="store_true", help="Launch 911 LLM Optics with hands-free Ghost Driver (?demo=1).")
+    parser.add_argument("--no-freeze", action="store_true", help="Do not pause Honeybot logs.py with SIGSTOP while stage is active.")
     parser.add_argument("--say", type=str, default="", help="Optional Piper TTS announcement before opening stage.")
     parser.add_argument("--dry-run", action="store_true", help="Verify stage command routing without side effects.")
     parsed = parser.parse_args()
@@ -290,11 +301,22 @@ def main() -> int:
         low = token.strip().lower()
         if low in ("start", "stop", "status", "kill"):
             action = "stop" if low == "kill" else low
+        elif low in ("optics", "optics-demo", "911"):
+            subpath = "/optics_workflow?demo=1"
         elif token.startswith("/"):
             subpath = token.strip()
 
+    if parsed.optics_demo:
+        subpath = "/optics_workflow?demo=1"
+
     if parsed.mode == "app":
-        return run_ytapp(action=action, subpath=subpath, say_text=parsed.say, dry_run=parsed.dry_run)
+        return run_ytapp(
+            action=action,
+            subpath=subpath,
+            say_text=parsed.say,
+            dry_run=parsed.dry_run,
+            freeze_hud=not parsed.no_freeze,
+        )
     return run_ytvim(action=action, dry_run=parsed.dry_run)
 
 
