@@ -165,14 +165,15 @@ class OpticsWorkflow:
                     H3(f'{self.ui["EMOJIS"]["LOCKED"]} Optical Deed Sealed'),
                     P(f"SHA-256 Digest: {hash_str}", cls='text-muted'),
                     Div(
-                        A("📥 Download Verified Optics Deed (ZIP)", href=f'/{app_name}/download/{pipeline_id}', cls=self.ui['BUTTON_STYLES']['PRIMARY'], role='button'),
+                        A("📥 Download Verified Optics Deed (ZIP)", href=f'/{app_name}/download/{pipeline_id}', cls=self.ui['BUTTON_STYLES']['PRIMARY'], role='button', id='optics-download-deed-btn'),
                         style='margin-bottom: 1rem;'
                     ),
                     Form(
-                        Button(self.ui['BUTTON_LABELS']['UNLOCK'], type='submit', cls=self.ui['BUTTON_STYLES']['OUTLINE']),
+                        Button(self.ui['BUTTON_LABELS']['UNLOCK'], type='submit', cls=self.ui['BUTTON_STYLES']['OUTLINE'], id='optics-unlock-btn'),
                         hx_post=f'/{app_name}/unfinalize',
                         hx_target=f'#{app_name}-container',
-                        hx_swap='outerHTML'
+                        hx_swap='outerHTML',
+                        id='optics-unlock-form'
                     ),
                     id=finalize_step.id,
                     role='region'
@@ -184,10 +185,11 @@ class OpticsWorkflow:
                         H3(f'{self.ui["EMOJIS"]["SUCCESS"]} Optical Analysis Complete. Seal Deed?'),
                         P("Finalizing will compile the ZIP deed, stamp the cryptographic hash, and lock the run.", cls='text-muted'),
                         Form(
-                            Button(self.ui['BUTTON_LABELS']['FINALIZE'], type='submit', cls=self.ui['BUTTON_STYLES']['PRIMARY']),
+                            Button(self.ui['BUTTON_LABELS']['FINALIZE'], type='submit', cls=self.ui['BUTTON_STYLES']['PRIMARY'], id='optics-finalize-btn'),
                             hx_post=f'/{app_name}/finalize',
                             hx_target=f'#{app_name}-container',
-                            hx_swap='outerHTML'
+                            hx_swap='outerHTML',
+                            id='optics-finalize-form'
                         ),
                         id=finalize_step.id,
                         role='region'
@@ -635,20 +637,23 @@ class OpticsWorkflow:
                     self._render_markdown_lens(links_text, f"optics-links-{pipeline_id.replace('-', '_')}"),
                     H4("4. DOM Hierarchy Diff & ASCII Layout Boxes"),
                     Details(
-                        Summary("View Hierarchy Diff (Source vs. Hydrated Tree)", style='font-size: 0.84rem; cursor: pointer; color: #8be9fd; margin-bottom: 0.4rem;'),
-                        self._render_colored_diff(hier_diff_text)
+                        Summary("View Hierarchy Diff (Source vs. Hydrated Tree)", id='optics-hier-summary', style='font-size: 0.84rem; cursor: pointer; color: #8be9fd; margin-bottom: 0.4rem;'),
+                        self._render_colored_diff(hier_diff_text),
+                        id='optics-hier-details'
                     ),
                     Details(
-                        Summary("View Hydrated ASCII Layout Boxes", style='font-size: 0.84rem; cursor: pointer; color: #50fa7b; margin-top: 0.4rem; margin-bottom: 0.4rem;'),
-                        Pre(boxes_text, style='max-height: 280px; overflow-y: auto; overflow-x: auto; background: #111; color: #f8f8f2; padding: 0.75rem; border-radius: 4px; font-size: 0.75rem;')
+                        Summary("View Hydrated ASCII Layout Boxes", id='optics-boxes-summary', style='font-size: 0.84rem; cursor: pointer; color: #50fa7b; margin-top: 0.4rem; margin-bottom: 0.4rem;'),
+                        Pre(boxes_text, style='max-height: 280px; overflow-y: auto; overflow-x: auto; background: #111; color: #f8f8f2; padding: 0.75rem; border-radius: 4px; font-size: 0.75rem;'),
+                        id='optics-boxes-details'
                     ),
                     H4("5. Extracted Agent Markdown (seo.md)"),
                     Details(
-                        Summary("View Distilled Markdown Payload", style='font-size: 0.84rem; cursor: pointer; color: #bd93f9; margin-bottom: 0.4rem;'),
-                        self._render_markdown_lens(seo_md_text, f"optics-seo-{pipeline_id.replace('-', '_')}")
+                        Summary("View Distilled Markdown Payload", id='optics-seo-summary', style='font-size: 0.84rem; cursor: pointer; color: #bd93f9; margin-bottom: 0.4rem;'),
+                        self._render_markdown_lens(seo_md_text, f"optics-seo-{pipeline_id.replace('-', '_')}"),
+                        id='optics-seo-details'
                     ),
                     Form(
-                        Button("Accept Optical Findings & Seal ▸", type='submit', cls=self.ui['BUTTON_STYLES']['PRIMARY']),
+                        Button("Accept Optical Findings & Seal ▸", type='submit', cls=self.ui['BUTTON_STYLES']['PRIMARY'], id='optics-step03-accept-btn'),
                         hx_post=f'/{app_name}/{step_id}_submit',
                         hx_target=f'#{step_id}',
                         style='margin-top: 1rem;',

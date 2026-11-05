@@ -808,14 +808,20 @@ document.addEventListener('keydown', function(event) {
         let currentApp = 'introduction'; // Default
         const path = window.location.pathname;
         
-        // Extract app name from URL logic
+        // Extract app name from URL logic or active workflow container
         if (path.includes('/redirect/')) {
             currentApp = path.split('/redirect/')[1];
         } else if (path !== '/' && path !== '') {
             const parts = path.split('/').filter(p => p);
             if (parts.length > 0) currentApp = parts[0];
             currentApp = currentApp.replace(/^\d+_/, ''); // Strip numeric prefix
+        } else {
+            const containerEl = document.querySelector('[id$="-container"]');
+            if (containerEl && containerEl.id) {
+                currentApp = containerEl.id.replace(/-container$/, '');
+            }
         }
+        if (currentApp === 'hello') currentApp = 'hello_workflow';
         
         const scriptName = `${currentApp}_test.json`;
         
@@ -2173,7 +2179,7 @@ The element is now sparkling with golden light!`;
 
 // Flash element with gold effect - real UI enhancement
 function flashElementWithGoldEffect(elementId) {
-    const element = document.getElementById(elementId);
+    const element = document.getElementById(elementId) || document.querySelector(elementId);
     if (element) {
         // Add gold flash animation
         element.style.transition = 'all 0.3s ease-in-out';
