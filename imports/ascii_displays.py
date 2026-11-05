@@ -491,13 +491,13 @@ def _expand_color_bits_ai(text: str) -> str:
 def _figurate_white_rabbit():
     """Render white_rabbit as (human, ai) tuple for FIGURATE_REGISTRY."""
     art = r"""
-        Built on a "No Problem" framework
-                            O        /)  ____
-                             o /)\__//  /    \               
-                Nix,       ___(/_ 0 0  |      |     vim      
-               Python    *(    ==(_T_)== NPvg |     git      
-                           \  )   ""\  |      |              
-                            |__>-\_>_>  \____/
+   Built on a "No Problem" framework
+             O        /)  ____
+              o /)\__//  /    \
+ Nix,       ___(/_ 0 0  |      |     vim
+Python    *(    ==(_T_)== NPvg |     git
+            \  )   ""\  |      |
+             |__>-\_>_>  \____/
     """
     ai_art = _expand_color_bits_ai(art)
     human_art = _expand_color_bits_human(art)
