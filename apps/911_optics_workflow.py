@@ -202,7 +202,13 @@ class OpticsWorkflow:
                 out_dir = Path(out_dir_str)
                 zip_path = out_dir / "optics_deed.zip"
                 with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zf:
-                    for fname in ["headers.json", "source.html", "hydrated_dom.html", "diff_simple_dom.txt", "diff_hierarchy.txt", "links.md", "seo.md"]:
+                    for fname in [
+                        "headers.json", "source.html", "hydrated_dom.html",
+                        "diff_simple_dom.txt", "diff_hierarchy.txt", "diff_boxes.txt",
+                        "source_dom_hierarchy.txt", "hydrated_dom_hierarchy.txt",
+                        "source_dom_layout_boxes.txt", "hydrated_dom_layout_boxes.txt",
+                        "links.md", "seo.md"
+                    ]:
                         fpath = out_dir / fname
                         if fpath.exists():
                             zf.write(fpath, arcname=fname)
@@ -557,6 +563,9 @@ class OpticsWorkflow:
         else:
             # Read artifacts
             diff_text = "No diff artifact found."
+            hier_diff_text = "No hierarchy diff found."
+            boxes_text = "No layout boxes found."
+            seo_md_text = "No agent markdown extracted."
             links_text = "No link lens found."
             provenance = "unknown"
             rfc_headers_text = "No RFC 9110/9111 headers captured."
@@ -567,6 +576,18 @@ class OpticsWorkflow:
                     diff_path = out_dir / "diff_hierarchy.txt"
                 if diff_path.exists():
                     diff_text = diff_path.read_text(encoding='utf-8')[:4000]
+
+                hier_path = out_dir / "diff_hierarchy.txt"
+                if hier_path.exists():
+                    hier_diff_text = hier_path.read_text(encoding='utf-8')[:4000]
+
+                boxes_path = out_dir / "hydrated_dom_layout_boxes.txt"
+                if boxes_path.exists():
+                    boxes_text = boxes_path.read_text(encoding='utf-8')[:4000]
+
+                seo_path = out_dir / "seo.md"
+                if seo_path.exists():
+                    seo_md_text = seo_path.read_text(encoding='utf-8')[:3000]
 
                 links_path = out_dir / "links.md"
                 if links_path.exists():
@@ -612,6 +633,20 @@ class OpticsWorkflow:
                     self._render_colored_diff(diff_text),
                     H4("3. Link Lens (Anchor Accounting)"),
                     self._render_markdown_lens(links_text, f"optics-links-{pipeline_id.replace('-', '_')}"),
+                    H4("4. DOM Hierarchy Diff & ASCII Layout Boxes"),
+                    Details(
+                        Summary("View Hierarchy Diff (Source vs. Hydrated Tree)", style='font-size: 0.84rem; cursor: pointer; color: #8be9fd; margin-bottom: 0.4rem;'),
+                        self._render_colored_diff(hier_diff_text)
+                    ),
+                    Details(
+                        Summary("View Hydrated ASCII Layout Boxes", style='font-size: 0.84rem; cursor: pointer; color: #50fa7b; margin-top: 0.4rem; margin-bottom: 0.4rem;'),
+                        Pre(boxes_text, style='max-height: 280px; overflow-y: auto; overflow-x: auto; background: #111; color: #f8f8f2; padding: 0.75rem; border-radius: 4px; font-size: 0.75rem;')
+                    ),
+                    H4("5. Extracted Agent Markdown (seo.md)"),
+                    Details(
+                        Summary("View Distilled Markdown Payload", style='font-size: 0.84rem; cursor: pointer; color: #bd93f9; margin-bottom: 0.4rem;'),
+                        self._render_markdown_lens(seo_md_text, f"optics-seo-{pipeline_id.replace('-', '_')}")
+                    ),
                     Form(
                         Button("Accept Optical Findings & Seal ▸", type='submit', cls=self.ui['BUTTON_STYLES']['PRIMARY']),
                         hx_post=f'/{app_name}/{step_id}_submit',
