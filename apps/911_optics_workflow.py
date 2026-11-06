@@ -474,7 +474,7 @@ class OpticsWorkflow:
         parsed = urlparse(target_url)
         domain = parsed.netloc or "unknown"
         slug = quote(parsed.path or "/", safe="").replace("/", "_")[:100] or "%2F"
-        output_dir = Path("browser_cache/looking_at") / domain / slug
+        output_dir = Path("browser_cache") / domain / slug
         output_dir.mkdir(parents=True, exist_ok=True)
 
         form = await request.form()
@@ -488,7 +488,7 @@ class OpticsWorkflow:
             "url_path_slug": slug,
             "take_screenshot": False,
             "headless": not show_browser,
-            "is_notebook_context": False,
+            "is_notebook_context": True,
             "verbose": False,
             "persistent": False,
             "override_cache": True,
@@ -500,7 +500,14 @@ class OpticsWorkflow:
             logger.warning(f"Selenium capture failed: {e}; attempting HTTP fallback")
             res = {"success": False}
 
-        if not res.get("success"):
+        if res.get("success"):
+            looking_at = res.get("looking_at_files") or {}
+            sample_path = next((Path(v) for v in looking_at.values() if v), None)
+            if sample_path and sample_path.parent.exists():
+                output_dir = sample_path.parent
+            if not (output_dir / "hydrated_dom_layout_boxes.txt").exists():
+                await generate_optics_subprocess(str(output_dir))
+        else:
             import urllib.request
             try:
                 req = urllib.request.Request(
@@ -572,6 +579,7 @@ class OpticsWorkflow:
             # Read artifacts
             diff_text = "No diff artifact found."
             hier_diff_text = "No hierarchy diff found."
+            hier_tree_text = "No DOM hierarchy tree found."
             boxes_text = "No layout boxes found."
             seo_md_text = "No agent markdown extracted."
             links_text = "No link lens found."
@@ -598,6 +606,9 @@ class OpticsWorkflow:
                 hier_path = out_dir / "diff_hierarchy.txt"
                 if hier_path.exists():
                     hier_diff_text = hier_path.read_text(encoding='utf-8')[:4000]
+                tree_path = out_dir / "hydrated_dom_hierarchy.txt"
+                if tree_path.exists():
+                    hier_tree_text = tree_path.read_text(encoding='utf-8')[:4000]
 
                 boxes_path = out_dir / "hydrated_dom_layout_boxes.txt"
                 if boxes_path.exists():
@@ -671,6 +682,11 @@ class OpticsWorkflow:
                         Summary("View Hierarchy Diff (Source vs. Hydrated Tree)", id='optics-hier-summary', style='font-size: 0.84rem; cursor: pointer; color: #8be9fd; margin-bottom: 0.4rem;'),
                         self._render_colored_diff(hier_diff_text),
                         id='optics-hier-details'
+                    ),
+                    Details(
+                        Summary("View Hydrated DOM Hierarchy Tree (🌐 Document Root)", id='optics-tree-summary', style='font-size: 0.84rem; cursor: pointer; color: #f1fa8c; margin-top: 0.4rem; margin-bottom: 0.4rem;'),
+                        Pre(hier_tree_text, style='max-height: 280px; overflow-y: auto; overflow-x: auto; background: #111; color: #f8f8f2; padding: 0.75rem; border-radius: 4px; font-size: 0.75rem;'),
+                        id='optics-tree-details'
                     ),
                     Details(
                         Summary("View Hydrated ASCII Layout Boxes", id='optics-boxes-summary', style='font-size: 0.84rem; cursor: pointer; color: #50fa7b; margin-top: 0.4rem; margin-bottom: 0.4rem;'),
