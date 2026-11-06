@@ -114,7 +114,7 @@ def generate_visualizations(html_content: str, prefix: str, output_dir: Path, re
 
         record_console_html_h = Console(record=True, file=io.StringIO(), width=CONSOLE_WIDTH)
         record_console_html_h.print(tree_object)
-        results[f'{prefix}_hierarchy_html_content'] = record_console_html_h.export_html(theme=MONOKAI)
+        results[f'{prefix}_hierarchy_html_content'] = record_console_html_h.export_html(theme=MONOKAI, inline_styles=True)
     except Exception as e:
         print(f"Error generating {prefix} hierarchy: {e}", file=sys.stderr)
 
@@ -130,7 +130,7 @@ def generate_visualizations(html_content: str, prefix: str, output_dir: Path, re
 
             record_console_html_b = Console(record=True, file=io.StringIO(), width=CONSOLE_WIDTH)
             record_console_html_b.print(box_object)
-            results[f'{prefix}_boxes_html_content'] = record_console_html_b.export_html(theme=MONOKAI)
+            results[f'{prefix}_boxes_html_content'] = record_console_html_b.export_html(theme=MONOKAI, inline_styles=True)
     except Exception as e:
         print(f"Error generating {prefix} boxes: {e}", file=sys.stderr)
 
@@ -161,7 +161,7 @@ def generate_diff(source_text: str, hydrated_text: str, prefix: str, results: di
         syntax = Syntax(diff_text, "diff", theme="monokai", word_wrap=True)
         record_console = Console(record=True, file=io.StringIO(), width=CONSOLE_WIDTH)
         record_console.print(syntax)
-        results[f'diff_{prefix}_html_content'] = record_console.export_html(theme=MONOKAI)
+        results[f'diff_{prefix}_html_content'] = record_console.export_html(theme=MONOKAI, inline_styles=True)
     except Exception as e:
         print(f"Error generating diff for {prefix}: {e}", file=sys.stderr)
 

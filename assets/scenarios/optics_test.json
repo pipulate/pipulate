@@ -108,14 +108,25 @@
         "description": "Trigger browser capture and SIFT subprocess"
       },
       {
-        "step_id": "07_open_boxes_lens",
+        "step_id": "07a_open_tree_lens",
         "type": "dom_action",
         "action": "click",
-        "selector": "#optics-boxes-summary",
-        "message_template": "📦 **Lens Opened:** Inspecting Hydrated ASCII Layout Boxes & Hierarchy Diff.",
+        "selector": "#optics-tree-summary",
+        "message_template": "🌳 **Tree Lens Opened:** Inspecting Monokai-colorized DOM Hierarchy Tree (`🌐 Document Root`).",
         "timing": {
           "wait_for_selector": "#optics-step03-accept-btn",
           "timeout": 45000,
+          "delay_before": 1200
+        },
+        "description": "Expand Hydrated DOM Hierarchy Tree details"
+      },
+      {
+        "step_id": "07b_open_boxes_lens",
+        "type": "dom_action",
+        "action": "click",
+        "selector": "#optics-boxes-summary",
+        "message_template": "📦 **Boxes Lens Opened:** Inspecting Monokai-colorized Hydrated ASCII Layout Boxes.",
+        "timing": {
           "delay_before": 1200
         },
         "description": "Expand Hydrated ASCII Layout Boxes details"

@@ -212,9 +212,13 @@ class OpticsWorkflow:
                 with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zf:
                     for fname in [
                         "headers.json", "source.html", "hydrated_dom.html",
-                        "diff_simple_dom.txt", "diff_hierarchy.txt", "diff_boxes.txt",
-                        "source_dom_hierarchy.txt", "hydrated_dom_hierarchy.txt",
-                        "source_dom_layout_boxes.txt", "hydrated_dom_layout_boxes.txt",
+                        "diff_simple_dom.txt", "diff_simple_dom.html",
+                        "diff_hierarchy.txt", "diff_hierarchy.html",
+                        "diff_boxes.txt", "diff_boxes.html",
+                        "source_dom_hierarchy.txt", "source_dom_hierarchy.html",
+                        "hydrated_dom_hierarchy.txt", "hydrated_dom_hierarchy.html",
+                        "source_dom_layout_boxes.txt", "source_dom_layout_boxes.html",
+                        "hydrated_dom_layout_boxes.txt", "hydrated_dom_layout_boxes.html",
                         "links.md", "seo.md"
                     ]:
                         fpath = out_dir / fname
@@ -251,6 +255,37 @@ class OpticsWorkflow:
 
     async def get_suggestion(self, step_id, state):
         return ''
+
+    def _render_rich_html_lens(self, html_doc: str, fallback_text: str, scope_id: str):
+        import re
+        if not html_doc:
+            return Pre(
+                fallback_text,
+                style='max-height: 340px; overflow-y: auto; overflow-x: auto; background: #111; color: #f8f8f2; padding: 0.75rem; border-radius: 4px; font-size: 0.75rem; line-height: 1.3;'
+            )
+        style_match = re.search(r'<style[^>]*>(.*?)</style>', html_doc, flags=re.DOTALL | re.IGNORECASE)
+        pre_match = re.search(r'<pre[^>]*>.*?</pre>', html_doc, flags=re.DOTALL | re.IGNORECASE)
+        if not pre_match:
+            return Pre(
+                fallback_text,
+                style='max-height: 340px; overflow-y: auto; overflow-x: auto; background: #111; color: #f8f8f2; padding: 0.75rem; border-radius: 4px; font-size: 0.75rem; line-height: 1.3;'
+            )
+        pre_html = pre_match.group(0)
+        style_css = ""
+        if style_match:
+            raw_css = style_match.group(1)
+            rule_lines = [
+                re.sub(r'\.r(\d+)\b', f'.{scope_id}_r\\1', ln.strip())
+                for ln in raw_css.splitlines()
+                if ln.strip().startswith('.r')
+            ]
+            if rule_lines:
+                style_css = f"<style>{' '.join(rule_lines)}</style>"
+            pre_html = re.sub(r'class="r(\d+)"', f'class="{scope_id}_r\\1"', pre_html)
+        return Div(
+            NotStr(style_css + pre_html),
+            style='max-height: 360px; overflow-y: auto; overflow-x: auto; background: #111; color: #f8f8f2; padding: 0.75rem; border-radius: 4px; font-size: 0.75rem; line-height: 1.3; border: 1px solid #2a3140;'
+        )
 
     def _render_colored_diff(self, diff_text: str):
         lines = []
@@ -580,7 +615,10 @@ class OpticsWorkflow:
             diff_text = "No diff artifact found."
             hier_diff_text = "No hierarchy diff found."
             hier_tree_text = "No DOM hierarchy tree found."
+            hier_tree_html = ""
             boxes_text = "No layout boxes found."
+            boxes_html = ""
+            boxes_diff_text = "No layout boxes diff found."
             seo_md_text = "No agent markdown extracted."
             links_text = "No link lens found."
             provenance = "unknown"
@@ -608,11 +646,20 @@ class OpticsWorkflow:
                     hier_diff_text = hier_path.read_text(encoding='utf-8')[:4000]
                 tree_path = out_dir / "hydrated_dom_hierarchy.txt"
                 if tree_path.exists():
-                    hier_tree_text = tree_path.read_text(encoding='utf-8')[:4000]
+                    hier_tree_text = tree_path.read_text(encoding='utf-8')[:6000]
+                tree_html_path = out_dir / "hydrated_dom_hierarchy.html"
+                if tree_html_path.exists():
+                    hier_tree_html = tree_html_path.read_text(encoding='utf-8')
 
                 boxes_path = out_dir / "hydrated_dom_layout_boxes.txt"
                 if boxes_path.exists():
-                    boxes_text = boxes_path.read_text(encoding='utf-8')[:4000]
+                    boxes_text = boxes_path.read_text(encoding='utf-8')[:6000]
+                boxes_html_path = out_dir / "hydrated_dom_layout_boxes.html"
+                if boxes_html_path.exists():
+                    boxes_html = boxes_html_path.read_text(encoding='utf-8')
+                boxes_diff_path = out_dir / "diff_boxes.txt"
+                if boxes_diff_path.exists():
+                    boxes_diff_text = boxes_diff_path.read_text(encoding='utf-8')[:4000]
 
                 seo_path = out_dir / "seo.md"
                 if seo_path.exists():
@@ -677,21 +724,26 @@ class OpticsWorkflow:
                     self._render_colored_diff(diff_text),
                     H4("3. Link Lens (Anchor Accounting)"),
                     self._render_markdown_lens(links_text, f"optics-links-{pipeline_id.replace('-', '_')}"),
-                    H4("4. DOM Hierarchy Diff & ASCII Layout Boxes"),
+                    H4("4. Colorized DOM Hierarchy Tree & ASCII Layout Boxes"),
                     Details(
-                        Summary("View Hierarchy Diff (Source vs. Hydrated Tree)", id='optics-hier-summary', style='font-size: 0.84rem; cursor: pointer; color: #8be9fd; margin-bottom: 0.4rem;'),
+                        Summary("View Hydrated DOM Hierarchy Tree (🌐 Document Root — Monokai Color)", id='optics-tree-summary', style='font-size: 0.84rem; cursor: pointer; color: #f1fa8c; margin-bottom: 0.4rem;'),
+                        self._render_rich_html_lens(hier_tree_html, hier_tree_text, "optics_tree"),
+                        id='optics-tree-details'
+                    ),
+                    Details(
+                        Summary("View Hydrated ASCII Layout Boxes (Monokai Color)", id='optics-boxes-summary', style='font-size: 0.84rem; cursor: pointer; color: #50fa7b; margin-top: 0.4rem; margin-bottom: 0.4rem;'),
+                        self._render_rich_html_lens(boxes_html, boxes_text, "optics_boxes"),
+                        id='optics-boxes-details'
+                    ),
+                    Details(
+                        Summary("View Hierarchy Diff (Source vs. Hydrated Tree)", id='optics-hier-summary', style='font-size: 0.84rem; cursor: pointer; color: #8be9fd; margin-top: 0.4rem; margin-bottom: 0.4rem;'),
                         self._render_colored_diff(hier_diff_text),
                         id='optics-hier-details'
                     ),
                     Details(
-                        Summary("View Hydrated DOM Hierarchy Tree (🌐 Document Root)", id='optics-tree-summary', style='font-size: 0.84rem; cursor: pointer; color: #f1fa8c; margin-top: 0.4rem; margin-bottom: 0.4rem;'),
-                        Pre(hier_tree_text, style='max-height: 280px; overflow-y: auto; overflow-x: auto; background: #111; color: #f8f8f2; padding: 0.75rem; border-radius: 4px; font-size: 0.75rem;'),
-                        id='optics-tree-details'
-                    ),
-                    Details(
-                        Summary("View Hydrated ASCII Layout Boxes", id='optics-boxes-summary', style='font-size: 0.84rem; cursor: pointer; color: #50fa7b; margin-top: 0.4rem; margin-bottom: 0.4rem;'),
-                        Pre(boxes_text, style='max-height: 280px; overflow-y: auto; overflow-x: auto; background: #111; color: #f8f8f2; padding: 0.75rem; border-radius: 4px; font-size: 0.75rem;'),
-                        id='optics-boxes-details'
+                        Summary("View ASCII Layout Boxes Diff (Source vs. Hydrated Boxes)", id='optics-boxes-diff-summary', style='font-size: 0.84rem; cursor: pointer; color: #ffb86c; margin-top: 0.4rem; margin-bottom: 0.4rem;'),
+                        self._render_colored_diff(boxes_diff_text),
+                        id='optics-boxes-diff-details'
                     ),
                     H4("5. Extracted Agent Markdown (seo.md)"),
                     Details(
