@@ -562,6 +562,8 @@ def get_broadcast_kit(target_key="1", slug_match=None):
     fb_title = _strip_markdown_for_fb(title)
     fb_imprint = _strip_markdown_for_fb(li_imprint)
     fb_meta = _strip_markdown_for_fb(li_meta)
+    yt_live_fb = "youtube\x2e\u2060com/MikeLevin/live"
+    discord_fb = f"discord\x2e\u2060gg/{DISCORD_INVITE_CODE}"
     fb_parts = [
         f"{fb_title}",
         "",
@@ -575,8 +577,8 @@ def get_broadcast_kit(target_key="1", slug_match=None):
         fb_parts.extend(["", f"TL;DR: {fb_meta}"])
     fb_parts.extend([
         "",
-        f"🔴 Watch/Listen 24/7 on Honeybot Storytime: {yt_live_vanity}",
-        f"🟣 Join the Founding 1,000 on Discord: {DEFAULT_DISCORD_INVITE_URL}",
+        f"🔴 Watch/Listen 24/7 on Honeybot Storytime: {yt_live_fb}",
+        f"🟣 Join the Founding 1,000 on Discord: {discord_fb}",
         "🚲 Inspect the 60-second Nix Flake (`LPvg` -> `NPvg`) workbench: `curl -fsSL sunpug\x2e\u2060io | less`",
     ])
     if tags:
@@ -594,6 +596,8 @@ def get_broadcast_kit(target_key="1", slug_match=None):
         "tweet": tweet,
         "linkedin": linkedin_post,
         "fb": fb_post,
+        "has_fm_image": bool(fm_img_rel),
+        "has_hero_file": Path(hero_img_dest).is_file(),
         "hero_prompt": hero_prompt,
         "hero_yaml": hero_yaml,
         "hero_img_dest": hero_img_dest,
@@ -1034,6 +1038,12 @@ def print_broadcast_kit(target_key="1", mode="card", slug_match=None):
         copied = _copy_to_clipboard(kit["fb"])
         print(kit["fb"])
         print(f"\n{'📋 Copied Facebook (MikeLevinux) Promo Post to clipboard!' if copied else 'ℹ️  (Non-TTY: printed only)'}")
+        if not kit.get("has_fm_image") or not kit.get("has_hero_file"):
+            print(
+                f"⚠️  OG Hero Banner Notice: frontmatter image={kit.get('has_fm_image')} | "
+                f"file_exists={kit.get('has_hero_file')} ({kit.get('hero_img_dest')}). "
+                "Run `ythero` -> save JPEG -> `ytyaml` -> `publish` so Facebook scrapes the article hero card!"
+            )
         return 0
     if mode == "title":
         copied = _copy_to_clipboard(kit["yt_title"])

@@ -2353,10 +2353,10 @@ _HONEYBOT_MD_AWK = r"""awk -F'|' '/Markdown/{print $2 "|" $3; exit}'"""
 # metric whose top contributor is its author measures nothing.
 _HONEYBOT_HYD_AWK = (
     r"""awk -F'|' '$1 !~ /^127\./ && $1 !~ /^10\./ && $1 !~ /^192\.168\./ """
-    r"""{n++; t+=$3} END{print n "|" t}'"""
+    r"""{n++; t+=$3} END{if (NR>0) print n "|" t}'"""
 )
 _HONEYBOT_CNEG_AWK = (
-    r"""awk -F'|' 'NF>=2 {t+=$2; if ($1 ~ /^\[SPOOFED-IP\]/) s+=$2} END{print (s+0) "|" (t+0)}'"""
+    r"""awk -F'|' 'NF>=2 {t+=$2; if ($1 ~ /^\[SPOOFED-IP\]/) s+=$2} END{if (NR>0) print (s+0) "|" (t+0)}'"""
 )
 HONEYBOT_METRICS = {
     "markdown": f"cat remotes/honeybot/queries/format_ratio.sql | {_HONEYBOT_PIPE} | {_HONEYBOT_MD_AWK}",
@@ -2383,7 +2383,9 @@ def fetch_honeybot_stats() -> dict:
     # retries; the fetched clock stamps the reading; a failure advances only
     # the first, so the bytes a dark stretch renders are the bytes before it.
     since_attempt = now - cached.get('attempted_epoch', cached.get('fetched_epoch', 0))
-    if cached and 0 <= since_attempt < HONEYBOT_TTL_SECONDS:
+    cached_metrics = cached.get('metrics') if isinstance(cached.get('metrics'), dict) else {}
+    has_display_metrics = ("markdown" in cached_metrics and "hydration" in cached_metrics)
+    if cached and 0 <= since_attempt < HONEYBOT_TTL_SECONDS and (has_display_metrics or not cached.get('ok')):
         return cached
     metrics = {}
     for name, command in HONEYBOT_METRICS.items():
@@ -2405,13 +2407,14 @@ def fetch_honeybot_stats() -> dict:
                 metrics[name] = value
         except Exception:
             continue
-    if metrics:
+    merged_metrics = {**cached_metrics, **metrics}
+    if "markdown" in metrics and "hydration" in metrics:
         fresh = {
             'fetched_epoch': now, 'attempted_epoch': now,
             'fetched_at': datetime.fromtimestamp(now, timezone.utc).strftime('%Y-%m-%dT%H:%MZ'),
-            'ok': True, 'metrics': metrics,
+            'ok': True, 'metrics': merged_metrics,
         }
-    elif cached.get('metrics'):
+    elif has_display_metrics:
         # Stale-but-real beats silence: keep the reading and its own stamp,
         # advance only the attempt clock, and say so on the console.
         fresh = dict(cached)
