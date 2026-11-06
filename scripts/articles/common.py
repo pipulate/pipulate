@@ -553,6 +553,35 @@ def get_broadcast_kit(target_key="1", slug_match=None):
     if tags:
         li_parts.extend(["", tags])
     linkedin_post = "\n".join(li_parts).strip()
+    def _strip_markdown_for_fb(text):
+        s = re.sub(r"^#{1,6}\s+", "", text or "", flags=re.MULTILINE)
+        s = re.sub(r"\*\*([^*]+)\*\*", r"\1", s)
+        s = re.sub(r"__([^_]+)__", r"\1", s)
+        s = re.sub(r"\[([^\]]+)\]\((https?://[^)]+)\)", r"\1 (\2)", s)
+        return s.strip()
+    fb_title = _strip_markdown_for_fb(title)
+    fb_imprint = _strip_markdown_for_fb(li_imprint)
+    fb_meta = _strip_markdown_for_fb(li_meta)
+    fb_parts = [
+        f"{fb_title}",
+        "",
+        f"📖 Full article & code receipts: {canonical_url}?src=fb",
+    ]
+    if fb_imprint:
+        fb_parts.extend(["", fb_imprint])
+    elif fb_meta:
+        fb_parts.extend(["", fb_meta])
+    if fb_meta and fb_imprint and fb_meta != fb_imprint:
+        fb_parts.extend(["", f"TL;DR: {fb_meta}"])
+    fb_parts.extend([
+        "",
+        f"🔴 Watch/Listen 24/7 on Honeybot Storytime: {yt_live_vanity}",
+        f"🟣 Join the Founding 1,000 on Discord: {DEFAULT_DISCORD_INVITE_URL}",
+        "🚲 Inspect the 60-second Nix Flake (`LPvg` -> `NPvg`) workbench: `curl -fsSL sunpug\x2e\u2060io | less`",
+    ])
+    if tags:
+        fb_parts.extend(["", tags])
+    fb_post = "\n".join(fb_parts).strip()
     preview_port = tcfg.get("preview_port", 4001)
     preview_url = f"http://localhost:{preview_port}{permalink}"
     return {
@@ -564,6 +593,7 @@ def get_broadcast_kit(target_key="1", slug_match=None):
         "preview_url": preview_url,
         "tweet": tweet,
         "linkedin": linkedin_post,
+        "fb": fb_post,
         "hero_prompt": hero_prompt,
         "hero_yaml": hero_yaml,
         "hero_img_dest": hero_img_dest,
@@ -814,7 +844,7 @@ key_prefix = {(key[:16] if key else '')!r}
 log_p = pathlib.Path("/var/log/nginx/access.log")
 total = 0
 md_served = 0
-dyes = {{"a+href": 0, "link+rel": 0, "llms.txt": 0, "youtube": 0, "linkedin": 0, "x": 0, "rfc9110": 0}}
+dyes = {{"a+href": 0, "link+rel": 0, "llms.txt": 0, "youtube": 0, "linkedin": 0, "fb": 0, "x": 0, "rfc9110": 0}}
 bots = set()
 key_hits = 0
 feed_hits = 0
@@ -845,7 +875,7 @@ if log_p.is_file():
             for tok in ("Applebot", "bingbot", "IndexNow", "archive.org", "wayback", "CorpusBot", "AHC", "OAI-SearchBot", "GPTBot", "Claude", "ExaSearchBot", "ExaUser", "DuckAssistBot", "Googlebot", "FeedFetcher-Google"):
                 if tok.lower() in line.lower():
                     bots.add(tok)
-print(f"TOTAL={{total}}|MD={{md_served}}|KEY_HITS={{key_hits}}|FEED_HITS={{feed_hits}}|YT_REFS={{yt_refs}}|A_HREF={{dyes['a+href']}}|LINK_REL={{dyes['link+rel']}}|LLMS={{dyes['llms.txt']}}|S_YT={{dyes['youtube']}}|S_LI={{dyes['linkedin']}}|S_X={{dyes['x']}}|S_RFC={{dyes['rfc9110']}}|BOTS={{','.join(sorted(bots)) or 'none'}}")
+print(f"TOTAL={{total}}|MD={{md_served}}|KEY_HITS={{key_hits}}|FEED_HITS={{feed_hits}}|YT_REFS={{yt_refs}}|A_HREF={{dyes['a+href']}}|LINK_REL={{dyes['link+rel']}}|LLMS={{dyes['llms.txt']}}|S_YT={{dyes['youtube']}}|S_LI={{dyes['linkedin']}}|S_FB={{dyes['fb']}}|S_X={{dyes['x']}}|S_RFC={{dyes['rfc9110']}}|BOTS={{','.join(sorted(bots)) or 'none'}}")
 """
     try:
         res = subprocess.run(
@@ -869,8 +899,8 @@ print(f"TOTAL={{total}}|MD={{md_served}}|KEY_HITS={{key_hits}}|FEED_HITS={{feed_
             )
             print(
                 f"      ↳ Social & Canary : ?src=youtube ({kv.get('S_YT', 0)}) · "
-                f"?src=linkedin ({kv.get('S_LI', 0)}) · ?src=x ({kv.get('S_X', 0)}) · "
-                f"?src=rfc9110 ({kv.get('S_RFC', 0)})"
+                f"?src=linkedin ({kv.get('S_LI', 0)}) · ?src=fb ({kv.get('S_FB', 0)}) · "
+                f"?src=x ({kv.get('S_X', 0)}) · ?src=rfc9110 ({kv.get('S_RFC', 0)})"
             )
             print(f"      ↳ Crawlers Seen   : {kv.get('BOTS', 'none')}")
         else:
@@ -939,7 +969,8 @@ def print_broadcast_kit(target_key="1", mode="card", slug_match=None):
         print("  5. publish \"msg\"    Commit + push trimnoir, sync GDocs & auto-ping wire")
         print("  6. tweet            📋 Copy X.com Promo Tweet (canonical URL + tags)")
         print("  7. linkedin         📋 Copy LinkedIn Promo Post (imprint + TL;DR + URL)")
-        print("  8. ytpebble         🪨 Re-run Wayback + IndexNow wire pings (--dry-run)")
+        print("  8. fb               📋 Copy Facebook MikeLevinux Post (plain text + OG URL)")
+        print("  9. ytpebble         🪨 Re-run Wayback + IndexNow wire pings (--dry-run)")
         print(thin)
         print("PHASE 3: YOUTUBE LIVE CUT-AND-ROLL (Slice VOD Episode on Honeybot)")
         print("  9. ytroll stop       ⏹️  Stop OBS first so the old VOD keeps its title/thumb")
@@ -999,6 +1030,11 @@ def print_broadcast_kit(target_key="1", mode="card", slug_match=None):
         print(kit["linkedin"])
         print(f"\n{'📋 Copied LinkedIn Promo Post to clipboard!' if copied else 'ℹ️  (Non-TTY: printed only)'}")
         return 0
+    if mode in ("fb", "facebook"):
+        copied = _copy_to_clipboard(kit["fb"])
+        print(kit["fb"])
+        print(f"\n{'📋 Copied Facebook (MikeLevinux) Promo Post to clipboard!' if copied else 'ℹ️  (Non-TTY: printed only)'}")
+        return 0
     if mode == "title":
         copied = _copy_to_clipboard(kit["yt_title"])
         print(kit["yt_title"])
@@ -1016,7 +1052,7 @@ def print_broadcast_kit(target_key="1", mode="card", slug_match=None):
         print(f"   • Live URL   : {kit['canonical_url']}")
         if yt_thumb:
             print(f"   • YT Thumb   : {yt_thumb} (1280x720 16:9)")
-        print("   • Quick Copy : tweet | linkedin | yttitle | ytdesc | ytcard (full kit)")
+        print("   • Quick Copy : tweet | linkedin | fb | yttitle | ytdesc | ytcard (full kit)")
         return 0
     print(f"\n{bar}")
     print(f"📡 GO-GO-GADGET BROADCAST KIT ({Path(kit['path']).name})")
@@ -1033,6 +1069,9 @@ def print_broadcast_kit(target_key="1", mode="card", slug_match=None):
     print("💼 LINKEDIN PROMO POST (type `linkedin` to copy):")
     print(kit["linkedin"])
     print(thin)
+    print("📘 FACEBOOK MIKELEVINUX POST (type `fb` to copy):")
+    print(kit["fb"])
+    print(thin)
     print(f"📺 YOUTUBE LIVE TITLE [{len(kit['yt_title'])}/{YT_TITLE_LIMIT} chars] (type `yttitle` to copy):")
     print(kit["yt_title"])
     print(thin)
@@ -1043,7 +1082,7 @@ def print_broadcast_kit(target_key="1", mode="card", slug_match=None):
     if yt_thumb:
         print(thin)
         print(f"📺 YT STUDIO THUMBNAIL (1280x720 16:9): {yt_thumb} (Checklist: Upload thumb + Enable DVR)")
-    print("🎛️  Quick Words:  yt (help) | ythero | ytyaml | tweet | linkedin | ytpebble | yttitle | ytdesc | ytfeature | ytcard | yttop | ytoutro | ytreboot | ytsay | ytticker | ytwatch | ytping | ytroll | ytbell | ytstatus")
+    print("🎛️  Quick Words:  yt (help) | ythero | ytyaml | tweet | linkedin | fb | ytpebble | yttitle | ytdesc | ytfeature | ytcard | yttop | ytoutro | ytreboot | ytsay | ytticker | ytwatch | ytping | ytroll | ytbell | ytstatus")
     print(thin)
     print(f"🔗 Preview URL:   {kit['preview_url']}")
     print(f"✏️  Edit Command:  vim {kit['path']}")
@@ -2087,6 +2126,8 @@ SPOKEN_ALERT_TABLE = {
     "src=discord": "Web Bot Observatory alert. A link was followed from Discord.",
     "src=youtube": "Web Bot Observatory alert. A link was followed from YouTube.",
     "src=linkedin": "Web Bot Observatory alert. A link was followed from LinkedIn.",
+    "src=fb": "Web Bot Observatory alert. A link was followed from the Mike Levinux Facebook community.",
+    "src=facebook": "Web Bot Observatory alert. A link was followed from the Mike Levinux Facebook community.",
     "src=x": "Web Bot Observatory alert. A link was followed from X dot com.",
     "src=twitter": "Web Bot Observatory alert. A link was followed from X dot com.",
     "src=rfc9110": "Web Bot Observatory alert. An engineer just ran the R F C 9110 terminal verification test.",
@@ -3493,9 +3534,9 @@ if __name__ == "__main__":
     add_standard_arguments(parser)
     parser.add_argument(
         "--broadcast",
-        choices=("help", "card", "summary", "hero", "yaml", "tweet", "linkedin", "pebble", "title", "desc", "top", "outro", "bgm", "reboot", "feature", "status", "bell", "stop", "start", "roll", "enable-ws", "say", "ticker", "ping", "watch"),
+        choices=("help", "card", "summary", "hero", "yaml", "tweet", "linkedin", "fb", "facebook", "pebble", "title", "desc", "top", "outro", "bgm", "reboot", "feature", "status", "bell", "stop", "start", "roll", "enable-ws", "say", "ticker", "ping", "watch"),
         default="card",
-        help="Print/copy broadcast kit or control Honeybot (help|card|summary|hero|yaml|tweet|linkedin|pebble|title|desc|top|outro|bgm|reboot|feature|status|bell|stop|start|roll|enable-ws|say|ticker|ping|watch).",
+        help="Print/copy broadcast kit or control Honeybot (help|card|summary|hero|yaml|tweet|linkedin|fb|facebook|pebble|title|desc|top|outro|bgm|reboot|feature|status|bell|stop|start|roll|enable-ws|say|ticker|ping|watch).",
     )
     parser.add_argument(
         "--vod",
