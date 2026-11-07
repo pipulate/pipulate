@@ -55,6 +55,10 @@ def _reap_orphaned_tts_and_overlays():
             raw_f.unlink(missing_ok=True)
         except OSError:
             pass
+    try:
+        Path("/tmp/honeybot_weebo_active").unlink(missing_ok=True)
+    except OSError:
+        pass
 
 
 def acquire_singleton_lock():
