@@ -415,12 +415,23 @@ class SonarApp(App):
         width: 100%;
     }
 
+    .panel_header.hit_bottom {
+        background: #ffd700;
+        color: #000000;
+        text-style: bold;
+        border-bottom: heavy #ffffff;
+    }
+
     DataTable {
         height: 1fr;
         width: 100%;
         overflow-x: hidden;
         overflow-y: auto;
         scrollbar-size: 0 0;
+    }
+
+    DataTable.hit_bottom {
+        background: #221600;
     }
     
     /* Countdown moves to the footer area style override if needed, 
