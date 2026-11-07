@@ -1424,8 +1424,12 @@ def _resolve_honeybot_media_target(raw_target):
 
 
 def _pause_honeybot_stage_for_weebo(pause_audio=True):
-    """Immediately SIGSTOP active TTS/director processes and clear competing overlays while Weebo holds the stage."""
+    """Freeze logs.py via sentinel file (avoiding Textual SIGCONT screen-wipe) and SIGSTOP audio while Weebo holds the stage."""
     paused = []
+    try:
+        Path(WEEBO_STAGE_PAUSE_FILE).write_text(str(os.getpid()), encoding="utf-8")
+    except Exception:
+        pass
     my_pid = os.getpid()
     parent_pid = os.getppid()
     lock_pid = 0
@@ -1442,24 +1446,23 @@ def _pause_honeybot_stage_for_weebo(pause_audio=True):
             paused.append(lock_pid)
         except Exception:
             pass
-    for p in sorted(Path("/proc").glob("[0-9]*/cmdline")):
-        try:
-            pid = int(p.parent.name)
-            if pid in (my_pid, parent_pid) or pid in paused:
+    if pause_audio:
+        for p in sorted(Path("/proc").glob("[0-9]*/cmdline")):
+            try:
+                pid = int(p.parent.name)
+                if pid in (my_pid, parent_pid) or pid in paused:
+                    continue
+                raw = p.read_bytes().replace(b"\x00", b" ").decode("utf-8", errors="ignore")
+                if "--conjure-media" in raw:
+                    continue
+                if (
+                    ("aplay" in raw and ("-t raw" in raw or "honeybot_tts" in raw or "tick.wav" in raw or "dripulate.wav" in raw))
+                    or ("piper" in raw and "output_raw" in raw)
+                ):
+                    os.kill(pid, signal.SIGSTOP)
+                    paused.append(pid)
+            except Exception:
                 continue
-            raw = p.read_bytes().replace(b"\x00", b" ").decode("utf-8", errors="ignore")
-            if "--conjure-media" in raw:
-                continue
-            is_logs_tui = "scripts/logs.py" in raw
-            is_tts_audio = pause_audio and (
-                ("aplay" in raw and ("-t raw" in raw or "honeybot_tts" in raw or "tick.wav" in raw or "dripulate.wav" in raw))
-                or ("piper" in raw and "output_raw" in raw)
-            )
-            if is_logs_tui or is_tts_audio:
-                os.kill(pid, signal.SIGSTOP)
-                paused.append(pid)
-        except Exception:
-            continue
     for pat in ("conjure_window_overlay", "patronus_visual_shield"):
         try:
             subprocess.run(["pkill", "-f", pat], check=False)
@@ -1469,7 +1472,11 @@ def _pause_honeybot_stage_for_weebo(pause_audio=True):
 
 
 def _resume_honeybot_stage_after_weebo(paused_pids):
-    """Send SIGCONT to any paused TTS/director processes (idempotent safety sweep)."""
+    """Clear logs.py pause sentinel and send SIGCONT to any paused TTS/director processes."""
+    try:
+        Path(WEEBO_STAGE_PAUSE_FILE).unlink(missing_ok=True)
+    except Exception:
+        pass
     resumed = set()
     for pid in (paused_pids or []):
         try:
