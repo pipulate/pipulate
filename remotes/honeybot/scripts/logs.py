@@ -499,7 +499,7 @@ class SonarApp(App):
         # HUD Scrolling State
         self.hud_scroll_target = "js"
         self.hud_scroll_y = 0
-        self.hud_scroll_pause = 4
+        self.hud_scroll_pause = 0
         
         try:
             self.script_mtime = os.stat(__file__).st_mtime
