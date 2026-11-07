@@ -507,6 +507,7 @@ class SonarApp(App):
         self.set_interval(0.08, self.tick_marquee)
         self.set_interval(1, self.update_countdown)
         self.set_interval(5, self.refresh_tables)
+        self.set_interval(1.5, self.scroll_hud_tables)
 
     def _rebuild_billboard_cache(self, width: int):
         """Pre-render 5-row Rich.Text still cards and pre-baked PSX DOOM fire timelines."""
