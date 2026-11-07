@@ -50,6 +50,8 @@ import json
 import time
 import argparse
 from html import escape as html_escape
+from urllib.parse import urlsplit
+from bs4 import BeautifulSoup, Comment
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -158,22 +160,160 @@ def _sanitize_internal_pii(text: str) -> str:
     return text
 
 
-def _prepare_markdown(md_text: str) -> str:
-    """Strip Liquid wrappers and prune public-web meta blocks before conversion."""
-    # Liquid safety wrappers matter to Jekyll, are noise in a Google Doc.
+_INLINE_CODE_RE = re.compile(r'(?<!\\)(`+)(.+?)(?<!`)\1(?!`)')
+_FENCE_OPEN_RE = re.compile(r'^(`{3,}|~{3,})(.*)$')
+_SAFE_INLINE_TAG_RE = re.compile(r'^<(?:sup|sub|/sup|/sub|br|br\s*/)>$', re.IGNORECASE)
+_ANY_ANGLE_RE = re.compile(r'<[^<>]*>')
+_ALLOWED_GDRIVE_TAGS = frozenset({
+    'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'div', 'ul', 'ol', 'li',
+    'blockquote', 'pre', 'code', 'strong', 'b', 'em', 'i', 'a', 'hr', 'br',
+    'table', 'thead', 'tbody', 'tr', 'th', 'td', 'sup', 'sub',
+})
+_TIER3_GDRIVE_TAGS = frozenset({'h1', 'h2', 'h3', 'h4', 'p', 'pre', 'br', 'hr'})
+_DROP_CONTENT_TAGS = (
+    'script', 'style', 'svg', 'iframe', 'object', 'embed',
+    'form', 'input', 'button', 'select', 'textarea', 'meta', 'link', 'head', 'title',
+)
+
+
+def _escape_prose_angles(segment: str) -> str:
+    """Escape < and > in plain prose except simple <sup>/<sub>/<br> tags."""
+    def _repl(match):
+        tok = match.group(0)
+        if _SAFE_INLINE_TAG_RE.match(tok):
+            return tok
+        return html_escape(tok, quote=False)
+
+    out = _ANY_ANGLE_RE.sub(_repl, segment)
+    # Also escape any stray unclosed < or > outside balanced <...>
+    parts = re.split(r'(</?(?:sup|sub|br)\b[^<>]*>)', out, flags=re.IGNORECASE)
+    cleaned = []
+    for idx, part in enumerate(parts):
+        if idx % 2 == 1:
+            cleaned.append(part)
+        else:
+            cleaned.append(part.replace('<', '&lt;').replace('>', '&gt;'))
+    return ''.join(cleaned)
+
+
+def _escape_prose_line(line: str) -> str:
+    """Preserve leading blockquote '>' markers and inline code spans while escaping prose <...>."""
+    bq_match = re.match(r'^(\s*>+\s?)', line)
+    prefix = bq_match.group(1) if bq_match else ''
+    rest = line[len(prefix):]
+    out = []
+    last = 0
+    for m in _INLINE_CODE_RE.finditer(rest):
+        out.append(_escape_prose_angles(rest[last:m.start()]))
+        out.append(m.group(0))
+        last = m.end()
+    out.append(_escape_prose_angles(rest[last:]))
+    return prefix + ''.join(out)
+
+
+def _is_valid_gdrive_href(href: str) -> bool:
+    """True when href is a clean absolute HTTP(S) URL that Google Drive's importer accepts."""
+    if not href or len(href) > 2000 or any(c in href for c in ' \t\r\n<>"\'{}|\\^`'):
+        return False
+    try:
+        parts = urlsplit(href)
+    except ValueError:
+        return False
+    if parts.scheme not in ('http', 'https') or not parts.netloc:
+        return False
+    return bool(re.match(r'^[A-Za-z0-9.-]+(?::\d+)?$', parts.netloc))
+
+
+def _prepare_markdown(md_text: str, canonical_url: str = "", tier: int = 1) -> str:
+    """Strip Liquid/control chars, cap giant fenced blocks, and escape prose pseudo-tags."""
+    if not md_text:
+        return ""
+    md_text = re.sub(r'\x1b\[[0-9;]*[A-Za-z]', '', md_text)
+    md_text = re.sub(r'[\x00-\x08\x0b\x0c\x0e-\x1f\x7f\u2060\ud800-\udfff]', '', md_text)
     md_text = re.sub(r'\{%-?\s*raw\s*-?%\}\s*\n?', '', md_text)
     md_text = re.sub(r'\{%-?\s*endraw\s*-?%\}\s*\n?', '', md_text)
-    # Prune promo/meta blocks that only make sense on the public site.
+    md_text = re.sub(r'<!--[\s\S]*?-->', '', md_text)
     md_text = re.sub(
         r'### 🐦 X\.com Promo Tweet\n```text\n.*?\n```\n*', '', md_text, flags=re.DOTALL
     )
     md_text = re.sub(
         r'### Title Brainstorm\n.*?(?=\n### |\Z)', '', md_text, flags=re.DOTALL
     )
-    return _sanitize_internal_pii(md_text)
+    md_text = _sanitize_internal_pii(md_text)
+    link_target = canonical_url or "https://mikelev.in"
+    max_fence_chars = 12000 if tier == 1 else (1600 if tier == 2 else 0)
+    max_fence_lines = 200 if tier == 1 else (35 if tier == 2 else 0)
+    out_lines = []
+    in_ledger = False
+    fence_char = None
+    fence_len = 0
+    fence_lang = ""
+    fence_buf = []
+
+    def _flush_fence():
+        if tier >= 3:
+            out_lines.append(
+                f"\n> *[Code block omitted in compact Google Doc — full source at {link_target}]*\n"
+            )
+            return
+        body_lines = []
+        char_count = 0
+        truncated = False
+        for fline in fence_buf:
+            safe_line = re.sub(r'`{3,}', '[triple-backtick]', fline)
+            safe_line = re.sub(r'~{3,}', '[triple-tilde]', safe_line)
+            if len(safe_line) > 500:
+                safe_line = safe_line[:500] + " ... [line truncated]"
+            if len(body_lines) >= max_fence_lines or (char_count + len(safe_line)) > max_fence_chars:
+                truncated = True
+                break
+            body_lines.append(safe_line)
+            char_count += len(safe_line) + 1
+        if truncated:
+            body_lines.append(
+                f"... [Code block truncated for Google Docs — full source: {link_target}]"
+            )
+        out_lines.append(f"```{fence_lang}")
+        out_lines.extend(body_lines)
+        out_lines.append("```")
+
+    for line in md_text.splitlines():
+        if fence_char is not None:
+            close_re = re.compile(rf'^{re.escape(fence_char)}{{{fence_len},}}[ \t]*$')
+            if close_re.match(line):
+                _flush_fence()
+                fence_char = None
+                fence_len = 0
+                fence_lang = ""
+                fence_buf = []
+            else:
+                fence_buf.append(line)
+            continue
+        m_open = _FENCE_OPEN_RE.match(line)
+        if m_open:
+            marker, tail = m_open.group(1), m_open.group(2).strip()
+            fence_char = marker[0]
+            fence_len = len(marker)
+            fence_lang = re.sub(r'[^A-Za-z0-9_+-]', '', tail.split()[0]) if tail else "text"
+            fence_buf = []
+            continue
+        if '<div class="commit-ledger"' in line:
+            in_ledger = True
+        if in_ledger:
+            out_lines.append(line)
+            if '</div>' in line:
+                in_ledger = False
+            continue
+        out_lines.append(_escape_prose_line(line))
+
+    if fence_char is not None:
+        _flush_fence()
+    return "\n".join(out_lines)
 
 
-def markdown_to_html(md_text: str, headline: str = "") -> bytes:
+def markdown_to_html(
+    md_text: str, headline: str = "", canonical_url: str = "", tier: int = 1
+) -> bytes:
     """Markdown -> minimal HTML document, ready for Drive import-on-upload.
     `headline` is the article title, emitted as the Doc's opening <h1>. The
     title lives in YAML frontmatter, which frontmatter.load() strips from
@@ -187,11 +327,148 @@ def markdown_to_html(md_text: str, headline: str = "") -> bytes:
             "The 'markdown' package is required. Add it to requirements.in "
             "and reinstall (probe: .venv/bin/python -c 'import markdown')."
         )
-    body = md_lib.markdown(_prepare_markdown(md_text), extensions=['extra', 'sane_lists'])
+    exts = ['fenced_code', 'tables', 'sane_lists'] if tier == 1 else ['fenced_code', 'sane_lists']
+    raw_body = md_lib.markdown(
+        _prepare_markdown(md_text, canonical_url=canonical_url, tier=tier),
+        extensions=exts,
+    )
+    body = _sanitize_html_for_gdrive(raw_body, canonical_url=canonical_url, tier=tier)
     if headline:
         body = f"<h1>{html_escape(headline)}</h1>\n{body}"
     html = f"<html><head><meta charset=\"utf-8\"></head><body>{body}</body></html>"
     return html.encode('utf-8')
+
+
+def _sanitize_html_for_gdrive(raw_body: str, canonical_url: str = "", tier: int = 1) -> str:
+    """Clean rendered HTML with BeautifulSoup and enforce DOM-safe byte caps for Google Drive."""
+    soup = BeautifulSoup(raw_body, 'html.parser')
+    for comment in soup.find_all(string=lambda t: isinstance(t, Comment)):
+        comment.extract()
+    for bad_tag in soup.find_all(_DROP_CONTENT_TAGS):
+        bad_tag.decompose()
+    for img_tag in soup.find_all('img'):
+        img_tag.decompose()
+    if tier >= 2:
+        for tbl in soup.find_all('table'):
+            for tr in tbl.find_all('tr'):
+                cells = [c.get_text(" ", strip=True) for c in tr.find_all(['th', 'td'])]
+                p_tag = soup.new_tag('p')
+                p_tag.string = " | ".join(c for c in cells if c)
+                tbl.insert_before(p_tag)
+            tbl.decompose()
+    allowed = _ALLOWED_GDRIVE_TAGS if tier in (1, 2) else _TIER3_GDRIVE_TAGS
+    for tag in list(soup.find_all(True)):
+        if tag.name not in allowed:
+            if tag.name == 'li':
+                tag.insert(0, "• ")
+                tag.name = 'p'
+                tag.attrs = {}
+            else:
+                tag.unwrap()
+            continue
+        if tag.name == 'a' and tier in (1, 2):
+            href = str(tag.get('href') or '').strip()
+            if href.startswith('/') and not href.startswith('//'):
+                href = f"https://mikelev.in{href}"
+            if _is_valid_gdrive_href(href):
+                tag.attrs = {'href': href}
+            else:
+                tag.unwrap()
+        else:
+            tag.attrs = {}
+    link_target = canonical_url or "https://mikelev.in"
+    for blk in soup.find_all(['p', 'pre', 'li', 'blockquote']):
+        txt = blk.get_text()
+        if len(txt) > 14000:
+            blk.clear()
+            blk.string = txt[:14000] + f"\n... [Truncated — full text at {link_target}]"
+    max_bytes = 220000 if tier == 1 else (100000 if tier == 2 else 45000)
+    truncated_tail = False
+    while len(str(soup).encode('utf-8')) > max_bytes and len(soup.contents) > 1:
+        last_node = soup.contents[-1]
+        last_node.extract()
+        truncated_tail = True
+    if truncated_tail or tier >= 2:
+        hr_tag = soup.new_tag('hr')
+        soup.append(hr_tag)
+        note_p = soup.new_tag('p')
+        if tier in (1, 2) and _is_valid_gdrive_href(link_target):
+            strong = soup.new_tag('strong')
+            strong.string = "📖 Read the complete article and full code receipts online: "
+            a_tag = soup.new_tag('a', href=link_target)
+            a_tag.string = link_target
+            note_p.append(strong)
+            note_p.append(a_tag)
+        else:
+            note_p.string = f"Read the complete article and full code receipts online: {link_target}"
+        soup.append(note_p)
+    return str(soup)
+
+
+def markdown_to_plain_bytes(md_text: str, headline: str = "", canonical_url: str = "") -> bytes:
+    """Tier 4 emergency fallback: clean UTF-8 plain text ready for Drive text/plain -> Doc import."""
+    link_target = canonical_url or "https://mikelev.in"
+    prepared = _prepare_markdown(md_text, canonical_url=link_target, tier=2)
+    header = f"{headline}\nCanonical URL: {link_target}\n" + ("=" * 72) + "\n\n" if headline else ""
+    full_text = header + prepared
+    raw_bytes = full_text.encode('utf-8', errors='ignore')
+    if len(raw_bytes) > 120000:
+        clipped = raw_bytes[:120000].decode('utf-8', errors='ignore')
+        clipped += f"\n\n---\n[Truncated for Google Docs — read full article at {link_target}]\n"
+        return clipped.encode('utf-8')
+    return raw_bytes
+
+
+def _canonical_url(md_file: Path, post, base_url: str = "https://mikelev.in") -> str:
+    """Resolve the public canonical URL for a post so truncated Google Docs can link back."""
+    metadata = (post.metadata if post else None) or {}
+    permalink = _metadata_value(metadata, "permalink")
+    base = (base_url or "https://mikelev.in").rstrip("/")
+    if permalink:
+        p = str(permalink).strip()
+        if p.startswith(("http://", "https://")):
+            return p
+        if not p.startswith("/"):
+            p = "/" + p
+        return f"{base}{p}"
+    stem = re.sub(r"^\d{4}-\d{2}-\d{2}-", "", md_file.stem)
+    return f"{base}/futureproof/{stem}/"
+
+
+def upsert_article_doc(service, folder_id, md_file, post, target_title, base_url="", existing_id=None):
+    """Upsert a markdown post as a native Google Doc with a 4-tier HTTP 500 fallback ladder."""
+    headline = _headline(md_file, post)
+    canonical_url = _canonical_url(md_file, post, base_url=base_url)
+    tiers = (
+        (1, 'text/html', 'tier1:html-full'),
+        (2, 'text/html', 'tier2:html-compact'),
+        (3, 'text/html', 'tier3:html-minimal'),
+        (4, 'text/plain', 'tier4:text-plain'),
+    )
+    last_err = None
+    for tier_num, source_mime, tier_label in tiers:
+        try:
+            if source_mime == 'text/plain':
+                payload_bytes = markdown_to_plain_bytes(
+                    post.content, headline=headline, canonical_url=canonical_url
+                )
+            else:
+                payload_bytes = markdown_to_html(
+                    post.content, headline=headline, canonical_url=canonical_url, tier=tier_num
+                )
+            file_id, verb = drive_convert_upsert(
+                service, folder_id, target_title, payload_bytes,
+                source_mime, DOC_MIME, existing_id=existing_id
+            )
+            return file_id, verb, tier_label
+        except HttpError as http_err:
+            last_err = http_err
+            status = http_err.resp.status if http_err.resp else 0
+            if status not in (400, 413, 429, 500, 502, 503, 504):
+                raise
+            print(f"      ↻ {target_title!r} HTTP {status} on {tier_label}; trying next fallback tier...")
+            time.sleep(0.5 * tier_num)
+    raise last_err
 
 
 # ----------------------------------------------------------------------------
@@ -743,12 +1020,14 @@ def main():
             # is cheaper than 1,431 retained bodies. Safe against the stamp
             # writer below, which only touches the file AFTER the upload.
             post = frontmatter.load(md_file)
-            html_bytes = markdown_to_html(post.content, headline=_headline(md_file, post))
-            file_id, verb = drive_convert_upsert(
-                service, folder_id, target_title, html_bytes,
-                'text/html', DOC_MIME, existing_id=existing
+            file_id, verb, tier_label = upsert_article_doc(
+                service, folder_id, md_file, post, target_title,
+                base_url=config.get("url") or "https://mikelev.in",
+                existing_id=existing,
             )
             ok, detail = readback_ok(service, file_id, target_title)
+            if tier_label != "tier1:html-full":
+                detail = f"{detail} | {tier_label}"
             shared = ensure_anyone_reader(service, file_id)
             stamp = common.stamp_frontmatter_value(
                 md_file, common.GDOC_URL_KEY, common.gdoc_share_url(file_id))
