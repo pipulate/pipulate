@@ -658,8 +658,14 @@ class SonarApp(App):
         if not getattr(self, "pending_log_buffer", None) and getattr(self, "pending_table_refresh", False):
             self.refresh_tables()
 
+    def _is_stage_frozen(self) -> bool:
+        """True when DOOM fire is burning or Weebo/Max holds the broadcast stage."""
+        return bool(getattr(self, "is_fire_burning", False) or os.path.exists(WEEBO_ACTIVE_PATH))
+
     def tick_marquee(self):
         """Drive #ticker_bar: fast-pathed 4.5s still-card hold with pre-baked DOOM fire frames."""
+        if os.path.exists(WEEBO_ACTIVE_PATH):
+            return
         if self.ticker_mode == "billboard" and self.ticker_cards:
             self.ticker_hold_ticks += 1
             if self.ticker_hold_ticks < CARD_HOLD_TICKS:
