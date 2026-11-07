@@ -220,6 +220,20 @@ def _fallback_title(md_file: Path) -> str:
     return stem.replace("-", " ").strip().title()
 
 
+def _load_frontmatter_only(md_file: Path):
+    """Parse only the leading YAML frontmatter block without reading the full markdown body."""
+    try:
+        with open(md_file, 'r', encoding='utf-8', errors='replace') as f:
+            head = f.read(16384)
+        if head.startswith('---'):
+            end_idx = head.find('\n---', 3)
+            if end_idx != -1:
+                return frontmatter.loads(head[:end_idx + 4])
+    except Exception:
+        pass
+    return frontmatter.load(md_file)
+
+
 def _headline(md_file: Path, post) -> str:
     """The bare, PII-scrubbed article title: the Doc's opening H1."""
     metadata = post.metadata or {}
@@ -501,7 +515,8 @@ def main():
         print(f"❌ Error: Posts directory does not exist: {posts_dir}")
         sys.exit(1)
 
-    # Selection precedence: explicit --file > --latest > full directory sweep.
+    # Selection precedence: explicit --file > --latest (pending catch-up + latest) > full directory sweep.
+    latest_update_set = set()
     if args.file:
         md_files = []
         for raw in args.file:
@@ -515,13 +530,18 @@ def main():
                 print(f"   ⚠ Skipping --file (not found): {candidate}")
         print(f"🎯 Explicit selection via --file: {len(md_files)} document(s).")
     elif args.latest:
+        all_posts = sorted(posts_dir.glob("*.md"))
         latest_path = common.get_last_published(target_key)
-        if not latest_path:
-            print(f"❌ --latest: no recorded publish for target '{target_key}'.")
-            print("  ↳ Run articleizer first, pass --file PATH, or drop --latest for a full sweep.")
+        if latest_path and Path(latest_path).is_file():
+            latest_update_set.add(Path(latest_path).resolve())
+        if all_posts:
+            latest_update_set.add(all_posts[-1].resolve())
+        if not latest_update_set:
+            print(f"❌ --latest: no markdown posts found for target '{target_key}'.")
             sys.exit(1)
-        md_files = [Path(latest_path).resolve()]
-        print(f"🎯 Latest-only selection (from marker): {md_files[0].name}")
+        md_files = all_posts
+        marker_names = ", ".join(sorted(p.name for p in latest_update_set))
+        print(f"🎯 Latest + pending catch-up selection (latest marker: {marker_names})")
     else:
         md_files = sorted(posts_dir.glob("*.md"))
 
@@ -544,12 +564,19 @@ def main():
         sys.exit(1)
 
     local_contracts = []
+    pre_settled = 0
     print("\n🧾 Local Target Title Contract:")
     try:
         for md_file in md_files:
-            post = frontmatter.load(md_file)
-            target_title = _target_title(md_file, post)
+            resolved_md = md_file.resolve()
+            post = _load_frontmatter_only(resolved_md)
+            target_title = _target_title(resolved_md, post)
             stamped_id = common.gdoc_id_from_frontmatter(post.metadata)
+            if args.latest:
+                meta_chk = inventory.get(target_title)
+                if meta_chk and stamped_id == meta_chk['id'] and resolved_md not in latest_update_set:
+                    pre_settled += 1
+                    continue
             # THE RENDER MOVED OUT OF THIS LOOP (measured: ~5 minutes for a
             # 1,431-article sweep, ~119 of which actually upload). This loop
             # exists to compute TITLES, and a title needs frontmatter, not
@@ -563,10 +590,11 @@ def main():
             # ever hold None reads like a cache a later change might populate,
             # and there is no such future: point-of-use rendering strictly
             # dominates any pre-render. Three unpack sites move to 3-tuples.
-            local_contracts.append((md_file, target_title, stamped_id))
+            local_contracts.append((resolved_md, target_title, stamped_id))
             if verbose:
                 print(f"   Target Title: {target_title}")
-        print(f"✅ Local contract pass complete. {len(local_contracts)} document(s) mapped.")
+        settled_note = f" ({pre_settled} prior post(s) already synced & stamped)" if pre_settled else ""
+        print(f"✅ Local contract pass complete. {len(local_contracts)} active document(s) mapped{settled_note}.")
     except Exception as e:
         print(f"❌ Local contract failure: {e}")
         sys.exit(1)
@@ -636,7 +664,8 @@ def main():
         # verified locally, so a MATCHed-but-unstamped post gets its ledger
         # entry (and a share re-assert) without a re-upload. --force reopens
         # the full re-render path for rendering-pipeline changes.
-        if existing and not args.force and _remote_is_fresh(meta, md_file):
+        is_catchup_heal = bool(args.latest and md_file not in latest_update_set)
+        if existing and not args.force and (is_catchup_heal or _remote_is_fresh(meta, md_file)):
             # THE LEDGER SHORTCUT (2026-08-31). stamp_frontmatter_value opens
             # the file, read_text()s ~200k bytes, splits them into a line list,
             # scans the YAML block, finds the line already correct and returns
