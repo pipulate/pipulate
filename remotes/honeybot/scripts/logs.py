@@ -1150,7 +1150,7 @@ class SonarApp(App):
         hits = 0
         for line in sys.stdin:
             wait_ticks = 0
-            while getattr(self, "is_fire_burning", False) and wait_ticks < 16:
+            while self._is_stage_frozen() and wait_ticks < 16:
                 time.sleep(0.08)
                 wait_ticks += 1
             clean_line = ANSI_ESCAPE.sub('', line).strip()
