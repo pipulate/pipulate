@@ -16,7 +16,7 @@ LAST_PUBLISHED_FILE = CONFIG_DIR / "last_published.json"
 # YouTube Live Summon Thresholds (ytwatch)
 # Minimum simultaneous viewers required to ring the bell + send an ntfy push
 # (2 = viewer + their trusted advisor; lone 1-viewer drive-bys stay silent unless they comment)
-YT_VIEWER_ALERT_MIN = int(os.environ.get("PIPULATE_YT_VIEWER_MIN", "3"))
+YT_VIEWER_ALERT_MIN = int(os.environ.get("PIPULATE_YT_VIEWER_MIN", "2"))
 YT_VIEWER_ALERT_DWELL = int(os.environ.get("PIPULATE_YT_VIEWER_DWELL", "60"))  # Seconds viewers must stay >= min before alerting
 YT_VIEWER_ALERT_COOLDOWN = int(os.environ.get("PIPULATE_YT_VIEWER_COOLDOWN", "300"))  # Seconds between any two viewer alerts
 YT_VIEWER_FAST_POLL = int(os.environ.get("PIPULATE_YT_FAST_POLL", "5"))  # Seconds between lightweight updated_metadata viewer checks
