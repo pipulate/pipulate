@@ -619,8 +619,15 @@ class ChipVoiceSystem:
         return ["play", output_path]
 
     def sanitize_text(self, text: str) -> str:
-        """Apply domain substitution and acoustic markdown/HTML stripping."""
-        spoken_text = re.sub(r'\*?\*?MikeLev\.in\*?\*?:?', 'Mike:', text, flags=re.IGNORECASE)
+        """Apply domain substitution, phonetic polish, and acoustic markdown/HTML stripping."""
+        spoken_text = re.sub(r'^\s*\*?\*?(?:MikeLev\.in|Me)\*?\*?\s*:\s*', 'Mike: ', text, flags=re.IGNORECASE)
+        spoken_text = re.sub(r'\*?\*?MikeLev\.in\*?\*?:?', 'Mike L E V dot eye N', spoken_text, flags=re.IGNORECASE)
+        spoken_text = re.sub(r'\bNixOS\b', 'Nix O S', spoken_text)
+        spoken_text = re.sub(r'\bSQLite\b', 'S Q Lite', spoken_text, flags=re.IGNORECASE)
+        spoken_text = re.sub(r'\bFastHTML\b', 'Fast H T M L', spoken_text, flags=re.IGNORECASE)
+        spoken_text = re.sub(r'\bHTMX\b', 'H T M X', spoken_text, flags=re.IGNORECASE)
+        spoken_text = re.sub(r'\bNPvg\b', 'N P V G', spoken_text)
+        spoken_text = re.sub(r'\bLPvg\b', 'L P V G', spoken_text)
         spoken_text = re.sub(r'\[([^\]]+)\]\([^\)]+\)', r'\1', spoken_text)
         spoken_text = re.sub(r'\[[^\]]+\]', '', spoken_text)
         spoken_text = re.sub(r'<[^>]+>', ' ', spoken_text)
@@ -791,10 +798,7 @@ class ChipVoiceSystem:
         # Tags substitute to a SPACE, not to nothing: `press<b>X</b>now` must
         # not become `pressXnow`. Collapse afterward so the spoken line matches
         # the line on screen.
-        spoken_text = re.sub(r'\[([^\]]+)\]\([^\)]+\)', r'\1', spoken_text)  # Extract markdown link text
-        spoken_text = re.sub(r'\[[^\]]+\]', '', spoken_text)  # Remove silent bracket tags
-        spoken_text = re.sub(r'<[^>]+>', ' ', spoken_text)  # Strip HTML tags
-        spoken_text = re.sub(r'\s+', ' ', spoken_text).strip()
+        spoken_text = self.sanitize_text(text)
         
         try:
             # Serialize speech across processes (installer vs. server vs. wand)

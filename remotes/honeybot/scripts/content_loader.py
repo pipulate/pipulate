@@ -471,6 +471,55 @@ _FILEPATH_RE = re.compile(
     r')'
 )
 
+# Phonetic ear-orthography table for Piper TTS (en_US-amy-low.onnx).
+# Applied after URL/filepath simplification so domain names, speaker labels,
+# and recurring stack acronyms are pronounced naturally on Storytime.
+_TTS_PRONUNCIATION_MAP = (
+    (re.compile(r'(?m)^\s*\*?\*?(?:MikeLev\.in|Me)\*?\*?\s*:\s*', re.IGNORECASE), 'Mike: '),
+    (re.compile(r'\bmikelev\.in\b', re.IGNORECASE), 'Mike L E V dot eye N'),
+    (re.compile(r'\bsunpug\.io\b', re.IGNORECASE), 'Sun Pug dot eye oh'),
+    (re.compile(r'\bqamy\.ai\b', re.IGNORECASE), 'Q A my dot A I'),
+    (re.compile(r'\bnpvg\.org\b', re.IGNORECASE), 'N P V G dot org'),
+    (re.compile(r'\blevinix\.org\b', re.IGNORECASE), 'Levinix dot org'),
+    (re.compile(r'\blevinux\.com\b', re.IGNORECASE), 'Levinux dot com'),
+    (re.compile(r'\brfc9110\.org\b', re.IGNORECASE), 'R F C 91 10 dot org'),
+    (re.compile(r'\brfc9111\.io\b', re.IGNORECASE), 'R F C 91 11 dot eye oh'),
+    (re.compile(r'\bRFC[ -]?9110\b', re.IGNORECASE), 'R F C 91 10'),
+    (re.compile(r'\bRFC[ -]?9111\b', re.IGNORECASE), 'R F C 91 11'),
+    (re.compile(r'\bRFC[ -]?9421\b', re.IGNORECASE), 'R F C 94 21'),
+    (re.compile(r'\bNixOS\b'), 'Nix O S'),
+    (re.compile(r'\bSQLite\b', re.IGNORECASE), 'S Q Lite'),
+    (re.compile(r'\bFastHTML\b', re.IGNORECASE), 'Fast H T M L'),
+    (re.compile(r'\bHTMX\b', re.IGNORECASE), 'H T M X'),
+    (re.compile(r'\bNPvg\b'), 'N P V G'),
+    (re.compile(r'\bLPvg\b'), 'L P V G'),
+    (re.compile(r'\bllms\.txt\b', re.IGNORECASE), 'L L M S dot text'),
+    (re.compile(r'\bAGENTS\.md\b'), 'AGENTS dot M D'),
+    (re.compile(r'\bSKILL\.md\b'), 'SKILL dot M D'),
+    (re.compile(r'\bREADME\.md\b', re.IGNORECASE), 'README dot M D'),
+    (re.compile(r'\bTL;DR\b:?', re.IGNORECASE), 'T L D R:'),
+    (re.compile(r'\bOAI-SearchBot\b', re.IGNORECASE), 'O A I SearchBot'),
+    (re.compile(r'\bGPTBot\b'), 'G P T Bot'),
+    (re.compile(r'\bRLVR\b'), 'R L V R'),
+    (re.compile(r'\bRLHF\b'), 'R L H F'),
+)
+
+
+def _apply_tts_pronunciations(text):
+    """Abolish structural Markdown/ASCII debris and apply phonetic respellings for Piper TTS."""
+    # 1. Abolish standalone horizontal rules (---, ***, ___) so score.py never speaks "---"
+    text = re.sub(r'(?m)^[ \t]*[-*_]{3,}[ \t]*$', '', text)
+    # 2. Abolish Markdown table alignment rows (| :--- | ---: |) and turn cell pipes into commas
+    text = re.sub(r'(?m)^[ \t]*\|[ \t:|-]+\|[ \t]*$', '', text)
+    text = re.sub(r'(?m)^[ \t]*\|(.+)\|[ \t]*$', lambda m: ', '.join(c.strip() for c in m.group(1).split('|') if c.strip()), text)
+    # 3. Abolish unfenced ASCII box-drawing / block-art runs and humanize ASCII arrows
+    text = re.sub(r'[─━│┃┌┐└┘├┤┬┴┼═║╔╗╚╝╠╣╦╩╬░▒▓█▲▼◄►]{2,}', ' ', text)
+    text = re.sub(r'<-->|<->|-->|->|==>|<==', ', ', text)
+    # 4. Polish phonetic pronunciations
+    for pattern, spoken_repl in _TTS_PRONUNCIATION_MAP:
+        text = pattern.sub(spoken_repl, text)
+    return text
+
 
 def _truncate_after_editorial_take(text):
     """Strip Notary Beat prompt/gobbledygook, keep 5. CLOSING and Ai/AI Editorial Take, and drop trailing sections."""
@@ -843,6 +892,8 @@ def clean_markdown(text, label=None, census=True):
 
     # Remove HTML tags
     text = re.sub(r'<[^>]+>', '', text)
+    # Abolish horizontal rules, table bars, box-drawing runs, and polish phonetic spellings
+    text = _apply_tts_pronunciations(text)
     # Simplify slash-heavy file paths to filename.ext or "file path" before stripping underscores
     text = _simplify_filepaths_for_tts(text)
     # Remove Headers/Bold/Italic markers
