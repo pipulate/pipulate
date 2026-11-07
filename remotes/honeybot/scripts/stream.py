@@ -1687,6 +1687,10 @@ def conjure_media(media_spec, duration=15.0, mute=False, _direct=False):
                     proc.kill()
                 except Exception:
                     pass
+        try:
+            Path(WEEBO_STAGE_PAUSE_FILE).unlink(missing_ok=True)
+        except Exception:
+            pass
         if paused_pids:
             if POST_WEEBO_BUFFER_SEC > 0:
                 time.sleep(POST_WEEBO_BUFFER_SEC)
