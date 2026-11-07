@@ -1011,7 +1011,7 @@ class SonarApp(App):
         else:
             if max_y > 0:
                 self.hud_scroll_y += 1
-                active_table.scroll_to(y=self.hud_scroll_y, animate=True)
+                active_table.scroll_to(y=self.hud_scroll_y, animate=False)
                 if self.hud_scroll_y >= max_y:
                     self.hud_scroll_pause = 6  # Hold at the bottom
             else:
