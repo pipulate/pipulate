@@ -941,7 +941,7 @@ class SonarApp(App):
 
     def _restore_hud_scroll(self):
         """Restore HUD table scroll positions after DataTable dimension updates."""
-        if getattr(self, "is_fire_burning", False):
+        if self._is_stage_frozen():
             return
         try:
             js_table = self.query_one("#js_table", DataTable)
@@ -954,9 +954,9 @@ class SonarApp(App):
             pass
 
     def refresh_tables(self):
-        """Updates both Intelligence tables from DB (deferred while DOOM fire is burning)."""
+        """Updates both Intelligence tables from DB (deferred while DOOM fire or Weebo is active)."""
         if not db: return
-        if getattr(self, "is_fire_burning", False):
+        if self._is_stage_frozen():
             self.pending_table_refresh = True
             return
         self.pending_table_refresh = False
