@@ -457,13 +457,13 @@ class SonarApp(App):
         with Container(id="intelligence_panel"):
             
             # LEFT: Javascript Executors
-            with Vertical(classes="half_panel"):
-                yield Label("⚡ DOM HYDRATION TRAPDOOR (Bots Executing JS)", classes="panel_header")
+            with Vertical(id="js_panel", classes="half_panel"):
+                yield Label(JS_PANEL_TITLE, id="js_header", classes="panel_header")
                 yield DataTable(id="js_table")
             
             # RIGHT: Markdown Seekers
-            with Vertical(classes="half_panel"):
-                yield Label("🧠 RFC 9110 MARKDOWN NEGOTIATORS (Accept: text/markdown)", classes="panel_header")
+            with Vertical(id="md_panel", classes="half_panel"):
+                yield Label(MD_PANEL_TITLE, id="md_header", classes="panel_header")
                 yield DataTable(id="md_table")
         # ----------------------------------------
             
