@@ -952,6 +952,45 @@ class SonarApp(App):
         self.countdown_str = f"{mins:02d}:{secs:02d}"
         self.sub_title = self.get_sub_title() # Trigger header update
 
+    def scroll_hud_tables(self):
+        """Scrolls the bottom HUD tables vertically, alternating between left and right."""
+        if getattr(self, "is_fire_burning", False):
+            return
+
+        active_id = f"#{self.hud_scroll_target}_table"
+        inactive_id = "#md_table" if self.hud_scroll_target == "js" else "#js_table"
+        
+        try:
+            active_table = self.query_one(active_id, DataTable)
+            inactive_table = self.query_one(inactive_id, DataTable)
+        except Exception:
+            return
+
+        # Always ensure inactive table is parked at the top
+        if inactive_table.scroll_y != 0:
+            inactive_table.scroll_to(y=0, animate=False)
+
+        max_y = max(0, active_table.row_count - HUD_TABLE_ROWS)
+
+        if self.hud_scroll_pause > 0:
+            self.hud_scroll_pause -= 1
+            if self.hud_scroll_pause <= 0 and self.hud_scroll_y >= max_y:
+                # We finished pausing at the bottom. Reset to top and switch focus.
+                active_table.scroll_to(y=0, animate=False)
+                self.hud_scroll_y = 0
+                self.hud_scroll_target = "md" if self.hud_scroll_target == "js" else "js"
+                self.hud_scroll_pause = 4  # Pause at top before scrolling new table
+        else:
+            if max_y > 0:
+                self.hud_scroll_y += 1
+                active_table.scroll_to(y=self.hud_scroll_y, animate=True)
+                if self.hud_scroll_y >= max_y:
+                    self.hud_scroll_pause = 6  # Hold at the bottom
+            else:
+                # Not enough rows to scroll. Switch to the other table after a brief hold.
+                self.hud_scroll_pause = 6
+                self.hud_scroll_y = max_y
+
     # -------------------------------------------------------------------------
     # Core Logic: IP Anonymization & Stream Parsing
     # -------------------------------------------------------------------------
