@@ -867,15 +867,21 @@ class SonarApp(App):
 
     def _populate_hud_table(self, table, data):
         """Populate a HUD DataTable with explicit column widths so Textual never clips to header length before Idle."""
-        table.clear(columns=True)
+        has_cols = len(table.columns) == 3
+        table.clear(columns=not has_cols)
         panel_w = table.size.width or max(80, (self.size.width // 2) - 1)
         if not data:
             hits_w = len("Hits")
             id_w = len("Bot Identity")
             sig_w = max(len("Raw Signature"), len("Waiting for data..."), panel_w - hits_w - id_w - 6)
-            table.add_column("Hits", width=hits_w)
-            table.add_column("Bot Identity", width=id_w)
-            table.add_column("Raw Signature", width=sig_w)
+            if not has_cols:
+                table.add_column("Hits", width=hits_w)
+                table.add_column("Bot Identity", width=id_w)
+                table.add_column("Raw Signature", width=sig_w)
+            else:
+                for col_obj, w in zip(table.columns.values(), (hits_w, id_w, sig_w)):
+                    col_obj.width = w
+                    col_obj.auto_width = False
             table.add_row("-", "None", "Waiting for data...")
             return
         styled_rows = []
@@ -899,11 +905,30 @@ class SonarApp(App):
             avail_sig_width,
             max((sig.cell_len for _, _, sig in styled_rows), default=0),
         )
-        table.add_column("Hits", width=hits_width)
-        table.add_column("Bot Identity", width=id_width)
-        table.add_column("Raw Signature", width=sig_width)
+        if not has_cols:
+            table.add_column("Hits", width=hits_width)
+            table.add_column("Bot Identity", width=id_width)
+            table.add_column("Raw Signature", width=sig_width)
+        else:
+            for col_obj, w in zip(table.columns.values(), (hits_width, id_width, sig_width)):
+                col_obj.width = w
+                col_obj.auto_width = False
         for count_str, identity, signature in styled_rows:
             table.add_row(count_str, identity, signature)
+
+    def _restore_hud_scroll(self):
+        """Restore HUD table scroll positions after DataTable dimension updates."""
+        if getattr(self, "is_fire_burning", False):
+            return
+        try:
+            js_table = self.query_one("#js_table", DataTable)
+            md_table = self.query_one("#md_table", DataTable)
+            target = getattr(self, "hud_scroll_target", "js")
+            y_pos = getattr(self, "hud_scroll_y", 0)
+            js_table.scroll_to(y=y_pos if target == "js" else 0, animate=False)
+            md_table.scroll_to(y=y_pos if target == "md" else 0, animate=False)
+        except Exception:
+            pass
 
     def refresh_tables(self):
         """Updates both Intelligence tables from DB (deferred while DOOM fire is burning)."""
