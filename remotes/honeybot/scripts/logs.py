@@ -998,7 +998,7 @@ class SonarApp(App):
         if inactive_table.scroll_y != 0:
             inactive_table.scroll_to(y=0, animate=False)
 
-        max_y = max(0, active_table.row_count - HUD_TABLE_ROWS)
+        max_y = int(active_table.max_scroll_y) or max(0, active_table.row_count - HUD_TABLE_ROWS)
 
         if self.hud_scroll_pause > 0:
             self.hud_scroll_pause -= 1
