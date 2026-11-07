@@ -915,8 +915,12 @@ class SonarApp(App):
         # 1. Update JS Executors (Left)
         try:
             table = self.query_one("#js_table", DataTable)
-            data = db.get_js_executors(limit=HUD_TABLE_ROWS)
+            data = db.get_js_executors(limit=100)
             self._populate_hud_table(table, data)
+            if getattr(self, "hud_scroll_target", "") == "js":
+                table.scroll_to(y=getattr(self, "hud_scroll_y", 0), animate=False)
+            else:
+                table.scroll_to(y=0, animate=False)
         except Exception as e:
             table.clear()
             table.add_row("ERROR", "None", str(e)[:40])
@@ -924,8 +928,12 @@ class SonarApp(App):
         # 2. Update Markdown Negotiators (Right - strict RFC 9110 Accept: text/markdown)
         try:
             table = self.query_one("#md_table", DataTable)
-            data = db.get_content_neg_agents(limit=HUD_TABLE_ROWS)
+            data = db.get_content_neg_agents(limit=100)
             self._populate_hud_table(table, data)
+            if getattr(self, "hud_scroll_target", "") == "md":
+                table.scroll_to(y=getattr(self, "hud_scroll_y", 0), animate=False)
+            else:
+                table.scroll_to(y=0, animate=False)
         except Exception as e:
             table.clear()
             table.add_row("ERROR", "None", str(e)[:40])
