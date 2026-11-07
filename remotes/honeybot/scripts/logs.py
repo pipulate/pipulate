@@ -964,6 +964,7 @@ class SonarApp(App):
         except Exception as e:
             table.clear()
             table.add_row("ERROR", "None", str(e)[:40])
+        self.call_after_refresh(self._restore_hud_scroll)
 
     def update_countdown(self):
         """Ticks the clock and updates the Sub-Title (paused while DOOM fire is burning)."""
