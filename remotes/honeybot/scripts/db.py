@@ -533,15 +533,83 @@ class HoneyDB:
         "GPTBot",
         "meta-webindexer",
         "OAI-SearchBot",
+        "ChatGPT-User",
         "Claude-User",
+        "ClaudeBot",
+        "claude-code",
+        "Claude-Web",
+        "GoogleOther",
+        "Google-InspectionTool",
+        "Storebot-Google",
+        "Google-Extended",
+        "Googlebot",
         "ShapBot",
         "KeenableBot",
+        "ExaSearchBot",
         "ExaUser",
+        "PerplexityBot",
+        "Perplexity-User",
+        "Amazonbot",
+        "Applebot",
+        "bingbot",
+        "YandexBot",
+        "PetalBot",
+        "AhrefsBot",
+        "SemrushBot",
+        "DotBot",
+        "MJ12bot",
+        "DataForSeoBot",
+        "Barkrowler",
+        "DuckAssistBot",
+        "facebookexternalhit",
+        "FacebookBot",
+        "Twitterbot",
+        "LinkedInBot",
+        "Discordbot",
+        "TelegramBot",
+        "Slackbot",
         "HeadlessChrome",
         "Bytespider",
         "axios",
-        "Googlebot/",
+        "curl/",
+        "wget/",
+        "python-requests",
     )
+    _COMPAT_BOT_RE = re.compile(r"compatible;\s*([A-Za-z0-9._-]+)", re.IGNORECASE)
+    _KEYWORD_BOT_RE = re.compile(
+        r"\b([A-Za-z0-9._-]*(?:bot|spider|crawler|agent|radar|worker|mcp|research|scraper|fetcher|inspector|archiver|httpx|requests|axios|curl|wget|aiohttp|urllib|go-http-client|python)[A-Za-z0-9._-]*)",
+        re.IGNORECASE,
+    )
+    _LEADING_AGENT_RE = re.compile(r"^([A-Za-z0-9._-]+?)(?:/[\d.]+|\s+\(|\s*$)")
+
+    def _detect_rollup_key(self, clean_ua: str):
+        """Return a canonical lowercase bot identity key so recurring bots roll up into one HUD row."""
+        s = (clean_ua or "").strip()
+        if not s or s == "-":
+            return None
+        s_lower = s.lower()
+        for tok in self._ROLLUP_BOT_TOKENS:
+            if tok.lower() in s_lower:
+                return tok.lower().rstrip("/")
+        for bot_name in sorted(KNOWN_BOTS, key=len, reverse=True):
+            if bot_name in s:
+                m_ext = re.search(rf"({re.escape(bot_name)}[A-Za-z0-9._-]*)", s)
+                raw_tok = m_ext.group(1).strip(";/() ") if m_ext else bot_name
+                return re.sub(r"[-_]+v?\d+(?:\.\d+)+$", "", raw_tok).lower()
+        for m in self._COMPAT_BOT_RE.finditer(s):
+            tok = m.group(1).strip(";/() ")
+            if tok and tok.upper() not in ("MSIE", "MOZILLA"):
+                return re.sub(r"[-_]+v?\d+(?:\.\d+)+$", "", tok).lower()
+        if not s.startswith(("Mozilla/", "AppleWebKit/", "(")):
+            m_lead = self._LEADING_AGENT_RE.match(s)
+            if m_lead:
+                return re.sub(r"[-_]+v?\d+(?:\.\d+)+$", "", m_lead.group(1).strip()).lower()
+        m_kw = self._KEYWORD_BOT_RE.search(s)
+        if m_kw:
+            tok = m_kw.group(1).strip(";/() ")
+            if tok.lower() not in ("mozilla", "applewebkit", "safari", "chrome", "gecko", "khtml", "mobile"):
+                return re.sub(r"[-_]+v?\d+(?:\.\d+)+$", "", tok).lower()
+        return None
 
     def _rollup_bot_rows(self, rows, limit=20):
         """Selectively roll up noisy multi-UA bots into their top UA with a [+N] prefix."""
@@ -556,12 +624,7 @@ class HoneyDB:
             for pfx in ("[SPOOFED-IP] ", "[VERIFIED] "):
                 if clean_ua.startswith(pfx):
                     clean_ua = clean_ua[len(pfx):]
-            matched_token = None
-            clean_lower = clean_ua.lower()
-            for tok in self._ROLLUP_BOT_TOKENS:
-                if tok.lower() in clean_lower:
-                    matched_token = tok.lower()
-                    break
+            matched_token = self._detect_rollup_key(clean_ua)
             if matched_token is None:
                 results.append([agent_str, count, 0, is_spoof, is_verified, clean_ua])
                 continue
