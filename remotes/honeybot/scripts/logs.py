@@ -1256,8 +1256,8 @@ class SonarApp(App):
                 self.call_from_thread(self.write_log, rich_text)
 
     def write_log(self, text):
-        """Write the Rich Text object directly to the RichLog widget (buffered during fire)."""
-        if getattr(self, "is_fire_burning", False):
+        """Write the Rich Text object directly to the RichLog widget (buffered during fire or Weebo)."""
+        if self._is_stage_frozen():
             self.pending_log_buffer.append(text)
             return
         if getattr(self, "pending_log_buffer", None):
