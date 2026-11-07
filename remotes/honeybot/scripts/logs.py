@@ -994,30 +994,20 @@ class SonarApp(App):
         except Exception:
             return
 
-        # Always ensure inactive table is parked at the top
-        if inactive_table.scroll_y != 0:
-            inactive_table.scroll_to(y=0, animate=False)
-
         max_y = int(active_table.max_scroll_y) or max(0, active_table.row_count - HUD_TABLE_ROWS)
 
-        if self.hud_scroll_pause > 0:
-            self.hud_scroll_pause -= 1
-            if self.hud_scroll_pause <= 0 and self.hud_scroll_y >= max_y:
-                # We finished pausing at the bottom. Reset to top and switch focus.
-                active_table.scroll_to(y=0, animate=False)
-                self.hud_scroll_y = 0
-                self.hud_scroll_target = "md" if self.hud_scroll_target == "js" else "js"
-                self.hud_scroll_pause = 4  # Pause at top before scrolling new table
+        if self.hud_scroll_y < max_y:
+            if inactive_table.scroll_y != 0:
+                inactive_table.scroll_to(y=0, animate=False)
+            self.hud_scroll_y += 1
+            active_table.scroll_to(y=self.hud_scroll_y, animate=False)
         else:
-            if max_y > 0:
-                self.hud_scroll_y += 1
-                active_table.scroll_to(y=self.hud_scroll_y, animate=False)
-                if self.hud_scroll_y >= max_y:
-                    self.hud_scroll_pause = 6  # Hold at the bottom
-            else:
-                # Not enough rows to scroll. Switch to the other table after a brief hold.
-                self.hud_scroll_pause = 6
-                self.hud_scroll_y = max_y
+            # Same-frame baton handoff: snap current table to top and step sibling table to row 1
+            active_table.scroll_to(y=0, animate=False)
+            self.hud_scroll_target = "md" if self.hud_scroll_target == "js" else "js"
+            next_max_y = int(inactive_table.max_scroll_y) or max(0, inactive_table.row_count - HUD_TABLE_ROWS)
+            self.hud_scroll_y = 1 if next_max_y > 0 else 0
+            inactive_table.scroll_to(y=self.hud_scroll_y, animate=False)
 
     # -------------------------------------------------------------------------
     # Core Logic: IP Anonymization & Stream Parsing
