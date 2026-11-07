@@ -683,7 +683,7 @@ def main():
     parser.add_argument("--file", action="append", metavar="PATH",
                         help="Sync only the given file(s). Repeatable. Beats --latest and the sweep.")
     parser.add_argument("--latest", action="store_true",
-                        help="Sync only the article articleizer.py most recently wrote for this target.")
+                        help="Sync the latest article plus any unstamped or missing prior articles (self-healing catch-up).")
     # EARMARK -- --restamp, CONTINGENT RATHER THAN SPECULATIVE (2026-08-31).
     # --force is currently the ONLY remedy for a stale gdoc_url STRING, and it
     # is the wrong-sized tool: it re-uploads all ~1,400 documents to repair a
