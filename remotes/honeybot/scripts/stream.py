@@ -835,6 +835,7 @@ def start_storytime_bgm():
 
 
 MEDIA_OVERLAY_MARKER = "honeybot_media_overlay"
+WEEBO_STAGE_PAUSE_FILE = "/tmp/honeybot_weebo_active"
 POST_WEEBO_BUFFER_SEC = 1.0
 _CACHED_SCREEN_GEOM = None
 
