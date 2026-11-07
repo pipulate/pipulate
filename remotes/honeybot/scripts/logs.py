@@ -413,7 +413,9 @@ class SonarApp(App):
     DataTable {
         height: 1fr;
         width: 100%;
-        overflow: hidden;
+        overflow-x: hidden;
+        overflow-y: auto;
+        scrollbar-size: 0 0;
     }
     
     /* Countdown moves to the footer area style override if needed, 
