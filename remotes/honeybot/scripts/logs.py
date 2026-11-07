@@ -698,6 +698,33 @@ class SonarApp(App):
         """True when RFC 9421 / IETF Web Bot Auth Signature-Agent header is present."""
         return bool(self.clean_sig_agent(sig_str))
 
+    def detect_live_rag_agent(self, ua_str):
+        """Return ('rag=openai', 'OPENAI') or ('rag=anthropic', 'ANTHROPIC') for real-time user-triggered RAG fetches."""
+        s = (ua_str or "").lower()
+        if "chatgpt-user" in s:
+            return "rag=openai", "OPENAI"
+        if "claude-user" in s or "claude-web" in s:
+            return "rag=anthropic", "ANTHROPIC"
+        return None, None
+
+    def ring_rag_bell(self):
+        """Play ding.wav non-blockingly on Honeybot's default ALSA audio bus for live stream listeners."""
+        for cand in (
+            "/home/mike/www/mikelev.in/assets/sounds/ding.wav",
+            os.path.expanduser("~/www/mikelev.in/assets/sounds/ding.wav"),
+        ):
+            if os.path.isfile(cand):
+                try:
+                    import subprocess
+                    subprocess.Popen(
+                        ["aplay", "-q", "-D", "default", cand],
+                        stdout=subprocess.DEVNULL,
+                        stderr=subprocess.DEVNULL,
+                    )
+                except Exception:
+                    pass
+                break
+
     def detect_bot_token(self, ua_str):
         """Extract the self-identifying bot/agent token from a User-Agent string, or None for standard browsers."""
         s = (ua_str or "").strip()
@@ -958,11 +985,13 @@ class SonarApp(App):
                         # We keep the ?src= tracking dyes (including social campaign referrals) for attribution
                         if '?' in raw_path:
                             base_path, qs = raw_path.split('?', 1)
-                            if qs in (
+                            qs_first = qs.split('&', 1)[0]
+                            if qs_first in (
                                 'src=a+href', 'src=llms.txt', 'src=link+rel',
-                                'src=youtube', 'src=linkedin', 'src=x', 'src=twitter', 'src=discord',
+                                'src=youtube', 'src=linkedin', 'src=fb', 'src=facebook',
+                                'src=x', 'src=twitter', 'src=discord', 'src=rfc9110',
                             ):
-                                clean_path = raw_path
+                                clean_path = f"{base_path}?{qs_first}"
                             else:
                                 clean_path = base_path
                         else:
@@ -999,18 +1028,30 @@ class SonarApp(App):
                         )
                         db.increment_counter("global_hits")
                         if not str(data['ip']).startswith(('127.', '10.', '192.168.')):
+                            now_ts = time.time()
                             ref_src = None
                             if clean_path == '/discord' or clean_path.startswith(('/discord?', '/discord/')):
                                 ref_src = 'discord_invite'
                             elif '?' in clean_path:
                                 _, qs_part = clean_path.split('?', 1)
-                                if qs_part in ('src=youtube', 'src=linkedin', 'src=x', 'src=twitter', 'src=discord'):
+                                if qs_part in (
+                                    'src=youtube', 'src=linkedin', 'src=fb', 'src=facebook',
+                                    'src=x', 'src=twitter', 'src=discord', 'src=rfc9110',
+                                ):
                                     ref_src = qs_part
+                            rag_src, _ = self.detect_live_rag_agent(data.get('ua'))
+                            if rag_src and not clean_path.endswith('/robots.txt'):
+                                last_ding = getattr(self, '_last_rag_ding_ts', 0.0)
+                                if (now_ts - last_ding) >= 15.0:
+                                    self._last_rag_ding_ts = now_ts
+                                    self.ring_rag_bell()
+                                    if not ref_src:
+                                        ref_src = rag_src
                             if ref_src:
                                 import json as _json
                                 with open('/tmp/honeybot_referrals.jsonl', 'a', encoding='utf-8') as rf:
                                     rf.write(_json.dumps({
-                                        'ts': int(time.time()),
+                                        'ts': int(now_ts),
                                         'src': ref_src,
                                         'path': clean_path,
                                     }) + '\n')
@@ -1080,13 +1121,19 @@ class SonarApp(App):
         text.append("  ") # Just space
         if data.get('md') == '1':
             text.append("[RFC9110:MD] ", style="bold black on green")
+        _, rag_label = self.detect_live_rag_agent(ua)
+        if rag_label:
+            text.append(f"[🔔 RAG:{rag_label}] ", style="bold black on bright_yellow")
         for ref_tag, ref_label in (
             ("src=youtube", "YOUTUBE"),
             ("src=linkedin", "LINKEDIN"),
+            ("src=fb", "FACEBOOK"),
+            ("src=facebook", "FACEBOOK"),
             ("src=x", "X.COM"),
             ("src=twitter", "X.COM"),
             ("src=discord", "DISCORD"),
             ("/discord", "DISCORD"),
+            ("src=rfc9110", "RFC9110"),
         ):
             if ref_tag in path:
                 text.append(f"[REF:{ref_label}] ", style="bold white on magenta")

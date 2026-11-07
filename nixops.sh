@@ -47,6 +47,7 @@ ssh $TARGET "chmod +x ~/git/mikelev.in.git/hooks/post-receive && mkdir -p ~/www/
 rsync --delete $RSYNC_OPTS remotes/honeybot/scripts/ $TARGET:~/www/mikelev.in/scripts/
 rsync $RSYNC_OPTS imports/ascii_displays.py $TARGET:~/www/mikelev.in/imports/
 rsync $RSYNC_OPTS assets/sounds/tick.wav $TARGET:~/www/mikelev.in/assets/sounds/tick.wav
+rsync $RSYNC_OPTS assets/sounds/ding.wav $TARGET:~/www/mikelev.in/assets/sounds/ding.wav
 if [ -f "assets/sounds/dripulate.wav" ]; then
   rsync $RSYNC_OPTS assets/sounds/dripulate.wav $TARGET:~/www/mikelev.in/assets/sounds/dripulate.wav
 fi

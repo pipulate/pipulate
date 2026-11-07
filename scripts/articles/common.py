@@ -2141,6 +2141,8 @@ SPOKEN_ALERT_TABLE = {
     "src=x": "Web Bot Observatory alert. A link was followed from X dot com.",
     "src=twitter": "Web Bot Observatory alert. A link was followed from X dot com.",
     "src=rfc9110": "Web Bot Observatory alert. An engineer just ran the R F C 9110 terminal verification test.",
+    "rag=openai": "Web Bot Observatory alert. A live Chat G P T user search just fetched a page from your site.",
+    "rag=anthropic": "Web Bot Observatory alert. A live Claude user session just fetched a page from your site.",
     "default": "Web Bot Observatory notification. {message}",
 }
 
@@ -2769,15 +2771,18 @@ def run_youtube_watch(
                     rpath = str(robj.get("path") or "/")
                     if rts > last_ref_ts and rsrc in SPOKEN_ALERT_TABLE:
                         max_ref_ts = max(max_ref_ts, rts)
-                        ref_msg = f"Inbound click ({rsrc}) -> {rpath}"
-                        print(f"[{_ytlog_ts()}] 🔗 [REFERRAL] {ref_msg}", flush=True)
+                        is_rag = rsrc.startswith("rag=")
+                        ref_msg = f"Live AI RAG fetch ({rsrc}) -> {rpath}" if is_rag else f"Inbound click ({rsrc}) -> {rpath}"
+                        ref_badge = "🔔 [LIVE-RAG]" if is_rag else "🔗 [REFERRAL]"
+                        ntfy_title = "🔔 Live AI User RAG Fetch" if is_rag else "🔗 Inbound Social Referral"
+                        print(f"[{_ytlog_ts()}] {ref_badge} {ref_msg}", flush=True)
                         _play_local_ding(ding, spoken_text=SPOKEN_ALERT_TABLE[rsrc])
                         if resolved_topic:
                             send_ntfy_notification(
                                 ref_msg,
-                                title="🔗 Inbound Social Referral",
+                                title=ntfy_title,
                                 priority="high",
-                                tags="link",
+                                tags="bell" if is_rag else "link",
                                 topic=resolved_topic,
                             )
                 persisted["last_referral_ts"] = max_ref_ts
@@ -2980,6 +2985,10 @@ def reboot_honeybot_stream(sync_only=False, dry_run=False):
     )
     subprocess.run(
         ["rsync", "-aq", f"{repo_root}/assets/sounds/tick.wav", f"{HONEYBOT_SSH_HOST}:~/www/mikelev.in/assets/sounds/tick.wav"],
+        check=False,
+    )
+    subprocess.run(
+        ["rsync", "-aq", f"{repo_root}/assets/sounds/ding.wav", f"{HONEYBOT_SSH_HOST}:~/www/mikelev.in/assets/sounds/ding.wav"],
         check=False,
     )
     bgm_asset = repo_root / "assets" / "sounds" / "dripulate.wav"

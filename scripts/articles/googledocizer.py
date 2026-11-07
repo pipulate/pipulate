@@ -531,11 +531,12 @@ def main():
         print(f"🎯 Explicit selection via --file: {len(md_files)} document(s).")
     elif args.latest:
         all_posts = sorted(posts_dir.glob("*.md"))
+        dated_posts = [p for p in all_posts if p.name[:4].isdigit()]
         latest_path = common.get_last_published(target_key)
         if latest_path and Path(latest_path).is_file():
             latest_update_set.add(Path(latest_path).resolve())
-        if all_posts:
-            latest_update_set.add(all_posts[-1].resolve())
+        if dated_posts:
+            latest_update_set.add(dated_posts[-1].resolve())
         if not latest_update_set:
             print(f"❌ --latest: no markdown posts found for target '{target_key}'.")
             sys.exit(1)
@@ -591,7 +592,9 @@ def main():
             # and there is no such future: point-of-use rendering strictly
             # dominates any pre-render. Three unpack sites move to 3-tuples.
             local_contracts.append((resolved_md, target_title, stamped_id))
-            if verbose:
+        local_contracts.sort(key=lambda item: item[1])
+        if verbose:
+            for _, target_title, _ in local_contracts:
                 print(f"   Target Title: {target_title}")
         settled_note = f" ({pre_settled} prior post(s) already synced & stamped)" if pre_settled else ""
         print(f"✅ Local contract pass complete. {len(local_contracts)} active document(s) mapped{settled_note}.")
