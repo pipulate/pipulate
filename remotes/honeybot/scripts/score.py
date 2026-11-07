@@ -75,7 +75,7 @@ def _append_article_performance(script, article, is_latest=True):
                 f"That concludes {article['title']}. "
                 "You can read the full text and source code at Mike L E V dot eye N, "
                 "or inspect the portable workshop through any of our eight doors, including "
-                "Sun Pug dot eye oh, Guerilla Tech dot com, R F C 9110 dot org, and R F C 9111 dot eye oh, "
+                "Sun Pug dot eye oh, Guerilla Tech dot com, R F C 91 10 dot org, and R F C 91 11 dot eye oh, "
                 "using curl pipe less. "
                 "Drop a message in the live chat if you are tuning in. "
                 "A human operator monitors this observatory and can break in live."

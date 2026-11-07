@@ -506,7 +506,20 @@ _TTS_PRONUNCIATION_MAP = (
     (re.compile(r'\bGPTBot\b'), 'G P T Bot'),
     (re.compile(r'\bRLVR\b'), 'R L V R'),
     (re.compile(r'\bRLHF\b'), 'R L H F'),
-    (re.compile(r'\bPolish\b(?!\s+notation\b)'), 'polish'),
+    (re.compile(r'(?<!Reverse )\bPolish\b(?!\s+notation\b)'), 'polish'),
+    (re.compile(r'\bSEO\b'), 'S E O'),
+    (re.compile(r'\bCDNs\b'), 'C D Ns'),
+    (re.compile(r'\bCDN\b'), 'C D N'),
+    (re.compile(r'\bDOM\b'), 'D O M'),
+    (re.compile(r'\bHTML\b'), 'H T M L'),
+    (re.compile(r'\bHTTPS\b'), 'H T T P S'),
+    (re.compile(r'\bHTTP\b'), 'H T T P'),
+    (re.compile(r'\bSSH\b'), 'S S H'),
+    (re.compile(r'\bCLI\b'), 'C L I'),
+    (re.compile(r'\bTUI\b'), 'T U I'),
+    (re.compile(r'\bLLMs\b'), 'L L Ms'),
+    (re.compile(r'\bLLM\b'), 'L L M'),
+    (re.compile(r'\bChatGPT\b', re.IGNORECASE), 'Chat G P T'),
     (re.compile(r'\bNginx\b', re.IGNORECASE), 'Engine X'),
     (re.compile(r'\bPyPI\b', re.IGNORECASE), 'Pie P I'),
     (re.compile(r'\bkubectl\b', re.IGNORECASE), 'kube control'),
@@ -829,9 +842,9 @@ def clean_markdown(text, label=None, census=True):
     # was harmless while nothing stripped them -- and becomes self-deleting the
     # instant the side-channel stripper below lands. Brackets are the notation
     # for "do not speak this," so a cue meant to be HEARD must not wear them.
-    text = text.replace(CODE_SENTINEL, 'See the code at MikeLev dot Eye N slash latest.')
+    text = text.replace(CODE_SENTINEL, 'See the code at Mike L E V dot eye N slash latest.')
     # Global cap: no article should repeat this more than once.
-    spoken = 'See the code at MikeLev dot Eye N slash latest.'
+    spoken = 'See the code at Mike L E V dot eye N slash latest.'
     if text.count(spoken) > 1:
         idx = text.index(spoken)
         text = text[:idx + len(spoken)] + text[idx + len(spoken):].replace(spoken, '')
