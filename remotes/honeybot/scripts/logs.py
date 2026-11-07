@@ -516,6 +516,7 @@ class SonarApp(App):
         self.hud_scroll_target = "js"
         self.hud_scroll_y = 0
         self.hud_scroll_pause = 0
+        self.hud_bump_active = False
         
         try:
             self.script_mtime = os.stat(__file__).st_mtime
