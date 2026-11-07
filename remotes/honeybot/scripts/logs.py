@@ -26,8 +26,13 @@ from db import db, KNOWN_BOTS  # Import the list
 STRIP_MOZILLA_PREFIX = False  # Set to True to save space in bottom panels
 HUD_TABLE_ROWS = 12           # Visible data rows in both bottom HUD tables (freed 3 rows for 5-row #ticker_bar)
 HUD_PANEL_HEIGHT = HUD_TABLE_ROWS + 4  # +4 rows for top border, panel title, header rule, and column headers
-BOT_IDENTITY_WIDTH = 21       # Emoji (2) + space (1) + 18-char bot name (trims 15 chars for Raw Signature)
+BOT_IDENTITY_WIDTH = 21        # Emoji (2) + space (1) + 18-char bot name (trims 15 chars for Raw Signature)
 TICKER_FILE_PATH = "/tmp/honeybot_ticker.txt"
+WEEBO_ACTIVE_PATH = "/tmp/honeybot_weebo_active"
+JS_PANEL_TITLE = "⚡ DOM HYDRATION TRAPDOOR (Bots Executing JS)"
+MD_PANEL_TITLE = "🧠 RFC 9110 MARKDOWN NEGOTIATORS (Accept: text/markdown)"
+JS_BUMP_TITLE = "💥 HIT BOTTOM — HANDING OFF TO MARKDOWN HUD ➔"
+MD_BUMP_TITLE = "⬅ HANDING OFF TO JS TRAPDOOR HUD — HIT BOTTOM 💥"
 CARD_HOLD_TICKS = 56  # 56 * 0.08s = ~4.5s still hold per card (0% CPU during hold)
 FIRE_TICKS = 12       # 12 * 0.08s = ~0.96s pre-baked PSX DOOM fire sequence
 CARD_STYLES = ("bold #ffd700", "bold #00ffff", "bold #ffae42")
