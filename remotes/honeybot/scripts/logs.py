@@ -493,6 +493,12 @@ class SonarApp(App):
         self.is_fire_burning = False
         self.pending_log_buffer = deque(maxlen=64)
         self.pending_table_refresh = False
+        
+        # HUD Scrolling State
+        self.hud_scroll_target = "js"
+        self.hud_scroll_y = 0
+        self.hud_scroll_pause = 4
+        
         try:
             self.script_mtime = os.stat(__file__).st_mtime
         except OSError:
