@@ -414,6 +414,7 @@ def get_broadcast_kit(target_key="1", slug_match=None):
     base_url = (tcfg.get("base_url") or "https://mikelev.in").rstrip("/")
     permalink = str(fm.get("permalink") or "")
     canonical_url = str(fm.get("canonical_url") or (f"{base_url}{permalink}" if permalink else base_url))
+    gdoc_url = str(fm.get("gdoc_url") or "").strip()
     meta_desc = str(fm.get("meta_description") or fm.get("excerpt") or "").strip()
     imprint = str(fm.get("description") or "").strip()
     editorial_match = re.search(
@@ -502,6 +503,7 @@ def get_broadcast_kit(target_key="1", slug_match=None):
     yt_title = format_youtube_title(title)
     desc_parts = [
         f"📖 Read the full article: {canonical_url}?src=youtube",
+        *([f"📄 Summarize in Google Docs: {gdoc_url}"] if gdoc_url else []),
         f"🟣 Join the Founding 1,000 Discord (1,000 members + 8 wks = Google-indexed community): {DEFAULT_DISCORD_INVITE_URL}",
         f"🔭 Got the SEO Blues? SEO moved to the Edge — Your Site Is Your Feed: {base_url}/?src=youtube#consulting | Inspect workshop: curl -fsSL https://sunpug.io | less (Email: {CONTACT_EMAIL})",
         f"🧪 Test RFC 9110 in your terminal: curl -sI -H \"Accept: text/markdown\" {canonical_url}?src=rfc9110",
@@ -592,6 +594,7 @@ def get_broadcast_kit(target_key="1", slug_match=None):
         "title": title,
         "base_url": base_url,
         "canonical_url": canonical_url,
+        "gdoc_url": gdoc_url,
         "preview_url": preview_url,
         "tweet": tweet,
         "linkedin": linkedin_post,
@@ -1060,6 +1063,8 @@ def print_broadcast_kit(target_key="1", mode="card", slug_match=None):
     if mode == "summary":
         print(f"📡 Broadcast Kit Ready ({Path(kit['path']).name}):")
         print(f"   • Live URL   : {kit['canonical_url']}")
+        if kit.get("gdoc_url"):
+            print(f"   • Google Doc : {kit['gdoc_url']}")
         if yt_thumb:
             print(f"   • YT Thumb   : {yt_thumb} (1280x720 16:9)")
         print("   • Quick Copy : tweet | linkedin | fb | yttitle | ytdesc | ytcard (full kit)")
@@ -2141,6 +2146,7 @@ SPOKEN_ALERT_TABLE = {
     "src=x": "Web Bot Observatory alert. A link was followed from X dot com.",
     "src=twitter": "Web Bot Observatory alert. A link was followed from X dot com.",
     "src=rfc9110": "Web Bot Observatory alert. An engineer just ran the R F C 9110 terminal verification test.",
+    "src=install": "Web Bot Observatory alert. An engineer just fetched the Nix Flake installer from a domain door.",
     "rag=openai": "Web Bot Observatory alert. A live Chat G P T user search just fetched a page from your site.",
     "rag=anthropic": "Web Bot Observatory alert. A live Claude user session just fetched a page from your site.",
     "default": "Web Bot Observatory notification. {message}",

@@ -2685,8 +2685,20 @@ print('AI:\n', r.ai)
             
             # The Bounded Context of the Payload
             TARGET_REPO="$HOME/repos/trimnoir"
-            
-            echo "🚀 [1/5] Payload Delivery: Committing and Pushing $TARGET_REPO..."
+
+            # STAMP BEFORE THE PUSH (2026-11-07): googledocizer.py depends only on
+            # the local _posts/*.md file(s) on disk and stamps `gdoc_url:` into
+            # each post's YAML frontmatter. Running it as [1/5] BEFORE `git add .`
+            # and `git push` ensures the new article's Google Doc link is committed,
+            # pushed, and rendered on the live site on the very first publish
+            # rather than trailing by one article. Non-fatal by design so a Drive
+            # hiccup never blocks deployment.
+            echo "🚀 [1/5] Google Docs: Syncing to Drive & Stamping gdoc_url (scope: ''${GDOCS_SCOPE:-full sweep})..."
+            if ! "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/articles/googledocizer.py" -t 1 --yes $GDOCS_SCOPE; then
+                echo "⚠️  Google Docs sync failed; continuing deployment anyway."
+            fi
+
+            echo "🚀 [2/5] Payload Delivery: Committing and Pushing $TARGET_REPO..."
             "$PIPULATE_ROOT/.venv/bin/python" -c "import sys; sys.path.insert(0, '$PIPULATE_ROOT/scripts/articles'); import common; common.ensure_indexnow_key_file('1')" || true
             "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/articles/common.py" --broadcast summary || true
             # Pre-sync Honeybot stream scripts BEFORE git push rings .deploy_standby
@@ -2710,28 +2722,9 @@ print('AI:\n', r.ai)
                 fi
                 git push
             )
-            
+
             # Check if the subshell push succeeded (which triggers the post-receive hook)
             if [ $? -eq 0 ]; then
-                # GOOGLE DOCS SYNC rides here, right after the git payload
-                # lands, because it depends only on the local article file(s)
-                # already on disk -- not on the Honeybot deploy below.
-                # SCOPE COMES FROM THE GATE ABOVE, and the echo prints the
-                # resolved value rather than a fixed word, so the receipt can
-                # never disagree with what actually ran.
-                # Non-fatal by design -- a Drive hiccup (expired OAuth token,
-                # network blip) must never block the live site from shipping.
-                # Retry by hand with:
-                #   python scripts/articles/googledocizer.py -t 1 --yes --latest
-                # INTERPRETER ANCHORED (UNNAMED-ROOT RULE): the bare name
-                # resolved through PATH, which is only correct while the venv
-                # is in front of it. The script path was already anchored one
-                # argument to its right; this makes both halves of the line
-                # agree.
-                echo "🚀 [2/5] Google Docs: Syncing to Drive (scope: ''${GDOCS_SCOPE:-full sweep})..."
-                if ! "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/articles/googledocizer.py" -t 1 --yes $GDOCS_SCOPE; then
-                    echo "⚠️  Google Docs sync failed; continuing deployment anyway."
-                fi
                 echo "🚀 [3/5] Infrastructure: Synchronizing Server Configurations..."
                 # Run nixops.sh from PIPULATE_ROOT regardless of caller's current directory
                 if [ -f "$PIPULATE_ROOT/nixops.sh" ]; then

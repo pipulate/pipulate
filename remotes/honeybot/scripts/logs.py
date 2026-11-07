@@ -319,6 +319,26 @@ _KEYWORD_BOT_RE = re.compile(
 )
 _LEADING_AGENT_RE = re.compile(r"^([A-Za-z0-9._-]+?)(?:/[\d.]+|\s+\(|\s*$)")
 _ROLLUP_PREFIX_RE = re.compile(r"^\[(\+\d+)\]\s*")
+_PIRATE_PATH_RE = re.compile(
+    r"(?:"
+    r"/wp-(?:admin|login|content|includes|json|config)"
+    r"|/xmlrpc\.php"
+    r"|/\.(?:env|git|aws|ssh|DS_Store|htaccess|svn|vscode)"
+    r"|/(?:phpmyadmin|pma|myadmin|mysql|adminer|dbadmin)"
+    r"|/(?:cgi-bin|vendor/phpunit|boaform|hnap1|actuator|geoserver|solr|evox|autodiscover|owa|ecp)"
+    r"|/(?:shell|alfa|eval-stdin|setup\.php|config\.php|info\.php|test\.php)"
+    r"|\.\./|%2e%2e"
+    r"|\.(?:php[0-9]?|phtml|asp|aspx|jsp|jspx|cgi|cfm|env|sql|bak|old|orig|ini)(?:$|\?|/)"
+    r")",
+    re.IGNORECASE,
+)
+_PIRATE_UA_RE = re.compile(
+    r"\b(?:sqlmap|nikto|nmap|masscan|zgrab|nuclei|gobuster|dirbuster|feroxbuster|wpscan|acunetix|nessus)\b",
+    re.IGNORECASE,
+)
+_INSTALL_DOOR_HOSTS = (
+    "sunpug", "npvg", "qamy", "levinix", "pipulate", "guerillatech", "rfc9110", "rfc9111",
+)
 
 try:
     from db import db  # Import our new database singleton
@@ -707,6 +727,31 @@ class SonarApp(App):
             return "rag=anthropic", "ANTHROPIC"
         return None, None
 
+    def detect_pirate_probe(self, path_str, status_code=0, ua_str=""):
+        """True when a request probes exploit paths (.php, /wp-admin, /.env, /.git) or runs a vulnerability scanner."""
+        p = (path_str or "").strip()
+        u = (ua_str or "").strip()
+        if _PIRATE_PATH_RE.search(p) or _PIRATE_UA_RE.search(u):
+            return True
+        return False
+
+    def detect_terminal_action(self, path_str, ua_str="", host_str="", md_flag=""):
+        """Return (ref_src, badge_label) when a user runs an RFC 9110 terminal verification or curls a domain door."""
+        p = (path_str or "").strip()
+        u = (ua_str or "").strip().lower()
+        h = (host_str or "").strip().lower()
+        base_p = p.split("?", 1)[0]
+        is_cli = u.startswith(("curl/", "wget/", "fetch/"))
+        if "src=rfc9110" in p:
+            return "src=rfc9110", "🧪 VERIFY:RFC9110"
+        if is_cli and str(md_flag) == "1":
+            return "src=rfc9110", "🧪 CURL:MARKDOWN"
+        if base_p in ("/install.sh", "/mck.sh") or (
+            is_cli and base_p == "/" and any(d in h for d in _INSTALL_DOOR_HOSTS)
+        ):
+            return "src=install", "🚲 DOOR:INSTALL"
+        return None, None
+
     def ring_rag_bell(self):
         """Play ding.wav non-blockingly on Honeybot's default ALSA audio bus for live stream listeners."""
         for cand in (
@@ -1040,13 +1085,17 @@ class SonarApp(App):
                                 ):
                                     ref_src = qs_part
                             rag_src, _ = self.detect_live_rag_agent(data.get('ua'))
-                            if rag_src and not clean_path.endswith('/robots.txt'):
+                            term_src, _ = self.detect_terminal_action(
+                                clean_path, data.get('ua'), data.get('host'), data.get('md')
+                            )
+                            bell_src = rag_src if (rag_src and not clean_path.endswith('/robots.txt')) else term_src
+                            if bell_src:
                                 last_ding = getattr(self, '_last_rag_ding_ts', 0.0)
                                 if (now_ts - last_ding) >= 15.0:
                                     self._last_rag_ding_ts = now_ts
                                     self.ring_rag_bell()
-                                    if not ref_src:
-                                        ref_src = rag_src
+                                if not ref_src:
+                                    ref_src = bell_src
                             if ref_src:
                                 import json as _json
                                 with open('/tmp/honeybot_referrals.jsonl', 'a', encoding='utf-8') as rf:
@@ -1082,30 +1131,43 @@ class SonarApp(App):
         elif 400 <= status < 500: status_style = "bold red"
         else: status_style = "white on red"
 
-        ip_display = self.anonymize_ip(data['ip'])
         method, path = self.parse_request(data['request'])
-        
         ua = data['ua']
+        is_pirate = self.detect_pirate_probe(path, status, ua)
+        _, term_badge = self.detect_terminal_action(path, ua, data.get('host'), data.get('md'))
+        if is_pirate:
+            ip_display = Text(f"🏴‍☠️ {data['ip']} [UNMASKED]", style="bold bright_white on #8b0000")
+        else:
+            ip_display = self.anonymize_ip(data['ip'])
+
         is_spoof = self.is_spoofed_bot(data.get('ip'), ua)
         is_verified = self.is_verified_bot(data.get('sig'))
         bot_token = self.detect_bot_token(ua)
         if is_verified and bot_token and hasattr(self, "verified_tokens"):
             self.verified_tokens.add(bot_token)
-        ua_text = self.stylize_agent(ua, is_spoof=is_spoof, is_verified=is_verified, bot_token=bot_token)
-        if is_spoof:
-            prefix = "🛑 "
-        elif is_verified:
-            prefix = "🔷 "
-        elif bot_token:
-            prefix = "🟠 "
+        if is_pirate:
+            ua_text = Text(ua.strip(), style="bold red")
+            prefix = "🏴‍☠️ "
         else:
-            prefix = "👤 "
+            ua_text = self.stylize_agent(ua, is_spoof=is_spoof, is_verified=is_verified, bot_token=bot_token)
+            if is_spoof:
+                prefix = "🛑 "
+            elif is_verified:
+                prefix = "🔷 "
+            elif bot_token:
+                prefix = "🟠 "
+            else:
+                prefix = "👤 "
 
         # Dynamic styling for the requested path
-        path_style = "blue"
-        if "js_confirm.gif" in path:
-            prefix = "🪤 " + prefix
-            path_style = "black on blue"
+        if is_pirate:
+            path_style = "bold bright_white on #5a0000"
+            status_style = "bold bright_yellow on #8b0000"
+        else:
+            path_style = "blue"
+            if "js_confirm.gif" in path:
+                prefix = "🪤 " + prefix
+                path_style = "black on blue"
 
         text = Text()
         try:
@@ -1119,8 +1181,12 @@ class SonarApp(App):
 
         text.append(ip_display)
         text.append("  ") # Just space
+        if is_pirate:
+            text.append("[🏴‍☠️ PIRATE] ", style="bold bright_white on #b00020")
         if data.get('md') == '1':
             text.append("[RFC9110:MD] ", style="bold black on green")
+        if term_badge:
+            text.append(f"[{term_badge}] ", style="bold black on bright_green")
         _, rag_label = self.detect_live_rag_agent(ua)
         if rag_label:
             text.append(f"[🔔 RAG:{rag_label}] ", style="bold black on bright_yellow")
