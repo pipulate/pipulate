@@ -1437,23 +1437,24 @@ def _pause_honeybot_stage_for_weebo(pause_audio=True):
             paused.append(lock_pid)
         except Exception:
             pass
-    if pause_audio:
-        for p in sorted(Path("/proc").glob("[0-9]*/cmdline")):
-            try:
-                pid = int(p.parent.name)
-                if pid in (my_pid, parent_pid) or pid in paused:
-                    continue
-                raw = p.read_bytes().replace(b"\x00", b" ").decode("utf-8", errors="ignore")
-                if "--conjure-media" in raw:
-                    continue
-                if (
-                    ("aplay" in raw and ("-t raw" in raw or "honeybot_tts" in raw or "tick.wav" in raw or "dripulate.wav" in raw))
-                    or ("piper" in raw and "output_raw" in raw)
-                ):
-                    os.kill(pid, signal.SIGSTOP)
-                    paused.append(pid)
-            except Exception:
+    for p in sorted(Path("/proc").glob("[0-9]*/cmdline")):
+        try:
+            pid = int(p.parent.name)
+            if pid in (my_pid, parent_pid) or pid in paused:
                 continue
+            raw = p.read_bytes().replace(b"\x00", b" ").decode("utf-8", errors="ignore")
+            if "--conjure-media" in raw:
+                continue
+            is_logs_tui = "scripts/logs.py" in raw
+            is_tts_audio = pause_audio and (
+                ("aplay" in raw and ("-t raw" in raw or "honeybot_tts" in raw or "tick.wav" in raw or "dripulate.wav" in raw))
+                or ("piper" in raw and "output_raw" in raw)
+            )
+            if is_logs_tui or is_tts_audio:
+                os.kill(pid, signal.SIGSTOP)
+                paused.append(pid)
+        except Exception:
+            continue
     for pat in ("conjure_window_overlay", "patronus_visual_shield"):
         try:
             subprocess.run(["pkill", "-f", pat], check=False)
