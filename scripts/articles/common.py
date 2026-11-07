@@ -3234,7 +3234,39 @@ def run_honeybot_outro(
         return reboot_honeybot_stream(sync_only=True, dry_run=dry_run)
     if act in ("reboot", "restart"):
         return reboot_honeybot_stream(sync_only=False, dry_run=dry_run)
-    all_lines = [str(custom_text).strip()] if (custom_text and str(custom_text).strip()) else [intro, *loop_lines]
+    repo_root = Path(__file__).resolve().parents[2]
+    hb_scripts_dir = str(repo_root / "remotes" / "honeybot" / "scripts")
+    if hb_scripts_dir not in sys.path:
+        sys.path.insert(0, hb_scripts_dir)
+    try:
+        import content_loader as _cl
+    except Exception:
+        _cl = None
+    if act in ("article", "preview"):
+        if _cl is not None:
+            arts = _cl.get_playlist(recent_n=1, include_archive=False)
+            if arts:
+                art = arts[0]
+                chunks = [
+                    c.strip()
+                    for c in art.get("content", "").splitlines()
+                    if len(c.strip()) > 2 and not c.strip().startswith("[[")
+                ]
+                all_lines = [f"Title: {art.get('title', '')}.", *chunks[:6]]
+                custom_text = " ".join(all_lines)
+            else:
+                all_lines = ["No article found for local preview."]
+        else:
+            all_lines = ["content_loader unavailable."]
+    elif custom_text and str(custom_text).strip():
+        cleaned = (
+            _cl.clean_markdown(str(custom_text).strip(), label="ytoutro", census=False)
+            if _cl is not None
+            else str(custom_text).strip()
+        )
+        all_lines = [c.strip() for c in cleaned.splitlines() if c.strip()] or [str(custom_text).strip()]
+    else:
+        all_lines = [intro, *loop_lines]
     native_rate = 16000
     speed_ratio = eff_rate / native_rate
     semitones = 12.0 * math.log2(max(0.1, speed_ratio))
@@ -3875,7 +3907,7 @@ if __name__ == "__main__":
             tokens.pop(0)
             custom_say = " ".join(tokens).strip() or "Listen my friends and you shall notice, this article read by a chipmunk voice."
             outro_act = "play"
-        use_tick = not (cli_args.no_tick or cli_args.no_ding or outro_act in ("voice", "notick") or bool(custom_say))
+        use_tick = not (cli_args.no_tick or cli_args.no_ding or outro_act in ("voice", "notick", "article", "preview") or bool(custom_say))
         if outro_act in ("voice", "notick"):
             outro_act = "play"
         sys.exit(

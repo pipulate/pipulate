@@ -366,12 +366,14 @@ def get_playlist(recent_n=10, include_archive=True):
                 image_path = fm_image.strip()
 
             eff_date, eff_order = _storytime_effective_rank(post_date, sort_order, frontmatter)
+            raw_title = str(frontmatter.get('title', slug.replace('-', ' ')) or '')
+            spoken_title = _apply_tts_pronunciations(raw_title)
             all_articles.append({
                 'date': post_date,
                 'sort_order': sort_order, # Added for secondary sort key
                 'eff_date': eff_date,
                 'eff_order': eff_order,
-                'title': frontmatter.get('title', slug.replace('-', ' ')),
+                'title': spoken_title,
                 'url': url,
                 'image': image_path,
                 'image_alt': image_alt,
@@ -496,12 +498,26 @@ _TTS_PRONUNCIATION_MAP = (
     (re.compile(r'\bllms\.txt\b', re.IGNORECASE), 'L L M S dot text'),
     (re.compile(r'\bAGENTS\.md\b'), 'AGENTS dot M D'),
     (re.compile(r'\bSKILL\.md\b'), 'SKILL dot M D'),
+    (re.compile(r'\bguerillatech\.com\b', re.IGNORECASE), 'Guerilla Tech dot com'),
+    (re.compile(r'\bpipulate\.com\b', re.IGNORECASE), 'Pipulate dot com'),
     (re.compile(r'\bREADME\.md\b', re.IGNORECASE), 'README dot M D'),
-    (re.compile(r'\bTL;DR\b:?', re.IGNORECASE), 'T L D R:'),
+    (re.compile(r'\bTL;DR\b[:.]?', re.IGNORECASE), 'T L D R:'),
     (re.compile(r'\bOAI-SearchBot\b', re.IGNORECASE), 'O A I SearchBot'),
     (re.compile(r'\bGPTBot\b'), 'G P T Bot'),
     (re.compile(r'\bRLVR\b'), 'R L V R'),
     (re.compile(r'\bRLHF\b'), 'R L H F'),
+    (re.compile(r'\bPolish\b(?!\s+notation\b)'), 'polish'),
+    (re.compile(r'\bNginx\b', re.IGNORECASE), 'Engine X'),
+    (re.compile(r'\bPyPI\b', re.IGNORECASE), 'Pie P I'),
+    (re.compile(r'\bkubectl\b', re.IGNORECASE), 'kube control'),
+    (re.compile(r'\bstdout\b', re.IGNORECASE), 'standard out'),
+    (re.compile(r'\bstderr\b', re.IGNORECASE), 'standard error'),
+    (re.compile(r'\bstdin\b', re.IGNORECASE), 'standard in'),
+    (re.compile(r'\bstdio\b', re.IGNORECASE), 'standard I O'),
+    (re.compile(r'\brsync\b', re.IGNORECASE), 'R sync'),
+    (re.compile(r'\b(?:Neovim|nvim)\b', re.IGNORECASE), 'Neo vim'),
+    (re.compile(r'\bOpenGraph\b'), 'Open Graph'),
+    (re.compile(r'\bInnerTube\b'), 'Inner Tube'),
 )
 
 
@@ -514,10 +530,11 @@ def _apply_tts_pronunciations(text):
     text = re.sub(r'(?m)^[ \t]*\|(.+)\|[ \t]*$', lambda m: ', '.join(c.strip() for c in m.group(1).split('|') if c.strip()), text)
     # 3. Abolish unfenced ASCII box-drawing / block-art runs and humanize ASCII arrows
     text = re.sub(r'[─━│┃┌┐└┘├┤┬┴┼═║╔╗╚╝╠╣╦╩╬░▒▓█▲▼◄►]{2,}', ' ', text)
-    text = re.sub(r'<-->|<->|-->|->|==>|<==', ', ', text)
+    text = re.sub(r'\s*(?:<-->|<->|-->|->|==>|<==)\s*', ', ', text)
     # 4. Polish phonetic pronunciations
     for pattern, spoken_repl in _TTS_PRONUNCIATION_MAP:
         text = pattern.sub(spoken_repl, text)
+    text = re.sub(r'[ \t]+,', ',', text)
     return text
 
 
