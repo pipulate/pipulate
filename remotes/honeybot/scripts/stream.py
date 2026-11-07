@@ -1485,7 +1485,11 @@ def _resume_honeybot_stage_after_weebo(paused_pids):
             if pid in resumed:
                 continue
             raw = p.read_bytes().replace(b"\x00", b" ").decode("utf-8", errors="ignore")
-            if ("aplay" in raw and ("-t raw" in raw or "honeybot_tts" in raw or "dripulate.wav" in raw)) or ("piper" in raw and "output_raw" in raw):
+            if (
+                ("scripts/logs.py" in raw)
+                or ("aplay" in raw and ("-t raw" in raw or "honeybot_tts" in raw or "dripulate.wav" in raw))
+                or ("piper" in raw and "output_raw" in raw)
+            ):
                 os.kill(pid, signal.SIGCONT)
         except Exception:
             continue
