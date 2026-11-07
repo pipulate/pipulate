@@ -990,8 +990,8 @@ class SonarApp(App):
         self.call_after_refresh(self._restore_hud_scroll)
 
     def update_countdown(self):
-        """Ticks the clock and updates the Sub-Title (paused while DOOM fire is burning)."""
-        if getattr(self, "is_fire_burning", False):
+        """Ticks the clock and updates the Sub-Title (paused while DOOM fire or Weebo is active)."""
+        if self._is_stage_frozen():
             return
         elapsed = time.time() - self.start_time
         total_seconds = self.duration_mins * 60
@@ -1003,9 +1003,52 @@ class SonarApp(App):
         self.countdown_str = f"{mins:02d}:{secs:02d}"
         self.sub_title = self.get_sub_title() # Trigger header update
 
+    def _trigger_hud_bottom_bump(self, target: str, active_table: DataTable, max_y: int):
+        """Flash the active HUD header/table gold and perform a 1-row recoil bounce on hitting bottom."""
+        self.hud_bump_active = True
+        header_id = "#js_header" if target == "js" else "#md_header"
+        bump_title = JS_BUMP_TITLE if target == "js" else MD_BUMP_TITLE
+        try:
+            hdr = self.query_one(header_id, Label)
+            hdr.update(bump_title)
+            hdr.add_class("hit_bottom")
+            active_table.add_class("hit_bottom")
+        except Exception:
+            pass
+        if max_y > 0:
+            recoil_y = max(0, max_y - 1)
+            self.set_timer(
+                0.12,
+                lambda: active_table.scroll_to(y=recoil_y, animate=False)
+                if getattr(self, "hud_bump_active", False) and self.hud_scroll_target == target
+                else None,
+            )
+            self.set_timer(
+                0.24,
+                lambda: active_table.scroll_to(y=max_y, animate=False)
+                if getattr(self, "hud_bump_active", False) and self.hud_scroll_target == target
+                else None,
+            )
+
+    def _clear_hud_bottom_bump(self):
+        """Clear bottom-hit flash classes and restore standard HUD headers before baton handoff."""
+        self.hud_bump_active = False
+        for hdr_id, title_txt in (("#js_header", JS_PANEL_TITLE), ("#md_header", MD_PANEL_TITLE)):
+            try:
+                hdr = self.query_one(hdr_id, Label)
+                hdr.remove_class("hit_bottom")
+                hdr.update(title_txt)
+            except Exception:
+                pass
+        for tbl_id in ("#js_table", "#md_table"):
+            try:
+                self.query_one(tbl_id, DataTable).remove_class("hit_bottom")
+            except Exception:
+                pass
+
     def scroll_hud_tables(self):
         """Scrolls the bottom HUD tables vertically, alternating between left and right."""
-        if getattr(self, "is_fire_burning", False):
+        if self._is_stage_frozen():
             return
 
         active_id = f"#{self.hud_scroll_target}_table"
@@ -1024,13 +1067,18 @@ class SonarApp(App):
                 inactive_table.scroll_to(y=0, animate=False)
             self.hud_scroll_y += 1
             active_table.scroll_to(y=self.hud_scroll_y, animate=False)
+            if self.hud_scroll_y >= max_y:
+                self._trigger_hud_bottom_bump(self.hud_scroll_target, active_table, max_y)
         else:
-            # Same-frame baton handoff: snap current table to top and step sibling table to row 1
+            # Same-frame baton handoff: clear bottom bump, snap current table to top, and step sibling table to row 1
+            self._clear_hud_bottom_bump()
             active_table.scroll_to(y=0, animate=False)
             self.hud_scroll_target = "md" if self.hud_scroll_target == "js" else "js"
             next_max_y = int(inactive_table.max_scroll_y) or max(0, inactive_table.row_count - HUD_TABLE_ROWS)
             self.hud_scroll_y = 1 if next_max_y > 0 else 0
             inactive_table.scroll_to(y=self.hud_scroll_y, animate=False)
+            if self.hud_scroll_y >= next_max_y and next_max_y > 0:
+                self._trigger_hud_bottom_bump(self.hud_scroll_target, inactive_table, next_max_y)
 
     # -------------------------------------------------------------------------
     # Core Logic: IP Anonymization & Stream Parsing
