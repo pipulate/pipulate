@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 # Deploy "Brain" to Honeybot
 # DEPLOYMENT BOUNDARY (2026-09-13):
 # A served body changes when its file is synced; an HTML-only edit does not
@@ -26,9 +27,9 @@ fi
 INSTALLER_DOORS="npvg.org qamy.ai levinix.org sunpug.io guerillatech.com rfc9110.org rfc9111.io"
 sync_installer() {
   echo "🚀 Syncing installer to home-hosted doors ($INSTALLER_DOORS)..."
+  ssh $TARGET "cd ~/www && mkdir -p $INSTALLER_DOORS" || return 1
   for door in $INSTALLER_DOORS; do
-    ssh $TARGET "mkdir -p ~/www/$door" \
-      && rsync $RSYNC_OPTS assets/installer/install.sh "$TARGET:~/www/$door/install.sh" || return 1
+    rsync $RSYNC_OPTS assets/installer/install.sh "$TARGET:~/www/$door/install.sh" || return 1
   done
 }
 if [ "${1:-}" = "--installer" ]; then
@@ -51,8 +52,8 @@ if [ -f "assets/sounds/dripulate.wav" ]; then
 fi
 
 echo "🚀 Syncing 8 Domain Doors & Installer..."
-for door in npvg.org qamy.ai levinix.org sunpug.io guerillatech.com rfc9110.org rfc9111.io; do
-  ssh $TARGET "mkdir -p ~/www/$door"
+ssh $TARGET "cd ~/www && mkdir -p $INSTALLER_DOORS"
+for door in $INSTALLER_DOORS; do
   rsync $RSYNC_OPTS "remotes/honeybot/www/$door/" "$TARGET:~/www/$door/"
 done
 sync_installer
