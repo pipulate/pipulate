@@ -515,6 +515,7 @@ _TTS_PRONUNCIATION_MAP = (
     (re.compile(r'\bRAG\b'), 'R A G'),
     (re.compile(r'\bMCP\b'), 'M C P'),
     (re.compile(r'\bGSC\b'), 'G S C'),
+    (re.compile(r'\b360i\b', re.IGNORECASE), 'three sixty eye'),
     (re.compile(r'\bGA4\b'), 'G A 4'),
     (re.compile(r'\bSERPs\b'), 'S E R Ps'),
     (re.compile(r'\bSERP\b'), 'S E R P'),

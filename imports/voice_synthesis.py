@@ -637,6 +637,7 @@ class ChipVoiceSystem:
         spoken_text = re.sub(r'\bRAG\b', 'R A G', spoken_text)
         spoken_text = re.sub(r'\bMCP\b', 'M C P', spoken_text)
         spoken_text = re.sub(r'\bGSC\b', 'G S C', spoken_text)
+        spoken_text = re.sub(r'\b360i\b', 'three sixty eye', spoken_text, flags=re.IGNORECASE)
         spoken_text = re.sub(r'\bGA4\b', 'G A 4', spoken_text)
         spoken_text = re.sub(r'\bSERPs\b', 'S E R Ps', spoken_text)
         spoken_text = re.sub(r'\bSERP\b', 'S E R P', spoken_text)

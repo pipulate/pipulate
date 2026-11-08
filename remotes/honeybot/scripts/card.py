@@ -52,7 +52,12 @@ def render(label: str):
         try:
             term_w = _console.size.width or 80
             term_h = _console.size.height or 20
-            clean_banner = banner.rstrip("\n")
+            raw_lines = [ln.rstrip() for ln in banner.splitlines()]
+            while raw_lines and not raw_lines[-1]:
+                raw_lines.pop()
+            while raw_lines and not raw_lines[0]:
+                raw_lines.pop()
+            clean_banner = "\n".join(raw_lines) if raw_lines else label.strip()
             panel = Panel(
                 Align.center(Text(clean_banner, style="bold bright_cyan")),
                 border_style="bright_cyan",

@@ -173,11 +173,30 @@ class HoneyDB:
             )
         """)
 
+        # 3b. Script-Kiddie Pirate & IDS Footprint Table (VPN-safe IP + UA + Path + Domain profiling)
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS pirate_logs (
+                date TEXT,
+                ip_id INTEGER,
+                ua_id INTEGER,
+                path_id INTEGER,
+                domain_id INTEGER,
+                status INTEGER,
+                count INTEGER DEFAULT 1,
+                last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (date, ip_id, ua_id, path_id, domain_id, status),
+                FOREIGN KEY(ip_id) REFERENCES ips(id),
+                FOREIGN KEY(ua_id) REFERENCES user_agents(id),
+                FOREIGN KEY(path_id) REFERENCES paths(id),
+                FOREIGN KEY(domain_id) REFERENCES domains(id)
+            )
+        """)
         # 4. Performance Indexes for Sub-Second Station-Break Reports & 5s HUD Refreshes
         cur.execute("CREATE INDEX IF NOT EXISTS idx_daily_logs_path_id ON daily_logs(path_id)")
         cur.execute("CREATE INDEX IF NOT EXISTS idx_daily_logs_ua_id ON daily_logs(ua_id)")
         cur.execute("CREATE INDEX IF NOT EXISTS idx_telemetry_served_md ON telemetry(served_md, accept_id, path_id)")
         cur.execute("CREATE INDEX IF NOT EXISTS idx_rfc9421_logs_ua_id ON rfc9421_logs(ua_id)")
+        cur.execute("CREATE INDEX IF NOT EXISTS idx_pirate_logs_ip_id ON pirate_logs(ip_id)")
 
         conn.commit()
         self.backfill_rfc9421_from_access_log()
@@ -314,7 +333,7 @@ class HoneyDB:
         except:
             return None
 
-    def log_request(self, ip, ua, path, status, date_str=None, referrer=None, accept=None, served_md=None, host=None, sig_agent=None):
+    def log_request(self, ip, ua, path, status, date_str=None, referrer=None, accept=None, served_md=None, host=None, sig_agent=None, is_pirate=False):
         """
         The Main Ingestor. 
         Takes raw log data, normalizes it, and updates the daily counter.
@@ -373,6 +392,16 @@ class HoneyDB:
                 DO UPDATE SET count = count + 1, last_updated = CURRENT_TIMESTAMP
             """
             conn.execute(sql_sig, (date_str, ip_id, ua_id, sig_id))
+        # 6. Handle Script-Kiddie Pirate & IDS Footprint Sidecar
+        if is_pirate:
+            dom_id_p = self._get_or_create_id('domains', (host or 'mikelev.in').lower().strip())
+            sql_pirate = """
+                INSERT INTO pirate_logs (date, ip_id, ua_id, path_id, domain_id, status, count)
+                VALUES (?, ?, ?, ?, ?, ?, 1)
+                ON CONFLICT(date, ip_id, ua_id, path_id, domain_id, status)
+                DO UPDATE SET count = count + 1, last_updated = CURRENT_TIMESTAMP
+            """
+            conn.execute(sql_pirate, (date_str, ip_id, ua_id, path_id, dom_id_p, int(status)))
 
         conn.commit()
         if ua and ("Googlebot" in ua or "bingbot" in ua.lower() or "Applebot" in ua):

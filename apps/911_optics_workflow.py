@@ -167,11 +167,20 @@ class OpticsWorkflow:
                 if zip_path and zip_path.exists():
                     hash_str = hashlib.sha256(zip_path.read_bytes()).hexdigest()[:16]
 
+                target_url_Done = state.get('step_01', {}).get('url', 'https://example.com/')
+                mail_subj = quote(f"911 LLM Optics AI-Readiness Audit: {target_url_Done}")
+                mail_body = quote(
+                    f"Attached is the 911 LLM Optics single-page AI-readiness deed (optics_deed_{pipeline_id}.zip) for {target_url_Done}.\n\n"
+                    f"- Sealed SHA-256 Digest (first 16): {hash_str}\n"
+                    f"- Inspect audit_report.md, rfc9110_probe.json, and the Monokai DOM diff lenses inside the ZIP.\n"
+                    f"- Run your own audit locally: curl -fsSL https://sunpug.io | less\n"
+                )
                 return Article(
                     H3(f'{self.ui["EMOJIS"]["LOCKED"]} Optical Deed Sealed'),
                     P(f"SHA-256 Digest: {hash_str}", cls='text-muted'),
                     Div(
-                        A("📥 Download Verified Optics Deed (ZIP)", href=f'/{app_name}/download/{pipeline_id}', cls=self.ui['BUTTON_STYLES']['PRIMARY'], role='button', id='optics-download-deed-btn'),
+                        A("📥 Download Verified Optics Deed (ZIP)", href=f'/{app_name}/download/{pipeline_id}', cls=self.ui['BUTTON_STYLES']['PRIMARY'], role='button', id='optics-download-deed-btn', style='margin-right: 0.75rem;'),
+                        A("📧 Email / Share Audit Deed", href=f"mailto:?subject={mail_subj}&body={mail_body}", cls=self.ui['BUTTON_STYLES']['OUTLINE'], role='button', id='optics-email-deed-btn'),
                         style='margin-bottom: 1rem;'
                     ),
                     Form(
@@ -659,6 +668,7 @@ class OpticsWorkflow:
             boxes_html = ""
             boxes_diff_text = "No layout boxes diff found."
             seo_md_text = "No agent markdown extracted."
+            origin_md_text = "Origin did not serve text/markdown on RFC 9110 probe."
             links_text = "No link lens found."
             provenance = "unknown"
             rfc_headers_text = "No RFC 9110/9111 headers captured."
@@ -717,6 +727,9 @@ class OpticsWorkflow:
                 seo_path = out_dir / "seo.md"
                 if seo_path.exists():
                     seo_md_text = seo_path.read_text(encoding='utf-8')[:3000]
+                origin_md_path = out_dir / "origin_markdown.md"
+                if origin_md_path.exists():
+                    origin_md_text = origin_md_path.read_text(encoding='utf-8', errors='replace')[:4000]
 
                 links_path = out_dir / "links.md"
                 if links_path.exists():
@@ -775,7 +788,34 @@ class OpticsWorkflow:
                     "```",
                 ]
                 (out_dir / "audit_report.md").write_text("\n".join(report_lines) + "\n", encoding="utf-8")
+            accordion_css = Style("""
+                #step_03 details > summary {
+                    list-style: none;
+                    padding: 0.35rem 0.6rem;
+                    background: #161b22;
+                    border: 1px solid #30363d;
+                    border-radius: 5px;
+                    user-select: none;
+                    transition: background 0.15s ease;
+                }
+                #step_03 details > summary:hover {
+                    background: #1f2937;
+                }
+                #step_03 details > summary::-webkit-details-marker {
+                    display: none;
+                }
+                #step_03 details > summary::before {
+                    content: "▸ ";
+                    display: inline-block;
+                    width: 1.15rem;
+                    font-weight: bold;
+                }
+                #step_03 details[open] > summary::before {
+                    content: "▾ ";
+                }
+            """)
             return Div(
+                accordion_css,
                 Article(
                     H3(f'{self.ui["EMOJIS"]["GREETING"]} {self.wand.fmt(step.id)}: {step.show}'),
                     P(f"Wire Truth Provenance: {provenance.upper()}", cls='text-muted'),
@@ -819,9 +859,14 @@ class OpticsWorkflow:
                         self._render_colored_diff(boxes_diff_text),
                         id='optics-boxes-diff-details'
                     ),
-                    H4("5. Extracted Agent Markdown (seo.md)"),
+                    H4("5. RFC 9110 Origin Markdown vs. Distilled DOM Markdown"),
                     Details(
-                        Summary("View Distilled Markdown Payload", id='optics-seo-summary', style='font-size: 0.84rem; cursor: pointer; color: #bd93f9; margin-bottom: 0.4rem;'),
+                        Summary("View RFC 9110 Negotiated Origin Markdown (origin_markdown.md)", id='optics-origin-md-summary', style='font-size: 0.84rem; cursor: pointer; color: #50fa7b; margin-bottom: 0.4rem;'),
+                        self._render_markdown_lens(origin_md_text, f"optics-origin-md-{pipeline_id.replace('-', '_')}"),
+                        id='optics-origin-md-details'
+                    ),
+                    Details(
+                        Summary("View Distilled DOM Markdown Payload (seo.md)", id='optics-seo-summary', style='font-size: 0.84rem; cursor: pointer; color: #bd93f9; margin-top: 0.4rem; margin-bottom: 0.4rem;'),
                         self._render_markdown_lens(seo_md_text, f"optics-seo-{pipeline_id.replace('-', '_')}"),
                         id='optics-seo-details'
                     ),

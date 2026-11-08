@@ -31,8 +31,8 @@ TICKER_FILE_PATH = "/tmp/honeybot_ticker.txt"
 WEEBO_ACTIVE_PATH = "/tmp/honeybot_weebo_active"
 JS_PANEL_TITLE = "⚡ DOM HYDRATION TRAPDOOR (Bots Executing JS)"
 MD_PANEL_TITLE = "🧠 RFC 9110 MARKDOWN NEGOTIATORS (Accept: text/markdown)"
-JS_BUMP_TITLE = "💥 HIT BOTTOM — HANDING OFF TO MARKDOWN HUD ➔"
-MD_BUMP_TITLE = "⬅ HANDING OFF TO JS TRAPDOOR HUD — HIT BOTTOM 💥"
+JS_BUMP_TITLE = "▾ END OF LIST — HANDING OFF TO MARKDOWN HUD ➔"
+MD_BUMP_TITLE = "⬅ HANDING OFF TO JS TRAPDOOR HUD — END OF LIST ▾"
 CARD_HOLD_TICKS = 56  # 56 * 0.08s = ~4.5s still hold per card (0% CPU during hold)
 FIRE_TICKS = 12       # 12 * 0.08s = ~0.96s pre-baked PSX DOOM fire sequence
 CARD_STYLES = ("bold #ffd700", "bold #00ffff", "bold #ffae42")
@@ -416,10 +416,10 @@ class SonarApp(App):
     }
 
     .panel_header.hit_bottom {
-        background: #ffd700;
-        color: #000000;
+        background: #0a3622;
+        color: #7ee787;
         text-style: bold;
-        border-bottom: heavy #ffffff;
+        border-bottom: solid #2ea043;
     }
 
     DataTable {
@@ -431,7 +431,7 @@ class SonarApp(App):
     }
 
     DataTable.hit_bottom {
-        background: #221600;
+        background: #071e1e;
     }
     
     /* Countdown moves to the footer area style override if needed, 
@@ -665,7 +665,21 @@ class SonarApp(App):
     def tick_marquee(self):
         """Drive #ticker_bar: fast-pathed 4.5s still-card hold with pre-baked DOOM fire frames."""
         if os.path.exists(WEEBO_ACTIVE_PATH):
+            self._was_weebo_active = True
             return
+        if getattr(self, "_was_weebo_active", False):
+            self._was_weebo_active = False
+            if self.ticker_mode == "billboard" and self.ticker_cards:
+                cur_card = self.ticker_cards[self.ticker_card_idx % len(self.ticker_cards)]
+                still_frame = cur_card.get("still")
+                if still_frame is not None:
+                    self.ticker_last_frame = still_frame
+                    try:
+                        self.query_one("#ticker_bar", Static).update(still_frame)
+                    except Exception:
+                        pass
+            self._flush_fire_hold_queues()
+            self.refresh(repaint=True, layout=False)
         if self.ticker_mode == "billboard" and self.ticker_cards:
             self.ticker_hold_ticks += 1
             if self.ticker_hold_ticks < CARD_HOLD_TICKS:
@@ -1210,6 +1224,7 @@ class SonarApp(App):
                                 clean_path += "?src=content_neg"
 
                         clean_sig = self.clean_sig_agent(data.get('sig'))
+                        is_pirate_req = self.detect_pirate_probe(clean_path, int(data['status']), data.get('ua'))
                         db.log_request(
                             ip=data['ip'],
                             ua=data['ua'],
@@ -1220,6 +1235,7 @@ class SonarApp(App):
                             served_md=data.get('md'),
                             host=data.get('host') or 'mikelev.in',
                             sig_agent=clean_sig,
+                            is_pirate=is_pirate_req,
                         )
                         db.increment_counter("global_hits")
                         if not str(data['ip']).startswith(('127.', '10.', '192.168.')):

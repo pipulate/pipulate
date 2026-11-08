@@ -204,6 +204,40 @@ def _center_and_raise(window_class, env=None, fill=False, margin=40, retries=10)
     )
 
 
+def render_patronus_banner(name: str) -> None:
+    """Render a registered figurate ASCII art piece centered inside a visible Rich Panel border."""
+    import sys
+    art_res = figurate(name)
+    human_obj = art_res.human
+    title = None
+    content = human_obj
+    if isinstance(human_obj, Panel):
+        title = human_obj.title
+        content = human_obj.renderable
+    if isinstance(content, str):
+        lines = [ln.rstrip() for ln in content.splitlines()]
+        while lines and not lines[-1].strip():
+            lines.pop()
+        while lines and not lines[0].strip():
+            lines.pop()
+        content = "\n".join(lines)
+    panel = Panel(
+        content,
+        title=title,
+        border_style="bright_cyan",
+        padding=(1, 2),
+        expand=False,
+    )
+    term_w = console.size.width or 100
+    term_h = console.size.height or 24
+    console.clear()
+    console.print(
+        Align.center(panel, vertical="middle", width=term_w, height=term_h),
+        end="",
+    )
+    sys.stdout.flush()
+
+
 def patronus(name: str, duration: float = 3.5) -> None:
     """🛡️ PATRONUS: Conjures an out-of-bounds visual popup window for the asset.
     
@@ -230,7 +264,11 @@ def patronus(name: str, duration: float = 3.5) -> None:
         return
 
     _, ai_out = render_fn()
-    raw_lines = ai_out.splitlines()
+    raw_lines = [ln.rstrip() for ln in ai_out.splitlines()]
+    while raw_lines and not raw_lines[-1].strip():
+        raw_lines.pop()
+    while raw_lines and not raw_lines[0].strip():
+        raw_lines.pop()
     
     # Calculate exact dynamic column width and row bounds
     max_width = max(len(line) for line in raw_lines) if raw_lines else 80
@@ -238,8 +276,8 @@ def patronus(name: str, duration: float = 3.5) -> None:
     
     # Inject exact safety padding constants for the Rich panel frame boundaries
     # Expanded horizontal padding to +20 to secure an unbreakable margin against terminal cell wrapping
-    columns_needed = max_width + 20
-    lines_needed = total_rows + 4
+    columns_needed = max_width + 16
+    lines_needed = total_rows + 6
 
     # Resolve paths relative to framework root directory structures
     display_file_path = Path(__file__).resolve()
@@ -250,10 +288,8 @@ def patronus(name: str, duration: float = 3.5) -> None:
     # Using posix paths to handle multi-platform Windows backslash escaping bugs cleanly
     python_payload = (
         f"import sys; sys.path.insert(0, '{Path(repo_root).as_posix()}'); "
-        f"from imports.ascii_displays import figurate, safe_console_print; "
-        f"art_res = figurate('{name}'); "
-        f"safe_console_print(art_res.human); "
-        f"sys.stdout.flush(); "
+        f"from imports.ascii_displays import render_patronus_banner; "
+        f"render_patronus_banner('{name}'); "
         f"import time; time.sleep({duration})"
     )
 
@@ -411,7 +447,13 @@ def measure_figlet(label: str, font: str = "standard") -> tuple:
         rendered = Figlet(font=font).renderText(label)
     except Exception:
         rendered = label
-    lines = rendered.splitlines() or [label]
+    lines = [ln.rstrip() for ln in rendered.splitlines()]
+    while lines and not lines[-1]:
+        lines.pop()
+    while lines and not lines[0]:
+        lines.pop()
+    if not lines:
+        lines = [label]
     width = max((len(line) for line in lines), default=len(label))
     height = len(lines) or 1
     return width, height

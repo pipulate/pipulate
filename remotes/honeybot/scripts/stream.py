@@ -279,6 +279,16 @@ except ImportError:
 MODEL_DIR = Path.home() / ".local/share/piper_voices"
 MODEL_NAME = "en_US-amy-low.onnx"
 TTS_SAMPLE_RATE = int(os.environ.get("HONEYBOT_TTS_RATE", "22050"))
+HUMAN_TTS_SAMPLE_RATE = int(os.environ.get("HONEYBOT_HUMAN_TTS_RATE", "16000"))
+CHIPMUNK_TTS_SAMPLE_RATE = int(os.environ.get("HONEYBOT_CHIPMUNK_TTS_RATE", "22050"))
+_AI_SPEAKER_RE = (
+    "gemini", "claude", "chat g p t", "chatgpt", "ai editorial take",
+)
+_HUMAN_SPEAKER_RE = (
+    "mike:", "me:", "setting the stage", "technical journal", "t l d r",
+    "we interrupt", "we now return", "scheduled station", "receiving updates",
+    "minor maintenance", "signal check", "the article currently", "now i read",
+)
 
 
 def run_tui_app(script_name, duration=None):
@@ -385,7 +395,17 @@ class Narrator(threading.Thread):
         self._play_lock = threading.Lock()
         self._active_procs = []
         self._tts_seq = 0
+        self._speaker_rate = HUMAN_TTS_SAMPLE_RATE
         self.exclusive_mode = threading.Event()
+
+    def resolve_speaker_rate(self, text: str) -> int:
+        """Switch between David Seville (16000 Hz human pitch) and Alvin (22050 Hz AI pitch)."""
+        low = (text or "").strip().lower()
+        if any(low.startswith(p) for p in _AI_SPEAKER_RE):
+            self._speaker_rate = CHIPMUNK_TTS_SAMPLE_RATE
+        elif any(low.startswith(p) for p in _HUMAN_SPEAKER_RE):
+            self._speaker_rate = HUMAN_TTS_SAMPLE_RATE
+        return self._speaker_rate
 
     def _cleanup_item(self, item):
         """Remove any unplayed pre-synthesized .raw file when flushing the queue."""
@@ -429,8 +449,9 @@ class Narrator(threading.Thread):
 
     def play_raw(self, raw_path, fallback_text=""):
         """Enqueue a pre-synthesized .raw file for zero-latency playback, falling back to text."""
+        rate = self.resolve_speaker_rate(fallback_text) if fallback_text else self._speaker_rate
         if raw_path and os.path.exists(raw_path):
-            self.queue.put(("RAW", str(raw_path)))
+            self.queue.put(("RAW", str(raw_path), rate))
         elif fallback_text:
             self.queue.put(fallback_text)
 
@@ -536,7 +557,8 @@ class Narrator(threading.Thread):
                     while time.time() < deadline and not self.stop_event.is_set() and not _shutting_down.is_set():
                         time.sleep(min(0.2, max(0.0, deadline - time.time())))
                 elif isinstance(item, tuple) and item and item[0] == "RAW":
-                    self._play_raw_now(item[1])
+                    raw_rate = item[2] if len(item) >= 3 else self._speaker_rate
+                    self._play_raw_now(item[1], sample_rate=raw_rate)
                 else:
                     self._speak_now(item)
                 self.queue.task_done()
@@ -565,8 +587,9 @@ class Narrator(threading.Thread):
                         stderr=subprocess.DEVNULL,
                     )
                     p1.stdout.close()
+                    spk_rate = self.resolve_speaker_rate(text)
                     p3 = subprocess.Popen(
-                        ["aplay", "-r", str(TTS_SAMPLE_RATE), "-f", "S16_LE", "-t", "raw"],
+                        ["aplay", "-r", str(spk_rate), "-f", "S16_LE", "-t", "raw"],
                         stdin=p2.stdout,
                         stderr=subprocess.DEVNULL,
                     )
@@ -585,7 +608,7 @@ class Narrator(threading.Thread):
                                 pass
                     self._active_procs = []
 
-    def _play_raw_now(self, raw_path):
+    def _play_raw_now(self, raw_path, sample_rate=None):
         """Play a pre-synthesized .raw file immediately via aplay and unlink when done."""
         if not raw_path or not os.path.exists(raw_path):
             return
@@ -595,12 +618,13 @@ class Narrator(threading.Thread):
             except OSError:
                 pass
             return
+        rate = int(sample_rate or self._speaker_rate or TTS_SAMPLE_RATE)
         with self._play_lock:
             p_play = None
             try:
                 with self._proc_lock:
                     p_play = subprocess.Popen(
-                        ["aplay", "-r", str(TTS_SAMPLE_RATE), "-f", "S16_LE", "-t", "raw", str(raw_path)],
+                        ["aplay", "-r", str(rate), "-f", "S16_LE", "-t", "raw", str(raw_path)],
                         stdout=subprocess.DEVNULL,
                         stderr=subprocess.DEVNULL,
                     )
@@ -1498,8 +1522,7 @@ def _resume_honeybot_stage_after_weebo(paused_pids):
                 continue
             raw = p.read_bytes().replace(b"\x00", b" ").decode("utf-8", errors="ignore")
             if (
-                ("scripts/logs.py" in raw)
-                or ("aplay" in raw and ("-t raw" in raw or "honeybot_tts" in raw or "dripulate.wav" in raw))
+                ("aplay" in raw and ("-t raw" in raw or "honeybot_tts" in raw or "dripulate.wav" in raw))
                 or ("piper" in raw and "output_raw" in raw)
             ):
                 os.kill(pid, signal.SIGCONT)
@@ -1750,7 +1773,7 @@ def conjure_window(script_name, duration=30.0, columns=100, lines=30, args=None)
     if safe_script == "card.py" and args:
         fig_w, fig_h = measure_figlet(str(args[0]))
         columns = max(68, fig_w + 16)
-        lines = max(18, fig_h + 10)
+        lines = max(12, fig_h + 6)
         cmd = [sys.executable, "-u", str(script_path)] + [str(a) for a in args]
     elif safe_script == "forest.py":
         columns = 138
@@ -1758,6 +1781,12 @@ def conjure_window(script_name, duration=30.0, columns=100, lines=30, args=None)
         mode_arg = str(args[0]).strip() if args else "overview"
         ansi_path = None
         try:
+            try:
+                from db import db as _live_db
+                if _live_db and _live_db.conn:
+                    _live_db.conn.commit()
+            except Exception:
+                pass
             _reload_forest_module()
             from forest import (
                 REPORT_WINDOW_COLUMNS,
@@ -1833,10 +1862,11 @@ def show_card(label, max_hold=60.0):
     """Display a transient Figlet title card window on Honeybot until dismiss_card(handle)."""
     if not label:
         return None
-    try:
-        subprocess.run(["pkill", "-f", MEDIA_OVERLAY_MARKER], check=False)
-    except Exception:
-        pass
+    for pat in (MEDIA_OVERLAY_MARKER, "conjure_window_overlay", "patronus_visual_shield"):
+        try:
+            subprocess.run(["pkill", "-f", pat], check=False)
+        except Exception:
+            pass
     global _card_seq
     _card_seq += 1
     stop_file = f"/tmp/honeybot_card_{os.getpid()}_{_card_seq}.stop"
