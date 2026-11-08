@@ -361,6 +361,10 @@ def _build_station_report_panel(mode="overview", panel_width=None):
             db.db_path = ":memory:"
             db.init_db()
         conn = db.get_conn()
+        try:
+            conn.commit()
+        except Exception:
+            pass
         cur = conn.cursor()
     else:
         conn = cur = None

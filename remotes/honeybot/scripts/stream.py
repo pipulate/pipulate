@@ -279,7 +279,7 @@ except ImportError:
 MODEL_DIR = Path.home() / ".local/share/piper_voices"
 MODEL_NAME = "en_US-amy-low.onnx"
 TTS_SAMPLE_RATE = int(os.environ.get("HONEYBOT_TTS_RATE", "22050"))
-HUMAN_TTS_SAMPLE_RATE = int(os.environ.get("HONEYBOT_HUMAN_TTS_RATE", "16000"))
+HUMAN_TTS_SAMPLE_RATE = int(os.environ.get("HONEYBOT_HUMAN_TTS_RATE", "17600"))
 CHIPMUNK_TTS_SAMPLE_RATE = int(os.environ.get("HONEYBOT_CHIPMUNK_TTS_RATE", "22050"))
 _AI_SPEAKER_RE = (
     "gemini", "claude", "chat g p t", "chatgpt", "ai editorial take",

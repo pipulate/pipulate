@@ -8,7 +8,8 @@
 <style>
   body { max-width: 44rem; margin: 3rem auto; padding: 0 1rem; font: 18px/1.55 Georgia, serif; color: #e5e7eb; background: #111111; }
   h1, h2 { color: #f8fafc; }
-  pre  { padding: 1rem; background: #1e293b; color: #38bdf8; border-radius: 6px; overflow-x: auto; }
+  pre  { position: relative; padding: 1rem 4.5rem 1rem 1rem; background: #1e293b; color: #38bdf8; border-radius: 6px; overflow-x: auto; }
+  .copy-btn { position: absolute; top: 0.55rem; right: 0.55rem; padding: 0.2rem 0.55rem; font: 13px/1.2 system-ui, sans-serif; cursor: pointer; border: 1px solid #334155; border-radius: 4px; background: #0f172a; color: #e2e8f0; }
   code { background: #1e293b; color: #38bdf8; padding: 0.1rem 0.3rem; border-radius: 4px; }
   a    { color: #22d3ee; }
 </style>
@@ -28,5 +29,14 @@
   <li><strong><a href="https://github.com/pipulate/pipulate">pipulate/pipulate</a> (The Forever Machine)</strong>: Full local-first FastHTML/HTMX workshop, multi-door installer, and Prompt Fu context compiler.</li>
 </ul>
 <p><a href="https://levinux.com/">Classic Levinux (LPvg)</a> &middot; <a href="https://npvg.org/">NPvg</a> &middot; <a href="https://pipulate.com/">Pipulate</a> &middot; <a href="https://qamy.ai/">QA My AI</a> &middot; <a href="https://mikelev.in/">MikeLev.in</a></p>
+<script>
+document.querySelectorAll('pre').forEach(function(pre) {
+  var cmd = pre.textContent.trim();
+  var b = document.createElement('button');
+  b.className = 'copy-btn'; b.type = 'button'; b.textContent = 'Copy';
+  b.onclick = function() { navigator.clipboard.writeText(cmd).then(function() { b.textContent = 'Copied!'; setTimeout(function() { b.textContent = 'Copy'; }, 1500); }); };
+  pre.appendChild(b);
+});
+</script>
 </body>
 </html>

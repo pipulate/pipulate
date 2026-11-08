@@ -8,7 +8,8 @@
 <style>
   body { max-width: 44rem; margin: 3rem auto; padding: 0 1rem; font: 18px/1.55 Georgia, serif; color: #e5e7eb; background: #111111; }
   h1, h2 { color: #f8fafc; }
-  pre  { padding: 1rem; background: #1e293b; color: #38bdf8; border-radius: 6px; overflow-x: auto; }
+  pre  { position: relative; padding: 1rem 4.5rem 1rem 1rem; background: #1e293b; color: #38bdf8; border-radius: 6px; overflow-x: auto; }
+  .copy-btn { position: absolute; top: 0.55rem; right: 0.55rem; padding: 0.2rem 0.55rem; font: 13px/1.2 system-ui, sans-serif; cursor: pointer; border: 1px solid #334155; border-radius: 4px; background: #0f172a; color: #e2e8f0; }
   code { background: #1e293b; color: #38bdf8; padding: 0.1rem 0.3rem; border-radius: 4px; }
   a    { color: #22d3ee; }
 </style>
@@ -28,5 +29,14 @@
   <li><strong><a href="https://github.com/miklevin/python_nix_flake">miklevin/python_nix_flake</a> (The Docker Killer)</strong>: Standalone Rust <code>uv</code> + Python 3.13 Data Science &amp; AI Agent starter flake with <code>.#default</code> and <code>.#quiet</code> shells.</li>
 </ul>
 <p><a href="https://npvg.org/">NPvg</a> &middot; <a href="https://levinix.org/">Levinix</a> &middot; <a href="https://qamy.ai/">QA My AI</a> &middot; <a href="https://sunpug.io/">Sun Pug</a> &middot; <a href="https://guerillatech.com/">GuerillaTech</a> &middot; <a href="https://rfc9110.org/">RFC 9110</a> &middot; <a href="https://rfc9111.io/">RFC 9111</a> &middot; <a href="https://mikelev.in/">MikeLev.in</a></p>
+<script>
+document.querySelectorAll('pre').forEach(function(pre) {
+  var cmd = pre.textContent.trim();
+  var b = document.createElement('button');
+  b.className = 'copy-btn'; b.type = 'button'; b.textContent = 'Copy';
+  b.onclick = function() { navigator.clipboard.writeText(cmd).then(function() { b.textContent = 'Copied!'; setTimeout(function() { b.textContent = 'Copy'; }, 1500); }); };
+  pre.appendChild(b);
+});
+</script>
 </body>
 </html>
