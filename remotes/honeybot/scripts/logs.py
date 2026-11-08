@@ -1123,10 +1123,17 @@ class SonarApp(App):
             "levinix.com": "Levinix.com/",
             "levinux.com": "Levinux.com/",
             "pipulate.com": "Pipulate.com/",
+            "pipulate.org": "Pipulate.org/",
+            "lpvg.org": "LPvg.org/",
             "guerillatech.com": "GuerillaTech.com/",
             "rfc9110.org": "RFC9110.org/",
+            "rfc9110.com": "RFC9110.com/",
+            "rfc9110.io": "RFC9110.io/",
             "rfc9111.io": "RFC9111.io/",
             "rfc9111.com": "RFC9111.com/",
+            "rfc9111.org": "RFC9111.org/",
+            "mike-levin.com": "Mike-Levin.com/",
+            "mikelevinseo.com": "MikeLevinSEO.com/",
         }
         for known, label in host_display_map.items():
             if h == known or h.endswith("." + known):
