@@ -296,9 +296,10 @@
       # THE DOOR: only the bare path negotiates by client.
       locations."= /" = {
         extraConfig = ''
-          add_header Vary "User-Agent" always;
+          add_header Vary "Accept, User-Agent" always;
           types {
               text/html          html;
+              text/markdown      md;
               text/x-shellscript sh;
           }
           # THE STAMP (2026-09-14). install.sh carries one contiguous
@@ -316,7 +317,10 @@
           sub_filter_types text/x-shellscript;
           sub_filter_once off;
           sub_filter '__INSTALL_DEFAULT_NAME__' 'npvg';
-          try_files $npvg_index =404;
+          if ($serve_markdown) {
+              rewrite ^ /index.md break;
+          }
+          try_files $npvg_index /index.md =404;
         '';
       };
 
@@ -354,15 +358,19 @@
 
       locations."= /" = {
         extraConfig = ''
-          add_header Vary "User-Agent" always;
+          add_header Vary "Accept, User-Agent" always;
           types {
               text/html          html;
+              text/markdown      md;
               text/x-shellscript sh;
           }
           sub_filter_types text/x-shellscript;
           sub_filter_once off;
           sub_filter '__INSTALL_DEFAULT_NAME__' 'qamy';
-          try_files $npvg_index =404;
+          if ($serve_markdown) {
+              rewrite ^ /index.md break;
+          }
+          try_files $npvg_index /index.md =404;
         '';
       };
 
