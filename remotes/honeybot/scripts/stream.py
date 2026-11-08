@@ -741,12 +741,29 @@ def wait_for_availability(url, timeout=60):
     narrator.say("Generation timed out. Proceeding with caution.")
 
 
+_PATRONUS_ALIASES = {
+    "tiktok": "mechanical_man",
+    "tik_tok": "mechanical_man",
+    "tik-tok": "mechanical_man",
+    "oz": "mechanical_man",
+    "airlock": "mechanical_man",
+    "pachinko": "ai_pachinko",
+    "rabbit": "white_rabbit",
+    "bunny": "white_rabbit",
+    "npvg": "white_rabbit",
+}
+
+
+def resolve_patronus_key(name: str) -> str:
+    """Normalize shorthand aliases (e.g. 'tiktok' -> 'mechanical_man', 'pachinko' -> 'ai_pachinko')."""
+    raw = "".join(c for c in str(name or "").strip().lower() if c.isalnum() or c in {"_", "-"})
+    return _PATRONUS_ALIASES.get(raw, raw or "white_rabbit")
+
+
 def conjure_patronus(name, duration=3.5):
     """Launch the shared patronus renderer from a sheet-music directive."""
-    safe_name = "".join(c for c in str(name).strip() if c.isalnum() or c in {"_", "-"})
-    if not safe_name:
-        safe_name = "white_rabbit"
-    duration = max(0.75, min(60.0, float(duration)))
+    safe_name = resolve_patronus_key(name)
+    duration = max(0.75, min(600.0, float(duration)))
 
     site_root = Path(__file__).resolve().parents[1]
     python_code = (
@@ -755,8 +772,7 @@ def conjure_patronus(name, duration=3.5):
         "from imports.ascii_displays import patronus; "
         f"patronus(sys.argv[1], duration={duration})"
     )
-    env = os.environ.copy()
-    env["DISPLAY"] = env.get("DISPLAY") or ":10.0"
+    env = _hydrate_honeybot_x11_env()
 
     try:
         subprocess.Popen(
@@ -2672,7 +2688,8 @@ def trigger_station_bead_live(target_spec="pirates", out_path="/home/mike/www/mi
     _reload_forest_module()
     if not STATION_SEGMENTS:
         return None
-    q = str(target_spec or "pirates").strip().lower()
+    q_raw = str(target_spec or "pirates").strip().lower()
+    q = _PATRONUS_ALIASES.get(q_raw, q_raw)
     chosen_bead = None
     if q.isdigit():
         chosen_bead = STATION_SEGMENTS[int(q) % len(STATION_SEGMENTS)]
@@ -2732,12 +2749,23 @@ if __name__ == "__main__":
         mute_arg = "--mute" in sys.argv[4:]
         conjure_media(sys.argv[2], duration=dur_arg, mute=mute_arg, _direct=True)
         sys.exit(0)
+    if len(sys.argv) >= 2 and sys.argv[1] in ("--patronus", "--art"):
+        art_arg = resolve_patronus_key(sys.argv[2] if len(sys.argv) >= 3 else "mechanical_man")
+        dur_arg = float(sys.argv[3]) if len(sys.argv) >= 4 else 20.0
+        for pat in ("conjure_window_overlay", "patronus_visual_shield"):
+            subprocess.run(["pkill", "-f", pat], check=False)
+        conjure_patronus(art_arg, duration=dur_arg)
+        sys.exit(0)
     if len(sys.argv) >= 2 and sys.argv[1] == "--report":
         mode_arg = sys.argv[2] if len(sys.argv) >= 3 else "pirates"
         dur_arg = float(sys.argv[3]) if len(sys.argv) >= 4 else 45.0
         for pat in ("conjure_window_overlay", "patronus_visual_shield"):
             subprocess.run(["pkill", "-f", pat], check=False)
-        conjure_window("forest.py", duration=dur_arg, args=[mode_arg])
+        resolved_art = resolve_patronus_key(mode_arg)
+        if resolved_art in ("white_rabbit", "ai_pachinko", "mechanical_man", "flyball_governor", "canal_lock", "player_piano", "clipboard", "bunny_trail", "ai_stack_combo", "deployment_context", "honeybot_pipeline", "workspace_tree", "forcing_pair"):
+            conjure_patronus(resolved_art, duration=dur_arg)
+        else:
+            conjure_window("forest.py", duration=dur_arg, args=[mode_arg])
         sys.exit(0)
     if len(sys.argv) >= 2 and sys.argv[1] == "--bead":
         spec_arg = sys.argv[2] if len(sys.argv) >= 3 else "pirates"

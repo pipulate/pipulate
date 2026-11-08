@@ -39,6 +39,7 @@ must not itself contain a colon. Bare labels like "THE ITCH" are fine.
 # REPORT_WINDOW_CAP_SECONDS: Safety ceiling for the Alacritty overlay window;
 # run_station_break() closes the window deterministically once post_linger ends.
 REPORT_POST_LINGER_SECONDS = 25
+PATRONUS_POST_LINGER_SECONDS = 8
 REPORT_WINDOW_CAP_SECONDS = 90
 REPORT_WINDOW_COLUMNS = 138
 REPORT_WINDOW_LINES = 38
@@ -113,7 +114,12 @@ def _make_station_bead(card_label, card_say, capstone_cue, forest_story_lines, p
             and capstone_cue[0] == "WINDOW"
             and any(tag in str(capstone_cue[1]) for tag in (":overview", ":markdown", ":bimodal", ":trapdoor", ":schism", ":rfc9421", ":doors", ":pirates"))
         )
-        post_linger = REPORT_POST_LINGER_SECONDS if is_window_report else 0
+        is_patronus_art = (
+            isinstance(capstone_cue, tuple)
+            and len(capstone_cue) >= 2
+            and capstone_cue[0] == "PATRONUS"
+        )
+        post_linger = REPORT_POST_LINGER_SECONDS if is_window_report else (PATRONUS_POST_LINGER_SECONDS if is_patronus_art else 0)
     if post_linger > 0:
         cues.append(("WAIT", int(post_linger)))
     return cues

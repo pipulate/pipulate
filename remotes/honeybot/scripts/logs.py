@@ -32,7 +32,9 @@ WEEBO_ACTIVE_PATH = "/tmp/honeybot_weebo_active"
 JS_PANEL_TITLE = "⚡ DOM HYDRATION TRAPDOOR (Bots Executing JS)"
 MD_PANEL_TITLE = "🧠 RFC 9110 MARKDOWN NEGOTIATORS (Accept: text/markdown)"
 JS_BUMP_TITLE = "▾ END OF LIST — HANDING OFF TO MARKDOWN HUD ➔"
-MD_BUMP_TITLE = "⬅ HANDING OFF TO JS TRAPDOOR HUD — END OF LIST ▾"
+MD_BUMP_TITLE = "▾ END OF LIST — RELAXING HUD FOR 30S ⏸"
+HUD_RELAX_SECONDS = 30.0      # 30s pause with both HUDs parked at top (0% scroll CPU) between left+right sweeps
+HUD_BUMP_HOLD_TICKS = 4       # 4 * 0.10s = 0.40s pause at bottom before snapping back to top
 CARD_HOLD_TICKS = 56  # 56 * 0.08s = ~4.5s still hold per card (0% CPU during hold)
 FIRE_TICKS = 12       # 12 * 0.08s = ~0.96s pre-baked PSX DOOM fire sequence
 CARD_STYLES = ("bold #ffd700", "bold #00ffff", "bold #ffae42")
@@ -512,11 +514,14 @@ class SonarApp(App):
         self.pending_log_buffer = deque(maxlen=64)
         self.pending_table_refresh = False
         
-        # HUD Scrolling State
+        # HUD Scrolling State ("relax" for 30s -> protected "js" sweep -> protected "md" sweep -> "relax")
+        self.hud_scroll_phase = "relax"
         self.hud_scroll_target = "js"
         self.hud_scroll_y = 0
         self.hud_scroll_pause = 0
         self.hud_bump_active = False
+        self.hud_bump_ticks = 0
+        self.hud_relax_until = time.monotonic() + 8.0
         
         try:
             self.script_mtime = os.stat(__file__).st_mtime
@@ -526,7 +531,7 @@ class SonarApp(App):
         self.set_interval(0.08, self.tick_marquee)
         self.set_interval(1, self.update_countdown)
         self.set_interval(5, self.refresh_tables)
-        self.set_interval(0.18, self.scroll_hud_tables)
+        self.set_interval(0.10, self.scroll_hud_tables)
 
     def _rebuild_billboard_cache(self, width: int):
         """Pre-render 5-row Rich.Text still cards and pre-baked PSX DOOM fire timelines."""
@@ -662,10 +667,16 @@ class SonarApp(App):
         """True when DOOM fire is burning or Weebo/Max holds the broadcast stage."""
         return bool(getattr(self, "is_fire_burning", False) or os.path.exists(WEEBO_ACTIVE_PATH))
 
+    def _is_hud_scrolling(self) -> bool:
+        """True during the protected left-then-right HUD scroll sweep."""
+        return getattr(self, "hud_scroll_phase", "relax") in ("js", "md")
+
     def tick_marquee(self):
         """Drive #ticker_bar: fast-pathed 4.5s still-card hold with pre-baked DOOM fire frames."""
         if os.path.exists(WEEBO_ACTIVE_PATH):
             self._was_weebo_active = True
+            return
+        if self._is_hud_scrolling() and self.ticker_mode == "billboard" and not getattr(self, "is_fire_burning", False):
             return
         if getattr(self, "_was_weebo_active", False):
             self._was_weebo_active = False
@@ -955,22 +966,20 @@ class SonarApp(App):
 
     def _restore_hud_scroll(self):
         """Restore HUD table scroll positions after DataTable dimension updates."""
-        if self._is_stage_frozen():
+        if self._is_stage_frozen() or self._is_hud_scrolling():
             return
         try:
             js_table = self.query_one("#js_table", DataTable)
             md_table = self.query_one("#md_table", DataTable)
-            target = getattr(self, "hud_scroll_target", "js")
-            y_pos = getattr(self, "hud_scroll_y", 0)
-            js_table.scroll_to(y=y_pos if target == "js" else 0, animate=False)
-            md_table.scroll_to(y=y_pos if target == "md" else 0, animate=False)
+            js_table.scroll_to(y=0, animate=False)
+            md_table.scroll_to(y=0, animate=False)
         except Exception:
             pass
 
     def refresh_tables(self):
-        """Updates both Intelligence tables from DB (deferred while DOOM fire or Weebo is active)."""
+        """Updates both Intelligence tables from DB (deferred while DOOM fire, Weebo, or HUD sweep is active)."""
         if not db: return
-        if self._is_stage_frozen():
+        if self._is_stage_frozen() or self._is_hud_scrolling():
             self.pending_table_refresh = True
             return
         self.pending_table_refresh = False
@@ -1060,39 +1069,80 @@ class SonarApp(App):
             except Exception:
                 pass
 
+    def _enter_hud_relax(self):
+        """Park both HUD tables at row 0 and relax for HUD_RELAX_SECONDS (0% scroll CPU)."""
+        self._clear_hud_bottom_bump()
+        self.hud_scroll_phase = "relax"
+        self.hud_scroll_target = "js"
+        self.hud_scroll_y = 0
+        self.hud_bump_ticks = 0
+        self.hud_relax_until = time.monotonic() + HUD_RELAX_SECONDS
+        for tbl_id in ("#js_table", "#md_table"):
+            try:
+                self.query_one(tbl_id, DataTable).scroll_to(y=0, animate=False)
+            except Exception:
+                pass
+        self._flush_fire_hold_queues()
+
     def scroll_hud_tables(self):
-        """Scrolls the bottom HUD tables vertically, alternating between left and right."""
+        """Protected 3-phase HUD cadence: scroll left ('js'), scroll right ('md'), then relax 30s at top."""
         if self._is_stage_frozen():
             return
 
-        active_id = f"#{self.hud_scroll_target}_table"
-        inactive_id = "#md_table" if self.hud_scroll_target == "js" else "#js_table"
-        
+        now_mono = time.monotonic()
+        phase = getattr(self, "hud_scroll_phase", "relax")
+        if phase == "relax":
+            if now_mono < getattr(self, "hud_relax_until", 0.0):
+                return
+            self.hud_scroll_phase = "js"
+            self.hud_scroll_target = "js"
+            self.hud_scroll_y = 0
+            self.hud_bump_ticks = 0
+            phase = "js"
+
+        active_id = "#js_table" if phase == "js" else "#md_table"
+        inactive_id = "#md_table" if phase == "js" else "#js_table"
         try:
             active_table = self.query_one(active_id, DataTable)
             inactive_table = self.query_one(inactive_id, DataTable)
         except Exception:
+            self._enter_hud_relax()
             return
 
-        max_y = int(active_table.max_scroll_y) or max(0, active_table.row_count - HUD_TABLE_ROWS)
+        if inactive_table.scroll_y != 0:
+            inactive_table.scroll_to(y=0, animate=False)
 
-        if self.hud_scroll_y < max_y:
-            if inactive_table.scroll_y != 0:
-                inactive_table.scroll_to(y=0, animate=False)
-            self.hud_scroll_y += 1
-            active_table.scroll_to(y=self.hud_scroll_y, animate=False)
-            if self.hud_scroll_y >= max_y:
-                self._trigger_hud_bottom_bump(self.hud_scroll_target, active_table, max_y)
-        else:
-            # Same-frame baton handoff: clear bottom bump, snap current table to top, and step sibling table to row 1
-            self._clear_hud_bottom_bump()
-            active_table.scroll_to(y=0, animate=False)
-            self.hud_scroll_target = "md" if self.hud_scroll_target == "js" else "js"
-            next_max_y = int(inactive_table.max_scroll_y) or max(0, inactive_table.row_count - HUD_TABLE_ROWS)
-            self.hud_scroll_y = 1 if next_max_y > 0 else 0
-            inactive_table.scroll_to(y=self.hud_scroll_y, animate=False)
-            if self.hud_scroll_y >= next_max_y and next_max_y > 0:
-                self._trigger_hud_bottom_bump(self.hud_scroll_target, inactive_table, next_max_y)
+        max_y = int(active_table.max_scroll_y) or max(0, active_table.row_count - HUD_TABLE_ROWS)
+        if max_y <= 0:
+            if phase == "js":
+                self.hud_scroll_phase = "md"
+                self.hud_scroll_target = "md"
+                self.hud_scroll_y = 0
+                self.hud_bump_ticks = 0
+            else:
+                self._enter_hud_relax()
+            return
+
+        if getattr(self, "hud_bump_active", False):
+            self.hud_bump_ticks = getattr(self, "hud_bump_ticks", 0) + 1
+            if self.hud_bump_ticks >= HUD_BUMP_HOLD_TICKS:
+                self._clear_hud_bottom_bump()
+                active_table.scroll_to(y=0, animate=False)
+                self.hud_scroll_y = 0
+                self.hud_bump_ticks = 0
+                if phase == "js":
+                    self.hud_scroll_phase = "md"
+                    self.hud_scroll_target = "md"
+                else:
+                    self._enter_hud_relax()
+            return
+
+        step = 1 if max_y <= 18 else max(1, round(max_y / 16))
+        self.hud_scroll_y = min(max_y, self.hud_scroll_y + step)
+        active_table.scroll_to(y=self.hud_scroll_y, animate=False)
+        if self.hud_scroll_y >= max_y:
+            self.hud_bump_ticks = 0
+            self._trigger_hud_bottom_bump(phase, active_table, max_y)
 
     # -------------------------------------------------------------------------
     # Core Logic: IP Anonymization & Stream Parsing
@@ -1171,7 +1221,7 @@ class SonarApp(App):
         hits = 0
         for line in sys.stdin:
             wait_ticks = 0
-            while self._is_stage_frozen() and wait_ticks < 16:
+            while (self._is_stage_frozen() or self._is_hud_scrolling()) and wait_ticks < 45:
                 time.sleep(0.08)
                 wait_ticks += 1
             clean_line = ANSI_ESCAPE.sub('', line).strip()
@@ -1279,8 +1329,8 @@ class SonarApp(App):
                 self.call_from_thread(self.write_log, rich_text)
 
     def write_log(self, text):
-        """Write the Rich Text object directly to the RichLog widget (buffered during fire or Weebo)."""
-        if self._is_stage_frozen():
+        """Write the Rich Text object directly to the RichLog widget (buffered during fire, Weebo, or HUD sweep)."""
+        if self._is_stage_frozen() or self._is_hud_scrolling():
             self.pending_log_buffer.append(text)
             return
         if getattr(self, "pending_log_buffer", None):
