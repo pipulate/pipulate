@@ -35,7 +35,10 @@
   networking.hosts = {
     "127.0.0.1" = [
       "mikelev.in" ("www." + "mikelev.in")
+      "pipulate.com" ("www." + "pipulate.com")
+      "pipulate.org" ("www." + "pipulate.org")
       "npvg.org" ("www." + "npvg.org")
+      "lpvg.org" ("www." + "lpvg.org")
       "qamy.ai" ("www." + "qamy.ai")
       "levinix.org" ("www." + "levinix.org")
       "levinix.com" ("www." + "levinix.com")
@@ -43,7 +46,13 @@
       "sunpug.io" ("www." + "sunpug.io")
       "guerillatech.com" ("www." + "guerillatech.com")
       "rfc9110.org" ("www." + "rfc9110.org")
+      "rfc9110.com" ("www." + "rfc9110.com")
+      "rfc9110.io" ("www." + "rfc9110.io")
       "rfc9111.io" ("www." + "rfc9111.io")
+      "rfc9111.com" ("www." + "rfc9111.com")
+      "rfc9111.org" ("www." + "rfc9111.org")
+      "mike-levin.com" ("www." + "mike-levin.com")
+      "mikelevinseo.com" ("www." + "mikelevinseo.com")
     ];
   };
 
@@ -622,6 +631,163 @@
         '';
       };
     };
+    # THE PIPULATE.COM SUN PUG DOOR (2026-11-08): Converts pipulate.com from
+    # GitHub Pages to a home-hosted Tri-Modal door on Honeybot. Serves
+    # install.sh to curl/wget at bare /, index.md to Accept: text/markdown
+    # agents, index.html to browsers, and static key.rot / AUDIT.md /
+    # AI_CONTEXT.md / install.sh at their direct paths.
+    virtualHosts."pipulate.com" = {
+      forceSSL = true;
+      enableACME = true;
+      serverAliases = [ ("www." + "pipulate.com") ];
+      root = "/home/mike/www/pipulate.com";
+      extraConfig = ''
+        access_log /var/log/nginx/access.log ai_tracker;
+        access_log /var/log/nginx/pipulate.access.log ai_tracker;
+      '';
+      locations."= /" = {
+        extraConfig = ''
+          add_header Vary "Accept, User-Agent" always;
+          types {
+              text/html          html;
+              text/markdown      md;
+              text/x-shellscript sh;
+          }
+          sub_filter_types text/x-shellscript;
+          sub_filter_once off;
+          sub_filter '__INSTALL_DEFAULT_NAME__' 'pipulate';
+          if ($serve_markdown) {
+              rewrite ^ /index.md break;
+          }
+          try_files $npvg_index /index.md =404;
+        '';
+      };
+      locations."/" = {
+        extraConfig = ''
+          add_header Vary "Accept" always;
+          if ($new_uri) {
+              return 301 https://mikelev.in$new_uri;
+          }
+          if (!-e $request_filename) {
+              return 301 https://mikelev.in$request_uri;
+          }
+          if ($serve_markdown) {
+              rewrite ^(.*)/$ $1/index.md break;
+              rewrite ^(.*[^/])$ $1/index.md break;
+          }
+          try_files $uri $uri/index.html $uri/index.md =404;
+        '';
+      };
+    };
+
+    # THE PIPULATE.ORG REDIRECT: 301s to pipulate.com while logging to the HUD.
+    virtualHosts."pipulate.org" = {
+      forceSSL = true;
+      enableACME = true;
+      serverAliases = [ ("www." + "pipulate.org") ];
+      extraConfig = ''
+        access_log /var/log/nginx/access.log ai_tracker;
+        access_log /var/log/nginx/pipulate.access.log ai_tracker;
+      '';
+      locations."/" = {
+        return = "301 https://pipulate.com$request_uri";
+      };
+    };
+
+    # THE LPVG.ORG REDIRECT: 301s the legacy LPvg acronym to NPvg (npvg.org).
+    virtualHosts."lpvg.org" = {
+      forceSSL = true;
+      enableACME = true;
+      serverAliases = [ ("www." + "lpvg.org") ];
+      extraConfig = ''
+        access_log /var/log/nginx/access.log ai_tracker;
+        access_log /var/log/nginx/npvg.access.log ai_tracker;
+      '';
+      locations."/" = {
+        return = "301 https://npvg.org$request_uri";
+      };
+    };
+
+    # THE MIKE-LEVIN.COM & MIKELEVINSEO.COM REDIRECTS: Retire GitHub Pages
+    # legacy domains into canonical mikelev.in while logging hits on the HUD.
+    virtualHosts."mike-levin.com" = {
+      forceSSL = true;
+      enableACME = true;
+      serverAliases = [ ("www." + "mike-levin.com") ];
+      extraConfig = ''
+        access_log /var/log/nginx/access.log ai_tracker;
+      '';
+      locations."/" = {
+        return = "301 https://mikelev.in$request_uri";
+      };
+    };
+
+    virtualHosts."mikelevinseo.com" = {
+      forceSSL = true;
+      enableACME = true;
+      serverAliases = [ ("www." + "mikelevinseo.com") ];
+      extraConfig = ''
+        access_log /var/log/nginx/access.log ai_tracker;
+      '';
+      locations."/" = {
+        return = "301 https://mikelev.in$request_uri";
+      };
+    };
+
+    # THE RFC 9110 SIBLING REDIRECTS (.com / .io -> .org)
+    virtualHosts."rfc9110.com" = {
+      forceSSL = true;
+      enableACME = true;
+      serverAliases = [ ("www." + "rfc9110.com") ];
+      extraConfig = ''
+        access_log /var/log/nginx/access.log ai_tracker;
+        access_log /var/log/nginx/rfc9110.access.log ai_tracker;
+      '';
+      locations."/" = {
+        return = "301 https://rfc9110.org$request_uri";
+      };
+    };
+
+    virtualHosts."rfc9110.io" = {
+      forceSSL = true;
+      enableACME = true;
+      serverAliases = [ ("www." + "rfc9110.io") ];
+      extraConfig = ''
+        access_log /var/log/nginx/access.log ai_tracker;
+        access_log /var/log/nginx/rfc9110.access.log ai_tracker;
+      '';
+      locations."/" = {
+        return = "301 https://rfc9110.org$request_uri";
+      };
+    };
+
+    # THE RFC 9111 SIBLING REDIRECTS (.com / .org -> .io)
+    virtualHosts."rfc9111.com" = {
+      forceSSL = true;
+      enableACME = true;
+      serverAliases = [ ("www." + "rfc9111.com") ];
+      extraConfig = ''
+        access_log /var/log/nginx/access.log ai_tracker;
+        access_log /var/log/nginx/rfc9111.access.log ai_tracker;
+      '';
+      locations."/" = {
+        return = "301 https://rfc9111.io$request_uri";
+      };
+    };
+
+    virtualHosts."rfc9111.org" = {
+      forceSSL = true;
+      enableACME = true;
+      serverAliases = [ ("www." + "rfc9111.org") ];
+      extraConfig = ''
+        access_log /var/log/nginx/access.log ai_tracker;
+        access_log /var/log/nginx/rfc9111.access.log ai_tracker;
+      '';
+      locations."/" = {
+        return = "301 https://rfc9111.io$request_uri";
+      };
+    };
+
     # THE LEVINIX.COM REDIRECT (2026-10-23): Retires the .com in favor of the
     # non-commercial .org Commons door while logging every redirect hit to the
     # unified access.log so traffic scrolls as [levinix.com] on Honeybot's HUD.

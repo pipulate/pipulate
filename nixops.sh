@@ -24,7 +24,7 @@ if [ "${1:-}" = "-v" ] || [ "${1:-}" = "--verbose" ]; then
   shift
 fi
 
-INSTALLER_DOORS="npvg.org qamy.ai levinix.org sunpug.io guerillatech.com rfc9110.org rfc9111.io"
+INSTALLER_DOORS="pipulate.com npvg.org qamy.ai levinix.org sunpug.io guerillatech.com rfc9110.org rfc9111.io"
 sync_installer() {
   echo "🚀 Syncing installer to home-hosted doors ($INSTALLER_DOORS)..."
   ssh $TARGET "cd ~/www && mkdir -p $INSTALLER_DOORS" || return 1
@@ -57,6 +57,13 @@ ssh $TARGET "cd ~/www && mkdir -p $INSTALLER_DOORS"
 for door in $INSTALLER_DOORS; do
   rsync $RSYNC_OPTS "remotes/honeybot/www/$door/" "$TARGET:~/www/$door/"
 done
+rsync $RSYNC_OPTS AUDIT.md assets/installer/mck.sh "$TARGET:~/www/pipulate.com/"
+if [ -f "$HOME/repos/Pipulate.com/key.rot" ]; then
+  rsync $RSYNC_OPTS "$HOME/repos/Pipulate.com/key.rot" "$TARGET:~/www/pipulate.com/key.rot"
+fi
+if [ -f "$HOME/repos/Pipulate.com/AI_CONTEXT.md" ]; then
+  rsync $RSYNC_OPTS "$HOME/repos/Pipulate.com/AI_CONTEXT.md" "$TARGET:~/www/pipulate.com/AI_CONTEXT.md"
+fi
 sync_installer
 
 if [ -x ".venv/bin/python" ]; then
