@@ -211,6 +211,7 @@ class OpticsWorkflow:
                 zip_path = out_dir / "optics_deed.zip"
                 with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zf:
                     for fname in [
+                        "audit_report.md", "rfc9110_probe.json", "origin_markdown.md",
                         "headers.json", "source.html", "hydrated_dom.html",
                         "diff_simple_dom.txt", "diff_simple_dom.html",
                         "diff_hierarchy.txt", "diff_hierarchy.html",
@@ -568,6 +569,44 @@ class OpticsWorkflow:
                 await self.message_queue.add(wand, error_msg, verbatim=True)
                 return P(error_msg, cls='text-invalid')
 
+        # Active RFC 9110 Content Negotiation Probe (Accept: text/markdown)
+        import urllib.request
+        rfc9110_meta = {
+            "url": target_url,
+            "negotiated": False,
+            "status": 0,
+            "content_type": "",
+            "vary": "",
+            "bytes": 0,
+        }
+        try:
+            md_req = urllib.request.Request(
+                target_url,
+                headers={
+                    "User-Agent": "Mozilla/5.0 (compatible; Pipulate-911-Optics/1.0; +https://pipulate.com)",
+                    "Accept": "text/markdown",
+                },
+            )
+            with urllib.request.urlopen(md_req, timeout=12) as md_resp:
+                md_bytes_raw = md_resp.read()
+                md_ctype = md_resp.headers.get("Content-Type", "")
+                md_vary = md_resp.headers.get("Vary", "")
+                is_md = "text/markdown" in md_ctype.lower()
+                rfc9110_meta = {
+                    "url": target_url,
+                    "negotiated": is_md,
+                    "status": getattr(md_resp, "status", 200),
+                    "content_type": md_ctype,
+                    "vary": md_vary,
+                    "bytes": len(md_bytes_raw),
+                }
+                if is_md:
+                    (output_dir / "origin_markdown.md").write_bytes(md_bytes_raw)
+        except Exception as md_err:
+            logger.debug(f"RFC 9110 markdown probe note for {target_url}: {md_err}")
+        (output_dir / "rfc9110_probe.json").write_text(
+            json.dumps(rfc9110_meta, indent=2), encoding="utf-8"
+        )
         stored_val = str(output_dir)
         await wand.set_step_data(pipeline_id, step_id, stored_val, steps)
         await self.message_queue.add(wand, f'{self.ui["EMOJIS"]["SUCCESS"]} Optics capture complete for {domain}', verbatim=True)
@@ -627,10 +666,24 @@ class OpticsWorkflow:
             hyd_bytes = 0
             hydration_only_links = "0 anchor(s)"
             has_vary_accept = False
+            md_negotiated = False
+            md_bytes = 0
+            md_ctype = ""
 
             if out_dir and out_dir.exists():
                 src_file = out_dir / "source.html"
                 hyd_file = out_dir / "hydrated_dom.html"
+                rfc_probe_file = out_dir / "rfc9110_probe.json"
+                if rfc_probe_file.exists():
+                    try:
+                        p_data = json.loads(rfc_probe_file.read_text(encoding="utf-8"))
+                        md_negotiated = bool(p_data.get("negotiated", False))
+                        md_bytes = int(p_data.get("bytes", 0))
+                        md_ctype = str(p_data.get("content_type", ""))
+                        if "accept" in str(p_data.get("vary", "")).lower():
+                            has_vary_accept = True
+                    except Exception:
+                        pass
                 if src_file.exists():
                     src_bytes = src_file.stat().st_size
                 if hyd_file.exists():
@@ -701,7 +754,27 @@ class OpticsWorkflow:
                     except Exception:
                         pass
 
-            vary_badge = "✅ Vary: Accept (Bimodal Ready)" if has_vary_accept else "⚠️ Single-Mode Origin (No Vary: Accept)"
+            vary_badge = "✅ RFC 9111 Vary: Accept" if has_vary_accept else "⚠️ No Vary: Accept"
+            md_badge = f"✅ RFC 9110 Markdown: {md_bytes:,} B" if md_negotiated else "❌ RFC 9110 Markdown: Not Served"
+            if out_dir and out_dir.exists():
+                target_url_str = wand.get_step_data(pipeline_id, 'step_01', {}).get('url', 'unknown')
+                report_lines = [
+                    "# 911 LLM Optics: Single-Page AI-Readiness Audit Deed",
+                    "",
+                    f"- **Target URL**: `{target_url_str}`",
+                    f"- **Wire Provenance**: `{provenance.upper()}`",
+                    f"- **RFC 9110 (`Accept: text/markdown`)**: {md_badge} (`{md_ctype or 'n/a'}`)",
+                    f"- **RFC 9111 (`Vary: Accept` Edge Partitioning)**: {vary_badge}",
+                    f"- **Wire Source HTML**: `{src_bytes:,}` bytes",
+                    f"- **Hydrated DOM HTML**: `{hyd_bytes:,}` bytes",
+                    f"- **Links Visible Only After JS Hydration**: `{hydration_only_links}`",
+                    "",
+                    "## Selected Wire Headers",
+                    "```yaml",
+                    rfc_headers_text,
+                    "```",
+                ]
+                (out_dir / "audit_report.md").write_text("\n".join(report_lines) + "\n", encoding="utf-8")
             return Div(
                 Article(
                     H3(f'{self.ui["EMOJIS"]["GREETING"]} {self.wand.fmt(step.id)}: {step.show}'),
@@ -709,6 +782,7 @@ class OpticsWorkflow:
                     Div(
                         Strong("📊 Executive AI-Readiness Verdict: "),
                         Span(f"Wire HTML: {src_bytes:,} B vs. Hydrated DOM: {hyd_bytes:,} B | "),
+                        Span(f"{md_badge} | "),
                         Span(f"JS-Only Links: {hydration_only_links} | "),
                         Span(vary_badge),
                         id='optics-executive-verdict',
