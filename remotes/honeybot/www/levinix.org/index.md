@@ -26,10 +26,12 @@ A decade ago, **Levinux (`levinux.com`)** used QEMU + Tiny Core Linux (`LPvg`) t
     # 2. Run the bootstrap:
     curl -fsSL https://levinix.org | bash
 
-## 3. Connected Ecosystem
+## 3. The 3-Repo Nix Flake Trilogy & Ecosystem
 
+- **Levinix Standalone Extraction (`pip` + Magic Cookie WORA App Wrapper)**: [https://github.com/pipulate/levinix](https://github.com/pipulate/levinix)
+- **Python Nix Flake (`uv` + Python 3.13 Data Science & AI Agent Starter)**: [https://github.com/miklevin/python_nix_flake](https://github.com/miklevin/python_nix_flake)
+- **Project Pipulate (The Full Forever Machine Workshop)**: [https://github.com/pipulate/pipulate](https://github.com/pipulate/pipulate) ([https://pipulate.com/](https://pipulate.com/))
 - **Classic Levinux (`LPvg` Slide Deck)**: [https://levinux.com/](https://levinux.com/)
 - **NPvg (Timeless Mastercraft)**: [https://npvg.org/](https://npvg.org/)
-- **Project Pipulate**: [https://pipulate.com/](https://pipulate.com/)
 - **QA My AI (Flight Data Recorder)**: [https://qamy.ai/](https://qamy.ai/)
 - **MikeLev.in (24/7 Web Bot AI Observatory)**: [https://mikelev.in/](https://mikelev.in/)
