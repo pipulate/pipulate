@@ -282,12 +282,22 @@ TTS_SAMPLE_RATE = int(os.environ.get("HONEYBOT_TTS_RATE", "22050"))
 HUMAN_TTS_SAMPLE_RATE = int(os.environ.get("HONEYBOT_HUMAN_TTS_RATE", "17600"))
 CHIPMUNK_TTS_SAMPLE_RATE = int(os.environ.get("HONEYBOT_CHIPMUNK_TTS_RATE", "22050"))
 _AI_SPEAKER_RE = (
-    "gemini", "claude", "chat g p t", "chatgpt", "ai editorial take",
+    "gemini:", "gemini 4", "gemini 3", "gemini 2", "gemini pro", "gemini flash",
+    "claude:", "claude 3", "claude 4", "claude opus", "claude sonnet",
+    "chat g p t:", "chatgpt:",
+    "a i editorial take", "ai editorial take", "book analysis",
 )
 _HUMAN_SPEAKER_RE = (
-    "mike:", "me:", "setting the stage", "technical journal", "t l d r",
+    "mike l e v dot eye n", "mikelev.in", "mike levin:", "mike:", "me:",
+    "setting the stage", "technical journal", "the a i edit method", "the ai-edit method",
+    "1: before", "2: after", "3: change", "4: prompt", "5: deliverable",
+)
+_HOST_TRANSIENT_RE = (
     "we interrupt", "we now return", "scheduled station", "receiving updates",
     "minor maintenance", "signal check", "the article currently", "now i read",
+    "resuming storytime", "breaking news", "to hear the next article",
+    "if you are actually here", "none of this is trained", "this live-broadcast",
+    "this is the signal",
 )
 
 
@@ -395,16 +405,25 @@ class Narrator(threading.Thread):
         self._play_lock = threading.Lock()
         self._active_procs = []
         self._tts_seq = 0
+        self._dialogue_rate = HUMAN_TTS_SAMPLE_RATE
         self._speaker_rate = HUMAN_TTS_SAMPLE_RATE
         self.exclusive_mode = threading.Event()
 
     def resolve_speaker_rate(self, text: str) -> int:
-        """Switch between David Seville (16000 Hz human pitch) and Alvin (22050 Hz AI pitch)."""
+        """Switch between brisk human pitch (17600 Hz) and Alvin AI pitch (22050 Hz) while preserving dialogue state across transient host cues."""
         low = (text or "").strip().lower()
+        if not low:
+            return self._speaker_rate
+        if self.exclusive_mode.is_set() or any(low.startswith(p) for p in _HOST_TRANSIENT_RE):
+            return HUMAN_TTS_SAMPLE_RATE
         if any(low.startswith(p) for p in _AI_SPEAKER_RE):
+            self._dialogue_rate = CHIPMUNK_TTS_SAMPLE_RATE
             self._speaker_rate = CHIPMUNK_TTS_SAMPLE_RATE
         elif any(low.startswith(p) for p in _HUMAN_SPEAKER_RE):
+            self._dialogue_rate = HUMAN_TTS_SAMPLE_RATE
             self._speaker_rate = HUMAN_TTS_SAMPLE_RATE
+        else:
+            self._speaker_rate = self._dialogue_rate
         return self._speaker_rate
 
     def _cleanup_item(self, item):
@@ -1730,6 +1749,7 @@ def conjure_window(script_name, duration=30.0, columns=100, lines=30, args=None)
     shared wand actuator in imports.ascii_displays. This keeps patronus and
     arbitrary command windows in parity.
     """
+    os.environ.update(_hydrate_honeybot_x11_env())
     safe_script = "".join(c for c in str(script_name).strip() if c.isalnum() or c in {"_", "-", "."})
     if not safe_script:
         return
@@ -2641,12 +2661,76 @@ def main():
         sys.exit(130)
 
 
+def trigger_station_bead_live(target_spec="pirates", out_path="/home/mike/www/mikelev.in/.live_message"):
+    """Queue a specific station-break bead (Card + Report Window/Patronus + Narration) via .live_message."""
+    import json as _json
+    _reload_forest_module()
+    if not STATION_SEGMENTS:
+        return None
+    q = str(target_spec or "pirates").strip().lower()
+    chosen_bead = None
+    if q.isdigit():
+        chosen_bead = STATION_SEGMENTS[int(q) % len(STATION_SEGMENTS)]
+    else:
+        for bead in STATION_SEGMENTS:
+            bead_str = " ".join(str(x) for x in bead).lower()
+            if f":{q}" in bead_str or q in bead_str:
+                chosen_bead = bead
+                break
+    if chosen_bead is None:
+        chosen_bead = STATION_SEGMENTS[-1]
+    card_label = "STATION\nREPORT"
+    card_say = ""
+    window_spec = None
+    patronus_key = None
+    story_lines = []
+    for idx, (cmd, val) in enumerate(chosen_bead):
+        if idx == 0 and cmd == "CARD" and isinstance(val, dict):
+            card_label = str(val.get("label") or card_label)
+            card_say = str(val.get("say") or "")
+        elif cmd == "WINDOW":
+            window_spec = str(val)
+        elif cmd == "PATRONUS":
+            patronus_key = val.get("key") if isinstance(val, dict) else str(val)
+        elif idx >= 4 and cmd == "SAY":
+            story_lines.append(str(val))
+    full_say = " ".join(s.strip() for s in [card_say, *story_lines] if s and s.strip())
+    payload = {
+        "card": card_label,
+        "say": full_say,
+        "duration": 90.0,
+        "linger": 20.0,
+    }
+    if window_spec:
+        payload["window"] = window_spec
+    elif patronus_key:
+        payload["patronus"] = patronus_key
+    if out_path:
+        p = Path(out_path)
+        tmp = p.with_suffix(".tmp")
+        tmp.write_text(_json.dumps(payload), encoding="utf-8")
+        tmp.replace(p)
+    return payload
+
+
 if __name__ == "__main__":
     register_signal_handlers()
     if len(sys.argv) >= 3 and sys.argv[1] == "--conjure-media":
         dur_arg = float(sys.argv[3]) if len(sys.argv) >= 4 else 8.0
         mute_arg = "--mute" in sys.argv[4:]
         conjure_media(sys.argv[2], duration=dur_arg, mute=mute_arg, _direct=True)
+        sys.exit(0)
+    if len(sys.argv) >= 2 and sys.argv[1] == "--report":
+        mode_arg = sys.argv[2] if len(sys.argv) >= 3 else "pirates"
+        dur_arg = float(sys.argv[3]) if len(sys.argv) >= 4 else 45.0
+        for pat in ("conjure_window_overlay", "patronus_visual_shield"):
+            subprocess.run(["pkill", "-f", pat], check=False)
+        conjure_window("forest.py", duration=dur_arg, args=[mode_arg])
+        sys.exit(0)
+    if len(sys.argv) >= 2 and sys.argv[1] == "--bead":
+        spec_arg = sys.argv[2] if len(sys.argv) >= 3 else "pirates"
+        res = trigger_station_bead_live(spec_arg)
+        print(f"📡 Queued station-break bead '{spec_arg}' -> card={res.get('card')!r} window={res.get('window') or res.get('patronus')!r}")
         sys.exit(0)
     acquire_singleton_lock()
     main()
