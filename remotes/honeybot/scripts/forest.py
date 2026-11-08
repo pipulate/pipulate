@@ -111,7 +111,7 @@ def _make_station_bead(card_label, card_say, capstone_cue, forest_story_lines, p
             isinstance(capstone_cue, tuple)
             and len(capstone_cue) >= 2
             and capstone_cue[0] == "WINDOW"
-            and any(tag in str(capstone_cue[1]) for tag in (":overview", ":markdown", ":bimodal", ":trapdoor", ":schism", ":rfc9421", ":doors"))
+            and any(tag in str(capstone_cue[1]) for tag in (":overview", ":markdown", ":bimodal", ":trapdoor", ":schism", ":rfc9421", ":doors", ":pirates"))
         )
         post_linger = REPORT_POST_LINGER_SECONDS if is_window_report else 0
     if post_linger > 0:
@@ -234,6 +234,19 @@ STATION_SEGMENTS = [
             "Camp one is Open A I, acting like a mini Google: O A I SearchBot and G P T Bot have fired our eight hundred millisecond JavaScript trapdoor over four thousand times while reading zero Markdown files.",
             "Camp two is the Markdown Vanguard, led by Exa dot A I, Parallel dot A I's ShapBot, and Anthropic's Claude User, bypassing the headless browser tax via R F C 9110 Markdown negotiation and R F C 9421 cryptographic signatures.",
             "Camp three is the bulk HTML hose-pullers, Meta and Amazonbot, while the bottom rows show our SQLite primary-key tripwire catching brand-new crawler species the second they debut on the wire.",
+        ],
+    ),
+    # Bead 8 (ACME Certificate Transparency Log Pirates & IDS Telemetry: pirates)
+    _make_station_bead(
+        "CT LOG\nPIRATES",
+        (
+            "The moment you mint a fresh Let's Encrypt T L S certificate, automated script-kiddie scanners watching the public Certificate Transparency logs pounce on the new domain within seconds."
+        ),
+        ("WINDOW", f"forest.py:{REPORT_WINDOW_CAP_SECONDS}:pirates"),
+        [
+            "Look at the crimson horizontal bars on this Intrusion Detection report.",
+            "Every time we bring a new domain door online, like L P V G dot org or Sun Pug dot eye oh, bots tailing the A C M E certificate stream immediately probe for WordPress logins, dot E N V secrets, and P H P shells hoping to catch an unconfigured server before default passwords are changed.",
+            "Because this is a declarative Nix O S appliance serving static representations and an S Q Lite telemetry ledger, there is no P H P runtime or admin login to breach -- every exploit probe simply unmasks the attacker's I P address on the live broadcast and records their exact fingerprint for instant Engine X filtering.",
         ],
     ),
 ]
@@ -645,6 +658,180 @@ def _build_station_report_panel(mode="overview", panel_width=None):
                 fs_str[11:19] or "DEBUT",
                 "PK RADAR",
                 Text(clean_ua, style="dim green"),
+            )
+    elif mode == "pirates":
+        title_str = "🏴‍☠️ ACME CT-LOG PIRATE RADAR & NGINX IDS FOOTPRINT (UNMASKED EXPLOIT PROBES)"
+        tbl.add_column("Probes", justify="right", style="bold bright_yellow", width=8, no_wrap=True)
+        tbl.add_column("Horizon / Unmasked IP", style="bold red", width=25, no_wrap=True)
+        tbl.add_column("Targeted Door · Exploit Vector · Scanner Signature", ratio=4, no_wrap=True)
+        tbl.add_column("Horizontal Bar & Share", width=38, no_wrap=True)
+        pirate_cond = """
+            (
+                p.value LIKE '%.php%'
+                OR p.value LIKE '/wp-%'
+                OR p.value LIKE '/.%'
+                OR p.value LIKE '%/.env%'
+                OR p.value LIKE '%/.git%'
+                OR p.value LIKE '%phpmyadmin%'
+                OR p.value LIKE '%/cgi-bin%'
+                OR p.value LIKE '%/boaform%'
+                OR p.value LIKE '%/actuator%'
+                OR p.value LIKE '%/autodiscover%'
+                OR p.value LIKE '%/owa%'
+                OR p.value LIKE '%..%'
+                OR p.value LIKE '%.bak%'
+                OR p.value LIKE '%.sql%'
+                OR ua.value LIKE '%sqlmap%'
+                OR ua.value LIKE '%nikto%'
+                OR ua.value LIKE '%nmap%'
+                OR ua.value LIKE '%nuclei%'
+                OR ua.value LIKE '%zgrab%'
+                OR ua.value LIKE '%masscan%'
+                OR ua.value LIKE '%wpscan%'
+                OR EXISTS (
+                    SELECT 1 FROM sqlite_master sm
+                    WHERE sm.type = 'table' AND sm.name = 'pirate_logs'
+                ) AND EXISTS (
+                    SELECT 1 FROM pirate_logs pl
+                    WHERE pl.ip_id = l.ip_id AND pl.path_id = l.path_id
+                )
+            )
+        """
+        cur.execute(
+            """
+            SELECT COALESCE(SUM(l.count), 0)
+            FROM daily_logs l
+            JOIN ips i ON l.ip_id = i.id
+            WHERE i.value NOT LIKE '127.%'
+              AND i.value NOT LIKE '10.%'
+              AND i.value NOT LIKE '192.168.%'
+            """
+        )
+        total_http = int((cur.fetchone() or [1])[0] or 1)
+        cur.execute(
+            f"""
+            SELECT COALESCE(SUM(l.count), 0), COUNT(DISTINCT l.ip_id), COUNT(DISTINCT l.path_id)
+            FROM daily_logs l
+            JOIN ips i ON l.ip_id = i.id
+            JOIN paths p ON l.path_id = p.id
+            JOIN user_agents ua ON l.ua_id = ua.id
+            WHERE i.value NOT LIKE '127.%'
+              AND i.value NOT LIKE '10.%'
+              AND i.value NOT LIKE '192.168.%'
+              AND {pirate_cond}
+            """
+        )
+        p_tot_row = cur.fetchone() or (0, 0, 0)
+        pirate_total = int(p_tot_row[0] or 0)
+        pirate_ips = int(p_tot_row[1] or 0)
+        pirate_paths = int(p_tot_row[2] or 0)
+        pirate_pct = round((pirate_total / max(1, total_http)) * 100.0, 2)
+        pirate_horizon_5pct = min(100.0, round((pirate_pct / 5.0) * 100.0, 1))
+        tbl.add_row(
+            f"{pirate_total:,}",
+            Text("🎯 0% → 5.0% IDS HORIZON", style="bold bright_yellow"),
+            Text(
+                f"Share of {total_http:,} HTTP responses ({pirate_ips:,} unmasked Pirate IPs · {pirate_paths:,} exploit paths)",
+                style="bold white",
+            ),
+            f"{_bar(pirate_horizon_5pct, 22, 'red')} [bold bright_yellow]{pirate_pct}% / 5.0%[/bold bright_yellow]",
+        )
+        tbl.add_section()
+        cur.execute(
+            f"""
+            WITH pirate_hits AS (
+                SELECT
+                    l.ip_id,
+                    l.ua_id,
+                    l.path_id,
+                    SUM(l.count) AS hits
+                FROM daily_logs l
+                JOIN ips i ON l.ip_id = i.id
+                JOIN paths p ON l.path_id = p.id
+                JOIN user_agents ua ON l.ua_id = ua.id
+                WHERE i.value NOT LIKE '127.%'
+                  AND i.value NOT LIKE '10.%'
+                  AND i.value NOT LIKE '192.168.%'
+                  AND {pirate_cond}
+                GROUP BY l.ip_id, l.ua_id, l.path_id
+            ),
+            ip_rollup AS (
+                SELECT
+                    ph.ip_id,
+                    SUM(ph.hits) AS total_probes,
+                    COUNT(DISTINCT ph.path_id) AS distinct_paths
+                FROM pirate_hits ph
+                GROUP BY ph.ip_id
+                ORDER BY total_probes DESC
+                LIMIT 10
+            )
+            SELECT
+                i.value AS ip_str,
+                r.total_probes,
+                r.distinct_paths,
+                (
+                    SELECT p2.value
+                    FROM pirate_hits ph2
+                    JOIN paths p2 ON ph2.path_id = p2.id
+                    WHERE ph2.ip_id = r.ip_id
+                    ORDER BY ph2.hits DESC
+                    LIMIT 1
+                ) AS top_path,
+                (
+                    SELECT ua2.value
+                    FROM pirate_hits ph3
+                    JOIN user_agents ua2 ON ph3.ua_id = ua2.id
+                    WHERE ph3.ip_id = r.ip_id
+                    ORDER BY ph3.hits DESC
+                    LIMIT 1
+                ) AS top_ua,
+                COALESCE(
+                    (
+                        SELECT d.value
+                        FROM pirate_logs pl
+                        JOIN domains d ON pl.domain_id = d.id
+                        WHERE pl.ip_id = r.ip_id
+                        ORDER BY pl.count DESC
+                        LIMIT 1
+                    ),
+                    (
+                        SELECT d2.value
+                        FROM pirate_hits ph4
+                        JOIN domain_daily_logs dl2 ON dl2.path_id = ph4.path_id AND dl2.ua_id = ph4.ua_id
+                        JOIN domains d2 ON dl2.domain_id = d2.id
+                        WHERE ph4.ip_id = r.ip_id
+                        ORDER BY dl2.count DESC
+                        LIMIT 1
+                    ),
+                    'mikelev.in'
+                ) AS top_domain
+            FROM ip_rollup r
+            JOIN ips i ON r.ip_id = i.id
+            ORDER BY r.total_probes DESC
+            """
+        )
+        p_rows = cur.fetchall()
+        max_p = max([int(r[1]) for r in p_rows] or [1])
+        for ip_str, probes_cnt, dist_paths, top_path, top_ua, top_dom in p_rows:
+            clean_ua = str(top_ua or "-").replace("Mozilla/5.0 ", "")
+            if len(clean_ua) > 26:
+                clean_ua = clean_ua[:25] + "…"
+            clean_path = str(top_path or "/")
+            if len(clean_path) > 24:
+                clean_path = clean_path[:23] + "…"
+            dom_tag = str(top_dom or "mikelev.in").lower()
+            vec_txt = Text.assemble(
+                (f"[{dom_tag}] ", "bold bright_white"),
+                (f"{clean_path} ", "bold bright_yellow"),
+                (f"({int(dist_paths)}p) ", "dim white"),
+                (clean_ua, "red"),
+            )
+            share_p = round((int(probes_cnt) / max(1, pirate_total)) * 100.0, 1)
+            tbl.add_row(
+                f"{int(probes_cnt):,}",
+                Text(f"🏴‍☠️ {ip_str}", style="bold bright_white on #5a0000"),
+                vec_txt,
+                f"{_bar((int(probes_cnt) / max_p) * 100.0, 22, 'red')} [bold red]{share_p:>4.1f}% of IDS[/bold red]",
             )
     elif mode == "doors":
         title_str = "🎙️ THE 8-DOOR HONEYBOT FREQUENCY DIAL (CURL -fsSL <DOOR> | LESS)"
