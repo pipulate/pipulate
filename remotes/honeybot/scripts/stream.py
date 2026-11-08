@@ -783,18 +783,16 @@ MUSIC_MARKER = "honeybot-updating-music"
 
 
 def start_updating_music():
-    """Loop the standby wav in its own PROCESS GROUP. aplay does not loop,
-    and the wav (~30s) is far shorter than the standby window (up to ~4
-    minutes), hence the while-loop shell wrapper -- which is exactly why the
-    group kill matters: kill only the aplay and the shell resurrects it a
-    beat later. The MUSIC_MARKER comment rides the command line so the
-    idempotent pkill backstop can target this loop and ONLY this loop,
-    never the Narrator's own Piper->aplay pipeline."""
+    """Loop tick.wav (4 ticks @ 1.00s spacing, 0.66s built-in seam) with a 0.34s sleep so every tick lands on an even 1.00s grid."""
+    try:
+        subprocess.run(["pkill", "-f", MUSIC_MARKER], check=False)
+    except Exception:
+        pass
     if not MUSIC_FILE.exists():
         return None
     try:
         return subprocess.Popen(
-            ["sh", "-c", f'while :; do aplay -q -D default "{MUSIC_FILE}"; sleep 1; done # {MUSIC_MARKER}'],
+            ["sh", "-c", f'while :; do aplay -q -D default "{MUSIC_FILE}"; sleep 0.34; done # {MUSIC_MARKER}'],
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
             preexec_fn=os.setsid,
@@ -1793,7 +1791,7 @@ def conjure_window(script_name, duration=30.0, columns=100, lines=30, args=None)
     if safe_script == "card.py" and args:
         fig_w, fig_h = measure_figlet(str(args[0]))
         columns = max(68, fig_w + 16)
-        lines = max(12, fig_h + 6)
+        lines = max(13, fig_h + 8)
         cmd = [sys.executable, "-u", str(script_path)] + [str(a) for a in args]
     elif safe_script == "forest.py":
         columns = 138
@@ -1978,6 +1976,13 @@ def dispatch_cue(command, content, env, profile_dir, pace_say=True):
     if command == "SAY":
         if isinstance(content, str) and "{CURRENT_ARTICLE}" in content:
             content = content.replace("{CURRENT_ARTICLE}", resolve_current_article_line())
+        if isinstance(content, str) and "{LIVE_REPORT:" in content:
+            try:
+                _reload_forest_module()
+                from forest import resolve_dynamic_report_speech
+                content = resolve_dynamic_report_speech(content)
+            except Exception:
+                pass
         if pace_say:
             # Double-buffered synthesis: pre-render the next paragraph while the
             # previous paragraph is still playing on aplay, then synchronize on
@@ -2693,7 +2698,14 @@ def trigger_station_bead_live(target_spec="pirates", out_path="/home/mike/www/mi
         elif cmd == "PATRONUS":
             patronus_key = val.get("key") if isinstance(val, dict) else str(val)
         elif idx >= 4 and cmd == "SAY":
-            story_lines.append(str(val))
+            line_str = str(val)
+            if "{LIVE_REPORT:" in line_str:
+                try:
+                    from forest import resolve_dynamic_report_speech
+                    line_str = resolve_dynamic_report_speech(line_str)
+                except Exception:
+                    pass
+            story_lines.append(line_str)
     full_say = " ".join(s.strip() for s in [card_say, *story_lines] if s and s.strip())
     payload = {
         "card": card_label,

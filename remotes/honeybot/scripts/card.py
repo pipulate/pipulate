@@ -53,11 +53,14 @@ def render(label: str):
             term_w = _console.size.width or 80
             term_h = _console.size.height or 20
             raw_lines = [ln.rstrip() for ln in banner.splitlines()]
-            while raw_lines and not raw_lines[-1]:
+            while raw_lines and not raw_lines[-1].strip():
                 raw_lines.pop()
-            while raw_lines and not raw_lines[0]:
-                raw_lines.pop()
+            while raw_lines and not raw_lines[0].strip():
+                raw_lines.pop(0)
             clean_banner = "\n".join(raw_lines) if raw_lines else label.strip()
+            banner_rows = len(clean_banner.splitlines()) or 1
+            panel_h = banner_rows + 4
+            top_pad = max(0, (term_h - panel_h) // 2)
             panel = Panel(
                 Align.center(Text(clean_banner, style="bold bright_cyan")),
                 border_style="bright_cyan",
@@ -65,8 +68,10 @@ def render(label: str):
                 expand=False,
             )
             _console.clear()
+            if top_pad > 0:
+                sys.stdout.write("\n" * top_pad)
             _console.print(
-                Align.center(panel, vertical="middle", width=term_w, height=term_h),
+                Align.center(panel, width=max(40, term_w - 1)),
                 end="",
             )
             sys.stdout.flush()

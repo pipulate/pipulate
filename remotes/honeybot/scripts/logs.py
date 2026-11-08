@@ -53,7 +53,7 @@ DEFAULT_TICKER_MESSAGE = (
     "1ST 1000 -> AI MEMORY | "
     "VISIT SUNPUG.IO | "
     "CHAT SUMMONS MIKE | "
-    "AI's LIVE AT MIKELEV.IN"
+    "AI'S @ MIKELEV.IN"
 )
 
 # 5-Row Full-Block (█) LED Matrix Font (6-col round bowls + 7-col M/W wide basis strokes)
@@ -111,7 +111,7 @@ LED_FONT_3X3 = {
     "&": (" ███  ", "█   █ ", " ███  ", "█   █ ", " ███ █"),
     "(": ("  █", " █ ", " █ ", " █ ", "  █"),
     ")": ("█  ", " █ ", " █ ", " █ ", "█  "),
-    "@": (" ████ ", "█    █", "█ ██ █", "█ ███ ", " ████ "),
+    "@": (" █████ ", "█     █", "█ ███ █", "█ █ ███", " ████  "),
     "#": (" █  █ ", "██████", " █  █ ", "██████", " █  █ "),
     "=": ("    ", "████", "    ", "████", "    "),
     "<": ("   █", "  █ ", " █  ", "  █ ", "   █"),
@@ -526,7 +526,7 @@ class SonarApp(App):
         self.set_interval(0.08, self.tick_marquee)
         self.set_interval(1, self.update_countdown)
         self.set_interval(5, self.refresh_tables)
-        self.set_interval(0.75, self.scroll_hud_tables)
+        self.set_interval(0.18, self.scroll_hud_tables)
 
     def _rebuild_billboard_cache(self, width: int):
         """Pre-render 5-row Rich.Text still cards and pre-baked PSX DOOM fire timelines."""
@@ -1032,13 +1032,13 @@ class SonarApp(App):
         if max_y > 0:
             recoil_y = max(0, max_y - 1)
             self.set_timer(
-                0.12,
+                0.06,
                 lambda: active_table.scroll_to(y=recoil_y, animate=False)
                 if getattr(self, "hud_bump_active", False) and self.hud_scroll_target == target
                 else None,
             )
             self.set_timer(
-                0.24,
+                0.12,
                 lambda: active_table.scroll_to(y=max_y, animate=False)
                 if getattr(self, "hud_bump_active", False) and self.hud_scroll_target == target
                 else None,

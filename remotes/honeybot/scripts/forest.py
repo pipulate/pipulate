@@ -130,10 +130,7 @@ STATION_SEGMENTS = [
         ),
         ("WINDOW", f"forest.py:{REPORT_WINDOW_CAP_SECONDS}:overview"),
         [
-            "Look first at the single cyan bar across the very top of this report.",
-            "That top bar merely shows the share of all H T T P responses served as Markdown on a scale from zero to one percent -- not a percentage of User-Agents, which version churn distorts, but point three three percent of all one point five eight million origin responses, already one third of the way to our one percent milestone.",
-            "Now look at the stacked horizontal bars below the divider, which break that Markdown activity from above out by individual User-Agent, with version-spinning agents like Claude Code grouped into a single row.",
-            "Exa Search Bot leads at nearly half of all negotiated Markdown reads, followed by Parallel dot A I's ShapBot, unmasked Googlebot I P cloakers, Keenable Bot, SleepBot, CorpusBot, and Anthropic's Claude User.",
+            "{LIVE_REPORT:overview}",
         ],
     ),
     # Bead 1 (ODD -> Patronus ASCII Art: white_rabbit)
@@ -158,10 +155,7 @@ STATION_SEGMENTS = [
         ),
         ("WINDOW", f"forest.py:{REPORT_WINDOW_CAP_SECONDS}:bimodal"),
         [
-            "Look first at the single amber bar across the very top of this report.",
-            "That top bar merely shows the percentage of eligible H T M L page responses -- the requests that actually received our script tag and could have hydrated the D O M -- that executed client-side JavaScript and fired our eight-hundred-millisecond J S confirm dot gif sensor, plotted on a zero to five percent scale.",
-            "Now look at the stacked horizontal bars below the divider, which break those eighteen thousand plus JavaScript executions from above out by grouped User-Agent and cloud renderer fleet.",
-            "Meta's External Agent leads at four thousand six hundred D O M hydrations, followed by Open A I's SearchBot at three thousand four hundred seventy-five, unbadged Google Cloud Chrome and Edge renderers across over one hundred I P addresses, Open A I's G P T Bot, Meta Web Indexer, Bytespider, Anthropic's ClaudeBot, and Headless Chrome.",
+            "{LIVE_REPORT:bimodal}",
         ],
     ),
     # Bead 3 (ODD -> Patronus ASCII Art: ai_pachinko)
@@ -357,6 +351,223 @@ def _format_bot_identity_and_sig(ua_str, known_bots=(), max_sig_len=58):
     else:
         sig_text = body_text
     return badge, Text(identity_str, style=id_style), sig_text
+
+
+_SPOKEN_BOT_NAMES = {
+    "meta-externalagent": "Meta's External Agent",
+    "meta-webindexer": "Meta Web Indexer",
+    "oai-searchbot": "Open A I's SearchBot",
+    "gptbot": "Open A I's G P T Bot",
+    "chatgpt-user": "Chat G P T User",
+    "exasearchbot": "Exa Search Bot",
+    "exauser": "Exa User",
+    "shapbot": "Parallel dot A I's ShapBot",
+    "claudebot": "Anthropic's ClaudeBot",
+    "claude-user": "Anthropic's Claude User",
+    "claude-code": "Anthropic's Claude Code",
+    "keenablebot": "Keenable Bot",
+    "googlebot": "unmasked Googlebot I P cloakers",
+    "headlesschrome": "Headless Chrome",
+    "bytespider": "Bytespider",
+    "amazonbot": "Amazonbot",
+}
+
+
+def _spoken_bot_label(raw_ua: str, known_bots=()) -> str:
+    """Convert a raw or rolled-up User-Agent row into a clean TTS-friendly bot name."""
+    s = str(raw_ua or "").strip()
+    if "Stealth Cloud Renderers" in s:
+        return "unbadged Google Cloud Chrome and Edge renderers"
+    is_spoof = s.startswith("[SPOOFED-IP] ")
+    for pfx in ("[SPOOFED-IP] ", "[VERIFIED] "):
+        if s.startswith(pfx):
+            s = s[len(pfx):].strip()
+    s = _ROLLUP_PREFIX_RE.sub("", s).strip()
+    tok = _detect_bot_token(s, known_bots=known_bots) or "Browser Agent"
+    low = tok.lower()
+    if is_spoof and "googlebot" in low:
+        return "unmasked Googlebot I P cloakers"
+    if low in _SPOKEN_BOT_NAMES:
+        return _SPOKEN_BOT_NAMES[low]
+    return tok.replace("-", " ").replace("_", " ")
+
+
+def resolve_dynamic_report_speech(text: str) -> str:
+    """Replace {LIVE_REPORT:overview} or {LIVE_REPORT:bimodal} with live SQLite figures matching the on-screen chart."""
+    s = str(text or "")
+    if "{LIVE_REPORT:" not in s:
+        return s
+    import os
+    from pathlib import Path
+    os.environ.setdefault("HONEYBOT_DB_READONLY", "1")
+    try:
+        from db import db, KNOWN_BOTS
+        if not Path(db.db_path).exists():
+            db.db_path = ":memory:"
+            db.init_db()
+        conn = db.get_conn()
+        try:
+            conn.commit()
+        except Exception:
+            pass
+        cur = conn.cursor()
+    except Exception:
+        cur = None
+        KNOWN_BOTS = ()
+
+    if "{LIVE_REPORT:overview}" in s:
+        try:
+            cur.execute(
+                """
+                SELECT COALESCE(SUM(t.count), 0)
+                FROM telemetry t
+                JOIN ips i ON t.ip_id = i.id
+                WHERE i.value NOT LIKE '127.%'
+                  AND i.value NOT LIKE '10.%'
+                  AND i.value NOT LIKE '192.168.%'
+                """
+            )
+            total_hits = int((cur.fetchone() or [0])[0] or 0)
+            cur.execute(
+                """
+                SELECT COALESCE(SUM(t.count), 0)
+                FROM telemetry t
+                JOIN ips i ON t.ip_id = i.id
+                WHERE t.served_md = 1
+                  AND i.value NOT LIKE '127.%'
+                  AND i.value NOT LIKE '10.%'
+                  AND i.value NOT LIKE '192.168.%'
+                """
+            )
+            md_reads = int((cur.fetchone() or [0])[0] or 0)
+            cneg_rows = db.get_content_neg_agents(limit=10)
+            total_cneg = max(1, sum(int(c) for _, c in cneg_rows))
+            if total_hits > 0 and cneg_rows:
+                md_pct = round((md_reads / max(1, total_hits)) * 100.0, 2)
+                top_parts = []
+                for ua, cnt in cneg_rows[:4]:
+                    bname = _spoken_bot_label(ua, known_bots=KNOWN_BOTS)
+                    share = round((int(cnt) / total_cneg) * 100.0, 1)
+                    top_parts.append(f"{bname} with {int(cnt):,} reads or {share} percent")
+                leaders_str = ", followed by ".join(top_parts[:2])
+                if len(top_parts) > 2:
+                    leaders_str += ", and " + ", ".join(top_parts[2:])
+                live_ov = (
+                    "Look first at the single cyan bar across the very top of this report. "
+                    f"That top bar shows the live share of all H T T P responses served as Markdown on a scale from zero to one percent: "
+                    f"currently {md_pct} percent across {total_hits:,} total origin responses, with {md_reads:,} total Markdown deliveries and {total_cneg:,} strict R F C 9110 Accept text slash markdown negotiations. "
+                    "Now look at the stacked horizontal bars below the divider, which break that Markdown activity out by grouped User-Agent. "
+                    f"{leaders_str}."
+                )
+            else:
+                raise ValueError("empty overview db")
+        except Exception:
+            live_ov = (
+                "Look first at the single cyan bar across the very top of this report. "
+                "That top bar shows the live share of all H T T P responses served as Markdown on a scale from zero to one percent. "
+                "Now look at the stacked horizontal bars below the divider, which break that Markdown activity out by grouped User-Agent, led by Exa Search Bot, Parallel dot A I's ShapBot, and Anthropic's Claude User."
+            )
+        s = s.replace("{LIVE_REPORT:overview}", live_ov)
+
+    if "{LIVE_REPORT:bimodal}" in s:
+        try:
+            cur.execute(
+                """
+                SELECT COALESCE(SUM(t.count), 0)
+                FROM telemetry t
+                JOIN ips i ON t.ip_id = i.id
+                JOIN paths p ON t.path_id = p.id
+                WHERE t.served_md = 0
+                  AND i.value NOT LIKE '127.%'
+                  AND i.value NOT LIKE '10.%'
+                  AND i.value NOT LIKE '192.168.%'
+                  AND p.value NOT LIKE '%js_confirm.gif%'
+                  AND p.value NOT LIKE '/assets/%'
+                  AND p.value NOT LIKE '%.md%'
+                  AND p.value NOT LIKE '%.xml%'
+                  AND p.value NOT LIKE '%.txt%'
+                  AND p.value NOT LIKE '%.json%'
+                  AND p.value NOT LIKE '%.css%'
+                  AND p.value NOT LIKE '%.js%'
+                  AND p.value NOT LIKE '%.ico%'
+                  AND p.value NOT LIKE '%.png%'
+                  AND p.value NOT LIKE '%.jpg%'
+                  AND p.value NOT LIKE '%.jpeg%'
+                  AND p.value NOT LIKE '%.gif%'
+                  AND p.value NOT LIKE '%.svg%'
+                  AND p.value NOT LIKE '%.webp%'
+                  AND p.value NOT LIKE '%.woff%'
+                  AND p.value NOT LIKE '%.ttf%'
+                  AND p.value NOT LIKE '%.zip%'
+                  AND p.value NOT LIKE '%.sh%'
+                """
+            )
+            eligible_html = int((cur.fetchone() or [0])[0] or 0)
+            cur.execute(
+                """
+                SELECT COALESCE(SUM(t.count), 0)
+                FROM telemetry t
+                JOIN ips i ON t.ip_id = i.id
+                JOIN paths p ON t.path_id = p.id
+                WHERE p.value LIKE '%js_confirm.gif%'
+                  AND i.value NOT LIKE '127.%'
+                  AND i.value NOT LIKE '10.%'
+                  AND i.value NOT LIKE '192.168.%'
+                """
+            )
+            js_telem_hits = int((cur.fetchone() or [0])[0] or 0)
+            cur.execute(
+                """
+                SELECT COALESCE(SUM(t.count), 0), COUNT(DISTINCT i.id)
+                FROM telemetry t
+                JOIN ips i ON t.ip_id = i.id
+                JOIN user_agents ua ON t.ua_id = ua.id
+                JOIN paths p ON t.path_id = p.id
+                WHERE p.value LIKE '%js_confirm.gif%'
+                  AND (i.value LIKE '34.%' OR i.value LIKE '35.%' OR i.value LIKE '136.65.%')
+                  AND ua.value LIKE 'Mozilla%'
+                  AND ua.value NOT LIKE '%compatible%'
+                """
+            )
+            cloud_row = cur.fetchone() or (0, 0)
+            cloud_triggers, cloud_ips = int(cloud_row[0] or 0), int(cloud_row[1] or 0)
+            js_rows = list(db.get_js_executors(limit=25))
+            if cloud_triggers > 0:
+                js_rows.append((
+                    f"[+{max(0, cloud_ips - 1)}] Mozilla/5.0 Chrome/135.0.0.0 Edg/135.0.0.0 (Stealth Cloud Renderers)",
+                    cloud_triggers,
+                ))
+            js_rows.sort(key=lambda item: int(item[1]), reverse=True)
+            total_js_execs = max(1, sum(int(c) for _, c in js_rows))
+            js_horizon_hits = js_telem_hits if js_telem_hits > 0 else total_js_execs
+            if eligible_html > 0 and js_rows:
+                js_pct = round((js_horizon_hits / max(1, eligible_html)) * 100.0, 2)
+                top_js = []
+                for ua, cnt in js_rows[:4]:
+                    bname = _spoken_bot_label(ua, known_bots=KNOWN_BOTS)
+                    share = round((int(cnt) / total_js_execs) * 100.0, 1)
+                    top_js.append(f"{bname} at {int(cnt):,} D O M hydrations or {share} percent of J S")
+                leaders_js = ", followed by ".join(top_js[:2])
+                if len(top_js) > 2:
+                    leaders_js += ", and " + ", ".join(top_js[2:])
+                live_bi = (
+                    "Look first at the single amber bar across the very top of this report. "
+                    f"That top bar shows the live percentage of eligible H T M L page responses that executed client-side JavaScript and fired our eight-hundred-millisecond J S confirm dot gif sensor: "
+                    f"currently {js_pct} percent across {eligible_html:,} eligible H T M L responses, with {js_horizon_hits:,} total trapdoor executions on our zero to five percent scale. "
+                    "Now look at the stacked horizontal bars below the divider, which break those live JavaScript executions out by grouped User-Agent and cloud renderer fleet. "
+                    f"{leaders_js}."
+                )
+            else:
+                raise ValueError("empty bimodal db")
+        except Exception:
+            live_bi = (
+                "Look first at the single amber bar across the very top of this report. "
+                "That top bar shows the live percentage of eligible H T M L page responses that executed client-side JavaScript and fired our eight-hundred-millisecond J S confirm dot gif sensor on a zero to five percent scale. "
+                "Now look at the stacked horizontal bars below the divider, which break those JavaScript executions out by grouped User-Agent, led by Meta's External Agent, Open A I's SearchBot, and unbadged Google Cloud Chrome and Edge renderers."
+            )
+        s = s.replace("{LIVE_REPORT:bimodal}", live_bi)
+
+    return s
 
 
 def _build_station_report_panel(mode="overview", panel_width=None):

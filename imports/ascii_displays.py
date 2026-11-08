@@ -219,8 +219,10 @@ def render_patronus_banner(name: str) -> None:
         while lines and not lines[-1].strip():
             lines.pop()
         while lines and not lines[0].strip():
-            lines.pop()
+            lines.pop(0)
         content = "\n".join(lines)
+    art_rows = len(content.splitlines()) if isinstance(content, str) else 12
+    panel_h = art_rows + 4
     panel = Panel(
         content,
         title=title,
@@ -230,9 +232,12 @@ def render_patronus_banner(name: str) -> None:
     )
     term_w = console.size.width or 100
     term_h = console.size.height or 24
+    top_pad = max(0, (term_h - panel_h) // 2)
     console.clear()
+    if top_pad > 0:
+        sys.stdout.write("\n" * top_pad)
     console.print(
-        Align.center(panel, vertical="middle", width=term_w, height=term_h),
+        Align.center(panel, width=max(40, term_w - 1)),
         end="",
     )
     sys.stdout.flush()
@@ -268,16 +273,16 @@ def patronus(name: str, duration: float = 3.5) -> None:
     while raw_lines and not raw_lines[-1].strip():
         raw_lines.pop()
     while raw_lines and not raw_lines[0].strip():
-        raw_lines.pop()
+        raw_lines.pop(0)
     
     # Calculate exact dynamic column width and row bounds
     max_width = max(len(line) for line in raw_lines) if raw_lines else 80
     total_rows = len(raw_lines) if raw_lines else 12
     
     # Inject exact safety padding constants for the Rich panel frame boundaries
-    # Expanded horizontal padding to +20 to secure an unbreakable margin against terminal cell wrapping
+    # panel_h is total_rows + 4; +8 gives 2 blank rows above and 2 blank rows below
     columns_needed = max_width + 16
-    lines_needed = total_rows + 6
+    lines_needed = total_rows + 8
 
     # Resolve paths relative to framework root directory structures
     display_file_path = Path(__file__).resolve()
@@ -448,10 +453,10 @@ def measure_figlet(label: str, font: str = "standard") -> tuple:
     except Exception:
         rendered = label
     lines = [ln.rstrip() for ln in rendered.splitlines()]
-    while lines and not lines[-1]:
+    while lines and not lines[-1].strip():
         lines.pop()
-    while lines and not lines[0]:
-        lines.pop()
+    while lines and not lines[0].strip():
+        lines.pop(0)
     if not lines:
         lines = [label]
     width = max((len(line) for line in lines), default=len(label))
