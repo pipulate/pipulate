@@ -61,6 +61,25 @@ DEFAULT_TICKER_MESSAGE = (
     "CHAT SUMMONS MIKE | "
     "AI'S @ MIKELEV.IN"
 )
+STAGE_BOX_WIDTH = 14
+STAGE_LEFT_CURTAIN_LINES = ("", "Mike-E", "the", "Apprentice", "")
+STAGE_RIGHT_CURTAIN_LINES = ("", "Shipmunk", "O'", "Theseus!", "")
+
+
+def render_stage_curtain(side: str, width: int = STAGE_BOX_WIDTH) -> Text:
+    """Render the 5-row x 14-col theatrical curtain label for #left_stage or #right_stage."""
+    is_left = (side or "").strip().lower() != "right"
+    lines = STAGE_LEFT_CURTAIN_LINES if is_left else STAGE_RIGHT_CURTAIN_LINES
+    primary_style = "bold #ffd700 on #0d061a" if is_left else "bold #00ffff on #0d061a"
+    mid_style = "italic #ffae42 on #0d061a" if is_left else "bold #ff79c6 on #0d061a"
+    txt = Text()
+    for idx, raw_line in enumerate(lines):
+        if idx > 0:
+            txt.append("\n")
+        padded = raw_line.center(width)[:width]
+        row_style = mid_style if idx == 2 else primary_style
+        txt.append(padded, style=row_style)
+    return txt
 
 # 5-Row Full-Block (█) LED Matrix Font (6-col round bowls + 7-col M/W wide basis strokes)
 LED_FONT_3X3 = {
@@ -385,10 +404,36 @@ class SonarApp(App):
         min-width: 100%;
     }
 
-    /* MIDDLE SECTION: Eye-Level Giant 5-Row LED Marquee Ticker (borderless, 100% signage) */
-    #ticker_bar {
+    /* MIDDLE SECTION: 5-Row Theatrical Triptych (#left_stage + #ticker_bar + #right_stage) */
+    #middle_stage {
         height: 5;
         width: 100%;
+        background: #140826;
+        layout: horizontal;
+        overflow: hidden;
+    }
+
+    .stage_box {
+        width: 14;
+        height: 5;
+        background: #0d061a;
+        color: #ffd700;
+        text-style: bold;
+        padding: 0;
+        overflow: hidden;
+    }
+
+    #left_stage {
+        color: #ffd700;
+    }
+
+    #right_stage {
+        color: #00ffff;
+    }
+
+    #ticker_bar {
+        height: 5;
+        width: 1fr;
         background: #140826;
         color: #ffd700;
         text-style: bold;
@@ -510,7 +555,10 @@ class SonarApp(App):
         # RichLog handles wrapping and styling natively. 
         # wrap=True ensures lines don't get cut off.
         yield RichLog(id="log_stream", highlight=False, wrap=True)
-        yield Static("", id="ticker_bar")
+        with Horizontal(id="middle_stage"):
+            yield Static(render_stage_curtain("left"), id="left_stage", classes="stage_box")
+            yield Static("", id="ticker_bar")
+            yield Static(render_stage_curtain("right"), id="right_stage", classes="stage_box")
         
         # --- NEW: The Dual Intelligence Panel ---
         with Container(id="intelligence_panel"):
@@ -594,7 +642,8 @@ class SonarApp(App):
         self.set_interval(0.10, self.scroll_hud_tables)
 
     def _get_ticker_width(self) -> int:
-        """Return usable inner column width of #ticker_bar, falling back to OS terminal size before layout."""
+        """Return usable inner column width of #ticker_bar, falling back to OS terminal size minus stage boxes before layout."""
+        stage_deduction = (2 * STAGE_BOX_WIDTH) + 2
         try:
             bar = self.query_one("#ticker_bar", Static)
             if bar.size.width and bar.size.width > 0:
@@ -603,14 +652,14 @@ class SonarApp(App):
             pass
         try:
             if self.size.width and self.size.width > 80:
-                return max(40, self.size.width - 2)
+                return max(40, self.size.width - stage_deduction)
         except Exception:
             pass
         try:
             term_cols = shutil.get_terminal_size((190, 48)).columns
-            return max(40, term_cols - 2)
+            return max(40, term_cols - stage_deduction)
         except Exception:
-            return 188
+            return 188 - (2 * STAGE_BOX_WIDTH)
 
     def on_resize(self, event) -> None:
         """Re-center #ticker_bar billboard cards immediately when terminal geometry settles."""
