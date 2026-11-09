@@ -444,6 +444,10 @@ class SonarApp(App):
     """.replace("__HUD_PANEL_HEIGHT__", str(HUD_PANEL_HEIGHT))
 
     TITLE = "Web Bot AI Observatory — https://mikelev.in (RFC 9110 · RFC 9421 · JS Trapdoor)"
+    countdown_str = "--:--"
+    viewers_mtime = None
+    live_viewers = None
+    peak_viewers = 0
 
     # --- NEW: Banish the interactive Command Palette ---
     ENABLE_COMMAND_PALETTE = False
@@ -454,6 +458,7 @@ class SonarApp(App):
             if not os.path.exists(VIEWERS_FILE_PATH):
                 self.viewers_mtime = None
                 self.live_viewers = None
+                self.peak_viewers = 0
                 return None
             st_mtime = os.stat(VIEWERS_FILE_PATH).st_mtime
             now = time.time()
@@ -467,12 +472,14 @@ class SonarApp(App):
                     data = _json.load(vf)
                 if not isinstance(data, dict) or not data.get("running", True):
                     self.live_viewers = None
+                    self.peak_viewers = 0
                 else:
                     updated_at = float(data.get("updated_at") or st_mtime)
                     if (now - updated_at) > VIEWERS_TTL_SECONDS:
                         self.live_viewers = None
                     else:
                         self.live_viewers = max(0, int(data.get("viewers") or 0))
+                        self.peak_viewers = max(self.live_viewers, int(data.get("peak") or 0))
             return self.live_viewers
         except Exception:
             self.live_viewers = None
@@ -484,12 +491,18 @@ class SonarApp(App):
         if v is None:
             return BASE_APP_TITLE
         v_word = "Viewer" if v == 1 else "Viewers"
-        return f"👀 {v} {v_word} — {BASE_APP_TITLE}"
+        pk = getattr(self, "peak_viewers", 0) or 0
+        pk_seg = f" (Peak: {pk})" if pk > 0 else ""
+        return f"👀 {v} {v_word}{pk_seg} — Web Bot AI Observatory — https://mikelev.in"
 
     def get_sub_title(self):
         v = self._read_live_viewers()
-        v_seg = f"👀 Viewers: {v} | " if v is not None else ""
-        return f"{v_seg}Live Nginx Log Analysis | Next Report: {self.countdown_str}"
+        countdown = getattr(self, "countdown_str", "--:--")
+        if v is None:
+            return f"Live Nginx Log Analysis | Next Report: {countdown}"
+        pk = getattr(self, "peak_viewers", 0) or 0
+        pk_seg = f" (Peak: {pk})" if pk > 0 else ""
+        return f"👀 Viewers: {v}{pk_seg} | Next Report: {countdown}"
 
     def compose(self) -> ComposeResult:
         yield Header()
