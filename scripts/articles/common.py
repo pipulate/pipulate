@@ -1365,7 +1365,7 @@ def run_honeybot_obs(mode="status"):
         text=True,
     )
     if res.returncode == 0 and mode in ("start", "roll", "bell"):
-        vid = sync_live_video_id(push_remote=True)
+        vid = sync_live_video_id(push_remote=True, reset_peak=(mode in ("start", "roll")))
         if vid:
             print(f"📺 Synced live_video.json -> {vid} (local + Honeybot)")
     return res.returncode
@@ -1835,7 +1835,7 @@ def _walk_dicts(node):
 
 _YTWATCH_RESERVED_ACTIONS = {
     "start", "stop", "status", "restart", "daemon", "kill",
-    "attach", "log", "logs", "tail", "tmux",
+    "attach", "log", "logs", "tail", "tmux", "reset", "reset-peak",
 }
 
 
@@ -2124,7 +2124,7 @@ def _save_ytwatch_state(state_obj):
 YT_CHANNEL_ID = "UCd26IHBHcbtxD7pUdnIgiCw"
 
 
-def sync_live_video_id(state=None, push_remote=False):
+def sync_live_video_id(state=None, push_remote=False, reset_peak=False):
     """Resolve current YouTube Live video_id and sync to ytwatch_state.json, trimnoir, and optionally Honeybot."""
     import subprocess
     import time
@@ -2137,11 +2137,20 @@ def sync_live_video_id(state=None, push_remote=False):
     vid = str((state or {}).get("video_id") or persisted.get("video_id") or "").strip()
     if not vid:
         return ""
-    if (state or {}).get("video_id") and state.get("video_id") != persisted.get("video_id"):
+    new_vid = bool((state or {}).get("video_id") and state.get("video_id") != persisted.get("video_id"))
+    new_title = bool((state or {}).get("title") and persisted.get("title") and state.get("title") != persisted.get("title"))
+    if new_vid or new_title or reset_peak:
+        cur_v = int((state or {}).get("concurrent_viewers") or 0)
         persisted["video_id"] = vid
-        persisted["concurrent_viewers"] = int(state.get("concurrent_viewers") or 0)
+        if (state or {}).get("title"):
+            persisted["title"] = str(state["title"])
+        persisted["concurrent_viewers"] = cur_v
+        persisted["peak_viewers"] = cur_v
+        persisted["alerted_in_run"] = False
+        persisted["seen_ids"] = []
         persisted["updated_at"] = int(time.time())
         _save_ytwatch_state(persisted)
+        _sync_honeybot_viewers(cur_v, running=True, video_id=vid, peak=cur_v, push_remote=push_remote)
     live_payload = (
         json.dumps(
             {
@@ -2540,6 +2549,31 @@ def run_youtube_watch(
     saved_ch = _get_vault_var("PIPULATE_YT_CHANNEL").strip()
     if saved_ch.lower().lstrip("@") in _YTWATCH_RESERVED_ACTIONS:
         _save_vault_var("PIPULATE_YT_CHANNEL", "@MikeLevin")
+    if daemon_action in ("reset", "reset-peak"):
+        if dry_run:
+            print("📡 [DRY RUN] Would reset ytwatch session peak_viewers to current concurrent viewers.")
+            return 0
+        try:
+            st_now = fetch_youtube_live_state(_normalize_yt_url(channel or _get_vault_var("PIPULATE_YT_CHANNEL")))
+            cur_v = int(st_now.get("concurrent_viewers") or 0)
+            cur_vid = str(st_now.get("video_id") or "")
+            cur_t = str(st_now.get("title") or "")
+        except Exception:
+            st_p = _load_ytwatch_state()
+            cur_v = int(st_p.get("concurrent_viewers") or 0)
+            cur_vid = str(st_p.get("video_id") or "")
+            cur_t = str(st_p.get("title") or "")
+        st_p = _load_ytwatch_state()
+        st_p["video_id"] = cur_vid
+        st_p["title"] = cur_t
+        st_p["concurrent_viewers"] = cur_v
+        st_p["peak_viewers"] = cur_v
+        st_p["alerted_in_run"] = False
+        st_p["updated_at"] = int(time.time())
+        _save_ytwatch_state(st_p)
+        _sync_honeybot_viewers(cur_v, running=True, video_id=cur_vid, peak=cur_v, push_remote=True)
+        print(f"🔄 Reset ytwatch session peak -> {cur_v} (video={cur_vid or 'NONE'}).")
+        return _manage_ytwatch_daemon("restart", interval=interval, channel=channel)
     if daemon_action in ("daemon", "start", "restart", "stop", "status", "attach"):
         if dry_run:
             print(f"📡 [DRY RUN] ytwatch daemon_action={daemon_action} | interval={interval}")
@@ -2569,9 +2603,10 @@ def run_youtube_watch(
         print(f"❌ YouTube Watch fetch failed for {resolved_channel}: {exc}")
         return 1
     persisted = _load_ytwatch_state()
-    same_video = (persisted.get("video_id") == state["video_id"] and bool(state["video_id"]))
+    same_title = (not persisted.get("title") or not state.get("title") or persisted.get("title") == state.get("title"))
+    same_video = (persisted.get("video_id") == state["video_id"] and bool(state["video_id"]) and same_title)
     if state.get("video_id") and not same_video:
-        sync_live_video_id(state=state, push_remote=True)
+        sync_live_video_id(state=state, push_remote=True, reset_peak=True)
     seen_ids = set(persisted.get("seen_ids") or []) if same_video else set()
     had_prior_snapshot = bool(same_video and persisted.get("seen_ids") is not None)
     peak_viewers = int(persisted.get("peak_viewers") or 0) if same_video else 0
@@ -2637,6 +2672,7 @@ def run_youtube_watch(
         all_ids = list(dict.fromkeys([*(persisted.get("seen_ids") or []), *(m["id"] for m in state["chat_messages"])]))[-500:]
         _save_ytwatch_state({
             "video_id": state["video_id"],
+            "title": state.get("title") or "",
             "concurrent_viewers": state["concurrent_viewers"],
             "peak_viewers": peak_viewers,
             "alerted_in_run": alerted_in_run,
@@ -2662,6 +2698,7 @@ def run_youtube_watch(
     dwell_window = [(init_ts, state["concurrent_viewers"])] if state["concurrent_viewers"] >= YT_VIEWER_ALERT_MIN else []
     _save_ytwatch_state({
         "video_id": state["video_id"],
+        "title": state.get("title") or "",
         "concurrent_viewers": state["concurrent_viewers"],
         "peak_viewers": peak_viewers,
         "alerted_in_run": alerted_in_run,
@@ -2733,6 +2770,7 @@ def run_youtube_watch(
                 print(f"[{_ytlog_ts()}] 🔄 [HOT-RELOAD] common.py updated on disk — re-execing ytwatch daemon...", flush=True)
                 os.execv(sys.executable, [sys.executable, *sys.argv])
             cur_vid = state.get("video_id") if state.get("is_live") else ""
+            cur_title = state.get("title") or ""
             for _ in range(sub_polls - 1):
                 time.sleep(fast_step)
                 if Path(__file__).stat().st_mtime != script_mtime:
@@ -2915,6 +2953,7 @@ def run_youtube_watch(
                 pass
             _save_ytwatch_state({
                 "video_id": state["video_id"],
+                "title": state.get("title") or "",
                 "concurrent_viewers": viewers,
                 "peak_viewers": peak_viewers,
                 "alerted_in_run": alerted_in_run,
@@ -3976,6 +4015,8 @@ if __name__ == "__main__":
             first_arg = cli_args.message[0].strip().lower()
             if first_arg in ("daemon", "start", "restart"):
                 daemon_act = "daemon"
+            elif first_arg in ("reset", "reset-peak"):
+                daemon_act = "reset"
             elif first_arg in ("stop", "kill"):
                 daemon_act = "stop"
             elif first_arg == "status":
