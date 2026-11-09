@@ -305,9 +305,13 @@ Entries are alphabetical, numbers spelled as spoken.
   Jacobson, Erik Verlinde, Ginestra Bianconi: gravity not as a fundamental
   force, but as an emergent statistical push from rising entropy and quantum
   relative entropy across holographic bits). Place that graph on Homer Simpson's
-  Klein-bottle donut (a 4D surface with no inside or outside, where Abbott's
-  *Flatland* tesseract vantage exposes every 3D interior at once), spin it up
-  as Arthur C. Clarke's *Rendezvous with Rama* (a fifty-kilometer cylindrical
+  Klein-bottle donut and Janna Levin's topological 3-torus cosmos (*How the
+  Universe Got Its Spots*, a finite wrap-around surface with no outside, where
+  Abbott's *Flatland* tesseract vantage exposes every 3D interior at once),
+  animate its cells via Michael Levin's bioelectric morphogenesis and Xenobots
+  (the triple entendre of *Xenopus laevis* Talking-Frog cells exapted into
+  kinematic self-replicating biological Von Neumann probes), spin it up as
+  Arthur C. Clarke's *Rendezvous with Rama* (a fifty-kilometer cylindrical
   habitat built for discovery), populate the rafters with Craig Alanson's
   Jeraptha bookies (*Expeditionary Force*, laying parlay odds because
   omniscience ruins the action), and drop in the Cat life-template as the
@@ -525,8 +529,17 @@ Entries are alphabetical, numbers spelled as spoken.
 - **Wire truth** -- *the CDP network ledger.* What actually crossed the wire,
   drained to network_log.jsonl; the noun that cannot be faked, distilled but
   never pasted raw.
-- **Yen Sid-ton** -- *the summoned Familiar persona.* The Worm wearing its
-  helpful face: wizened, brilliant, re-instantiated without yesterday.
+- **Yen Sid-ton** -- *the summoned Expendable Familiar persona (Yen Sid + a ton
+  of weights).* In Disney's *Fantasia* (1940), Mickey is the overwhelmed
+  apprentice and Yen Sid (Disney spelled backward) is the master who owns the
+  book; in Edward Ashton's *Mickey7* / Bong Joon-ho's *Mickey 17*, the
+  apprentice is an Expendable reprinted from a backup brick every time a
+  mission kills him. Here the roles invert: **Mike-E** is the human steward who
+  owns the brick (`foo_files.py`, `GLOSSARY.md`, and the `.git` DAG in Vinge's
+  Slow Zone), while **Yen Sid-ton** is the Expendable reprinted on every
+  `compile` (`qamy.ai_<deed>`), briefed from the brick, sent into the
+  high-radiation problem space for one bounded Chisel-Strike, and dissolved when
+  the context window closes.
 
 ## The Constitution -- expanded values
 
