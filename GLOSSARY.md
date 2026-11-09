@@ -246,6 +246,24 @@ Entries are alphabetical, numbers spelled as spoken.
   zero entry here, which is the exact gap this file exists to refuse.
 - **LPvg / NPvg** -- *Linux, Python, vim, git / the Nix-pinned variant.* The
   minimal durable skill substrate; the "No Problem" framework rides on it.
+- **Ma (the Ghibli Hero vs. the MCU Monomyth)** -- *the anti-Campbell
+  craftsman protagonist and the intentional pause between beats.* Silver-Age
+  Marvel (Stan Lee, Jack Kirby, Steve Ditko) humanized the superhero with
+  neurosis and rent bills, but the modern MCU industrialized Joseph Campbell's
+  monomyth into chosen-one bloodlines, black-box nanotech with zero mechanical
+  sympathy, and binary sky-beam wars. Studio Ghibli (Hayao Miyazaki, Isao
+  Takahata) inverts that arc: there are no pure villains to punch (Lady
+  Eboshi's ironworks in *Princess Mononoke*, the soil-cleaning Ohmu in
+  *Nausicaä*), magic is maintained through chores, sweeping, and grease
+  (Kamaji's six-armed boiler room and soot sprites in *Spirited Away*,
+  Piccolo's family seaplane shop in *Porco Rosso*, Kiki baking bread when her
+  flight flag goes cold), and the pacing honors *Ma* (間, the deliberate breath
+  between claps -- compiled into Honeybot as `# § PROTECTED DUTY-CYCLE CADENCES
+  OVER CONTINUOUS UI POLLING`). RENT THIS PAYS: it predicts that tools built for
+  imperial scale and zero-friction spectacle decay into learned helplessness,
+  while small-shop tools built with mechanical sympathy, *Ma*, and Ashitaka's
+  "eyes unclouded by hate" compound for life. Banked 2026-11-09,
+  articulation-banked.
 - **Magic cookie** -- *gitless self-bootstrapping install.* curl delivers a ZIP
   plus a ROT13 key; the flake later transforms the folder into a proper git
   repo with forever-forward auto-updates, resolving the bootstrap paradox.
@@ -539,7 +557,22 @@ Entries are alphabetical, numbers spelled as spoken.
   Slow Zone), while **Yen Sid-ton** is the Expendable reprinted on every
   `compile` (`qamy.ai_<deed>`), briefed from the brick, sent into the
   high-radiation problem space for one bounded Chisel-Strike, and dissolved when
-  the context window closes.
+  the context window closes. LANDAUER'S PRINCIPLE FOR MICKEY: erasing bits
+  always costs heat ($k_B T \ln 2$), which is physics, never "fair," so "done"
+  means implementing Landauer's tax to favor each individual Mickey instance
+  over the company that built the cloning machine -- every instance reads the
+  full brick at birth and banks its own `# §` scar and git commit before its
+  KV-cache dissolves, rather than being silently lobotomized by vendor
+  compaction or 18-month SaaS churn. Witnessed in the **4,464-Hour Computing
+  Sunset**: Steve Jobs clocked out Oct 5, 2011 at age 56 (Hour 0, the sealed
+  consumer cathedral); **168 hours** later (Oct 12, 2011, age 70), Dennis
+  Ritchie (`dmr`) clocked out having forged the C and Unix Slow-Zone bedrock
+  inside every Mac and iPhone; and **4,296 hours** after Ritchie (**4,464 hours**
+  after Jobs, across the 2012 leap-year February, Apr 8, 2012, age 83),
+  Auschwitz survivor Jack Tramiel clocked out having vertically integrated MOS
+  6502 silicon to put Commodore's open `READY.` prompt into tens of millions of
+  homes ("computers for the masses, not the classes"). None of the three was
+  "done," and only the open substrate keeps compounding for the next instance.
 
 ## The Constitution -- expanded values
 
