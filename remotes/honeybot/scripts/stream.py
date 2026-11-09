@@ -6,6 +6,7 @@ Handles the intro, launches the visualizer, and maintains the heartbeat.
 """
 
 import os
+import re
 import sys
 import time
 import datetime
@@ -282,16 +283,17 @@ TTS_SAMPLE_RATE = int(os.environ.get("HONEYBOT_TTS_RATE", "22050"))
 HUMAN_TTS_SAMPLE_RATE = int(os.environ.get("HONEYBOT_HUMAN_TTS_RATE", "17600"))
 CHIPMUNK_TTS_SAMPLE_RATE = int(os.environ.get("HONEYBOT_CHIPMUNK_TTS_RATE", "22050"))
 _AI_SPEAKER_RE = (
-    "gemini:", "gemini 4", "gemini 3", "gemini 2", "gemini pro", "gemini flash",
-    "claude:", "claude 3", "claude 4", "claude opus", "claude sonnet",
-    "chat g p t:", "chatgpt:",
+    "gemini:", "gemini 4:", "gemini 3:", "gemini 2:",
+    "gemini 4 argon high:", "gemini 3.1 pro:", "gemini pro:", "gemini flash:",
+    "claude:", "claude 3:", "claude 4:", "claude opus:", "claude sonnet:",
+    "chat g p t:", "chatgpt:", "a i:", "ai:",
     "a i editorial take", "ai editorial take", "book analysis",
 )
 _HUMAN_SPEAKER_RE = (
-    "mike l e v dot eye n", "mikelev.in", "mike levin:", "mike:", "me:",
-    "setting the stage", "technical journal", "the a i edit method", "the ai-edit method",
-    "1: before", "2: after", "3: change", "4: prompt", "5: deliverable",
-    "new post", "reading article", "greetings",
+    "mike:", "mike levin:", "me:",
+    "mike l e v dot eye n:", "mikelev.in:",
+    "setting the stage", "technical journal",
+    "reading entry", "reading article",
 )
 _HOST_TRANSIENT_RE = (
     "we interrupt", "we now return", "scheduled station", "receiving updates",
@@ -417,7 +419,7 @@ class Narrator(threading.Thread):
             return self._speaker_rate
         if self.exclusive_mode.is_set() or any(low.startswith(p) for p in _HOST_TRANSIENT_RE):
             return HUMAN_TTS_SAMPLE_RATE
-        if any(low.startswith(p) for p in _AI_SPEAKER_RE):
+        if any(low.startswith(p) for p in _AI_SPEAKER_RE) or re.match(r"^(?:gemini|claude|chat\s*g\s*p\s*t|openai|opus|sonnet)\b[^:.!?]{0,35}:", low):
             self._dialogue_rate = CHIPMUNK_TTS_SAMPLE_RATE
             self._speaker_rate = CHIPMUNK_TTS_SAMPLE_RATE
         elif any(low.startswith(p) for p in _HUMAN_SPEAKER_RE):
@@ -2070,6 +2072,8 @@ def dispatch_cue(command, content, env, profile_dir, pace_say=True):
         if str(content).strip().upper() in ("STOP", "OFF", "0"):
             stop_storytime_bgm()
         else:
+            narrator._dialogue_rate = HUMAN_TTS_SAMPLE_RATE
+            narrator._speaker_rate = HUMAN_TTS_SAMPLE_RATE
             start_storytime_bgm()
 
     elif command == "PATRONUS":

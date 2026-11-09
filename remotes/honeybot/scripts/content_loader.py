@@ -432,6 +432,40 @@ def get_playlist(recent_n=10, include_archive=True):
                         "visit Mike L E V dot eye N slash latest."
                     )
                 main_mod.resolve_current_article_line = _live_resolve_current_article_line
+                if hasattr(main_mod.narrator, "resolve_speaker_rate"):
+                    import types
+                    def _hot_resolve_speaker_rate(self, text: str) -> int:
+                        low = (text or "").strip().lower()
+                        if not low:
+                            return self._speaker_rate
+                        host_re = getattr(main_mod, "_HOST_TRANSIENT_RE", ())
+                        if self.exclusive_mode.is_set() or any(low.startswith(p) for p in host_re):
+                            return getattr(main_mod, "HUMAN_TTS_SAMPLE_RATE", 17600)
+                        ai_prefixes = (
+                            "gemini:", "gemini 4:", "gemini 3:", "gemini 2:",
+                            "gemini 4 argon high:", "gemini 3.1 pro:", "gemini pro:", "gemini flash:",
+                            "claude:", "claude 3:", "claude 4:", "claude opus:", "claude sonnet:",
+                            "chat g p t:", "chatgpt:", "a i:", "ai:",
+                            "a i editorial take", "ai editorial take", "book analysis",
+                        )
+                        human_prefixes = (
+                            "mike:", "mike levin:", "me:",
+                            "mike l e v dot eye n:", "mikelev.in:",
+                            "setting the stage", "technical journal",
+                            "reading entry", "reading article",
+                        )
+                        if any(low.startswith(p) for p in ai_prefixes) or re.match(r"^(?:gemini|claude|chat\s*g\s*p\s*t|openai|opus|sonnet)\b[^:.!?]{0,35}:", low):
+                            rate = getattr(main_mod, "CHIPMUNK_TTS_SAMPLE_RATE", 22050)
+                            self._dialogue_rate = rate
+                            self._speaker_rate = rate
+                        elif any(low.startswith(p) for p in human_prefixes):
+                            rate = getattr(main_mod, "HUMAN_TTS_SAMPLE_RATE", 17600)
+                            self._dialogue_rate = rate
+                            self._speaker_rate = rate
+                        else:
+                            self._speaker_rate = self._dialogue_rate
+                        return self._speaker_rate
+                    main_mod.narrator.resolve_speaker_rate = types.MethodType(_hot_resolve_speaker_rate, main_mod.narrator)
             except Exception:
                 pass
         if not include_archive:
@@ -476,8 +510,23 @@ _FILEPATH_RE = re.compile(
 # Phonetic ear-orthography table for Piper TTS (en_US-amy-low.onnx).
 # Applied after URL/filepath simplification so domain names, speaker labels,
 # and recurring stack acronyms are pronounced naturally on Storytime.
+# Speaker turn regexes use horizontal whitespace [ \t]* before the label and
+# emit a leading '\n\n' so they never eat the preceding paragraph break.
 _TTS_PRONUNCIATION_MAP = (
-    (re.compile(r'(?m)^\s*\*?\*?(?:MikeLev\.in|Me)\*?\*?\s*:\s*', re.IGNORECASE), 'Mike: '),
+    (
+        re.compile(
+            r'(?m)^[ \t]*(?:\*\*[ \t]*(?:MikeLev\.in|Mike[ \t]+Levin|Mike|Me)[ \t]*:?[ \t]*\*\*[ \t]*:?|(?:MikeLev\.in|Mike[ \t]+Levin|Mike|Me)[ \t]*:)[ \t]*(?:\r?\n[ \t]*(?!\*\*[ \t]*(?:Gemini|Claude|ChatGPT|OpenAI|AI|MikeLev\.in|Mike|Me)\b))*',
+            re.IGNORECASE,
+        ),
+        '\n\nMike: ',
+    ),
+    (
+        re.compile(
+            r'(?m)^[ \t]*\*\*[ \t]*((?:Gemini|Claude|ChatGPT|OpenAI|Opus|Sonnet)[^*\n:]{0,35}?)[ \t]*:?[ \t]*\*\*[ \t]*:?[ \t]*(?:\r?\n[ \t]*(?!\*\*[ \t]*(?:Gemini|Claude|ChatGPT|OpenAI|AI|MikeLev\.in|Mike|Me)\b))*',
+            re.IGNORECASE,
+        ),
+        r'\n\n\1: ',
+    ),
     (re.compile(r'\bmikelev\.in\b', re.IGNORECASE), 'Mike L E V dot eye N'),
     (re.compile(r'\bsunpug\.io\b', re.IGNORECASE), 'Sun Pug dot eye oh'),
     (re.compile(r'\bqamy\.ai\b', re.IGNORECASE), 'Q A my dot A I'),
@@ -959,6 +1008,8 @@ def clean_markdown(text, label=None, census=True):
 
     # Remove HTML tags
     text = re.sub(r'<[^>]+>', '', text)
+    # Isolate Markdown ATX headings on their own paragraph boundaries before stripping '#'
+    text = re.sub(r'(?m)^[ \t]*#{1,6}[ \t]+([^\n]+)$', r'\n\n\1\n\n', text)
     # Abolish horizontal rules, table bars, box-drawing runs, and polish phonetic spellings
     text = _apply_tts_pronunciations(text)
     # Simplify slash-heavy file paths to filename.ext or "file path" before stripping underscores
