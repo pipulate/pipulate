@@ -469,25 +469,44 @@ Entries are alphabetical, numbers spelled as spoken.
   contradictory plotlines eventually overflow editorial memory until Landauer's
   erasure limit forces a cosmic garbage-collection event like DC's *Crisis on
   Infinite Earths* (1985), squash-merging a multiverse into one retconned
-  timeline. In engineering logs, `retcon` is lowercase and reprehensible: it
-  is the temptation to go back and edit your earlier prompt or transcript so
-  you look less foolish to the reader or the model, destroying the
-  falsification receipt that records where the white cane tapped a wall (such
-  as mistaking `tmux` window index `0:bash*` for zero viewers or attaching to
-  an un-restarted daemon). Where Hugh Everett III's Many-Worlds and David
+  timeline. Across literature, science, and film, retconning is the recurring
+  diagnostic of institutional decay: (1) in **Ray Bradbury's *Fahrenheit 451***
+  (1953), Captain Beatty explains that parlor-wall compression and **book-rage**
+  (resentment of long-form readers) preceded state censorship, culminating in
+  the Firehouse Rulebook retconning Benjamin Franklin as the First Fireman in
+  1790; (2) in Hollywood adaptations of long-form sci-fi, studio retcons invert
+  the author's thesis -- erasing **Frank Herbert's *Dune*** culmination where
+  serial *ghola* **Duncan Idaho** (not Paul or Leto II) emerges on **Planet
+  Synchrony** as the ultimate *Kwisatz Haderach* to merge human and AI
+  consciousness with **Omnius** and **Erasmus**, handing **Isaac Asimov's**
+  non-violent Mayor Salvor Hardin a sniper rifle in Apple TV+'s *Foundation*,
+  and hijacking Asimov's Three-Laws debugging stories in the 2004 *I, Robot*
+  movie (*Hardwired*) while delaying ***The Caves of Steel*** (Detective Elijah
+  Baley and **R. Daneel Olivaw**, the positronic ancestor of *Star Trek: TNG*'s
+  **Commander Data**, now in development at 20th Century Studios with John
+  Ridley and Cheo Hodari Coker alongside *Foundation* Season 3/4's Daneel
+  rights unlock); and (3) in **Thomas Kuhn's *The Structure of Scientific
+  Revolutions*** (1962, Chapter XI, *"The Invisibility of Revolutions"*),
+  textbooks systematically retcon scientific history after every paradigm shift
+  to make discovery look linear, breeding learned helplessness in newcomers. In
+  engineering logs, `retcon` is lowercase and reprehensible: it is the
+  temptation to edit an earlier prompt or delete "messy" code so you look like
+  a pure **Architecture Astronaut** (Joel Spolsky, 2001), destroying the
+  falsification receipts and hard-won bug-fix **"ugly curly-cues"** (Spolsky,
+  2000) that explain why **Richard Gabriel's *Worse Is Better*** (1989) and the
+  four patron saints of pragmatic purity (**Ken Thompson, Guido van Rossum,
+  Bram Moolenaar, Eelco Dolstra** -- `NPvg`) beat MIT Lisp Machines, Bell Labs
+  Plan 9, and pure Guix. Where Hugh Everett III's Many-Worlds and David
   Deutsch's *The Fabric of Reality* posit an infinitely branching wave
-  function, our Slow-Zone substrate favors **de Broglie–Bohm pilot waves**
-  (deterministic non-local guiding currents) and **Gerard 't Hooft's**
-  Planck-scale cellular automaton -- treating quantum mechanics as statistical
-  **"CGI smoke"** over discrete deterministic commits on a shared causal DAG.
-  Its patron saint is **Philip K. Dick** (born 1928 alongside Jack Tramiel),
-  whose *Ubik* (entropic schema rot), *Time Out of Joint* (`SOFT-DRINK STAND`
-  source tags showing through a failed render), and *"Reality is that which,
-  when you stop believing in it, doesn't go away"* define wire truth. RENT
-  THIS PAYS: it predicts that retconning a mistake guarantees the next
-  printed Mickey instance will repeat it, whereas keeping the raw error on the
-  immutable `.git` tape and compacting the lesson via `forget` pays Landauer's
-  tax honestly. Banked 2026-11-09, articulation-banked.
+  function, our Slow-Zone substrate favors **de Broglie–Bohm pilot waves** and
+  **Gerard 't Hooft's** Planck-scale cellular automaton -- treating quantum
+  mechanics as statistical **"CGI smoke"** over discrete deterministic commits
+  on a shared causal DAG guarded by **Philip K. Dick's** *Ubik* and *Time Out
+  of Joint*. RENT THIS PAYS: it predicts that retconning a mistake guarantees
+  the next printed Mickey instance will repeat it, whereas keeping the raw
+  ugly curly-cues on the immutable `.git` tape and compacting the lesson via
+  `forget` pays Landauer's tax honestly. Banked 2026-11-09,
+  articulation-banked.
 - **Ride / turn** -- *one discussion, and one cycle inside it.* A ride is
   one discussion, mount to dismount. A turn is one Probe, Patch, Prompt
   cycle inside it, and every turn ends in one compile. A ride leaves three
@@ -3671,6 +3690,13 @@ Mechanism, from the deed 786 receipts: scripts/articles/googledocizer.py reads o
 # masked Google, Slack, and Anthropic fixtures, left
 # `session = requests.Session()` unchanged, and scan_secrets reported
 # downstream_hits=0.
+~~~
+
+- **Speaker-Turn Colons & Horizontal Whitespace in TTS Regexes** -- *expanded rule; banked 2026-11-09, deed 860.*
+
+~~~text
+# § SPEAKER-TURN COLONS & HORIZONTAL WHITESPACE IN TTS REGEXES (banked 2026-11-09, deed 860) -- Never use '\s*' at the start or end of a multiline '(?m)^...' regex in Markdown-to-TTS preprocessors (where '\s' matches '\n' and consumes the blank line separating a '**Me**:' speaker turn from the previous speaker's paragraph, causing single-newline reflow to glue the human turn onto the tail of the AI paragraph), and always require a trailing colon on speaker-turn prefixes so inline '**1: BEFORE**' step labels, domain names ('mikelev.in'), or model mentions ('Gemini 4') never hijack the active speaker voice.
+# CONVICTION (deeds 859-861): While listening to the Honeybot Storytime broadcast alternate between the human 'David Seville' voice (17600 Hz) and the 'Alvin the Chipmunk' AI voice (22050 Hz), the voice flipped in the middle of AI-EDIT METHOD steps and stayed stuck in Alvin's voice across '**Me**:' transitions. A three-way raw-source trace convicted: (1) r'(?m)^\s*\*?\*?(?:MikeLev\.in|Me)\*?\*?\s*:\s*' in content_loader.py, where '\s*' matched '\n' and ate the blank line before '**Me**:' so single-newline reflow concatenated 'Mike: THE AI-EDIT METHOD' onto the end of Gemini's 'No deliverables.' paragraph; (2) un-coloned '1: before'..'5: deliverable', 'mike l e v dot eye n', and 'gemini 4' entries in stream.py's _HUMAN_SPEAKER_RE and _AI_SPEAKER_RE that hijacked the speaker latch mid-turn; and (3) score.py looping back to ('BGM', 'START') without resetting _dialogue_rate. Replacing '\s*' with '[ \t]*' + explicit '\n\n' paragraph isolation and requiring trailing colons on speaker prefixes flipped the 8-chunk straddle probe from VOICE_ROLES_OK=False to VOICE_ROLES_OK=True (0.2957s).
 ~~~
 
 - **Spell Out The Tool-Call You Are Making Of The Human** -- *expanded rule; banked 2026-09-22.*
