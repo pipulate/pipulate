@@ -34,7 +34,7 @@ MD_PANEL_TITLE = "🧠 RFC 9110 MARKDOWN NEGOTIATORS (Accept: text/markdown)"
 JS_BUMP_TITLE = "▾ END OF LIST — HANDING OFF TO MARKDOWN HUD ➔"
 MD_BUMP_TITLE = "▾ END OF LIST — RELAXING HUD FOR 30S ⏸"
 HUD_RELAX_SECONDS = 30.0      # 30s pause with both HUDs parked at top (0% scroll CPU) between left+right sweeps
-HUD_BUMP_HOLD_TICKS = 4       # 4 * 0.10s = 0.40s pause at bottom before snapping back to top
+HUD_BUMP_HOLD_SECONDS = 2.5   # Equal 2.5s monotonic hold at bottom of both Left and Right HUDs before snapping to top
 CARD_HOLD_TICKS = 56  # 56 * 0.08s = ~4.5s still hold per card (0% CPU during hold)
 FIRE_TICKS = 12       # 12 * 0.08s = ~0.96s pre-baked PSX DOOM fire sequence
 CARD_STYLES = ("bold #ffd700", "bold #00ffff", "bold #ffae42")
@@ -520,7 +520,7 @@ class SonarApp(App):
         self.hud_scroll_y = 0
         self.hud_scroll_pause = 0
         self.hud_bump_active = False
-        self.hud_bump_ticks = 0
+        self.hud_bump_until = 0.0
         self.hud_relax_until = time.monotonic() + 8.0
         
         try:
@@ -1075,17 +1075,17 @@ class SonarApp(App):
         self.hud_scroll_phase = "relax"
         self.hud_scroll_target = "js"
         self.hud_scroll_y = 0
-        self.hud_bump_ticks = 0
+        self.hud_bump_until = 0.0
         self.hud_relax_until = time.monotonic() + HUD_RELAX_SECONDS
         for tbl_id in ("#js_table", "#md_table"):
             try:
                 self.query_one(tbl_id, DataTable).scroll_to(y=0, animate=False)
             except Exception:
                 pass
-        self._flush_fire_hold_queues()
+        self.set_timer(0.15, self._flush_fire_hold_queues)
 
     def scroll_hud_tables(self):
-        """Protected 3-phase HUD cadence: scroll left ('js'), scroll right ('md'), then relax 30s at top."""
+        """Protected 3-phase HUD cadence: scroll left ('js'), hold 2.5s, scroll right ('md'), hold 2.5s, relax 30s."""
         if self._is_stage_frozen():
             return
 
@@ -1097,7 +1097,7 @@ class SonarApp(App):
             self.hud_scroll_phase = "js"
             self.hud_scroll_target = "js"
             self.hud_scroll_y = 0
-            self.hud_bump_ticks = 0
+            self.hud_bump_until = 0.0
             phase = "js"
 
         active_id = "#js_table" if phase == "js" else "#md_table"
@@ -1118,18 +1118,17 @@ class SonarApp(App):
                 self.hud_scroll_phase = "md"
                 self.hud_scroll_target = "md"
                 self.hud_scroll_y = 0
-                self.hud_bump_ticks = 0
+                self.hud_bump_until = 0.0
             else:
                 self._enter_hud_relax()
             return
 
         if getattr(self, "hud_bump_active", False):
-            self.hud_bump_ticks = getattr(self, "hud_bump_ticks", 0) + 1
-            if self.hud_bump_ticks >= HUD_BUMP_HOLD_TICKS:
+            if now_mono >= getattr(self, "hud_bump_until", 0.0):
                 self._clear_hud_bottom_bump()
                 active_table.scroll_to(y=0, animate=False)
                 self.hud_scroll_y = 0
-                self.hud_bump_ticks = 0
+                self.hud_bump_until = 0.0
                 if phase == "js":
                     self.hud_scroll_phase = "md"
                     self.hud_scroll_target = "md"
@@ -1141,7 +1140,7 @@ class SonarApp(App):
         self.hud_scroll_y = min(max_y, self.hud_scroll_y + step)
         active_table.scroll_to(y=self.hud_scroll_y, animate=False)
         if self.hud_scroll_y >= max_y:
-            self.hud_bump_ticks = 0
+            self.hud_bump_until = now_mono + HUD_BUMP_HOLD_SECONDS
             self._trigger_hud_bottom_bump(phase, active_table, max_y)
 
     # -------------------------------------------------------------------------
@@ -1221,7 +1220,7 @@ class SonarApp(App):
         hits = 0
         for line in sys.stdin:
             wait_ticks = 0
-            while (self._is_stage_frozen() or self._is_hud_scrolling()) and wait_ticks < 45:
+            while (self._is_stage_frozen() or self._is_hud_scrolling()) and wait_ticks < 120:
                 time.sleep(0.08)
                 wait_ticks += 1
             clean_line = ANSI_ESCAPE.sub('', line).strip()

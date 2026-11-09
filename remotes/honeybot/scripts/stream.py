@@ -291,6 +291,7 @@ _HUMAN_SPEAKER_RE = (
     "mike l e v dot eye n", "mikelev.in", "mike levin:", "mike:", "me:",
     "setting the stage", "technical journal", "the a i edit method", "the ai-edit method",
     "1: before", "2: after", "3: change", "4: prompt", "5: deliverable",
+    "new post", "reading article", "greetings",
 )
 _HOST_TRANSIENT_RE = (
     "we interrupt", "we now return", "scheduled station", "receiving updates",
@@ -2045,6 +2046,8 @@ def dispatch_cue(command, content, env, profile_dir, pace_say=True):
             dismiss_card(card_handle)
 
     elif command == "VISIT":
+        narrator._dialogue_rate = HUMAN_TTS_SAMPLE_RATE
+        narrator._speaker_rate = HUMAN_TTS_SAMPLE_RATE
         # Ensure the page actually exists before showing it
         wait_for_availability(content)
         try:
