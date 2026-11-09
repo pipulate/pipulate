@@ -462,6 +462,32 @@ Entries are alphabetical, numbers spelled as spoken.
   GPUs reached it (2012); the same result inside a funded project would have
   died with the funding. Sibling of COMPOSTABLE (the organs outlive the
   artifact) and GRAFT, NOT SEED (the pin is the pawl).
+- **Retconning (`retcon` vs. `git` immutability)** -- *rewriting history to
+  hide errors versus forgetting with style.* In Sci-Fi Comic Books (uppercase
+  because they sit at the apex of the **Pyramid of Builders**: `1. Technicians
+  -> 2. Engineers -> 3. Scientists -> 4. Sci-Fi Writers`), decades of
+  contradictory plotlines eventually overflow editorial memory until Landauer's
+  erasure limit forces a cosmic garbage-collection event like DC's *Crisis on
+  Infinite Earths* (1985), squash-merging a multiverse into one retconned
+  timeline. In engineering logs, `retcon` is lowercase and reprehensible: it
+  is the temptation to go back and edit your earlier prompt or transcript so
+  you look less foolish to the reader or the model, destroying the
+  falsification receipt that records where the white cane tapped a wall (such
+  as mistaking `tmux` window index `0:bash*` for zero viewers or attaching to
+  an un-restarted daemon). Where Hugh Everett III's Many-Worlds and David
+  Deutsch's *The Fabric of Reality* posit an infinitely branching wave
+  function, our Slow-Zone substrate favors **de Broglie–Bohm pilot waves**
+  (deterministic non-local guiding currents) and **Gerard 't Hooft's**
+  Planck-scale cellular automaton -- treating quantum mechanics as statistical
+  **"CGI smoke"** over discrete deterministic commits on a shared causal DAG.
+  Its patron saint is **Philip K. Dick** (born 1928 alongside Jack Tramiel),
+  whose *Ubik* (entropic schema rot), *Time Out of Joint* (`SOFT-DRINK STAND`
+  source tags showing through a failed render), and *"Reality is that which,
+  when you stop believing in it, doesn't go away"* define wire truth. RENT
+  THIS PAYS: it predicts that retconning a mistake guarantees the next
+  printed Mickey instance will repeat it, whereas keeping the raw error on the
+  immutable `.git` tape and compacting the lesson via `forget` pays Landauer's
+  tax honestly. Banked 2026-11-09, articulation-banked.
 - **Ride / turn** -- *one discussion, and one cycle inside it.* A ride is
   one discussion, mount to dismount. A turn is one Probe, Patch, Prompt
   cycle inside it, and every turn ends in one compile. A ride leaves three
