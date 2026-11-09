@@ -282,6 +282,49 @@ MODEL_NAME = "en_US-amy-low.onnx"
 TTS_SAMPLE_RATE = int(os.environ.get("HONEYBOT_TTS_RATE", "22050"))
 HUMAN_TTS_SAMPLE_RATE = int(os.environ.get("HONEYBOT_HUMAN_TTS_RATE", "17600"))
 CHIPMUNK_TTS_SAMPLE_RATE = int(os.environ.get("HONEYBOT_CHIPMUNK_TTS_RATE", "22050"))
+STAGE_STATE_PATH = "/tmp/honeybot_stage.json"
+STAGE_CURTAIN_SECONDS = 1.8
+_STAGE_CURTAIN_INTRO_RE = (
+    "now i read", "reading entry", "reading article", "greetings",
+)
+_stage_seq = 0
+_stage_write_lock = threading.Lock()
+
+
+def write_stage_state(
+    speaker: str = "narrator",
+    left: str = "curtain",
+    right: str = "curtain",
+    curtain_side: str = "",
+    curtain_seconds: float = 0.0,
+    stage_path: str = STAGE_STATE_PATH,
+) -> dict:
+    """Atomically write /tmp/honeybot_stage.json so logs.py flips stage portraits in voice-order."""
+    import json as _json
+    global _stage_seq
+    now = time.time()
+    with _stage_write_lock:
+        _stage_seq += 1
+        payload = {
+            "speaker": speaker,
+            "left": left,
+            "right": right,
+            "curtain_side": curtain_side,
+            "curtain_until": round(now + curtain_seconds, 3) if (curtain_side and curtain_seconds > 0) else 0.0,
+            "seq": _stage_seq,
+            "updated_at": round(now, 3),
+        }
+        if stage_path:
+            try:
+                p = Path(stage_path)
+                tmp = p.with_name(f".{p.name}.{os.getpid()}.tmp")
+                tmp.write_text(_json.dumps(payload), encoding="utf-8")
+                os.replace(tmp, p)
+            except Exception:
+                pass
+        return payload
+
+
 _AI_SPEAKER_RE = (
     "gemini:", "gemini 4:", "gemini 3:", "gemini 2:",
     "gemini 4 argon high:", "gemini 3.1 pro:", "gemini pro:", "gemini flash:",
@@ -410,6 +453,8 @@ class Narrator(threading.Thread):
         self._tts_seq = 0
         self._dialogue_rate = HUMAN_TTS_SAMPLE_RATE
         self._speaker_rate = HUMAN_TTS_SAMPLE_RATE
+        self._stage_dialogue_role = "narrator"
+        self.live_operator_mode = threading.Event()
         self.exclusive_mode = threading.Event()
 
     def resolve_speaker_rate(self, text: str) -> int:
@@ -428,6 +473,39 @@ class Narrator(threading.Thread):
         else:
             self._speaker_rate = self._dialogue_rate
         return self._speaker_rate
+
+    def sync_stage_for_utterance(self, text: str, sample_rate: int = None, stage_path: str = STAGE_STATE_PATH) -> dict:
+        """Update /tmp/honeybot_stage.json at the exact moment ALSA playback begins."""
+        low = (text or "").strip().lower()
+        rate = int(sample_rate or self._speaker_rate or HUMAN_TTS_SAMPLE_RATE)
+        if self.live_operator_mode.is_set():
+            prev = self._stage_dialogue_role
+            self._stage_dialogue_role = "left"
+            c_side = "left" if prev != "left" else ""
+            return write_stage_state("left", "active", "inactive", c_side, STAGE_CURTAIN_SECONDS if c_side else 0.0, stage_path=stage_path)
+        if low.startswith("signal check"):
+            return write_stage_state("transient", "inactive", "inactive", "", 0.0, stage_path=stage_path)
+        if any(low.startswith(p) for p in _STAGE_CURTAIN_INTRO_RE):
+            self._stage_dialogue_role = "narrator"
+            return write_stage_state("narrator", "curtain", "curtain", "", 0.0, stage_path=stage_path)
+        if self.exclusive_mode.is_set() or any(low.startswith(p) for p in _HOST_TRANSIENT_RE):
+            self._stage_dialogue_role = "narrator"
+            return write_stage_state("narrator", "inactive", "inactive", "", 0.0, stage_path=stage_path)
+        if not low:
+            role = "right" if rate >= 20000 else ("left" if self._stage_dialogue_role == "left" else "narrator")
+        elif rate >= 20000 or any(low.startswith(p) for p in _AI_SPEAKER_RE) or re.match(r"^(?:gemini|claude|chat\s*g\s*p\s*t|openai|opus|sonnet)\b[^:.!?]{0,35}:", low):
+            role = "right"
+        else:
+            role = "left"
+        if role == "right":
+            c_side = "right" if self._stage_dialogue_role != "right" else ""
+            self._stage_dialogue_role = "right"
+            return write_stage_state("right", "inactive", "active", c_side, STAGE_CURTAIN_SECONDS if c_side else 0.0, stage_path=stage_path)
+        if role == "left":
+            c_side = "left" if self._stage_dialogue_role != "left" else ""
+            self._stage_dialogue_role = "left"
+            return write_stage_state("left", "active", "inactive", c_side, STAGE_CURTAIN_SECONDS if c_side else 0.0, stage_path=stage_path)
+        return write_stage_state("narrator", "curtain", "curtain", "", 0.0, stage_path=stage_path)
 
     def _cleanup_item(self, item):
         """Remove any unplayed pre-synthesized .raw file when flushing the queue."""
@@ -473,7 +551,7 @@ class Narrator(threading.Thread):
         """Enqueue a pre-synthesized .raw file for zero-latency playback, falling back to text."""
         rate = self.resolve_speaker_rate(fallback_text) if fallback_text else self._speaker_rate
         if raw_path and os.path.exists(raw_path):
-            self.queue.put(("RAW", str(raw_path), rate))
+            self.queue.put(("RAW", str(raw_path), rate, str(fallback_text or "")))
         elif fallback_text:
             self.queue.put(fallback_text)
 
@@ -580,7 +658,8 @@ class Narrator(threading.Thread):
                         time.sleep(min(0.2, max(0.0, deadline - time.time())))
                 elif isinstance(item, tuple) and item and item[0] == "RAW":
                     raw_rate = item[2] if len(item) >= 3 else self._speaker_rate
-                    self._play_raw_now(item[1], sample_rate=raw_rate)
+                    raw_text = item[3] if len(item) >= 4 else ""
+                    self._play_raw_now(item[1], sample_rate=raw_rate, text=raw_text)
                 else:
                     self._speak_now(item)
                 self.queue.task_done()
@@ -610,6 +689,7 @@ class Narrator(threading.Thread):
                     )
                     p1.stdout.close()
                     spk_rate = self.resolve_speaker_rate(text)
+                    self.sync_stage_for_utterance(text, sample_rate=spk_rate)
                     p3 = subprocess.Popen(
                         ["aplay", "-r", str(spk_rate), "-f", "S16_LE", "-t", "raw"],
                         stdin=p2.stdout,
@@ -630,7 +710,7 @@ class Narrator(threading.Thread):
                                 pass
                     self._active_procs = []
 
-    def _play_raw_now(self, raw_path, sample_rate=None):
+    def _play_raw_now(self, raw_path, sample_rate=None, text=""):
         """Play a pre-synthesized .raw file immediately via aplay and unlink when done."""
         if not raw_path or not os.path.exists(raw_path):
             return
@@ -645,6 +725,7 @@ class Narrator(threading.Thread):
             p_play = None
             try:
                 with self._proc_lock:
+                    self.sync_stage_for_utterance(text, sample_rate=rate)
                     p_play = subprocess.Popen(
                         ["aplay", "-r", str(rate), "-f", "S16_LE", "-t", "raw", str(raw_path)],
                         stdout=subprocess.DEVNULL,
@@ -2050,6 +2131,8 @@ def dispatch_cue(command, content, env, profile_dir, pace_say=True):
     elif command == "VISIT":
         narrator._dialogue_rate = HUMAN_TTS_SAMPLE_RATE
         narrator._speaker_rate = HUMAN_TTS_SAMPLE_RATE
+        narrator._stage_dialogue_role = "narrator"
+        write_stage_state("narrator", "curtain", "curtain")
         # Ensure the page actually exists before showing it
         wait_for_availability(content)
         try:
@@ -2074,6 +2157,8 @@ def dispatch_cue(command, content, env, profile_dir, pace_say=True):
         else:
             narrator._dialogue_rate = HUMAN_TTS_SAMPLE_RATE
             narrator._speaker_rate = HUMAN_TTS_SAMPLE_RATE
+            narrator._stage_dialogue_role = "narrator"
+            write_stage_state("narrator", "curtain", "curtain")
             start_storytime_bgm()
 
     elif command == "PATRONUS":
@@ -2191,6 +2276,8 @@ def run_live_message(msg, env, profile_dir):
         patronus_key = msg.get("patronus") if isinstance(msg, dict) else None
         media_spec = msg.get("media") if isinstance(msg, dict) else None
         window_spec = msg.get("window") if isinstance(msg, dict) else None
+        if "MIKE" in str(card_label or "").upper() and not window_spec and not patronus_key:
+            narrator.live_operator_mode.set()
         hold = float(msg.get("duration", 120.0)) if isinstance(msg, dict) else 120.0
         # Pre-synthesize during the pre-banner silence so the 3.0s palate cleanser
         # absorbs Piper synthesis time and the banner speaks the instant it pops.
@@ -2246,6 +2333,7 @@ def run_live_message(msg, env, profile_dir):
                 pace_say=True,
             )
     finally:
+        narrator.live_operator_mode.clear()
         _in_live_message = False
         if not was_exclusive:
             narrator.exclusive_mode.clear()
@@ -2622,6 +2710,7 @@ def run_logs():
 
 def main():
     _reap_orphaned_tts_and_overlays()
+    write_stage_state("narrator", "curtain", "curtain")
     atexit.register(_reap_orphaned_tts_and_overlays)
     narrator.start()
     director = threading.Thread(target=start_director_track, daemon=True)
