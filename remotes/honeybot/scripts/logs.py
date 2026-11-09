@@ -229,6 +229,124 @@ def _cells_to_rich_text(grid_rows, fallback_style: str) -> Text:
     return txt
 
 
+# 14x10 pixel-art grids (packed 2 vertical pixels per terminal row via Unicode half-blocks ▀/▄/█)
+MIKE_E_PIXELS = (
+    "......GL......",
+    ".....BGLB.....",
+    "....BBLLBB....",
+    "...GGGGGGGG...",
+    "..EESSSSSSEE..",
+    "..ESWKSSKWSE..",
+    "..E.CSSSSC.E..",
+    "....SSMMSS....",
+    "...RRRRRRRR...",
+    "..RRRRGGRRRR..",
+)
+MIKE_E_PALETTE = {
+    "B": "#1e40af",  # Sorcerer's Apprentice royal blue hat
+    "L": "#3b82f6",  # Wizard hat highlight blue
+    "G": "#ffd700",  # Star / hatband / clasp gold
+    "E": "#3b2314",  # Round apprentice ears / hair
+    "S": "#ffcc99",  # Warm skin
+    "C": "#f59e7a",  # Rosy cheek
+    "W": "#ffffff",  # Eye sparkle
+    "K": "#111827",  # Pupil
+    "M": "#991b1b",  # Warm smile
+    "R": "#dc2626",  # Apprentice crimson robe
+}
+
+SHIPMUNK_PIXELS = (
+    "..DD......DD..",
+    ".DPFD.DD.DFPD.",
+    "..FFDAAAADFF..",
+    "..FFKWAAWKFF..",
+    ".FFFTTNNTTFFF.",
+    ".FFFFTTTTFFFF.",
+    "..FFFTWWTFFF..",
+    "...FFFFFFFF...",
+    "..CCCGGGGCCC..",
+    "...FFTTTTFF...",
+)
+SHIPMUNK_PALETTE = {
+    "D": "#5c2d0c",  # Dark walnut ear rim & head stripe
+    "F": "#d97706",  # Russet chipmunk fur
+    "A": "#f59e0b",  # Amber highlight fur
+    "P": "#f472b6",  # Inner ear pink
+    "T": "#fde68a",  # Cream muzzle & belly
+    "W": "#ffffff",  # Eye shine & signature buck teeth
+    "K": "#090d16",  # Pupil
+    "N": "#ef4444",  # Chipmunk nose
+    "C": "#00ffff",  # Ship of Theseus cyber collar cyan
+    "G": "#ffd700",  # Collar rivet gold
+}
+
+
+def _scale_hex_color(hex_str: str, factor: float) -> str:
+    """Scale an #rrggbb hex string by factor (1.0 = active full-bright, 0.38 = inactive dimmed)."""
+    h = (hex_str or "#000000").lstrip("#")
+    if len(h) != 6:
+        return "#0d061a"
+    r = max(0, min(255, int(int(h[0:2], 16) * factor)))
+    g = max(0, min(255, int(int(h[2:4], 16) * factor)))
+    b = max(0, min(255, int(int(h[4:6], 16) * factor)))
+    return f"#{r:02x}{g:02x}{b:02x}"
+
+
+def render_stage_portrait(side: str, active: bool = True, width: int = STAGE_BOX_WIDTH) -> Text:
+    """Pre-bake a 5-row x 14-col 24-bit Truecolor portrait from a 14x10 pixel grid (requires _cells_to_rich_text above)."""
+    is_left = (side or "").strip().lower() != "right"
+    pixels = MIKE_E_PIXELS if is_left else SHIPMUNK_PIXELS
+    raw_pal = MIKE_E_PALETTE if is_left else SHIPMUNK_PALETTE
+    factor = 1.0 if active else 0.38
+    bg_hex = "#0d061a" if active else "#080411"
+    pal = {k: _scale_hex_color(v, factor) for k, v in raw_pal.items()}
+    grid_rows = []
+    for row_idx in range(5):
+        top_line = pixels[row_idx * 2].ljust(width, ".")[:width]
+        bot_line = pixels[row_idx * 2 + 1].ljust(width, ".")[:width]
+        row_cells = []
+        for col_idx in range(width):
+            t_ch = top_line[col_idx]
+            b_ch = bot_line[col_idx]
+            t_col = pal.get(t_ch)
+            b_col = pal.get(b_ch)
+            if t_col is None and b_col is None:
+                row_cells.append((" ", f"on {bg_hex}"))
+            elif t_col is not None and b_col is None:
+                row_cells.append(("▀", f"{t_col} on {bg_hex}"))
+            elif t_col is None and b_col is not None:
+                row_cells.append(("▄", f"{b_col} on {bg_hex}"))
+            elif t_col == b_col:
+                row_cells.append(("█", f"{t_col} on {bg_hex}"))
+            else:
+                row_cells.append(("▀", f"{t_col} on {b_col}"))
+        grid_rows.append(row_cells)
+    return _cells_to_rich_text(grid_rows, f"on {bg_hex}")
+
+
+STAGE_FRAMES = {
+    "left": {
+        "curtain": render_stage_curtain("left"),
+        "active": render_stage_portrait("left", active=True),
+        "inactive": render_stage_portrait("left", active=False),
+    },
+    "right": {
+        "curtain": render_stage_curtain("right"),
+        "active": render_stage_portrait("right", active=True),
+        "inactive": render_stage_portrait("right", active=False),
+    },
+}
+
+
+def get_stage_frame(side: str, state: str = "curtain") -> Text:
+    """Return the pre-baked 5x14 Rich.Text frame ('curtain', 'active', or 'inactive') in O(1)."""
+    s_key = "right" if (side or "").strip().lower() == "right" else "left"
+    st_key = (state or "curtain").strip().lower()
+    if st_key not in ("curtain", "active", "inactive"):
+        st_key = "curtain"
+    return STAGE_FRAMES[s_key][st_key]
+
+
 def _bake_doom_fire_timeline(led_rows, width: int, base_style: str, effect: str, still_txt: Text, seed: int = 0):
     """Pre-bake a 56-tick timeline with bilateral PSX DOOM fire (12 entry ticks + 32 still ticks + 12 exit ticks)."""
     if effect not in ("subtle", "dramatic") or width <= 0 or len(led_rows) != 5:
@@ -619,6 +737,8 @@ class SonarApp(App):
         self.ticker_cached_width = 0
         self.ticker_last_frame = None
         self.is_fire_burning = False
+        self.left_stage_state = "curtain"
+        self.right_stage_state = "curtain"
         self.pending_log_buffer = deque(maxlen=64)
         self.pending_table_refresh = False
         
@@ -667,6 +787,21 @@ class SonarApp(App):
             new_w = self._get_ticker_width()
             if new_w != getattr(self, "ticker_cached_width", 0):
                 self._rebuild_billboard_cache(new_w)
+
+    def update_stage_boxes(self, left_state: str, right_state: str) -> None:
+        """Flip #left_stage and #right_stage between pre-baked 'curtain', 'active', and 'inactive' frames."""
+        if left_state != getattr(self, "left_stage_state", None):
+            self.left_stage_state = left_state
+            try:
+                self.query_one("#left_stage", Static).update(get_stage_frame("left", left_state))
+            except Exception:
+                pass
+        if right_state != getattr(self, "right_stage_state", None):
+            self.right_stage_state = right_state
+            try:
+                self.query_one("#right_stage", Static).update(get_stage_frame("right", right_state))
+            except Exception:
+                pass
 
     def _rebuild_billboard_cache(self, width: int):
         """Pre-render 5-row Rich.Text still cards and pre-baked PSX DOOM fire timelines."""
@@ -863,6 +998,12 @@ class SonarApp(App):
             if not cards:
                 return
             self.ticker_card_idx = (self.ticker_card_idx + 1) % len(cards)
+            if self.ticker_card_idx == 0:
+                self.update_stage_boxes("curtain", "curtain")
+            elif self.ticker_card_idx % 2 == 1:
+                self.update_stage_boxes("active", "inactive")
+            else:
+                self.update_stage_boxes("inactive", "active")
             next_card = cards[self.ticker_card_idx]
             first_frame = next_card["timeline"][0] if next_card.get("timeline") else next_card["still"]
             self.is_fire_burning = first_frame is not next_card.get("still")
