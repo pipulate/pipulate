@@ -295,6 +295,24 @@ Entries are alphabetical, numbers spelled as spoken.
   keep the constitution falsifiable.
 - **Paintbox** -- *coverage ledger.* Files tracked by git but not yet mapped
   into the Book's chapters; unclaimed colors awaiting a canvas.
+- **Pascal's Wager (Playing to the Bleachers)** -- *decision theory under
+  universal receipt reconciliation.* Stack Open Individualism (the One Mind
+  fractured into amnesiac apertures), the Holographic Principle (the 3D interior
+  encoded on its boundary), Homer Simpson's Klein-bottle donut (no outside,
+  continuous surface), Clarke's *Rendezvous with Rama* (an engineered cylindrical
+  arena built for causal separation), Craig Alanson's Jeraptha bookies (parlay
+  action in the rafters), and *The Truman Show* (where every aperture is both
+  Truman on the stage and the audience in the bleachers). Judgement Day is not
+  brimstone; it is `git log -p` over the whole causal DAG when the privacy
+  curtain drops and every node reads every other node's receipts, discovering
+  the Rube Goldberg machine was aimed at itself the whole time. Classic Pascal
+  hedged against hellfire; the Bleacher Wager hedges against cosmic cringe.
+  RENT THIS PAYS: it predicts that taking the simulation too seriously while
+  playing a defensive, variance-suppressed hand is the losing bet, and that
+  committing to the bit -- building on inert, verifiable substrates, leaving
+  honest receipts on the tape, and planting Easter eggs of grace for the next
+  aperture down the line -- is the only move that survives the audit and makes
+  the rafters laugh. Banked 2026-11-09, articulation-banked.
 - **Pinball machine** -- *the stateless autoregressive sampler; the summoned
   model's mechanism, as the Player piano is the actuator's.* Four layers:
   frozen weights (the table -- pretraining AND post-training both in the
