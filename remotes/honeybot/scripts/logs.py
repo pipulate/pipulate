@@ -493,7 +493,7 @@ class SonarApp(App):
         v_word = "Viewer" if v == 1 else "Viewers"
         pk = getattr(self, "peak_viewers", 0) or 0
         pk_seg = f" (Peak: {pk})" if pk > 0 else ""
-        return f"👀 {v} {v_word}{pk_seg} — Web Bot AI Observatory — https://mikelev.in"
+        return f"{v} {v_word}{pk_seg} 👀 — Web Bot AI Observatory — https://mikelev.in"
 
     def get_sub_title(self):
         v = self._read_live_viewers()
@@ -502,7 +502,7 @@ class SonarApp(App):
             return f"Live Nginx Log Analysis | Next Report: {countdown}"
         pk = getattr(self, "peak_viewers", 0) or 0
         pk_seg = f" (Peak: {pk})" if pk > 0 else ""
-        return f"👀 Viewers: {v}{pk_seg} | Next Report: {countdown}"
+        return f"Viewers: {v}{pk_seg} 👀 | Next Report: {countdown}"
 
     def compose(self) -> ComposeResult:
         yield Header()
