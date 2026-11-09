@@ -101,7 +101,7 @@ def register_signal_handlers():
 
 # --- Configuration ---
 SHOW_DURATION_MINUTES = 240  # Minutes for the big logfile stream
-PITCH_INTERVAL = 600        # Seconds between "Station Identification" (Bumped to 10 mins so it doesn't get repetitive)
+PITCH_INTERVAL = 1200       # Seconds between "Station Identification" (Doubled to 20 mins for longer uninterrupted article reading)
 
 # Spoken over tick.wav when `publish "msg"` rings .deploy_standby on Honeybot.
 # Edit with `ytoutro edit` and audition locally on Prime with `ytoutro`.
