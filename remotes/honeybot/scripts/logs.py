@@ -29,6 +29,9 @@ HUD_PANEL_HEIGHT = HUD_TABLE_ROWS + 4  # +4 rows for top border, panel title, he
 BOT_IDENTITY_WIDTH = 21        # Emoji (2) + space (1) + 18-char bot name (trims 15 chars for Raw Signature)
 TICKER_FILE_PATH = "/tmp/honeybot_ticker.txt"
 WEEBO_ACTIVE_PATH = "/tmp/honeybot_weebo_active"
+VIEWERS_FILE_PATH = "/tmp/honeybot_viewers.json"
+VIEWERS_TTL_SECONDS = 120.0
+BASE_APP_TITLE = "Web Bot AI Observatory — https://mikelev.in (RFC 9110 · RFC 9421 · JS Trapdoor)"
 JS_PANEL_TITLE = "⚡ DOM HYDRATION TRAPDOOR (Bots Executing JS)"
 MD_PANEL_TITLE = "🧠 RFC 9110 MARKDOWN NEGOTIATORS (Accept: text/markdown)"
 JS_BUMP_TITLE = "▾ END OF LIST — HANDING OFF TO MARKDOWN HUD ➔"
@@ -445,8 +448,48 @@ class SonarApp(App):
     # --- NEW: Banish the interactive Command Palette ---
     ENABLE_COMMAND_PALETTE = False
     
+    def _read_live_viewers(self):
+        """Return the live viewer count pushed by ytwatch if /tmp/honeybot_viewers.json is fresh, else None."""
+        try:
+            if not os.path.exists(VIEWERS_FILE_PATH):
+                self.viewers_mtime = None
+                self.live_viewers = None
+                return None
+            st_mtime = os.stat(VIEWERS_FILE_PATH).st_mtime
+            now = time.time()
+            if (now - st_mtime) > VIEWERS_TTL_SECONDS:
+                self.live_viewers = None
+                return None
+            if st_mtime != getattr(self, "viewers_mtime", None):
+                self.viewers_mtime = st_mtime
+                import json as _json
+                with open(VIEWERS_FILE_PATH, "r", encoding="utf-8") as vf:
+                    data = _json.load(vf)
+                if not isinstance(data, dict) or not data.get("running", True):
+                    self.live_viewers = None
+                else:
+                    updated_at = float(data.get("updated_at") or st_mtime)
+                    if (now - updated_at) > VIEWERS_TTL_SECONDS:
+                        self.live_viewers = None
+                    else:
+                        self.live_viewers = max(0, int(data.get("viewers") or 0))
+            return self.live_viewers
+        except Exception:
+            self.live_viewers = None
+            return None
+
+    def get_app_title(self):
+        """When ytwatch is running, lead the Honeybot Storytime terminal title with the live viewer count."""
+        v = self._read_live_viewers()
+        if v is None:
+            return BASE_APP_TITLE
+        v_word = "Viewer" if v == 1 else "Viewers"
+        return f"👀 {v} {v_word} — {BASE_APP_TITLE}"
+
     def get_sub_title(self):
-        return f"Live Nginx Log Analysis | Next Report: {self.countdown_str}"
+        v = self._read_live_viewers()
+        v_seg = f"👀 Viewers: {v} | " if v is not None else ""
+        return f"{v_seg}Live Nginx Log Analysis | Next Report: {self.countdown_str}"
 
     def compose(self) -> ComposeResult:
         yield Header()
@@ -474,6 +517,9 @@ class SonarApp(App):
     def on_mount(self) -> None:
         self.ua_counter = Counter()
         self.countdown_str = "--:--"
+        self.viewers_mtime = None
+        self.live_viewers = None
+        self.title = self.get_app_title()
         self.spoof_flip = False
         self.verified_tokens = {"ExaSearchBot", "AhrefsBot", "DesearchBot"}
         self.stream_logs()
@@ -1024,6 +1070,9 @@ class SonarApp(App):
         mins, secs = divmod(int(remaining), 60)
         
         self.countdown_str = f"{mins:02d}:{secs:02d}"
+        new_title = self.get_app_title()
+        if self.title != new_title:
+            self.title = new_title
         self.sub_title = self.get_sub_title() # Trigger header update
 
     def _trigger_hud_bottom_bump(self, target: str, active_table: DataTable, max_y: int):
