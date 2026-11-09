@@ -66,7 +66,7 @@ WHATS_HAPPENING_BEAT = (
     "This is not second-hand Forrester or Gartner research papers. This is not million-dollar McKinsey or Deloitte consulting. This is far better and worth more, direct off-the-wire as it is. "
     "It may be hard to see that right now because it is so new, but if you are here you are ahead of the curve. "
     "Got someone you trust you can ask if this guy knows what he's talking about? Loop them in, please. "
-    "When you hear someone say that A I gives you superpowers, they're talking about this; not the infinite generative spam-cannon of so-called content. "
+    "When you hear someone say that AI gives you superpowers, they're talking about this; not the infinite generative spam-cannon of so-called content. "
     "This is what you've been waiting for. "
     "Round oranges highlight every self-asserted crawler. "
     "Blue diamonds mark agents cryptographically signing requests under R F C 94 21 Web Bot Auth. "
