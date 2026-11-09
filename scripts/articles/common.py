@@ -1616,29 +1616,35 @@ HONEYBOT_VIEWERS_FILE = "/tmp/honeybot_viewers.json"
 DEFAULT_YT_LIVE_URL = "https://www.youtube.com/MikeLevin/live"
 
 
-def _viewer_payload_shell_cmd(viewers, video_id=""):
+def _viewer_payload_shell_cmd(viewers, video_id="", peak=0):
     """Return a shell snippet that atomically writes /tmp/honeybot_viewers.json on Honeybot."""
     import time
+    v_cnt = max(0, int(viewers or 0))
+    p_cnt = max(v_cnt, int(peak or 0))
     payload_str = json.dumps({
-        "viewers": max(0, int(viewers or 0)),
+        "viewers": v_cnt,
+        "peak": p_cnt,
         "running": True,
         "video_id": str(video_id or ""),
         "updated_at": int(time.time()),
     })
-    return f"printf '%s\\n' { payload_str!r} > {HONEYBOT_VIEWERS_FILE}.tmp && mv {HONEYBOT_VIEWERS_FILE}.tmp {HONEYBOT_VIEWERS_FILE}"
+    return f"printf '%s\\n' {payload_str!r} > {HONEYBOT_VIEWERS_FILE}.tmp && mv {HONEYBOT_VIEWERS_FILE}.tmp {HONEYBOT_VIEWERS_FILE}"
 
 
-def _sync_honeybot_viewers(viewers, running=True, video_id="", push_remote=True):
+def _sync_honeybot_viewers(viewers, running=True, video_id="", peak=0, push_remote=True):
     """Sync ytwatch viewer count to local /tmp/honeybot_viewers.json, tmux title, and Honeybot."""
     import subprocess
     import time
     v_cnt = max(0, int(viewers or 0))
+    p_cnt = max(v_cnt, int(peak or 0))
     v_word = "Viewer" if v_cnt == 1 else "Viewers"
+    peak_tag = f" (Peak: {p_cnt})" if p_cnt > 0 else ""
     local_p = Path(HONEYBOT_VIEWERS_FILE)
     try:
         if running:
             payload = {
                 "viewers": v_cnt,
+                "peak": p_cnt,
                 "running": True,
                 "video_id": str(video_id or ""),
                 "updated_at": int(time.time()),
@@ -1659,10 +1665,10 @@ def _sync_honeybot_viewers(viewers, running=True, video_id="", push_remote=True)
         ).returncode == 0
         if has_tmux and running:
             for opt, val in (
-                ("status-left-length", "36"),
-                ("status-left", f" 🔭 YTWATCH LIVE (👀 {v_cnt}) "),
+                ("status-left-length", "44"),
+                ("status-left", f" 🔭 YTWATCH LIVE (👀 {v_cnt}{peak_tag}) "),
                 ("set-titles", "on"),
-                ("set-titles-string", f"👀 {v_cnt} {v_word} — Honeybot Storytime"),
+                ("set-titles-string", f"👀 {v_cnt} {v_word}{peak_tag} — Honeybot Storytime"),
             ):
                 subprocess.run(
                     ["tmux", "set-option", "-t", "ytwatch", opt, val],
@@ -1676,7 +1682,7 @@ def _sync_honeybot_viewers(viewers, running=True, video_id="", push_remote=True)
         return
     try:
         remote_cmd = (
-            _viewer_payload_shell_cmd(v_cnt, video_id=video_id)
+            _viewer_payload_shell_cmd(v_cnt, video_id=video_id, peak=p_cnt)
             if running
             else f"rm -f {HONEYBOT_VIEWERS_FILE} {HONEYBOT_VIEWERS_FILE}.tmp"
         )
@@ -2367,11 +2373,23 @@ def _manage_ytwatch_daemon(action, interval=30, channel=None):
             print("ℹ️  No background 'ytwatch' tmux session was running.")
         return 0
     def _style_ytwatch_tmux():
+        left_label = " 🔭 YTWATCH LIVE "
+        try:
+            vf = Path(HONEYBOT_VIEWERS_FILE)
+            if vf.is_file():
+                vdata = json.loads(vf.read_text(encoding="utf-8"))
+                if isinstance(vdata, dict) and vdata.get("running"):
+                    vc = int(vdata.get("viewers") or 0)
+                    pk = int(vdata.get("peak") or 0)
+                    pk_s = f" (Peak: {pk})" if pk > 0 else ""
+                    left_label = f" 🔭 YTWATCH LIVE (👀 {vc}{pk_s}) "
+        except Exception:
+            pass
         for opt, val in (
             ("status", "on"),
             ("status-style", "bg=colour235,fg=colour51,bold"),
-            ("status-left-length", "28"),
-            ("status-left", " 🔭 YTWATCH LIVE "),
+            ("status-left-length", "44"),
+            ("status-left", left_label),
             ("status-right-length", "68"),
             ("status-right", " EXIT (KEEP RUNNING): Press q OR Ctrl+b then d "),
         ):
@@ -2407,9 +2425,15 @@ def _manage_ytwatch_daemon(action, interval=30, channel=None):
         print("❌ Failed to start tmux session 'ytwatch'.")
         return 1
     if action == "attach":
+        vf = Path(HONEYBOT_VIEWERS_FILE)
         if not is_running:
             print("🔭 'ytwatch' daemon was not running — starting it now...")
             rc = _manage_ytwatch_daemon("start", interval=interval, channel=channel)
+            if rc != 0:
+                return rc
+        elif not vf.is_file():
+            print("🔄 Upgrading running 'ytwatch' daemon to sync live viewer count to Honeybot...")
+            rc = _manage_ytwatch_daemon("restart", interval=interval, channel=channel)
             if rc != 0:
                 return rc
         _style_ytwatch_tmux()
@@ -2607,8 +2631,9 @@ def run_youtube_watch(
                         tags="speech_balloon",
                         topic=resolved_topic,
                     )
+        peak_viewers = max(peak_viewers, int(state["concurrent_viewers"] or 0))
         if daemon_running:
-            _sync_honeybot_viewers(state["concurrent_viewers"], running=True, video_id=state["video_id"], push_remote=True)
+            _sync_honeybot_viewers(state["concurrent_viewers"], running=True, video_id=state["video_id"], peak=peak_viewers, push_remote=True)
         all_ids = list(dict.fromkeys([*(persisted.get("seen_ids") or []), *(m["id"] for m in state["chat_messages"])]))[-500:]
         _save_ytwatch_state({
             "video_id": state["video_id"],
@@ -2621,7 +2646,8 @@ def run_youtube_watch(
             "updated_at": int(time.time()),
         })
         return 0
-    _sync_honeybot_viewers(state["concurrent_viewers"], running=True, video_id=state["video_id"], push_remote=True)
+    peak_viewers = max(peak_viewers, int(state["concurrent_viewers"] or 0))
+    _sync_honeybot_viewers(state["concurrent_viewers"], running=True, video_id=state["video_id"], peak=peak_viewers, push_remote=True)
     for m in state["chat_messages"]:
         seen_ids.add(m["id"])
     if state["is_live"] and state["concurrent_viewers"] > prev_viewers:
@@ -2700,17 +2726,25 @@ def run_youtube_watch(
             dwell_window.clear()
             alerted_in_run = False
 
+    script_mtime = Path(__file__).stat().st_mtime
     try:
         while True:
+            if Path(__file__).stat().st_mtime != script_mtime:
+                print(f"[{_ytlog_ts()}] 🔄 [HOT-RELOAD] common.py updated on disk — re-execing ytwatch daemon...", flush=True)
+                os.execv(sys.executable, [sys.executable, *sys.argv])
             cur_vid = state.get("video_id") if state.get("is_live") else ""
             for _ in range(sub_polls - 1):
                 time.sleep(fast_step)
+                if Path(__file__).stat().st_mtime != script_mtime:
+                    print(f"[{_ytlog_ts()}] 🔄 [HOT-RELOAD] common.py updated on disk — re-execing ytwatch daemon...", flush=True)
+                    os.execv(sys.executable, [sys.executable, *sys.argv])
                 if not cur_vid:
                     break
                 fast_v = _fetch_yt_concurrent_viewers_fast(cur_vid)
                 if fast_v is None:
                     continue
                 fast_ts = time.time()
+                peak_viewers = max(peak_viewers, int(fast_v))
                 if fast_v > prev_viewers:
                     print(
                         f"[{_ytlog_ts()}] ⚡ [FAST VIEWER +{fast_v - prev_viewers}] {prev_viewers} -> {fast_v} watching ({fast_step}s InnerTube pulse) — firing hairline Weebo trigger!",
@@ -2723,7 +2757,7 @@ def run_youtube_watch(
                         flush=True,
                     )
                 if fast_v != prev_viewers:
-                    _sync_honeybot_viewers(fast_v, running=True, video_id=cur_vid, push_remote=True)
+                    _sync_honeybot_viewers(fast_v, running=True, video_id=cur_vid, peak=peak_viewers, push_remote=True)
                 prev_viewers = fast_v
                 _check_dwell(fast_v, fast_ts)
             time.sleep(fast_step)
@@ -2840,10 +2874,11 @@ def run_youtube_watch(
                         flush=True,
                     )
                 prev_discord_members = cur_disc
-            _sync_honeybot_viewers(viewers, running=True, video_id=state["video_id"], push_remote=False)
+            peak_viewers = max(peak_viewers, int(viewers or 0))
+            _sync_honeybot_viewers(viewers, running=True, video_id=state["video_id"], peak=peak_viewers, push_remote=False)
             try:
                 last_ref_ts = int(persisted.get("last_referral_ts") or int(now))
-                hb_sync_and_tail = f"{_viewer_payload_shell_cmd(viewers, video_id=state['video_id'])}; tail -n 20 /tmp/honeybot_referrals.jsonl 2>/dev/null"
+                hb_sync_and_tail = f"{_viewer_payload_shell_cmd(viewers, video_id=state['video_id'], peak=peak_viewers)}; tail -n 20 /tmp/honeybot_referrals.jsonl 2>/dev/null"
                 ref_res = subprocess.run(
                     ["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=4", HONEYBOT_SSH_HOST, hb_sync_and_tail],
                     capture_output=True,
@@ -3148,6 +3183,14 @@ echo "⚠️ No new stream.py PID seen within 14s; verify the stream watchdog on
 exit 1
 """
     res = subprocess.run(["ssh", HONEYBOT_SSH_HOST, "sh", "-s"], input=remote_sh, text=True)
+    has_ytwatch = subprocess.run(
+        ["tmux", "has-session", "-t", "ytwatch"],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        check=False,
+    ).returncode == 0
+    if has_ytwatch:
+        _manage_ytwatch_daemon("restart")
     return res.returncode
 
 
