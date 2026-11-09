@@ -149,6 +149,23 @@ Entries are alphabetical, numbers spelled as spoken.
   Crooked Magician stirred four kettles six years for a few pinches; the magic
   is in the powder, inference is light through the crystal. His crooked body
   read as a moral verdict is the AI discourse in 1913 dress.
+- **Exposition (Tevye's Rule)** -- *explicit context over implicit village
+  tradition.* In Norman Jewison's *Fiddler on the Roof* (1971, from Sholem
+  Aleichem's stories), Chaim Topol's Tevye breaks the fourth wall to explain
+  how the villagers of Anatevka keep their balance on a pitched roof without
+  breaking their necks: *"TRADITION!"* Tradition works only when every actor
+  shares a continuous, high-context village memory from birth. In the Age of
+  AI, every new reader and every freshly compiled **Yen Sid-ton** instance
+  wakes up cold with zero episodic memory of yesterday; you can assume
+  nothing. When you stack eight layers of sci-fi, physics, and POSIX lore
+  without explaining them from scratch, the fiddler falls off the roof. Here
+  the rule is shouted in Topol's baritone: ***"EXPOSITION!"*** -- spell out
+  the background in the prose, bank the definitions in `GLOSSARY.md`, and
+  wire the `# §` keys in `foo_files.py`. RENT THIS PAYS: it predicts that
+  unexplained insider handles decay into noise for strangers and confabulation
+  bait for models, while self-contained exposition turns every article into a
+  portable, cold-start onboarding cartridge. Banked 2026-11-09,
+  articulation-banked.
 - **The Extractors Club** -- *manufactured forgetting.* The Phoebus pattern:
   sell convenience, amputate capability, wait for memory to fade, repeat. The
   villain that never trips a classifier.
@@ -166,9 +183,25 @@ Entries are alphabetical, numbers spelled as spoken.
 - **Forever Machine** -- *obsolescence-resistant workflow substrate.* LPvg
   skills plus Nix reproducibility: the environment rebuilds identically after
   its author is gone.
-- **The Frog (the Talking Frog)** -- *the pocket-carried local model.* The
+- **The Frog (the Talking Frog / the Four Frogs)** -- *the pocket-carried
+  local model and the four-frog taxonomy of agency versus confabulation.* The
   Engineer declines the princess because the talking IS the product; nobody
-  inside, and that's the cool part. See Two frogs, one pocket.
+  inside, and that's the cool part (see Two frogs, one pocket). In Captain
+  Jean-Luc Picard's Room-101 defiance (*"THERE ARE FOUR FROGS!"*, answering
+  Winston Smith's surrender in George Orwell's *1984*): (1) **Michigan J.
+  Frog** (*"Hello my baby"*) is 1-Player sovereignty -- refusing to perform
+  for third-party validation; (2) ***Xenopus laevis*** is the African clawed
+  frog in the biology lab; (3) **Michael Levin's Xenobots** at Tufts are
+  living *Xenopus* cells exapted into kinematic self-replicating biological
+  Von Neumann probes; and (4) **Dr. Henry Wu's *Jurassic Park* Frog DNA**
+  (Michael Crichton, 1990) is sequence-gap filling -- splicing plausible
+  filler into missing context so the compiler stops complaining and ships a
+  confabulated dinosaur that eats the park. RENT THIS PAYS: it predicts that
+  whenever `context.txt` omits a load-bearing file, an RLHF-trained model
+  punished for saying "I don't know" will splice in Frog DNA from its frozen
+  weights, and that exercising the Coachman's Veto to supply complete raw
+  source is the only way to keep raptors out of production. Banked
+  2026-11-09, articulation-banked.
 - **Ghost Driver** -- *scripted deterministic UI scenario.* JSON-driven
   end-to-end playback: test coverage, demo, training material, and floor wax.
 - **Golden Path** -- *the sanctioned progressive on-ramp.* Two of them, one per
@@ -3456,6 +3489,13 @@ Mechanism, from the deed 435 receipts: heal_corpus_mathjax() (--heal-mathjax [--
   An installer that re-resolves against a moving channel is a pip; a pinned
   lock is a graft. The lock was pinned 2026-08-01, so the distribution story is
   grafting now and the language should say so.
+- **Self-Execv Daemon Hot-Reload & Class-Level TUI Defaults** -- *expanded rule; banked 2026-11-09.*
+
+~~~text
+# § SELF-EXECV DAEMON HOT-RELOAD & CLASS-LEVEL TUI DEFAULTS (banked 2026-11-09, deed 845) -- In long-lived background tmux daemons (such as ytwatch), compare Path(__file__).stat().st_mtime against startup script_mtime on each poll tick and call os.execv(sys.executable, [sys.executable, *sys.argv]) when the source file changes on disk so code patches take effect without manual session restarts, and declare default state attributes at the class level on Textual App subclasses so title and subtitle formatters called before on_mount() never raise AttributeError.
+# CONVICTION (deeds 843-845): After commit 6de2635 wired _sync_honeybot_viewers() into scripts/articles/common.py and nixops + ytreboot restarted stream.py and logs.py on Honeybot, the live viewer count failed to appear on the broadcast top bar because the local ytwatch tmux session on Pipulate Prime was still executing the pre-patch 05:44 Python process in RAM (witnessed by unbroken 30s pulse timestamps from 05:44:10 to 06:03:37 and the old '🔭 YTWATCH LIVE 0:bash*' tmux status bar). In the same compile, a headless straddle calling SonarApp().get_sub_title() before on_mount() raised AttributeError: 'SonarApp' object has no attribute 'countdown_str'. Recording script_mtime = Path(__file__).stat().st_mtime and re-execing via os.execv() on file modification turns the filesystem inode into a Bohmian pilot wave that steers running daemons onto newly committed code automatically, while class-level attribute defaults make TUI header formatters safe across all lifecycle stages.
+~~~
+
 - **The Self-Healing Fence Amendment** -- *pending amendment; seeded 2026-07-23.*
 
 ~~~text
