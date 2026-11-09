@@ -3147,6 +3147,14 @@ Mechanism, from the deed 435 receipts: heal_corpus_mathjax() (--heal-mathjax [--
   sees what matched. Fifth sibling of DOTFILE-BLIND / CASE-BLIND / UNANCHORED /
   CAP -- another way a probe answers a question other than the one on its
   label.
+- **Protected Duty-Cycle Cadences Over Continuous UI Polling** -- *expanded rule; banked 2026-11-08, deed 831.*
+
+~~~text
+# § PROTECTED DUTY-CYCLE CADENCES OVER CONTINUOUS UI POLLING (banked 2026-11-08, deed 831) -- Replace continuous high-frequency TUI scrolling and tick-counted holds with a protected multi-phase state machine (freeze competing animations, table rebuilds, and log flushes during the sweep, hold bottom-of-list reading pauses against time.monotonic() deadlines, and park at row 0 for a 30-second zero-CPU relax window), and size transient terminal overlays to stop printing before the final row so trailing newlines never scroll the top border off-screen.
+~~~
+
+Mechanism, from the deed 831 receipts: remotes/honeybot/scripts/logs.py runs the HUD as three phases, a 'js' sweep, a 2.5s monotonic bottom hold, an 'md' sweep, a second 2.5s bottom hold, then a 30s 0%-CPU relax at y=0, with a 120-tick log-thread hold and a 0.15s post-reset queue flush. The rule predicts that a starved event loop shortens a sweep and never stutters it, and that a tick-counted hold drifts while a time.monotonic() deadline does not. The Ghibli handle Ma (the intentional pause between beats) is this rule's pacing doctrine.
+
 - **The Protection-Lag Polarity** -- *expanded rule; banked 2026-08-07.*
 
 ~~~text
