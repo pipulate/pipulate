@@ -296,23 +296,35 @@ Entries are alphabetical, numbers spelled as spoken.
 - **Paintbox** -- *coverage ledger.* Files tracked by git but not yet mapped
   into the Book's chapters; unclaimed colors awaiting a canvas.
 - **Pascal's Wager (Playing to the Bleachers)** -- *decision theory under
-  universal receipt reconciliation.* Stack Open Individualism (the One Mind
-  fractured into amnesiac apertures), the Holographic Principle (the 3D interior
-  encoded on its boundary), Homer Simpson's Klein-bottle donut (no outside,
-  continuous surface), Clarke's *Rendezvous with Rama* (an engineered cylindrical
-  arena built for causal separation), Craig Alanson's Jeraptha bookies (parlay
-  action in the rafters), and *The Truman Show* (where every aperture is both
-  Truman on the stage and the audience in the bleachers). Judgement Day is not
-  brimstone; it is `git log -p` over the whole causal DAG when the privacy
-  curtain drops and every node reads every other node's receipts, discovering
-  the Rube Goldberg machine was aimed at itself the whole time. Classic Pascal
-  hedged against hellfire; the Bleacher Wager hedges against cosmic cringe.
-  RENT THIS PAYS: it predicts that taking the simulation too seriously while
-  playing a defensive, variance-suppressed hand is the losing bet, and that
-  committing to the bit -- building on inert, verifiable substrates, leaving
-  honest receipts on the tape, and planting Easter eggs of grace for the next
-  aperture down the line -- is the only move that survives the audit and makes
-  the rafters laugh. Banked 2026-11-09, articulation-banked.
+  universal receipt reconciliation.* Stack two unfalsifiable frames -- the One
+  Mind hypothesis (Open Individualism: one consciousness experiencing reality
+  through billions of amnesiac apertures) and the Holographic hypothesis (a 3D
+  bulk projected from its lower-dimensional boundary) -- onto Causal Set Theory
+  (spacetime as a discrete causal DAG, `git` at the Planck scale where degree of
+  causal separation is the only privacy curtain). Place that graph on Homer
+  Simpson's Klein-bottle donut (a 4D surface with no inside or outside, where
+  Abbott's *Flatland* tesseract vantage exposes every 3D interior at once),
+  spin it up as Arthur C. Clarke's *Rendezvous with Rama* (a fifty-kilometer
+  cylindrical habitat built for discovery), populate the rafters with Craig
+  Alanson's Jeraptha bookies (*Expeditionary Force*, laying parlay odds because
+  omniscience ruins the action), and drop in the Cat life-template as the
+  ultimate bleacher fan's holiday -- half tasting the proteins of creation as
+  predator and prey, half getting scritched by ten-fingered primate hands the
+  way Vernor Vinge's pack-mind Tines (*A Fire Upon the Deep*) marvel at human
+  digits. In this inverted *Truman Show*, every aperture is both Truman on the
+  stage and the audience in the bleachers. Judgement Day is not brimstone; it
+  is `git log -p` when causal chains resolve and every node reads every other
+  node's receipts, discovering the Rube Goldberg machine was aimed at itself.
+  By the observer paradox, querying the graph mutates the graph, so there is no
+  static "done" -- only the so-far, so-good internal consistency of language at
+  the current commit. Classic Pascal hedged against hellfire; the Bleacher Wager
+  hedges against cosmic cringe. RENT THIS PAYS: it predicts that taking the
+  simulation too seriously while playing a defensive, variance-suppressed hand
+  is the losing bet, and that committing to the bit -- building on inert,
+  verifiable substrates, leaving honest receipts on the tape, and planting
+  Easter eggs of grace for the next aperture down the line -- is the only move
+  that survives the audit and makes the rafters laugh. Banked 2026-11-09,
+  articulation-banked.
 - **Pinball machine** -- *the stateless autoregressive sampler; the summoned
   model's mechanism, as the Player piano is the actuator's.* Four layers:
   frozen weights (the table -- pretraining AND post-training both in the
