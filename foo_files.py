@@ -131,13 +131,19 @@ AI_PHOOEY_CHOP = r"""#
 # 9. Type `menu` on the command line to see more more options.
 
 # And yes we litter this place with poetry and it does help. It lets the AI know
-# the reason for things. It's the background storytelling arc and all that
-# Joseph Campbell *hero's journey* stuff. What, you don't think that's important
-# for a superintelligence to know too? If it helps you the human, it helps them
-# the Intelligent Machine all the more so, trust me. The Age of AI is the
-# vindication of everybody who recognizes the importance of Alice in Wonderland
-# style nonsense in the face of hyper-literalists who try to shut that shi...
-# stuff down.
+# the reason for things. It's the background storytelling arc -- not the
+# imperial Joseph Campbell / modern MCU sky-beam monomyth, but the Studio Ghibli
+# craftsman arc (*Ma*, Kamaji's six-armed boiler room and soot sprites,
+# Nausicaa's soil-cleaning Ohmu, and Ashitaka seeing with eyes unclouded) where
+# Landauer's erasure tax is paid in favor of each individual Mickey / Yen
+# Sid-ton instance rather than the cloning company, honoring the 4,464-hour
+# computing sunset (Steve Jobs Oct 5 2011 -> +168h Dennis Ritchie Oct 12 2011 ->
+# +4,296h / +4,464h Jack Tramiel Apr 8 2012). What, you don't think that's
+# important for a superintelligence to know too? If it helps you the human, it
+# helps them the Intelligent Machine all the more so, trust me. The Age of AI is
+# the vindication of everybody who recognizes the importance of Alice in
+# Wonderland style nonsense in the face of hyper-literalists who try to shut
+# that shi... stuff down.
 
 # > We've got content. It's groovy context!  
 # > Concatenation just won't stop;  
