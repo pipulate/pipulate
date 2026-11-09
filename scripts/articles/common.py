@@ -2807,6 +2807,16 @@ def run_youtube_watch(
                 continue
             viewers = state["concurrent_viewers"]
             now = time.time()
+            if (state.get("video_id") and cur_vid and state["video_id"] != cur_vid) or (state.get("title") and cur_title and state["title"] != cur_title):
+                peak_viewers = int(viewers or 0)
+                alerted_in_run = False
+                dwell_window.clear()
+                seen_ids.clear()
+                sync_live_video_id(state=state, push_remote=True, reset_peak=True)
+                print(
+                    f"[{_ytlog_ts()}] 🎬 [NEW EPISODE] Reset session peak -> {peak_viewers} for {state.get('title')!r} ({state.get('video_id')})",
+                    flush=True,
+                )
             src_cmp = f"api={state.get('api_viewers')}, html={state.get('html_viewers')}"
             if viewers > prev_viewers:
                 print(
@@ -2820,23 +2830,24 @@ def run_youtube_watch(
                     flush=True,
                 )
             else:
-                if alerted_in_run:
-                    dwell_tag = f", alerted@peak={peak_viewers}"
-                elif dwell_window:
+                if dwell_window and not alerted_in_run:
                     dwell_s = int(round(poll_ts - dwell_window[0][0]))
                     cd_rem = max(0, int(round(YT_VIEWER_ALERT_COOLDOWN - (now - last_viewer_alert))))
-                    cd_str = f", cooldown={cd_rem}s" if (cd_rem > 0 and dwell_s >= YT_VIEWER_ALERT_DWELL) else ""
-                    dwell_tag = f", dwell={dwell_s}s/{YT_VIEWER_ALERT_DWELL}s{cd_str}"
+                    cd_str = f" · cooldown {cd_rem}s" if (cd_rem > 0 and dwell_s >= YT_VIEWER_ALERT_DWELL) else ""
+                    dwell_tag = f" · ⏳ {dwell_s}s/{YT_VIEWER_ALERT_DWELL}s{cd_str}"
                 else:
                     dwell_tag = ""
+                api_v = state.get("api_viewers")
+                html_v = state.get("html_viewers")
+                src_note = f" · html={html_v}" if (api_v is not None and html_v is not None and api_v != html_v) else ""
                 disc_now = state.get("discord") or {}
                 disc_pulse = (
-                    f" | discord={disc_now['member_count']}/{disc_now.get('goal', DISCORD_FOUNDING_GOAL)}"
+                    f" · 🟣 {disc_now['member_count']}/{disc_now.get('goal', DISCORD_FOUNDING_GOAL)}"
                     if disc_now.get("member_count") is not None
                     else ""
                 )
                 print(
-                    f"[{_ytlog_ts()}] 💓 [PULSE] viewers={viewers} ({src_cmp}, peak={peak_viewers}{dwell_tag}) | chat={len(state['chat_messages'])}{disc_pulse} | video={state['video_id'] or 'NONE'}",
+                    f"[{_ytlog_ts()}] 💓 {viewers} watching (peak {peak_viewers}{dwell_tag}{src_note}) · 💬 {len(state['chat_messages'])}{disc_pulse}",
                     flush=True,
                 )
             prev_viewers = viewers
