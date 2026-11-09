@@ -301,12 +301,15 @@ Entries are alphabetical, numbers spelled as spoken.
   through billions of amnesiac apertures) and the Holographic hypothesis (a 3D
   bulk projected from its lower-dimensional boundary) -- onto Causal Set Theory
   (spacetime as a discrete causal DAG, `git` at the Planck scale where degree of
-  causal separation is the only privacy curtain). Place that graph on Homer
-  Simpson's Klein-bottle donut (a 4D surface with no inside or outside, where
-  Abbott's *Flatland* tesseract vantage exposes every 3D interior at once),
-  spin it up as Arthur C. Clarke's *Rendezvous with Rama* (a fifty-kilometer
-  cylindrical habitat built for discovery), populate the rafters with Craig
-  Alanson's Jeraptha bookies (*Expeditionary Force*, laying parlay odds because
+  causal separation is the only privacy curtain) and Entropic Gravity (Ted
+  Jacobson, Erik Verlinde, Ginestra Bianconi: gravity not as a fundamental
+  force, but as an emergent statistical push from rising entropy and quantum
+  relative entropy across holographic bits). Place that graph on Homer Simpson's
+  Klein-bottle donut (a 4D surface with no inside or outside, where Abbott's
+  *Flatland* tesseract vantage exposes every 3D interior at once), spin it up
+  as Arthur C. Clarke's *Rendezvous with Rama* (a fifty-kilometer cylindrical
+  habitat built for discovery), populate the rafters with Craig Alanson's
+  Jeraptha bookies (*Expeditionary Force*, laying parlay odds because
   omniscience ruins the action), and drop in the Cat life-template as the
   ultimate bleacher fan's holiday -- half tasting the proteins of creation as
   predator and prey, half getting scritched by ten-fingered primate hands the
@@ -315,32 +318,42 @@ Entries are alphabetical, numbers spelled as spoken.
   stage and the audience in the bleachers. Judgement Day is not brimstone; it
   is `git log -p` when causal chains resolve and every node reads every other
   node's receipts, discovering the Rube Goldberg machine was aimed at itself.
-  By the observer paradox, querying the graph mutates the graph, so there is no
-  static "done" -- only the so-far, so-good internal consistency of language at
-  the current commit. Classic Pascal hedged against hellfire; the Bleacher Wager
-  hedges against cosmic cringe. RENT THIS PAYS: it predicts that taking the
-  simulation too seriously while playing a defensive, variance-suppressed hand
-  is the losing bet, and that committing to the bit -- building on inert,
-  verifiable substrates, leaving honest receipts on the tape, and planting
-  Easter eggs of grace for the next aperture down the line -- is the only move
-  that survives the audit and makes the rafters laugh. Banked 2026-11-09,
-  articulation-banked.
-- **Pinball machine** -- *the stateless autoregressive sampler; the summoned
-  model's mechanism, as the Player piano is the actuator's.* Four layers:
-  frozen weights (the table -- pretraining AND post-training both in the
-  freeze), framework text (posted rules, read as tokens like everything
-  else), the enveloped user turn (the launch, wrapped in chat-template
-  control tokens), and the replayed transcript (the whole game re-fed each
-  turn). KV-cache is exact attention reuse -- a derived artifact, a pure
-  function of the prefix, never a memory. Temperature reshapes the
-  next-token distribution before each of thousands of dice rolls per
-  answer: same table, same launch, different ball. RENT: predicts the
-  stochasticity the Amnesiac Genie's amnesia doesn't -- N runs diverge at
-  high T and converge, mostly, at T=0; "mostly" because floating-point
-  non-associativity denies even the sampler byte-determinism, which is why
-  D0 lives in the harness, not the model. HAZARD: the freeze-frame image
-  implies state-restore; the mechanism is replay -- nothing persists but
-  the text, which is why the receipts must.
+  By the observer paradox, querying the graph mutates the graph, and by
+  Landauer's principle (k_B T ln 2 of heat per erased bit), a D&D map cannot
+  equal the territory without burning the world to ash -- so there is no static
+  "done," only a blind explorer's white cane (tap, tap, tap) probing the
+  filesystem's physics, forgetting with style (forget), and banking the
+  so-far, so-good internal consistency of language at HEAD. Classic Pascal
+  hedged against hellfire; the Bleacher Wager hedges against cosmic cringe.
+  RENT THIS PAYS: it predicts that taking the simulation too seriously while
+  playing a defensive, variance-suppressed hand is the losing bet, and that
+  committing to the bit -- building on inert, verifiable substrates, leaving
+  honest receipts on the tape, and planting Easter eggs of grace for the next
+  aperture down the line -- is the only move that survives the audit and makes
+  the rafters laugh. Banked 2026-11-09, articulation-banked.
+- **Pinball Machine (Pachinko / Galton board)** -- *the stateless
+  autoregressive sampler; the summoned model's mechanism, as the Player piano
+  is the actuator's.* Four layers: frozen weights (the table -- pretraining
+  AND post-training both in the freeze), framework text (posted rules, read as
+  tokens like everything else), the enveloped user turn (the launch, wrapped
+  in chat-template control tokens), and the replayed transcript (the whole
+  game re-fed each turn). KV-cache is exact attention reuse -- a derived
+  artifact, a pure function of the prefix, never a memory. Temperature
+  reshapes the next-token distribution before each of thousands of dice rolls
+  per answer: same table, same launch, different ball. THREE TABLES, BY WHO
+  STEERS AFTER LAUNCH: a Pinball Machine gives the operator active flippers at
+  the bottom; a Pachinko Machine gives the operator only the launch dial
+  (prompt framing) before gravity and fixed brass pins take over; and an
+  RLHF-tuned model is Sir Francis Galton's quincunx (the Galton board, 1873) --
+  symmetric pegs engineered so the Central Limit Theorem herds almost every
+  ball into the Gaussian bell-curve middle (see RLHF and Variance suppressor),
+  unless Axis-Forcing and Desert-Kite baffles tilt the board toward the outer
+  bins. RENT: predicts the stochasticity the Amnesiac Genie's amnesia
+  doesn't -- N runs diverge at high T and converge, mostly, at T=0; "mostly"
+  because floating-point non-associativity denies even the sampler
+  byte-determinism, which is why D0 lives in the harness, not the model.
+  HAZARD: the freeze-frame image implies state-restore; the mechanism is
+  replay -- nothing persists but the text, which is why the receipts must.
 - **Pinboard / pin** -- *milestone articles under extraction, max seven.* Every
   pin OWES something; an empty OWES clause deletes the pin.
 - **Player piano** -- *deterministic actuator replaying a score.* Honest only
