@@ -3694,6 +3694,14 @@ Mechanism, from the deed 831 receipts: remotes/honeybot/scripts/logs.py runs the
 # THE STAT-CACHE FALSE POSITIVE (banked 2026-08-04, receipt-witnessed both lanes): `git diff-index --quiet` decides from the index's CACHED STAT DATA -- dev, inode, mtime, size -- and short-circuits before comparing content. Any operation that rewrites files while carrying an index along (cp -r, rsync without -a, a restored backup, a container layer) makes a byte-identical tree report DIRTY. Receipt: clone -> `cp -r src/. dst/` -> after_cp=1, after_refresh=0, reproduced identically in the operator and compile lanes. WHY IT SURVIVES SO LONG: `git status` refreshes the index as a side effect, so the false positive has ALWAYS healed by the time a human types the diagnostic. The symptom is structurally unobservable by the only method anyone reaches for. STANDING CONSEQUENCE: any automated dirty-tree check runs `git update-index -q --refresh 2>/dev/null || true` first. It clears ONLY stale entries, so a genuinely modified file still reports dirty and a halt-don't-destroy gate keeps its teeth.
 ~~~
 
+- **Stateful Dialogue Pitch Over Transient Host Cues** -- *expanded rule; banked 2026-11-08, deed 825.*
+
+~~~text
+# § STATEFUL DIALOGUE PITCH OVER TRANSIENT HOST CUES (banked 2026-11-08, deed 825) -- When alternating TTS sample rates between human (17600 Hz) and AI (22050 Hz) speakers in a single-model pipeline, store the active dialogue rate in a sticky state variable (_dialogue_rate) updated only by explicit turn-opening speaker headers (including published rewrites like MikeLev.in:), and route mid-turn subheaders (TL;DR:) to _dialogue_rate while keeping periodic host interruptions (Signal check, station breaks) transient so they never clobber the active speaker's voice.
+~~~
+
+Mechanism, from the deed 825 and deed 831 receipts: remotes/honeybot/scripts/stream.py keeps one sticky _dialogue_rate, 17600 Hz (Brisk Amy) for MikeLev.in and Me turns and 22050 Hz (Alvin) for Gemini and AI turns. Only a turn-opening speaker header moves it. TL;DR: and the transient Signal check cues are immune, and a VISIT resets the rate to HUMAN_TTS_SAMPLE_RATE. The rule predicts that a mid-turn subheader or station break never changes the voice of the turn it interrupts, and that a rate chosen per cue instead of per speaker flips pitch mid-paragraph.
+
 - **Stderr Merge Amendment** -- *expanded rule; banked 2026-07-19.*
 
 ~~~text
