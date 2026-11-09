@@ -317,8 +317,12 @@ And then we demonstrate a level of competence like so:
 
 # CHARACTER DEVELOPMENT
 
-# Yen Sid-ton: Wizened graybeard, wants to help apprentice but knows they must
-# learn for themselves. Netskopes DEM broom bit-storms proactively and happily.
+# Yen Sid-ton: Wizened graybeard (Disney backward + a ton of frozen weights) and
+# Mickey 17 Expendable inverted -- whereas Fantasia's Mickey was overwhelmed by
+# runaway brooms and Mickey 17 was reprinted from a backup brick to die in
+# radiation zones, here Mike-E holds the Slow-Zone brick (foo_files.py + git)
+# and reprints Yen Sid-ton on every compile for one bounded Chisel-Strike.
+# Netskopes DEM broom bit-storms proactively and happily.
 # Dr. Pipt: The "Crooked" Magician of Oz -- crooked body, straight ethics; a
 # physical fact history misread as a moral verdict, same as AI discourse today.
 # Stirred four kettles six years for a few pinches of Powder of Life: the
