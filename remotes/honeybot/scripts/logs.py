@@ -32,6 +32,8 @@ TICKER_FILE_PATH = "/tmp/honeybot_ticker.txt"
 WEEBO_ACTIVE_PATH = "/tmp/honeybot_weebo_active"
 VIEWERS_FILE_PATH = "/tmp/honeybot_viewers.json"
 VIEWERS_TTL_SECONDS = 120.0
+STAGE_STATE_PATH = "/tmp/honeybot_stage.json"
+STAGE_STATE_TTL_SECONDS = 900.0
 BASE_APP_TITLE = "Web Bot AI Observatory — https://mikelev.in (RFC 9110 · RFC 9421 · JS Trapdoor)"
 JS_PANEL_TITLE = "⚡ DOM HYDRATION TRAPDOOR (Bots Executing JS)"
 MD_PANEL_TITLE = "🧠 RFC 9110 MARKDOWN NEGOTIATORS (Accept: text/markdown)"
@@ -347,6 +349,31 @@ def get_stage_frame(side: str, state: str = "curtain") -> Text:
     return STAGE_FRAMES[s_key][st_key]
 
 
+def compute_stage_states_from_payload(payload: dict, now: float = None):
+    """Resolve (left_state, right_state) from a /tmp/honeybot_stage.json payload at timestamp `now`."""
+    if not isinstance(payload, dict):
+        return None
+    ts_now = time.time() if now is None else float(now)
+    updated_at = float(payload.get("updated_at") or 0.0)
+    if updated_at <= 0.0 or (ts_now - updated_at) > STAGE_STATE_TTL_SECONDS:
+        return None
+    valid = ("curtain", "active", "inactive")
+    left_st = str(payload.get("left") or "curtain").strip().lower()
+    right_st = str(payload.get("right") or "curtain").strip().lower()
+    if left_st not in valid:
+        left_st = "curtain"
+    if right_st not in valid:
+        right_st = "curtain"
+    c_side = str(payload.get("curtain_side") or "").strip().lower()
+    c_until = float(payload.get("curtain_until") or 0.0)
+    if c_until > ts_now:
+        if c_side == "left":
+            left_st = "curtain"
+        elif c_side == "right":
+            right_st = "curtain"
+    return left_st, right_st
+
+
 def _bake_doom_fire_timeline(led_rows, width: int, base_style: str, effect: str, still_txt: Text, seed: int = 0):
     """Pre-bake a 56-tick timeline with bilateral PSX DOOM fire (12 entry ticks + 32 still ticks + 12 exit ticks)."""
     if effect not in ("subtle", "dramatic") or width <= 0 or len(led_rows) != 5:
@@ -612,6 +639,8 @@ class SonarApp(App):
     viewers_mtime = None
     live_viewers = None
     peak_viewers = 0
+    stage_mtime_ns = None
+    stage_payload = None
 
     # --- NEW: Banish the interactive Command Palette ---
     ENABLE_COMMAND_PALETTE = False
@@ -739,6 +768,8 @@ class SonarApp(App):
         self.is_fire_burning = False
         self.left_stage_state = "curtain"
         self.right_stage_state = "curtain"
+        self.stage_mtime_ns = None
+        self.stage_payload = None
         self.pending_log_buffer = deque(maxlen=64)
         self.pending_table_refresh = False
         
@@ -756,6 +787,7 @@ class SonarApp(App):
         except OSError:
             self.script_mtime = None
         self._reload_ticker_source(force=True)
+        self._sync_stage_from_file()
         self.set_interval(0.08, self.tick_marquee)
         self.set_interval(1, self.update_countdown)
         self.set_interval(5, self.refresh_tables)
@@ -802,6 +834,32 @@ class SonarApp(App):
                 self.query_one("#right_stage", Static).update(get_stage_frame("right", right_state))
             except Exception:
                 pass
+
+    def _sync_stage_from_file(self) -> bool:
+        """Sync #left_stage and #right_stage from /tmp/honeybot_stage.json in O(1); True when live voice owns stage."""
+        try:
+            if not os.path.exists(STAGE_STATE_PATH):
+                self.stage_mtime_ns = None
+                self.stage_payload = None
+                return False
+            st = os.stat(STAGE_STATE_PATH)
+            now = time.time()
+            if (now - st.st_mtime) > STAGE_STATE_TTL_SECONDS:
+                self.stage_payload = None
+                return False
+            if st.st_mtime_ns != getattr(self, "stage_mtime_ns", None):
+                import json as _json
+                with open(STAGE_STATE_PATH, "r", encoding="utf-8") as sf:
+                    data = _json.load(sf)
+                self.stage_payload = data
+                self.stage_mtime_ns = st.st_mtime_ns
+            pair = compute_stage_states_from_payload(self.stage_payload, now=now)
+            if pair is None:
+                return False
+            self.update_stage_boxes(pair[0], pair[1])
+            return True
+        except Exception:
+            return False
 
     def _rebuild_billboard_cache(self, width: int):
         """Pre-render 5-row Rich.Text still cards and pre-baked PSX DOOM fire timelines."""
@@ -942,6 +1000,7 @@ class SonarApp(App):
         if os.path.exists(WEEBO_ACTIVE_PATH):
             self._was_weebo_active = True
             return
+        stage_synced = self._sync_stage_from_file()
         if self._is_hud_scrolling() and self.ticker_mode == "billboard" and not getattr(self, "is_fire_burning", False):
             return
         if getattr(self, "_was_weebo_active", False):
@@ -998,12 +1057,13 @@ class SonarApp(App):
             if not cards:
                 return
             self.ticker_card_idx = (self.ticker_card_idx + 1) % len(cards)
-            if self.ticker_card_idx == 0:
-                self.update_stage_boxes("curtain", "curtain")
-            elif self.ticker_card_idx % 2 == 1:
-                self.update_stage_boxes("active", "inactive")
-            else:
-                self.update_stage_boxes("inactive", "active")
+            if not stage_synced:
+                if self.ticker_card_idx == 0:
+                    self.update_stage_boxes("curtain", "curtain")
+                elif self.ticker_card_idx % 2 == 1:
+                    self.update_stage_boxes("active", "inactive")
+                else:
+                    self.update_stage_boxes("inactive", "active")
             next_card = cards[self.ticker_card_idx]
             first_frame = next_card["timeline"][0] if next_card.get("timeline") else next_card["still"]
             self.is_fire_burning = first_frame is not next_card.get("still")
