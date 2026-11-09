@@ -8,6 +8,7 @@ import sys
 import re
 import hashlib
 import random
+import shutil
 from datetime import datetime
 from collections import Counter, deque
 import os 
@@ -102,14 +103,14 @@ LED_FONT_3X3 = {
     " ": ("   ", "   ", "   ", "   ", "   "),
     "!": ("█", "█", "█", " ", "█"),
     "?": (" ████ ", "█    █", "   ██ ", "      ", "  █   "),
-    ".": (" ", " ", " ", " ", "█"),
-    ",": ("  ", "  ", "  ", " █", "█ "),
+    ".": ("  ", "  ", "  ", "██", "██"),
+    ",": ("   ", "   ", " ██", " ██", "██ "),
     "-": ("    ", "    ", "████", "    ", "    "),
     "+": ("     ", "  █  ", "█████", "  █  ", "     "),
     ":": (" ", "█", " ", "█", " "),
     "/": ("    █", "   █ ", "  █  ", " █   ", "█    "),
     "*": ("     ", " █ █ ", "  █  ", " █ █ ", "     "),
-    "'": ("█", "█", " ", " ", " "),
+    "'": (" ██", " ██", "██ ", "   ", "   "),
     '"': ("█ █", "█ █", "   ", "   ", "   "),
     "$": (" █████", "█  █  ", " ████ ", "  █  █", "█████ "),
     "%": ("██   █", "    █ ", "  ██  ", " █    ", "█   ██"),
@@ -592,6 +593,32 @@ class SonarApp(App):
         self.set_interval(5, self.refresh_tables)
         self.set_interval(0.10, self.scroll_hud_tables)
 
+    def _get_ticker_width(self) -> int:
+        """Return usable inner column width of #ticker_bar, falling back to OS terminal size before layout."""
+        try:
+            bar = self.query_one("#ticker_bar", Static)
+            if bar.size.width and bar.size.width > 0:
+                return max(40, bar.size.width - 2)
+        except Exception:
+            pass
+        try:
+            if self.size.width and self.size.width > 80:
+                return max(40, self.size.width - 2)
+        except Exception:
+            pass
+        try:
+            term_cols = shutil.get_terminal_size((190, 48)).columns
+            return max(40, term_cols - 2)
+        except Exception:
+            return 188
+
+    def on_resize(self, event) -> None:
+        """Re-center #ticker_bar billboard cards immediately when terminal geometry settles."""
+        if getattr(self, "ticker_mode", "billboard") == "billboard" and getattr(self, "ticker_raw_text", ""):
+            new_w = self._get_ticker_width()
+            if new_w != getattr(self, "ticker_cached_width", 0):
+                self._rebuild_billboard_cache(new_w)
+
     def _rebuild_billboard_cache(self, width: int):
         """Pre-render 5-row Rich.Text still cards and pre-baked PSX DOOM fire timelines."""
         self.ticker_cached_width = width
@@ -701,11 +728,7 @@ class SonarApp(App):
                 pass
         else:
             self.ticker_raw_text = raw
-            try:
-                bar = self.query_one("#ticker_bar", Static)
-                width = max(40, (bar.size.width or 160) - 2)
-            except Exception:
-                width = 160
+            width = self._get_ticker_width()
             self._rebuild_billboard_cache(width)
 
     def _flush_fire_hold_queues(self, max_lines: int = 12):
@@ -751,6 +774,9 @@ class SonarApp(App):
             self._flush_fire_hold_queues()
             self.refresh(repaint=True, layout=False)
         if self.ticker_mode == "billboard" and self.ticker_cards:
+            cur_w = self._get_ticker_width()
+            if cur_w != self.ticker_cached_width:
+                self._rebuild_billboard_cache(cur_w)
             self.ticker_hold_ticks += 1
             if self.ticker_hold_ticks < CARD_HOLD_TICKS:
                 cur_card = self.ticker_cards[self.ticker_card_idx % len(self.ticker_cards)]
@@ -777,7 +803,7 @@ class SonarApp(App):
             self._reload_ticker_source(force=False)
         try:
             bar = self.query_one("#ticker_bar", Static)
-            width = max(40, (bar.size.width or 160) - 2)
+            width = self._get_ticker_width()
         except Exception:
             return
 
