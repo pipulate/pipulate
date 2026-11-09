@@ -3463,6 +3463,14 @@ Mechanism, from the deed 831 receipts: remotes/honeybot/scripts/logs.py runs the
 # a deadline that no longer exists.
 ~~~
 
+- **Sanitize Prose & Step Down Converter Tiers** -- *expanded rule; banked 2026-11-07, deed 786.*
+
+~~~text
+# § SANITIZE PROSE & STEP DOWN CONVERTER TIERS (banked 2026-11-07, deed 786) -- When uploading Markdown as HTML to an opaque remote document converter (such as Google Drive's HTML-to-Doc importer), strip control characters and Python-Markdown 'extra' attribute debris, escape non-fenced prose angle brackets, validate <a> href URLs with BeautifulSoup, and step down a deterministic 4-tier fallback ladder (full HTML -> compact HTML -> minimal HTML -> text/plain with a canonical back-link) on HTTP 500 rather than spending LLM tokens or abandoning the sync.
+~~~
+
+Mechanism, from the deed 786 receipts: scripts/articles/googledocizer.py reads only the frontmatter it needs (_load_frontmatter_only), escapes angle brackets in prose while leaving fenced code alone, sanitizes the DOM with BeautifulSoup, and on an HTTP 500 from the converter retries down tier1:html-full, tier2:html-compact, tier3:html-minimal, tier4:text-plain. Tier 4 carries a canonical back-link, so a post always syncs in some form. The rule predicts that an opaque converter's 500 is a property of the input's markup and not of the network, so a cheaper, simpler rendering of the same bytes succeeds where a retry never would, and that no model call is needed to find it.
+
 - **The Screenshot Is Not a Locator** -- (banked 2026-09-11, two exchanges lost).
   Confluence pages for custom link attributes say "go to the project
   page on django admin" and show the field ONLY as a screenshot. Two admin
