@@ -1612,7 +1612,83 @@ def send_honeybot_live_message(
 
 VAULT_ENV_FILE = CONFIG_DIR / ".env"
 YTWATCH_STATE_FILE = CONFIG_DIR / "ytwatch_state.json"
+HONEYBOT_VIEWERS_FILE = "/tmp/honeybot_viewers.json"
 DEFAULT_YT_LIVE_URL = "https://www.youtube.com/MikeLevin/live"
+
+
+def _viewer_payload_shell_cmd(viewers, video_id=""):
+    """Return a shell snippet that atomically writes /tmp/honeybot_viewers.json on Honeybot."""
+    import time
+    payload_str = json.dumps({
+        "viewers": max(0, int(viewers or 0)),
+        "running": True,
+        "video_id": str(video_id or ""),
+        "updated_at": int(time.time()),
+    })
+    return f"printf '%s\\n' { payload_str!r} > {HONEYBOT_VIEWERS_FILE}.tmp && mv {HONEYBOT_VIEWERS_FILE}.tmp {HONEYBOT_VIEWERS_FILE}"
+
+
+def _sync_honeybot_viewers(viewers, running=True, video_id="", push_remote=True):
+    """Sync ytwatch viewer count to local /tmp/honeybot_viewers.json, tmux title, and Honeybot."""
+    import subprocess
+    import time
+    v_cnt = max(0, int(viewers or 0))
+    v_word = "Viewer" if v_cnt == 1 else "Viewers"
+    local_p = Path(HONEYBOT_VIEWERS_FILE)
+    try:
+        if running:
+            payload = {
+                "viewers": v_cnt,
+                "running": True,
+                "video_id": str(video_id or ""),
+                "updated_at": int(time.time()),
+            }
+            tmp_p = local_p.with_suffix(".tmp")
+            tmp_p.write_text(json.dumps(payload) + "\n", encoding="utf-8")
+            tmp_p.replace(local_p)
+        else:
+            local_p.unlink(missing_ok=True)
+    except OSError:
+        pass
+    try:
+        has_tmux = subprocess.run(
+            ["tmux", "has-session", "-t", "ytwatch"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=False,
+        ).returncode == 0
+        if has_tmux and running:
+            for opt, val in (
+                ("status-left-length", "36"),
+                ("status-left", f" 🔭 YTWATCH LIVE (👀 {v_cnt}) "),
+                ("set-titles", "on"),
+                ("set-titles-string", f"👀 {v_cnt} {v_word} — Honeybot Storytime"),
+            ):
+                subprocess.run(
+                    ["tmux", "set-option", "-t", "ytwatch", opt, val],
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                    check=False,
+                )
+    except Exception:
+        pass
+    if not push_remote:
+        return
+    try:
+        remote_cmd = (
+            _viewer_payload_shell_cmd(v_cnt, video_id=video_id)
+            if running
+            else f"rm -f {HONEYBOT_VIEWERS_FILE} {HONEYBOT_VIEWERS_FILE}.tmp"
+        )
+        subprocess.run(
+            ["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=4", HONEYBOT_SSH_HOST, remote_cmd],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            timeout=6,
+            check=False,
+        )
+    except Exception:
+        pass
 
 
 def _load_vault_env():
@@ -2283,6 +2359,7 @@ def _manage_ytwatch_daemon(action, interval=30, channel=None):
                     print(f"   {ln}")
         return 0
     if action == "stop":
+        _sync_honeybot_viewers(0, running=False, push_remote=True)
         if is_running:
             subprocess.run(["tmux", "kill-session", "-t", "ytwatch"], check=False)
             print("🛑 Stopped background tmux session 'ytwatch'.")
@@ -2530,6 +2607,8 @@ def run_youtube_watch(
                         tags="speech_balloon",
                         topic=resolved_topic,
                     )
+        if daemon_running:
+            _sync_honeybot_viewers(state["concurrent_viewers"], running=True, video_id=state["video_id"], push_remote=True)
         all_ids = list(dict.fromkeys([*(persisted.get("seen_ids") or []), *(m["id"] for m in state["chat_messages"])]))[-500:]
         _save_ytwatch_state({
             "video_id": state["video_id"],
@@ -2542,6 +2621,7 @@ def run_youtube_watch(
             "updated_at": int(time.time()),
         })
         return 0
+    _sync_honeybot_viewers(state["concurrent_viewers"], running=True, video_id=state["video_id"], push_remote=True)
     for m in state["chat_messages"]:
         seen_ids.add(m["id"])
     if state["is_live"] and state["concurrent_viewers"] > prev_viewers:
@@ -2642,6 +2722,8 @@ def run_youtube_watch(
                         f"[{_ytlog_ts()}] 📉 [FAST VIEWER -{prev_viewers - fast_v}] {prev_viewers} -> {fast_v} watching ({fast_step}s InnerTube pulse)",
                         flush=True,
                     )
+                if fast_v != prev_viewers:
+                    _sync_honeybot_viewers(fast_v, running=True, video_id=cur_vid, push_remote=True)
                 prev_viewers = fast_v
                 _check_dwell(fast_v, fast_ts)
             time.sleep(fast_step)
@@ -2758,10 +2840,12 @@ def run_youtube_watch(
                         flush=True,
                     )
                 prev_discord_members = cur_disc
+            _sync_honeybot_viewers(viewers, running=True, video_id=state["video_id"], push_remote=False)
             try:
                 last_ref_ts = int(persisted.get("last_referral_ts") or int(now))
+                hb_sync_and_tail = f"{_viewer_payload_shell_cmd(viewers, video_id=state['video_id'])}; tail -n 20 /tmp/honeybot_referrals.jsonl 2>/dev/null"
                 ref_res = subprocess.run(
-                    ["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=4", HONEYBOT_SSH_HOST, "tail -n 20 /tmp/honeybot_referrals.jsonl 2>/dev/null"],
+                    ["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=4", HONEYBOT_SSH_HOST, hb_sync_and_tail],
                     capture_output=True,
                     text=True,
                     timeout=6,
@@ -2806,6 +2890,7 @@ def run_youtube_watch(
                 "updated_at": int(now),
             })
     except KeyboardInterrupt:
+        _sync_honeybot_viewers(0, running=False, push_remote=True)
         print("\n🛑 Stopped YouTube Watch.")
         return 0
 
