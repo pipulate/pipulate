@@ -432,40 +432,6 @@ def get_playlist(recent_n=10, include_archive=True):
                         "visit Mike L E V dot eye N slash latest."
                     )
                 main_mod.resolve_current_article_line = _live_resolve_current_article_line
-                if hasattr(main_mod.narrator, "resolve_speaker_rate"):
-                    import types
-                    def _hot_resolve_speaker_rate(self, text: str) -> int:
-                        low = (text or "").strip().lower()
-                        if not low:
-                            return self._speaker_rate
-                        host_re = getattr(main_mod, "_HOST_TRANSIENT_RE", ())
-                        if self.exclusive_mode.is_set() or any(low.startswith(p) for p in host_re):
-                            return getattr(main_mod, "HUMAN_TTS_SAMPLE_RATE", 17600)
-                        ai_prefixes = (
-                            "gemini:", "gemini 4:", "gemini 3:", "gemini 2:",
-                            "gemini 4 argon high:", "gemini 3.1 pro:", "gemini pro:", "gemini flash:",
-                            "claude:", "claude 3:", "claude 4:", "claude opus:", "claude sonnet:",
-                            "chat g p t:", "chatgpt:", "a i:", "ai:",
-                            "a i editorial take", "ai editorial take", "book analysis",
-                        )
-                        human_prefixes = (
-                            "mike:", "mike levin:", "me:",
-                            "mike l e v dot eye n:", "mikelev.in:",
-                            "setting the stage", "technical journal",
-                            "reading entry", "reading article",
-                        )
-                        if any(low.startswith(p) for p in ai_prefixes) or re.match(r"^(?:gemini|claude|chat\s*g\s*p\s*t|openai|opus|sonnet)\b[^:.!?]{0,35}:", low):
-                            rate = getattr(main_mod, "CHIPMUNK_TTS_SAMPLE_RATE", 22050)
-                            self._dialogue_rate = rate
-                            self._speaker_rate = rate
-                        elif any(low.startswith(p) for p in human_prefixes):
-                            rate = getattr(main_mod, "HUMAN_TTS_SAMPLE_RATE", 17600)
-                            self._dialogue_rate = rate
-                            self._speaker_rate = rate
-                        else:
-                            self._speaker_rate = self._dialogue_rate
-                        return self._speaker_rate
-                    main_mod.narrator.resolve_speaker_rate = types.MethodType(_hot_resolve_speaker_rate, main_mod.narrator)
             except Exception:
                 pass
         if not include_archive:
@@ -550,7 +516,7 @@ _TTS_PRONUNCIATION_MAP = (
     (re.compile(r'\bguerillatech\.com\b', re.IGNORECASE), 'Guerilla Tech dot com'),
     (re.compile(r'\bpipulate\.com\b', re.IGNORECASE), 'Pipulate dot com'),
     (re.compile(r'\bREADME\.md\b', re.IGNORECASE), 'README dot M D'),
-    (re.compile(r'\bTL;DR\b[:.]?', re.IGNORECASE), 'T L D R:'),
+    (re.compile(r'\*{0,2}\bTL;DR\b\*{0,2}\s*[:.]?', re.IGNORECASE), 'T L D R:'),
     (re.compile(r'\bOAI-SearchBot\b', re.IGNORECASE), 'O A I SearchBot'),
     (re.compile(r'\bGPTBot\b'), 'G P T Bot'),
     (re.compile(r'\bRLVR\b'), 'R L V R'),
