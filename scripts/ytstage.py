@@ -15,9 +15,12 @@ Commands (via flake.nix wrappers `ytapp` and `ytvim`):
 """
 
 import argparse
+import base64
+from pathlib import Path
 import os
 import subprocess
 import sys
+import time
 import urllib.request
 
 HONEYBOT_HOST = os.environ.get("PIPULATE_HONEYBOT_HOST", "honeybot")
@@ -111,8 +114,8 @@ for p in sorted(pathlib.Path("/proc").glob("[0-9]*/cmdline")):
 """
 
 REMOTE_SPEAK_SNIPPET = """
-import os, pathlib, shutil, subprocess, sys
-text = sys.stdin.read().strip()
+import os, pathlib, shutil, subprocess
+text = base64.b64decode(TEXT_B64).decode("utf-8").strip()
 if text:
     extra = "/etc/profiles/per-user/mike/bin:/home/mike/.nix-profile/bin:/run/current-system/sw/bin:/usr/bin:/bin"
     env = os.environ.copy()
@@ -151,6 +154,11 @@ def _tunnel_pids() -> list[str]:
     return [p.strip() for p in (res.stdout or "").splitlines() if p.strip()]
 
 
+def build_remote_speak_script(say_text: str) -> str:
+    b64 = base64.b64encode((say_text or "").strip().encode("utf-8")).decode("ascii")
+    return f"import base64\nTEXT_B64 = {b64!r}\n" + REMOTE_SPEAK_SNIPPET
+
+
 def speak_on_honeybot(say_text: str, dry_run: bool = False) -> int:
     clean = (say_text or "").strip()
     if not clean:
@@ -159,8 +167,8 @@ def speak_on_honeybot(say_text: str, dry_run: bool = False) -> int:
         print(f"🎤 [DRY RUN] Honeybot stage speech: {clean!r}")
         return 0
     res = subprocess.run(
-        ["ssh", "-o", "BatchMode=yes", HONEYBOT_HOST, "python3", "-c", REMOTE_SPEAK_SNIPPET],
-        input=clean,
+        ["ssh", "-o", "BatchMode=yes", HONEYBOT_HOST, "python3", "-"],
+        input=build_remote_speak_script(clean),
         text=True,
         check=False,
     )
@@ -192,13 +200,15 @@ prof.mkdir(parents=True, exist_ok=True)
 )
 before_res = subprocess.run(["wmctrl", "-l"], env=env, capture_output=True, text=True, check=False)
 before_wids = {{ln.split()[0] for ln in (before_res.stdout or "").splitlines() if ln.strip()}}
-subprocess.Popen(
+proc = subprocess.Popen(
     ["firefox", "--profile", {STAGE_PROFILE_DIR!r}, "--no-remote", "--new-instance", {stage_url!r}],
     env=env,
     stdout=subprocess.DEVNULL,
     stderr=subprocess.DEVNULL,
     start_new_session=True,
 )
+if {freeze_hud!r}:
+    pathlib.Path("/tmp/honeybot_weebo_active").write_text(str(proc.pid), encoding="utf-8")
 for _ in range(25):
     time.sleep(0.4)
     res = subprocess.run(["wmctrl", "-l"], env=env, capture_output=True, text=True, check=False)
@@ -220,9 +230,12 @@ def run_ytapp(
     action: str,
     subpath: str = "/",
     say_text: str = "",
+    outro_text: str = "",
     dry_run: bool = False,
     freeze_hud: bool = True,
     pause_audio: bool = True,
+    wait_for_deed: bool = False,
+    wait_timeout: int = 110,
 ) -> int:
     if action == "say":
         return speak_on_honeybot(say_text, dry_run=dry_run)
@@ -308,6 +321,7 @@ def run_ytapp(
             print(f"❌ Failed to open SSH reverse tunnel to {HONEYBOT_HOST}.")
             return 1
 
+    start_ts = time.time()
     remote_launch = build_remote_firefox_launch(
         stage_url=stage_url, freeze_hud=freeze_hud, pause_audio=pause_audio
     )
@@ -321,8 +335,39 @@ def run_ytapp(
         print(f"🎬 Pipulate FastHTML Live Stage ON-AIR at {stage_url}")
         if say_text:
             speak_on_honeybot(say_text, dry_run=False)
-        print("   • Speak live stage commentary : ytapp say \"Watch Ghost Driver audit RFC 9110!\"")
-        print("   • Return stream to Observatory: ytapp stop")
+        if wait_for_deed:
+            try:
+                print(f"⏳ Waiting up to {wait_timeout}s for Ghost Driver to seal optics_deed.zip...")
+                deadline = time.time() + wait_timeout
+                deed_sealed = None
+                watch_roots = [Path("browser_cache/mikelev.in"), Path("browser_cache/looking_at")]
+                while time.time() < deadline:
+                    for root in watch_roots:
+                        if root.is_dir():
+                            for zp in root.rglob("optics_deed.zip"):
+                                try:
+                                    if zp.stat().st_mtime > start_ts and zp.stat().st_size > 0:
+                                        deed_sealed = zp
+                                        break
+                                except OSError:
+                                    continue
+                        if deed_sealed:
+                            break
+                    if deed_sealed:
+                        break
+                    time.sleep(1.0)
+                if deed_sealed:
+                    print(f"✅ Fresh Optics Deed sealed ({deed_sealed.stat().st_size:,} B). Holding 7s for gold button flash...")
+                    time.sleep(7.0)
+                    if outro_text:
+                        speak_on_honeybot(outro_text, dry_run=False)
+                else:
+                    print("⚠️ Timed out waiting for fresh optics_deed.zip; releasing stage cleanly.")
+            finally:
+                run_ytapp("stop", dry_run=False)
+        else:
+            print("   • Speak live stage commentary : ytapp say \"Watch Ghost Driver audit RFC 9110!\"")
+            print("   • Return stream to Observatory: ytapp stop")
     return res.returncode
 
 
@@ -383,7 +428,7 @@ _pause_honeybot_stage(pause_audio={pause_audio!r})
 subprocess.run(["pkill", "-f", "HONEYBOT_LIVE_VIM"], check=False)
 p = pathlib.Path({VIM_ANSI_FIFO!r})
 p.write_text("\\033[2J\\033[H🔴 LIVE TERMINAL / NEOVIM STREAM FROM PIPULATE PRIME...\\r\\n", encoding="utf-8")
-subprocess.Popen(
+proc = subprocess.Popen(
     [
         "alacritty",
         "--title", "HONEYBOT_LIVE_VIM",
@@ -396,6 +441,7 @@ subprocess.Popen(
     stderr=subprocess.DEVNULL,
     start_new_session=True,
 )
+pathlib.Path("/tmp/honeybot_weebo_active").write_text(str(proc.pid), encoding="utf-8")
 time.sleep(0.6)
 subprocess.run(["wmctrl", "-r", "HONEYBOT_LIVE_VIM", "-b", "add,fullscreen,above"], env=env, check=False)
 print("YTVIM_STAGE_READY")
@@ -442,6 +488,9 @@ def main() -> int:
     parser.add_argument("--no-freeze", action="store_true", help="Do not set /tmp/honeybot_weebo_active sentinel while stage is active.")
     parser.add_argument("--keep-audio", action="store_true", help="Keep Honeybot Storytime background narration playing during stage overlay.")
     parser.add_argument("--say", type=str, default="", help="Optional scripted Piper TTS line spoken directly on Honeybot's audio bus.")
+    parser.add_argument("--outro", type=str, default="", help="Optional closing Piper TTS line spoken after --wait detects deed seal.")
+    parser.add_argument("--wait", action="store_true", help="Wait for Ghost Driver to seal a fresh optics_deed.zip, then auto-stop and release port 15001.")
+    parser.add_argument("--wait-timeout", type=int, default=110, help="Max seconds to wait for Ghost Driver completion under --wait (default: 110).")
     parser.add_argument("--dry-run", action="store_true", help="Verify stage command routing without side effects.")
     parsed = parser.parse_args()
 
@@ -470,9 +519,12 @@ def main() -> int:
             action=action,
             subpath=subpath,
             say_text=say_text,
+            outro_text=parsed.outro,
             dry_run=parsed.dry_run,
             freeze_hud=not parsed.no_freeze,
             pause_audio=not parsed.keep_audio,
+            wait_for_deed=parsed.wait,
+            wait_timeout=parsed.wait_timeout,
         )
     return run_ytvim(
         action=action,

@@ -768,6 +768,31 @@ function showContextTriggerHUD(appName, scriptName) {
     }, 1500);
 }
 
+// 🎯 Context-Sensitive Scenario/Script Trigger (Top-level for ?demo=1 hands-free, WebSocket, or Hotkey)
+window.triggerContextAwareDemo = function() {
+    console.log("🎯 Triggered Context-Sensitive Scenario");
+    let currentApp = 'introduction';
+    const path = window.location.pathname;
+    if (path.includes('/redirect/')) {
+        currentApp = path.split('/redirect/')[1];
+    } else if (path !== '/' && path !== '') {
+        const parts = path.split('/').filter(p => p);
+        if (parts.length > 0) currentApp = parts[0];
+        currentApp = currentApp.replace(/^\d+_/, '');
+    } else {
+        const containerEl = document.querySelector('[id$="-container"]');
+        if (containerEl && containerEl.id) {
+            currentApp = containerEl.id.replace(/-container$/, '');
+        }
+    }
+    if (currentApp === 'hello') currentApp = 'hello_workflow';
+    if (currentApp === 'optics_workflow') currentApp = 'optics';
+    const scriptName = `${currentApp}_test.json`;
+    showContextTriggerHUD(currentApp, scriptName);
+    console.log(`🎯 Context detected: ${currentApp}. Loading ${scriptName}...`);
+    loadAndExecuteCleanDemoScript(scriptName);
+};
+
 // Global keyboard shortcuts
 document.addEventListener('keydown', function(event) {
     // 🔧 RESTORED DEBUGGING: Log modifier keys to troubleshoot OS collisions
@@ -800,40 +825,7 @@ document.addEventListener('keydown', function(event) {
 
 
 
-    // 🎯 NEW: Context-Sensitive Scenario/Script Trigger (Callable via WebSocket or Hotkey)
-    window.triggerContextAwareDemo = function() {
-        console.log("🎯 AI Triggered Context-Sensitive Scenario");
-        
-        // 1. Detect current app/context
-        let currentApp = 'introduction'; // Default
-        const path = window.location.pathname;
-        
-        // Extract app name from URL logic or active workflow container
-        if (path.includes('/redirect/')) {
-            currentApp = path.split('/redirect/')[1];
-        } else if (path !== '/' && path !== '') {
-            const parts = path.split('/').filter(p => p);
-            if (parts.length > 0) currentApp = parts[0];
-            currentApp = currentApp.replace(/^\d+_/, ''); // Strip numeric prefix
-        } else {
-            const containerEl = document.querySelector('[id$="-container"]');
-            if (containerEl && containerEl.id) {
-                currentApp = containerEl.id.replace(/-container$/, '');
-            }
-        }
-        if (currentApp === 'hello') currentApp = 'hello_workflow';
-        if (currentApp === 'optics_workflow') currentApp = 'optics';
-        
-        const scriptName = `${currentApp}_test.json`;
-        
-        // 2. TRIGGER THE HUD
-        showContextTriggerHUD(currentApp, scriptName);
-        
-        console.log(`🎯 Context detected: ${currentApp}. Loading ${scriptName}...`);
-        
-        // 3. Load the specific test script
-        loadAndExecuteCleanDemoScript(scriptName);
-    };
+    // Context-sensitive scenario trigger lives at top-level window.triggerContextAwareDemo
 
     // Unified: Ctrl+Alt+S (Mac natively maps Alt to Option in JS events)
     // Note: Strictly checking !event.shiftKey to ensure clean triggers
@@ -1998,7 +1990,14 @@ async function executeDomActionStep(step) {
         } else if (step.action === 'submit_form') {
             const form = target.tagName === 'FORM' ? target : target.closest('form');
             if (form) {
-                form.requestSubmit ? form.requestSubmit() : form.submit();
+                const submitBtn = form.querySelector('button[type="submit"], input[type="submit"]');
+                if (submitBtn) {
+                    submitBtn.click();
+                } else if (form.requestSubmit) {
+                    form.requestSubmit();
+                } else {
+                    form.submit();
+                }
             } else {
                 console.error('🎯 DOM Action Error: No form found for submit_form');
             }
@@ -3175,7 +3174,7 @@ function waitForSelector(selector, timeout = 5000) {
     });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+const bootPlayerPiano = () => {
     initializeChatInterface();
     initializeScrollObserver();
     
@@ -3193,9 +3192,9 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(sendTempMessageWhenReady, 1000);
     }
 
-    // Auto-trigger Ghost Driver when ?demo=1 is passed (e.g. via ytapp on Honeybot)
+    // Auto-trigger Ghost Driver when ?demo=1 or #demo=1 is passed (e.g. via ytapp on Honeybot)
     const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('demo') === '1') {
+    if (urlParams.get('demo') === '1' || window.location.hash.includes('demo=1')) {
         sessionStorage.setItem('pipulate_auto_demo', '1');
     }
     if (sessionStorage.getItem('pipulate_auto_demo') === '1') {
@@ -3211,6 +3210,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 setTimeout(tryStartAutoDemo, 300);
             }
         };
-        setTimeout(tryStartAutoDemo, 1200);
+        setTimeout(tryStartAutoDemo, 900);
     }
-});
+};
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bootPlayerPiano);
+} else {
+    bootPlayerPiano();
+}

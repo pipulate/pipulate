@@ -138,7 +138,7 @@
         "selector": "#optics-boxes-summary",
         "message_template": "📦 **Boxes Lens Opened:** Inspecting Monokai-colorized Hydrated ASCII Layout Boxes.",
         "timing": {
-          "delay_before": 3000
+          "delay_before": 2000
         },
         "description": "Expand Hydrated ASCII Layout Boxes details"
       },
@@ -149,7 +149,7 @@
         "selector": "#optics-origin-md-summary",
         "message_template": "📄 **RFC 9110 Origin Markdown Opened:** Inspecting clean `Accept: text/markdown` wire payload (`origin_markdown.md`).",
         "timing": {
-          "delay_before": 3000
+          "delay_before": 2000
         },
         "description": "Expand RFC 9110 Negotiated Origin Markdown details"
       },
@@ -160,7 +160,7 @@
         "selector": "#optics-step03-form",
         "message_template": "✅ **Findings Accepted:** Proceeding to cryptographic deed seal.",
         "timing": {
-          "delay_before": 3500
+          "delay_before": 2200
         },
         "description": "Accept optical analysis findings"
       },
