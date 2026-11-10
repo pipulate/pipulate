@@ -822,6 +822,7 @@ document.addEventListener('keydown', function(event) {
             }
         }
         if (currentApp === 'hello') currentApp = 'hello_workflow';
+        if (currentApp === 'optics_workflow') currentApp = 'optics';
         
         const scriptName = `${currentApp}_test.json`;
         
@@ -1987,8 +1988,11 @@ async function executeDomActionStep(step) {
         }
     }
 
-    // Perform Action
+    // Perform Action (smooth-scroll into stage viewport for live broadcasts)
     try {
+        if (typeof target.scrollIntoView === 'function') {
+            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
         if (step.action === 'click') {
             target.click();
         } else if (step.action === 'submit_form') {
@@ -2179,8 +2183,12 @@ The element is now sparkling with golden light!`;
 
 // Flash element with gold effect - real UI enhancement
 function flashElementWithGoldEffect(elementId) {
-    const element = document.getElementById(elementId) || document.querySelector(elementId);
+    const cleanId = typeof elementId === 'string' ? elementId.replace(/^#/, '') : elementId;
+    const element = document.getElementById(cleanId) || document.querySelector(elementId);
     if (element) {
+        if (typeof element.scrollIntoView === 'function') {
+            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
         // Add gold flash animation
         element.style.transition = 'all 0.3s ease-in-out';
         element.style.boxShadow = '0 0 20px gold, 0 0 40px gold, 0 0 60px gold';
@@ -3187,12 +3195,19 @@ document.addEventListener('DOMContentLoaded', () => {
     if (urlParams.get('demo') === '1') {
         sessionStorage.setItem('pipulate_auto_demo', '1');
     }
-    if (sessionStorage.getItem('pipulate_auto_demo') === '1' && document.querySelector('[id$="-container"]')) {
-        sessionStorage.removeItem('pipulate_auto_demo');
-        setTimeout(() => {
-            if (typeof window.triggerContextAwareDemo === 'function') {
-                window.triggerContextAwareDemo();
+    if (sessionStorage.getItem('pipulate_auto_demo') === '1') {
+        let demoAttempts = 0;
+        const tryStartAutoDemo = () => {
+            if (document.querySelector('[id$="-container"]') || document.querySelector("form[hx-post$='/init']")) {
+                sessionStorage.removeItem('pipulate_auto_demo');
+                if (typeof window.triggerContextAwareDemo === 'function') {
+                    window.triggerContextAwareDemo();
+                }
+            } else if (demoAttempts < 15) {
+                demoAttempts += 1;
+                setTimeout(tryStartAutoDemo, 300);
             }
-        }, 1500);
+        };
+        setTimeout(tryStartAutoDemo, 1200);
     }
 });

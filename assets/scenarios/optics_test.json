@@ -34,7 +34,7 @@
         "step_id": "01_submit_key",
         "type": "dom_action",
         "action": "submit_form",
-        "selector": "form[hx-post='/optics/init']",
+        "selector": "form[hx-post$='/init']",
         "read_value_from": "input[name='pipeline_id']",
         "message_template": "✅ **Optics Initialized:** Run Key `{value}`",
         "timing": {
@@ -127,9 +127,20 @@
         "selector": "#optics-boxes-summary",
         "message_template": "📦 **Boxes Lens Opened:** Inspecting Monokai-colorized Hydrated ASCII Layout Boxes.",
         "timing": {
-          "delay_before": 1200
+          "delay_before": 3000
         },
         "description": "Expand Hydrated ASCII Layout Boxes details"
+      },
+      {
+        "step_id": "07c_open_origin_md",
+        "type": "dom_action",
+        "action": "click",
+        "selector": "#optics-origin-md-summary",
+        "message_template": "📄 **RFC 9110 Origin Markdown Opened:** Inspecting clean `Accept: text/markdown` wire payload (`origin_markdown.md`).",
+        "timing": {
+          "delay_before": 3000
+        },
+        "description": "Expand RFC 9110 Negotiated Origin Markdown details"
       },
       {
         "step_id": "08_accept_findings",
@@ -138,7 +149,7 @@
         "selector": "#optics-step03-form",
         "message_template": "✅ **Findings Accepted:** Proceeding to cryptographic deed seal.",
         "timing": {
-          "delay_before": 1500
+          "delay_before": 3500
         },
         "description": "Accept optical analysis findings"
       },
@@ -147,7 +158,7 @@
         "type": "dom_action",
         "action": "submit_form",
         "selector": "#optics-finalize-form",
-        "message_template": "🔒 **Sealing Deed:** Bundling 12 optical artifacts into `optics_deed.zip`...",
+        "message_template": "🔒 **Sealing Deed:** Bundling all optical & RFC 9110 wire-truth artifacts into `optics_deed.zip`...",
         "timing": {
           "wait_for_selector": "#optics-finalize-btn",
           "timeout": 15000,

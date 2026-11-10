@@ -3,22 +3,21 @@
 ytstage.py — LAN-to-DMZ Live Stage Projector for Honeybot (:10.0 OBS Broadcast).
 
 Commands (via flake.nix wrappers `ytapp` and `ytvim`):
-  • ytapp [start] [/path] [--say "Intro"]  Project local Pipulate FastHTML app (localhost:5001)
-                                           onto Honeybot :10.0 via SSH reverse tunnel (15001).
-  • ytapp status                           Check reverse tunnel & Honeybot Firefox stage window.
-  • ytapp stop                             Dismiss Firefox stage window & close reverse tunnel.
-  • ytvim [start]                          Pop fullscreen Alacritty stage window on Honeybot :10.0
-                                           and stream local terminal/Neovim session live.
-  • ytvim status                           Check Honeybot Alacritty stage window status.
-  • ytvim stop                             Dismiss Alacritty stage window on Honeybot.
+  • ytapp [start] [/path|optics] [--say "Intro"]  Project local Pipulate FastHTML app (localhost:5001)
+                                                  onto Honeybot :10.0 via SSH reverse tunnel (15001).
+  • ytapp say "Commentary..."                     Speak scripted Piper TTS on Honeybot's live audio bus.
+  • ytapp status                                  Check reverse tunnel & Honeybot Firefox stage window.
+  • ytapp stop                                    Dismiss Firefox stage window, resume Storytime, & close tunnel.
+  • ytvim [start]                                 Pop fullscreen Alacritty stage window on Honeybot :10.0
+                                                  and stream local terminal/Neovim session live.
+  • ytvim status                                  Check Honeybot Alacritty stage window status.
+  • ytvim stop                                    Dismiss Alacritty stage window & resume Storytime on Honeybot.
 """
 
 import argparse
 import os
-from pathlib import Path
 import subprocess
 import sys
-import time
 import urllib.request
 
 HONEYBOT_HOST = os.environ.get("PIPULATE_HONEYBOT_HOST", "honeybot")
@@ -26,6 +25,114 @@ LOCAL_PORT = int(os.environ.get("PIPULATE_PORT", "5001"))
 REMOTE_TUNNEL_PORT = 15001
 STAGE_PROFILE_DIR = "/tmp/honeybot_ytapp_profile"
 VIM_ANSI_FIFO = "/tmp/ytvim.ansi"
+WEEBO_STAGE_PAUSE_FILE = "/tmp/honeybot_weebo_active"
+STREAM_LOCK_PATH = "/tmp/honeybot-stream.py.lock"
+STAGE_PAUSED_PIDS_FILE = "/tmp/honeybot_ytstage_paused.json"
+
+REMOTE_PAUSE_SNIPPET = """
+def _pause_honeybot_stage(pause_audio=True):
+    import json, os, pathlib, signal
+    paused = []
+    try:
+        pathlib.Path("/tmp/honeybot_weebo_active").write_text(str(os.getpid()), encoding="utf-8")
+    except Exception:
+        pass
+    my_pid, parent_pid = os.getpid(), os.getppid()
+    lock_p = pathlib.Path("/tmp/honeybot-stream.py.lock")
+    if lock_p.is_file():
+        raw_lp = lock_p.read_text(encoding="utf-8", errors="ignore").strip()
+        if raw_lp.isdigit() and int(raw_lp) not in (my_pid, parent_pid):
+            try:
+                os.kill(int(raw_lp), signal.SIGSTOP)
+                paused.append(int(raw_lp))
+            except Exception:
+                pass
+    if pause_audio:
+        for p in sorted(pathlib.Path("/proc").glob("[0-9]*/cmdline")):
+            try:
+                pid = int(p.parent.name)
+                if pid in (my_pid, parent_pid) or pid in paused:
+                    continue
+                raw = p.read_bytes().replace(b"\\x00", b" ").decode("utf-8", errors="ignore")
+                if (
+                    ("aplay" in raw and ("-t raw" in raw or "honeybot_tts" in raw or "tick.wav" in raw or "dripulate.wav" in raw))
+                    or ("piper" in raw and "output_raw" in raw)
+                ):
+                    os.kill(pid, signal.SIGSTOP)
+                    paused.append(pid)
+            except Exception:
+                continue
+    try:
+        pathlib.Path("/tmp/honeybot_ytstage_paused.json").write_text(json.dumps(paused), encoding="utf-8")
+    except Exception:
+        pass
+"""
+
+REMOTE_RESUME_SNIPPET = """
+import json, os, pathlib, signal
+pathlib.Path("/tmp/honeybot_weebo_active").unlink(missing_ok=True)
+paused = []
+state_p = pathlib.Path("/tmp/honeybot_ytstage_paused.json")
+if state_p.is_file():
+    try:
+        paused = json.loads(state_p.read_text(encoding="utf-8"))
+    except Exception:
+        paused = []
+    state_p.unlink(missing_ok=True)
+lock_p = pathlib.Path("/tmp/honeybot-stream.py.lock")
+if lock_p.is_file():
+    raw_lp = lock_p.read_text(encoding="utf-8", errors="ignore").strip()
+    if raw_lp.isdigit() and int(raw_lp) not in paused:
+        paused.append(int(raw_lp))
+resumed = set()
+for pid in paused:
+    try:
+        os.kill(int(pid), signal.SIGCONT)
+        resumed.add(int(pid))
+    except Exception:
+        pass
+for p in sorted(pathlib.Path("/proc").glob("[0-9]*/cmdline")):
+    try:
+        pid = int(p.parent.name)
+        if pid in resumed:
+            continue
+        raw = p.read_bytes().replace(b"\\x00", b" ").decode("utf-8", errors="ignore")
+        if (
+            ("aplay" in raw and ("-t raw" in raw or "honeybot_tts" in raw or "dripulate.wav" in raw))
+            or ("piper" in raw and "output_raw" in raw)
+        ):
+            os.kill(pid, signal.SIGCONT)
+        elif "logs.py" in raw:
+            stat_txt = (p.parent / "stat").read_text(encoding="utf-8", errors="ignore")
+            if ") T " in stat_txt:
+                os.kill(pid, signal.SIGCONT)
+    except Exception:
+        continue
+"""
+
+REMOTE_SPEAK_SNIPPET = """
+import os, pathlib, shutil, subprocess, sys
+text = sys.stdin.read().strip()
+if text:
+    extra = "/etc/profiles/per-user/mike/bin:/home/mike/.nix-profile/bin:/run/current-system/sw/bin:/usr/bin:/bin"
+    env = os.environ.copy()
+    env["PATH"] = extra + ":" + env.get("PATH", "")
+    vdir = pathlib.Path.home() / ".local/share/piper_voices"
+    ryan = vdir / "en_US-ryan-low.onnx"
+    amy = vdir / "en_US-amy-low.onnx"
+    model, rate = (ryan, "19200") if (ryan.is_file() and (vdir / "en_US-ryan-low.onnx.json").is_file()) else (amy, "16000")
+    piper_bin = shutil.which("piper", path=env["PATH"])
+    aplay_bin = shutil.which("aplay", path=env["PATH"])
+    if piper_bin and aplay_bin and model.is_file():
+        p1 = subprocess.Popen([piper_bin, "--model", str(model), "--output_raw"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, env=env)
+        p2 = subprocess.Popen([aplay_bin, "-q", "-D", "default", "-r", rate, "-f", "S16_LE", "-t", "raw"], stdin=p1.stdout, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, env=env)
+        if p1.stdin:
+            p1.stdin.write(text.encode("utf-8"))
+            p1.stdin.close()
+        if p1.stdout:
+            p1.stdout.close()
+        p2.wait(timeout=90)
+"""
 
 
 def _local_server_alive(port: int = LOCAL_PORT) -> bool:
@@ -44,20 +151,88 @@ def _tunnel_pids() -> list[str]:
     return [p.strip() for p in (res.stdout or "").splitlines() if p.strip()]
 
 
+def speak_on_honeybot(say_text: str, dry_run: bool = False) -> int:
+    clean = (say_text or "").strip()
+    if not clean:
+        return 0
+    if dry_run:
+        print(f"🎤 [DRY RUN] Honeybot stage speech: {clean!r}")
+        return 0
+    res = subprocess.run(
+        ["ssh", "-o", "BatchMode=yes", HONEYBOT_HOST, "python3", "-c", REMOTE_SPEAK_SNIPPET],
+        input=clean,
+        text=True,
+        check=False,
+    )
+    return res.returncode
+
+
+def build_remote_firefox_launch(stage_url: str, freeze_hud: bool, pause_audio: bool) -> str:
+    return f"""
+import os, pathlib, subprocess, time
+{REMOTE_PAUSE_SNIPPET}
+env = os.environ.copy()
+extra = "/etc/profiles/per-user/mike/bin:/home/mike/.nix-profile/bin:/run/current-system/sw/bin:/usr/bin:/bin"
+env["PATH"] = extra + ":" + env.get("PATH", "")
+env["DISPLAY"] = ":10.0"
+if {freeze_hud!r}:
+    _pause_honeybot_stage(pause_audio={pause_audio!r})
+subprocess.run(["pkill", "-f", {STAGE_PROFILE_DIR!r}], check=False)
+prof = pathlib.Path({STAGE_PROFILE_DIR!r})
+prof.mkdir(parents=True, exist_ok=True)
+(prof / "user.js").write_text(
+    'user_pref("browser.sessionstore.resume_from_crash", false);\\n'
+    'user_pref("browser.shell.checkDefaultBrowser", false);\\n'
+    'user_pref("datareporting.policy.dataSubmissionPolicyBypassNotification", true);\\n'
+    'user_pref("trailhead.firstrun.didSeeAboutWelcome", true);\\n'
+    'user_pref("browser.startup.homepage_override.mstone", "ignore");\\n',
+    encoding="utf-8",
+)
+before_res = subprocess.run(["wmctrl", "-l"], env=env, capture_output=True, text=True, check=False)
+before_wids = {{ln.split()[0] for ln in (before_res.stdout or "").splitlines() if ln.strip()}}
+subprocess.Popen(
+    ["firefox", "--profile", {STAGE_PROFILE_DIR!r}, "--no-remote", "--new-instance", {stage_url!r}],
+    env=env,
+    stdout=subprocess.DEVNULL,
+    stderr=subprocess.DEVNULL,
+    start_new_session=True,
+)
+for _ in range(25):
+    time.sleep(0.4)
+    res = subprocess.run(["wmctrl", "-l"], env=env, capture_output=True, text=True, check=False)
+    for line in (res.stdout or "").splitlines():
+        parts = line.split()
+        if not parts:
+            continue
+        wid = parts[0]
+        if wid not in before_wids and ("Firefox" in line or "Pipulate" in line or "Optics" in line):
+            subprocess.run(["wmctrl", "-i", "-r", wid, "-b", "add,fullscreen,above"], env=env, check=False)
+            subprocess.run(["wmctrl", "-i", "-a", wid], env=env, check=False)
+            print("STAGE_WINDOW_PINNED=" + wid)
+            raise SystemExit(0)
+print("STAGE_WINDOW_LAUNCHED")
+"""
+
+
 def run_ytapp(
     action: str,
     subpath: str = "/",
     say_text: str = "",
     dry_run: bool = False,
     freeze_hud: bool = True,
+    pause_audio: bool = True,
 ) -> int:
+    if action == "say":
+        return speak_on_honeybot(say_text, dry_run=dry_run)
+
     clean_path = "/" + (subpath or "").lstrip("/")
     stage_url = f"http://127.0.0.1:{REMOTE_TUNNEL_PORT}{clean_path}"
 
     if dry_run:
         print(
             f"🎬 [DRY RUN] ytapp action={action} | local=127.0.0.1:{LOCAL_PORT} -> "
-            f"{HONEYBOT_HOST}:{stage_url} | freeze_hud={freeze_hud} | say={bool(say_text)}"
+            f"{HONEYBOT_HOST}:{stage_url} | sentinel_pause={freeze_hud} | "
+            f"pause_audio={pause_audio} | say={bool(say_text)}"
         )
         return 0
 
@@ -71,7 +246,10 @@ def run_ytapp(
                 "-o",
                 "ConnectTimeout=5",
                 HONEYBOT_HOST,
-                f"pgrep -af '{STAGE_PROFILE_DIR}' || echo 'NO_STAGE_BROWSER'",
+                (
+                    f"pgrep -af '{STAGE_PROFILE_DIR}' || echo 'NO_STAGE_BROWSER'; "
+                    f"test -f {WEEBO_STAGE_PAUSE_FILE} && echo 'SENTINEL=ACTIVE' || echo 'SENTINEL=CLEAR'"
+                ),
             ],
             capture_output=True,
             text=True,
@@ -84,21 +262,20 @@ def run_ytapp(
         return 0
 
     if action == "stop":
+        stop_script = (
+            "import subprocess\n"
+            f"subprocess.run(['pkill', '-f', {STAGE_PROFILE_DIR!r}], check=False)\n"
+            + REMOTE_RESUME_SNIPPET
+        )
         subprocess.run(
-            [
-                "ssh",
-                "-o",
-                "BatchMode=yes",
-                "-o",
-                "ConnectTimeout=5",
-                HONEYBOT_HOST,
-                f"pkill -f '{STAGE_PROFILE_DIR}' 2>/dev/null || true; pkill -CONT -f 'logs[.]py' 2>/dev/null || true",
-            ],
+            ["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=5", HONEYBOT_HOST, "python3", "-"],
+            input=stop_script,
+            text=True,
             check=False,
         )
         for pid in _tunnel_pids():
             subprocess.run(["kill", pid], check=False)
-        print("🛑 Dismissed Honeybot FastHTML stage window, resumed logs.py (SIGCONT), & closed SSH reverse tunnel.")
+        print("🛑 Dismissed Honeybot FastHTML stage window, cleared sentinel pause, resumed Storytime, & closed SSH tunnel.")
         return 0
 
     # action == "start"
@@ -108,23 +285,6 @@ def run_ytapp(
             "Start it with `pu` or `nix develop` first."
         )
         return 1
-
-    if say_text:
-        repo_root = Path(__file__).resolve().parent.parent
-        common_py = repo_root / "scripts" / "articles" / "common.py"
-        if common_py.is_file():
-            subprocess.run(
-                [
-                    sys.executable,
-                    str(common_py),
-                    "--broadcast",
-                    "say",
-                    "-c",
-                    "PIPULATE\nLIVE DEMO",
-                    say_text,
-                ],
-                check=False,
-            )
 
     if not _tunnel_pids():
         tun = subprocess.run(
@@ -146,33 +306,9 @@ def run_ytapp(
             print(f"❌ Failed to open SSH reverse tunnel to {HONEYBOT_HOST}.")
             return 1
 
-    remote_launch = f"""
-import os, subprocess, time
-env = os.environ.copy()
-env["DISPLAY"] = ":10.0"
-if {freeze_hud}:
-    subprocess.run(["pkill", "-STOP", "-f", "logs[.]py"], check=False)
-subprocess.run(["pkill", "-f", "{STAGE_PROFILE_DIR}"], check=False)
-subprocess.run(["mkdir", "-p", "{STAGE_PROFILE_DIR}"], check=False)
-subprocess.Popen(
-    ["firefox", "--profile", "{STAGE_PROFILE_DIR}", "--new-window", "{stage_url}"],
-    env=env,
-    stdout=subprocess.DEVNULL,
-    stderr=subprocess.DEVNULL,
-    start_new_session=True,
-)
-for _ in range(20):
-    time.sleep(0.4)
-    res = subprocess.run(["wmctrl", "-l"], env=env, capture_output=True, text=True)
-    for line in (res.stdout or "").splitlines():
-        if "Mozilla Firefox" in line or "Pipulate" in line:
-            wid = line.split()[0]
-            subprocess.run(["wmctrl", "-i", "-r", wid, "-b", "add,fullscreen,above"], env=env, check=False)
-            subprocess.run(["wmctrl", "-i", "-a", wid], env=env, check=False)
-            print("STAGE_WINDOW_PINNED=" + wid)
-            raise SystemExit(0)
-print("STAGE_WINDOW_LAUNCHED")
-"""
+    remote_launch = build_remote_firefox_launch(
+        stage_url=stage_url, freeze_hud=freeze_hud, pause_audio=pause_audio
+    )
     res = subprocess.run(
         ["ssh", HONEYBOT_HOST, "python3", "-"],
         input=remote_launch,
@@ -181,16 +317,21 @@ print("STAGE_WINDOW_LAUNCHED")
     )
     if res.returncode == 0:
         print(f"🎬 Pipulate FastHTML Live Stage ON-AIR at {stage_url}")
-        print("   • Drive it in your local browser at http://localhost:5001 (or run Ghost Driver: Ctrl+Alt+D)")
-        print("   • Return stream to Observatory HUD: ytapp stop")
+        if say_text:
+            speak_on_honeybot(say_text, dry_run=False)
+        print("   • Speak live stage commentary : ytapp say \"Watch Ghost Driver audit RFC 9110!\"")
+        print("   • Return stream to Observatory: ytapp stop")
     return res.returncode
 
 
-def run_ytvim(action: str, dry_run: bool = False) -> int:
+def run_ytvim(action: str, say_text: str = "", dry_run: bool = False, pause_audio: bool = True) -> int:
+    if action == "say":
+        return speak_on_honeybot(say_text, dry_run=dry_run)
+
     if dry_run:
         print(
             f"🎬 [DRY RUN] ytvim action={action} | stream=Prime(script -q -f) -> "
-            f"{HONEYBOT_HOST}:{VIM_ANSI_FIFO} (Alacritty Fullscreen :10.0)"
+            f"{HONEYBOT_HOST}:{VIM_ANSI_FIFO} (Alacritty Fullscreen :10.0, sentinel_pause=True)"
         )
         return 0
 
@@ -213,29 +354,32 @@ def run_ytvim(action: str, dry_run: bool = False) -> int:
         return 0
 
     if action == "stop":
+        stop_script = (
+            "import pathlib, subprocess\n"
+            "subprocess.run(['pkill', '-f', 'HONEYBOT_LIVE_VIM'], check=False)\n"
+            f"pathlib.Path({VIM_ANSI_FIFO!r}).unlink(missing_ok=True)\n"
+            + REMOTE_RESUME_SNIPPET
+        )
         subprocess.run(
-            [
-                "ssh",
-                "-o",
-                "BatchMode=yes",
-                "-o",
-                "ConnectTimeout=5",
-                HONEYBOT_HOST,
-                f"pkill -f 'HONEYBOT_LIVE_VIM' 2>/dev/null || true; pkill -CONT -f 'logs[.]py' 2>/dev/null || true; rm -f {VIM_ANSI_FIFO}",
-            ],
+            ["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=5", HONEYBOT_HOST, "python3", "-"],
+            input=stop_script,
+            text=True,
             check=False,
         )
-        print("🛑 Dismissed Honeybot Live Neovim stage window & resumed logs.py (SIGCONT).")
+        print("🛑 Dismissed Honeybot Live Neovim stage window, cleared sentinel pause, & resumed Storytime.")
         return 0
 
     # action == "start"
     remote_prep = f"""
 import os, pathlib, subprocess, time
+{REMOTE_PAUSE_SNIPPET}
 env = os.environ.copy()
+extra = "/etc/profiles/per-user/mike/bin:/home/mike/.nix-profile/bin:/run/current-system/sw/bin:/usr/bin:/bin"
+env["PATH"] = extra + ":" + env.get("PATH", "")
 env["DISPLAY"] = ":10.0"
-subprocess.run(["pkill", "-STOP", "-f", "logs[.]py"], check=False)
+_pause_honeybot_stage(pause_audio={pause_audio!r})
 subprocess.run(["pkill", "-f", "HONEYBOT_LIVE_VIM"], check=False)
-p = pathlib.Path("{VIM_ANSI_FIFO}")
+p = pathlib.Path({VIM_ANSI_FIFO!r})
 p.write_text("\\033[2J\\033[H🔴 LIVE TERMINAL / NEOVIM STREAM FROM PIPULATE PRIME...\\r\\n", encoding="utf-8")
 subprocess.Popen(
     [
@@ -264,6 +408,9 @@ print("YTVIM_STAGE_READY")
         print(f"❌ Failed to open Alacritty stage window on {HONEYBOT_HOST}.")
         return 1
 
+    if say_text:
+        speak_on_honeybot(say_text, dry_run=False)
+
     print("╔══════════════════════════════════════════════════════════════════════╗")
     print("║ 🔴 LIVE ON YOUTUBE: Your terminal is now mirrored on Honeybot :10.0! ║")
     print("║ • Open Neovim (`vim ...`) or run commands normally.                  ║")
@@ -288,24 +435,31 @@ print("YTVIM_STAGE_READY")
 def main() -> int:
     parser = argparse.ArgumentParser(description="Project Pipulate FastHTML App or Neovim onto Honeybot :10.0.")
     parser.add_argument("mode", choices=("app", "vim"), help="Stage mode: 'app' (FastHTML browser) or 'vim' (terminal/Neovim).")
-    parser.add_argument("args", nargs="*", help="Action (start|stop|status) and optional URL path or 'optics' preset.")
+    parser.add_argument("args", nargs="*", help="Action (start|stop|status|say) and optional URL path or 'optics' preset.")
     parser.add_argument("--optics-demo", action="store_true", help="Launch 911 LLM Optics with hands-free Ghost Driver (?demo=1).")
-    parser.add_argument("--no-freeze", action="store_true", help="Do not pause Honeybot logs.py with SIGSTOP while stage is active.")
-    parser.add_argument("--say", type=str, default="", help="Optional Piper TTS announcement before opening stage.")
+    parser.add_argument("--no-freeze", action="store_true", help="Do not set /tmp/honeybot_weebo_active sentinel while stage is active.")
+    parser.add_argument("--keep-audio", action="store_true", help="Keep Honeybot Storytime background narration playing during stage overlay.")
+    parser.add_argument("--say", type=str, default="", help="Optional scripted Piper TTS line spoken directly on Honeybot's audio bus.")
     parser.add_argument("--dry-run", action="store_true", help="Verify stage command routing without side effects.")
     parsed = parser.parse_args()
 
     action = "start"
     subpath = "/"
-    for token in parsed.args:
-        low = token.strip().lower()
-        if low in ("start", "stop", "status", "kill"):
-            action = "stop" if low == "kill" else low
-        elif low in ("optics", "optics-demo", "911"):
-            subpath = "/optics_workflow?demo=1"
-        elif token.startswith("/"):
-            subpath = token.strip()
+    say_parts: list[str] = []
+    if parsed.args and parsed.args[0].strip().lower() == "say":
+        action = "say"
+        say_parts = list(parsed.args[1:])
+    else:
+        for token in parsed.args:
+            low = token.strip().lower()
+            if low in ("start", "stop", "status", "kill"):
+                action = "stop" if low == "kill" else low
+            elif low in ("optics", "optics-demo", "911"):
+                subpath = "/optics_workflow?demo=1"
+            elif token.startswith("/"):
+                subpath = token.strip()
 
+    say_text = parsed.say or (" ".join(say_parts).strip() if say_parts else "")
     if parsed.optics_demo:
         subpath = "/optics_workflow?demo=1"
 
@@ -313,11 +467,17 @@ def main() -> int:
         return run_ytapp(
             action=action,
             subpath=subpath,
-            say_text=parsed.say,
+            say_text=say_text,
             dry_run=parsed.dry_run,
             freeze_hud=not parsed.no_freeze,
+            pause_audio=not parsed.keep_audio,
         )
-    return run_ytvim(action=action, dry_run=parsed.dry_run)
+    return run_ytvim(
+        action=action,
+        say_text=say_text,
+        dry_run=parsed.dry_run,
+        pause_audio=not parsed.keep_audio,
+    )
 
 
 if __name__ == "__main__":
