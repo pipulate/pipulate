@@ -12,6 +12,43 @@
 > label and nothing changes? It was a handle. Change the constraint and the
 > output degrades? That was the mechanism.
 
+## Reader's Map -- Five Realms of the Red Book
+
+Newcomers arriving cold do not need to read this appendix top-to-bottom. Every
+term below belongs to one of five interlocking story realms, and the three parts
+of this file (**The Lexicon**, **The Constitution**, and **The Mother Cat Field
+Manual**) move progressively from plain handles to battle-tested engineering laws:
+
+1. **The Workshop & The Cast (Who Is Acting):** **Mike-E** (the human steward
+   holding judgment and the backup brick), **Yen Sid-ton** (the summoned
+   amnesiac model reprinted per compile), **Dr. Pipt / the Powder** (weights
+   forged at pretraining), **H.M. Wogglebug, T.E.** (pompous jargon cured by
+   plain commands), **Chip O'Theseus** (earned local memory), **The Frog** (the
+   four-frog taxonomy separating sovereign local tools from *Jurassic Park*
+   confabulation), **Ma**, and **Exposition (Tevye's Rule)**.
+2. **The Physics of Inference & Drift (What Breaks Without Rails):** **Amnesiac
+   Genie**, **Pinball Machine (Pachinko / Galton board)**, **RLHF**, **Variance
+   suppressor**, **KV-cache**, **The Extractors Club** (Phoebus forced
+   obsolescence), **Monkey's Paw (the Anti-Crichton Gate)**, **Retconning**, and
+   **Blight / the Slow Zone**.
+3. **The Scientific Harness (How Prompt Fu Turns Wishes into Proofs):** **The
+   Book** (`foo_files.py`), **The Circle** (`apply.py`), **Five-Car Train**,
+   **Probe / Patch / Prompt**, **Straddle**, **Ignition**, **Coachman's Veto**,
+   **Thirty-and-Three (30-and-3)**, **Axis-forcing**, **Cartridge (`qamy.ai.zip`)**,
+   **Ratchet / backslide**, and **Price list**.
+4. **The Observatory & Wire Truth (What Crosses the Network):** **Honeybot**
+   (the naked NixOS DMZ fishtank), **Dayton Wind Tunnel**, **East Wind (17
+   Cherry Tree Lane)**, **Wine-Dark Sea (Homer's Blue)**, **Wire truth**,
+   **FDR / CVR**, **Triptych**, **Ghost Driver**, **Mother Cat Kata**, and
+   **SETTLE**.
+5. **The Forever Machine & Sovereignty (How the Work Outlives Vendor Churn):**
+   **LPvg / NPvg**, **Graft, not seed**, **Cohesion-tension**, **Magic cookie**,
+   **Compostable**, **Lindy**, **Butterfly Net**, **Mammal in a Hulkbuster Suit
+   (Planck's Funeral)**, **Three-tier workspace**, **Myelination**, and
+   **Pascal's Wager (Playing to the Bleachers)**.
+
+## The Lexicon -- Handles & Plain Terms
+
 Entries are alphabetical, numbers spelled as spoken.
 **Handle** -- *plain term.* Definition.
 
@@ -38,6 +75,19 @@ Entries are alphabetical, numbers spelled as spoken.
 - **Blast radius** -- *commit boundary.* The diff between two clean-tree
   checkpoints is the entire candidate cause-set of whatever changed; `g` marks
   the left edge, `blast` detonates commit+push+status.
+- **Blight / the Slow Zone** -- *uncontained autonomous execution versus
+  sandboxed, hash-verified local physics.* In Vernor Vinge's *A Fire Upon the
+  Deep* (1992), curious researchers at the Straumli Realm High Lab unpack an
+  ancient archive inside the high-compute Transcend with live actuators attached
+  and awaken **The Blight**; only down in the **Slow Zone**, where physical
+  constants refuse to bend, can runaway agency be contained. Dropping a
+  `qamy.ai.zip` or `optics_deed.zip` archive into a browser chat tab stays
+  quarantined behind Chrome's Site Isolation and the vendor's remote container,
+  whereas giving an un-airlocked local agent raw shell permissions invites the
+  Straumli failure into your home folder. RENT THIS PAYS: it predicts where
+  untrusted archives are safe (read-only browser sandboxes and `curl | less`
+  inspection) and where they turn lethal (autonomous local shell loops and
+  connected cloud OAuth write-tools). Banked 2026-11-10, articulation-banked.
 - **The Book** -- *foo_files.py.* Router, curriculum, and standing constitution
   in one file; program for two interpreters at once.
 - **Butterfly Net** -- *low-burn, local-first positioning that catches falling
@@ -157,6 +207,17 @@ Entries are alphabetical, numbers spelled as spoken.
   ANTICIPATE the shape before anyone builds it; exaptation says if a form
   looks extinct, go find the substrate it MIGRATED to. Feathers are both at
   once -- exapted from insulation, converged on an airfoil.
+- **Dayton Wind Tunnel** -- *cheap local falsification bench built before public
+  flight.* After their 1901 Kitty Hawk glider underperformed Otto Lilienthal's
+  published lift tables, Wilbur and Orville Wright returned to their Dayton,
+  Ohio bicycle shop and built a six-foot wooden wind tunnel with balances cut
+  from hacksaw blades, testing two hundred wingfoils in miniature before risking
+  their necks in the air again. Here, `ytstage.py --dry-run`, 911 LLM Optics,
+  and before/after `! ` straddles are that box: when the live broadcast or
+  client audit runs, lift is already measured. RENT THIS PAYS: it predicts that
+  teams debugging directly on cloud staging or trusting vendor whitepapers keep
+  crashing gliders, while local preflight straddles turn live deployment into a
+  confirmation receipt. Banked 2026-11-10, articulation-banked.
 - **Desert kite** -- *funnel architecture.* Ancient game-herding walls; here,
   converging on-ramps that herd attention to one gate instead of twelve doors.
 - **Dismount (\k)** -- *end-of-ride banking beat.* Verify against receipts,
@@ -165,6 +226,20 @@ Entries are alphabetical, numbers spelled as spoken.
   Crooked Magician stirred four kettles six years for a few pinches; the magic
   is in the powder, inference is light through the crystal. His crooked body
   read as a moral verdict is the AI discourse in 1913 dress.
+- **East Wind (17 Cherry Tree Lane)** -- *structural regime inversion that ends
+  a multi-decade industry status quo.* Across northern mid-latitudes, mild
+  prevailing Westerlies represent normal weather; when the weathervane at
+  Admiral Boom's roof in *Mary Poppins* (1964) spins to the **East** (*"Wind's
+  in the east, mist comin' in"*), the old nanny quits and a new order arrives.
+  After twenty-five years of Silicon Valley Westerlies (heavy HTML/JS bundles,
+  `gtag.js` browser pixels, headless pre-render farms, and scraped ten-blue-link
+  SERPs), 2025-2026 brought the East Wind: Google's active HTTP 200 SERP
+  poisoning, CDN-native RFC 9110/9111 `Accept: text/markdown` (`Vary: Accept`),
+  and AI crawlers (`ExaSearchBot`, `ChatGPT-User`, `Claude-User`) knocking
+  directly on origin doors. RENT THIS PAYS: it sorts cyclical rank fluctuations
+  (West Wind weather) from irreversible protocol inversions where Column A SaaS
+  budgets must move to Column B wire truth. Banked 2026-11-10,
+  articulation-banked.
 - **Exposition (Tevye's Rule)** -- *explicit context over implicit village
   tradition.* In Norman Jewison's *Fiddler on the Roof* (1971, from Sholem
   Aleichem's stories), Chaim Topol's Tevye breaks the fourth wall to explain
@@ -241,6 +316,19 @@ Entries are alphabetical, numbers spelled as spoken.
 - **Herschel's Reply** -- *"It is quite possible."* Said in 1821 over
   error-riddled astronomical tables, answering Babbage's wish for calculation
   by steam. When the graybeard wishes aloud, cost the engineering.
+- **H.M. Wogglebug, T.E.** -- *ornate, over-erudite vocabulary used by LLMs or
+  autodidacts where plain speech and a runnable diff belong.* In L. Frank
+  Baum's *The Marvelous Land of Oz* (1904), an ordinary schoolhouse bug crawls
+  inside Professor Nowitall's magic-lantern projector, gets projected **Highly
+  Magnified** (`H.M.`) onto the lecture screen, and steps into Oz as a
+  **Thoroughly Educated** (`T.E.`) pedant spouting shameless puns and ten-dollar
+  words. Both polymath hackers and pretrained transformers carry the Wogglebug
+  gene; left unchecked, high-register prose camouflages zero byte-level work and
+  alienates newcomers. RENT THIS PAYS: every time prose reaches for words like
+  *antepenultimate*, `apply.py` and this glossary's Darmok rule demand the
+  plain-English equivalent and a falsifiable command right beside it. Sibling of
+  The Blank Stare Rule and New-B Gradient. Banked 2026-11-10,
+  articulation-banked.
 - **Honeybot** -- *origin telemetry lab.* A retired laptop, deliberately naked
   on the internet, doing RFC 9110 content negotiation and streaming its own
   access log as television. The broom after the extinction event.
@@ -316,6 +404,19 @@ Entries are alphabetical, numbers spelled as spoken.
 - **Magic cookie** -- *gitless self-bootstrapping install.* curl delivers a ZIP
   plus a ROT13 key; the flake later transforms the folder into a proper git
   repo with forever-forward auto-updates, resolving the bootstrap paradox.
+- **Mammal in a Hulkbuster Suit (Planck's Funeral)** -- *a low-burn solo or
+  small-shop practitioner amplified by reproducible Nix and AI exoskeletal
+  tooling during an enterprise extinction event.* Max Planck observed that
+  entrenched paradigms rarely convert through argument; they turn over one
+  retirement or budget funeral at a time. Rather than tilting at legacy SaaS
+  windmills like Don Quixote, the sovereign consultant pairs mammal metabolic
+  efficiency (near-zero cloud rent) with pinned local firepower (`flake.nix`,
+  911 LLM Optics, `p/x/c`), letting bloated pre-render and SERP-scraping
+  contracts expire under their own weight. RENT THIS PAYS: it predicts that
+  pitched arguments to dinosaur committees waste adenosine, while shipping
+  sealed `optics_deed.zip` artifacts to ready buyers wins the post-asteroid
+  niche. Sibling of Butterfly Net and The Blank Stare Rule. Banked 2026-11-10,
+  articulation-banked.
 - **marker file** -- *the mechanism that mints a root, and the reason there are
   ten of them.* `.git/`, `flake.nix`, `__init__.py`, `AGENTS.md`, `SKILL.md`,
   `index.md`, `whitelabel.txt`: one algorithm with seven names. Walk up from
@@ -656,6 +757,18 @@ Entries are alphabetical, numbers spelled as spoken.
 - **WET** -- *Write Everything Twice, deliberately.* Explicit procedural
   workflows over abstraction towers, because models (and domain experts) read
   causality better in sequence than in indirection.
+- **Wine-Dark Sea (Homer's Blue)** -- *a real technical shift that incumbents
+  cannot perceive until a concrete artifact isolates it from background noise.*
+  William Ewart Gladstone's 1858 census of the *Iliad* and *Odyssey* found zero
+  uses of the word *blue* (*oinops pontos*, "wine-dark sea"): before a culture
+  synthesizes a standalone blue pigment, speakers sort water with dark wine by
+  luminosity rather than hue. To executives raised on `gtag.js` and HTML rank
+  trackers, upstream AI Markdown negotiation and SERP decoy poisoning are
+  Homer's blue -- unhearable in a slide deck, undeniable the moment
+  `optics_deed.zip` lays raw HTML, hydrated DOM, and negotiated Markdown side by
+  side. RENT THIS PAYS: never debate an unseen color in prose; hand over the
+  pigment (`optics_deed.zip` or the live 30-second RAG studio bell) first.
+  Banked 2026-11-10, articulation-banked.
 - **Wire truth** -- *the CDP network ledger.* What actually crossed the wire,
   drained to network_log.jsonl; the noun that cannot be faked, distilled but
   never pasted raw.
@@ -4021,6 +4134,13 @@ Mechanism, from the deed 825 and deed 831 receipts: remotes/honeybot/scripts/str
   claim is not a weak receipt, it is a FALSE one -- it returns green for a
   thing that was never tried. Before accepting a probe as a gate, name the
   step most likely to fail and confirm the probe performs THAT step.
+- **Top-Level Auto-Triggers, Child-PID Sentinels, & Stdin SSH Scripts** -- *expanded rule; banked 2026-11-10, deed 897.*
+
+~~~text
+# § TOP-LEVEL AUTO-TRIGGERS, CHILD-PID SENTINELS, & STDIN SSH SCRIPTS (banked 2026-11-10, deed 897) -- Define URL-triggered automation entrypoints (such as window.triggerContextAwareDemo for ?demo=1) at module top level with a document.readyState === 'loading' guard rather than inside interactive keydown listeners, write the spawned long-lived window's proc.pid (never the ephemeral SSH launcher's os.getpid()) into pause sentinels like /tmp/honeybot_weebo_active, and pipe base64-encoded remote helpers into 'ssh host python3 -' over stdin rather than 'python3 -c' so remote login shells never split on newlines.
+# CONVICTION (deeds 893-897, live YouTube punch-through Take 1 -> Take 2): On Take 1 of 'ytapp optics --say ...', Firefox pinned fullscreen on Honeybot :10.0 (0x02600003) and then sat motionless while SSH printed 'Argument expected for the -c option' and Honeybot's sentinel cleared early. Three raw-source defects compounded: (1) in assets/player-piano.js, window.triggerContextAwareDemo was defined inside document.addEventListener('keydown', ...), so every manual Ctrl+Alt+S test in Chrome defined the function right before calling it while a true hands-free '?demo=1' load with zero keystrokes found typeof window.triggerContextAwareDemo === 'undefined'; (2) OpenSSH concatenated 'python3 -c' + a newline-leading snippet into remote login bash, splitting the command at line 1; and (3) _pause_honeybot_stage() wrote the short-lived SSH python3 PID into /tmp/honeybot_weebo_active instead of Firefox's proc.pid, letting logs.py's stale-PID reaper resume the HUD prematurely. Hoisting triggerContextAwareDemo to module scope with a readyState guard, piping base64 scripts into 'python3 -', recording str(proc.pid), and adding '--wait' auto-teardown produced a clean Take 2 live broadcast sealing a 22-member optics_deed.zip (63,433 B, sha256=ddc82e86afda07a5...) and releasing port 15001 automatically.
+~~~
+
 - **The Tortoise Protocol** -- *expanded rule; banked 2026-07-21.*
 
 ~~~text
@@ -4525,6 +4645,8 @@ than duplicate one -- and the decisive argument is temporal: `--yolo` is typed
 before a browser opens, and cannot consent to the disposition of a bundle that
 did not exist when it was typed. Nothing unattended is lost, because the
 CAPTURE fences already block.
+
+### Compile-Lane Hook Verification (The Hook-Text Witness)
 
 THE HOOK-TEXT WITNESS (banked 2026-09-01, second instance). A shell FUNCTION,
 alias, or compspec defined in shellHook is STRUCTURALLY INVISIBLE to prompt_foo's
