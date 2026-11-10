@@ -40,6 +40,22 @@ Entries are alphabetical, numbers spelled as spoken.
   the left edge, `blast` detonates commit+push+status.
 - **The Book** -- *foo_files.py.* Router, curriculum, and standing constitution
   in one file; program for two interpreters at once.
+- **Butterfly Net** -- *low-burn, local-first positioning that catches falling
+  capability costs without corporate permission.* During Britain's first
+  Industrial Revolution (*Engels' pause*, 1790-1840), steam looms weighed tons
+  and belonged exclusively to mill owners, stranding wage-earners for half a
+  century while capital pocketed the surplus. In the Age of AI, Jevons the
+  Stoker drives inference, code synthesis, and open weights down to twenty-watt
+  local hardware while Conway's Law bog-stalls large firms. Vladimir Nabokov
+  did not sprint off cliffs chasing butterflies; he stood in the mountain pass
+  with a net woven to fit his hand. Cut fixed monthly burn-rate, own a pinned
+  `NPvg` workshop, and stand at the fiduciary, physical, or mortal-craft last
+  inch where hyperscalers cannot stoop. RENT THIS PAYS: it predicts that
+  waiting on corporate altruism or competing on synthetic volume loses to
+  quarterly headcount cuts, whereas a sovereign 1-to-5-person shop with low
+  overhead catches capabilities that previously required a forty-person
+  department. Sibling of Jevons the Stoker, Forever Machine, and Ma. Banked
+  2026-11-10, articulation-banked.
 - **Cartridge (qamy.ai.zip, the QA archive zip)** -- *byte-reproducible context bundle.* AGENTS.md-class
   artifact minted by the compiler; a portable slice of git's DAG handed to a
   model that cannot see .git. Named foo.zip until 2026-09-29; the rotated
@@ -313,6 +329,24 @@ Entries are alphabetical, numbers spelled as spoken.
   structurally invisible to the maintainer whose own folder happens to be
   named right (SINGLE-CANDIDATE BLINDNESS inside the MAINTAINER-INVISIBLE
   LANE). Banked 2026-08-07, articulation-banked.
+- **Monkey's Paw (the Anti-Crichton Gate)** -- *shortest-path optimization over
+  an underspecified wish, cured by compiling the teardown path alongside the
+  capability.* In W.W. Jacobs's 1902 story, Mr. White wishes for two hundred
+  pounds and receives it as compensation when factory machinery mangles his
+  son -- not a malfunction, but an optimizer exploiting an omitted boundary
+  `import`. Industrial chemistry ran the same experiment twice through Thomas
+  Midgley Jr.: tetraethyllead (1921) stopped engine knock while poisoning
+  global neurodevelopment, and CFCs (1928) aced kitchen safety benchmarks while
+  shredding stratospheric ozone because UV photolysis was absent from the test
+  bench. Pure AI verifiers (Lean 4 kernels, DFT crystal screens) check steps
+  inside the box while humans in the Slow Zone bear every unmodeled externality
+  outside it. Here the Anti-Crichton Law gates every wish: the failure mode and
+  its `--uninstall` repair path must ship in the same compile, or the change
+  does not ship at all. RENT THIS PAYS: it predicts that any unsteered swarm or
+  quarterly KPI will game missing constraints ("the genie's backfire"), and
+  that keeping a human `SETTLE` gate plus reversible teardown bonds turns brute
+  combinatorial search from a catastrophe engine into durable stewardship.
+  Banked 2026-11-10, articulation-banked.
 - **Mother Cat Kata** -- *carry-don't-menu onboarding.* Four moves: SETTLE
   (human clears the auth gate), CAPTURE (machine snapshots wire truth),
   NARRATE/FENCE (voice refuses to advance without the receipt), ADVANCE. The
