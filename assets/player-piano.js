@@ -2004,10 +2004,13 @@ async function executeDomActionStep(step) {
             }
         } else if (step.action === 'set_value') {
              if ('value' in target) {
-                target.value = step.value || '';
+                const stamp = new Date().toISOString().replace(/[-:T]/g, '').slice(4, 14);
+                const resolvedVal = String(step.value || '').replace('{{timestamp}}', stamp);
+                target.value = resolvedVal;
+                capturedValue = resolvedVal;
                 target.dispatchEvent(new Event('input', { bubbles: true }));
                 target.dispatchEvent(new Event('change', { bubbles: true }));
-                console.log(`🎯 DOM Action: Set value to "${step.value}"`);
+                console.log(`🎯 DOM Action: Set value to "${resolvedVal}"`);
             }
         }
         console.log('🎯 DOM Action performed:', step.action);

@@ -31,6 +31,17 @@
         "description": "✨ Highlight pipeline key input"
       },
       {
+        "step_id": "00c_set_fresh_key",
+        "type": "dom_action",
+        "action": "set_value",
+        "selector": "input[name='pipeline_id']",
+        "value": "live-{{timestamp}}",
+        "timing": {
+          "delay_before": 300
+        },
+        "description": "Mint fresh timestamped optics run key"
+      },
+      {
         "step_id": "01_submit_key",
         "type": "dom_action",
         "action": "submit_form",

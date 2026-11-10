@@ -169,7 +169,7 @@ def speak_on_honeybot(say_text: str, dry_run: bool = False) -> int:
 
 def build_remote_firefox_launch(stage_url: str, freeze_hud: bool, pause_audio: bool) -> str:
     return f"""
-import os, pathlib, subprocess, time
+import os, pathlib, shutil, subprocess, time
 {REMOTE_PAUSE_SNIPPET}
 env = os.environ.copy()
 extra = "/etc/profiles/per-user/mike/bin:/home/mike/.nix-profile/bin:/run/current-system/sw/bin:/usr/bin:/bin"
@@ -178,7 +178,9 @@ env["DISPLAY"] = ":10.0"
 if {freeze_hud!r}:
     _pause_honeybot_stage(pause_audio={pause_audio!r})
 subprocess.run(["pkill", "-f", {STAGE_PROFILE_DIR!r}], check=False)
+time.sleep(0.2)
 prof = pathlib.Path({STAGE_PROFILE_DIR!r})
+shutil.rmtree(prof, ignore_errors=True)
 prof.mkdir(parents=True, exist_ok=True)
 (prof / "user.js").write_text(
     'user_pref("browser.sessionstore.resume_from_crash", false);\\n'
