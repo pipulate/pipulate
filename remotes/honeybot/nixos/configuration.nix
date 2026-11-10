@@ -940,17 +940,25 @@
     piper-tts
 
     (writeShellScriptBin "stream" ''
-      # --- Ensure Voice Model Exists ---
+      # --- Ensure 3-Voice Cast Models Exist (Norma/Shipmunk + Mike-E) ---
       MODEL_DIR="$HOME/.local/share/piper_voices"
       MODEL_NAME="en_US-amy-low.onnx"
       JSON_NAME="en_US-amy-low.onnx.json"
       URL_BASE="https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/amy/low"
+      MIKE_MODEL_NAME="en_US-ryan-low.onnx"
+      MIKE_JSON_NAME="en_US-ryan-low.onnx.json"
+      MIKE_URL_BASE="https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/ryan/low"
 
       mkdir -p "$MODEL_DIR"
-      if [ ! -f "$MODEL_DIR/$MODEL_NAME" ]; then
-        echo "📥 Downloading voice model..."
-        ${pkgs.curl}/bin/curl -L -o "$MODEL_DIR/$MODEL_NAME" "$URL_BASE/$MODEL_NAME?download=true"
-        ${pkgs.curl}/bin/curl -L -o "$MODEL_DIR/$JSON_NAME" "$URL_BASE/$JSON_NAME?download=true"
+      if [ ! -s "$MODEL_DIR/$MODEL_NAME" ] || [ ! -s "$MODEL_DIR/$JSON_NAME" ]; then
+        echo "📥 Downloading Norma/Shipmunk voice model ($MODEL_NAME)..."
+        ${pkgs.curl}/bin/curl -fsSL -o "$MODEL_DIR/$MODEL_NAME" "$URL_BASE/$MODEL_NAME?download=true"
+        ${pkgs.curl}/bin/curl -fsSL -o "$MODEL_DIR/$JSON_NAME" "$URL_BASE/$JSON_NAME?download=true"
+      fi
+      if [ ! -s "$MODEL_DIR/$MIKE_MODEL_NAME" ] || [ ! -s "$MODEL_DIR/$MIKE_JSON_NAME" ]; then
+        echo "📥 Downloading Mike-E voice model ($MIKE_MODEL_NAME)..."
+        ${pkgs.curl}/bin/curl -fsSL -o "$MODEL_DIR/$MIKE_MODEL_NAME" "$MIKE_URL_BASE/$MIKE_MODEL_NAME?download=true"
+        ${pkgs.curl}/bin/curl -fsSL -o "$MODEL_DIR/$MIKE_JSON_NAME" "$MIKE_URL_BASE/$MIKE_JSON_NAME?download=true"
       fi
       # ---------------------------------
 
@@ -1083,12 +1091,20 @@ PY
       MODEL_NAME="en_US-amy-low.onnx"
       JSON_NAME="en_US-amy-low.onnx.json"
       URL_BASE="https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/amy/low"
+      MIKE_MODEL_NAME="en_US-ryan-low.onnx"
+      MIKE_JSON_NAME="en_US-ryan-low.onnx.json"
+      MIKE_URL_BASE="https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/ryan/low"
       
       # 2. Fetch if missing
-      if [ ! -f "$MODEL_DIR/$MODEL_NAME" ]; then
-        echo "📥 Downloading voice model (One-time setup)..."
-        ${pkgs.curl}/bin/curl -L -o "$MODEL_DIR/$MODEL_NAME" "$URL_BASE/$MODEL_NAME?download=true"
-        ${pkgs.curl}/bin/curl -L -o "$MODEL_DIR/$JSON_NAME" "$URL_BASE/$JSON_NAME?download=true"
+      if [ ! -s "$MODEL_DIR/$MODEL_NAME" ] || [ ! -s "$MODEL_DIR/$JSON_NAME" ]; then
+        echo "📥 Downloading Norma/Shipmunk voice model (One-time setup)..."
+        ${pkgs.curl}/bin/curl -fsSL -o "$MODEL_DIR/$MODEL_NAME" "$URL_BASE/$MODEL_NAME?download=true"
+        ${pkgs.curl}/bin/curl -fsSL -o "$MODEL_DIR/$JSON_NAME" "$URL_BASE/$JSON_NAME?download=true"
+      fi
+      if [ ! -s "$MODEL_DIR/$MIKE_MODEL_NAME" ] || [ ! -s "$MODEL_DIR/$MIKE_JSON_NAME" ]; then
+        echo "📥 Downloading Mike-E voice model (One-time setup)..."
+        ${pkgs.curl}/bin/curl -fsSL -o "$MODEL_DIR/$MIKE_MODEL_NAME" "$MIKE_URL_BASE/$MIKE_MODEL_NAME?download=true"
+        ${pkgs.curl}/bin/curl -fsSL -o "$MODEL_DIR/$MIKE_JSON_NAME" "$MIKE_URL_BASE/$MIKE_JSON_NAME?download=true"
       fi
 
       echo "🛡️ Watchdog Active. Starting Performance Loop..."
