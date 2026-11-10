@@ -43,7 +43,12 @@ HUD_RELAX_SECONDS = 30.0      # 30s pause with both HUDs parked at top (0% scrol
 HUD_BUMP_HOLD_SECONDS = 2.5   # Equal 2.5s monotonic hold at bottom of both Left and Right HUDs before snapping to top
 CARD_HOLD_TICKS = 56  # 56 * 0.08s = ~4.5s still hold per card (0% CPU during hold)
 FIRE_TICKS = 12       # 12 * 0.08s = ~0.96s pre-baked PSX DOOM fire sequence
-CARD_STYLES = ("bold #ffd700", "bold #00ffff", "bold #ffae42")
+STAGE_PALETTE_THEME = os.environ.get("HONEYBOT_STAGE_PALETTE", "ninja_steel").strip().lower()
+CARD_STYLES = (
+    ("bold #ffd700", "bold #00ffff", "bold #ffae42")
+    if STAGE_PALETTE_THEME == "classic"
+    else ("bold #e2e8f0", "bold #38bdf8", "bold #d4af37")
+)
 DOOM_FIRE_PALETTE = (
     (" ", ""),               # 0: Cooled sky (background #140826)
     ("░", "#570707"),        # 1: Charcoal ash (25% block)
@@ -72,8 +77,12 @@ def render_stage_curtain(side: str, width: int = STAGE_BOX_WIDTH) -> Text:
     """Render the 5-row x 14-col theatrical curtain label for #left_stage or #right_stage."""
     is_left = (side or "").strip().lower() != "right"
     lines = STAGE_LEFT_CURTAIN_LINES if is_left else STAGE_RIGHT_CURTAIN_LINES
-    primary_style = "bold #ffd700 on #0d061a" if is_left else "bold #00ffff on #0d061a"
-    mid_style = "italic #ffae42 on #0d061a" if is_left else "bold #ff79c6 on #0d061a"
+    if STAGE_PALETTE_THEME == "classic":
+        primary_style = "bold #ffd700 on #0d061a" if is_left else "bold #00ffff on #0d061a"
+        mid_style = "italic #ffae42 on #0d061a" if is_left else "bold #ff79c6 on #0d061a"
+    else:
+        primary_style = "bold #e2e8f0 on #070d12" if is_left else "bold #38bdf8 on #070d12"
+        mid_style = "italic #d4af37 on #070d12" if is_left else "italic #94a3b8 on #070d12"
     txt = Text()
     for idx, raw_line in enumerate(lines):
         if idx > 0:
@@ -244,18 +253,33 @@ MIKE_E_PIXELS = (
     "...RRRRRRRR...",
     "..RRRRGGRRRR..",
 )
-MIKE_E_PALETTE = {
-    "B": "#1e40af",  # Sorcerer's Apprentice royal blue hat
-    "L": "#3b82f6",  # Wizard hat highlight blue
-    "G": "#ffd700",  # Star / hatband / clasp gold
-    "E": "#3b2314",  # Round apprentice ears / hair
-    "S": "#ffcc99",  # Warm skin
-    "C": "#f59e7a",  # Rosy cheek
-    "W": "#ffffff",  # Eye sparkle
-    "K": "#111827",  # Pupil
-    "M": "#991b1b",  # Warm smile
-    "R": "#dc2626",  # Apprentice crimson robe
+MIKE_E_PALETTES = {
+    "ninja_steel": {
+        "B": "#334155",  # Anodized blued-steel hat shadow
+        "L": "#94a3b8",  # Brushed stainless hat bevel highlight
+        "G": "#d4af37",  # Brushed watchmaker-brass star, brim & clasp
+        "E": "#1e293b",  # Dark gunmetal silhouette & apprentice ears
+        "S": "#cbd5e1",  # Machined 316L brushed stainless face
+        "C": "#94a3b8",  # Milled pewter cheek contour
+        "W": "#f8fafc",  # Crisp ice-platinum specular eye glint
+        "K": "#020617",  # Deep obsidian pupil
+        "M": "#475569",  # Etched gunmetal smile seam
+        "R": "#1e3a5f",  # Stealth midnight Prussian-steel cloak
+    },
+    "classic": {
+        "B": "#1e40af",  # Sorcerer's Apprentice royal blue hat
+        "L": "#3b82f6",  # Wizard hat highlight blue
+        "G": "#ffd700",  # Star / hatband / clasp gold
+        "E": "#3b2314",  # Round apprentice ears / hair
+        "S": "#ffcc99",  # Warm skin
+        "C": "#f59e7a",  # Rosy cheek
+        "W": "#ffffff",  # Eye sparkle
+        "K": "#111827",  # Pupil
+        "M": "#991b1b",  # Warm smile
+        "R": "#dc2626",  # Apprentice crimson robe
+    },
 }
+MIKE_E_PALETTE = MIKE_E_PALETTES.get(STAGE_PALETTE_THEME, MIKE_E_PALETTES["ninja_steel"])
 
 SHIPMUNK_PIXELS = (
     "..DD......DD..",
@@ -269,18 +293,33 @@ SHIPMUNK_PIXELS = (
     "..CCCGGGGCCC..",
     "...FFTTTTFF...",
 )
-SHIPMUNK_PALETTE = {
-    "D": "#5c2d0c",  # Dark walnut ear rim & head stripe
-    "F": "#d97706",  # Russet chipmunk fur
-    "A": "#f59e0b",  # Amber highlight fur
-    "P": "#f472b6",  # Inner ear pink
-    "T": "#fde68a",  # Cream muzzle & belly
-    "W": "#ffffff",  # Eye shine & signature buck teeth
-    "K": "#090d16",  # Pupil
-    "N": "#ef4444",  # Chipmunk nose
-    "C": "#00ffff",  # Ship of Theseus cyber collar cyan
-    "G": "#ffd700",  # Collar rivet gold
+SHIPMUNK_PALETTES = {
+    "ninja_steel": {
+        "D": "#1e293b",  # Carbon-gunmetal ear rim & head stripe
+        "F": "#64748b",  # Smoked titanium-steel chassis
+        "A": "#94a3b8",  # Brushed stainless brow highlight
+        "P": "#38bdf8",  # Ice-cyan acoustic inner-ear sensor
+        "T": "#cbd5e1",  # Satin 316L stainless muzzle & chest
+        "W": "#ffffff",  # White-hot platinum buck teeth & eye glint
+        "K": "#020617",  # Deep obsidian pupil
+        "N": "#0ea5e9",  # Anodized cobalt-cyan nose stud
+        "C": "#00d8ff",  # Precision RFC 9110 laser-cyan collar
+        "G": "#d4af37",  # Brushed watchmaker-brass collar rivets
+    },
+    "classic": {
+        "D": "#5c2d0c",  # Dark walnut ear rim & head stripe
+        "F": "#d97706",  # Russet chipmunk fur
+        "A": "#f59e0b",  # Amber highlight fur
+        "P": "#f472b6",  # Inner ear pink
+        "T": "#fde68a",  # Cream muzzle & belly
+        "W": "#ffffff",  # Eye shine & signature buck teeth
+        "K": "#090d16",  # Pupil
+        "N": "#ef4444",  # Chipmunk nose
+        "C": "#00ffff",  # Ship of Theseus cyber collar cyan
+        "G": "#ffd700",  # Collar rivet gold
+    },
 }
+SHIPMUNK_PALETTE = SHIPMUNK_PALETTES.get(STAGE_PALETTE_THEME, SHIPMUNK_PALETTES["ninja_steel"])
 
 
 def _scale_hex_color(hex_str: str, factor: float) -> str:
@@ -300,7 +339,10 @@ def render_stage_portrait(side: str, active: bool = True, width: int = STAGE_BOX
     pixels = MIKE_E_PIXELS if is_left else SHIPMUNK_PIXELS
     raw_pal = MIKE_E_PALETTE if is_left else SHIPMUNK_PALETTE
     factor = 1.0 if active else 0.38
-    bg_hex = "#0d061a" if active else "#080411"
+    if STAGE_PALETTE_THEME == "classic":
+        bg_hex = "#0d061a" if active else "#080411"
+    else:
+        bg_hex = "#070d12" if active else "#04080b"
     pal = {k: _scale_hex_color(v, factor) for k, v in raw_pal.items()}
     grid_rows = []
     for row_idx in range(5):
@@ -553,7 +595,7 @@ class SonarApp(App):
     #middle_stage {
         height: 5;
         width: 100%;
-        background: #140826;
+        background: #0b1319;
         layout: horizontal;
         overflow: hidden;
     }
@@ -561,26 +603,26 @@ class SonarApp(App):
     .stage_box {
         width: 14;
         height: 5;
-        background: #0d061a;
-        color: #ffd700;
+        background: #070d12;
+        color: #cbd5e1;
         text-style: bold;
         padding: 0;
         overflow: hidden;
     }
 
     #left_stage {
-        color: #ffd700;
+        color: #e2e8f0;
     }
 
     #right_stage {
-        color: #00ffff;
+        color: #38bdf8;
     }
 
     #ticker_bar {
         height: 5;
         width: 1fr;
-        background: #140826;
-        color: #ffd700;
+        background: #0b1319;
+        color: #e2e8f0;
         text-style: bold;
         padding: 0 1;
         overflow: hidden;
