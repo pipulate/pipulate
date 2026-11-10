@@ -278,10 +278,77 @@ except ImportError:
 
 # --- Configuration ---
 MODEL_DIR = Path.home() / ".local/share/piper_voices"
-MODEL_NAME = "en_US-amy-low.onnx"
+NORMA_MODEL_NAME = os.environ.get("HONEYBOT_NORMA_MODEL", "en_US-amy-low.onnx")
+MODEL_NAME = NORMA_MODEL_NAME
+MIKE_MODEL_NAME = os.environ.get("HONEYBOT_MIKE_MODEL", "en_US-ryan-low.onnx")
+SHIPMUNK_MODEL_NAME = os.environ.get("HONEYBOT_SHIPMUNK_MODEL", "en_US-amy-low.onnx")
 TTS_SAMPLE_RATE = int(os.environ.get("HONEYBOT_TTS_RATE", "22050"))
+NORMA_TTS_SAMPLE_RATE = int(os.environ.get("HONEYBOT_NORMA_TTS_RATE", "16000"))
 HUMAN_TTS_SAMPLE_RATE = int(os.environ.get("HONEYBOT_HUMAN_TTS_RATE", "17600"))
+MIKE_TTS_SAMPLE_RATE = int(os.environ.get("HONEYBOT_MIKE_TTS_RATE", "19200"))
 CHIPMUNK_TTS_SAMPLE_RATE = int(os.environ.get("HONEYBOT_CHIPMUNK_TTS_RATE", "22050"))
+MIKE_TURN_CUE_TEXT = "Mike E, the Apprentice."
+SHIPMUNK_TURN_CUE_TEXT = "Shipmunk O'Theseus!"
+CAST_VOICE_URLS = {
+    "en_US-amy-low.onnx": "https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/amy/low",
+    "en_US-ryan-low.onnx": "https://huggingface.co/rhasspy/piper-voices/resolve/main/en/en_US/ryan/low",
+}
+
+
+def ensure_cast_voice_models(model_dir: Path = MODEL_DIR) -> dict:
+    """Idempotently ensure both declarative cast .onnx + .onnx.json files exist on disk."""
+    import json as _json
+    import urllib.request as _urlreq
+    status = {}
+    try:
+        model_dir.mkdir(parents=True, exist_ok=True)
+    except OSError:
+        return status
+    wanted = [NORMA_MODEL_NAME, MIKE_MODEL_NAME]
+    for m_name in wanted:
+        url_base = CAST_VOICE_URLS.get(m_name)
+        onnx_p = model_dir / m_name
+        json_p = model_dir / f"{m_name}.json"
+        if onnx_p.is_file() and onnx_p.stat().st_size > 0 and json_p.is_file() and json_p.stat().st_size > 0:
+            status[m_name] = True
+            continue
+        if not url_base:
+            status[m_name] = False
+            continue
+        ok = True
+        for fname, dst, is_json in ((m_name, onnx_p, False), (f"{m_name}.json", json_p, True)):
+            if dst.is_file() and dst.stat().st_size > 0:
+                continue
+            tmp = dst.with_name(f".{dst.name}.{os.getpid()}.tmp")
+            url = f"{url_base}/{fname}?download=true"
+            try:
+                if shutil.which("curl"):
+                    subprocess.run(
+                        ["curl", "-fsSL", "-o", str(tmp), url],
+                        stdout=subprocess.DEVNULL,
+                        stderr=subprocess.DEVNULL,
+                        timeout=60,
+                        check=True,
+                    )
+                else:
+                    with _urlreq.urlopen(url, timeout=60) as resp, open(tmp, "wb") as out_f:
+                        shutil.copyfileobj(resp, out_f)
+                if not tmp.is_file() or tmp.stat().st_size == 0:
+                    ok = False
+                else:
+                    if is_json:
+                        _json.loads(tmp.read_text(encoding="utf-8"))
+                    os.replace(tmp, dst)
+            except Exception:
+                ok = False
+                try:
+                    tmp.unlink(missing_ok=True)
+                except OSError:
+                    pass
+        status[m_name] = ok and onnx_p.is_file() and json_p.is_file()
+    return status
+
+
 STAGE_STATE_PATH = "/tmp/honeybot_stage.json"
 STAGE_CURTAIN_SECONDS = 1.8
 _STAGE_CURTAIN_INTRO_RE = (
@@ -335,8 +402,14 @@ _AI_SPEAKER_RE = (
 _HUMAN_SPEAKER_RE = (
     "mike:", "mike levin:", "me:",
     "mike l e v dot eye n:", "mikelev.in:",
-    "setting the stage", "technical journal",
-    "reading entry", "reading article",
+)
+_HUMAN_TURN_PREFIX_RE = re.compile(
+    r"^\s*(?:mike(?:\s+levin|\s+l\s+e\s+v\s+dot\s+eye\s+n|[- ]+e(?:\s+the\s+apprentice)?)?|mikelev\.in|me)\s*:\s*",
+    re.IGNORECASE,
+)
+_AI_TURN_PREFIX_RE = re.compile(
+    r"^\s*(?:(?:gemini|claude|chat\s*g\s*p\s*t|chatgpt|openai|opus|sonnet|shipmunk)\b[^:.!?]{0,40}?|a\s*i)\s*:\s*",
+    re.IGNORECASE,
 )
 _HOST_TRANSIENT_RE = (
     "we interrupt", "we now return", "scheduled station", "receiving updates",
@@ -451,11 +524,143 @@ class Narrator(threading.Thread):
         self._play_lock = threading.Lock()
         self._active_procs = []
         self._tts_seq = 0
-        self._dialogue_rate = HUMAN_TTS_SAMPLE_RATE
-        self._speaker_rate = HUMAN_TTS_SAMPLE_RATE
-        self._stage_dialogue_role = "narrator"
+        self._dialogue_rate = NORMA_TTS_SAMPLE_RATE
+        self._speaker_rate = NORMA_TTS_SAMPLE_RATE
+        self._stage_dialogue_role = "prologue"
+        self._reannounce_after_break = False
         self.live_operator_mode = threading.Event()
         self.exclusive_mode = threading.Event()
+
+    def reset_for_article(self) -> None:
+        """Park both portraits in Amiga Half-Brite ('inactive', 'inactive') under Norma Centroid until dialogue begins."""
+        self._dialogue_rate = NORMA_TTS_SAMPLE_RATE
+        self._speaker_rate = NORMA_TTS_SAMPLE_RATE
+        self._stage_dialogue_role = "prologue"
+        self._reannounce_after_break = False
+
+    def resolve_voice_target(self, voice_key: str) -> tuple:
+        """Return (model_path, sample_rate) for 'norma', 'mike', or 'shipmunk', with clean fallback if offline."""
+        vk = (voice_key or "norma").strip().lower()
+        if vk == "mike":
+            m_path = MODEL_DIR / MIKE_MODEL_NAME
+            j_path = MODEL_DIR / f"{MIKE_MODEL_NAME}.json"
+            if m_path.is_file() and j_path.is_file():
+                return m_path, MIKE_TTS_SAMPLE_RATE
+            return MODEL_DIR / NORMA_MODEL_NAME, HUMAN_TTS_SAMPLE_RATE
+        if vk == "shipmunk":
+            s_path = MODEL_DIR / SHIPMUNK_MODEL_NAME
+            if s_path.is_file():
+                return s_path, CHIPMUNK_TTS_SAMPLE_RATE
+            return MODEL_DIR / NORMA_MODEL_NAME, CHIPMUNK_TTS_SAMPLE_RATE
+        return MODEL_DIR / NORMA_MODEL_NAME, NORMA_TTS_SAMPLE_RATE
+
+    def _make_spec(self, voice: str, text: str, speaker: str, left: str, right: str) -> dict:
+        model_map = {
+            "norma": NORMA_MODEL_NAME,
+            "mike": MIKE_MODEL_NAME,
+            "shipmunk": SHIPMUNK_MODEL_NAME,
+        }
+        rate_map = {
+            "norma": NORMA_TTS_SAMPLE_RATE,
+            "mike": MIKE_TTS_SAMPLE_RATE,
+            "shipmunk": CHIPMUNK_TTS_SAMPLE_RATE,
+        }
+        return {
+            "voice": voice,
+            "model": model_map.get(voice, NORMA_MODEL_NAME),
+            "rate": rate_map.get(voice, NORMA_TTS_SAMPLE_RATE),
+            "text": text,
+            "speaker": speaker,
+            "left": left,
+            "right": right,
+        }
+
+    def plan_card_utterance(self, text: str) -> dict:
+        """Build a single utterance spec for a CARD or live operator break-in."""
+        clean = (text or "").strip()
+        if self.live_operator_mode.is_set():
+            return self._make_spec("mike", clean, "left", "active", "inactive")
+        return self._make_spec("norma", clean, "narrator", "inactive", "inactive")
+
+    def plan_utterances(self, text: str) -> list:
+        """Plan 1 or 2 zero-lag utterance specs across Norma Centroid, Mike-E, and Shipmunk O'Theseus!"""
+        raw = (text or "").strip()
+        if not raw:
+            return []
+        low = raw.lower()
+        if self.live_operator_mode.is_set():
+            need_cue = self._stage_dialogue_role != "left"
+            self._stage_dialogue_role = "left"
+            out = []
+            if need_cue:
+                out.append(self._make_spec("norma", MIKE_TURN_CUE_TEXT, "narrator", "curtain", "inactive"))
+            out.append(self._make_spec("mike", raw, "left", "active", "inactive"))
+            return out
+        if low.startswith("signal check"):
+            return [self._make_spec("norma", raw, "transient", "inactive", "inactive")]
+        if self.exclusive_mode.is_set() or any(low.startswith(p) for p in _HOST_TRANSIENT_RE):
+            return [self._make_spec("norma", raw, "narrator", "inactive", "inactive")]
+        if low.startswith(("reading entry", "reading article", "setting the stage")):
+            self._stage_dialogue_role = "prologue"
+            self._reannounce_after_break = False
+            return [self._make_spec("norma", raw, "narrator", "inactive", "inactive")]
+        if low.startswith("technical journal entry"):
+            self._stage_dialogue_role = "journal_ready"
+            self._reannounce_after_break = False
+            return [self._make_spec("norma", raw, "narrator", "inactive", "inactive")]
+        if low.startswith(("ai editorial take", "a i editorial take", "book analysis")):
+            self._stage_dialogue_role = "right"
+            self._reannounce_after_break = False
+            return [self._make_spec("norma", raw, "narrator", "inactive", "curtain")]
+
+        m_human = _HUMAN_TURN_PREFIX_RE.match(raw)
+        if m_human:
+            body = re.sub(r":\s*:", ":", raw[m_human.end():]).strip()
+            need_cue = (self._stage_dialogue_role != "left") or self._reannounce_after_break
+            self._stage_dialogue_role = "left"
+            self._reannounce_after_break = False
+            out = []
+            if need_cue:
+                out.append(self._make_spec("norma", MIKE_TURN_CUE_TEXT, "narrator", "curtain", "inactive"))
+            if body:
+                out.append(self._make_spec("mike", body, "left", "active", "inactive"))
+            return out
+
+        m_ai = _AI_TURN_PREFIX_RE.match(raw)
+        if m_ai:
+            body = re.sub(r":\s*:", ":", raw[m_ai.end():]).strip()
+            need_cue = (self._stage_dialogue_role != "right") or self._reannounce_after_break
+            self._stage_dialogue_role = "right"
+            self._reannounce_after_break = False
+            out = []
+            if need_cue:
+                out.append(self._make_spec("norma", SHIPMUNK_TURN_CUE_TEXT, "narrator", "inactive", "curtain"))
+            if body:
+                out.append(self._make_spec("shipmunk", body, "right", "inactive", "active"))
+            return out
+
+        if self._stage_dialogue_role == "journal_ready":
+            self._stage_dialogue_role = "left"
+            self._reannounce_after_break = False
+            return [
+                self._make_spec("norma", MIKE_TURN_CUE_TEXT, "narrator", "curtain", "inactive"),
+                self._make_spec("mike", raw, "left", "active", "inactive"),
+            ]
+        if self._stage_dialogue_role == "left":
+            out = []
+            if self._reannounce_after_break:
+                self._reannounce_after_break = False
+                out.append(self._make_spec("norma", MIKE_TURN_CUE_TEXT, "narrator", "curtain", "inactive"))
+            out.append(self._make_spec("mike", raw, "left", "active", "inactive"))
+            return out
+        if self._stage_dialogue_role == "right":
+            out = []
+            if self._reannounce_after_break:
+                self._reannounce_after_break = False
+                out.append(self._make_spec("norma", SHIPMUNK_TURN_CUE_TEXT, "narrator", "inactive", "curtain"))
+            out.append(self._make_spec("shipmunk", raw, "right", "inactive", "active"))
+            return out
+        return [self._make_spec("norma", raw, "narrator", "inactive", "inactive")]
 
     def resolve_speaker_rate(self, text: str) -> int:
         """Switch between brisk human pitch (17600 Hz) and Alvin AI pitch (22050 Hz) while preserving dialogue state across transient host cues."""
@@ -517,13 +722,13 @@ class Narrator(threading.Thread):
                 except OSError:
                     pass
 
-    def prep_raw(self, text):
-        """Pre-synthesize narration into a back-buffer .raw PCM file before showing a card or advancing."""
-        if not text:
-            return None
-        model_path = MODEL_DIR / MODEL_NAME
-        if not model_path.exists() or not shutil.which("piper"):
-            return None
+    def _synth_raw_with_voice(self, text: str, voice_key: str) -> tuple:
+        """Synthesize `text` using `voice_key` ('norma'|'mike'|'shipmunk'); returns (raw_path, actual_rate) or (None, 0)."""
+        if not text or not shutil.which("piper"):
+            return None, 0
+        model_path, actual_rate = self.resolve_voice_target(voice_key)
+        if not model_path.exists():
+            return None, 0
         self._tts_seq += 1
         raw_path = f"/tmp/honeybot_tts_{os.getpid()}_{self._tts_seq}.raw"
         try:
@@ -537,7 +742,7 @@ class Narrator(threading.Thread):
                     check=False,
                 )
             if res.returncode == 0 and os.path.exists(raw_path) and os.path.getsize(raw_path) > 0:
-                return raw_path
+                return raw_path, actual_rate
         except Exception:
             pass
         if os.path.exists(raw_path):
@@ -545,15 +750,50 @@ class Narrator(threading.Thread):
                 os.remove(raw_path)
             except OSError:
                 pass
-        return None
+        return None, 0
+
+    def prep_raw(self, text, voice_key: str = None):
+        """Pre-synthesize card narration into a .raw PCM file before showing a card."""
+        vk = voice_key or ("mike" if self.live_operator_mode.is_set() else "norma")
+        raw_path, _ = self._synth_raw_with_voice(text, vk)
+        return raw_path
+
+    def prep_specs_raw(self, specs: list):
+        """Pre-synthesize a planned 1-or-2-utterance turn batch into .raw files, or return None on failure."""
+        if not specs:
+            return []
+        batch = []
+        for spec in specs:
+            raw_path, actual_rate = self._synth_raw_with_voice(spec.get("text", ""), spec.get("voice", "norma"))
+            if not raw_path:
+                for prev_raw, _, _ in batch:
+                    self._cleanup_item(("RAW", prev_raw))
+                return None
+            batch.append((raw_path, actual_rate, spec))
+        return batch
+
+    def play_specs_raw(self, batch: list) -> None:
+        """Enqueue pre-synthesized (raw_path, actual_rate, spec) items in exact voice-order."""
+        for raw_path, actual_rate, spec in (batch or []):
+            if raw_path and os.path.exists(raw_path):
+                self.queue.put(("RAW", str(raw_path), int(actual_rate), spec))
+            elif spec.get("text"):
+                self.queue.put(("SPEC", spec))
+
+    def enqueue_specs(self, specs: list) -> None:
+        """Enqueue planned utterance specs for live synthesis when pre-rendering is skipped."""
+        for spec in (specs or []):
+            if spec.get("text"):
+                self.queue.put(("SPEC", spec))
 
     def play_raw(self, raw_path, fallback_text=""):
-        """Enqueue a pre-synthesized .raw file for zero-latency playback, falling back to text."""
-        rate = self.resolve_speaker_rate(fallback_text) if fallback_text else self._speaker_rate
+        """Enqueue a pre-synthesized CARD .raw file with Amiga Half-Brite (or Live Mike) stage metadata."""
+        spec = self.plan_card_utterance(fallback_text)
+        _, actual_rate = self.resolve_voice_target(spec["voice"])
         if raw_path and os.path.exists(raw_path):
-            self.queue.put(("RAW", str(raw_path), rate, str(fallback_text or "")))
+            self.queue.put(("RAW", str(raw_path), int(actual_rate), spec))
         elif fallback_text:
-            self.queue.put(fallback_text)
+            self.queue.put(("SPEC", spec))
 
     def say(self, text):
         """Add text to the speech queue."""
@@ -656,10 +896,12 @@ class Narrator(threading.Thread):
                     deadline = time.time() + rem
                     while time.time() < deadline and not self.stop_event.is_set() and not _shutting_down.is_set():
                         time.sleep(min(0.2, max(0.0, deadline - time.time())))
+                elif isinstance(item, tuple) and item and item[0] == "SPEC":
+                    self._speak_spec_now(item[1])
                 elif isinstance(item, tuple) and item and item[0] == "RAW":
                     raw_rate = item[2] if len(item) >= 3 else self._speaker_rate
-                    raw_text = item[3] if len(item) >= 4 else ""
-                    self._play_raw_now(item[1], sample_rate=raw_rate, text=raw_text)
+                    raw_meta = item[3] if len(item) >= 4 else ""
+                    self._play_raw_now(item[1], sample_rate=raw_rate, meta=raw_meta)
                 else:
                     self._speak_now(item)
                 self.queue.task_done()
@@ -667,11 +909,14 @@ class Narrator(threading.Thread):
             except queue.Empty:
                 continue
 
-    def _speak_now(self, text):
-        """Internal method to actually generate and play audio."""
-        if self.stop_event.is_set():
+    def _speak_spec_now(self, spec: dict):
+        """Synthesize and play one planned utterance spec immediately with zero-lag stage sync."""
+        if not isinstance(spec, dict) or self.stop_event.is_set():
             return
-        model_path = MODEL_DIR / MODEL_NAME
+        spoken_text = (spec.get("text") or "").strip()
+        if not spoken_text:
+            return
+        model_path, spk_rate = self.resolve_voice_target(spec.get("voice", "norma"))
         if not model_path.exists():
             return
         with self._play_lock:
@@ -680,7 +925,7 @@ class Narrator(threading.Thread):
             p1 = p2 = p3 = None
             try:
                 with self._proc_lock:
-                    p1 = subprocess.Popen(["echo", text], stdout=subprocess.PIPE)
+                    p1 = subprocess.Popen(["echo", spoken_text], stdout=subprocess.PIPE)
                     p2 = subprocess.Popen(
                         ["piper", "--model", str(model_path), "--output_raw"],
                         stdin=p1.stdout,
@@ -688,8 +933,11 @@ class Narrator(threading.Thread):
                         stderr=subprocess.DEVNULL,
                     )
                     p1.stdout.close()
-                    spk_rate = self.resolve_speaker_rate(text)
-                    self.sync_stage_for_utterance(text, sample_rate=spk_rate)
+                    write_stage_state(
+                        spec.get("speaker", "narrator"),
+                        spec.get("left", "inactive"),
+                        spec.get("right", "inactive"),
+                    )
                     p3 = subprocess.Popen(
                         ["aplay", "-r", str(spk_rate), "-f", "S16_LE", "-t", "raw"],
                         stdin=p2.stdout,
@@ -710,7 +958,18 @@ class Narrator(threading.Thread):
                                 pass
                     self._active_procs = []
 
-    def _play_raw_now(self, raw_path, sample_rate=None, text=""):
+    def _speak_now(self, text):
+        """Plan and speak raw text across the 3-voice cast."""
+        if self.stop_event.is_set():
+            return
+        for idx, spec in enumerate(self.plan_utterances(text)):
+            if self.stop_event.is_set():
+                return
+            if idx > 0:
+                time.sleep(0.08)
+            self._speak_spec_now(spec)
+
+    def _play_raw_now(self, raw_path, sample_rate=None, meta=""):
         """Play a pre-synthesized .raw file immediately via aplay and unlink when done."""
         if not raw_path or not os.path.exists(raw_path):
             return
@@ -720,12 +979,19 @@ class Narrator(threading.Thread):
             except OSError:
                 pass
             return
-        rate = int(sample_rate or self._speaker_rate or TTS_SAMPLE_RATE)
+        rate = int(sample_rate or self._speaker_rate or NORMA_TTS_SAMPLE_RATE)
         with self._play_lock:
             p_play = None
             try:
                 with self._proc_lock:
-                    self.sync_stage_for_utterance(text, sample_rate=rate)
+                    if isinstance(meta, dict):
+                        write_stage_state(
+                            meta.get("speaker", "narrator"),
+                            meta.get("left", "inactive"),
+                            meta.get("right", "inactive"),
+                        )
+                    else:
+                        self.sync_stage_for_utterance(str(meta or ""), sample_rate=rate)
                     p_play = subprocess.Popen(
                         ["aplay", "-r", str(rate), "-f", "S16_LE", "-t", "raw", str(raw_path)],
                         stdout=subprocess.DEVNULL,
@@ -2084,19 +2350,23 @@ def dispatch_cue(command, content, env, profile_dir, pace_say=True):
             except Exception:
                 pass
         if pace_say:
-            # Double-buffered synthesis: pre-render the next paragraph while the
-            # previous paragraph is still playing on aplay, then synchronize on
-            # the real voice clock so the director never outruns the voice.
-            raw_path = narrator.prep_raw(content)
-            if raw_path is not None:
+            # Double-buffered 3-voice synthesis: plan 1-or-2 utterances (Norma cue +
+            # Mike-E / Shipmunk body), pre-render .raw PCM while prior audio plays,
+            # then enqueue on the real ALSA voice clock for zero-lag curtain lifts.
+            specs = narrator.plan_utterances(content)
+            if not specs:
+                return
+            raw_batch = narrator.prep_specs_raw(specs)
+            if raw_batch is not None:
                 wait_for_voice_or_live_interrupt(env, profile_dir)
                 if has_pending_update():
-                    narrator._cleanup_item(("RAW", raw_path))
+                    for r_path, _, _ in raw_batch:
+                        narrator._cleanup_item(("RAW", r_path))
                     return
-                narrator.play_raw(raw_path, fallback_text=content)
+                narrator.play_specs_raw(raw_batch)
             else:
-                narrator.say(content)
-                time.sleep(len(content) / 20)
+                narrator.enqueue_specs(specs)
+                time.sleep(len(str(content)) / 20)
         else:
             narrator.say(content)
 
@@ -2114,6 +2384,8 @@ def dispatch_cue(command, content, env, profile_dir, pace_say=True):
             linger = 0.0
             pre_raw = None
         narrator.queue.join()
+        if "STORYTIME" in str(label or "").upper() and not narrator.live_operator_mode.is_set():
+            narrator.reset_for_article()
         raw_path = pre_raw if pre_raw is not None else (narrator.prep_raw(say_text) if say_text else None)
         card_handle = show_card(label, max_hold=hold)
         try:
@@ -2129,10 +2401,8 @@ def dispatch_cue(command, content, env, profile_dir, pace_say=True):
             dismiss_card(card_handle)
 
     elif command == "VISIT":
-        narrator._dialogue_rate = HUMAN_TTS_SAMPLE_RATE
-        narrator._speaker_rate = HUMAN_TTS_SAMPLE_RATE
-        narrator._stage_dialogue_role = "narrator"
-        write_stage_state("narrator", "curtain", "curtain")
+        narrator.reset_for_article()
+        write_stage_state("narrator", "inactive", "inactive")
         # Ensure the page actually exists before showing it
         wait_for_availability(content)
         try:
@@ -2152,13 +2422,11 @@ def dispatch_cue(command, content, env, profile_dir, pace_say=True):
             pass
 
     elif command == "BGM":
+        narrator.reset_for_article()
+        write_stage_state("narrator", "inactive", "inactive")
         if str(content).strip().upper() in ("STOP", "OFF", "0"):
             stop_storytime_bgm()
         else:
-            narrator._dialogue_rate = HUMAN_TTS_SAMPLE_RATE
-            narrator._speaker_rate = HUMAN_TTS_SAMPLE_RATE
-            narrator._stage_dialogue_role = "narrator"
-            write_stage_state("narrator", "curtain", "curtain")
             start_storytime_bgm()
 
     elif command == "PATRONUS":
@@ -2251,6 +2519,7 @@ def run_live_message(msg, env, profile_dir):
         return
     _in_live_message = True
     was_exclusive = narrator.exclusive_mode.is_set()
+    prev_dialogue_role = narrator._stage_dialogue_role
     narrator.exclusive_mode.set()
     try:
         t_cut = time.time()
@@ -2334,6 +2603,9 @@ def run_live_message(msg, env, profile_dir):
             )
     finally:
         narrator.live_operator_mode.clear()
+        narrator._stage_dialogue_role = prev_dialogue_role
+        if prev_dialogue_role in ("left", "right"):
+            narrator._reannounce_after_break = True
         _in_live_message = False
         if not was_exclusive:
             narrator.exclusive_mode.clear()
@@ -2375,6 +2647,7 @@ def run_station_break(env, profile_dir):
     # finishes instead of being clipped mid-word -- only the queued backlog is
     # dropped. The queue.join() below then rides the real voice clock, so the
     # lead-in lands after the current line ends, not on top of it.
+    prev_dialogue_role = narrator._stage_dialogue_role
     narrator.exclusive_mode.set()
     try:
         dropped = narrator.flush_queue()
@@ -2402,6 +2675,9 @@ def run_station_break(env, profile_dir):
         wait_for_voice_or_live_interrupt(env, profile_dir)
         time.sleep(1.2)
     finally:
+        narrator._stage_dialogue_role = prev_dialogue_role
+        if prev_dialogue_role in ("left", "right"):
+            narrator._reannounce_after_break = True
         narrator.exclusive_mode.clear()
 
 
@@ -2645,7 +2921,11 @@ def perform_show(script):
 
 def start_director_track():
     """The Script for the Show. Runs in parallel to the Log Stream."""
-    time.sleep(5)
+    t_boot = time.time()
+    ensure_cast_voice_models()
+    rem_boot = 5.0 - (time.time() - t_boot)
+    if rem_boot > 0:
+        time.sleep(rem_boot)
 
     # A publish-triggered restart (the [4/4] kill in flake.nix) births a fresh
     # process while .reading_trigger is still warm. Lead the very first cycle with
@@ -2710,7 +2990,7 @@ def run_logs():
 
 def main():
     _reap_orphaned_tts_and_overlays()
-    write_stage_state("narrator", "curtain", "curtain")
+    write_stage_state("narrator", "inactive", "inactive")
     atexit.register(_reap_orphaned_tts_and_overlays)
     narrator.start()
     director = threading.Thread(target=start_director_track, daemon=True)
