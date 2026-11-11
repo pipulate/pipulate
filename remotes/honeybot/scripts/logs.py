@@ -62,8 +62,7 @@ DOOM_FIRE_PALETTE = (
 DEFAULT_TICKER_MESSAGE = (
     "JUST GIVE 30 SECS... | "
     "HONEYBOT STORYTIME | "
-    "JOIN DISCORD 4-SEO! | "
-    "1ST 1000 -> AI MEMORY | "
+    "DON'T JOIN MY DISCORD | "
     "VISIT SUNPUG.IO | "
     "CHAT SUMMONS MIKE | "
     "AI'S @ MIKELEV.IN"
@@ -416,6 +415,18 @@ def compute_stage_states_from_payload(payload: dict, now: float = None):
     return left_st, right_st
 
 
+def extract_hud_focus_from_payload(payload: dict, now: float = None) -> str:
+    """Return 'logs', 'js', 'md', 'cast', or '' from a fresh /tmp/honeybot_stage.json payload."""
+    if not isinstance(payload, dict):
+        return ""
+    ts_now = time.time() if now is None else float(now)
+    updated_at = float(payload.get("updated_at") or 0.0)
+    if updated_at <= 0.0 or (ts_now - updated_at) > STAGE_STATE_TTL_SECONDS:
+        return ""
+    focus = str(payload.get("hud_focus") or "").strip().lower()
+    return focus if focus in ("logs", "js", "md", "cast") else ""
+
+
 def _bake_doom_fire_timeline(led_rows, width: int, base_style: str, effect: str, still_txt: Text, seed: int = 0):
     """Pre-bake a 56-tick timeline with bilateral PSX DOOM fire (12 entry ticks + 32 still ticks + 12 exit ticks)."""
     if effect not in ("subtle", "dramatic") or width <= 0 or len(led_rows) != 5:
@@ -660,6 +671,29 @@ class SonarApp(App):
         border-bottom: solid #2ea043;
     }
 
+    #log_stream.tour_focus {
+        border: heavy #ffd700;
+    }
+
+    .stage_box.tour_focus {
+        background: #1e293b;
+    }
+
+    #ticker_bar.tour_focus {
+        background: #1e293b;
+    }
+
+    .half_panel.tour_focus {
+        border: heavy #ffd700;
+    }
+
+    .panel_header.tour_focus {
+        background: #3b2f00;
+        color: #ffd700;
+        text-style: bold;
+        border-bottom: solid #ffd700;
+    }
+
     DataTable {
         height: 1fr;
         width: 100%;
@@ -810,6 +844,7 @@ class SonarApp(App):
         self.is_fire_burning = False
         self.left_stage_state = "curtain"
         self.right_stage_state = "curtain"
+        self.hud_tour_focus = ""
         self.stage_mtime_ns = None
         self.stage_payload = None
         self.pending_log_buffer = deque(maxlen=64)
@@ -877,17 +912,43 @@ class SonarApp(App):
             except Exception:
                 pass
 
+    def update_hud_tour_focus(self, focus_key: str) -> None:
+        """Highlight the active Observatory HUD zone during Overture / Intermission tours in O(1)."""
+        clean_focus = (focus_key or "").strip().lower()
+        if clean_focus == getattr(self, "hud_tour_focus", ""):
+            return
+        self.hud_tour_focus = clean_focus
+        zone_map = {
+            "logs": ("#log_stream",),
+            "js": ("#js_panel", "#js_header"),
+            "md": ("#md_panel", "#md_header"),
+            "cast": ("#left_stage", "#ticker_bar", "#right_stage"),
+        }
+        for zone, selectors in zone_map.items():
+            active = zone == clean_focus
+            for sel in selectors:
+                try:
+                    w = self.query_one(sel)
+                    if active:
+                        w.add_class("tour_focus")
+                    else:
+                        w.remove_class("tour_focus")
+                except Exception:
+                    pass
+
     def _sync_stage_from_file(self) -> bool:
-        """Sync #left_stage and #right_stage from /tmp/honeybot_stage.json in O(1); True when live voice owns stage."""
+        """Sync #left_stage, #right_stage, and HUD tour focus from /tmp/honeybot_stage.json in O(1)."""
         try:
             if not os.path.exists(STAGE_STATE_PATH):
                 self.stage_mtime_ns = None
                 self.stage_payload = None
+                self.update_hud_tour_focus("")
                 return False
             st = os.stat(STAGE_STATE_PATH)
             now = time.time()
             if (now - st.st_mtime) > STAGE_STATE_TTL_SECONDS:
                 self.stage_payload = None
+                self.update_hud_tour_focus("")
                 return False
             if st.st_mtime_ns != getattr(self, "stage_mtime_ns", None):
                 import json as _json
@@ -897,8 +958,10 @@ class SonarApp(App):
                 self.stage_mtime_ns = st.st_mtime_ns
             pair = compute_stage_states_from_payload(self.stage_payload, now=now)
             if pair is None:
+                self.update_hud_tour_focus("")
                 return False
             self.update_stage_boxes(pair[0], pair[1])
+            self.update_hud_tour_focus(extract_hud_focus_from_payload(self.stage_payload, now=now))
             return True
         except Exception:
             return False

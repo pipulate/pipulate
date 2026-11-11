@@ -130,7 +130,21 @@ STATION_SEGMENTS = [
             "{LIVE_REPORT:overview}",
         ],
     ),
-    # Bead 1 (ODD -> Patronus ASCII Art: white_rabbit)
+    # Bead 1 (Live LAN->DMZ Punch-Through: 911 LLM Optics Spectrometer with unattended fallback)
+    [
+        (
+            "CARD",
+            {
+                "label": "911 LLM\nOPTICS",
+                "say": (
+                    "What does an A I agent actually see when it fetches your site on the wire versus a hydrated browser?"
+                ),
+            },
+        ),
+        ("OPTICS_SLOT", {"handshake_wait": 8.0, "timeout": 180.0}),
+        ("SAY", CURRENT_ARTICLE_BEAT),
+    ],
+    # Bead 2 (ODD -> Patronus ASCII Art: white_rabbit)
     _make_station_bead(
         "PIPULATE\nNPvg",
         (

@@ -34,6 +34,7 @@ WEEBO_STAGE_PAUSE_FILE = "/tmp/honeybot_weebo_active"
 STREAM_LOCK_PATH = "/tmp/honeybot-stream.py.lock"
 STAGE_PAUSED_PIDS_FILE = "/tmp/honeybot_ytstage_paused.json"
 STAGE_AUDIO_BRIDGE_FILE = "/tmp/pipulate_ytstage_audio.json"
+OPTICS_SLOT_FILE = "/tmp/honeybot_optics_slot.json"
 
 REMOTE_PAUSE_SNIPPET = """
 def _pause_honeybot_stage(pause_audio=True):
@@ -186,6 +187,29 @@ def _clear_stage_audio_bridge() -> None:
         pass
 
 
+def _wait_for_local_voice_idle(max_wait: float = 20.0) -> None:
+    """Wait until any in-flight ChipVoiceSystem SSH speech releases pipulate_voice.lock."""
+    lock_path = f"/tmp/pipulate_voice.lock.{os.getuid()}"
+    try:
+        lf = open(lock_path, "w")
+    except OSError:
+        return
+    try:
+        deadline = time.monotonic() + max_wait
+        while time.monotonic() < deadline:
+            try:
+                fcntl.flock(lf, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                fcntl.flock(lf, fcntl.LOCK_UN)
+                break
+            except BlockingIOError:
+                time.sleep(0.15)
+    finally:
+        try:
+            lf.close()
+        except OSError:
+            pass
+
+
 def speak_on_honeybot(say_text: str, dry_run: bool = False) -> int:
     clean = (say_text or "").strip()
     if not clean:
@@ -285,11 +309,61 @@ def run_ytapp(
     freeze_hud: bool = True,
     pause_audio: bool = True,
     wait_for_deed: bool = False,
-    wait_timeout: int = 110,
+    wait_timeout: int = 180,
     mute_stage: bool = False,
+    watch_once: bool = False,
 ) -> int:
     if action == "say":
         return speak_on_honeybot(say_text, dry_run=dry_run)
+    if action in ("watch-breaks", "watch", "daemon"):
+        if dry_run:
+            print(f"🔭 [DRY RUN] Watching {HONEYBOT_HOST}:{OPTICS_SLOT_FILE} from LAN -> DMZ (once={watch_once}).")
+            return 0
+        print(f"🔭 Watching {HONEYBOT_HOST}:{OPTICS_SLOT_FILE} for DMZ-safe 911 LLM Optics station breaks...")
+        claim_script = (
+            "import json, pathlib, time\n"
+            f"p = pathlib.Path({OPTICS_SLOT_FILE!r})\n"
+            "if p.is_file():\n"
+            "    d = json.loads(p.read_text(encoding='utf-8'))\n"
+            "    if d.get('state') == 'waiting' and (time.time() - float(d.get('requested_at', 0))) < 35:\n"
+            "        d['state'] = 'claimed'\n"
+            "        p.write_text(json.dumps(d), encoding='utf-8')\n"
+            "        print('CLAIMED')\n"
+        )
+        try:
+            while True:
+                if _local_server_alive(LOCAL_PORT):
+                    chk = subprocess.run(
+                        ["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=5", HONEYBOT_HOST, "python3", "-"],
+                        input=claim_script,
+                        capture_output=True,
+                        text=True,
+                        check=False,
+                    )
+                    if "CLAIMED" in (chk.stdout or ""):
+                        print("🎬 Claimed Honeybot OPTICS_SLOT! Launching 911 LLM Optics stage...")
+                        rc = run_ytapp(
+                            action="start",
+                            subpath="/optics_workflow?demo=1",
+                            say_text=say_text,
+                            outro_text=outro_text or "Returning now to the Honeybot Observatory.",
+                            dry_run=False,
+                            freeze_hud=freeze_hud,
+                            pause_audio=pause_audio,
+                            wait_for_deed=True,
+                            wait_timeout=wait_timeout,
+                            mute_stage=mute_stage,
+                        )
+                        if watch_once:
+                            return rc
+                elif watch_once:
+                    return 0
+                if watch_once:
+                    return 0
+                time.sleep(2.5)
+        except KeyboardInterrupt:
+            print("\n🛑 Stopped watching Honeybot station breaks.")
+            return 0
 
     clean_path = "/" + (subpath or "").lstrip("/")
     stage_url = f"http://127.0.0.1:{REMOTE_TUNNEL_PORT}{clean_path}"
@@ -414,6 +488,7 @@ def run_ytapp(
                 if deed_sealed:
                     print(f"✅ Fresh Optics Deed sealed ({deed_sealed.stat().st_size:,} B). Holding 7s for gold button flash...")
                     time.sleep(7.0)
+                    _wait_for_local_voice_idle(max_wait=20.0)
                     if outro_text:
                         speak_on_honeybot(outro_text, dry_run=False)
                 else:
@@ -546,7 +621,8 @@ def main() -> int:
     parser.add_argument("--say", type=str, default="", help="Optional scripted Piper TTS line spoken directly on Honeybot's audio bus.")
     parser.add_argument("--outro", type=str, default="", help="Optional closing Piper TTS line spoken after --wait detects deed seal.")
     parser.add_argument("--wait", action="store_true", help="Wait for Ghost Driver to seal a fresh optics_deed.zip, then auto-stop and release port 15001.")
-    parser.add_argument("--wait-timeout", type=int, default=110, help="Max seconds to wait for Ghost Driver completion under --wait (default: 110).")
+    parser.add_argument("--wait-timeout", type=int, default=180, help="Max seconds to wait for Ghost Driver completion under --wait (default: 180).")
+    parser.add_argument("--once", action="store_true", help="Check once and exit when running watch-breaks.")
     parser.add_argument("--dry-run", action="store_true", help="Verify stage command routing without side effects.")
     parsed = parser.parse_args()
 
@@ -559,8 +635,8 @@ def main() -> int:
     else:
         for token in parsed.args:
             low = token.strip().lower()
-            if low in ("start", "stop", "status", "kill"):
-                action = "stop" if low == "kill" else low
+            if low in ("start", "stop", "status", "kill", "watch-breaks", "watch", "daemon"):
+                action = "stop" if low == "kill" else ("watch-breaks" if low in ("watch", "daemon") else low)
             elif low in ("optics", "optics-demo", "911"):
                 subpath = "/optics_workflow?demo=1"
             elif token.startswith("/"):
@@ -582,6 +658,7 @@ def main() -> int:
             wait_for_deed=parsed.wait,
             wait_timeout=parsed.wait_timeout,
             mute_stage=parsed.mute_stage,
+            watch_once=parsed.once,
         )
     return run_ytvim(
         action=action,

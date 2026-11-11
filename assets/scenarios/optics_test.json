@@ -9,7 +9,7 @@
         "type": "mcp_tool_call",
         "tool_name": "voice_synthesis",
         "tool_args": {
-          "text": "Engaging 911 L L M Optics. Initializing a new optical diffraction run."
+          "text": "Engaging 911 L L M Optics from Pipulate Prime. Minting a fresh run key and locking onto Mike L E V dot eye N."
         },
         "timing": {
           "delay_before": 400
@@ -108,15 +108,41 @@
         "description": "✨ Highlight Engage Optics SIFT button"
       },
       {
+        "step_id": "05b_voice_sift",
+        "type": "mcp_tool_call",
+        "tool_name": "voice_synthesis",
+        "tool_args": {
+          "text": "Engaging optical SIFT. Draining wire headers, raw H T M L source, hydrated D O M, and R F C 91 10 negotiated Markdown."
+        },
+        "timing": {
+          "delay_before": 300
+        },
+        "description": "🎤 Announcing SIFT capture"
+      },
+      {
         "step_id": "06_engage_sift",
         "type": "dom_action",
         "action": "submit_form",
         "selector": "#optics-step02-form",
         "message_template": "👁️ **SIFT Engaged:** Draining CDP wire log, source HTML, hydrated DOM, and 16 optical lenses...",
         "timing": {
-          "delay_before": 800
+          "delay_before": 400
         },
         "description": "Trigger browser capture and SIFT subprocess"
+      },
+      {
+        "step_id": "07_voice_lenses",
+        "type": "mcp_tool_call",
+        "tool_name": "voice_synthesis",
+        "tool_args": {
+          "text": "SIFT capture complete. Inspecting the hydrated D O M hierarchy tree, ASCII layout boxes, and clean R F C 91 10 origin Markdown."
+        },
+        "timing": {
+          "wait_for_selector": "#optics-step03-accept-btn",
+          "timeout": 45000,
+          "delay_before": 600
+        },
+        "description": "🎤 Announcing optical lens inspection"
       },
       {
         "step_id": "07a_open_tree_lens",
@@ -125,9 +151,7 @@
         "selector": "#optics-tree-summary",
         "message_template": "🌳 **Tree Lens Opened:** Inspecting Monokai-colorized DOM Hierarchy Tree (`🌐 Document Root`).",
         "timing": {
-          "wait_for_selector": "#optics-step03-accept-btn",
-          "timeout": 45000,
-          "delay_before": 1200
+          "delay_before": 400
         },
         "description": "Expand Hydrated DOM Hierarchy Tree details"
       },
@@ -154,13 +178,25 @@
         "description": "Expand RFC 9110 Negotiated Origin Markdown details"
       },
       {
+        "step_id": "08_voice_seal",
+        "type": "mcp_tool_call",
+        "tool_name": "voice_synthesis",
+        "tool_args": {
+          "text": "Accepting optical findings and sealing all sixteen wire-truth artifacts into a cryptographic S H A 256 zip deed."
+        },
+        "timing": {
+          "delay_before": 1200
+        },
+        "description": "🎤 Announcing cryptographic deed seal"
+      },
+      {
         "step_id": "08_accept_findings",
         "type": "dom_action",
         "action": "submit_form",
         "selector": "#optics-step03-form",
         "message_template": "✅ **Findings Accepted:** Proceeding to cryptographic deed seal.",
         "timing": {
-          "delay_before": 2200
+          "delay_before": 400
         },
         "description": "Accept optical analysis findings"
       },
@@ -173,7 +209,7 @@
         "timing": {
           "wait_for_selector": "#optics-finalize-btn",
           "timeout": 15000,
-          "delay_before": 1000
+          "delay_before": 800
         },
         "description": "Finalize and seal the ZIP deed"
       },
@@ -191,7 +227,19 @@
           "timeout": 15000,
           "delay_before": 800
         },
-        "description": "✨ Flash sealed Optics Deed download button",
+        "description": "✨ Flash sealed Optics Deed download button"
+      },
+      {
+        "step_id": "10b_voice_done",
+        "type": "mcp_tool_call",
+        "tool_name": "voice_synthesis",
+        "tool_args": {
+          "text": "Optics deed sealed. Every A I readiness claim is now verifiable from a single portable archive."
+        },
+        "timing": {
+          "delay_before": 300
+        },
+        "description": "🎤 Announcing sealed Optics Deed completion",
         "end_demo": true
       }
     ]

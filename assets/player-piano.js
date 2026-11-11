@@ -1206,9 +1206,44 @@ async function executeSystemReplyStep(step) {
     }
 }
 
+// Synchronously speak a Ghost Driver step via HTTP so steps await exact ALSA playback completion
+async function speakDemoStepSynchronously(rawText) {
+    const cleanText = String(rawText || '').trim();
+    if (!cleanText) return { success: false, skipped: true };
+    let spokenText = cleanText;
+    if (isMac && spokenText.toLowerCase().includes('control alt')) {
+        spokenText = spokenText
+            .replace(/control alt/gi, 'Control Option')
+            .replace(/ctrl\+alt/gi, 'Control+Option');
+    }
+    try {
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 90000);
+        const response = await fetch('/test-voice-synthesis', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({ text: spokenText }),
+            signal: controller.signal
+        });
+        clearTimeout(timer);
+        if (!response.ok) {
+            return { success: false, status: response.status };
+        }
+        return await response.json();
+    } catch (err) {
+        console.warn('🎤 Synchronous demo speech skipped or timed out:', err);
+        return { success: false, error: String(err) };
+    }
+}
+
 // Execute MCP tool call step
 async function executeMcpToolCallStep(step) {
     console.log('🎯 Executing MCP tool call:', step.tool_name);
+    if (step.tool_name === 'voice_synthesis') {
+        const voiceRes = await speakDemoStepSynchronously(step.tool_args?.text || '');
+        console.log('🎤 Synchronous voice_synthesis completed:', voiceRes);
+        return voiceRes;
+    }
     
     // 🔧 DEBUG: Enhanced WebSocket connection status
     console.log('🔧 DEMO MCP DEBUG - WebSocket status:', {
@@ -2097,6 +2132,11 @@ async function executeCleanSystemReplyStep(step) {
 // Execute MCP tool call step - phantom tool execution with real UI effects
 async function executeCleanMcpToolCallStep(step) {
     console.log('🎯 Executing clean MCP tool call:', step.tool_name);
+    if (step.tool_name === 'voice_synthesis') {
+        const voiceRes = await speakDemoStepSynchronously(step.tool_args?.text || '');
+        console.log('🎤 Synchronous voice_synthesis (fallback) completed:', voiceRes);
+        return voiceRes;
+    }
     
     // Simulate MCP tool execution time (no typing indicator)
     await new Promise(resolve => setTimeout(resolve, 2000));

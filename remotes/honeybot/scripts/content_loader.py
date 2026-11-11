@@ -992,8 +992,8 @@ def clean_markdown(text, label=None, census=True):
 
     # Remove HTML tags
     text = re.sub(r'<[^>]+>', '', text)
-    # Isolate Markdown ATX headings on their own paragraph boundaries before stripping '#'
-    text = re.sub(r'(?m)^[ \t]*#{1,6}[ \t]+([^\n]+)$', r'\n\n\1\n\n', text)
+    # Tag Markdown ATX headings on their own paragraph boundaries so Norma Centroid reads every headline
+    text = re.sub(r'(?m)^[ \t]*#{1,6}[ \t]+([^\n#]+?)[ \t#]*$', r'\n\nPP4HEADINGSTART \1 PP4HEADINGEND\n\n', text)
     # Abolish horizontal rules, table bars, box-drawing runs, and polish phonetic spellings
     text = _apply_tts_pronunciations(text)
     # Simplify slash-heavy file paths to filename.ext or "file path" before stripping underscores
@@ -1006,6 +1006,12 @@ def clean_markdown(text, label=None, census=True):
     text = re.sub(r'\n', ' ', text)
     text = text.replace('||PARAGRAPH||', '\n')
     text = re.sub(r' +', ' ', text).strip()
+    text = re.sub(r'(?m)^[ \t]*PP4HEADINGSTART[ \t]*PP4HEADINGEND[ \t]*\n?', '', text)
+    text = re.sub(
+        r'(?m)^[ \t]*PP4HEADINGSTART[ \t]+(.+?)[ \t]+PP4HEADINGEND[ \t]*$',
+        r'[[HEADING:\1]]',
+        text,
+    )
 
     for index, item in enumerate(pp4_directives):
         cue_kind, asset_name, duration = item if len(item) == 3 else ("PATRONUS", item[0], item[1])

@@ -350,6 +350,7 @@ def ensure_cast_voice_models(model_dir: Path = MODEL_DIR) -> dict:
 
 
 STAGE_STATE_PATH = "/tmp/honeybot_stage.json"
+OPTICS_SLOT_PATH = "/tmp/honeybot_optics_slot.json"
 STAGE_CURTAIN_SECONDS = 1.8
 _STAGE_CURTAIN_INTRO_RE = (
     "now i read", "reading entry", "reading article", "greetings",
@@ -365,8 +366,9 @@ def write_stage_state(
     curtain_side: str = "",
     curtain_seconds: float = 0.0,
     stage_path: str = STAGE_STATE_PATH,
+    hud_focus: str = "",
 ) -> dict:
-    """Atomically write /tmp/honeybot_stage.json so logs.py flips stage portraits in voice-order."""
+    """Atomically write /tmp/honeybot_stage.json so logs.py flips stage portraits and HUD focus in voice-order."""
     import json as _json
     global _stage_seq
     now = time.time()
@@ -376,6 +378,7 @@ def write_stage_state(
             "speaker": speaker,
             "left": left,
             "right": right,
+            "hud_focus": str(hud_focus or ""),
             "curtain_side": curtain_side,
             "curtain_until": round(now + curtain_seconds, 3) if (curtain_side and curtain_seconds > 0) else 0.0,
             "seq": _stage_seq,
@@ -567,7 +570,7 @@ class Narrator(threading.Thread):
             return MODEL_DIR / NORMA_MODEL_NAME, CHIPMUNK_TTS_SAMPLE_RATE
         return MODEL_DIR / NORMA_MODEL_NAME, NORMA_TTS_SAMPLE_RATE
 
-    def _make_spec(self, voice: str, text: str, speaker: str, left: str, right: str) -> dict:
+    def _make_spec(self, voice: str, text: str, speaker: str, left: str, right: str, hud_focus: str = "") -> dict:
         model_map = {
             "norma": NORMA_MODEL_NAME,
             "mike": MIKE_MODEL_NAME,
@@ -586,6 +589,7 @@ class Narrator(threading.Thread):
             "speaker": speaker,
             "left": left,
             "right": right,
+            "hud_focus": hud_focus,
         }
 
     def plan_card_utterance(self, text: str) -> dict:
@@ -600,6 +604,12 @@ class Narrator(threading.Thread):
         raw = (text or "").strip()
         if not raw:
             return []
+        is_heading = False
+        if raw.startswith("[[HEADING]]"):
+            is_heading = True
+            raw = raw[len("[[HEADING]]"):].strip()
+            if not raw:
+                return []
         low = raw.lower()
         if self.live_operator_mode.is_set():
             need_cue = self._stage_dialogue_role != "left"
@@ -625,6 +635,8 @@ class Narrator(threading.Thread):
             self._stage_dialogue_role = "right"
             self._reannounce_after_break = False
             return [self._make_spec("norma", raw, "narrator", "inactive", "curtain")]
+        if is_heading:
+            return [self._make_spec("norma", raw, "narrator", "inactive", "inactive")]
 
         m_human = _HUMAN_TURN_PREFIX_RE.match(raw)
         if m_human:
@@ -680,6 +692,8 @@ class Narrator(threading.Thread):
         low = (text or "").strip().lower()
         if not low:
             return self._speaker_rate
+        if low.startswith("[[heading]]"):
+            return NORMA_TTS_SAMPLE_RATE
         if self.exclusive_mode.is_set() or any(low.startswith(p) for p in _HOST_TRANSIENT_RE):
             return HUMAN_TTS_SAMPLE_RATE
         if any(low.startswith(p) for p in _AI_SPEAKER_RE) or _AI_TURN_PREFIX_RE.match(low):
@@ -950,6 +964,7 @@ class Narrator(threading.Thread):
                         spec.get("speaker", "narrator"),
                         spec.get("left", "inactive"),
                         spec.get("right", "inactive"),
+                        hud_focus=spec.get("hud_focus", ""),
                     )
                     p3 = subprocess.Popen(
                         ["aplay", "-r", str(spk_rate), "-f", "S16_LE", "-t", "raw"],
@@ -1002,6 +1017,7 @@ class Narrator(threading.Thread):
                             meta.get("speaker", "narrator"),
                             meta.get("left", "inactive"),
                             meta.get("right", "inactive"),
+                            hud_focus=meta.get("hud_focus", ""),
                         )
                     else:
                         self.sync_stage_for_utterance(str(meta or ""), sample_rate=rate)
@@ -2339,6 +2355,179 @@ def resolve_current_article_line(enqueue_media=True):
     return spoken_line
 
 
+def build_hud_circle_specs(mode: str = "OVERTURE", title: str = "") -> list:
+    """Build the clockwise Around-the-HUDs visual + 3-voice cast tour for Overture and Intermission."""
+    clean_mode = (mode or "OVERTURE").strip().upper()
+    clean_title = (title or "our latest technical journal entry").strip()
+    closing_line = (
+        f"Curtain up on Act One of: {clean_title}."
+        if clean_mode == "OVERTURE"
+        else f"That concludes our midpoint intermission for: {clean_title}. Full source and receipts live at Mike L E V dot eye N slash latest."
+    )
+    return [
+        narrator._make_spec(
+            "norma",
+            "Around the Observatory stage: at the top of your screen is the live Engine X origin log stream from a home-hosted Nix O S server, highlighting A I crawlers in orange, R F C 94 21 signed bots in blue diamonds, and unmasked exploit scanners in red.",
+            "narrator",
+            "inactive",
+            "inactive",
+            hud_focus="logs",
+        ),
+        narrator._make_spec(
+            "norma",
+            "In the lower-left H U D is the JavaScript D O M Hydration Trapdoor, catching crawlers like G P T Bot, O A I SearchBot, and Meta executing client-side JavaScript.",
+            "narrator",
+            "inactive",
+            "inactive",
+            hud_focus="js",
+        ),
+        narrator._make_spec(
+            "norma",
+            "In the lower-right H U D is Who Accepts Markdown, tracking R F C 91 10 Accept text slash markdown negotiations paired with R F C 91 11 Vary Accept edge caching.",
+            "narrator",
+            "inactive",
+            "inactive",
+            hud_focus="md",
+        ),
+        narrator._make_spec(
+            "norma",
+            "Flanking the center billboard are our two Storytime players. I am Norma Centroid, reading stage directions and every section headline. On stage left is Mike E, the Apprentice.",
+            "narrator",
+            "curtain",
+            "curtain",
+            hud_focus="cast",
+        ),
+        narrator._make_spec(
+            "mike",
+            "Measuring wire truth on bare metal, one verified git diff at a time.",
+            "left",
+            "active",
+            "inactive",
+            hud_focus="cast",
+        ),
+        narrator._make_spec(
+            "norma",
+            "And on stage right is Shipmunk O'Theseus, our A I collaborator.",
+            "narrator",
+            "inactive",
+            "curtain",
+            hud_focus="cast",
+        ),
+        narrator._make_spec(
+            "shipmunk",
+            "Context verified! High-bandwidth reasoning through a deterministic airlock!",
+            "right",
+            "inactive",
+            "active",
+            hud_focus="cast",
+        ),
+        narrator._make_spec(
+            "norma",
+            closing_line,
+            "narrator",
+            "inactive",
+            "inactive",
+            hud_focus="",
+        ),
+    ]
+
+
+def run_hud_circle_tour(mode: str, content, env, profile_dir) -> None:
+    """Execute the Opening Overture or Midpoint Intermission over the live Textual HUD."""
+    title = content.get("title", "") if isinstance(content, dict) else str(content or "")
+    clean_mode = (mode or "OVERTURE").strip().upper()
+    prev_role = narrator._stage_dialogue_role
+    wait_for_voice_or_live_interrupt(env, profile_dir)
+    if has_pending_update():
+        return
+    if clean_mode == "INTERMISSION":
+        dispatch_cue(
+            "CARD",
+            {"label": "MIDPOINT\nINTERMISSION", "say": "Midpoint intermission.", "duration": 10.0, "linger": 0.4},
+            env,
+            profile_dir,
+            pace_say=True,
+        )
+    specs = build_hud_circle_specs(mode=clean_mode, title=title)
+    for spec in specs:
+        if has_pending_update():
+            break
+        raw_batch = narrator.prep_specs_raw([spec])
+        if raw_batch is not None:
+            wait_for_voice_or_live_interrupt(env, profile_dir)
+            if has_pending_update():
+                for r_path, _, _ in raw_batch:
+                    narrator._cleanup_item(("RAW", r_path))
+                break
+            narrator.play_specs_raw(raw_batch)
+        else:
+            narrator.enqueue_specs([spec])
+    wait_for_voice_or_live_interrupt(env, profile_dir)
+    write_stage_state("narrator", "inactive", "inactive", hud_focus="")
+    if clean_mode == "INTERMISSION":
+        narrator._stage_dialogue_role = prev_role
+        if prev_role in ("left", "right"):
+            narrator._reannounce_after_break = True
+    else:
+        narrator.reset_for_article()
+
+
+def run_optics_station_slot(content, env, profile_dir) -> None:
+    """Offer a DMZ-safe 911 LLM Optics station-break window; fallback gracefully if Prime is unattended."""
+    import json as _json
+    cfg = content if isinstance(content, dict) else {}
+    handshake_wait = float(cfg.get("handshake_wait", 8.0))
+    max_hold = float(cfg.get("timeout", 180.0))
+    slot_p = Path(OPTICS_SLOT_PATH)
+    try:
+        slot_p.write_text(
+            _json.dumps({"state": "waiting", "requested_at": round(time.time(), 3), "pid": os.getpid()}),
+            encoding="utf-8",
+        )
+    except OSError:
+        pass
+    narrator.say("Checking Pipulate Prime for a live 911 L L M Optics spectrometer demonstration.")
+    wait_for_voice_or_live_interrupt(env, profile_dir)
+    claimed = False
+    deadline = time.time() + handshake_wait
+    while time.time() < deadline and not has_pending_update():
+        try:
+            if Path(WEEBO_STAGE_PAUSE_FILE).exists():
+                claimed = True
+                break
+            if slot_p.is_file():
+                data = _json.loads(slot_p.read_text(encoding="utf-8"))
+                if isinstance(data, dict) and data.get("state") == "claimed":
+                    claimed = True
+                    break
+        except Exception:
+            pass
+        time.sleep(0.4)
+    try:
+        if claimed:
+            stage_deadline = time.time() + max_hold
+            while time.time() < stage_deadline:
+                if not Path(WEEBO_STAGE_PAUSE_FILE).exists():
+                    time.sleep(0.5)
+                    if not Path(WEEBO_STAGE_PAUSE_FILE).exists():
+                        break
+                time.sleep(0.5)
+        else:
+            conjure_patronus("clipboard", duration=32.0)
+            narrator.say(
+                "Pipulate Prime is currently running unattended in local workshop mode. "
+                "When projected live on stage, 911 L L M Optics captures raw wire headers, static H T M L source, "
+                "hydrated D O M trees, ASCII layout boxes, and R F C 91 10 negotiated Markdown, sealing all sixteen "
+                "lenses into a single S H A 256 zip deed you can verify at Q A my dot A I."
+            )
+            wait_for_voice_or_live_interrupt(env, profile_dir)
+    finally:
+        try:
+            slot_p.unlink(missing_ok=True)
+        except OSError:
+            pass
+
+
 def dispatch_cue(command, content, env, profile_dir, pace_say=True):
     """Play one sheet-music cue through the brush set.
 
@@ -2441,6 +2630,12 @@ def dispatch_cue(command, content, env, profile_dir, pace_say=True):
             stop_storytime_bgm()
         else:
             start_storytime_bgm()
+
+    elif command in ("OVERTURE", "INTERMISSION"):
+        run_hud_circle_tour(command, content, env, profile_dir)
+
+    elif command == "OPTICS_SLOT":
+        run_optics_station_slot(content, env, profile_dir)
 
     elif command == "PATRONUS":
         narrator.patronus(content)
@@ -2921,7 +3116,9 @@ def perform_show(script):
                 next_pitch_time = next_slot(start_time, PITCH_INTERVAL, time.time())
 
             dispatch_cue(command, content, env, profile_dir, pace_say=True)
-            if command in ("MEDIA", "IMAGE", "VIDEO"):
+            if command in ("OVERTURE", "INTERMISSION"):
+                next_pitch_time = next_slot(start_time, PITCH_INTERVAL, time.time())
+            elif command in ("MEDIA", "IMAGE", "VIDEO"):
                 next_pitch_time = max(next_pitch_time, time.time() + 30.0)
     finally:
         stop_storytime_bgm()
@@ -3047,7 +3244,7 @@ def main():
         "Post a comment and see. The odds are good since it rings a bell in my office. "
         "Now sit back and enjoy storytime! "
     )
-    if not (score and trigger_is_fresh()):
+    if not score:
         narrator.say(NARRATOR_SAYS)
 
     # Station ID Logic Update: Reset the pitch timer here so it doesn't fire immediately
@@ -3090,6 +3287,14 @@ def trigger_station_bead_live(target_spec="pirates", out_path="/home/mike/www/mi
                 break
     if chosen_bead is None:
         chosen_bead = STATION_SEGMENTS[-1]
+    if any(cmd == "OPTICS_SLOT" for cmd, _ in chosen_bead):
+        payload = {"cues": chosen_bead, "pre_pause": 1.5}
+        if out_path:
+            p = Path(out_path)
+            tmp = p.with_suffix(".tmp")
+            tmp.write_text(_json.dumps(payload), encoding="utf-8")
+            tmp.replace(p)
+        return payload
     card_label = "STATION\nREPORT"
     card_say = ""
     window_spec = None

@@ -15,8 +15,9 @@ sys.path.append(str(Path(__file__).parent))
 ARCHIVE_WALK = False
 
 
-def append_article_content(script, article):
-    """Append article body chunks, preserving player-piano directives."""
+def _extract_article_cues(article):
+    """Parse article content into ordered player-piano cues, routing headings to Norma Centroid."""
+    cues = []
     for chunk in article['content'].split('\n'):
         chunk = chunk.strip()
         if chunk.startswith("[[PATRONUS:") and chunk.endswith("]]"):
@@ -28,7 +29,7 @@ def append_article_content(script, article):
             except ValueError:
                 duration = 3.5
             if key:
-                script.append(("PATRONUS", {"key": key, "duration": duration}))
+                cues.append(("PATRONUS", {"key": key, "duration": duration}))
         elif chunk.startswith("[[MEDIA:") and chunk.endswith("]]"):
             inner = chunk[len("[[MEDIA:"):-2].strip()
             parts = inner.rsplit(":", 1)
@@ -38,34 +39,79 @@ def append_article_content(script, article):
             except ValueError:
                 duration = 8.0
             if key:
-                script.append(("MEDIA", {"path": key, "duration": duration}))
+                cues.append(("MEDIA", {"path": key, "duration": duration}))
+        elif chunk.startswith("[[HEADING:") and chunk.endswith("]]"):
+            heading_text = chunk[len("[[HEADING:"):-2].strip()
+            if heading_text:
+                cues.append(("SAY", f"[[HEADING]] {heading_text}"))
         elif chunk and len(chunk) > 2:
-            script.append(("SAY", chunk))
+            cues.append(("SAY", chunk))
+    return cues
+
+
+def append_article_content(script, article):
+    """Append article body chunks, preserving player-piano directives."""
+    script.extend(_extract_article_cues(article))
+
+
+def _find_intermission_split(cues):
+    """Locate a clean heading or speaker-turn boundary near the 50% mark of an article."""
+    n = len(cues)
+    if n < 16:
+        return 0
+    mid = n // 2
+    lo = max(4, n // 3)
+    hi = min(n - 4, (2 * n) // 3)
+    best_idx = None
+    best_dist = n
+    turn_prefixes = ("[[heading]]", "mike:", "me:", "gemini", "claude", "chat g p t", "chatgpt", "shipmunk", "a i:")
+    for idx in range(lo, hi + 1):
+        cmd, val = cues[idx]
+        if cmd == "SAY" and isinstance(val, str):
+            low = val.strip().lower()
+            if any(low.startswith(p) for p in turn_prefixes):
+                dist = abs(idx - mid)
+                if dist < best_dist:
+                    best_dist = dist
+                    best_idx = idx
+    return best_idx if best_idx is not None else mid
 
 
 HERO_IMAGE_DURATION = 8.0
 
 
 def _append_article_performance(script, article, is_latest=True):
-    """Emit a voice-synchronized Figlet title card, hero image popup, and article body."""
+    """Emit symmetrical Opening Overture + Act I + Midpoint Intermission + Act II."""
     lead = (
         f"Reading the latest entry from {article['date']}."
         if is_latest
         else f"Accessing entry from {article['date']}."
     )
+    title_str = str(article.get("title") or "latest entry")
     script.append((
         "CARD",
         {
             "label": f"STORYTIME\n{article['date']}",
-            "say": f"{lead} Title: {article['title']}.",
+            "say": f"{lead} Title: {title_str}.",
         },
     ))
+    script.append(("OVERTURE", {"title": title_str}))
     script.append(("BGM", "START"))
     image_path = str(article.get("image") or "").strip()
     if image_path:
         script.append(("MEDIA", {"path": image_path, "duration": HERO_IMAGE_DURATION}))
     script.append(("SAY", "Reading entry..."))
-    append_article_content(script, article)
+    body_cues = _extract_article_cues(article)
+    split_idx = _find_intermission_split(body_cues)
+    if 0 < split_idx < len(body_cues):
+        script.extend(body_cues[:split_idx])
+        script.append(("BGM", "STOP"))
+        script.append(("INTERMISSION", {"title": title_str}))
+        script.append(("BGM", "START"))
+        script.append(("SAY", "Resuming storytime with Act Two."))
+        script.extend(body_cues[split_idx:])
+    else:
+        script.extend(body_cues)
     script.append(("BGM", "STOP"))
     script.append((
         "CARD",
