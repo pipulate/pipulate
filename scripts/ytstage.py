@@ -16,6 +16,8 @@ Commands (via flake.nix wrappers `ytapp` and `ytvim`):
 
 import argparse
 import base64
+import fcntl
+import json
 from pathlib import Path
 import os
 import subprocess
@@ -31,6 +33,7 @@ VIM_ANSI_FIFO = "/tmp/ytvim.ansi"
 WEEBO_STAGE_PAUSE_FILE = "/tmp/honeybot_weebo_active"
 STREAM_LOCK_PATH = "/tmp/honeybot-stream.py.lock"
 STAGE_PAUSED_PIDS_FILE = "/tmp/honeybot_ytstage_paused.json"
+STAGE_AUDIO_BRIDGE_FILE = "/tmp/pipulate_ytstage_audio.json"
 
 REMOTE_PAUSE_SNIPPET = """
 def _pause_honeybot_stage(pause_audio=True):
@@ -159,6 +162,30 @@ def build_remote_speak_script(say_text: str) -> str:
     return f"import base64\nTEXT_B64 = {b64!r}\n" + REMOTE_SPEAK_SNIPPET
 
 
+def _write_stage_audio_bridge(mute_stage: bool = False) -> None:
+    payload = {
+        "host": HONEYBOT_HOST,
+        "remote_port": REMOTE_TUNNEL_PORT,
+        "local_port": LOCAL_PORT,
+        "mute": bool(mute_stage),
+        "updated_at": round(time.time(), 3),
+    }
+    try:
+        p = Path(STAGE_AUDIO_BRIDGE_FILE)
+        tmp = p.with_name(f".{p.name}.{os.getpid()}.tmp")
+        tmp.write_text(json.dumps(payload), encoding="utf-8")
+        os.replace(tmp, p)
+    except OSError:
+        pass
+
+
+def _clear_stage_audio_bridge() -> None:
+    try:
+        Path(STAGE_AUDIO_BRIDGE_FILE).unlink(missing_ok=True)
+    except OSError:
+        pass
+
+
 def speak_on_honeybot(say_text: str, dry_run: bool = False) -> int:
     clean = (say_text or "").strip()
     if not clean:
@@ -166,13 +193,36 @@ def speak_on_honeybot(say_text: str, dry_run: bool = False) -> int:
     if dry_run:
         print(f"🎤 [DRY RUN] Honeybot stage speech: {clean!r}")
         return 0
-    res = subprocess.run(
-        ["ssh", "-o", "BatchMode=yes", HONEYBOT_HOST, "python3", "-"],
-        input=build_remote_speak_script(clean),
-        text=True,
-        check=False,
-    )
-    return res.returncode
+    lock_path = f"/tmp/pipulate_voice.lock.{os.getuid()}"
+    lock_file = None
+    try:
+        lock_file = open(lock_path, "w")
+        deadline = time.monotonic() + 45.0
+        while True:
+            try:
+                fcntl.flock(lock_file, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                break
+            except BlockingIOError:
+                if time.monotonic() > deadline:
+                    break
+                time.sleep(0.1)
+    except OSError:
+        lock_file = None
+    try:
+        res = subprocess.run(
+            ["ssh", "-o", "BatchMode=yes", HONEYBOT_HOST, "python3", "-"],
+            input=build_remote_speak_script(clean),
+            text=True,
+            check=False,
+        )
+        return res.returncode
+    finally:
+        if lock_file is not None:
+            try:
+                fcntl.flock(lock_file, fcntl.LOCK_UN)
+                lock_file.close()
+            except OSError:
+                pass
 
 
 def build_remote_firefox_launch(stage_url: str, freeze_hud: bool, pause_audio: bool) -> str:
@@ -236,6 +286,7 @@ def run_ytapp(
     pause_audio: bool = True,
     wait_for_deed: bool = False,
     wait_timeout: int = 110,
+    mute_stage: bool = False,
 ) -> int:
     if action == "say":
         return speak_on_honeybot(say_text, dry_run=dry_run)
@@ -288,6 +339,7 @@ def run_ytapp(
             text=True,
             check=False,
         )
+        _clear_stage_audio_bridge()
         for pid in _tunnel_pids():
             subprocess.run(["kill", pid], check=False)
         print("🛑 Dismissed Honeybot FastHTML stage window, cleared sentinel pause, resumed Storytime, & closed SSH tunnel.")
@@ -322,6 +374,7 @@ def run_ytapp(
             return 1
 
     start_ts = time.time()
+    _write_stage_audio_bridge(mute_stage=mute_stage)
     remote_launch = build_remote_firefox_launch(
         stage_url=stage_url, freeze_hud=freeze_hud, pause_audio=pause_audio
     )
@@ -331,6 +384,8 @@ def run_ytapp(
         text=True,
         check=False,
     )
+    if res.returncode != 0:
+        _clear_stage_audio_bridge()
     if res.returncode == 0:
         print(f"🎬 Pipulate FastHTML Live Stage ON-AIR at {stage_url}")
         if say_text:
@@ -487,6 +542,7 @@ def main() -> int:
     parser.add_argument("--optics-demo", action="store_true", help="Launch 911 LLM Optics with hands-free Ghost Driver (?demo=1).")
     parser.add_argument("--no-freeze", action="store_true", help="Do not set /tmp/honeybot_weebo_active sentinel while stage is active.")
     parser.add_argument("--keep-audio", action="store_true", help="Keep Honeybot Storytime background narration playing during stage overlay.")
+    parser.add_argument("--mute-stage", action="store_true", help="Do not route Pipulate Prime voice_synthesis audio over SSH to Honeybot.")
     parser.add_argument("--say", type=str, default="", help="Optional scripted Piper TTS line spoken directly on Honeybot's audio bus.")
     parser.add_argument("--outro", type=str, default="", help="Optional closing Piper TTS line spoken after --wait detects deed seal.")
     parser.add_argument("--wait", action="store_true", help="Wait for Ghost Driver to seal a fresh optics_deed.zip, then auto-stop and release port 15001.")
@@ -525,6 +581,7 @@ def main() -> int:
             pause_audio=not parsed.keep_audio,
             wait_for_deed=parsed.wait,
             wait_timeout=parsed.wait_timeout,
+            mute_stage=parsed.mute_stage,
         )
     return run_ytvim(
         action=action,

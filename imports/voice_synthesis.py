@@ -581,7 +581,7 @@ class ChipVoiceSystem:
         then the load, which downloads only after a yes. A status read that
         must never download keeps reading voice_ready, which now means loaded.
         """
-        return voice_consent() == "yes" and self.ensure_voice()
+        return (voice_consent() == "yes" or bool(self._active_ytstage_host())) and self.ensure_voice()
 
     def stop_speaking(self):
         """
@@ -603,6 +603,67 @@ class ChipVoiceSystem:
                 self.current_process = None
 
 
+
+    def _active_ytstage_host(self) -> Optional[str]:
+        """Return Honeybot SSH host when a live ytapp reverse-tunnel stage session owns audio, else None."""
+        bridge_path = Path("/tmp/pipulate_ytstage_audio.json")
+        if not bridge_path.is_file():
+            return None
+        try:
+            import json as _json
+            data = _json.loads(bridge_path.read_text(encoding="utf-8"))
+        except Exception:
+            return None
+        if not isinstance(data, dict) or data.get("mute"):
+            return None
+        host = str(data.get("host") or "").strip()
+        rport = int(data.get("remote_port") or 15001)
+        lport = int(data.get("local_port") or 5001)
+        if not host:
+            return None
+        res = subprocess.run(
+            ["pgrep", "-f", f"{rport}:127[.]0[.]0[.]1:{lport}"],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if not (res.stdout or "").strip():
+            try:
+                bridge_path.unlink(missing_ok=True)
+            except OSError:
+                pass
+            return None
+        return host
+
+    def _play_wav_on_honeybot(self, output_path: str, stage_host: str, text: str = "") -> bool:
+        """Stream a synthesized WAV file over SSH into Honeybot's default ALSA broadcast bus."""
+        remote_cmd = (
+            "PATH=/etc/profiles/per-user/mike/bin:/home/mike/.nix-profile/bin:"
+            "/run/current-system/sw/bin:/usr/bin:/bin:$PATH "
+            "aplay -q -D default -t wav"
+        )
+        try:
+            with open(output_path, "rb") as wf:
+                self.current_process = subprocess.Popen(
+                    ["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=5", stage_host, remote_cmd],
+                    stdin=wf,
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.PIPE,
+                )
+                logger.info(f"🎤 Stage speaking on {stage_host} (PID {self.current_process.pid}): {(text or output_path)[:50]}...")
+                _stderr = self.current_process.communicate()[1]
+                rc = self.current_process.returncode
+                if rc != 0:
+                    detail = (_stderr or b"").decode("utf-8", "replace").strip()
+                    detail = detail.splitlines()[-1] if detail else f"exit {rc}"
+                    logger.error(f"🎤 Honeybot SSH audio playback failed (exit {rc}): {detail}")
+                    self.last_error = f"honeybot ssh playback exit {rc}: {detail}"
+                    return False
+                return True
+        except Exception as e:
+            logger.error(f"🎤 Honeybot SSH audio playback failed: {e}")
+            self.last_error = f"{type(e).__name__}: {e}"
+            return False
 
     def _resolve_play_cmd(self, output_path: str, system: str) -> list:
         """Return the fastest available local audio player argv for output_path."""
@@ -676,7 +737,7 @@ class ChipVoiceSystem:
 
     def synthesize_to_wav(self, text: str, output_path: Optional[str] = None, ceremony: bool = False) -> Optional[str]:
         """Pre-render speech into a WAV file (back-buffer) without playing it yet."""
-        if voice_consent() != "yes" and not ceremony:
+        if voice_consent() != "yes" and not ceremony and not self._active_ytstage_host():
             self.last_error = "voice not allowed"
             logger.info("🎤 Voice not allowed; nothing synthesized")
             return None
@@ -708,7 +769,8 @@ class ChipVoiceSystem:
         if not output_path or not os.path.exists(output_path):
             self.last_error = "wav file missing"
             return False
-        if voice_consent() != "yes" and not ceremony:
+        stage_host = self._active_ytstage_host()
+        if voice_consent() != "yes" and not ceremony and not stage_host:
             self.last_error = "voice not allowed"
             if cleanup:
                 try:
@@ -734,6 +796,8 @@ class ChipVoiceSystem:
                         break
                     time.sleep(0.1)
             self.stop_speaking()
+            if stage_host:
+                return self._play_wav_on_honeybot(output_path, stage_host, text=text)
             system = platform.system()
             play_cmd = self._resolve_play_cmd(output_path, system)
             try:
@@ -797,7 +861,8 @@ class ChipVoiceSystem:
         Returns:
             bool: True if successful, False otherwise
         """
-        if voice_consent() != "yes" and not ceremony:
+        stage_host = self._active_ytstage_host()
+        if voice_consent() != "yes" and not ceremony and not stage_host:
             # THE BARRIER. Every path to sound passes here, and the answer is
             # read fresh each time, so a no recorded mid-session holds at once.
             # ceremony=True has one caller, first_contact(), and one line: the
@@ -882,6 +947,8 @@ class ChipVoiceSystem:
             with wave.open(output_path, "wb") as wav_file:
                 self.voice.synthesize_wav(spoken_text, wav_file)
             
+            if stage_host:
+                return self._play_wav_on_honeybot(output_path, stage_host, text=text)
             # Play audio using platform-specific command
             import platform
             system = platform.system()
@@ -989,7 +1056,8 @@ class ChipVoiceSystem:
             Dict with success status and details
         """
         consent = voice_consent()
-        if consent != "yes":
+        stage_host = self._active_ytstage_host()
+        if consent != "yes" and not stage_host:
             # DECLINED IS NOT FAILED. Callers read success=False either way;
             # this key is how they tell a human's answer from a broken player.
             return {
