@@ -394,7 +394,11 @@ def write_stage_state(
 
 _AI_SPEAKER_RE = (
     "gemini:", "gemini 4:", "gemini 3:", "gemini 2:",
-    "gemini 4 argon high:", "gemini 3.1 pro:", "gemini pro:", "gemini flash:",
+    "gemini 4 argon high:", "gemini 4 carbon high:",
+    "gemini 4 argon:", "gemini 4 carbon:",
+    "gemini argon high:", "gemini carbon high:",
+    "gemini argon:", "gemini carbon:",
+    "gemini 3.1 pro:", "gemini pro:", "gemini flash:",
     "claude:", "claude 3:", "claude 4:", "claude opus:", "claude sonnet:",
     "chat g p t:", "chatgpt:", "a i:", "ai:",
     "a i editorial take", "ai editorial take", "book analysis",
@@ -407,8 +411,17 @@ _HUMAN_TURN_PREFIX_RE = re.compile(
     r"^\s*(?:mike(?:\s+levin|\s+l\s+e\s+v\s+dot\s+eye\s+n|[- ]+e(?:\s+the\s+apprentice)?)?|mikelev\.in|me)\s*:\s*",
     re.IGNORECASE,
 )
+_AI_MODEL_MODIFIER_TOKEN = (
+    r"(?:\d+(?:\.\d+)*"
+    r"|argon|carbon|neon|helium|krypton|xenon|radon"
+    r"|pro|flash|ultra|nano|high|medium|low"
+    r"|opus|sonnet|haiku|code|user|web|bot"
+    r"|thinking|exp|experimental|preview|lite|mini|max|plus|turbo"
+    r"|o\d+|o'theseus"
+    r"|[a-z][a-z0-9-]{1,15}(?=\s+(?:high|medium|low|pro|flash|ultra|nano|lite|mini|max|plus|thinking|preview|exp)\b))"
+)
 _AI_TURN_PREFIX_RE = re.compile(
-    r"^\s*(?:(?:gemini|claude|chat\s*g\s*p\s*t|chatgpt|openai|opus|sonnet|shipmunk)\b[^:.!?]{0,40}?|a\s*i)\s*:\s*",
+    rf"^\s*(?:(?:gemini|claude|chat\s*g\s*p\s*t|chatgpt|openai|opus|sonnet|shipmunk)\b(?:\s+{_AI_MODEL_MODIFIER_TOKEN}){{0,4}}|a\s*i)\s*:\s*",
     re.IGNORECASE,
 )
 _HOST_TRANSIENT_RE = (
@@ -669,10 +682,10 @@ class Narrator(threading.Thread):
             return self._speaker_rate
         if self.exclusive_mode.is_set() or any(low.startswith(p) for p in _HOST_TRANSIENT_RE):
             return HUMAN_TTS_SAMPLE_RATE
-        if any(low.startswith(p) for p in _AI_SPEAKER_RE) or re.match(r"^(?:gemini|claude|chat\s*g\s*p\s*t|openai|opus|sonnet)\b[^:.!?]{0,35}:", low):
+        if any(low.startswith(p) for p in _AI_SPEAKER_RE) or _AI_TURN_PREFIX_RE.match(low):
             self._dialogue_rate = CHIPMUNK_TTS_SAMPLE_RATE
             self._speaker_rate = CHIPMUNK_TTS_SAMPLE_RATE
-        elif any(low.startswith(p) for p in _HUMAN_SPEAKER_RE):
+        elif any(low.startswith(p) for p in _HUMAN_SPEAKER_RE) or _HUMAN_TURN_PREFIX_RE.match(low):
             self._dialogue_rate = HUMAN_TTS_SAMPLE_RATE
             self._speaker_rate = HUMAN_TTS_SAMPLE_RATE
         else:
@@ -698,7 +711,7 @@ class Narrator(threading.Thread):
             return write_stage_state("narrator", "inactive", "inactive", "", 0.0, stage_path=stage_path)
         if not low:
             role = "right" if rate >= 20000 else ("left" if self._stage_dialogue_role == "left" else "narrator")
-        elif rate >= 20000 or any(low.startswith(p) for p in _AI_SPEAKER_RE) or re.match(r"^(?:gemini|claude|chat\s*g\s*p\s*t|openai|opus|sonnet)\b[^:.!?]{0,35}:", low):
+        elif rate >= 20000 or any(low.startswith(p) for p in _AI_SPEAKER_RE) or _AI_TURN_PREFIX_RE.match(low):
             role = "right"
         else:
             role = "left"

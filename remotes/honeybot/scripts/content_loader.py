@@ -478,17 +478,29 @@ _FILEPATH_RE = re.compile(
 # and recurring stack acronyms are pronounced naturally on Storytime.
 # Speaker turn regexes use horizontal whitespace [ \t]* before the label and
 # emit a leading '\n\n' so they never eat the preceding paragraph break.
+_AI_SPEAKER_LABEL_PAT = (
+    r"(?:(?:Gemini|Claude|ChatGPT|OpenAI|Opus|Sonnet|Shipmunk)\b"
+    r"(?:[ \t]+(?:\d+(?:\.\d+)*"
+    r"|Argon|Carbon|Neon|Helium|Krypton|Xenon|Radon"
+    r"|Pro|Flash|Ultra|Nano|High|Medium|Low"
+    r"|Opus|Sonnet|Haiku|Code|User|Web|Bot"
+    r"|Thinking|Exp|Experimental|Preview|Lite|Mini|Max|Plus|Turbo"
+    r"|o\d+|O'Theseus"
+    r"|[A-Za-z][A-Za-z0-9-]{1,15}(?=[ \t]+(?:High|Medium|Low|Pro|Flash|Ultra|Nano|Lite|Mini|Max|Plus|Thinking|Preview|Exp)\b))){0,4}"
+    r"|AI)"
+)
+
 _TTS_PRONUNCIATION_MAP = (
     (
         re.compile(
-            r'(?m)^[ \t]*(?:\*\*[ \t]*(?:MikeLev\.in|Mike[ \t]+Levin|Mike|Me)[ \t]*:?[ \t]*\*\*[ \t]*:?|(?:MikeLev\.in|Mike[ \t]+Levin|Mike|Me)[ \t]*:)[ \t]*(?:\r?\n[ \t]*(?!\*\*[ \t]*(?:Gemini|Claude|ChatGPT|OpenAI|AI|MikeLev\.in|Mike|Me)\b))*',
+            r'(?m)^[ \t]*(?:\*\*[ \t]*(?:MikeLev\.in|Mike[ \t]+Levin|Mike|Me)[ \t]*:?[ \t]*\*\*[ \t]*:?|(?:MikeLev\.in|Mike[ \t]+Levin|Mike|Me)[ \t]*:)[ \t]*(?:\r?\n[ \t]*(?!\*\*[ \t]*(?:Gemini|Claude|ChatGPT|OpenAI|Opus|Sonnet|Shipmunk|AI|MikeLev\.in|Mike|Me)\b))*',
             re.IGNORECASE,
         ),
         '\n\nMike: ',
     ),
     (
         re.compile(
-            r'(?m)^[ \t]*\*\*[ \t]*((?:Gemini|Claude|ChatGPT|OpenAI|Opus|Sonnet)[^*\n:]{0,35}?)[ \t]*:?[ \t]*\*\*[ \t]*:?[ \t]*(?:\r?\n[ \t]*(?!\*\*[ \t]*(?:Gemini|Claude|ChatGPT|OpenAI|AI|MikeLev\.in|Mike|Me)\b))*',
+            rf'(?m)^[ \t]*\*\*[ \t]*({_AI_SPEAKER_LABEL_PAT})[ \t]*:?[ \t]*\*\*[ \t]*:?[ \t]*(?:\r?\n[ \t]*(?!\*\*[ \t]*(?:Gemini|Claude|ChatGPT|OpenAI|Opus|Sonnet|Shipmunk|AI|MikeLev\.in|Mike|Me)\b))*',
             re.IGNORECASE,
         ),
         r'\n\n\1: ',
@@ -617,9 +629,9 @@ def _truncate_after_editorial_take(text):
     )
     # 2. Strip Notary Beat sections (0. TL;DR, 1. VERIFY, 2. BANK, 3. DANGLING, 4. SEED) down to 5. CLOSING
     text = re.sub(
-        r'^(?:#{1,6}[ \t]+|\*\*)(?:0\.[ \t]*\*?\*?TL;DR|1\.[ \t]*\*?\*?VERIFY)\b'
-        r'(?:(?!^\*\*(?:MikeLev\.in|Me|Gemini[^*\n]*)\*\*:)[\s\S])*?'
-        r'(?=^(?:#{1,6}[ \t]+|\*\*)?5\.[ \t]*\*?\*?CLOSING\b)',
+        r'^(?:#{1,6}[ \t]+|\*\*)?(?:0\.[ \t]*\*?\*?TL;DR|1\.[ \t]*\*?\*?VERIFY)\b'
+        r'(?:(?!^\*\*(?:MikeLev\.in|Mike[ \t]+Levin|Mike|Me|Gemini[^*\n]*|Claude[^*\n]*)\*\*:)[\s\S])*?'
+        r'^(?:#{1,6}[ \t]+|\*\*)?5\.[ \t]*\*?\*?CLOSING\*?\*?:?[ \t]*\n?',
         '',
         text,
         flags=re.IGNORECASE | re.MULTILINE,
@@ -627,8 +639,8 @@ def _truncate_after_editorial_take(text):
     # 3. Strip 6. NOTARIZE (token/byte ledger and SHA-256 deed) between 5. CLOSING and Book Analysis / Ai Editorial Take
     text = re.sub(
         r'^(?:#{1,6}[ \t]+|\*\*)?6\.[ \t]*\*?\*?NOTARIZE\b'
-        r'[\s\S]*?'
-        r'(?=^#{1,6}[ \t]*(?:Book[ \t]+Analysis|Ai[ \t]+Editorial[ \t]+Take)\b|\Z)',
+        r'(?:(?!^\*\*(?:MikeLev\.in|Mike[ \t]+Levin|Mike|Me|Gemini[^*\n]*|Claude[^*\n]*)\*\*:)[\s\S])*?'
+        r'(?=^\*\*(?:MikeLev\.in|Mike[ \t]+Levin|Mike|Me|Gemini[^*\n]*|Claude[^*\n]*)\*\*:|^#{1,6}[ \t]*(?:Book[ \t]+Analysis|Ai[ \t]+Editorial[ \t]+Take)\b|\Z)',
         '',
         text,
         flags=re.IGNORECASE | re.MULTILINE,
