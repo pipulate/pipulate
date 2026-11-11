@@ -101,7 +101,7 @@ def register_signal_handlers():
 
 # --- Configuration ---
 SHOW_DURATION_MINUTES = 240  # Minutes for the big logfile stream
-PITCH_INTERVAL = 1200       # Seconds between "Station Identification" (Doubled to 20 mins for longer uninterrupted article reading)
+PITCH_INTERVAL = 420        # 7-minute Copper grid: hits Markdown -> White Rabbit -> Intermission -> JS Trapdoor -> 911 Optics
 
 # Spoken over tick.wav when `publish "msg"` rings .deploy_standby on Honeybot.
 # Edit with `ytoutro edit` and audition locally on Prime with `ytoutro`.
@@ -208,9 +208,11 @@ except ImportError:
 try:
     import forest as _forest_mod
     STATION_SEGMENTS = _forest_mod.STATION_SEGMENTS
+    ARCHIVED_STATION_BEADS = getattr(_forest_mod, "ARCHIVED_STATION_BEADS", {})
 except ImportError:
     _forest_mod = None
     STATION_SEGMENTS = []
+    ARCHIVED_STATION_BEADS = {}
 
 
 def _polish_tts_text(text: str) -> str:
@@ -226,7 +228,7 @@ def _polish_tts_text(text: str) -> str:
 
 def _reload_forest_module():
     """Hot-reload terms.py and forest.py from disk so edits take effect without restarting stream.py."""
-    global _forest_mod, _terms_mod, STATION_SEGMENTS
+    global _forest_mod, _terms_mod, STATION_SEGMENTS, ARCHIVED_STATION_BEADS
     try:
         import importlib
         if _terms_mod is None:
@@ -242,6 +244,7 @@ def _reload_forest_module():
         else:
             _forest_mod = importlib.reload(_forest_mod)
         STATION_SEGMENTS = getattr(_forest_mod, "STATION_SEGMENTS", [])
+        ARCHIVED_STATION_BEADS = getattr(_forest_mod, "ARCHIVED_STATION_BEADS", {})
     except Exception:
         pass
     return _forest_mod
@@ -2547,12 +2550,13 @@ def run_optics_station_slot(content, env, profile_dir) -> None:
                         break
                 time.sleep(0.5)
         else:
-            conjure_patronus("clipboard", duration=32.0)
+            conjure_patronus("clipboard", duration=42.0)
             narrator.say(
-                "Pipulate Prime is currently running unattended in local workshop mode. "
-                "When projected live on stage, 911 L L M Optics captures raw wire headers, static H T M L source, "
-                "hydrated D O M trees, ASCII layout boxes, and R F C 91 10 negotiated Markdown, sealing all sixteen "
-                "lenses into a single S H A 256 zip deed you can verify at Q A my dot A I."
+                "Pipulate Prime is currently running in local workshop mode, and you can run this exact spectrometer on your own machine today. "
+                "911 LLM Optics is our FOSS Screaming Frog for the Age of AI: point it at any URL and it stacks sixteen wire-truth lenses side by side — "
+                "raw HTTP response headers, unrendered source HTML versus hydrated browser DOM, accessibility trees, token bloat, and RFC 9110 plus RFC 9111 Markdown readiness — "
+                "sealing the entire audit into a SHA-256 archive deed so you can retire $10K/mo pre-render stacks with proof. "
+                "Launch it free at SunPug.io."
             )
             wait_for_voice_or_live_interrupt(env, profile_dir)
     finally:
@@ -2975,6 +2979,7 @@ def announce_scheduled_reboot():
 
 def perform_show(script):
     """Reads the sheet music list and executes it."""
+    global _station_index
     # Idempotent safety net: whenever we start performing ANY fresh script --
     # normal playlist progression, a breaking-news restart, anything -- make
     # sure no stale "UPDATING" sentinel card is still lingering on screen.
@@ -3167,8 +3172,11 @@ def perform_show(script):
                 next_pitch_time = next_slot(start_time, PITCH_INTERVAL, time.time())
 
             dispatch_cue(command, content, env, profile_dir, pace_say=True)
-            if command in ("OVERTURE", "INTERMISSION"):
-                next_pitch_time = next_slot(start_time, PITCH_INTERVAL, time.time())
+            if command == "OVERTURE":
+                _station_index = 0
+                next_pitch_time = next_slot(start_time, PITCH_INTERVAL, time.time() + 180.0)
+            elif command == "INTERMISSION":
+                next_pitch_time = next_slot(start_time, PITCH_INTERVAL, time.time() + 180.0)
             elif command in ("MEDIA", "IMAGE", "VIDEO"):
                 next_pitch_time = max(next_pitch_time, time.time() + 30.0)
     finally:
@@ -3339,10 +3347,14 @@ def trigger_station_bead_live(target_spec="pirates", out_path="/home/mike/www/mi
             tmp.replace(p)
         return payload
     chosen_bead = None
-    if q.isdigit():
+    if q in ARCHIVED_STATION_BEADS:
+        chosen_bead = ARCHIVED_STATION_BEADS[q]
+    elif q_raw in ARCHIVED_STATION_BEADS:
+        chosen_bead = ARCHIVED_STATION_BEADS[q_raw]
+    elif q.isdigit():
         chosen_bead = STATION_SEGMENTS[int(q) % len(STATION_SEGMENTS)]
     else:
-        for bead in STATION_SEGMENTS:
+        for bead in (*STATION_SEGMENTS, *ARCHIVED_STATION_BEADS.values()):
             bead_str = " ".join(str(x) for x in bead).lower()
             if f":{q}" in bead_str or q in bead_str:
                 chosen_bead = bead

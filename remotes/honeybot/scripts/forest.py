@@ -47,36 +47,19 @@ REPORT_H_MARGIN = 3
 REPORT_V_MARGIN = 2
 
 WHATS_HAPPENING_BEAT = (
-    "What is happening on your screen right now? "
-    "You are watching the live Web Bot AI Observatory. "
-    "If you are not watching the behavior of AI bots and Agents directly on the wire meaning not behind a CDN, then you don't really have a feel for what's going on. "
-    "You have to watch it for awhile like fish in a fish tank. "
-    "It's changing and watching on a site like this lets you develop that intuitive understanding of how Agents work. "
-    "This is witnessing it first-hand rather than the generative AI-slop in the social media echo chambers. "
-    "Do you think they have access to first-hand information like this? Very few do. This is quite unique. "
-    "Why? Because today most web traffic is filtered through Content Distribution Networks or C D N's that cut you off from all this even in their dashboards. "
-    "Drips and drabs of this fall over your CDN and hit origin but it's already filtered by then. "
-    "What you don't see is the Agentic Web being born and maturing like you do here. "
-    "If you're here watching you already have a competitive advantage as a next-gen S E O practitioner -- I'm mean an AI Readiness -- practitioner in the new landscape. Don't believe me? Here's the live performance-art experiment you can run right now. "
-    "If you want your Ah-Ha moment in the next thirty seconds, open Chat G P T or Claude right now and ask it a live question about Mike L E V dot eye N. "
-    "When your prompt dispatches Chat G P T User or Claude User to fetch a page in real time, you will see a bright yellow R A G badge light up on this screen and hear the physical studio bell ding live on the air. "
-    "Every post on Mike L E V dot eye N also includes a one-click Google Doc link right at the top so you can summarize or explore any article with A I in seconds. "
-    "Round oranges highlight every self-asserted crawler. "
-    "Blue diamonds mark agents cryptographically signing requests under R F C 94 21 Web Bot Auth. "
-    "Big red bars unmask script-kiddie pirates probing for exploits, and purple bars catch bots executing client-side JavaScript in our D O M hydration trap-door. "
-    "And when you see the ticker say Don't Join My Discord, that is a Map Facade straight out of Ira Levin's This Perfect Day: as Reddit and Quora lock down behind paywalls, Discord is opening public servers to the Free and Open Web where frontier A I crawlers harvest channel summaries into future model weights, and we only want curious builders who look past the sign at Mike L E V dot eye N slash discord. "
-    "Get your screenshot key ready for the data report coming right up so you can grab a picture of the bare-metal numbers and send it to an engineer or technical S E O you trust. "
-    "Hit Like and Subscribe right now so you don't lose this telemetry feed. "
+    "You are watching the live Web Bot AI Observatory on bare metal — not filtered behind a CDN. "
+    "Watching AI crawlers and agents directly on the wire like fish in an aquarium builds an intuition you will never get from social media echo chambers. "
+    "Want your thirty-second ah-ha moment right now? Open ChatGPT or Claude and ask it a live question about mikelev.in. "
+    "When your prompt dispatches a live retrieval agent, a yellow RAG badge lights up on screen and rings the physical studio bell on the air. "
+    "Get your screenshot key ready for the wire-truth proof coming right up, and hit Like and Subscribe so you can find this feed again."
 )
 
 CURRENT_ARTICLE_BEAT = "{CURRENT_ARTICLE}"
 
 CONSULTING_CTA_BEAT = (
-    "Do you have the S E O blues while A I Overviews eat your clicks? "
-    "S E O isn't dead. Just like Mobile First gave us Responsive Web Design, "
-    "the Agentic Web is moving S E O to the Edge so one U R L serves H T M L to browsers, clean Markdown to A I bots, and a linked Google Doc you can summarize in one click. "
-    "Your site is already your feed. "
-    "Step into Edge S E O and A I Readiness at Mike L E V dot eye N, or inspect Sun Pug dot eye oh with curl pipe less."
+    "Got the SEO blues while AI Overviews eat your clicks and vendors pitch $10K/mo JavaScript pre-render taxes? "
+    "SEO moved to the Edge: one URL serving HTML to humans and clean RFC 9110 Markdown to AI agents, cached cleanly via RFC 9111 Vary Accept. "
+    "Explore the FOSS AI-Readiness toolkit and 911 LLM Optics right now at SunPug.io — or inspect it safely in your terminal with curl dash f s S L sunpug.io pipe less."
 )
 
 
@@ -115,60 +98,79 @@ def _make_station_bead(card_label, card_say, capstone_cue, forest_story_lines, p
     return cues
 
 
+# --- ACTIVE LINEAR-ARC STATION SEGMENTS ---
+# Paired with score.py's OVERTURE (Beat 1) and MIDPOINT INTERMISSION (Beat 4):
+#   Beat 1 (0%)   : OVERTURE — Around-the-HUDs stage & cast introduction
+#   Beat 2 (+7m)  : Bead 0 — RFC 9110 MARKDOWN (:overview data proof)
+#   Beat 3 (+14m) : Bead 1 — SEOS ASSEMBLE! (white_rabbit teaser -> RFC 9110/9111 + 911 LLM Optics @ SunPug.io)
+#   Beat 4 (50%)  : MIDPOINT INTERMISSION — Around-the-HUDs stage & cast refresh
+#   Beat 5a (+7m) : Bead 2 — DOM TRAPDOOR JS EXECS (:bimodal JS hydration proof)
+#   Beat 5b (+14m): Bead 3 — 911 LLM OPTICS (FOSS "Screaming Frog for the Age of AI" showcase @ SunPug.io)
 STATION_SEGMENTS = [
-    # Bead 0 (EVEN -> Rich Horizontal-Bar Telemetry Report: RFC 9110 Markdown 0-1% Horizon + UA Breakdown)
+    # Bead 0 (Beat 2 -> First Data Proof: Who Accepts Markdown on the Wire)
     _make_station_bead(
         "RFC 9110\nMARKDOWN",
         (
-            "Hello, and welcome to the Web Bot A I Observatory on Honeybot. "
-            "Like Benjamin Franklin dropping a thermometer into the Gulf Stream or Wilhelm Roentgen mailing Lord Kelvin an X-ray plate, "
-            "we measure A I crawler behavior directly on the bare-metal wire."
+            "Welcome to the Web Bot AI Observatory. "
+            "Like Benjamin Franklin dropping a thermometer into the Gulf Stream, "
+            "we measure which AI agents negotiate clean Markdown directly on the bare-metal wire."
         ),
         ("WINDOW", f"forest.py:{REPORT_WINDOW_CAP_SECONDS}:overview"),
         [
             "{LIVE_REPORT:overview}",
         ],
     ),
-    # Bead 1 (Live LAN->DMZ Punch-Through: 911 LLM Optics Spectrometer with unattended fallback)
+    # Bead 1 (Beat 3 -> Follow the White Rabbit: "SEOs Assemble!" Teaser for AI-Readiness & 911 LLM Optics)
+    _make_station_bead(
+        "SEOS\nASSEMBLE!",
+        (
+            "Follow the White Rabbit. SEOs, assemble! "
+            "Google is locking down the SERPs, and we are gathering the sharpest practitioners in the world "
+            "who are ready to become real AI-Readiness Consultants."
+        ),
+        ("PATRONUS", {"key": "white_rabbit", "duration": 65.0}),
+        [
+            "For years, enterprise teams paid a $10K/mo JavaScript pre-render tax just to spoon-feed bloated HTML snapshots to search crawlers.",
+            "In the Agentic Web, real AI-Readiness moves to the Edge with RFC 9110 content negotiation and RFC 9111 Vary Accept caching — serving HTML to humans and clean Markdown to AI bots from one URL with zero SaaS rent.",
+            "Stick around past our midpoint intermission: first we will check our live JavaScript DOM Hydration Trapdoor, and then you will see 911 LLM Optics — our FOSS Screaming Frog for the Age of AI — waiting for you right now at SunPug.io.",
+        ],
+    ),
+    # Bead 2 (Beat 5a -> Second Data Proof: JavaScript DOM Hydration Trapdoor)
+    _make_station_bead(
+        "DOM TRAPDOOR\nJS EXECS",
+        (
+            "Conventional SEO wisdom claims AI crawlers never execute client-side JavaScript. "
+            "So we wired an eight-hundred-millisecond JavaScript trapdoor into our HTML pages to measure the truth on the wire."
+        ),
+        ("WINDOW", f"forest.py:{REPORT_WINDOW_CAP_SECONDS}:bimodal"),
+        [
+            "{LIVE_REPORT:bimodal}",
+            "When OpenAI and Meta already hydrate JavaScript on their own dime and Markdown-native agents ask for text/markdown directly, $10K/mo pre-render middleware becomes pure dead weight.",
+        ],
+    ),
+    # Bead 3 (Beat 5b -> Killer-App Payoff: 911 LLM Optics @ SunPug.io)
     [
         (
             "CARD",
             {
                 "label": "911 LLM\nOPTICS",
                 "say": (
-                    "What does an A I agent actually see when it fetches your site on the wire versus a hydrated browser?"
+                    "Meet 911 LLM Optics: the FOSS Screaming Frog for the Age of AI, "
+                    "built to inspect exact wire truth inside the portable workshop at SunPug.io."
                 ),
             },
         ),
         ("OPTICS_SLOT", {"handshake_wait": 8.0, "timeout": 180.0}),
         ("SAY", CURRENT_ARTICLE_BEAT),
+        ("CARD", {"label": "TRY SUNPUG.IO\n911 OPTICS", "say": CONSULTING_CTA_BEAT}),
     ],
-    # Bead 2 (ODD -> Patronus ASCII Art: white_rabbit)
-    _make_station_bead(
-        "PIPULATE\nNPvg",
-        (
-            "The open-source project powering this observatory is called Pipulate, running on a stack we call N P v g."
-        ),
-        ("PATRONUS", {"key": "white_rabbit", "duration": 65.0}),
-        [
-            "N is for Nix, making the entire software environment reproducible on any machine. P is for Python. The little v is for Vim. And g is for Git.",
-            "Pipulate sits where A I assistance meets local hardware ownership. You do not need a multi-tenant cloud subscription to command your own stack.",
-        ],
-    ),
-    # Bead 2 (EVEN -> Rich Horizontal-Bar Telemetry Report: JS DOM Hydration Trapdoor 0-5% Eligible HTML Horizon + Executor Breakdown)
-    _make_station_bead(
-        "DOM TRAPDOOR\nJS EXECS",
-        (
-            "Conventional S E O wisdom claims A I crawlers only scrape static H T M L and never execute client-side JavaScript. "
-            "So we wired an eight-hundred-millisecond JavaScript trapdoor into our H T M L pages to measure the truth on the wire."
-        ),
-        ("WINDOW", f"forest.py:{REPORT_WINDOW_CAP_SECONDS}:bimodal"),
-        [
-            "{LIVE_REPORT:bimodal}",
-        ],
-    ),
-    # Bead 3 (ODD -> Patronus ASCII Art: ai_pachinko)
-    _make_station_bead(
+]
+
+# --- MODULAR STORYTELLING VAULT (INACTIVE IN AUTONOMOUS ROTATION, ON-DEMAND VIA `--bead <key>`) ---
+# Preserved intact so no Patronus or Rich telemetry piece is ever buried in git history.
+# Summon any archived bead live with: `ytapp tiktok`, `ytapp pachinko`, `ytapp pirates`, etc.
+ARCHIVED_STATION_BEADS = {
+    "ai_pachinko": _make_station_bead(
         "AI PACHINKO",
         (
             "Every token an A I model generates is a ball dropped through a pachinko parlor of frozen mathematical weights."
@@ -179,21 +181,7 @@ STATION_SEGMENTS = [
             "That is why we pair the pachinko machine with a cybernetic governor: plain-text files in git, before-and-after falsifying probes, and wire-truth receipts.",
         ],
     ),
-    # Bead 4 (EVEN -> Rich Horizontal-Bar Telemetry Report: RFC 9421 & Unmasked Cloakers)
-    _make_station_bead(
-        "RFC 9421\nWEB BOT AUTH",
-        (
-            "How do you tell a cryptographically signed A I agent from an unmasked IP cloaker?"
-        ),
-        ("WINDOW", f"forest.py:{REPORT_WINDOW_CAP_SECONDS}:rfc9421"),
-        [
-            "This report shows our three-shape bot identity taxonomy in action.",
-            "Blue diamonds mark operators sending R F C 9421 Signature-Agent headers on the wire, including Exa Search Bot, Exa User, Ahrefs Bot, and Desearch Bot.",
-            "Red stop signs unmask scrapers claiming to be Googlebot from non-Google I P addresses that fail forward-confirmed reverse D N S.",
-        ],
-    ),
-    # Bead 5 (ODD -> Patronus ASCII Art: mechanical_man)
-    _make_station_bead(
+    "mechanical_man": _make_station_bead(
         "THE AIRLOCK",
         (
             "How do you collaborate with frontier A I models without letting hallucinations wreck your production systems? Meet Smith and Tinker's Patent Mechanical Man."
@@ -205,8 +193,19 @@ STATION_SEGMENTS = [
             "Every code edit passes through an exact-match search and replace airlock with syntax tree verification before touching disk.",
         ],
     ),
-    # Bead 6 (EVEN -> Rich 8-Door Frequency Dial Report: doors)
-    _make_station_bead(
+    "rfc9421": _make_station_bead(
+        "RFC 9421\nWEB BOT AUTH",
+        (
+            "How do you tell a cryptographically signed A I agent from an unmasked IP cloaker?"
+        ),
+        ("WINDOW", f"forest.py:{REPORT_WINDOW_CAP_SECONDS}:rfc9421"),
+        [
+            "This report shows our three-shape bot identity taxonomy in action.",
+            "Blue diamonds mark operators sending R F C 9421 Signature-Agent headers on the wire, including Exa Search Bot, Exa User, Ahrefs Bot, and Desearch Bot.",
+            "Red stop signs unmask scrapers claiming to be Googlebot from non-Google I P addresses that fail forward-confirmed reverse D N S.",
+        ],
+    ),
+    "doors": _make_station_bead(
         "EIGHT DOORS\nONE ENGINE",
         (
             "Why does one home-hosted Nix O S head-end broadcast across eight distinct domain names? "
@@ -224,8 +223,7 @@ STATION_SEGMENTS = [
             "Inspect any door safely in your terminal with curl pipe less.",
         ],
     ),
-    # Bead 7 (Myth-Buster -> The 3-Camp AI Crawler Schism & Primary-Key Species Radar: schism)
-    _make_station_bead(
+    "schism": _make_station_bead(
         "AI CRAWLER\nSCHISM",
         (
             "Common S E O wisdom claims Open A I crawlers cannot execute JavaScript. "
@@ -239,8 +237,7 @@ STATION_SEGMENTS = [
             "Camp three is the bulk HTML hose-pullers, Meta and Amazonbot, while the bottom rows show our SQLite primary-key tripwire catching brand-new crawler species the second they debut on the wire.",
         ],
     ),
-    # Bead 8 (ACME Certificate Transparency Log Pirates & IDS Telemetry: pirates)
-    _make_station_bead(
+    "pirates": _make_station_bead(
         "CT LOG\nPIRATES",
         (
             "The moment you mint a fresh Let's Encrypt T L S certificate, automated script-kiddie scanners watching the public Certificate Transparency logs pounce on the new domain within seconds."
@@ -252,7 +249,7 @@ STATION_SEGMENTS = [
             "Because this is a declarative Nix O S appliance serving static representations and an S Q Lite telemetry ledger, there is no P H P runtime or admin login to breach -- every exploit probe simply unmasks the attacker's I P address on the live broadcast and records their exact fingerprint for instant Engine X filtering.",
         ],
     ),
-]
+}
 
 DOOR_DIAL_ROWS = (
     ("pipulate", "com", "~/pipulate", "Local-First AI & SEO Readiness Hub"),
