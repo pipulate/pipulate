@@ -7,7 +7,7 @@
 --                                
 
 -- Session AI Dialogue Label (`il` in terminal to edit, <F2> in Neovim to reload)
-local AI_LABEL = "Gemini 4 Argon High"
+local AI_LABEL = "Gemini 4 Carbon High"
 
 -- Basic Settings
 local set = vim.opt
