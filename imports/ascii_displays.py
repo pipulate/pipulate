@@ -538,17 +538,17 @@ def _expand_color_bits_ai(text: str) -> str:
 def _figurate_white_rabbit():
     """Render white_rabbit as (human, ai) tuple for FIGURATE_REGISTRY."""
     art = r"""
-   Built on a "No Problem" framework
+ The same URL serves HTML and Markdown?
              O        /)  ____
               o /)\__//  /    \
- Nix,       ___(/_ 0 0  |      |     vim
-Python    *(    ==(_T_)== NPvg |     git
+            ___(/_ 0 0  |      |
+          *(    ==(_T_)== 9111 |
             \  )   ""\  |      |
              |__>-\_>_>  \____/
     """
     ai_art = _expand_color_bits_ai(art)
     human_art = _expand_color_bits_human(art)
-    human = Panel(human_art, title="NPvg: Nix, Python, vim & git", border_style="white")
+    human = Panel(human_art, title="From SEO to AI-Readiness", border_style="white")
     return human, ai_art
 
 def _figurate_player_piano():
