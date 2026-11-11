@@ -2479,6 +2479,10 @@ def run_optics_station_slot(content, env, profile_dir) -> None:
     handshake_wait = float(cfg.get("handshake_wait", 8.0))
     max_hold = float(cfg.get("timeout", 180.0))
     slot_p = Path(OPTICS_SLOT_PATH)
+    narrator.say("Checking Pipulate Prime for a live 911 L L M Optics spectrometer demonstration.")
+    wait_for_voice_or_live_interrupt(env, profile_dir)
+    if has_pending_update():
+        return
     try:
         slot_p.write_text(
             _json.dumps({"state": "waiting", "requested_at": round(time.time(), 3), "pid": os.getpid()}),
@@ -2486,8 +2490,6 @@ def run_optics_station_slot(content, env, profile_dir) -> None:
         )
     except OSError:
         pass
-    narrator.say("Checking Pipulate Prime for a live 911 L L M Optics spectrometer demonstration.")
-    wait_for_voice_or_live_interrupt(env, profile_dir)
     claimed = False
     deadline = time.time() + handshake_wait
     while time.time() < deadline and not has_pending_update():
@@ -3276,6 +3278,17 @@ def trigger_station_bead_live(target_spec="pirates", out_path="/home/mike/www/mi
         return None
     q_raw = str(target_spec or "pirates").strip().lower()
     q = _PATRONUS_ALIASES.get(q_raw, q_raw)
+    if q in ("overture", "intermission"):
+        spoken_info, _ = resolve_current_article_info()
+        m_title = re.search(r"titled:\s*(.+?)\.\s*To read", spoken_info)
+        art_title = m_title.group(1).strip() if m_title else "our latest technical journal entry"
+        payload = {"cues": [(q.upper(), {"title": art_title})], "pre_pause": 1.2, "card": q.upper()}
+        if out_path:
+            p = Path(out_path)
+            tmp = p.with_suffix(".tmp")
+            tmp.write_text(_json.dumps(payload), encoding="utf-8")
+            tmp.replace(p)
+        return payload
     chosen_bead = None
     if q.isdigit():
         chosen_bead = STATION_SEGMENTS[int(q) % len(STATION_SEGMENTS)]
@@ -3288,7 +3301,7 @@ def trigger_station_bead_live(target_spec="pirates", out_path="/home/mike/www/mi
     if chosen_bead is None:
         chosen_bead = STATION_SEGMENTS[-1]
     if any(cmd == "OPTICS_SLOT" for cmd, _ in chosen_bead):
-        payload = {"cues": chosen_bead, "pre_pause": 1.5}
+        payload = {"cues": chosen_bead, "pre_pause": 1.5, "card": "911 LLM\nOPTICS"}
         if out_path:
             p = Path(out_path)
             tmp = p.with_suffix(".tmp")
