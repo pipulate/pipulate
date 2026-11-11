@@ -432,6 +432,12 @@ def get_playlist(recent_n=10, include_archive=True):
                         "visit Mike L E V dot eye N slash latest."
                     )
                 main_mod.resolve_current_article_line = _live_resolve_current_article_line
+                import importlib
+                import stream as _stream_mod
+                importlib.reload(_stream_mod)
+                for _attr in ("_AI_SPEAKER_RE", "_AI_MODEL_MODIFIER_TOKEN", "_AI_TURN_PREFIX_RE"):
+                    if hasattr(_stream_mod, _attr):
+                        setattr(main_mod, _attr, getattr(_stream_mod, _attr))
             except Exception:
                 pass
         if not include_archive:
