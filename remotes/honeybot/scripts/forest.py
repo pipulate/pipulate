@@ -57,7 +57,7 @@ WHATS_HAPPENING_BEAT = (
     "Why? Because today most web traffic is filtered through Content Distribution Networks or C D N's that cut you off from all this even in their dashboards. "
     "Drips and drabs of this fall over your CDN and hit origin but it's already filtered by then. "
     "What you don't see is the Agentic Web being born and maturing like you do here. "
-    "If you're here watching you already have a competitive advantage as a next-gen S E O practitioner... I'm mean an AI Readiness practitioner in the new landscape. Don't believe me? Here's the live performance-art experiment you can run right now. "
+    "If you're here watching you already have a competitive advantage as a next-gen S E O practitioner -- I'm mean an AI Readiness -- practitioner in the new landscape. Don't believe me? Here's the live performance-art experiment you can run right now. "
     "If you want your Ah-Ha moment in the next thirty seconds, open Chat G P T or Claude right now and ask it a live question about Mike L E V dot eye N. "
     "When your prompt dispatches Chat G P T User or Claude User to fetch a page in real time, you will see a bright yellow R A G badge light up on this screen and hear the physical studio bell ding live on the air. "
     "Every post on Mike L E V dot eye N also includes a one-click Google Doc link right at the top so you can summarize or explore any article with A I in seconds. "
