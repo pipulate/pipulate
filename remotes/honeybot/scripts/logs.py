@@ -34,7 +34,8 @@ VIEWERS_FILE_PATH = "/tmp/honeybot_viewers.json"
 VIEWERS_TTL_SECONDS = 120.0
 STAGE_STATE_PATH = "/tmp/honeybot_stage.json"
 STAGE_STATE_TTL_SECONDS = 900.0
-BASE_APP_TITLE = "Web Bot AI Observatory — https://mikelev.in (RFC 9110 · RFC 9421 · JS Trapdoor)"
+BASE_APP_TITLE = "Web Bot AI Observatory — https://mikelev.in · https://sunpug.io"
+SUNPUG_BORDER_BANNER = " ☀️ FOSS AI-READINESS SUITE & 911 OPTICS: https://sunpug.io · curl -fsSL sunpug.io | less "
 JS_PANEL_TITLE = "⚡ DOM HYDRATION TRAPDOOR (Bots Executing JS)"
 MD_PANEL_TITLE = "🧠 RFC 9110 MARKDOWN NEGOTIATORS (Accept: text/markdown)"
 JS_BUMP_TITLE = "▾ END OF LIST — HANDING OFF TO MARKDOWN HUD ➔"
@@ -643,6 +644,10 @@ class SonarApp(App):
     #intelligence_panel {
         height: __HUD_PANEL_HEIGHT__;
         border-top: solid cyan;
+        border-title-align: center;
+        border-title-color: #ffd700;
+        border-title-background: #0b1319;
+        border-title-style: bold;
         background: #051515;
         padding: 0;
         layout: horizontal; /* Split Left/Right */
@@ -710,7 +715,7 @@ class SonarApp(App):
        but standard Footer widget handles it well. */
     """.replace("__HUD_PANEL_HEIGHT__", str(HUD_PANEL_HEIGHT))
 
-    TITLE = "Web Bot AI Observatory — https://mikelev.in (RFC 9110 · RFC 9421 · JS Trapdoor)"
+    TITLE = BASE_APP_TITLE
     countdown_str = "--:--"
     viewers_mtime = None
     live_viewers = None
@@ -755,23 +760,18 @@ class SonarApp(App):
             return None
 
     def get_app_title(self):
-        """When ytwatch is running, lead the Honeybot Storytime terminal title with the live viewer count."""
+        """Lead with single live viewer/peak readout (when ytwatch runs) alongside always-on mikelev.in & sunpug.io."""
         v = self._read_live_viewers()
         if v is None:
             return BASE_APP_TITLE
         v_word = "Viewer" if v == 1 else "Viewers"
         pk = getattr(self, "peak_viewers", 0) or 0
         pk_seg = f" (Peak: {pk})" if pk > 0 else ""
-        return f"{v} {v_word}{pk_seg} 👀 — Web Bot AI Observatory — https://mikelev.in"
+        return f"{v} {v_word}{pk_seg} 👀 — {BASE_APP_TITLE}"
 
     def get_sub_title(self):
-        v = self._read_live_viewers()
         countdown = getattr(self, "countdown_str", "--:--")
-        if v is None:
-            return f"Live Nginx Log Analysis | Next Report: {countdown}"
-        pk = getattr(self, "peak_viewers", 0) or 0
-        pk_seg = f" (Peak: {pk})" if pk > 0 else ""
-        return f"Viewers: {v}{pk_seg} 👀 | Next Report: {countdown}"
+        return f"RFC 9110 · RFC 9421 · JS Trapdoor | Reset: {countdown}"
 
     def compose(self) -> ComposeResult:
         yield Header()
@@ -784,7 +784,8 @@ class SonarApp(App):
             yield Static(render_stage_curtain("right"), id="right_stage", classes="stage_box")
         
         # --- NEW: The Dual Intelligence Panel ---
-        with Container(id="intelligence_panel"):
+        with Container(id="intelligence_panel") as intel_panel:
+            intel_panel.border_title = SUNPUG_BORDER_BANNER
             
             # LEFT: Javascript Executors
             with Vertical(id="js_panel", classes="half_panel"):
@@ -805,6 +806,7 @@ class SonarApp(App):
         self.viewers_mtime = None
         self.live_viewers = None
         self.title = self.get_app_title()
+        self.sub_title = self.get_sub_title()
         self.spoof_flip = False
         self.verified_tokens = {"ExaSearchBot", "AhrefsBot", "DesearchBot"}
         self.stream_logs()

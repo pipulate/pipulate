@@ -81,6 +81,9 @@ REGEX_TERMS = (
     # Special capitonyms & punctuation-bearing shorthands
     (re.compile(r"\*{0,2}\bTL;DR\b\*{0,2}\s*[:.]?", re.IGNORECASE), "T L D R:"),
     (re.compile(r"(?<!Reverse )\bPolish\b(?!\s+notation\b)"), "polish"),
+    (re.compile(r"\bWeb\s+1\.0\b", re.IGNORECASE), "Web one point oh"),
+    (re.compile(r"\bWeb\s+2\.0\b", re.IGNORECASE), "Web two point oh"),
+    (re.compile(r"\bWeb\s+3\.0\b", re.IGNORECASE), "Web three point oh"),
     (re.compile(r"\bSHA-?256\b", re.IGNORECASE), "S H A 256"),
     (re.compile(r"\b(?:Neovim|nvim)\b", re.IGNORECASE), "Neo vim"),
 )
@@ -98,6 +101,8 @@ CASE_INSENSITIVE_TERMS = (
     ("pipulate.com", "Pipulate dot com"),
     ("prerender.io", "Pre-render dot eye oh"),
     ("tryprofound.com", "try profound dot com"),
+    ("hittail.com", "Hit Tail dot com"),
+    ("HitTail", "Hit Tail"),
     ("commodore.net", "Commodore dot net"),
     ("exa.ai", "Exa dot A I"),
     ("llms.txt", "L L M S dot text"),
@@ -147,6 +152,7 @@ EXACT_CASE_TERMS = (
     ("FCrDNS", "F C R D N S"),
     ("RLVR", "R L V R"),
     ("RLHF", "R L H F"),
+    ("vi", "vee eye"),
     ("FOSS", "foss"),
     ("RFCs", "R F C's"),
     ("RFC", "R F C"),
