@@ -44,8 +44,9 @@ Manual**) move progressively from plain handles to battle-tested engineering law
 5. **The Forever Machine & Sovereignty (How the Work Outlives Vendor Churn):**
    **LPvg / NPvg**, **Graft, not seed**, **Cohesion-tension**, **Magic cookie**,
    **Compostable**, **Lindy**, **Butterfly Net**, **Mammal in a Hulkbuster Suit
-   (Planck's Funeral)**, **Three-tier workspace**, **Myelination**, and
-   **Pascal's Wager (Playing to the Bleachers)**.
+   (Planck's Funeral)**, **IDIC (Infinite Diversity in Infinite Combinations)**,
+   **Three-tier workspace**, **Myelination**, and **Pascal's Wager (Playing to
+   the Bleachers)**.
 
 ## The Lexicon -- Handles & Plain Terms
 
@@ -339,6 +340,26 @@ Entries are alphabetical, numbers spelled as spoken.
   app (`apps/050_briefing.py`). Each rung is built from the one below it:
   the app calls the script, the script calls the connectors. Seeded
   2026-07-25 inside the THREE-TIER earmark; vocabulary since 2026-09-04.
+- **IDIC (Infinite Diversity in Infinite Combinations)** -- *one verified
+  plain-text archive projected into infinite reader-specific editions instead of
+  one static dead-tree book.* In Gene Roddenberry's *Star Trek* (*"Is There in
+  Truth No Beauty?"*, 1968), Vulcan philosophy celebrates *Infinite Diversity in
+  Infinite Combinations* -- truth and beauty emerging from the interplay of
+  distinct forms rather than a single frozen canon. Here, there is deliberately
+  never one static, tree-killing book that starts decaying the day ink hits
+  paper; instead, the immutable `.git` book-ore, `_posts/_context/*.json`
+  holographic shards, and sealed `qamy.ai.zip` cartridges form a generative
+  CliffsNotes-ready substrate. Drop that archive into any AI or deterministic
+  publisher to project the exact lens the moment requires: an executive brief, a
+  seven-minute *Archaeologist from the Future* ("And then the surprising thing
+  he did next was...") episode ending on a live `911 LLM Optics` payoff, or a
+  zero-paywall HTML5 `<audio controls>` "Good Read" edition. RENT THIS PAYS: it
+  predicts that forcing raw stream-of-consciousness lab transcripts and tight
+  public storytelling into one compromise document ruins both, whereas keeping
+  un-retconned wire receipts on the inert substrate lets every downstream cut
+  stay punchy, formulaic, and tailored without losing provenance. Sibling of
+  Inert / reactive substrate, The Ledger-Separation Rule, and Exposition
+  (Tevye's Rule). Banked 2026-11-11, articulation-banked.
 - **Ignition** -- *making patched code actually run.* Completes the Patch beat;
   an AFTER tap taken without ignition is a stale BEFORE wearing the AFTER's
   label. Either name the actuation or declare "no ignition required."

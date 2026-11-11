@@ -27,6 +27,7 @@ from pathlib import Path
 # --- Process Singleton ---
 STREAM_LOCK_PATH = "/tmp/honeybot-stream.py.lock"
 _stream_lock_handle = None
+_is_singleton_owner = False
 _shutting_down = threading.Event()
 _graceful_reboot_requested = False
 
@@ -64,7 +65,7 @@ def _reap_orphaned_tts_and_overlays():
 
 def acquire_singleton_lock():
     """Ensure only one stream.py process owns the Honeybot visual/audio surface."""
-    global _stream_lock_handle
+    global _stream_lock_handle, _is_singleton_owner
 
     _stream_lock_handle = open(STREAM_LOCK_PATH, "w", encoding="utf-8")
 
@@ -78,6 +79,7 @@ def acquire_singleton_lock():
     _stream_lock_handle.truncate()
     _stream_lock_handle.write(str(os.getpid()))
     _stream_lock_handle.flush()
+    _is_singleton_owner = True
 
     def _release_lock():
         try:
@@ -1086,13 +1088,17 @@ class Heartbeat(threading.Thread):
         self.daemon = True
 
     def run(self):
+        last_signal = time.monotonic()
+        poll_sec = min(10.0, float(self.interval))
         while not self.stop_event.is_set():
-            if self.stop_event.wait(self.interval):
+            if self.stop_event.wait(poll_sec):
                 break
-
-            if not narrator.exclusive_mode.is_set():
-                now = datetime.datetime.now().strftime("%H:%M:%S")
-                narrator.say(f"Signal check. The time is {now}.")
+            ensure_storytime_bgm_alive()
+            if (time.monotonic() - last_signal) >= self.interval:
+                last_signal = time.monotonic()
+                if not narrator.exclusive_mode.is_set():
+                    now = datetime.datetime.now().strftime("%H:%M:%S")
+                    narrator.say(f"Signal check. The time is {now}.")
 
     def stop(self):
         self.stop_event.set()
@@ -1240,11 +1246,34 @@ _BGM_CANDIDATES = (
 BGM_FILE = next((p for p in _BGM_CANDIDATES if p.exists()), _BGM_CANDIDATES[0])
 BGM_MARKER = "honeybot-storytime-bgm"
 _bgm_proc = None
+_bgm_desired = False
 
 
-def stop_storytime_bgm(proc=None):
-    """Idempotently kill any running Storytime BGM loop (tracked process group + /proc sweep)."""
-    global _bgm_proc
+def _bgm_is_alive() -> bool:
+    """True when a Storytime BGM shell/aplay loop is alive and not a zombie."""
+    if _bgm_proc is not None and _bgm_proc.poll() is None:
+        return True
+    my_pid = os.getpid()
+    for p in sorted(Path("/proc").glob("[0-9]*/cmdline")):
+        try:
+            pid = int(p.parent.name)
+            if pid == my_pid:
+                continue
+            raw = p.read_bytes().replace(b"\x00", b" ").decode("utf-8", errors="ignore")
+            if BGM_MARKER in raw or ("aplay" in raw and "dripulate.wav" in raw):
+                stat_txt = (p.parent / "stat").read_text(encoding="utf-8", errors="ignore")
+                if ") Z " not in stat_txt:
+                    return True
+        except Exception:
+            continue
+    return False
+
+
+def stop_storytime_bgm(proc=None, clear_desired: bool = True):
+    """Idempotently kill any running Storytime BGM loop (singleton-owner guarded /proc sweep)."""
+    global _bgm_proc, _bgm_desired
+    if clear_desired:
+        _bgm_desired = False
     for target_p in (proc, _bgm_proc):
         if target_p is not None:
             try:
@@ -1255,6 +1284,8 @@ def stop_storytime_bgm(proc=None):
                 except Exception:
                     pass
     _bgm_proc = None
+    if not _is_singleton_owner and proc is None:
+        return
     my_pid = os.getpid()
     for p in sorted(Path("/proc").glob("[0-9]*/cmdline")):
         try:
@@ -1276,17 +1307,28 @@ def stop_storytime_bgm(proc=None):
 
 
 def start_storytime_bgm():
-    """Kill any prior BGM instance, then start a single fresh low-volume ambient loop."""
-    global _bgm_proc
-    stop_storytime_bgm()
+    """Record _bgm_desired=True, reap any prior loop, and start a timeout-guarded ambient loop."""
+    global _bgm_proc, _bgm_desired
+    stop_storytime_bgm(clear_desired=False)
+    _bgm_desired = True
     if os.environ.get("HONEYBOT_NO_AUDIO") == "1":
         return None
     bgm_path = next((p for p in _BGM_CANDIDATES if p.exists()), BGM_FILE)
     if not bgm_path.exists():
         return None
+    aplay_prefix = ""
+    if shutil.which("timeout"):
+        try:
+            import wave
+            with wave.open(str(bgm_path), "rb") as wf:
+                dur_s = wf.getnframes() / float(max(1, wf.getframerate()))
+            if dur_s > 1.0:
+                aplay_prefix = f"timeout {int(dur_s) + 15} "
+        except Exception:
+            pass
     try:
         _bgm_proc = subprocess.Popen(
-            ["sh", "-c", f'while :; do aplay -q -D default "{bgm_path}"; sleep 0.2; done # {BGM_MARKER}'],
+            ["sh", "-c", f'while :; do {aplay_prefix}aplay -q -D default "{bgm_path}"; sleep 0.2; done # {BGM_MARKER}'],
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
             preexec_fn=os.setsid,
@@ -1297,7 +1339,23 @@ def start_storytime_bgm():
         return None
 
 
-atexit.register(stop_storytime_bgm)
+def ensure_storytime_bgm_alive() -> bool:
+    """Idempotent desired-state reconciler: keep dripulate.wav playing whenever _bgm_desired is True."""
+    if (
+        not _bgm_desired
+        or _shutting_down.is_set()
+        or os.environ.get("HONEYBOT_NO_AUDIO") == "1"
+        or Path(WEEBO_STAGE_PAUSE_FILE).exists()
+    ):
+        return False
+    if _bgm_is_alive():
+        if _bgm_proc is not None and _bgm_proc.poll() is None:
+            try:
+                os.killpg(os.getpgid(_bgm_proc.pid), signal.SIGCONT)
+            except Exception:
+                pass
+        return True
+    return start_storytime_bgm() is not None
 
 MEDIA_OVERLAY_MARKER = "honeybot_media_overlay"
 WEEBO_STAGE_PAUSE_FILE = "/tmp/honeybot_weebo_active"
@@ -2085,6 +2143,7 @@ def conjure_media(media_spec, duration=15.0, mute=False, _direct=False):
                 "--ontop",
                 f"--geometry={win_w}x{win_h}+{pos_x}+{pos_y}",
                 f"--image-display-duration={duration:.1f}",
+                "--no-audio",
                 "--keep-open=no",
                 "--really-quiet",
             ]
@@ -2868,6 +2927,7 @@ def run_live_message(msg, env, profile_dir):
         _in_live_message = False
         if not was_exclusive:
             narrator.exclusive_mode.clear()
+        ensure_storytime_bgm_alive()
 
 
 def wait_for_voice_or_live_interrupt(env, profile_dir):
@@ -2938,6 +2998,7 @@ def run_station_break(env, profile_dir):
         if prev_dialogue_role in ("left", "right"):
             narrator._reannounce_after_break = True
         narrator.exclusive_mode.clear()
+        ensure_storytime_bgm_alive()
 
 
 REBOOT_ANNOUNCEMENT_TEXT = (
@@ -3047,7 +3108,7 @@ def perform_show(script):
                     and new_featured_id != active_article_id
                 )
                 prev_standby_role = narrator._stage_dialogue_role
-                bgm_was_active = (_bgm_proc is not None)
+                bgm_was_active = _bgm_desired or (_bgm_proc is not None)
                 was_exclusive = narrator.exclusive_mode.is_set()
                 narrator.exclusive_mode.set()
                 updating_card = None
@@ -3172,6 +3233,7 @@ def perform_show(script):
                 next_pitch_time = next_slot(start_time, PITCH_INTERVAL, time.time())
 
             dispatch_cue(command, content, env, profile_dir, pace_say=True)
+            ensure_storytime_bgm_alive()
             if command == "OVERTURE":
                 _station_index = 0
                 next_pitch_time = next_slot(start_time, PITCH_INTERVAL, time.time() + 180.0)
@@ -3260,6 +3322,7 @@ def run_logs():
 def main():
     _reap_orphaned_tts_and_overlays()
     write_stage_state("narrator", "inactive", "inactive")
+    atexit.register(stop_storytime_bgm)
     atexit.register(_reap_orphaned_tts_and_overlays)
     narrator.start()
     director = threading.Thread(target=start_director_track, daemon=True)
@@ -3354,11 +3417,28 @@ def trigger_station_bead_live(target_spec="pirates", out_path="/home/mike/www/mi
     elif q.isdigit():
         chosen_bead = STATION_SEGMENTS[int(q) % len(STATION_SEGMENTS)]
     else:
-        for bead in (*STATION_SEGMENTS, *ARCHIVED_STATION_BEADS.values()):
-            bead_str = " ".join(str(x) for x in bead).lower()
-            if f":{q}" in bead_str or q in bead_str:
+        all_beads = (*STATION_SEGMENTS, *ARCHIVED_STATION_BEADS.values())
+        for bead in all_beads:
+            id_parts = []
+            for idx, (cmd, val) in enumerate(bead):
+                if idx == 0 and cmd == "CARD" and isinstance(val, dict):
+                    id_parts.append(str(val.get("label") or ""))
+                elif cmd == "WINDOW":
+                    id_parts.append(str(val))
+                elif cmd == "PATRONUS":
+                    id_parts.append(str(val.get("key") if isinstance(val, dict) else val))
+                elif cmd == "OPTICS_SLOT":
+                    id_parts.append("optics_slot")
+            head_id = " ".join(id_parts).lower()
+            if f":{q}" in head_id or q in head_id or q_raw in head_id:
                 chosen_bead = bead
                 break
+        if chosen_bead is None:
+            for bead in all_beads:
+                bead_str = " ".join(str(x) for x in bead).lower()
+                if f":{q}" in bead_str or q in bead_str:
+                    chosen_bead = bead
+                    break
     if chosen_bead is None:
         chosen_bead = STATION_SEGMENTS[-1]
     if any(cmd == "OPTICS_SLOT" for cmd, _ in chosen_bead):
