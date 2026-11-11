@@ -64,8 +64,7 @@ WHATS_HAPPENING_BEAT = (
     "Round oranges highlight every self-asserted crawler. "
     "Blue diamonds mark agents cryptographically signing requests under R F C 94 21 Web Bot Auth. "
     "Big red bars unmask script-kiddie pirates probing for exploits, and purple bars catch bots executing client-side JavaScript in our D O M hydration trap-door. "
-    "And when you see the ticker say Join Discord for S E O, here is why: as Reddit and Quora lock down behind paywalls, Discord is opening one-thousand-member servers to the Free and Open Web on November sixteenth and mid-December, where every frontier A I crawler on this screen will harvest public server pages and channel summaries straight into future model weights. "
-    "Visit Mike L E V dot eye N slash discord to claim one of the first one thousand spots before that invite cap locks. "
+    "And when you see the ticker say Don't Join My Discord, that is a Map Facade straight out of Ira Levin's This Perfect Day: as Reddit and Quora lock down behind paywalls, Discord is opening public servers to the Free and Open Web where frontier A I crawlers harvest channel summaries into future model weights, and we only want curious builders who look past the sign at Mike L E V dot eye N slash discord. "
     "Get your screenshot key ready for the data report coming right up so you can grab a picture of the bare-metal numbers and send it to an engineer or technical S E O you trust. "
     "Hit Like and Subscribe right now so you don't lose this telemetry feed. "
 )
