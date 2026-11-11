@@ -680,59 +680,26 @@ class ChipVoiceSystem:
         return ["play", output_path]
 
     def sanitize_text(self, text: str) -> str:
-        """Apply domain substitution, phonetic polish, and acoustic markdown/HTML stripping."""
+        """Apply domain substitution, shared terms.py phonetic polish, and markdown/HTML stripping."""
         spoken_text = re.sub(r'^\s*\*?\*?(?:MikeLev\.in|Me)\*?\*?\s*:\s*', 'Mike: ', text, flags=re.IGNORECASE)
-        spoken_text = re.sub(r'\*?\*?MikeLev\.in\*?\*?:?', 'Mike L E V dot eye N', spoken_text, flags=re.IGNORECASE)
-        spoken_text = re.sub(r'\bNixOS\b', 'Nix O S', spoken_text)
-        spoken_text = re.sub(r'\bSQLite\b', 'S Q Lite', spoken_text, flags=re.IGNORECASE)
-        spoken_text = re.sub(r'\bFastHTML\b', 'Fast H T M L', spoken_text, flags=re.IGNORECASE)
-        spoken_text = re.sub(r'\bHTMX\b', 'H T M X', spoken_text, flags=re.IGNORECASE)
-        spoken_text = re.sub(r'\bNPvg\b', 'N P V G', spoken_text)
-        spoken_text = re.sub(r'\bLPvg\b', 'L P V G', spoken_text)
-        spoken_text = re.sub(r'(?<!Reverse )\bPolish\b(?!\s+notation\b)', 'polish', spoken_text)
-        spoken_text = re.sub(r'\bSEO\b', 'S E O', spoken_text)
-        spoken_text = re.sub(r'\bAEO\b', 'A E O', spoken_text)
-        spoken_text = re.sub(r'\bGEO\b', 'G E O', spoken_text)
-        spoken_text = re.sub(r'\bAIO\b', 'A I O', spoken_text)
-        spoken_text = re.sub(r'\bSGE\b', 'S G E', spoken_text)
-        spoken_text = re.sub(r'\bRAG\b', 'R A G', spoken_text)
-        spoken_text = re.sub(r'\bMCP\b', 'M C P', spoken_text)
-        spoken_text = re.sub(r'\bGSC\b', 'G S C', spoken_text)
-        spoken_text = re.sub(r'\b360i\b', 'three sixty eye', spoken_text, flags=re.IGNORECASE)
-        spoken_text = re.sub(r'\bGA4\b', 'G A 4', spoken_text)
-        spoken_text = re.sub(r'\bSERPs\b', 'S E R Ps', spoken_text)
-        spoken_text = re.sub(r'\bSERP\b', 'S E R P', spoken_text)
-        spoken_text = re.sub(r'\bPDPs\b', 'P D Ps', spoken_text)
-        spoken_text = re.sub(r'\bPDP\b', 'P D P', spoken_text)
-        spoken_text = re.sub(r'\bPLPs\b', 'P L Ps', spoken_text)
-        spoken_text = re.sub(r'\bPLP\b', 'P L P', spoken_text)
-        spoken_text = re.sub(r'\bSKUs\b', 'S K Us', spoken_text)
-        spoken_text = re.sub(r'\bSKU\b', 'S K U', spoken_text)
-        spoken_text = re.sub(r'\bCTAs\b', 'C T As', spoken_text)
-        spoken_text = re.sub(r'\bCTA\b', 'C T A', spoken_text)
-        spoken_text = re.sub(r'\bKPIs\b', 'K P Is', spoken_text)
-        spoken_text = re.sub(r'\bKPI\b', 'K P I', spoken_text)
-        spoken_text = re.sub(r'\bCRO\b', 'C R O', spoken_text)
-        spoken_text = re.sub(r'\bROI\b', 'R O I', spoken_text)
-        spoken_text = re.sub(r'\bCMS\b', 'C M S', spoken_text)
-        spoken_text = re.sub(r'\bDOM\b', 'D O M', spoken_text)
-        spoken_text = re.sub(r'\bURLs\b', 'U R Ls', spoken_text)
-        spoken_text = re.sub(r'\bURL\b', 'U R L', spoken_text)
-        spoken_text = re.sub(r'\bAPIs\b', 'A P Is', spoken_text)
-        spoken_text = re.sub(r'\bAPI\b', 'A P I', spoken_text)
-        spoken_text = re.sub(r'\bDNS\b', 'D N S', spoken_text)
-        spoken_text = re.sub(r'\bTLS\b', 'T L S', spoken_text)
-        spoken_text = re.sub(r'\bCPU\b', 'C P U', spoken_text)
-        spoken_text = re.sub(r'\bGPU\b', 'G P U', spoken_text)
-        spoken_text = re.sub(r'\bChatGPT\b', 'Chat G P T', spoken_text, flags=re.IGNORECASE)
-        spoken_text = re.sub(r'\bNginx\b', 'Engine X', spoken_text, flags=re.IGNORECASE)
-        spoken_text = re.sub(r'\bPyPI\b', 'Pie P I', spoken_text, flags=re.IGNORECASE)
-        spoken_text = re.sub(r'\bstdout\b', 'standard out', spoken_text, flags=re.IGNORECASE)
-        spoken_text = re.sub(r'\bstderr\b', 'standard error', spoken_text, flags=re.IGNORECASE)
-        spoken_text = re.sub(r'\bstdin\b', 'standard in', spoken_text, flags=re.IGNORECASE)
         spoken_text = re.sub(r'\[([^\]]+)\]\([^\)]+\)', r'\1', spoken_text)
         spoken_text = re.sub(r'\[[^\]]+\]', '', spoken_text)
         spoken_text = re.sub(r'<[^>]+>', ' ', spoken_text)
+        spoken_text = re.sub(
+            r'\bhttps?://(?:www\.)?([A-Za-z0-9.-]+)/?(?=\s|[.,;!?)]|$)',
+            r'\1',
+            spoken_text,
+            flags=re.IGNORECASE,
+        )
+        spoken_text = re.sub(r'[`*]', '', spoken_text)
+        terms_dir = str(Path(__file__).resolve().parent.parent / "remotes" / "honeybot" / "scripts")
+        if terms_dir not in sys.path:
+            sys.path.insert(0, terms_dir)
+        try:
+            import terms as _shared_terms
+            spoken_text = _shared_terms.apply_inline_tts_terms(spoken_text)
+        except Exception:
+            spoken_text = re.sub(r'\*?\*?MikeLev\.in\*?\*?:?', 'Mike L E V dot eye N', spoken_text, flags=re.IGNORECASE)
         return re.sub(r'\s+', ' ', spoken_text).strip()
 
     def synthesize_to_wav(self, text: str, output_path: Optional[str] = None, ceremony: bool = False) -> Optional[str]:

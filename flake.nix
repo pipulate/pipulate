@@ -2355,6 +2355,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           alias webclip='(cd "$PIPULATE_ROOT" && python scripts/webclip_2_markdown.py)'
           alias forest='(cd "$PIPULATE_ROOT" && vim remotes/honeybot/scripts/forest.py)'
           alias art='(cd "$PIPULATE_ROOT" && vim imports/ascii_displays.py)'
+          alias terms='(cd "$PIPULATE_ROOT" && vim remotes/honeybot/scripts/terms.py)'
           alias smart='(cd "$PIPULATE_ROOT" && python release.py --force -m "Testing rabbit documentation injection")'
           # `latest` is now a Nix-packaged command in commonPackages (like `book`
           # and `posts`) so `! latest` works in context.txt child shells. Unset

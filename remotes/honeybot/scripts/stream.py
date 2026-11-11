@@ -202,6 +202,10 @@ PITCH_TEXT = (
 # through the shared dispatch_cue (the cathedral-of-one collapse).
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 try:
+    import terms as _terms_mod
+except ImportError:
+    _terms_mod = None
+try:
     import forest as _forest_mod
     STATION_SEGMENTS = _forest_mod.STATION_SEGMENTS
 except ImportError:
@@ -209,9 +213,28 @@ except ImportError:
     STATION_SEGMENTS = []
 
 
+def _polish_tts_text(text: str) -> str:
+    """Apply master ear-orthography pronunciations from terms.py to any station-break or live line."""
+    clean = (text or "").strip()
+    if not clean or _terms_mod is None:
+        return clean
+    try:
+        return _terms_mod.apply_inline_tts_terms(clean).strip()
+    except Exception:
+        return clean
+
+
 def _reload_forest_module():
-    """Hot-reload forest.py from disk so station-break edits take effect without restarting stream.py."""
-    global _forest_mod, STATION_SEGMENTS
+    """Hot-reload terms.py and forest.py from disk so edits take effect without restarting stream.py."""
+    global _forest_mod, _terms_mod, STATION_SEGMENTS
+    try:
+        import importlib
+        if _terms_mod is None:
+            import terms as _terms_mod
+        else:
+            _terms_mod = importlib.reload(_terms_mod)
+    except Exception:
+        pass
     try:
         import importlib
         if _forest_mod is None:
@@ -585,7 +608,7 @@ class Narrator(threading.Thread):
             "voice": voice,
             "model": model_map.get(voice, NORMA_MODEL_NAME),
             "rate": rate_map.get(voice, NORMA_TTS_SAMPLE_RATE),
-            "text": text,
+            "text": _polish_tts_text(text),
             "speaker": speaker,
             "left": left,
             "right": right,
@@ -781,7 +804,7 @@ class Narrator(threading.Thread):
     def prep_raw(self, text, voice_key: str = None):
         """Pre-synthesize card narration into a .raw PCM file before showing a card."""
         vk = voice_key or ("mike" if self.live_operator_mode.is_set() else "norma")
-        raw_path, _ = self._synth_raw_with_voice(text, vk)
+        raw_path, _ = self._synth_raw_with_voice(_polish_tts_text(text), vk)
         return raw_path
 
     def prep_specs_raw(self, specs: list):

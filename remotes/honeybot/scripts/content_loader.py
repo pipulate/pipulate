@@ -297,6 +297,12 @@ def get_playlist(recent_n=10, include_archive=True):
             key=lambda p: p.name,
             reverse=True,
         )
+        if "terms" in sys.modules:
+            try:
+                import importlib
+                importlib.reload(sys.modules["terms"])
+            except Exception:
+                pass
         pinned = _get_pinned_storytime_file()
         if pinned is not None and not include_archive:
             files = [pinned] + [p for p in files if p != pinned]
@@ -484,141 +490,19 @@ _FILEPATH_RE = re.compile(
 # and recurring stack acronyms are pronounced naturally on Storytime.
 # Speaker turn regexes use horizontal whitespace [ \t]* before the label and
 # emit a leading '\n\n' so they never eat the preceding paragraph break.
-_AI_SPEAKER_LABEL_PAT = (
-    r"(?:(?:Gemini|Claude|ChatGPT|OpenAI|Opus|Sonnet|Shipmunk)\b"
-    r"(?:[ \t]+(?:\d+(?:\.\d+)*"
-    r"|Argon|Carbon|Neon|Helium|Krypton|Xenon|Radon"
-    r"|Pro|Flash|Ultra|Nano|High|Medium|Low"
-    r"|Opus|Sonnet|Haiku|Code|User|Web|Bot"
-    r"|Thinking|Exp|Experimental|Preview|Lite|Mini|Max|Plus|Turbo"
-    r"|o\d+|O'Theseus"
-    r"|[A-Za-z][A-Za-z0-9-]{1,15}(?=[ \t]+(?:High|Medium|Low|Pro|Flash|Ultra|Nano|Lite|Mini|Max|Plus|Thinking|Preview|Exp)\b))){0,4}"
-    r"|AI)"
-)
+if str(Path(__file__).resolve().parent) not in sys.path:
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+import terms as _terms_mod
 
-_TTS_PRONUNCIATION_MAP = (
-    (
-        re.compile(
-            r'(?m)^[ \t]*(?:\*\*[ \t]*(?:MikeLev\.in|Mike[ \t]+Levin|Mike|Me)[ \t]*:?[ \t]*\*\*[ \t]*:?|(?:MikeLev\.in|Mike[ \t]+Levin|Mike|Me)[ \t]*:)[ \t]*(?:\r?\n[ \t]*(?!\*\*[ \t]*(?:Gemini|Claude|ChatGPT|OpenAI|Opus|Sonnet|Shipmunk|AI|MikeLev\.in|Mike|Me)\b))*',
-            re.IGNORECASE,
-        ),
-        '\n\nMike: ',
-    ),
-    (
-        re.compile(
-            rf'(?m)^[ \t]*\*\*[ \t]*({_AI_SPEAKER_LABEL_PAT})[ \t]*:?[ \t]*\*\*[ \t]*:?[ \t]*(?:\r?\n[ \t]*(?!\*\*[ \t]*(?:Gemini|Claude|ChatGPT|OpenAI|Opus|Sonnet|Shipmunk|AI|MikeLev\.in|Mike|Me)\b))*',
-            re.IGNORECASE,
-        ),
-        r'\n\n\1: ',
-    ),
-    (re.compile(r'\bmikelev\.in\b', re.IGNORECASE), 'Mike L E V dot eye N'),
-    (re.compile(r'\bsunpug\.io\b', re.IGNORECASE), 'Sun Pug dot eye oh'),
-    (re.compile(r'\bqamy\.ai\b', re.IGNORECASE), 'Q A my dot A I'),
-    (re.compile(r'\bnpvg\.org\b', re.IGNORECASE), 'N P V G dot org'),
-    (re.compile(r'\blevinix\.org\b', re.IGNORECASE), 'Levinix dot org'),
-    (re.compile(r'\blevinux\.com\b', re.IGNORECASE), 'Levinux dot com'),
-    (re.compile(r'\brfc9110\.org\b', re.IGNORECASE), 'R F C 91 10 dot org'),
-    (re.compile(r'\brfc9111\.io\b', re.IGNORECASE), 'R F C 91 11 dot eye oh'),
-    (re.compile(r'\bRFC[ -]?9110\b', re.IGNORECASE), 'R F C 91 10'),
-    (re.compile(r'\bRFC[ -]?9111\b', re.IGNORECASE), 'R F C 91 11'),
-    (re.compile(r'\bRFC[ -]?9421\b', re.IGNORECASE), 'R F C 94 21'),
-    (re.compile(r'\bNixOS\b'), 'Nix O S'),
-    (re.compile(r'\bSQLite\b', re.IGNORECASE), 'S Q Lite'),
-    (re.compile(r'\bFastHTML\b', re.IGNORECASE), 'Fast H T M L'),
-    (re.compile(r'\bHTMX\b', re.IGNORECASE), 'H T M X'),
-    (re.compile(r'\bNPvg\b'), 'N P V G'),
-    (re.compile(r'\bLPvg\b'), 'L P V G'),
-    (re.compile(r'\bllms\.txt\b', re.IGNORECASE), 'L L M S dot text'),
-    (re.compile(r'\bAGENTS\.md\b'), 'AGENTS dot M D'),
-    (re.compile(r'\bSKILL\.md\b'), 'SKILL dot M D'),
-    (re.compile(r'\bguerillatech\.com\b', re.IGNORECASE), 'Guerilla Tech dot com'),
-    (re.compile(r'\bpipulate\.com\b', re.IGNORECASE), 'Pipulate dot com'),
-    (re.compile(r'\bREADME\.md\b', re.IGNORECASE), 'README dot M D'),
-    (re.compile(r'\*{0,2}\bTL;DR\b\*{0,2}\s*[:.]?', re.IGNORECASE), 'T L D R:'),
-    (re.compile(r'\bOAI-SearchBot\b', re.IGNORECASE), 'O A I SearchBot'),
-    (re.compile(r'\bGPTBot\b'), 'G P T Bot'),
-    (re.compile(r'\bRLVR\b'), 'R L V R'),
-    (re.compile(r'\bRLHF\b'), 'R L H F'),
-    (re.compile(r'(?<!Reverse )\bPolish\b(?!\s+notation\b)'), 'polish'),
-    (re.compile(r'\bSEO\b'), 'S E O'),
-    (re.compile(r'\bAEO\b'), 'A E O'),
-    (re.compile(r'\bGEO\b'), 'G E O'),
-    (re.compile(r'\bAIO\b'), 'A I O'),
-    (re.compile(r'\bSGE\b'), 'S G E'),
-    (re.compile(r'\bRAG\b'), 'R A G'),
-    (re.compile(r'\bMCP\b'), 'M C P'),
-    (re.compile(r'\bGSC\b'), 'G S C'),
-    (re.compile(r'\b360i\b', re.IGNORECASE), 'three sixty eye'),
-    (re.compile(r'\bGA4\b'), 'G A 4'),
-    (re.compile(r'\bSERPs\b'), 'S E R Ps'),
-    (re.compile(r'\bSERP\b'), 'S E R P'),
-    (re.compile(r'\bPDPs\b'), 'P D Ps'),
-    (re.compile(r'\bPDP\b'), 'P D P'),
-    (re.compile(r'\bPLPs\b'), 'P L Ps'),
-    (re.compile(r'\bPLP\b'), 'P L P'),
-    (re.compile(r'\bSKUs\b'), 'S K Us'),
-    (re.compile(r'\bSKU\b'), 'S K U'),
-    (re.compile(r'\bCTAs\b'), 'C T As'),
-    (re.compile(r'\bCTA\b'), 'C T A'),
-    (re.compile(r'\bKPIs\b'), 'K P Is'),
-    (re.compile(r'\bKPI\b'), 'K P I'),
-    (re.compile(r'\bCRO\b'), 'C R O'),
-    (re.compile(r'\bROI\b'), 'R O I'),
-    (re.compile(r'\bCMS\b'), 'C M S'),
-    (re.compile(r'\bCDNs\b'), 'C D Ns'),
-    (re.compile(r'\bCDN\b'), 'C D N'),
-    (re.compile(r'\bDOM\b'), 'D O M'),
-    (re.compile(r'\bHTML\b'), 'H T M L'),
-    (re.compile(r'\bHTTPS\b'), 'H T T P S'),
-    (re.compile(r'\bHTTP\b'), 'H T T P'),
-    (re.compile(r'\bSSH\b'), 'S S H'),
-    (re.compile(r'\bCLI\b'), 'C L I'),
-    (re.compile(r'\bTUI\b'), 'T U I'),
-    (re.compile(r'\bURLs\b'), 'U R Ls'),
-    (re.compile(r'\bURL\b'), 'U R L'),
-    (re.compile(r'\bURIs\b'), 'U R Is'),
-    (re.compile(r'\bURI\b'), 'U R I'),
-    (re.compile(r'\bAPIs\b'), 'A P Is'),
-    (re.compile(r'\bAPI\b'), 'A P I'),
-    (re.compile(r'\bDNS\b'), 'D N S'),
-    (re.compile(r'\bTLS\b'), 'T L S'),
-    (re.compile(r'\bSSL\b'), 'S S L'),
-    (re.compile(r'\bCPUs\b'), 'C P Us'),
-    (re.compile(r'\bCPU\b'), 'C P U'),
-    (re.compile(r'\bGPUs\b'), 'G P Us'),
-    (re.compile(r'\bGPU\b'), 'G P U'),
-    (re.compile(r'\bLLMs\b'), 'L L Ms'),
-    (re.compile(r'\bLLM\b'), 'L L M'),
-    (re.compile(r'\bChatGPT\b', re.IGNORECASE), 'Chat G P T'),
-    (re.compile(r'\bNginx\b', re.IGNORECASE), 'Engine X'),
-    (re.compile(r'\bPyPI\b', re.IGNORECASE), 'Pie P I'),
-    (re.compile(r'\bkubectl\b', re.IGNORECASE), 'kube control'),
-    (re.compile(r'\bstdout\b', re.IGNORECASE), 'standard out'),
-    (re.compile(r'\bstderr\b', re.IGNORECASE), 'standard error'),
-    (re.compile(r'\bstdin\b', re.IGNORECASE), 'standard in'),
-    (re.compile(r'\bstdio\b', re.IGNORECASE), 'standard I O'),
-    (re.compile(r'\brsync\b', re.IGNORECASE), 'R sync'),
-    (re.compile(r'\b(?:Neovim|nvim)\b', re.IGNORECASE), 'Neo vim'),
-    (re.compile(r'\bOpenGraph\b'), 'Open Graph'),
-    (re.compile(r'\bInnerTube\b'), 'Inner Tube'),
-)
+_AI_SPEAKER_LABEL_PAT = _terms_mod.AI_SPEAKER_LABEL_PAT
+
+_TTS_PRONUNCIATION_MAP = _terms_mod.MARKDOWN_TTS_MAP
 
 
 def _apply_tts_pronunciations(text):
-    """Abolish structural Markdown/ASCII debris and apply phonetic respellings for Piper TTS."""
-    # 1. Abolish standalone horizontal rules (---, ***, ___) so score.py never speaks "---"
-    text = re.sub(r'(?m)^[ \t]*[-*_]{3,}[ \t]*$', '', text)
-    # 2. Abolish Markdown table alignment rows (| :--- | ---: |) and turn cell pipes into commas
-    text = re.sub(r'(?m)^[ \t]*\|[ \t:|-]+\|[ \t]*$', '', text)
-    text = re.sub(r'(?m)^[ \t]*\|(.+)\|[ \t]*$', lambda m: ', '.join(c.strip() for c in m.group(1).split('|') if c.strip()), text)
-    # 3. Abolish unfenced ASCII box-drawing / block-art runs and humanize ASCII arrows
-    text = re.sub(r'[─━│┃┌┐└┘├┤┬┴┼═║╔╗╚╝╠╣╦╩╬░▒▓█▲▼◄►]{2,}', ' ', text)
-    text = re.sub(r'\s*(?:<-->|<->|-->|->|==>|<==)\s*', ', ', text)
-    # 4. Polish phonetic pronunciations
-    for pattern, spoken_repl in _TTS_PRONUNCIATION_MAP:
-        text = pattern.sub(spoken_repl, text)
-    text = re.sub(r'[ \t]+,', ',', text)
-    return text
+    """Abolish structural Markdown/ASCII debris and apply phonetic respellings from terms.py."""
+    mod = sys.modules.get("terms", _terms_mod)
+    return mod.apply_markdown_tts_terms(text)
 
 
 def _truncate_after_editorial_take(text):
