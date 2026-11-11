@@ -139,7 +139,6 @@ STATION_SEGMENTS = [
         ("PATRONUS", {"key": "white_rabbit", "duration": 65.0}),
         [
             "N is for Nix, making the entire software environment reproducible on any machine. P is for Python. The little v is for Vim. And g is for Git.",
-            "The white rabbit on screen is both our mascot and a cryptographic wax seal with a registered checksum baked into the codebase.",
             "Pipulate sits where A I assistance meets local hardware ownership. You do not need a multi-tenant cloud subscription to command your own stack.",
         ],
     ),
