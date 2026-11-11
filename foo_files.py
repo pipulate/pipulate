@@ -2256,7 +2256,7 @@ MATCHBOOK_CHOP = r"""
 # remotes/honeybot/queries/hydration_selftest.sql  # [1,204 tokens | 4,235 bytes]
 # remotes/honeybot/queries/intel_markdown_affinity.sql  # [434 tokens | 1,685 bytes]
 # remotes/honeybot/queries/ua_variants.sql  # [645 tokens | 2,535 bytes]
-# remotes/honeybot/scripts/terms.py  # [4,152 tokens | 11,496 bytes]
+# remotes/honeybot/scripts/terms.py  # [4,260 tokens | 11,807 bytes]
 # scripts/articles/build_hierarchy.py  # [2,460 tokens | 10,361 bytes]
 # scripts/articles/build_navgraph.py  # [2,119 tokens | 9,029 bytes]
 # scripts/articles/execute_massive_prompt.py  # [491 tokens | 2,209 bytes]
