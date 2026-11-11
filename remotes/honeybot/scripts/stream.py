@@ -1253,6 +1253,8 @@ def start_storytime_bgm():
     """Kill any prior BGM instance, then start a single fresh low-volume ambient loop."""
     global _bgm_proc
     stop_storytime_bgm()
+    if os.environ.get("HONEYBOT_NO_AUDIO") == "1":
+        return None
     bgm_path = next((p for p in _BGM_CANDIDATES if p.exists()), BGM_FILE)
     if not bgm_path.exists():
         return None
@@ -1268,6 +1270,8 @@ def start_storytime_bgm():
         _bgm_proc = None
         return None
 
+
+atexit.register(stop_storytime_bgm)
 
 MEDIA_OVERLAY_MARKER = "honeybot_media_overlay"
 WEEBO_STAGE_PAUSE_FILE = "/tmp/honeybot_weebo_active"
