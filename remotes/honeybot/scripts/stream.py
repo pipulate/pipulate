@@ -721,7 +721,6 @@ class Narrator(threading.Thread):
             self._stage_dialogue_role = "narrator"
             return write_stage_state("narrator", "curtain", "curtain", "", 0.0, stage_path=stage_path)
         if self.exclusive_mode.is_set() or any(low.startswith(p) for p in _HOST_TRANSIENT_RE):
-            self._stage_dialogue_role = "narrator"
             return write_stage_state("narrator", "inactive", "inactive", "", 0.0, stage_path=stage_path)
         if not low:
             role = "right" if rate >= 20000 else ("left" if self._stage_dialogue_role == "left" else "narrator")
@@ -2440,36 +2439,42 @@ def run_hud_circle_tour(mode: str, content, env, profile_dir) -> None:
     wait_for_voice_or_live_interrupt(env, profile_dir)
     if has_pending_update():
         return
-    if clean_mode == "INTERMISSION":
-        dispatch_cue(
-            "CARD",
-            {"label": "MIDPOINT\nINTERMISSION", "say": "Midpoint intermission.", "duration": 10.0, "linger": 0.4},
-            env,
-            profile_dir,
-            pace_say=True,
-        )
-    specs = build_hud_circle_specs(mode=clean_mode, title=title)
-    for spec in specs:
-        if has_pending_update():
-            break
-        raw_batch = narrator.prep_specs_raw([spec])
-        if raw_batch is not None:
-            wait_for_voice_or_live_interrupt(env, profile_dir)
+    was_exclusive = narrator.exclusive_mode.is_set()
+    narrator.exclusive_mode.set()
+    try:
+        if clean_mode == "INTERMISSION":
+            dispatch_cue(
+                "CARD",
+                {"label": "MIDPOINT\nINTERMISSION", "say": "Midpoint intermission.", "duration": 10.0, "linger": 0.4},
+                env,
+                profile_dir,
+                pace_say=True,
+            )
+        specs = build_hud_circle_specs(mode=clean_mode, title=title)
+        for spec in specs:
             if has_pending_update():
-                for r_path, _, _ in raw_batch:
-                    narrator._cleanup_item(("RAW", r_path))
                 break
-            narrator.play_specs_raw(raw_batch)
+            raw_batch = narrator.prep_specs_raw([spec])
+            if raw_batch is not None:
+                wait_for_voice_or_live_interrupt(env, profile_dir)
+                if has_pending_update():
+                    for r_path, _, _ in raw_batch:
+                        narrator._cleanup_item(("RAW", r_path))
+                    break
+                narrator.play_specs_raw(raw_batch)
+            else:
+                narrator.enqueue_specs([spec])
+        wait_for_voice_or_live_interrupt(env, profile_dir)
+    finally:
+        write_stage_state("narrator", "inactive", "inactive", hud_focus="")
+        if clean_mode == "INTERMISSION":
+            narrator._stage_dialogue_role = prev_role
+            if prev_role in ("left", "right"):
+                narrator._reannounce_after_break = True
         else:
-            narrator.enqueue_specs([spec])
-    wait_for_voice_or_live_interrupt(env, profile_dir)
-    write_stage_state("narrator", "inactive", "inactive", hud_focus="")
-    if clean_mode == "INTERMISSION":
-        narrator._stage_dialogue_role = prev_role
-        if prev_role in ("left", "right"):
-            narrator._reannounce_after_break = True
-    else:
-        narrator.reset_for_article()
+            narrator.reset_for_article()
+        if not was_exclusive:
+            narrator.exclusive_mode.clear()
 
 
 def run_optics_station_slot(content, env, profile_dir) -> None:
@@ -2567,6 +2572,18 @@ def dispatch_cue(command, content, env, profile_dir, pace_say=True):
                     for r_path, _, _ in raw_batch:
                         narrator._cleanup_item(("RAW", r_path))
                     return
+                if (
+                    narrator._reannounce_after_break
+                    and narrator._stage_dialogue_role in ("left", "right")
+                    and len(specs) == 1
+                ):
+                    for r_path, _, _ in raw_batch:
+                        narrator._cleanup_item(("RAW", r_path))
+                    specs = narrator.plan_utterances(content)
+                    raw_batch = narrator.prep_specs_raw(specs)
+                    if raw_batch is None:
+                        narrator.enqueue_specs(specs)
+                        return
                 narrator.play_specs_raw(raw_batch)
             else:
                 narrator.enqueue_specs(specs)
@@ -2626,10 +2643,11 @@ def dispatch_cue(command, content, env, profile_dir, pace_say=True):
             pass
 
     elif command == "BGM":
-        narrator.reset_for_article()
-        write_stage_state("narrator", "inactive", "inactive")
+        if pace_say:
+            wait_for_voice_or_live_interrupt(env, profile_dir)
         if str(content).strip().upper() in ("STOP", "OFF", "0"):
             stop_storytime_bgm()
+            write_stage_state("narrator", "inactive", "inactive")
         else:
             start_storytime_bgm()
 
@@ -2996,6 +3014,7 @@ def perform_show(script):
                     and new_featured_id is not None
                     and new_featured_id != active_article_id
                 )
+                prev_standby_role = narrator._stage_dialogue_role
                 bgm_was_active = (_bgm_proc is not None)
                 was_exclusive = narrator.exclusive_mode.is_set()
                 narrator.exclusive_mode.set()
@@ -3079,6 +3098,9 @@ def perform_show(script):
                         pass
                 if is_new_show:
                     return "BREAKING"
+                narrator._stage_dialogue_role = prev_standby_role
+                if prev_standby_role in ("left", "right"):
+                    narrator._reannounce_after_break = True
                 if bgm_was_active:
                     start_storytime_bgm()
                 narrator.say("Resuming storytime.")
