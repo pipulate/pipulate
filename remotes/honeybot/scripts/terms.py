@@ -89,6 +89,22 @@ REGEX_TERMS = (
     (re.compile(r"\b(?:Neovim|nvim)\b", re.IGNORECASE), "Neo vim"),
     (re.compile(r"\bdx/dy\b", re.IGNORECASE), "D X over D Y"),
     (re.compile(r"\bdy/dx\b", re.IGNORECASE), "D Y over D X"),
+    # Data transfer rates (58.64 MiB/s, 550 KiB/s, 100 MB/s, 1 GB/s)
+    (re.compile(r"(?<![\d.,])\b1\s*[kK][iI]?[bB]\s*/\s*s(?:ec(?:ond)?)?\b"), "1 kilobyte per second"),
+    (re.compile(r"\b(\d[\d,]*(?:\.\d+)?)\s*[kK][iI]?[bB]\s*/\s*s(?:ec(?:ond)?)?\b"), r"\1 kilobytes per second"),
+    (re.compile(r"(?<![\d.,])\b1\s*[mM][iI]?[bB]\s*/\s*s(?:ec(?:ond)?)?\b"), "1 megabyte per second"),
+    (re.compile(r"\b(\d[\d,]*(?:\.\d+)?)\s*[mM][iI]?[bB]\s*/\s*s(?:ec(?:ond)?)?\b"), r"\1 megabytes per second"),
+    (re.compile(r"(?<![\d.,])\b1\s*[gG][iI]?[bB]\s*/\s*s(?:ec(?:ond)?)?\b"), "1 gigabyte per second"),
+    (re.compile(r"\b(\d[\d,]*(?:\.\d+)?)\s*[gG][iI]?[bB]\s*/\s*s(?:ec(?:ond)?)?\b"), r"\1 gigabytes per second"),
+    # Data sizes: singular 1 (1MB, 1 MB, 1KB) vs. plural quantities (500KB, 105 KB, 47.69 MiB, 4GB, 2TB)
+    (re.compile(r"(?<![\d.,])\b1\s*[kK][iI]?[bB]\b"), "1 kilobyte"),
+    (re.compile(r"\b(\d[\d,]*(?:\.\d+)?)\s*[kK][iI]?[bB]\b"), r"\1 kilobytes"),
+    (re.compile(r"(?<![\d.,])\b1\s*[mM][iI]?[bB]\b"), "1 megabyte"),
+    (re.compile(r"\b(\d[\d,]*(?:\.\d+)?)\s*[mM][iI]?[bB]\b"), r"\1 megabytes"),
+    (re.compile(r"(?<![\d.,])\b1\s*[gG][iI]?[bB]\b"), "1 gigabyte"),
+    (re.compile(r"\b(\d[\d,]*(?:\.\d+)?)\s*[gG][iI]?[bB]\b"), r"\1 gigabytes"),
+    (re.compile(r"(?<![\d.,])\b1\s*[tT][iI]?[bB]\b"), "1 terabyte"),
+    (re.compile(r"\b(\d[\d,]*(?:\.\d+)?)\s*[tT][iI]?[bB]\b"), r"\1 terabytes"),
 )
 
 # 2. Case-Insensitive Domains, Brands, & Jargon (auto-sorted longest-first)
@@ -211,6 +227,14 @@ EXACT_CASE_TERMS = (
     ("GPU", "G P U"),
     ("LLMs", "L L Ms"),
     ("LLM", "L L M"),
+    ("KiB", "kilobytes"),
+    ("MiB", "megabytes"),
+    ("GiB", "gigabytes"),
+    ("TiB", "terabytes"),
+    ("KB", "kilobytes"),
+    ("MB", "megabytes"),
+    ("GB", "gigabytes"),
+    ("TB", "terabytes"),
 )
 
 # Multiline speaker-turn normalizers for Storytime Markdown articles
@@ -298,7 +322,7 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         print(apply_inline_tts_terms(" ".join(sys.argv[1:])))
     else:
-        demo = "Killing the $10K Pre-Render Scam: SaaS & SERPs for SEOs at SunPug.io with 911 LLM Optics ($10K/mo vs $10K)"
+        demo = "Killing the $10K Pre-Render Scam: SaaS & SERPs for SEOs at SunPug.io with 911 LLM Optics ($10K/mo vs $10K, 1MB vs 500KB)"
         print(f"Loaded {len(INLINE_TTS_MAP)} inline TTS rules.")
         print(f"  IN : {demo}")
         print(f"  OUT: {apply_inline_tts_terms(demo)}")
