@@ -86,6 +86,8 @@ REGEX_TERMS = (
     (re.compile(r"\bWeb\s+3\.0\b", re.IGNORECASE), "Web three point oh"),
     (re.compile(r"\bSHA-?256\b", re.IGNORECASE), "S H A 256"),
     (re.compile(r"\b(?:Neovim|nvim)\b", re.IGNORECASE), "Neo vim"),
+    (re.compile(r"\bdx/dy\b", re.IGNORECASE), "D X over D Y"),
+    (re.compile(r"\bdy/dx\b", re.IGNORECASE), "D Y over D X"),
 )
 
 # 2. Case-Insensitive Domains, Brands, & Jargon (auto-sorted longest-first)
@@ -158,9 +160,13 @@ EXACT_CASE_TERMS = (
     ("RFC", "R F C"),
     ("SEOs", "S E O's"),
     ("SEO", "S E O"),
+    ("AEOs", "A E O's"),
     ("AEO", "A E O"),
+    ("GEOs", "G E O's"),
     ("GEO", "G E O"),
     ("AIO", "A I O"),
+    ("ADNS", "A D N S"),
+    ("QED", "Q E D"),
     ("SGE", "S G E"),
     ("RAG", "R A G"),
     ("MCP", "M C P"),
