@@ -78,20 +78,25 @@ def _make_station_bead(card_label, card_say, capstone_cue, forest_story_lines, p
         capstone_cue,
         ("WAIT", 2),
     ]
+    is_window_report = (
+        isinstance(capstone_cue, tuple)
+        and len(capstone_cue) >= 2
+        and capstone_cue[0] == "WINDOW"
+        and any(tag in str(capstone_cue[1]) for tag in (":overview", ":markdown", ":bimodal", ":trapdoor", ":schism", ":rfc9421", ":doors", ":pirates"))
+    )
+    is_patronus_art = (
+        isinstance(capstone_cue, tuple)
+        and len(capstone_cue) >= 2
+        and capstone_cue[0] == "PATRONUS"
+    )
+    if is_window_report:
+        cues.append((
+            "SAY",
+            "This is the moment — take your screenshot right now! Both MikeLev.in and SunPug.io are stamped right on the report frame so you have the links.",
+        ))
     for line in forest_story_lines:
         cues.append(("SAY", line))
     if post_linger is None:
-        is_window_report = (
-            isinstance(capstone_cue, tuple)
-            and len(capstone_cue) >= 2
-            and capstone_cue[0] == "WINDOW"
-            and any(tag in str(capstone_cue[1]) for tag in (":overview", ":markdown", ":bimodal", ":trapdoor", ":schism", ":rfc9421", ":doors", ":pirates"))
-        )
-        is_patronus_art = (
-            isinstance(capstone_cue, tuple)
-            and len(capstone_cue) >= 2
-            and capstone_cue[0] == "PATRONUS"
-        )
         post_linger = REPORT_POST_LINGER_SECONDS if is_window_report else (PATRONUS_POST_LINGER_SECONDS if is_patronus_art else 0)
     if post_linger > 0:
         cues.append(("WAIT", int(post_linger)))
@@ -841,7 +846,7 @@ def _build_station_report_panel(mode="overview", panel_width=None):
             },
         )
 
-        title_str = "⚡ JAVASCRIPT DOM HYDRATION TRAPDOOR (0% → 5.0% OF ELIGIBLE HTML RESPONSES) & EXECUTOR BREAKDOWN"
+        title_str = "⚡ JS DOM HYDRATION TRAPDOOR (0% → 5.0% OF ELIGIBLE HTML)"
         tbl.add_column("Execs", justify="right", style="bold yellow", width=8, no_wrap=True)
         tbl.add_column("Horizon / Bot Identity", style="bold white", width=25, no_wrap=True)
         tbl.add_column("Denominator Key / Grouped Executor Signature", ratio=4, no_wrap=True)
@@ -1233,7 +1238,7 @@ def _build_station_report_panel(mode="overview", panel_width=None):
             },
         )
 
-        title_str = "🧠 RFC 9110 MARKDOWN ADOPTION (0% → 1.0% OF ALL HTTP RESPONSES) & USER-AGENT BREAKDOWN"
+        title_str = "🧠 RFC 9110 MARKDOWN ADOPTION (0% → 1.0% OF HTTP RESPONSES)"
         tbl.add_column("Reads", justify="right", style="bold cyan", width=8, no_wrap=True)
         tbl.add_column("Horizon / Bot Identity", style="bold white", width=25, no_wrap=True)
         tbl.add_column("Denominator Key / Grouped User-Agent Signature", ratio=4, no_wrap=True)
@@ -1262,10 +1267,16 @@ def _build_station_report_panel(mode="overview", panel_width=None):
             )
 
     footer = Text.from_markup(
-        "[bold green]🔭 Got the SEO Blues?[/bold green] "
-        "SEO moved to the Edge — your site is your feed: [bold cyan]curl -fsSL sunpug.io | less[/bold cyan] · [bold cyan]mikelev.in/#consulting[/bold cyan]"
+        "[bold bright_white]📡 Wire Telemetry:[/bold bright_white] [bold #ffd700]https://MikeLev.in[/bold #ffd700] "
+        "[dim]│[/dim] [bold bright_green]Free 911 Optics:[/bold bright_green] [bold bright_cyan]https://SunPug.io[/bold bright_cyan] "
+        "[dim]·[/dim] [bold cyan]curl -fsSL sunpug.io | less[/bold cyan]"
     )
-    panel_kwargs = {"title": f"[bold bright_cyan]{title_str}[/bold bright_cyan]", "subtitle": footer, "padding": (0, 1)}
+    panel_title = (
+        f"[bold bright_cyan]{title_str}[/bold bright_cyan] "
+        "[dim]·[/dim] [bold #ffd700]MikeLev.in[/bold #ffd700] "
+        "[dim]·[/dim] [bold bright_green]SunPug.io[/bold bright_green]"
+    )
+    panel_kwargs = {"title": panel_title, "subtitle": footer, "padding": (0, 1)}
     if panel_width is not None:
         panel_kwargs["width"] = int(panel_width)
     return Panel(tbl, **panel_kwargs)

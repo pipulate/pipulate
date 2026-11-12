@@ -38,6 +38,14 @@ STAGE_AUDIO_BRIDGE_FILE = "/tmp/pipulate_ytstage_audio.json"
 OPTICS_SLOT_FILE = "/tmp/honeybot_optics_slot.json"
 YTBREAKS_TMUX_SESSION = "ytbreaks"
 YTBREAKS_LOG_FILE = "/tmp/ytbreaks.log"
+DEFAULT_OPTICS_OUTRO_TEXT = (
+    "Every tool you just watched can be yours right now, in this single sitting — "
+    "go get it and join the new wave of AI-Readiness Consultants! "
+    "Install it free on your own machine at SunPug.io, or if you want a strictly enterprise standards door "
+    "for your clients, visit RFC9110.org or RFC9111.io. "
+    "All three doors install the exact same open-source engine today and are tailoring directly to each audience over time. "
+    "Returning now to the Honeybot Observatory."
+)
 
 
 def _manage_ytbreaks_daemon(action: str, dry_run: bool = False) -> int:
@@ -202,8 +210,14 @@ for p in sorted(pathlib.Path("/proc").glob("[0-9]*/cmdline")):
 """
 
 REMOTE_SPEAK_SNIPPET = """
-import fcntl, os, pathlib, shutil, subprocess, time
+import fcntl, os, pathlib, shutil, subprocess, sys, time
 text = base64.b64decode(TEXT_B64).decode("utf-8").strip()
+try:
+    sys.path.insert(0, "/home/mike/www/mikelev.in/scripts")
+    import terms as _terms
+    text = _terms.apply_inline_tts_terms(text).strip()
+except Exception:
+    pass
 if text:
     extra = "/etc/profiles/per-user/mike/bin:/home/mike/.nix-profile/bin:/run/current-system/sw/bin:/usr/bin:/bin"
     env = os.environ.copy()
@@ -568,7 +582,7 @@ def run_ytapp(
                             action="start",
                             subpath="/optics_workflow?demo=1",
                             say_text=say_text,
-                            outro_text=outro_text or "Returning now to the Honeybot Observatory.",
+                            outro_text=outro_text or DEFAULT_OPTICS_OUTRO_TEXT,
                             dry_run=False,
                             freeze_hud=freeze_hud,
                             pause_audio=pause_audio,
