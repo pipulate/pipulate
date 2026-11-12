@@ -42,10 +42,6 @@ console = Console()
 # patronus.human → Rich Panel for the terminal
 # patronus.ai    → plain text for logs and LLM context
 
-
-
-
-
 FigurateResult = namedtuple('FigurateResult', ['name', 'human', 'ai'])
 
 
@@ -559,12 +555,14 @@ def _figurate_white_rabbit():
     """Render white_rabbit as (human, ai) tuple for FIGURATE_REGISTRY."""
     art = r"""
  The same URL serves HTML and Markdown?
-             O        /)  ____
-              o /)\__//  /    \
-            ___(/_ 0 0  |      |
-          *(    ==(_T_)== 9111 |
-            \  )   ""\  |      |
-             |__>-\_>_>  \____/
+            O        /)  ___
+             o /)\__//  /   \
+           ___(/_ 0 0  |     |
+         *(    ==(_T_)== 911 |
+           \  )   ""\  |     |
+            |__>-\_>_>  \___/
+
+  curl -fsSL https://sunpug.io | less
     """
     ai_art = _expand_color_bits_ai(art)
     human_art = _expand_color_bits_human(art)
