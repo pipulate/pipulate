@@ -988,9 +988,11 @@ def print_broadcast_kit(target_key="1", mode="card", slug_match=None):
         print(" 12. ytstatus          📡 Check Honeybot OBS PID, port 4455 & timecode")
         print(" 13. ytwatch           👀 Check live viewers & chat (`ytwatch start|log|status|stop`)")
         print("     ytlog             📺 Watch live notification stream (`q` or `Ctrl+b d` to exit)")
+        print("     ytmax             🎰 Toggle Max Headroom (`off` [default] | `on` | `12` Skinner VR-12)")
         print(" 14. ytsay \"text\"      🎙️ Break in LIVE on-air (`-c \"CARD\"` `-p white_rabbit` `-m IMG`)")
         print("     ytticker \"text\"   📟 Update 5-row LED side-band (`|` cards, `--scroll`, `--small`, `--reset`)")
         print(" 15. ytapp / ytvim     🖥️ Project local FastHTML (:5001) or live Vim onto stream")
+        print("     ytbreaks          🔭 Check background `ytapp watch-breaks` Optics station-break daemon")
         print("     ytmedia <path>    🖼️ Pop up an image or video on Honeybot :10.0 (`ytsay -m`)")
         print(" 16. ytping \"text\"     📲 Send ntfy.sh push notification to your phone")
         print(" 17. yttop [N]          📊 Keyless YouTube channel top videos & streams radar")
@@ -2884,7 +2886,7 @@ def run_youtube_watch(
                 peak_viewers = max(peak_viewers, int(fast_v))
                 if fast_v > prev_viewers:
                     print(
-                        f"[{_ytlog_ts()}] ⚡ [FAST VIEWER +{fast_v - prev_viewers}] {prev_viewers} -> {fast_v} watching ({fast_step}s InnerTube pulse) — firing hairline Weebo trigger!",
+                        f"[{_ytlog_ts()}] ⚡ [FAST VIEWER +{fast_v - prev_viewers}] {prev_viewers} -> {fast_v} watching ({fast_step}s InnerTube pulse)",
                         flush=True,
                     )
                     _trigger_ytwatch_weebo()

@@ -571,10 +571,6 @@ def resolve_dynamic_report_speech(text: str) -> str:
                     live_ov = _format_overview_speech(total_hits, md_reads, total_cneg, md_pct, top_bots)
                 else:
                     raise ValueError("empty overview db")
-            if False:
-                live_ov = ""
-            else:
-                raise ValueError("empty overview db")
         except Exception:
             live_ov = (
                 "Look first at the single cyan bar across the very top of this report. "
@@ -690,10 +686,6 @@ def resolve_dynamic_report_speech(text: str) -> str:
                     live_bi = _format_bimodal_speech(eligible_html, js_horizon_hits, js_pct, top_bots)
                 else:
                     raise ValueError("empty bimodal db")
-            if False:
-                live_bi = ""
-            else:
-                raise ValueError("empty bimodal db")
         except Exception:
             live_bi = (
                 "Look first at the single amber bar across the very top of this report. "
