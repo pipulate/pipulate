@@ -76,10 +76,10 @@ DOOM_FIRE_PALETTE = (
     ("█", "bold #ffffff"),   # 7: White-hot ignition (100% block)
 )
 DEFAULT_TICKER_MESSAGE = (
-    "JUST GIVE 30 SECS... | "
+    "DON'T GIVE 30 SECS... | "
     "HONEYBOT STORYTIME | "
     "DON'T JOIN MY DISCORD | "
-    "VISIT:  SUNPUG.IO | "
+    "DON'T VISIT SUNPUG.IO | "
     "CHAT SUMMONS MIKE | "
     "AI'S @ MIKELEV.IN"
 )
