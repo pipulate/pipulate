@@ -101,13 +101,13 @@ def _make_station_bead(card_label, card_say, capstone_cue, forest_story_lines, p
 # --- ACTIVE LINEAR-ARC STATION SEGMENTS ---
 # Paired with score.py's OVERTURE (Beat 1) and MIDPOINT INTERMISSION (Beat 4):
 #   Beat 1 (0%)   : OVERTURE — Around-the-HUDs stage & cast introduction
-#   Beat 2 (+7m)  : Bead 0 — RFC 9110 MARKDOWN (:overview data proof)
-#   Beat 3 (+14m) : Bead 1 — SEOS ASSEMBLE! (white_rabbit teaser -> RFC 9110/9111 + 911 LLM Optics @ SunPug.io)
+#   Beat 2 (+7m)  : Bead 0 — RFC 9110 MARKDOWN (:overview data proof + 911 LLM Optics teaser)
+#   Beat 3 (+14m) : Bead 1 — 911 LLM OPTICS (FOSS "Screaming Frog for the Age of AI" live showcase @ SunPug.io)
 #   Beat 4 (50%)  : MIDPOINT INTERMISSION — Around-the-HUDs stage & cast refresh
 #   Beat 5a (+7m) : Bead 2 — DOM TRAPDOOR JS EXECS (:bimodal JS hydration proof)
-#   Beat 5b (+14m): Bead 3 — 911 LLM OPTICS (FOSS "Screaming Frog for the Age of AI" showcase @ SunPug.io)
+#   Beat 5b (+14m): Bead 3 — SEOS ASSEMBLE! (white_rabbit -> RFC 9110/9111 Edge readiness @ SunPug.io)
 STATION_SEGMENTS = [
-    # Bead 0 (Beat 2 -> First Data Proof: Who Accepts Markdown on the Wire)
+    # Bead 0 (Beat 2 -> First Data Proof: Who Accepts Markdown on the Wire + Teaser for 911 LLM Optics)
     _make_station_bead(
         "RFC 9110\nMARKDOWN",
         (
@@ -118,23 +118,25 @@ STATION_SEGMENTS = [
         ("WINDOW", f"forest.py:{REPORT_WINDOW_CAP_SECONDS}:overview"),
         [
             "{LIVE_REPORT:overview}",
+            "Coming up on our next station break, we open 911 LLM Optics — our free, open-source Screaming Frog for the Age of AI at SunPug.io — to X-ray raw HTTP headers, hydrated DOM bloat, and RFC 9110 Markdown readiness side by side.",
         ],
     ),
-    # Bead 1 (Beat 3 -> Follow the White Rabbit: "SEOs Assemble!" Teaser for AI-Readiness & 911 LLM Optics)
-    _make_station_bead(
-        "SEOS\nASSEMBLE!",
+    # Bead 1 (Beat 3 -> Killer-App Payoff Promoted Ahead of White Rabbit: 911 LLM Optics @ SunPug.io)
+    [
         (
-            "Follow the White Rabbit. SEOs, assemble! "
-            "Google is locking down the SERPs, and we are gathering the sharpest practitioners in the world "
-            "who are ready to become real AI-Readiness Consultants."
+            "CARD",
+            {
+                "label": "911 LLM\nOPTICS",
+                "say": (
+                    "Meet 911 LLM Optics: the FOSS Screaming Frog for the Age of AI, "
+                    "built to inspect exact wire truth inside the portable workshop at SunPug.io."
+                ),
+            },
         ),
-        ("PATRONUS", {"key": "white_rabbit", "duration": 65.0}),
-        [
-            "For years, enterprise teams paid a $10K/mo JavaScript pre-render tax just to spoon-feed bloated HTML snapshots to search crawlers.",
-            "In the Agentic Web, real AI-Readiness moves to the Edge with RFC 9110 content negotiation and RFC 9111 Vary Accept caching — serving HTML to humans and clean Markdown to AI bots from one URL with zero SaaS rent.",
-            "Stick around past our midpoint intermission: first we will check our live JavaScript DOM Hydration Trapdoor, and then you will see 911 LLM Optics — our FOSS Screaming Frog for the Age of AI — waiting for you right now at SunPug.io.",
-        ],
-    ),
+        ("OPTICS_SLOT", {"handshake_wait": 20.0, "claim_grace": 35.0, "timeout": 180.0}),
+        ("SAY", CURRENT_ARTICLE_BEAT),
+        ("CARD", {"label": "TRY SUNPUG.IO\n911 OPTICS", "say": CONSULTING_CTA_BEAT}),
+    ],
     # Bead 2 (Beat 5a -> Second Data Proof: JavaScript DOM Hydration Trapdoor)
     _make_station_bead(
         "DOM TRAPDOOR\nJS EXECS",
@@ -148,22 +150,21 @@ STATION_SEGMENTS = [
             "When OpenAI and Meta already hydrate JavaScript on their own dime and Markdown-native agents ask for text/markdown directly, $10K/mo pre-render middleware becomes pure dead weight.",
         ],
     ),
-    # Bead 3 (Beat 5b -> Killer-App Payoff: 911 LLM Optics @ SunPug.io)
-    [
+    # Bead 3 (Beat 5b -> Follow the White Rabbit: "SEOs Assemble!" RFC 9110/9111 Edge Manifesto)
+    _make_station_bead(
+        "SEOS\nASSEMBLE!",
         (
-            "CARD",
-            {
-                "label": "911 LLM\nOPTICS",
-                "say": (
-                    "Meet 911 LLM Optics: the FOSS Screaming Frog for the Age of AI, "
-                    "built to inspect exact wire truth inside the portable workshop at SunPug.io."
-                ),
-            },
+            "Follow the White Rabbit. SEOs, assemble! "
+            "Google is locking down the SERPs, and we are gathering the sharpest practitioners in the world "
+            "who are ready to become real AI-Readiness Consultants."
         ),
-        ("OPTICS_SLOT", {"handshake_wait": 8.0, "timeout": 180.0}),
-        ("SAY", CURRENT_ARTICLE_BEAT),
-        ("CARD", {"label": "TRY SUNPUG.IO\n911 OPTICS", "say": CONSULTING_CTA_BEAT}),
-    ],
+        ("PATRONUS", {"key": "white_rabbit", "duration": 65.0}),
+        [
+            "For years, enterprise teams paid a $10K/mo JavaScript pre-render tax just to spoon-feed bloated HTML snapshots to search crawlers.",
+            "Roy Fielding and Mark Nottingham already wired the cure into HTTP: RFC 9110 content negotiation and RFC 9111 Vary Accept caching let your existing CDN serve HTML to humans and clean Markdown to AI agents from one URL with zero SaaS rent.",
+            "Run 911 LLM Optics free on your own domain right now at SunPug.io — or inspect the installer safely in your terminal with curl dash f s S L sunpug.io pipe less.",
+        ],
+    ),
 ]
 
 # --- MODULAR STORYTELLING VAULT (INACTIVE IN AUTONOMOUS ROTATION, ON-DEMAND VIA `--bead <key>`) ---

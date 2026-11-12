@@ -1161,6 +1161,8 @@ _PATRONUS_ALIASES = {
     "rabbit": "white_rabbit",
     "bunny": "white_rabbit",
     "npvg": "white_rabbit",
+    "911_optics": "optics_triptych",
+    "triptych": "optics_triptych",
 }
 
 
@@ -2570,13 +2572,11 @@ def run_optics_station_slot(content, env, profile_dir) -> None:
     """Offer a DMZ-safe 911 LLM Optics station-break window; fallback gracefully if Prime is unattended."""
     import json as _json
     cfg = content if isinstance(content, dict) else {}
-    handshake_wait = float(cfg.get("handshake_wait", 8.0))
+    handshake_wait = float(cfg.get("handshake_wait", 20.0))
+    claim_grace = float(cfg.get("claim_grace", 35.0))
     max_hold = float(cfg.get("timeout", 180.0))
     slot_p = Path(OPTICS_SLOT_PATH)
-    narrator.say("Checking Pipulate Prime for a live 911 L L M Optics spectrometer demonstration.")
-    wait_for_voice_or_live_interrupt(env, profile_dir)
-    if has_pending_update():
-        return
+    # Publish "waiting" BEFORE speaking so Prime gets ~6s of free head-start to boot server.py & SSH -R 15001.
     try:
         slot_p.write_text(
             _json.dumps({"state": "waiting", "requested_at": round(time.time(), 3), "pid": os.getpid()}),
@@ -2584,6 +2584,14 @@ def run_optics_station_slot(content, env, profile_dir) -> None:
         )
     except OSError:
         pass
+    narrator.say("Checking Pipulate Prime for a live 911 L L M Optics spectrometer demonstration.")
+    wait_for_voice_or_live_interrupt(env, profile_dir)
+    if has_pending_update():
+        try:
+            slot_p.unlink(missing_ok=True)
+        except OSError:
+            pass
+        return
     claimed = False
     deadline = time.time() + handshake_wait
     while time.time() < deadline and not has_pending_update():
@@ -2602,14 +2610,32 @@ def run_optics_station_slot(content, env, profile_dir) -> None:
     try:
         if claimed:
             stage_deadline = time.time() + max_hold
-            while time.time() < stage_deadline:
-                if not Path(WEEBO_STAGE_PAUSE_FILE).exists():
+            grace_deadline = time.time() + min(max_hold, claim_grace)
+            saw_pause_sentinel = Path(WEEBO_STAGE_PAUSE_FILE).exists()
+            while time.time() < stage_deadline and not has_pending_update():
+                if Path(WEEBO_STAGE_PAUSE_FILE).exists():
+                    saw_pause_sentinel = True
                     time.sleep(0.5)
+                    continue
+                if slot_p.is_file():
+                    try:
+                        sdata = _json.loads(slot_p.read_text(encoding="utf-8"))
+                        if isinstance(sdata, dict) and sdata.get("state") in ("done", "finished", "released"):
+                            break
+                    except Exception:
+                        pass
+                elif saw_pause_sentinel:
+                    break
+                if saw_pause_sentinel:
+                    time.sleep(0.8)
                     if not Path(WEEBO_STAGE_PAUSE_FILE).exists():
                         break
-                time.sleep(0.5)
+                elif time.time() >= grace_deadline:
+                    break
+                else:
+                    time.sleep(0.5)
         else:
-            conjure_patronus("clipboard", duration=42.0)
+            conjure_patronus("optics_triptych", duration=42.0)
             narrator.say(
                 "Pipulate Prime is currently running in local workshop mode, and you can run this exact spectrometer on your own machine today. "
                 "911 LLM Optics is our FOSS Screaming Frog for the Age of AI: point it at any URL and it stacks sixteen wire-truth lenses side by side — "
@@ -3510,7 +3536,7 @@ if __name__ == "__main__":
         for pat in ("conjure_window_overlay", "patronus_visual_shield"):
             subprocess.run(["pkill", "-f", pat], check=False)
         resolved_art = resolve_patronus_key(mode_arg)
-        if resolved_art in ("white_rabbit", "ai_pachinko", "mechanical_man", "flyball_governor", "canal_lock", "player_piano", "clipboard", "bunny_trail", "ai_stack_combo", "deployment_context", "honeybot_pipeline", "workspace_tree", "forcing_pair"):
+        if resolved_art in ("white_rabbit", "optics_triptych", "ai_pachinko", "mechanical_man", "flyball_governor", "canal_lock", "player_piano", "clipboard", "bunny_trail", "ai_stack_combo", "deployment_context", "honeybot_pipeline", "workspace_tree", "forcing_pair"):
             conjure_patronus(resolved_art, duration=dur_arg)
         else:
             conjure_window("forest.py", duration=dur_arg, args=[mode_arg])

@@ -143,6 +143,19 @@ def _wmctrl_window_size(window_class, env):
     return None
 
 
+def compute_overlay_xy(sw: int, sh: int, w: int, h: int, stage_band: bool = False) -> tuple:
+    """Compute (x, y) for an overlay window; when stage_band=True (:10.0), keep compact cards above #middle_stage."""
+    x = max(0, (int(sw) - int(w)) // 2)
+    if stage_band:
+        top_pad = 36
+        upper_h = int(int(sh) * 0.54)
+        if int(h) + top_pad + 8 <= upper_h:
+            y = top_pad + max(0, (upper_h - top_pad - int(h)) // 2)
+            return x, y
+        return x, max(32, (int(sh) - int(h)) // 2)
+    return x, max(0, (int(sh) - int(h)) // 2)
+
+
 def _center_and_raise(window_class, env=None, fill=False, margin=40, retries=10):
     """Raise the overlay above the F11/maximized terminal, then center it using
     the ACTUAL display resolution (xrandr) instead of a hardcoded offset.
@@ -169,10 +182,10 @@ def _center_and_raise(window_class, env=None, fill=False, margin=40, retries=10)
     if not shutil.which("wmctrl"):
         return
 
-    # Raise above the maximized log stream (the prior add,above retry loop).
+    # Raise above the maximized log stream and omit transient popups from XFCE's panel taskbar.
     for _ in range(retries):
         res = subprocess.run(
-            ["wmctrl", "-x", "-r", window_class, "-b", "add,above"],
+            ["wmctrl", "-x", "-r", window_class, "-b", "add,above,skip_taskbar,skip_pager"],
             capture_output=True,
             env=env,
         )
@@ -185,6 +198,14 @@ def _center_and_raise(window_class, env=None, fill=False, margin=40, retries=10)
         return
     sw, sh = screen
 
+    is_honeybot_stage = str(env.get("DISPLAY", "")).startswith(":10") or os.path.exists("/tmp/honeybot_stage.json")
+    if is_honeybot_stage and shutil.which("xdotool"):
+        subprocess.run(
+            ["xdotool", "mousemove", str(max(0, sw - 4)), str(sh // 2)],
+            capture_output=True,
+            env=env,
+            check=False,
+        )
     if fill:
         w = max(1, sw - 2 * margin)
         h = max(1, sh - 2 * margin)
@@ -194,8 +215,7 @@ def _center_and_raise(window_class, env=None, fill=False, margin=40, retries=10)
         if size is None:
             return
         w, h = size
-        x = max(0, (sw - w) // 2)
-        y = max(0, (sh - h) // 2)
+        x, y = compute_overlay_xy(sw, sh, w, h, stage_band=is_honeybot_stage)
 
     subprocess.run(
         ["wmctrl", "-x", "-r", window_class, "-e", f"0,{x},{y},{w},{h}"],
@@ -894,6 +914,28 @@ def _figurate_forcing_pair():
     return human, ai_art
 
 
+def _figurate_optics_triptych():
+    """Render Rontgen's X-ray plate for the Agentic Web: 911 LLM Optics @ SunPug.io."""
+    art = r"""
+ ┌────────────────────────┬────────────────────────┬────────────────────────┐
+ │ 1. VIEW-SOURCE (WIRE)  │ 2. HYDRATED DOM (JS)   │ 3. RFC 9110 MARKDOWN   │
+ ├────────────────────────┼────────────────────────┼────────────────────────┤
+ │ Raw HTTP headers +     │ Headless browser DOM   │ Accept: text/markdown  │
+ │ unrendered HTML bytes  │ diffed vs. wire HTML   │ + Vary: Accept (9111)  │
+ │ (what crawlers fetch)  │ (exposes $10K/mo tax)  │ (0-tax edge AI feed)   │
+ └───────────┬────────────┴───────────┬────────────┴───────────┬────────────┘
+             └────────────────────────┼────────────────────────┘
+ ┌────────────────────────────────────┴─────────────────────────────────────┐
+ │  16 Wire-Truth Lenses -> Sealed SHA-256 optics_deed.zip (Zero SaaS Tax)  │
+ │   FOSS Spectrometer: https://sunpug.io  |  curl -fsSL sunpug.io | less   │
+ └──────────────────────────────────────────────────────────────────────────┘
+"""
+    ai_art = _expand_color_bits_ai(art)
+    human_art = _expand_color_bits_human(art)
+    human = Panel(human_art, title="🔬 911 LLM Optics -- Wire-Truth X-Ray Spectrometer (SunPug.io)", border_style="bright_cyan")
+    return human, ai_art
+
+
 # === FIGURATE_RENDER_EXTRUDE_BOTTOM ===
 # Add new _figurate_* render functions immediately above this line
 
@@ -936,6 +978,9 @@ FIGURATE_REGISTRY: dict = {
     },
     "forcing_pair": {
         "render": _figurate_forcing_pair,
+    },
+    "optics_triptych": {
+        "render": _figurate_optics_triptych,
     },
     # === FIGURATE_REGISTRY_EXTRUDE_BOTTOM ===
     # Add new registry entries immediately above this line

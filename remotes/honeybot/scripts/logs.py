@@ -35,7 +35,22 @@ VIEWERS_TTL_SECONDS = 120.0
 STAGE_STATE_PATH = "/tmp/honeybot_stage.json"
 STAGE_STATE_TTL_SECONDS = 900.0
 BASE_APP_TITLE = "Web Bot AI Observatory — https://mikelev.in · https://sunpug.io"
-SUNPUG_BORDER_BANNER = " ☀️ FOSS AI-READINESS SUITE & 911 OPTICS: https://sunpug.io · curl -fsSL sunpug.io | less "
+
+
+def format_sunpug_border_banner(width: int = 180) -> str:
+    """Span sunpug.io across left wing, center, and right wing so no centered overlay can eclipse all three."""
+    core = " FOSS AI-READINESS & 911 OPTICS: https://sunpug.io · curl -fsSL sunpug.io | less "
+    left_wing = " ☀️ sunpug.io "
+    right_wing = " sunpug.io ☀️ "
+    target_w = max(len(core), int(width or 180) - 6)
+    rem = target_w - len(left_wing) - len(core) - len(right_wing)
+    if rem < 4:
+        return f"{left_wing}·{core}·{right_wing}"
+    half = rem // 2
+    return f"{left_wing}{'─' * half}{core}{'─' * (rem - half)}{right_wing}"
+
+
+SUNPUG_BORDER_BANNER = format_sunpug_border_banner(180)
 JS_PANEL_TITLE = "⚡ DOM HYDRATION TRAPDOOR (Bots Executing JS)"
 MD_PANEL_TITLE = "🧠 RFC 9110 MARKDOWN NEGOTIATORS (Accept: text/markdown)"
 JS_BUMP_TITLE = "▾ END OF LIST — HANDING OFF TO MARKDOWN HUD ➔"
@@ -785,7 +800,7 @@ class SonarApp(App):
         
         # --- NEW: The Dual Intelligence Panel ---
         with Container(id="intelligence_panel") as intel_panel:
-            intel_panel.border_title = SUNPUG_BORDER_BANNER
+            intel_panel.border_title = format_sunpug_border_banner(180)
             
             # LEFT: Javascript Executors
             with Vertical(id="js_panel", classes="half_panel"):
@@ -893,7 +908,11 @@ class SonarApp(App):
             return 188 - (2 * STAGE_BOX_WIDTH)
 
     def on_resize(self, event) -> None:
-        """Re-center #ticker_bar billboard cards immediately when terminal geometry settles."""
+        """Re-center #ticker_bar billboard cards and span #intelligence_panel wing banner when geometry settles."""
+        try:
+            self.query_one("#intelligence_panel", Container).border_title = format_sunpug_border_banner(self.size.width)
+        except Exception:
+            pass
         if getattr(self, "ticker_mode", "billboard") == "billboard" and getattr(self, "ticker_raw_text", ""):
             new_w = self._get_ticker_width()
             if new_w != getattr(self, "ticker_cached_width", 0):
