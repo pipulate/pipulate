@@ -35,6 +35,89 @@ STREAM_LOCK_PATH = "/tmp/honeybot-stream.py.lock"
 STAGE_PAUSED_PIDS_FILE = "/tmp/honeybot_ytstage_paused.json"
 STAGE_AUDIO_BRIDGE_FILE = "/tmp/pipulate_ytstage_audio.json"
 OPTICS_SLOT_FILE = "/tmp/honeybot_optics_slot.json"
+YTBREAKS_TMUX_SESSION = "ytbreaks"
+YTBREAKS_LOG_FILE = "/tmp/ytbreaks.log"
+
+
+def _manage_ytbreaks_daemon(action: str, dry_run: bool = False) -> int:
+    """Start, ensure, stop, or inspect the background tmux 'ytbreaks' (ytapp watch-breaks) session on Prime."""
+    repo_root = Path(__file__).resolve().parents[1]
+    log_path = Path(YTBREAKS_LOG_FILE)
+    if dry_run:
+        print(f"🔭 [DRY RUN] ytbreaks daemon action={action} (session={YTBREAKS_TMUX_SESSION}, log={log_path})")
+        return 0
+    is_running = (
+        subprocess.run(
+            ["tmux", "has-session", "-t", YTBREAKS_TMUX_SESSION],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=False,
+        ).returncode
+        == 0
+    )
+    if action == "watch-status":
+        print(f"📡 ytbreaks daemon: {'RUNNING (tmux session: ' + YTBREAKS_TMUX_SESSION + ')' if is_running else 'STOPPED'}")
+        if log_path.is_file():
+            lines = log_path.read_text(encoding="utf-8", errors="replace").splitlines()[-8:]
+            if lines:
+                print(f"--- Last {len(lines)} line(s) of {log_path} ---")
+                for ln in lines:
+                    print(f"   {ln}")
+        return 0
+    if action == "watch-stop":
+        if is_running:
+            subprocess.run(["tmux", "kill-session", "-t", YTBREAKS_TMUX_SESSION], check=False)
+            print(f"🛑 Stopped background tmux session '{YTBREAKS_TMUX_SESSION}'.")
+        else:
+            print(f"ℹ️  No background '{YTBREAKS_TMUX_SESSION}' tmux session was running.")
+        return 0
+    if action == "watch-log":
+        if not is_running:
+            rc = _manage_ytbreaks_daemon("daemon", dry_run=False)
+            if rc != 0:
+                return rc
+        if not sys.stdout.isatty():
+            return _manage_ytbreaks_daemon("watch-status", dry_run=False)
+        subprocess.run(["tmux", "bind-key", "-n", "q", "detach-client"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False)
+        try:
+            subprocess.run(["tmux", "attach-session", "-r", "-t", YTBREAKS_TMUX_SESSION], check=False)
+        finally:
+            subprocess.run(["tmux", "unbind-key", "-n", "q"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False)
+        return 0
+    if action == "ensure-daemon" and is_running:
+        return 0
+    if is_running:
+        subprocess.run(["tmux", "kill-session", "-t", YTBREAKS_TMUX_SESSION], check=False)
+    py_bin = repo_root / ".venv" / "bin" / "python"
+    if not py_bin.is_file():
+        py_bin = Path(sys.executable)
+    script_path = Path(__file__).resolve()
+    cmd_str = f"PYTHONUNBUFFERED=1 {py_bin} {script_path} app watch-breaks 2>&1 | tee -a {log_path}"
+    res = subprocess.run(
+        ["tmux", "new-session", "-d", "-s", YTBREAKS_TMUX_SESSION, "-c", str(repo_root), cmd_str],
+        check=False,
+    )
+    if res.returncode == 0:
+        for opt, val in (
+            ("status", "on"),
+            ("status-style", "bg=colour235,fg=colour46,bold"),
+            ("status-left-length", "48"),
+            ("status-left", " 🎬 YTBREAKS OPTICS WATCHER (15001->5001) "),
+            ("status-right-length", "64"),
+            ("status-right", " EXIT (KEEP RUNNING): Press q OR Ctrl+b then d "),
+        ):
+            subprocess.run(
+                ["tmux", "set-option", "-t", YTBREAKS_TMUX_SESSION, opt, val],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                check=False,
+            )
+        print(f"🎬 Started background '{YTBREAKS_TMUX_SESSION}' (`ytapp watch-breaks`) daemon in tmux.")
+        print("   • Check Optics watcher: ytbreaks   (or `ytapp watch-log` — press `q` to detach)")
+        print("   • Stop Optics watcher : ytapp watch-stop")
+        return 0
+    print(f"❌ Failed to start tmux session '{YTBREAKS_TMUX_SESSION}'.")
+    return 1
 
 REMOTE_PAUSE_SNIPPET = """
 def _pause_honeybot_stage(pause_audio=True):
@@ -359,7 +442,7 @@ for p in sorted(pathlib.Path("/proc").glob("[0-9]*/cmdline")):
                 k, v = item.split(b"=", 1)
                 ks = k.decode("utf-8", errors="ignore")
                 vs = v.decode("utf-8", errors="ignore")
-                if ks in ("XAUTHORITY", "XDG_RUNTIME_DIR", "DBUS_SESSION_BUS_ADDRESS") and vs:
+                if ks in ("XAUTHORITY", "XDG_RUNTIME_DIR", "DBUS_SESSION_BUS_ADDRESS", "PULSE_SERVER", "PIPEWIRE_RUNTIME_DIR") and vs:
                     env[ks] = vs
         if env.get("XAUTHORITY"):
             break
@@ -384,7 +467,9 @@ prof.mkdir(parents=True, exist_ok=True)
     'user_pref("browser.shell.checkDefaultBrowser", false);\\n'
     'user_pref("datareporting.policy.dataSubmissionPolicyBypassNotification", true);\\n'
     'user_pref("trailhead.firstrun.didSeeAboutWelcome", true);\\n'
-    'user_pref("browser.startup.homepage_override.mstone", "ignore");\\n',
+    'user_pref("browser.startup.homepage_override.mstone", "ignore");\\n'
+    'user_pref("media.autoplay.default", 0);\\n'
+    'user_pref("media.autoplay.blocking_policy", 0);\\n',
     encoding="utf-8",
 )
 before_res = subprocess.run(["wmctrl", "-l"], env=env, capture_output=True, text=True, check=False)
@@ -430,11 +515,14 @@ def run_ytapp(
 ) -> int:
     if action == "say":
         return speak_on_honeybot(say_text, dry_run=dry_run)
-    if action in ("watch-breaks", "watch", "daemon"):
+    if action in ("daemon", "watch-daemon", "watch-start", "restart-daemon", "ensure-daemon", "watch-stop", "watch-status", "watch-log"):
+        return _manage_ytbreaks_daemon(action, dry_run=dry_run)
+    if action in ("watch-breaks", "watch"):
         if dry_run:
             print(f"🔭 [DRY RUN] Watching {HONEYBOT_HOST}:{OPTICS_SLOT_FILE} from LAN -> DMZ (once={watch_once}).")
             return 0
-        print(f"🔭 Watching {HONEYBOT_HOST}:{OPTICS_SLOT_FILE} for DMZ-safe 911 LLM Optics station breaks...")
+        print(f"🔭 Watching {HONEYBOT_HOST}:{OPTICS_SLOT_FILE} for DMZ-safe 911 LLM Optics station breaks...", flush=True)
+        script_mtime = Path(__file__).stat().st_mtime
         claim_script = (
             "import json, pathlib, time\n"
             f"p = pathlib.Path({OPTICS_SLOT_FILE!r})\n"
@@ -447,6 +535,9 @@ def run_ytapp(
         )
         try:
             while True:
+                if not watch_once and Path(__file__).stat().st_mtime != script_mtime:
+                    print("🔄 [HOT-RELOAD] ytstage.py updated on disk — re-execing ytbreaks watcher...", flush=True)
+                    os.execv(sys.executable, [sys.executable, *sys.argv])
                 chk = subprocess.run(
                     ["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=5", HONEYBOT_HOST, "python3", "-"],
                     input=claim_script,
@@ -507,6 +598,18 @@ def run_ytapp(
             capture_output=True,
             text=True,
             check=False,
+        )
+        watcher_on = (
+            subprocess.run(
+                ["tmux", "has-session", "-t", YTBREAKS_TMUX_SESSION],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                check=False,
+            ).returncode
+            == 0
+        )
+        print(
+            f"📡 ytbreaks watcher (tmux)   : {'RUNNING (session: ' + YTBREAKS_TMUX_SESSION + ')' if watcher_on else 'STOPPED (start with `ytapp daemon` or `ytreboot`)'}"
         )
         print(
             f"📡 ytapp tunnel (15001->5001): {'RUNNING pid=' + ','.join(pids) if pids else 'STOPPED'}"
@@ -572,7 +675,8 @@ def run_ytapp(
                 print(f"⏳ Waiting up to {wait_timeout}s for Ghost Driver to seal optics_deed.zip...")
                 deadline = time.time() + wait_timeout
                 deed_sealed = None
-                watch_roots = [Path("browser_cache/mikelev.in"), Path("browser_cache/looking_at")]
+                repo_root = Path(__file__).resolve().parents[1]
+                watch_roots = [repo_root / "browser_cache" / "mikelev.in", repo_root / "browser_cache" / "looking_at"]
                 while time.time() < deadline:
                     for root in watch_roots:
                         if root.is_dir():
@@ -738,8 +842,12 @@ def main() -> int:
     else:
         for token in parsed.args:
             low = token.strip().lower()
-            if low in ("start", "stop", "status", "kill", "watch-breaks", "watch", "daemon"):
-                action = "stop" if low == "kill" else ("watch-breaks" if low in ("watch", "daemon") else low)
+            if low in (
+                "start", "stop", "status", "kill", "watch-breaks", "watch",
+                "daemon", "watch-daemon", "watch-start", "restart-daemon",
+                "ensure-daemon", "watch-stop", "watch-status", "watch-log",
+            ):
+                action = "stop" if low == "kill" else ("watch-breaks" if low == "watch" else low)
             elif low in ("optics", "optics-demo", "911"):
                 subpath = "/optics_workflow?demo=1"
             elif token.startswith("/"):

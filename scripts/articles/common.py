@@ -2472,14 +2472,113 @@ def _ytlog_ts():
     return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 
+def parse_ytmax_mode(raw_spec=None) -> tuple:
+    """Return (mode, odds, asset_spec) for Max Headroom popups; defaults to ('off', 0, '') when unset."""
+    if raw_spec is not None:
+        raw = str(raw_spec).strip()
+    else:
+        vault_val = _load_vault_env().get("PIPULATE_YTWATCH_WEEBO", "").strip()
+        raw = vault_val if vault_val else os.environ.get("PIPULATE_YTWATCH_WEEBO", "").strip()
+    low = raw.lower()
+    if low in ("", "0", "off", "false", "none", "no", "stop", "mute", "disable", "disabled"):
+        return ("off", 0, "")
+    if low in ("1", "on", "true", "yes", "auto", "always", "enable", "enabled"):
+        return ("on", 1, "auto")
+    if low in ("skinner", "random", "slot", "vegas"):
+        return ("skinner", 12, "auto")
+    m = re.match(r"^(?:1[:/]|vr-?)?(\d+)$", low)
+    if m:
+        n = int(m.group(1))
+        if n <= 0:
+            return ("off", 0, "")
+        if n == 1:
+            return ("on", 1, "auto")
+        return ("skinner", n, "auto")
+    return ("asset", 1, raw)
+
+
+def _sync_honeybot_no_max_sentinel(is_off: bool) -> bool:
+    """Keep Honeybot /tmp/honeybot_no_max aligned with Prime's ytmax mode."""
+    import subprocess
+    remote_cmd = (
+        "touch /tmp/honeybot_no_max && pkill -f honeybot_media_overlay 2>/dev/null || true"
+        if is_off
+        else "rm -f /tmp/honeybot_no_max"
+    )
+    res = subprocess.run(
+        ["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=4", HONEYBOT_SSH_HOST, remote_cmd],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    return res.returncode == 0
+
+
+def manage_ytmax_toggle(arg="status", dry_run=False) -> int:
+    """Inspect or set Max Headroom popup mode: `ytmax [status | off | on | 12]`."""
+    import subprocess
+    token = str(arg or "status").strip()
+    if token.lower() in ("", "status", "show", "check"):
+        mode, odds, asset = parse_ytmax_mode()
+        label = (
+            "OFF (viewer telemetry active, Max popups suppressed)"
+            if mode == "off"
+            else (
+                f"SKINNER BOX VR-{odds} (1-in-{odds} random payout per viewer +1)"
+                if mode == "skinner"
+                else (f"ON (1:1 every viewer +1, asset={asset})"))
+        )
+        hb_sentinel = "UNKNOWN (dry-run)"
+        if not dry_run:
+            chk = subprocess.run(
+                ["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=4", HONEYBOT_SSH_HOST, "test -f /tmp/honeybot_no_max && echo PRESENT || echo CLEAR"],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            hb_sentinel = (chk.stdout or "").strip() or "UNREACHABLE"
+        print(f"🎰 Max Headroom (`ytmax`): {label}")
+        print(f"   • Honeybot /tmp/honeybot_no_max : {hb_sentinel} (180s boot & Overture No-Max Zone always active)")
+        print("   • Toggle commands               : ytmax off  |  ytmax 12  |  ytmax on")
+        return 0
+    mode, odds, asset = parse_ytmax_mode(token)
+    canonical = "off" if mode == "off" else ("on" if mode == "on" else (f"1:{odds}" if mode == "skinner" else asset))
+    if dry_run:
+        print(f"🎰 [DRY RUN] Would set PIPULATE_YTWATCH_WEEBO={canonical!r} (mode={mode}, odds={odds}) & sync Honeybot sentinel.")
+        return 0
+    _save_vault_var("PIPULATE_YTWATCH_WEEBO", canonical)
+    synced = _sync_honeybot_no_max_sentinel(is_off=(mode == "off"))
+    sync_lbl = "synced" if synced else "SSH skipped"
+    if mode == "off":
+        print(f"🛑 Max Headroom OFF (PIPULATE_YTWATCH_WEEBO='off', Honeybot /tmp/honeybot_no_max {sync_lbl}).")
+    elif mode == "skinner":
+        print(f"🎰 Max Headroom set to B.F. SKINNER VR-{odds} (1-in-{odds} payout on viewer +1; Honeybot sentinel {sync_lbl}).")
+    else:
+        print(f"🎭 Max Headroom ON ({canonical!r}; Honeybot sentinel {sync_lbl}, 180s boot/Overture No-Max Zone active).")
+    return 0
+
+
 def _trigger_ytwatch_weebo(weebo_spec=None, duration=None):
     """Fire an undampened non-blocking centered Weebo popup on Honeybot :10.0, guarded against mid-clip clobbering."""
     global _last_weebo_trigger_ts
     import subprocess
     import time
-    cfg_spec = (weebo_spec or _get_vault_var("PIPULATE_YTWATCH_WEEBO") or "auto").strip()
-    if cfg_spec.lower() in ("0", "off", "false", "none"):
+    mode, odds, cfg_spec = parse_ytmax_mode(weebo_spec)
+    if mode == "off":
         return
+    if mode == "skinner" and odds > 1:
+        import secrets
+        roll = secrets.randbelow(odds) + 1
+        if roll != 1:
+            print(
+                f"[{_ytlog_ts()}] 🎲 [SKINNER VR-{odds}] Roll {roll}/{odds} — holding Max Headroom in reserve.",
+                flush=True,
+            )
+            return
+        print(
+            f"[{_ytlog_ts()}] 🎰 [SKINNER JACKPOT 1/{odds}] Variable-ratio payout hit — summoning Max Headroom!",
+            flush=True,
+        )
     now_ts = time.time()
     if _last_weebo_trigger_ts == 0.0:
         _last_weebo_trigger_ts = float(_load_ytwatch_state().get("last_weebo_trigger") or 0.0)
@@ -2689,7 +2788,7 @@ def run_youtube_watch(
     if state["is_live"] and state["concurrent_viewers"] > prev_viewers:
         print(
             f"[{_ytlog_ts()}] 📈 [VIEWER +{state['concurrent_viewers'] - prev_viewers}] "
-            f"{prev_viewers} -> {state['concurrent_viewers']} watching — firing hairline Weebo trigger!",
+            f"{prev_viewers} -> {state['concurrent_viewers']} watching",
             flush=True,
         )
         _trigger_ytwatch_weebo()
@@ -2820,7 +2919,7 @@ def run_youtube_watch(
             src_cmp = f"api={state.get('api_viewers')}, html={state.get('html_viewers')}"
             if viewers > prev_viewers:
                 print(
-                    f"[{_ytlog_ts()}] 📈 [VIEWER +{viewers - prev_viewers}] {prev_viewers} -> {viewers} watching ({src_cmp}) — firing hairline Weebo trigger!",
+                    f"[{_ytlog_ts()}] 📈 [VIEWER +{viewers - prev_viewers}] {prev_viewers} -> {viewers} watching ({src_cmp})",
                     flush=True,
                 )
                 _trigger_ytwatch_weebo()
@@ -3233,14 +3332,15 @@ echo "⚠️ No new stream.py PID seen within 14s; verify the stream watchdog on
 exit 1
 """
     res = subprocess.run(["ssh", HONEYBOT_SSH_HOST, "sh", "-s"], input=remote_sh, text=True)
-    has_ytwatch = subprocess.run(
-        ["tmux", "has-session", "-t", "ytwatch"],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-        check=False,
-    ).returncode == 0
-    if has_ytwatch:
-        _manage_ytwatch_daemon("restart")
+    cur_max_mode, _, _ = parse_ytmax_mode()
+    _sync_honeybot_no_max_sentinel(is_off=(cur_max_mode == "off"))
+    _manage_ytwatch_daemon("restart")
+    ytstage_script = repo_root / "scripts" / "ytstage.py"
+    if ytstage_script.is_file():
+        subprocess.run(
+            [sys.executable, str(ytstage_script), "app", "restart-daemon"],
+            check=False,
+        )
     return res.returncode
 
 
@@ -3769,9 +3869,9 @@ if __name__ == "__main__":
     add_standard_arguments(parser)
     parser.add_argument(
         "--broadcast",
-        choices=("help", "card", "summary", "hero", "yaml", "tweet", "linkedin", "fb", "facebook", "pebble", "title", "desc", "top", "outro", "bgm", "reboot", "feature", "status", "bell", "stop", "start", "roll", "enable-ws", "say", "ticker", "ping", "watch"),
+        choices=("help", "card", "summary", "hero", "yaml", "tweet", "linkedin", "fb", "facebook", "pebble", "title", "desc", "top", "outro", "bgm", "max", "reboot", "feature", "status", "bell", "stop", "start", "roll", "enable-ws", "say", "ticker", "ping", "watch"),
         default="card",
-        help="Print/copy broadcast kit or control Honeybot (help|card|summary|hero|yaml|tweet|linkedin|fb|facebook|pebble|title|desc|top|outro|bgm|reboot|feature|status|bell|stop|start|roll|enable-ws|say|ticker|ping|watch).",
+        help="Print/copy broadcast kit or control Honeybot (help|card|summary|hero|yaml|tweet|linkedin|fb|facebook|pebble|title|desc|top|outro|bgm|max|reboot|feature|status|bell|stop|start|roll|enable-ws|say|ticker|ping|watch).",
     )
     parser.add_argument(
         "--vod",
@@ -4060,6 +4160,9 @@ if __name__ == "__main__":
         if cli_args.verify or first_pebble_arg in ("verify", "check", "status"):
             sys.exit(verify_pebble_receipts(cli_args.target, slug_match=cli_args.slug))
         sys.exit(drop_pebble_pings(cli_args.target, slug_match=cli_args.slug, dry_run=cli_args.dry_run))
+    if cli_args.broadcast == "max":
+        max_arg = cli_args.message[0] if cli_args.message else "status"
+        sys.exit(manage_ytmax_toggle(arg=max_arg, dry_run=cli_args.dry_run))
     if cli_args.broadcast == "bgm":
         bgm_arg = cli_args.message[0] if cli_args.message else "status"
         sys.exit(tune_storytime_bgm(arg=bgm_arg, dry_run=cli_args.dry_run))

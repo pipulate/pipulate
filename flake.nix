@@ -2626,9 +2626,17 @@ print('AI:\n', r.ai)
           ytmedia()  { "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/articles/common.py" --broadcast say -m "$@"; }
           ytoutro()  { "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/articles/common.py" --broadcast outro  "$@"; }
           ytbgm()    { "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/articles/common.py" --broadcast bgm    "$@"; }
-          ytreboot() { "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/articles/common.py" --broadcast reboot "$@"; }
+          ytmax()    { "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/articles/common.py" --broadcast max    "$@"; }
+          ytreboot() {
+            "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/articles/common.py" --broadcast reboot "$@" || return $?
+            case " $* " in
+              *" --dry-run "*|*" --sync "*) ;;
+              *) "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/ytstage.py" app ensure-daemon ;;
+            esac
+          }
           ytticker() { "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/articles/common.py" --broadcast ticker "$@"; }
           ytapp()     { "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/ytstage.py" app "$@"; }
+          ytbreaks()  { "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/ytstage.py" app watch-status "$@"; }
           ytvim()     { "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/ytstage.py" vim "$@"; }
           ytfeature() { "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/articles/common.py" --broadcast feature "$@"; }
 
