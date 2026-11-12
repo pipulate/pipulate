@@ -71,11 +71,16 @@ REGEX_TERMS = (
         ),
         "nine eleven",
     ),
-    # Numbered IETF RFCs & MIME content-negotiation headers
+    # Numbered IETF RFCs, first-party Discord door, & MIME content-negotiation headers
+    (re.compile(r"\bmikelev\.in/discord/?\b", re.IGNORECASE), "Mike L E V dot eye N slash discord"),
+    (re.compile(r"\bNein\s+Juan\s+Wan\b", re.IGNORECASE), "Nine Wahn Wahn"),
     (re.compile(r"\brfc9110\.org\b", re.IGNORECASE), "R F C 91 10 dot org"),
     (re.compile(r"\brfc9111\.io\b", re.IGNORECASE), "R F C 91 11 dot eye oh"),
+    (re.compile(r"\bRFC[ -]?7231\b", re.IGNORECASE), "R F C 72 31"),
+    (re.compile(r"\bRFC[ -]?7763\b", re.IGNORECASE), "R F C 77 63"),
     (re.compile(r"\bRFC[ -]?9110\b", re.IGNORECASE), "R F C 91 10"),
     (re.compile(r"\bRFC[ -]?9111\b", re.IGNORECASE), "R F C 91 11"),
+    (re.compile(r"\bRFC[ -]?9112\b", re.IGNORECASE), "R F C 91 12"),
     (re.compile(r"\bRFC[ -]?9421\b", re.IGNORECASE), "R F C 94 21"),
     (re.compile(r"\btext/markdown\b", re.IGNORECASE), "text slash markdown"),
     (re.compile(r"\btext/html\b", re.IGNORECASE), "text slash H T M L"),
@@ -151,6 +156,7 @@ CASE_INSENSITIVE_TERMS = (
     ("stdin", "standard in"),
     ("stdio", "standard I O"),
     ("rsync", "R sync"),
+    ("JSON-LD", "J S O N L D"),
     ("JSONL", "J S O N L"),
     # Crawlers
     ("OAI-SearchBot", "O A I SearchBot"),
@@ -183,6 +189,9 @@ EXACT_CASE_TERMS = (
     ("GEO", "G E O"),
     ("AIO", "A I O"),
     ("ADNS", "A D N S"),
+    ("O2O", "O 2 O"),
+    ("Nein", "Nine"),
+    ("Juan", "Wahn"),
     ("QED", "Q E D"),
     ("SGE", "S G E"),
     ("RAG", "R A G"),
@@ -253,14 +262,14 @@ AI_SPEAKER_LABEL_PAT = (
 SPEAKER_TURN_RULES = (
     (
         re.compile(
-            r"(?m)^[ \t]*(?:\*\*[ \t]*(?:MikeLev\.in|Mike[ \t]+Levin|Mike|Me)[ \t]*:?[ \t]*\*\*[ \t]*:?|(?:MikeLev\.in|Mike[ \t]+Levin|Mike|Me)[ \t]*:)[ \t]*(?:\r?\n[ \t]*(?!\*\*[ \t]*(?:Gemini|Claude|ChatGPT|OpenAI|Opus|Sonnet|Shipmunk|AI|MikeLev\.in|Mike|Me)\b))*",
+            r"(?m)^[ \t]*(?:\*\*[ \t]*(?:MikeLev\.in|Mike[ \t]+Levin|Mike|Me)[ \t]*:?[ \t]*\*\*[ \t]*:?|(?:MikeLev\.in|Mike[ \t]+Levin|Mike|Me)[ \t]*:)[ \t]*(?:\r?\n[ \t]*(?!\*\*[ \t]*(?:Gemini|Claude|ChatGPT|OpenAI|Opus|Sonnet|Shipmunk|AI|MikeLev\.in|Mike|Me)\b|PP4HEADINGSTART|#{1,6}[ \t]))*",
             re.IGNORECASE,
         ),
         "\n\nMike: ",
     ),
     (
         re.compile(
-            rf"(?m)^[ \t]*\*\*[ \t]*({AI_SPEAKER_LABEL_PAT})[ \t]*:?[ \t]*\*\*[ \t]*:?[ \t]*(?:\r?\n[ \t]*(?!\*\*[ \t]*(?:Gemini|Claude|ChatGPT|OpenAI|Opus|Sonnet|Shipmunk|AI|MikeLev\.in|Mike|Me)\b))*",
+            rf"(?m)^[ \t]*\*\*[ \t]*({AI_SPEAKER_LABEL_PAT})[ \t]*:?[ \t]*\*\*[ \t]*:?[ \t]*(?:\r?\n[ \t]*(?!\*\*[ \t]*(?:Gemini|Claude|ChatGPT|OpenAI|Opus|Sonnet|Shipmunk|AI|MikeLev\.in|Mike|Me)\b|PP4HEADINGSTART|#{1,6}[ \t]))*",
             re.IGNORECASE,
         ),
         r"\n\n\1: ",

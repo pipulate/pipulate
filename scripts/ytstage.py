@@ -38,12 +38,18 @@ STAGE_AUDIO_BRIDGE_FILE = "/tmp/pipulate_ytstage_audio.json"
 OPTICS_SLOT_FILE = "/tmp/honeybot_optics_slot.json"
 YTBREAKS_TMUX_SESSION = "ytbreaks"
 YTBREAKS_LOG_FILE = "/tmp/ytbreaks.log"
+DEFAULT_OPTICS_SIFT_TEXT = (
+    "Capturing live wire headers, raw HTML source, hydrated DOM, and RFC 9110 Markdown right now. "
+    "This tool can be yours — you can just go get it at SunPug.io and join the army of AI-Readiness Consultants, "
+    "and step inside our Founding 1,000 practitioner chat at mikelev.in/discord."
+)
 DEFAULT_OPTICS_OUTRO_TEXT = (
     "Every tool you just watched can be yours right now, in this single sitting — "
-    "go get it and join the new wave of AI-Readiness Consultants! "
-    "Install it free on your own machine at SunPug.io, or if you want a strictly enterprise standards door "
+    "go get your own Sun Pug at SunPug.io, or if you want a strictly enterprise standards door "
     "for your clients, visit RFC9110.org or RFC9111.io. "
     "All three doors install the exact same open-source engine today and are tailoring directly to each audience over time. "
+    "Forward this live stream to one colleague who needs to see life after doorway-page slop, "
+    "and join us on Discord at mikelev.in/discord. "
     "Returning now to the Honeybot Observatory."
 )
 
@@ -705,9 +711,13 @@ def run_ytapp(
                 print(f"⏳ Waiting up to {wait_timeout}s for Ghost Driver to seal optics_deed.zip...")
                 deadline = time.time() + wait_timeout
                 deed_sealed = None
+                sift_spoken = bool(say_text)
                 repo_root = Path(__file__).resolve().parents[1]
                 watch_roots = [repo_root / "browser_cache" / "mikelev.in", repo_root / "browser_cache" / "looking_at"]
                 while time.time() < deadline:
+                    if not sift_spoken and (time.time() - start_ts) >= 5.0:
+                        sift_spoken = True
+                        speak_on_honeybot(DEFAULT_OPTICS_SIFT_TEXT, dry_run=False)
                     for root in watch_roots:
                         if root.is_dir():
                             for zp in root.rglob("optics_deed.zip"):

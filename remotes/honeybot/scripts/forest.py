@@ -51,7 +51,8 @@ WHATS_HAPPENING_BEAT = (
     "Watching AI crawlers and agents directly on the wire like fish in an aquarium builds an intuition you will never get from social media echo chambers. "
     "Want your thirty-second ah-ha moment right now? Open ChatGPT or Claude and ask it a live question about mikelev.in. "
     "When your prompt dispatches a live retrieval agent, a yellow RAG badge lights up on screen and rings the physical studio bell on the air. "
-    "Get your screenshot key ready for the wire-truth proof coming right up, and hit Like and Subscribe so you can find this feed again."
+    "Get your screenshot key ready for the wire-truth proof coming right up, forward this live feed to one sharp builder who needs to see it, "
+    "and join our Founding 1,000 practitioners at mikelev.in/discord."
 )
 
 CURRENT_ARTICLE_BEAT = "{CURRENT_ARTICLE}"
@@ -59,7 +60,8 @@ CURRENT_ARTICLE_BEAT = "{CURRENT_ARTICLE}"
 CONSULTING_CTA_BEAT = (
     "Got the SEO blues while AI Overviews eat your clicks and vendors pitch $10K/mo JavaScript pre-render taxes? "
     "SEO moved to the Edge: one URL serving HTML to humans and clean RFC 9110 Markdown to AI agents, cached cleanly via RFC 9111 Vary Accept. "
-    "Explore the FOSS AI-Readiness toolkit and 911 LLM Optics right now at SunPug.io — or inspect it safely in your terminal with curl dash f s S L sunpug.io pipe less."
+    "Grab your own free Sun Pug and 911 LLM Optics right now at SunPug.io, RFC9110.org, or RFC9111.io — "
+    "and rally with fellow AI-Readiness Consultants on Discord at mikelev.in/discord."
 )
 
 
@@ -167,7 +169,7 @@ STATION_SEGMENTS = [
         [
             "For years, enterprise teams paid a $10K/mo JavaScript pre-render tax just to spoon-feed bloated HTML snapshots to search crawlers.",
             "Roy Fielding and Mark Nottingham already wired the cure into HTTP: RFC 9110 content negotiation and RFC 9111 Vary Accept caching let your existing CDN serve HTML to humans and clean Markdown to AI agents from one URL with zero SaaS rent.",
-            "Run 911 LLM Optics free on your own domain right now at SunPug.io — or inspect the installer safely in your terminal with curl dash f s S L sunpug.io pipe less.",
+            "Grab your own Sun Pug free at SunPug.io, tell one colleague there is real engineering life after doorway-page slop, and join the Founding 1,000 on Discord at mikelev.in/discord.",
         ],
     ),
 ]
@@ -1267,8 +1269,9 @@ def _build_station_report_panel(mode="overview", panel_width=None):
             )
 
     footer = Text.from_markup(
-        "[bold bright_white]📡 Wire Telemetry:[/bold bright_white] [bold #ffd700]https://MikeLev.in[/bold #ffd700] "
+        "[bold bright_white]📡 Wire:[/bold bright_white] [bold #ffd700]https://MikeLev.in[/bold #ffd700] "
         "[dim]│[/dim] [bold bright_green]Free 911 Optics:[/bold bright_green] [bold bright_cyan]https://SunPug.io[/bold bright_cyan] "
+        "[dim]│[/dim] [bold bright_magenta]Discord:[/bold bright_magenta] [bold bright_white]MikeLev.in/discord[/bold bright_white] "
         "[dim]·[/dim] [bold cyan]curl -fsSL sunpug.io | less[/bold cyan]"
     )
     panel_title = (
