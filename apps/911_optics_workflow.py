@@ -98,6 +98,16 @@ class OpticsWorkflow:
                 )
             return Response("Deed file not found", status_code=404)
 
+    def _is_scripted_demo_run(self, pipeline_id: str) -> bool:
+        """True when Ghost Driver (optics_test.json -> live-{{timestamp}}) owns narration for this run."""
+        pid = str(pipeline_id or "")
+        return pid.startswith("live-") or "-optics-live-" in pid
+
+    def _speak_step_cue(self, pipeline_id: str, text: str) -> None:
+        """Speak interactive workflow cue unless Ghost Driver's scripted narration is driving."""
+        if not self._is_scripted_demo_run(pipeline_id):
+            self.wand.speak(text, wait=False)
+
     async def landing(self, request):
         return self.wand.create_standard_landing_page(self)
 
@@ -141,7 +151,7 @@ class OpticsWorkflow:
             self.wand.speak("Optics audit recovered.", wait=False)
         elif not any((step.id in state for step in self.steps)):
             await self.message_queue.add(wand, f'{self.ui["EMOJIS"]["INPUT_FORM"]} Step 1: Provide target URL to begin optical diffraction.', verbatim=True)
-            self.wand.speak("Optics workflow initialized. Enter target URL to begin.", wait=False)
+            self._speak_step_cue(pipeline_id, "Optics workflow initialized. Enter target URL to begin.")
 
         parsed = wand.parse_pipeline_key(pipeline_id)
         prefix = f"{parsed['profile_part']}-{parsed['plugin_part']}-"
@@ -237,7 +247,7 @@ class OpticsWorkflow:
 
             await wand.finalize_workflow(pipeline_id)
             await self.message_queue.add(wand, self.step_messages['finalize']['complete'], verbatim=True)
-            self.wand.speak("The optics deed is now locked and sealed.", wait=False)
+            self._speak_step_cue(pipeline_id, "The optics deed is now locked and sealed.")
             return wand.run_all_cells(app_name, steps)
 
     async def unfinalize(self, request):
@@ -438,7 +448,7 @@ class OpticsWorkflow:
 
         await wand.set_step_data(pipeline_id, step_id, user_val, steps)
         await self.message_queue.add(wand, f'{self.ui["EMOJIS"]["SUCCESS"]} Target set: {user_val}', verbatim=True)
-        self.wand.speak("Target URL set. Ready for optical capture.", wait=False)
+        self._speak_step_cue(pipeline_id, "Target URL set. Ready for optical capture.")
         self.wand.append_to_history(f"[WIDGET CONTENT] {step.show}:\n{user_val}")
         return wand.chain_reverter(step_id, step_index, steps, app_name, user_val)
 
@@ -619,7 +629,7 @@ class OpticsWorkflow:
         stored_val = str(output_dir)
         await wand.set_step_data(pipeline_id, step_id, stored_val, steps)
         await self.message_queue.add(wand, f'{self.ui["EMOJIS"]["SUCCESS"]} Optics capture complete for {domain}', verbatim=True)
-        self.wand.speak("Optics capture complete. Diff ready for inspection.", wait=False)
+        self._speak_step_cue(pipeline_id, "Optics capture complete. Diff ready for inspection.")
         return wand.chain_reverter(step_id, step_index, steps, app_name, stored_val)
 
     # --- STEP 03: OPTICAL ANALYSIS ---
@@ -893,5 +903,5 @@ class OpticsWorkflow:
         stored_val = "verified"
         await wand.set_step_data(pipeline_id, step_id, stored_val, steps)
         await self.message_queue.add(wand, f'{self.ui["EMOJIS"]["SUCCESS"]} Optical analysis verified.', verbatim=True)
-        self.wand.speak("Optical analysis accepted. Ready to seal deed.", wait=False)
+        self._speak_step_cue(pipeline_id, "Optical analysis accepted. Ready to seal deed.")
         return wand.chain_reverter(step_id, step_index, steps, app_name, stored_val)

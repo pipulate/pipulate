@@ -639,8 +639,10 @@ class ChipVoiceSystem:
         """Stream a synthesized WAV file over SSH into Honeybot's default ALSA broadcast bus."""
         remote_cmd = (
             "PATH=/etc/profiles/per-user/mike/bin:/home/mike/.nix-profile/bin:"
-            "/run/current-system/sw/bin:/usr/bin:/bin:$PATH "
-            "aplay -q -D default -t wav"
+            "/run/current-system/sw/bin:/usr/bin:/bin:$PATH; "
+            "if command -v flock >/dev/null 2>&1; then "
+            "flock -w 30 /tmp/honeybot_stage_aplay.lock aplay -q -D default -t wav; "
+            "else aplay -q -D default -t wav; fi"
         )
         try:
             with open(output_path, "rb") as wf:
@@ -745,7 +747,6 @@ class ChipVoiceSystem:
                 except OSError:
                     pass
             return False
-        self.stop_speaking()
         try:
             import fcntl
             import time
@@ -841,8 +842,7 @@ class ChipVoiceSystem:
             logger.warning("🎤 Voice synthesis not ready")
             return False
         
-        # STOP any existing audio before starting new one
-        self.stop_speaking()
+        # Acquire pipulate_voice.lock below before touching self.current_process so concurrent threads serialize cleanly
 
         # ---------------------------------------------------------
         # THE INTERCEPT: Swap the domain for a natural spoken name 

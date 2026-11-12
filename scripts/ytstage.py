@@ -29,6 +29,7 @@ HONEYBOT_HOST = os.environ.get("PIPULATE_HONEYBOT_HOST", "honeybot")
 LOCAL_PORT = int(os.environ.get("PIPULATE_PORT", "5001"))
 REMOTE_TUNNEL_PORT = 15001
 STAGE_PROFILE_DIR = "/tmp/honeybot_ytapp_profile"
+STAGE_PROFILE_PGREP = "[/]tmp/honeybot_ytapp_profile"
 VIM_ANSI_FIFO = "/tmp/ytvim.ansi"
 WEEBO_STAGE_PAUSE_FILE = "/tmp/honeybot_weebo_active"
 STREAM_LOCK_PATH = "/tmp/honeybot-stream.py.lock"
@@ -201,7 +202,7 @@ for p in sorted(pathlib.Path("/proc").glob("[0-9]*/cmdline")):
 """
 
 REMOTE_SPEAK_SNIPPET = """
-import os, pathlib, shutil, subprocess
+import fcntl, os, pathlib, shutil, subprocess, time
 text = base64.b64decode(TEXT_B64).decode("utf-8").strip()
 if text:
     extra = "/etc/profiles/per-user/mike/bin:/home/mike/.nix-profile/bin:/run/current-system/sw/bin:/usr/bin:/bin"
@@ -214,14 +215,29 @@ if text:
     piper_bin = shutil.which("piper", path=env["PATH"])
     aplay_bin = shutil.which("aplay", path=env["PATH"])
     if piper_bin and aplay_bin and model.is_file():
-        p1 = subprocess.Popen([piper_bin, "--model", str(model), "--output_raw"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, env=env)
-        p2 = subprocess.Popen([aplay_bin, "-q", "-D", "default", "-r", rate, "-f", "S16_LE", "-t", "raw"], stdin=p1.stdout, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, env=env)
-        if p1.stdin:
-            p1.stdin.write(text.encode("utf-8"))
-            p1.stdin.close()
-        if p1.stdout:
-            p1.stdout.close()
-        p2.wait(timeout=90)
+        lf = open("/tmp/honeybot_stage_aplay.lock", "w")
+        deadline = time.monotonic() + 30.0
+        while time.monotonic() < deadline:
+            try:
+                fcntl.flock(lf, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                break
+            except BlockingIOError:
+                time.sleep(0.1)
+        try:
+            p1 = subprocess.Popen([piper_bin, "--model", str(model), "--output_raw"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, env=env)
+            p2 = subprocess.Popen([aplay_bin, "-q", "-D", "default", "-r", rate, "-f", "S16_LE", "-t", "raw"], stdin=p1.stdout, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, env=env)
+            if p1.stdin:
+                p1.stdin.write(text.encode("utf-8"))
+                p1.stdin.close()
+            if p1.stdout:
+                p1.stdout.close()
+            p2.wait(timeout=90)
+        finally:
+            try:
+                fcntl.flock(lf, fcntl.LOCK_UN)
+                lf.close()
+            except OSError:
+                pass
 """
 
 
@@ -457,7 +473,7 @@ if {freeze_hud!r}:
     _pause_honeybot_stage(pause_audio={pause_audio!r})
 if shutil.which("xdotool", path=env["PATH"]):
     subprocess.run(["xdotool", "mousemove", "1916", "540"], env=env, check=False)
-subprocess.run(["pkill", "-f", {STAGE_PROFILE_DIR!r}], check=False)
+subprocess.run(["pkill", "-f", {STAGE_PROFILE_PGREP!r}], check=False)
 time.sleep(0.2)
 prof = pathlib.Path({STAGE_PROFILE_DIR!r})
 shutil.rmtree(prof, ignore_errors=True)
@@ -591,7 +607,7 @@ def run_ytapp(
                 "ConnectTimeout=5",
                 HONEYBOT_HOST,
                 (
-                    f"pgrep -af '{STAGE_PROFILE_DIR}' || echo 'NO_STAGE_BROWSER'; "
+                    f"pgrep -af '{STAGE_PROFILE_PGREP}' || echo 'NO_STAGE_BROWSER'; "
                     f"test -f {WEEBO_STAGE_PAUSE_FILE} && echo 'SENTINEL=ACTIVE' || echo 'SENTINEL=CLEAR'"
                 ),
             ],
@@ -626,7 +642,7 @@ def run_ytapp(
             "        sp.write_text(json.dumps({'state': 'done'}), encoding='utf-8')\n"
             "    except Exception:\n"
             "        pass\n"
-            f"subprocess.run(['pkill', '-f', {STAGE_PROFILE_DIR!r}], check=False)\n"
+            f"subprocess.run(['pkill', '-f', {STAGE_PROFILE_PGREP!r}], check=False)\n"
             + REMOTE_RESUME_SNIPPET
         )
         subprocess.run(
@@ -728,7 +744,7 @@ def run_ytvim(action: str, say_text: str = "", dry_run: bool = False, pause_audi
                 "-o",
                 "ConnectTimeout=5",
                 HONEYBOT_HOST,
-                "pgrep -af 'HONEYBOT_LIVE_VIM' || echo 'NO_VIM_STAGE'",
+                "pgrep -af '[H]ONEYBOT_LIVE_VIM' || echo 'NO_VIM_STAGE'",
             ],
             capture_output=True,
             text=True,

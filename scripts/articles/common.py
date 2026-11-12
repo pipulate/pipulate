@@ -2503,7 +2503,7 @@ def _sync_honeybot_no_max_sentinel(is_off: bool) -> bool:
     """Keep Honeybot /tmp/honeybot_no_max aligned with Prime's ytmax mode."""
     import subprocess
     remote_cmd = (
-        "touch /tmp/honeybot_no_max && pkill -f honeybot_media_overlay 2>/dev/null || true"
+        "touch /tmp/honeybot_no_max && pkill -f '[h]oneybot_media_overlay' 2>/dev/null || true"
         if is_off
         else "rm -f /tmp/honeybot_no_max"
     )

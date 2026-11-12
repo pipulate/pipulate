@@ -94,8 +94,42 @@ def _sound_file(name):
     return None
 
 
-def _player_args(sound):
-    if sound is None:
+STAGE_AUDIO_BRIDGE_FILE = Path("/tmp/pipulate_ytstage_audio.json")
+
+
+def _is_ytstage_audio_active(bridge_path=None) -> bool:
+    """True when a live ytstage session owns broadcast audio, muting local Prime scrape chimes."""
+    bp = Path(bridge_path) if bridge_path is not None else STAGE_AUDIO_BRIDGE_FILE
+    if not bp.is_file():
+        return False
+    try:
+        data = json.loads(bp.read_text(encoding="utf-8"))
+    except Exception:
+        return False
+    if not isinstance(data, dict):
+        return False
+    if bridge_path is not None:
+        return (time.time() - float(data.get("updated_at") or time.time())) < 600
+    rport = int(data.get("remote_port") or 15001)
+    lport = int(data.get("local_port") or 5001)
+    import subprocess
+    res = subprocess.run(
+        ["pgrep", "-f", f"{rport}:127[.]0[.]0[.]1:{lport}"],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if not (res.stdout or "").strip():
+        try:
+            bp.unlink(missing_ok=True)
+        except OSError:
+            pass
+        return False
+    return True
+
+
+def _player_args(sound, bridge_path=None):
+    if sound is None or _is_ytstage_audio_active(bridge_path=bridge_path):
         return None
     if sys.platform == "darwin":
         player = shutil.which("afplay")
