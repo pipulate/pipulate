@@ -158,7 +158,7 @@ def route(text: str, target: str = None) -> bool:
             os.path.join(REPO_ROOT, "prompt_foo.py"),
             PROGRESSIVE_REVEAL_CONTINUATION_PROMPT,
             "--chop",
-            "CHOP_PROGRESSIVE_REVEAL",
+            "ADHOC_CHOP",
             "--no-tree",
         ]
         if target:
