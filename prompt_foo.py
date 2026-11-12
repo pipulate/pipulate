@@ -71,15 +71,7 @@ DEFAULT_TARGETS = {
 # ============================================================================
 # --- Logging & Capture ---
 # ============================================================================
-# THE RULE OF SILENCE, IN release.py'S SHAPE (2026-09-06). release.py runs
-# it already: a module flag, a note() that prints only under -v, a failure
-# that prints everything. Here the split is between two READERS rather than
-# two moods. The console is read by a person, who has no sieve, so it gets
-# readings and verdicts. The Processing Log rides INSIDE the sealed payload
-# and is read by a model, which greps, so it keeps every line it ever had:
-# note() captures exactly what print() does and merely stops echoing. The
-# captured announcement bytes are the same under either setting.
-# Set once in main() from --verbose.
+# § THE TERMINAL HOUSE STYLE: note() captures announcements for the sealed Processing Log, echoing only under --verbose.
 VERBOSE = False
 class Logger:
     """Captures stdout for inclusion in the generated prompt."""
@@ -99,12 +91,7 @@ class Logger:
         print(*args, **kwargs)
 
     def note(self, *args, **kwargs):
-        """Capture for the payload's Processing Log; echo to the console only
-        under --verbose. Same signature and same captured bytes as print().
-        Use it for ANNOUNCEMENTS -- a header, a flag echoed back, a step
-        about to start or just finished -- and duplicate detail already
-        represented in the Payload Ledger. Never hide the only reading of
-        an outcome, failure, omission, timing, hash, or safety verdict."""
+        """Capture announcements into self.logs; echo to console only under --verbose."""
         sep = kwargs.get('sep', ' ')
         end = kwargs.get('end', '\n')
         self.logs.append(sep.join(map(str, args)) + end)
@@ -131,11 +118,7 @@ def load_targets():
             logger.print(f"Warning: {TARGETS_FILE} is corrupt. Using defaults.")
     return DEFAULT_TARGETS
 
-# Initialize with defaults, but allow override
-CONFIG = {
-    "PROJECT_NAME": "pipulate",
-    "POSTS_DIRECTORY": DEFAULT_TARGETS["1"]["path"]
-}
+# (CONFIG is initialized below after REPO_ROOT resolution.)
 
 # ============================================================================
 # --- Configuration ---
@@ -188,14 +171,7 @@ def get_literary_perspective(word_count: int, token_word_ratio: float) -> str:
         )
     return f"📚 Equivalent in length to a **{description}**{density_warning}"
 
-# LAST-INCH AUDIT (banked 2026-07-31): this except used to swallow a
-# tokenizer failure and return a WORD COUNT wearing a token count's label.
-# Every figure in the Manifest, the Payload Ledger, foo_files.py's inline
-# annotations and the Paintbox would change UNITS simultaneously --
-# plausibly, uniformly, and in the direction of looking smaller -- while the
-# operator's context-budget decisions rode on them. Garbage announces
-# itself; a plausible wrong number does not. Shout ONCE per process, then
-# degrade exactly as before.
+# § THE LAST-INCH RULE: warn once per process if tiktoken degrades to whitespace word counts.
 _TOKENIZER_FALLBACK_WARNED = False
 def count_tokens(text: str, model: str = "gpt-4o") -> int:
     global _TOKENIZER_FALLBACK_WARNED
@@ -415,17 +391,7 @@ def run_tree_command() -> str:
     eza_exec = shutil.which("eza")
     if not eza_exec: return "Skipping: `eza` command not found."
     try:
-        # Added --level 3 to keep the tree from exploding if the repo grows deeper
-        # THE PATH IS SPELLED (2026-09-27, convicted in the compile lane and
-        # not by reading eza's source): the identical eza line read 310 lines
-        # from a terminal and 0 as a ! probe with no stderr, while the same
-        # line with a dot read 310 in both lanes. eza given no path and a
-        # stdin that is not a terminal reads its paths off stdin, and
-        # /dev/null hands it EOF. This subprocess inherits the compiler's
-        # stdin, so every tree to date rode because a person sat at the
-        # keyboard; a compile driven from a pipe, a rider or a timer would
-        # have carried the placeholder instead. One token. The witness is a
-        # call with stdin redirected, never a compile, which has a terminal.
+        # Pass explicit '.' so eza never reads EOF from non-TTY stdin (/dev/null -> 0 lines).
         result = subprocess.run(
             [eza_exec, '--tree', '--level', '3', '--git-ignore', '--color=never', '.'],
             capture_output=True, text=True, cwd=REPO_ROOT, check=True
@@ -464,15 +430,7 @@ def run_static_analysis(python_files: List[str]) -> str:
         except Exception as e:
             logger.print(f"      [Error running Ruff: {e}]")
             result = None
-        # THE SUCCESS-ONLY WITNESS, discharged (convicted 2026-08-21, and in
-        # BOTH lanes at once): `ruff check` died on NixOS's stub-ld loader
-        # refusal -- exit nonzero, stdout EMPTY, stderr DISCARDED -- and the
-        # completion line below printed a checkmark anyway. A linter that never
-        # STARTED and a linter that found NOTHING wrote the identical green,
-        # which is THE DISCRIMINATION QUESTION failing inside the compiler's own
-        # telemetry. Root cause is the pip-installed manylinux binary, not this
-        # function; the cure is a nixpkgs ruff in the flake. This car fixes only
-        # the LIE, and it is self-clearing the day the binary can run.
+        # § THE SUCCESS-ONLY WITNESS: distinguish exit 0 from nonzero empty-stdout loader failures.
         if result is not None:
             if result.returncode == 0:
                 logger.print("   -> Ruff exit 0 (clean).")
@@ -493,16 +451,7 @@ def run_static_analysis(python_files: List[str]) -> str:
 
 
 def distill_network_ledger(jsonl_path: str, target_domain: str = "") -> str:
-    """Distills a CDP performance-log flight recorder (network_log.jsonl)
-    into a per-request Markdown table plus a third-party host census.
-
-    THE WIRE-TRUTH INVARIANT: raw JSONL never enters the context window;
-    only this distillate does. Rules learned from the first live ledgers:
-      1. Drop chrome:// / about: / data: gate-chatter (the cockpit recorder
-         taping the pilots' small talk before the flight).
-      2. If a target domain is known, keep only events whose documentURL
-         belongs to it -- partition by the flight actually being recorded.
-    """
+    """Distill CDP network_log.jsonl into a request table + host census (raw JSONL never enters context)."""
     from urllib.parse import urlparse
     requests_by_id = {}
     try:
@@ -752,13 +701,7 @@ def print_optics_receipt(artifacts: dict, target_url: str, cached: bool = False)
         except OSError:
             return "--"
 
-    # PROVENANCE GATE. scraper_tools.py stamps source_provenance into
-    # headers.json. When it reports a page_source fallback, source.html IS the
-    # hydrated DOM, so the diff lens compares the DOM against itself, finds no
-    # differences, and Hinge A announces FLAT 0 degrees -- a confident
-    # INVERSION of the single measurement this triptych exists to take, printed
-    # in the most-used path. Refuse the verdict rather than print a wrong one.
-    # Fail-open: captures predating the flag carry no key and proceed unchanged.
+    # Provenance gate: refuse Hinge A verdict when source_provenance != 'wire' (e.g. page_source_fallback).
     provenance = None
     headers_path = art(('headers',))
     if headers_path:
@@ -780,46 +723,12 @@ def print_optics_receipt(artifacts: dict, target_url: str, cached: bool = False)
                 hinge_a = "SWUNG -- JS changed the structure (read the diff lens)"
         except OSError:
             pass
-    # PROVENANCE IS THREE-VALUED, NOT TWO, AND THE THIRD VALUE IS NOT A BUG.
-    #   'wire'                 -- a witnessed claim
-    #   'page_source_fallback' -- a witnessed refusal
-    #   ABSENT (None)          -- neither: the capture predates 2026-07-24 and
-    #                             nothing ever looked
-    #
-    # Rejected 2026-07-24: stamping absent captures with an 'unflagged_legacy'
-    # token, either into the returned artifacts dict (which no consumer reads
-    # -- every one of them opens headers.json from disk) or into headers.json
-    # itself on a cache hit (which would make a READ mutate an artifact whose
-    # entire value is being a record of a scrape that already happened).
-    # Absence carries identical information to the token and has no failure
-    # mode; a token can be wrong the day a stamping bug writes it onto a
-    # post-flag capture, and then a file asserts an ignorance it does not have.
-    #
-    # ARTIFACTS RECORD WHAT HAPPENED. RECEIPTS RECORD WHAT WE KNOW. The
-    # uncertainty is a property of THIS reader, so it is annotated here and
-    # nothing on disk is touched. The annotation is self-clearing: it vanishes
-    # the moment a capture is re-scraped, which is the only kind of warning
-    # that does not get trained out of the person reading it.
+    # 3-valued provenance ('wire', fallback, or None on pre-flag captures); never mutate cached headers on read.
     if provenance is None:
         hinge_a += "  [provenance unwitnessed -- capture predates the flag]"
     elif provenance != 'wire':
         hinge_a = f"UNMEASURABLE -- source.html is a {provenance}, not wire truth"
-    # THE EMPTY-PANEL REFUSAL (convicted 2026-08-04, example.com). The
-    # provenance gate above watches ONE door: a WITNESSED REFUSAL
-    # (page_source_fallback). A capture that reports source_provenance='wire'
-    # and lands ZERO BYTES walks through the other door, and Hinge A then
-    # announces "SWUNG -- JS changed the structure" with total confidence
-    # about a panel that is empty. That is the exact confident-inversion this
-    # gate exists to prevent, arriving by the route it does not watch.
-    # Sibling of REFUSAL-ONLY WITNESS: the gate had only ever been observed
-    # catching the refusal, so nobody knew the success branch was unguarded.
-    # THE TINY-PAGE ACQUITTAL (convicted 2026-09-05 by example.com itself).
-    # This comment used to claim a real HTML document is never under 1 KB.
-    # The canonical test page is 474 bytes on the wire and 559 on disk, so
-    # the gate below called a faithful capture EMPTY on every compile that
-    # reused it. The signature of a capture fault is a small panel 1 UNDER A
-    # LARGE PANEL 2: the source vanished while the DOM did not. Two small
-    # panels is a small page. Zero bytes still fires unconditionally.
+    # Guard empty Panel 1 (0 B, or <1 KB under >=8x larger hydrated DOM so small static pages like example.com pass).
     _src = art(('source_html', 'source'))
     try:
         _src_bytes = os.path.getsize(_src) if _src else 0
@@ -893,14 +802,7 @@ def parse_file_list_from_config(chop_var: str = "AI_PHOOEY_CHOP", format_kwargs:
         logger.print(f"ERROR: foo_files.py not found or doesn't contain '{chop_var}'.")
         sys.exit(1)
     
-    # THE ADHOC OVERLAY: splice a gitignored overlay file into the slot.
-    # The tracked slot stays structurally empty. Ordinary git staging
-    # excludes the overlay, and the pre-commit tripwire refuses it if it
-    # is ever forced into the index with `git add -f` -- exclusion is a
-    # policy, not a wall. For client work, set PIPULATE_ADHOC_FILE to a
-    # path outside the worktree (e.g. ~/.local/state/pipulate/context.txt)
-    # so no git sweep, forced or not, can ever reach it: structural
-    # absence beats exclusion policy.
+    # Splice gitignored context.txt (or external PIPULATE_ADHOC_FILE) into ADHOC SLOT START/END.
     adhoc_overlay = os.environ.get(
         'PIPULATE_ADHOC_FILE',
         os.path.join(REPO_ROOT, 'context.txt')
@@ -983,41 +885,9 @@ FAILSAFE_PROFILE = {
     "secrets": "block",
 }
 
-# Always-on secret tripwires. Deliberately high-precision (credential
-# formats, not names) so a false positive can't brick a legitimate run.
-# NO profile, flag, or config edit disables these -- credentials are not
-# a disclosure decision. 'secrets: warn' (local lane) downgrades block
-# to a loud warning; anything else clamps to block.
-# SECRET_TRIPWIRES -- CREDENTIALS, NOT IDENTITY. This is the opposite polarity
-# from the PII substitutions and the denylist, and conflating them is what
-# emptied this list.
-#
-#   substitutions / denylist  -> IDENTITY. Client names. Per-client, grows
-#                                forever, and LEGITIMATELY bypassable: a
-#                                Confluence payload is allowed to name clients.
-#   SECRET_TRIPWIRES          -> CREDENTIALS. Shape-based, universal, and
-#                                essentially static. NEVER bypassable by any
-#                                profile or flag, because a leaked key cannot
-#                                be redacted after the fact -- it is rotated.
-#
-# TWO PROPERTIES MAKE THIS LIST SURVIVABLE. It was blanked because an earlier
-# spelling fired on every compile, and a guard that always fires gets deleted:
-#
-#   1. REQUIRE THE VALUE, NOT THE NAME. "refresh_token" on its own is
-#      documentation -- it appears in this repo's own prose and in its vault
-#      manifest. Only "refresh_token" followed by a real-length value is a
-#      credential. Every pattern below demands the value.
-#   2. SELF-QUOTING SAFETY. prompt_foo.py is in nearly every payload, so a
-#      pattern whose own source text matches it would convict this file
-#      forever. One character of each literal is written as a single-member
-#      character class -- PRIVAT[E] matches PRIVATE and is not matched by
-#      itself. Preserve that when editing, or the scanner eats its own tail.
-#
-# DELIBERATELY ABSENT: generic high-entropy detection (base64 blobs, long hex
-# runs). It is the largest false-positive source in every scanner that ships
-# it, and false positives are the mechanism by which this list becomes []
-# again. Also absent: anything matching a client name -- that is the other
-# filter's job, and mixing them is what made this one look optional.
+# Always-on credential-shape tripwires (never bypassed; 'secrets: warn' only downgrades block in no-egress local profiles).
+# Invariants: (1) require credential VALUES, never bare names; (2) write one char per literal as a class (e.g. PRIVAT[E])
+# so prompt_foo.py never self-matches in payloads; (3) omit generic entropy rules (client identity lives in pii_substitutions).
 SECRET_TRIPWIRES = [
     r'-----BEGIN (?:RSA |EC |DSA |OPENSSH |PGP )?PRIVAT[E] KEY',   # PEM block
     r'\bAKI[A][0-9A-Z]{16}\b',                                     # AWS access key id
@@ -1027,72 +897,21 @@ SECRET_TRIPWIRES = [
     r'\bsk-an[t]-[A-Za-z0-9_\-]{24,}',                             # Anthropic
     r'\bsk-[A-Za-z0-9]{32,}\b',                                    # OpenAI-shape; loosest here, cut this one first
     r'"(?:refresh_toke[n]|client_secre[t]|private_ke[y]|api_ke[y]|access_toke[n])"\s*:\s*"[^"]{12,}"',
-    # UNQUOTED SECRET FIELD (banked 2026-08-26, payload-convicted). A Slack app
-    # Client Secret is a BARE 32-hex string carrying no prefix and no shape of
-    # its own, so every format tripwire above is structurally blind to it, and
-    # the quoted-JSON pattern directly above covers only the JSON spelling. One
-    # rode into a compiled payload inside a curl line copied off a vendor docs
-    # page -- and therefore into a chat window, into foo.zip, and into every
-    # rotated snapshot -- while the tripwire printed ARMED and zero hits.
-    # THE SHAPE IS THE FIELD NAME PLUS AN ASSIGNMENT, never entropy: generic
-    # high-entropy detection stays deliberately absent (see the note above), and
-    # rule 1 is honored because the VALUE is still required. Rule 2 is honored
-    # by the single-member class, so this line cannot convict itself. Tight
-    # enough not to fire on prose: the value must be 20+ contiguous characters
-    # with no whitespace in them.
+    # Unquoted secret field assignment requiring a 20+ contiguous-char value.
     r'\b(?:client_secre[t]|signing_secre[t]|app_secre[t])\b\s*[:=]\s*'
     r'["\']?[A-Za-z0-9_\-./+=]{20,}',
-    # Generic assignment tripwire, but LITERAL-ONLY. The previous spelling
-    # accepted any twelve non-space characters after "=", so executable code
-    # such as an environment lookup was indistinguishable from a hardcoded
-    # credential. Quoted literals and plausible unquoted dotenv values remain
-    # covered; calls, attribute access with parentheses, and other expressions
-    # do not. A path is not a credential (convicted 2026-11-01, deed 596, by
-    # HF_TOKEN_FILE = "/home/mike/.cache/huggingface/token" in imagine.nix,
-    # which fired 4 hits and invited a temporary `secret_hits = False` disarm):
-    # `_(FILE|PATH|DIR)` variable suffixes and `/` or `~/` path values are
-    # excluded so the gate stays armed.
+    # Literal-only uppercase secret assignment (excludes _FILE/_PATH/_DIR suffixes and / or ~/ paths).
     r"(?m)^[A-Z0-9_]*(?:SECRE[T]|TOKE[N]|PASSWOR[D]|API_KE[Y])[A-Z0-9_]*(?<!_FILE)(?<!_PATH)(?<!_DIR)"
     r"\s*=\s*(?![\"']?(?:/|~/))(?:\"[^\"\s]{12,}\"|'[^'\s]{12,}'|[A-Za-z0-9_./+=:@-]{20,})"
     r"\s*(?:#.*)?$",
-    # ADMIN-FORM LABEL ANCHOR (convicted 2026-09-11, cartridge foo-d5dfdb65-1342.zip).
-    # A `?URL` scrape of a Django admin page renders a credential as a BARE VALUE
-    # under its field LABEL: no assignment, no JSON key, no vendor prefix. Every
-    # pattern above is structurally blind to that shape, so the gate printed
-    # ARMED / 0 hits -- arithmetically correct, and a live basic-auth blob plus a
-    # crawler token rode into the seal anyway. THE DISCRIMINATION QUESTION asked
-    # of a whole exposure class: an armed scanner and a blind one read the same.
-    # THE LABEL IS THE SHAPE. That keeps rule 1 (the value is still required, and
-    # is still what the fixture-marker search cuts to) and keeps generic entropy
-    # detection out, which is the false-positive engine that emptied this list
-    # once already. Rule 2 is honored by the single-member class, so neither
-    # pattern can convict its own source line.
-    # NARROW ON PURPOSE: two fields, one vendor's admin. This is a tripwire for
-    # two known landmines, not a cure for the class. The structural fix is not to
-    # put a ProjectSettings page through `?URL` at all; this is the backstop for
-    # the compile where that gets forgotten.
+    # § ADMIN FORMS ARE CREDENTIAL SURFACES: bare secret values rendered beneath admin field labels.
     r'Header authorizatio[n]:(?s:.{0,200}?)[A-Za-z0-9+/]{24,}',
     r'Pulse crawler toke[n]:(?s:.{0,200}?)[a-f0-9]{32,}',
 ]
 
 
 def load_disclosure_profile(requested: str = None):
-    """Resolve the built-in baseline or a configured disclosure profile.
-
-    An explicit --profile baseline returns a copy of FAILSAFE_PROFILE without
-    reading disclosure.json. Other names use ~/.config/pipulate/disclosure.json.
-
-    Returns (name, profile_dict). Resolution order:
-      1. --profile NAME from the CLI, if given.
-      2. 'default_profile' from disclosure.json, if the file exists.
-      3. FAILSAFE_PROFILE ('cloud-safe' semantics: today's behavior).
-
-    Fails CLOSED on every error path: a missing file, bad JSON, or an
-    unknown profile name all resolve to FAILSAFE_PROFILE with a printed
-    warning. A config problem may cost you a rerun; it may not cost you
-    a leak. The 'secrets' key is clamped: 'warn' survives only so the
-    no-egress local lane can breathe; every other value means 'block'.
-    """
+    """Resolve 'baseline' or a named profile in disclosure.json; fails closed to FAILSAFE_PROFILE and clamps secrets != 'warn' to 'block'."""
     profiles = {}
     # Reserve an explicit, configuration-independent blocking lane. Local
     # profiles keep their existing semantics, including no-egress WARN.
@@ -1121,29 +940,7 @@ def load_disclosure_profile(requested: str = None):
     return (name, profile)
 
 
-# DECLARED FIXTURES -- the fine-grained control this tripwire was missing, and
-# the ONLY sanctioned relaxation of it. Opposite polarity from a disclosure
-# profile: a profile says "trust this RUN"; this says "this VALUE was never a
-# credential."
-#
-# CONVICTED 2026-08-28: a published article carrying four copies of one probe
-# fixture -- a Slack user-token prefix followed by a literal synthetic body --
-# blocked every compile that included it, and the operator reached past the
-# gate and edited the branch by hand, twice, to get a payload out. A guard that
-# fires on the ONE activity this repo performs constantly (writing about
-# credentials) is a guard on its way to being deleted, which is exactly how
-# SECRET_TRIPWIRES became [] the first time.
-#
-# THE MARKER MUST RIDE INSIDE THE MATCHED VALUE, never merely on its line. A
-# real credential's body is issued by a vendor and is base62 noise; it cannot
-# contain the literal word "synthetic" or "redacted", so this exemption is
-# structurally incapable of clearing a live secret. A line-level check WOULD be
-# capable of it, which is why a line-level check is not offered.
-#
-# THE EXEMPTION IS LOUD. scan_secrets prints one line per exempted fixture, so
-# an armed-and-exempting scanner and an armed-and-silent one never print the
-# same thing. THE SILENT-PASS PROBLEM does not get to return through the relief
-# valve built to prevent it.
+# § THE DECLARED-FIXTURE RELIEF VALVE: exempt synthetic values only when a marker word rides INSIDE the value itself, and log loudly.
 TRIPWIRE_FIXTURE_MARKERS = (
     'synthetic', 'redacted', 'placeholder', 'example', 'dummy',
     'fixture', 'notarealtoken',
@@ -1151,16 +948,7 @@ TRIPWIRE_FIXTURE_MARKERS = (
 
 
 def _payload_source(text: str, offset: int) -> str:
-    """Name the payload member a byte offset falls inside.
-
-    THE OLD LOCATOR POINTED AT A FILE THAT WAS NEVER WRITTEN. A blocked run
-    exits at step 6; write_context_cartridge runs at step 7. So "payload:10438
-    -- inspect this payload line" instructed the operator to open an artifact
-    that, by construction, does not exist on a blocked compile. The payload
-    already carries its own address space -- every member is bracketed by a
-    START marker -- so the enclosing FILE is recoverable for free, and a file
-    path is a thing the operator can actually open, grep, and edit.
-    """
+    """# § THE LOCATOR THAT POINTED AT NOTHING: recover the enclosing '--- START: <path> ---' source label for offset."""
     start = text.rfind("\n--- START: ", 0, offset)
     if start == -1:
         return "(before any section marker)"
@@ -1187,18 +975,7 @@ def scan_secrets(text: str):
     for pat in SECRET_TRIPWIRES:
         for match in re.finditer(pat, text):
             matched = match.group(0)
-            # THE NAME IS NOT THE VALUE (banked 2026-08-28, hole found the same
-            # morning the exemption landed). Every shape-based tripwire above
-            # matches the credential ITSELF, so searching the whole match is
-            # searching the value. The generic assignment tripwire is the one
-            # exception: it captures the VARIABLE NAME too, so a marker word
-            # sitting in the NAME would exempt whatever real credential sat to
-            # the right of the equals sign -- the marker riding OUTSIDE the
-            # value, which is exactly the failure this exemption's own comment
-            # says a line-level check would have. Cut at the first assignment
-            # or field separator when the match contains one; matches with no
-            # separator (token prefixes, PEM headers, AWS ids) are searched
-            # whole, unchanged.
+            # § THE NAME IS NOT THE VALUE: check fixture markers only to the right of the first '=' or ':'.
             seps = [i for i in (matched.find('='), matched.find(':')) if i != -1]
             value = matched[min(seps) + 1:] if seps else matched
             fixture = next(
@@ -1244,17 +1021,7 @@ def scan_secrets(text: str):
 
 
 def _identity_table_state(path, stage_enabled: bool) -> str:
-    """Three states, never two, for one identity table on THIS machine.
-
-    THE DISCRIMINATION QUESTION, asked of the BASELINE run. Both stages below
-    gate on .exists() and a missing table is a documented silent no-op, so a
-    default compile where neither table exists is byte-identical to one where
-    both exist and match nothing. Only a count discriminates a table that
-    looked and found nothing from a table that was never read. pub:-prefixed
-    rules are excluded because the compile lane skips them: a table holding
-    nothing but publish-lane rules protects this payload not at all, and
-    would otherwise report a reassuring nonzero.
-    """
+    """Return 'OFF', 'MISSING (...)', or 'N rule(s)' (excluding pub:-only rules) so missing tables never read like 0-hit scans."""
     if not stage_enabled:
         return "OFF"
     if not path.exists():
@@ -1268,22 +1035,7 @@ def _identity_table_state(path, stage_enabled: bool) -> str:
 
 
 def scrub_compile_payload(text: str, apply_substitutions: bool = True, scan_denylist: bool = True):
-    """Sanitize the compiled payload before it leaves the machine.
-
-    Two stages, mirroring the repo's two protection styles:
-      1. TRANSFORM: apply ~/.config/pipulate/pii_substitutions.txt
-         ('pattern === replacement' per line, hash comments ignored) --
-         the same table sanitizer.py trusts for the article lane.
-      2. REFUSE: scan the post-scrub text against
-         ~/.config/pipulate/commit_denylist.txt (one case-insensitive
-         ERE per line, same patterns the pre-commit airlock enforces).
-         Any surviving hit is a leak the substitution table missed;
-         the caller fails closed.
-
-    Returns (scrubbed_text, substitution_count, leaks) where leaks is
-    a list of (pattern, hit_count) tuples. Missing config files are a
-    silent no-op for their stage, matching the airlock's behavior.
-    """
+    """Apply compile-lane pii_substitutions.txt rewrites then scan commit_denylist.txt; return (text, sub_count, leaks)."""
     total = 0
     if apply_substitutions and PII_SUBSTITUTIONS_FILE.exists():
         for line in PII_SUBSTITUTIONS_FILE.read_text(encoding='utf-8').splitlines():
@@ -1299,14 +1051,7 @@ def scrub_compile_payload(text: str, apply_substitutions: bool = True, scan_deny
                 try:
                     text, n = re.subn(pattern, repl, text)
                     total += n
-                    # LAST-INCH AUDIT (banked 2026-07-31): this stage rewrites
-                    # the ASSEMBLED payload -- Codebase file bodies and `!`
-                    # receipt stdout included -- and used to report a single
-                    # integer. Witnessed same day: a ClaudeBot user-agent
-                    # string arrived in a telemetry receipt with its contact
-                    # address substituted, indistinguishable from the real UA
-                    # to any reader downstream. Name every rule that fires so
-                    # the operator can grep the payload for its replacement.
+                    # § THE LAST-INCH RULE: name every PII substitution rule that fires on assembled payload text.
                     if n:
                         print(f"🧼 PII rewrite: {n}x {pattern!r} -> {repl!r}")
                 except re.error as e:
@@ -1363,17 +1108,7 @@ _extract_prompt_member = foo_cartridge._extract_prompt_member
 verify_context_cartridge = foo_cartridge.verify_context_cartridge
 
 
-# THE DEED IS NAMED FOR THE DOOR (2026-09-29). The archive is named for the
-# address that explains it: <CARTRIDGE_STEM>.zip is the canonical newest, and
-# each compile drops <CARTRIDGE_STEM>_<deed>-<hash8>.zip beside it, the deed
-# number FIRST so a plain sort reads chronologically, pruned to the newest
-# FOO_CARTRIDGE_KEEP. Snapshots minted before the rename keep their foo-
-# names (an archive is never renamed; the articles cite them), so the
-# counter takes its maximum over BOTH spellings and the prune sorts both in
-# one roster by deed number: otherwise the deeds restart at 1 and the old
-# twenty never age out. One stem, one line to change for a fork. The
-# number is monotonic (max existing + 1), never a logrotate shift, so a
-# snapshot's name is stable for its whole life -- safe to attach to a ticket.
+# § THE ARTIFACT-OF-RECORD RULE: canonical qamy.ai.zip + monotonic qamy.ai_<deed>-<hash8>.zip snapshots (keeping newest 20).
 CARTRIDGE_STEM = "qamy.ai"
 FOO_CARTRIDGE_KEEP = 20
 _ROTATED_CARTRIDGE_RE = re.compile(rf"^{re.escape(CARTRIDGE_STEM)}_(\d+)-[0-9a-f]{{8}}\.zip$")
@@ -1434,16 +1169,7 @@ def write_context_cartridge(
             f"🗂️  Rotated archive snapshot: {snapshot.name} "
             f"(keeping newest {min(len(rotated), FOO_CARTRIDGE_KEEP)} of {FOO_CARTRIDGE_KEEP})"
         )
-        # THE DEED'S NAME, RETURNED AND NOT MERELY PRINTED (2026-09-06). The
-        # rotation mints this name, so the rotation is the ONE authority that
-        # hands it back; recomputing the hash and the sequence in main() would
-        # be a second authority for a single string, which is the failure this
-        # repo keeps convicting. Reassigning `result` rather than editing the
-        # return keeps the contract intact -- every path still returns a Path
-        # to a written, verified cartridge. On any rotation failure the except
-        # below logs and `result` stays foo.zip, so the caller can never name
-        # a file that was not made, and the two names discriminate the two
-        # worlds without a flag.
+        # Return the rotated snapshot path directly so main()'s deed footer never recomputes seq/hash.
         result = snapshot
     except Exception as exc:
         logger.print(f"Warning: cartridge rotation skipped: {exc}")
@@ -1655,18 +1381,7 @@ class PromptBuilder:
         is_narrative = (title == "Recent Narrative Context")
         is_article = (title == "Full Article Content")
         is_shard = (title == "Holographic Context Shards")
-        # TELEMETRY IS PAYLOAD, NOT STATUS (convicted 2026-08-06, in-payload).
-        # The substring filter below was written to catch GENERATOR STATUS
-        # strings -- "Error: pyreverse failed", "Skipping: eza not found" --
-        # emitted by the tree and UML channels when their tools are missing.
-        # Applied to a git diff or a Ruff report it eats the EVIDENCE, because
-        # a diff of this repo says "error" constantly and a lint report is made
-        # of error text. Conviction: a compile rendered the Telemetry
-        # placeholder while HEAD~1..HEAD held a commit, solely because the
-        # earmark that commit added contained the phrase "the error names a".
-        # The drop is SILENT, so the placeholder reads identically whether the
-        # channel was empty or eaten. Exempt by NAME, the same way narrative,
-        # article, and shard content already is.
+        # § THE FILTER THAT ATE THE EVIDENCE: exempt diff and lint payload channels from generator 'error'/'skipping' filters.
         is_telemetry = title in ("Recent Git Diff Telemetry", "Static Analysis Diagnostics")
         content_is_valid = bool(content)
         filter_passed = "error" not in content.lower() and "skipping" not in content.lower()
@@ -1750,48 +1465,7 @@ class PromptBuilder:
         return "\n\n".join(parts).strip()
 
 
-    # EMPTY LINES DO NOT SURVIVE TRANSPORT, AND THE CURE IS REFUSED (earmarked
-    # 2026-09-05, ruled 2026-09-06). This method emits bodies byte-faithful --
-    # f['content'] is a raw read -- and the paste into a chat window collapses
-    # empty lines while keeping whitespace-only ones, so a model sees every
-    # function butted against the next and every docstring summary glued to
-    # its body. The earmark proposed rendering each blank here as a single
-    # space and teaching apply.py that a whitespace-only SEARCH line matches
-    # an empty file line. BOTH HALVES ARE REFUSED.
-    # THE FIRST HALF WOULD CORRUPT THE RECORD. A transform applied here runs
-    # BEFORE write_context_cartridge, so the sealed bytes would stop being a
-    # faithful copy of the source they claim to hold -- trading the archive's
-    # fidelity for the reader's convenience, in a tool whose whole thesis is
-    # that the record must be faithful. The deed footer is the correct shape
-    # for a reader-side accommodation: it rides on egress_text, OUTSIDE the
-    # seal, and it says so. If this transform ever rides, it rides there, and
-    # the footer names it.
-    # THE SECOND HALF WOULD BLUNT THE INTERLOCK. Exact match is the one
-    # mechanism proving an edit lands where it was aimed; "whitespace-only
-    # matches empty" loosens it PERMANENTLY to fix an INTERMITTENT failure
-    # that is already detected and already receipted. Measured cost of
-    # leaving it: two refused blocks in one train and one hand repair. The
-    # right direction when that cost rises is a BETTER REFUSAL -- the
-    # zero-span diagnostic, which landed in apply.py on 2026-09-06 -- never a
-    # looser match.
-    # WHAT IS ARGUED AND WHAT IS MEASURED, kept apart on purpose. The refusal
-    # above rests on two arguments that need no receipt: a transform here runs
-    # BEFORE the seal, and a looser interlock is permanently looser. The
-    # BYTE-FAITHFUL claim in the first paragraph is different -- it is
-    # supported by reading this method (f['content'] is a raw read) and by an
-    # rg that found no newline-run collapse, and NOT by a clean measurement.
-    # THREE INSTRUMENTS HAVE FAILED TO TAKE ONE, each in a different way and
-    # none of them touching the thing measured: a whole-payload empty-line
-    # census that scaled with payload content and so could never read a delta
-    # (2026-09-05), a per-file census whose START-marker split swept in fence
-    # and marker scaffolding and read two lines high (2026-09-06), and its
-    # fence-split replacement, whose triple-backtick literal inside a
-    # double-quoted shell -c string became command substitution and produced
-    # no reading at all (2026-09-06). The honest state is UNACQUITTED AND
-    # UNCONVICTED. Anyone reaching for this comment as evidence should build
-    # the instrument first: count empty lines in one named file on disk
-    # against the same file's body inside the sealed cartridge, with the fence
-    # literal assembled as chr(96)*3 so no backtick reaches the shell.
+    # § THE CONTIGUITY COROLLARY: emit raw file bytes untouched so sealed cartridges stay byte-faithful.
     def _build_codebase_content(self) -> str:
         if self.context_only: return ""
         if not self.processed_files: return ""
@@ -1807,32 +1481,7 @@ class PromptBuilder:
         return "\n".join(lines).strip()
 
     def _build_telemetry_content(self) -> str:
-        """Emit auto-context channels that were MEASURED but never RENDERED.
-
-        CONVICTED 2026-08-05 BY THIS COMPILER'S OWN PAYLOAD. main() registered
-        'Recent Git Diff Telemetry' and 'Static Analysis Diagnostics' into
-        auto_context; the Summary listed both under Auto-Context Metadata; the
-        Payload Ledger gave each an AUTO row; and assemble_text emitted neither,
-        because no section builder ever read those titles. The ledger therefore
-        over-reported the payload by the size of every unrendered channel -- the
-        instrument that gauges the artifact was counting a section the artifact
-        did not contain, inside the tool whose entire job is refusing that.
-        Rendering them does not merely add content; it makes the ledger TRUE.
-
-        WHY A SECTION AND NOT THE SUMMARY. main() echoes console_summary to the
-        terminal on every compile, so a diff folded into the Summary would print
-        hundreds of lines to the operator's screen. And the Summary is the
-        LEDGER: putting evidence inside the accounting is the map/territory
-        confusion this compiler exists to prevent.
-
-        SCOPE IS NARROW AND THE LABEL ALREADY SAYS SO. main() computes the diff
-        as `git diff HEAD` and falls back to `git diff HEAD~1 HEAD` on a clean
-        tree -- so after a `blast` this is ONE COMMIT, not a whole ride, and
-        diff_label reads 'Most Recent Commit Changes' rather than over-claiming.
-        Widening the range (the candidate is `git diff @{u}@{1}..@{u}`, meaning
-        everything pushed since the last push) is a separate editorial decision
-        and is deliberately NOT bundled here.
-        """
+        """Render Static Analysis Diagnostics and Recent Git Diff Telemetry in their own payload section."""
         parts = []
         for title in ("Static Analysis Diagnostics", "Recent Git Diff Telemetry"):
             data = self.auto_context.get(title)
@@ -2258,16 +1907,7 @@ def update_paintbox_in_place():
         total_files = len(repo_files)
         mapped_files = total_files - len(unused_tubes)
         coverage = (mapped_files / total_files) * 100 if total_files > 0 else 100
-        # A GAUGE IS NOT A CLICK (landed 2026-09-17, the day its TODO was
-        # written). This function printed the current coverage and nothing
-        # else, so when a router edit unclaimed two files on 2026-09-01 the
-        # number dropped and stayed dropped for four days, and no compile said
-        # so; the Paintbox convicted it by hand on 2026-09-05. The previous
-        # reading now lives in the Paintbox header of foo_files.py itself, in
-        # the TRACKED file rather than a machine-local cache, so the memory
-        # travels with the repo and a moved number lands as a git diff on the
-        # next blast. It is read from foo_content BEFORE the rewrite below
-        # replaces it, and the anchor is a line only this function writes.
+        # Read previous '# Coverage: M/T' from foo_files.py before rewriting so claimed/tracked deltas print once.
         prev = re.search(r'^# Coverage: (\d+)/(\d+) ', foo_content, re.MULTILINE)
         if prev:
             prev_mapped, prev_total = int(prev.group(1)), int(prev.group(2))
@@ -2308,29 +1948,7 @@ def update_paintbox_in_place():
 # ============================================================================
 # --- Honeybot Telemetry (TTL-cached, fail-soft) ---
 # ============================================================================
-# Sibling of lsa.py's MtimeMemo, with the one structural difference that
-# matters: a REMOTE SQLite file has no local mtime to invalidate against, so
-# staleness is bounded by wall clock instead of by a sentinel. TTL is the
-# correct instrument for a resource you cannot stat.
-#
-# THREE INVARIANTS, all of them about never taxing a compile:
-#   1. FAIL-SOFT. No ssh, no host, no DB, timeout, bad parse -- the STATS
-#      block renders exactly as it did before this code existed. A telemetry
-#      pull must never be able to break a payload.
-#   2. NEGATIVE CACHING. A FAILED pull is cached too. Without it, every
-#      compile on a machine with no route to honeybot (macOS, WSL, a client
-#      laptop) pays the full connect timeout forever -- the exact "slows down
-#      every call" failure the operator asked to avoid, arriving by the back
-#      door.
-#   3. STABLE TIMESTAMP. The rendered line carries the FETCH time, never
-#      now(). Two compiles served from one cache render identical bytes, which
-#      is what keeps the foo_files.py write idempotent and the cartridge
-#      byte-reproducible per THE RECEIPT LADDER RULE.
-#
-# BOTH METRICS ARE SCALARS ON PURPOSE. A number has no render surface: it
-# cannot be linkified, wrapped, or autolinked in transit. After the render-gap
-# conviction, "prefer an output class that cannot be transformed" is a design
-# rule, and a telemetry line baked into a tracked file is where to honor it.
+# Honeybot scalar telemetry: fail-soft, 6h TTL with negative-attempt caching, and fetch-stamped for idempotent writes.
 HONEYBOT_SSH_HOST = "honeybot"
 HONEYBOT_DB_PATH = "~/www/mikelev.in/honeybot.db"
 HONEYBOT_CACHE_FILE = CONFIG_DIR / "honeybot_stats.json"
@@ -2396,13 +2014,7 @@ def fetch_honeybot_stats() -> dict:
                 timeout=HONEYBOT_TIMEOUT_SECONDS,
             )
             value = result.stdout.strip()
-            # THE EMPTY PIPE READ AS A READING (convicted 2026-09-21, blackout).
-            # With the host dark, ssh exits 255 and prints nothing, awk's END
-            # block still prints n "|" t with both unset, and the pipeline's
-            # exit is awk's 0 because there is no pipefail. A bare "|" passed
-            # the truthy test, ok read True, and the router was written as
-            # "DOM hydration:  trapdoor triggers from  non-local IPs" under a
-            # "fetched" stamp. The shape check below is the whole cure.
+            # § GUARD AWK END BLOCKS ON NR>0: validate digits|digits shape so dark-host empty pipes never clobber stats.
             if result.returncode == 0 and _HONEYBOT_SHAPE.fullmatch(value):
                 metrics[name] = value
         except Exception:
@@ -2483,15 +2095,7 @@ def update_stats_in_place():
             if f.endswith('.md') and f[:4].isdigit()
         ]
         count = len(posts)
-        # THE ZERO-ARTICLE GATE (convicted 2026-09-21, blackout, Mac). A Darwin
-        # shell points target 1 at an empty shadow corpus, so every Mac compile,
-        # cpr included, rewrote this TRACKED file to read zero articles; the
-        # next nix develop then refused to auto-update over local modifications
-        # the human never made, and one blast later the zeros were on origin.
-        # A corpus with no dated post has no reading to offer, so the committed
-        # block, written by the machine that holds the corpus, stands. A forker
-        # with a real blog still gets their own numbers. Placed before the
-        # Honeybot call on purpose: a Mac never opens an ssh it cannot complete.
+        # Skip stats rewrite on empty Darwin shadow corpora so tracked foo_files.py stays clean.
         if count == 0:
             logger.print(f"📊 Stats block untouched: {blog_name} holds no dated posts; the committed reading stands.")
             return
@@ -2531,43 +2135,12 @@ def update_stats_in_place():
 
 
 def update_agents_md_in_place():
-    """Splice the sealed workspace_tree art into AGENTS.md between sentinels.
-
-    THE SIGNPOST IS A SHIM, NOT A SECOND SOURCE. AGENTS.md is a README
-    addressed to agents: its prose (setup, tools, edits, conventions) is
-    legitimately AUTHORED and lives OUTSIDE the sentinels. Only the region
-    that DESCRIBES LIVE CAPABILITY is generated -- the same
-    GENERATED-NOT-AUTHORED split the Tool Roster already runs, applied to a
-    tracked markdown file instead of a payload section.
-
-    THE MECHANISM IS DELIBERATELY NOT NEW. This is update_stats_in_place()
-    aimed at a different file with different sentinels: fails closed on a
-    missing file or missing sentinel block, and writes only when the rendered
-    bytes actually change. A third instance of a pattern already proven twice
-    (stats block, ADHOC slot) is a smaller claim than a new lane.
-
-    THE SEAL IS LOAD-BEARING HERE, NOT DECORATIVE. Splicing art whose CRC
-    reports drift would propagate a corrupted frame into the one file every
-    external agent tool reads. Refuse instead: a stale AGENTS.md is a wound,
-    a confidently wrong one is a lie.
-
-    ORDERING NOTE (why the straddle closes in ONE compile): main() calls this
-    at step 2, BEFORE the `!` executor loop runs. A probe echoed into
-    context.txt therefore witnesses THIS compile's fill, not the previous one --
-    the opposite of the foo.zip DOUBLE-TAP lag, and the reason the sentinels
-    were landed EMPTY. A hand-copied frame could never prove the generator ran.
-    """
+    """# § THE GENERATED-NOT-AUTHORED RULE: splice CRC-sealed workspace_tree art into AGENTS.md when changed."""
     agents_path = os.path.join(REPO_ROOT, "AGENTS.md")
     if not os.path.exists(agents_path):
         return
     try:
         from pipulate import wand
-        # NO PANEL (2026-09-06, operator's ruling on the first console
-        # recording, which read this block at 18 of 88 lines -- the largest
-        # block after the ledger, repainting on every compile what a reader
-        # can open in AGENTS.md itself). Same argument the README twin
-        # passes below; the seal is still read, and the "regenerated" line
-        # is still the only witness that anything changed.
         result = wand.figurate("workspace_tree", console_output=False)
         art = result.ai.strip("\n")
 
@@ -2600,55 +2173,12 @@ def update_agents_md_in_place():
 
 
 def update_readme_md_in_place():
-    """Splice the sealed workspace_tree art into README.md between sentinels.
-
-    THE SECOND PROJECTION, AND THAT IS THE ENTIRE POINT. update_agents_md_in_place
-    above is the first; this is a deliberate near-copy rather than a shared helper.
-    A mechanism proven ONCE is a coincidence and a mechanism proven TWICE is a
-    pattern -- and the diff between these two functions is the specification for
-    the helper that should absorb them when a THIRD surface arrives. Guessing that
-    signature now would bake in whatever the author imagines surface three needs;
-    reading it off two working instances costs nothing and cannot be wrong.
-
-    THE SILENT NO-OP IS THE TRAP THIS DOCSTRING EXISTS TO NAME. If README.md
-    carries no sentinels, pattern.search returns None, this returns, nothing is
-    written, and NOTHING IS PRINTED -- a green console over zero effect. The
-    sentinels are hand-placed once, out of band, because where a diagram sits on
-    a project's homepage is an editorial judgment and a guessed position looks
-    exactly like a chosen one.
-
-    THE SEAL IS LOAD-BEARING, same as its sibling: splicing art whose CRC reports
-    drift would propagate a corrupted frame into the highest-traffic surface the
-    project has. A stale README is a wound; a confidently wrong one is a lie.
-
-    ORDERING: called from main() at step 2, alongside the AGENTS.md splice and
-    BEFORE the `!` executor loop -- so a probe echoed into context.txt witnesses
-    THIS compile's fill rather than the previous one's.
-    """
+    """# § THE GENERATED-NOT-AUTHORED RULE: splice CRC-sealed workspace_tree art into README.md when changed."""
     readme_path = os.path.join(REPO_ROOT, "README.md")
     if not os.path.exists(readme_path):
         return
     try:
         from pipulate import wand
-        # ONE PANEL, NOT TWO (2026-09-05). Both splice functions ask for the
-        # same sealed art, and Pipulate.figurate prints its Rich panel by
-        # default, so every compile painted the identical workspace tree twice
-        # in a row -- roughly thirty console lines saying one thing, at the
-        # exact moment the console is trying to report what CHANGED.
-        # THE PANEL WAS NEVER THE RECEIPT. It renders identically whether the
-        # splice landed, was skipped for drift, or found no sentinels, so its
-        # green is uninformative -- THE DISCRIMINATION QUESTION answered "the
-        # same thing" by a thing nobody had asked it of. The honest witnesses
-        # are the two "workspace tree regenerated" lines, which fire only when
-        # bytes actually change, and they are unaffected here.
-
-        # AGENTS.md went dark too on 2026-09-06: the first console recording
-        # read its panel at 18 of 88 lines, the largest block after the
-        # ledger, so neither splice paints a panel now and the two
-        # "regenerated" lines are the only witnesses. Deliberately NOT
-        # factored into a shared helper -- see this function's docstring: the
-        # diff between these two IS the helper's specification, and it gets
-        # written when a THIRD surface arrives, not before.
         result = wand.figurate("workspace_tree", console_output=False)
         art = result.ai.strip("\n")
 
@@ -2684,20 +2214,7 @@ def check_topological_integrity(chop_var: str = "AI_PHOOEY_CHOP", format_kwargs:
     """Reports references in foo_files.py that no longer exist on disk."""
     import foo_files
     raw_content = getattr(foo_files, chop_var, "")
-    # SCOPE PARITY (banked 2026-08-21, convicted by this counter's FIRST after
-    # tap): parse_file_list_from_config splices the gitignored adhoc overlay
-    # into the ADHOC SLOT before loading anything; this checker did not. So on
-    # every `ahc` compile it validated the TRACKED body -- which carries ONE
-    # recognizable path, apply.py, because .gitattributes and .gitignore have
-    # neither a slash nor a STORY_EXTENSION -- while the compiler loaded the
-    # SPLICED body carrying ~22. Two different strings, one green label:
-    # INCOMMENSURABLE MEASUREMENTS inside the guard whose whole job is refusing
-    # that. A DELIBERATE SECOND INSTANCE of the splice rather than a shared
-    # helper, per the house rule that a mechanism proven twice is what
-    # SPECIFIES the helper; the diff between these two call sites is that
-    # specification, and guessing the signature now would bake in an imagined
-    # third caller. Silent on purpose: parse_file_list_from_config owns the one
-    # visible splice receipt, and two identical lines would read as a bug.
+    # § INCOMMENSURABLE MEASUREMENTS: splice the active context.txt overlay here too so integrity scans what compile loads.
     _overlay = os.path.expanduser(os.environ.get(
         'PIPULATE_ADHOC_FILE', os.path.join(REPO_ROOT, 'context.txt')
     ))
@@ -2731,16 +2248,7 @@ def check_topological_integrity(chop_var: str = "AI_PHOOEY_CHOP", format_kwargs:
             has_dir = '/' in ref and len(ref) > 2 and any(c.isalnum() for c in ref)
             if not (has_ext or has_dir):
                 continue
-            # PROSE GUARD: on a commented line the optional '#' group is
-            # consumed into group(1), so the leading token is a real
-            # (toggled-off) ledger pin ONLY if nothing but whitespace, a
-            # '<--' note, or a two-space '#' inline note follows it. A comment
-            # that continues with one space + words is a sentence, not a path:
-            # a MIME type (text/markdown), a protocol name (SEARCH/REPLACE), a
-            # filename cited mid-thought (index.md, SKILL.md, context.txt), or a
-            # paren-glued token ((payload.md). Those minted the phantom
-            # Broken-References alert; the compiler's own parser never loads a
-            # '#' line, and now neither does this checker's prose.
+            # Prose guard: treat commented tokens as file pins only when followed by empty space, '<--', or '  #'.
             if '#' in m.group(1):
                 rest = line[m.end():]
                 if rest.strip() and not (
@@ -2755,20 +2263,7 @@ def check_topological_integrity(chop_var: str = "AI_PHOOEY_CHOP", format_kwargs:
     # 3. Find the Ghosts
     broken_refs = []
     for ref in potential_refs:
-        # THE PROSE-PUNCTUATION GUARD (banked 2026-08-01, log-convicted): a
-        # candidate is a path only if it is SPELLED like one. Backticks,
-        # parentheses, and a trailing "/." belong to sentences, not filenames.
-        # CONVICTION: the 2026-08-01 compile reported TWO broken references and
-        # both were phantoms, born of an 80-column comment wrap that stranded a
-        # prose token at the START of its own line -- one backtick-quoted script
-        # name inside parentheses, one site permalink ending in a period. Neither
-        # is a file reference and neither was ever loaded, because the compiler
-        # skips every commented line. An alert that fires on prose trains the
-        # reader to skip the alert, and the next reader to skip a REAL broken
-        # reference. Sibling of SINGLE-LINE-WITNESS: that one is a phrase a
-        # line-oriented tool cannot see; this one is prose a line-oriented tool
-        # mistakes for a path. High precision on purpose -- no path in this
-        # router has ever carried a backtick or a paren.
+        # Skip prose-punctuated tokens stranded at column 0 by 80-col comment wrapping.
         if '`' in ref or '(' in ref or ')' in ref or ref.endswith('/.'):
             continue
         # Ignore HTTP, Commands, double-slashes, and server-side absolute paths
@@ -2928,32 +2423,8 @@ def main():
     parser.add_argument('--check-dependencies', action='store_true', help='Verify that all required external tools are installed.')
     parser.add_argument('--context-only', action='store_true', help='Generate a context-only prompt without file contents.')
     parser.add_argument('-n', '--no-tree', action='store_true', help='Suppress file tree and UML generation.')
-    # THE TREE WORD (2026-09-27, the operator's own reading: "maybe the
-    # parameter is the option"). It is, and compile could not reach it.
-    # Every alias bakes --no-tree in, and a store_true flag has no
-    # opposite, so the tree rode only the u-twins (fu, ahcu, defaultu)
-    # that nobody types since compile became the word; the checklist then
-    # sends every model looking for a tree the placeholder says failed.
-    # Same destination, last flag wins: an alias keeps its baked default
-    # and one typed word overrides it, compile --tree. argparse takes the
-    # namespace default from the FIRST action on a shared destination, so
-    # a bare fu still reads the tree; SUPPRESS says the same thing out
-    # loud instead of leaning on the order. Whether compile carries the
-    # tree by default is a one-word ruling in flake.nix (drop --no-tree
-    # from ahc), made after a compile --tree has read the tree's cost.
     parser.add_argument('--tree', action='store_false', dest='no_tree', default=argparse.SUPPRESS, help='Include the file tree and UML diagrams even when the alias passed --no-tree; the last of the two flags wins.')
-    # THE ACCOUNTING GOES QUIET; THE GATES DO NOT (2026-08-25). At minute zero
-    # of first contact, the onboarding command's answer to "teach me" was a
-    # token-budget table -- the machinery showing through at exactly the moment
-    # the Stick Bug is supposed to be invisible. This flag is read EXACTLY ONCE,
-    # on the step-5 conjunct below, and gates ONE if. The step-6 sanitizer,
-    # secrets tripwire, render canary and disclosure receipt, and the step-7
-    # cartridge write, all sit AFTER that block at main()'s own indentation and
-    # are therefore STRUCTURALLY unreachable from here -- silencing any of them
-    # would recreate THE SILENT-PASS PROBLEM, where an armed gate and a
-    # disarmed gate print identically. It does not reach steps 1-4 either:
-    # the paintbox, integrity and processing lines print through logger.print
-    # long before this. Bulk removed, receipts intact.
+    # --quiet suppresses only step-5 console accounting; step-6 security gates always print.
     parser.add_argument('--quiet', action='store_true', help='Suppress the step-5 console echo (Payload Ledger + Summary). Cannot reach the step-6 sanitizer, secrets tripwire, render canary, or disclosure receipt.')
     # --quiet hides accounting; --verbose adds announcements and optional
     # transport-exposure diagnostics. Neither flag disables integrity checks.
@@ -3178,42 +2649,15 @@ def main():
                     proc.communicate()
                     logger.print(f"\n      [Error] Timed out after 180s; process group killed.")
                     continue
-                # SILENT-SUCCESS RECEIPT (convicted 2026-07-24 by this compile's
-                # own probe): a grep whose PASS condition is NO MATCH exits 1
-                # with empty stdout AND empty stderr, and this branch used to
-                # raise -- deleting the receipt for exactly those probes whose
-                # success IS silence. The Manifest, which claims sole authority
-                # over what ran, then shows a gap where a green belongs, and the
-                # straddle reads as a missing probe rather than a passing one.
-                # Land a synthetic receipt instead so meaningful silence is
-                # visible. Sibling of the FAILED-PROBE RECEIPT amendment: that
-                # one rescued stderr-only failures, this one rescues the
-                # no-output-at-all case it left behind.
+                # § FAILED-PROBE RECEIPT & § STDERR MERGE AMENDMENT: preserve silent-exit-1, stderr-only, and tail-capped stderr receipts.
                 if proc.returncode != 0 and not cmd_stdout.strip() and not cmd_stderr.strip():
                     cmd_stdout = "(no output, no stderr -- the exit code is the whole receipt)"
-                # FAILED-PROBE RECEIPT (banked 2026-07-20, canary-witnessed): an
-                # all-stderr failure is a valid receipt, not a skip. Conviction:
-                # the 2026-07-20 SERVICE_DISABLED live LISTs vanished from the
-                # Manifest twice because empty stdout raised here; only the
-                # Processing Log preserved them. Empty stdout with nonempty
-                # stderr now falls through so the stderr merge below lands it.
                 if proc.returncode != 0 and not cmd_stdout.strip():
                     content = "(no stdout -- stderr is the receipt)"
                 else:
                     content = cmd_stdout.strip() or "(Executed successfully, no output)"
                 if proc.returncode != 0:
-                    # Exit-code-as-data tools (grep -c, diff) signal via return
-                    # code while stdout carries the receipt. Preserve the receipt,
-                    # annotate the code, never silently drop the punch.
                     content = f"# NON-ZERO EXIT {proc.returncode} (stdout preserved as receipt)\n{content}"
-                # STDERR MERGE (banked 2026-07-19; mechanism landed one compile
-                # after the amendment -- the canary receipt convicted the gap).
-                # Diagnostics ride stderr by Unix design (`time`, cache
-                # counters, -X importtime); capturing stdout alone kept the
-                # payload channel and discarded the receipt channel. Fold
-                # stderr into EVERY receipt, fenced and tail-capped per the
-                # Probe Economy Rule so a runaway stream can't flood the
-                # manifest.
                 _err = cmd_stderr.strip()
                 if _err:
                     _CAP = 2000
@@ -3257,16 +2701,7 @@ def main():
                     logger.print(f"   -> ⚠️ $URL cache miss for {target_url}")
                     logger.print(f"      Run the !{target_url} scrape first to populate browser_cache.")
                 else:
-                    # PARTIAL REFUSAL. headers.json stays honest even when the
-                    # body does not (and when it doesn't, it says so in its own
-                    # error key), so it always lands. source.html under a
-                    # fallback flag is the hydrated DOM wearing the "Raw Source"
-                    # label -- the one artifact here that can be silently,
-                    # confidently wrong to a model that cannot check it -- so
-                    # THAT lens is withheld and replaced by a note naming the
-                    # remedy. Refusing the whole compile would be
-                    # disproportionate; proceeding silently would ship the lie.
-                    # Withhold the liar, keep the witness.
+                    # Withhold source.html when source_provenance != 'wire' while keeping headers.json.
                     provenance = None
                     try:
                         with open(headers_file, 'r', encoding='utf-8') as f:
@@ -3458,22 +2893,7 @@ def main():
         # ABSOLUTE PATH CERTAINTY: Resolve to absolute path immediately (tilde-aware)
         path = os.path.expanduser(path)
         full_path = os.path.join(REPO_ROOT, path) if not os.path.isabs(path) else path
-        # THE DE-PREFIXED COMMAND HINT (convicted 2026-08-03): three probe
-        # echoes lost their leading "! " during a hand-copy into context.txt, so
-        # the compiler parsed them as PATHS, printed three IDENTICAL generic
-        # warnings, and the operator's eye slid past all three -- costing the
-        # AFTER half of an exit-code straddle. THE DISCRIMINATION QUESTION,
-        # applied to a warning: the old message printed the same sentence
-        # whether a file was genuinely absent or a command had lost its sigil,
-        # so it could not tell the operator which repair to make. A router path
-        # has never carried a space or a shell metacharacter; a de-prefixed
-        # command almost always does. False positive costs one sentence in a
-        # warning that was already firing; false negative costs a straddle.
-        # THE FIRST EMISSION WAS REFUSED for ambiguity: it anchored on
-        # `if not os.path.exists(full_path):`, which occurs twice at this
-        # indentation -- here and in check_topological_integrity. That refusal
-        # is the GOOD one under the HAND-REPAIR CLAUSE: the interlock read the
-        # body, found it twice, and declined to guess.
+        # Warn specifically when a missing path looks like a command that lost its leading '! '.
         if not os.path.exists(full_path) and (' ' in path or any(ch in path for ch in ';|>&$')):
             logger.print(f"Warning: DE-PREFIXED COMMAND? Add the leading '! ' in context.txt: {path} <--- !!!")
             continue
@@ -3743,21 +3163,29 @@ def main():
         if analysis_output:
             builder.add_auto_context("Static Analysis Diagnostics", analysis_output)   
 
-    # Git Diff Telemetry Validation (Backpropagation Channel)
+    # Git Diff Telemetry Validation (Backpropagation Channel, Hybrid Stat + Slice capped so giant commits never rebound)
+    MAX_DIFF_TELEMETRY_BYTES = 24_000
     try:
-        # Prefer the live working-tree diff so an xp-applied patch is visible
-        # to the very next compiled postback before it has been committed.
-        diff_result = subprocess.run(['git', 'diff', 'HEAD'], capture_output=True, text=True, cwd=REPO_ROOT)
+        diff_args = ['HEAD']
+        diff_result = subprocess.run(['git', 'diff', *diff_args], capture_output=True, text=True, cwd=REPO_ROOT)
         diff_label = "### Working Tree Changes Since HEAD"
-
-        # If the tree is clean, fall back to the most recent committed change.
         if not diff_result.stdout.strip():
-            diff_result = subprocess.run(['git', 'diff', 'HEAD~1', 'HEAD'], capture_output=True, text=True, cwd=REPO_ROOT)
+            diff_args = ['HEAD~1', 'HEAD']
+            diff_result = subprocess.run(['git', 'diff', *diff_args], capture_output=True, text=True, cwd=REPO_ROOT)
             diff_label = "### Most Recent Commit Changes"
-
-        if diff_result.stdout.strip():
+        raw_diff = diff_result.stdout.strip()
+        if raw_diff:
+            diff_bytes = len(raw_diff.encode('utf-8'))
+            if diff_bytes > MAX_DIFF_TELEMETRY_BYTES:
+                stat_res = subprocess.run(['git', 'diff', '--stat', *diff_args], capture_output=True, text=True, cwd=REPO_ROOT)
+                sliced = raw_diff[:MAX_DIFF_TELEMETRY_BYTES].rsplit('\n', 1)[0]
+                raw_diff = (
+                    f"{stat_res.stdout.strip()}\n\n{sliced}\n\n"
+                    f"... [Git diff telemetry capped at {MAX_DIFF_TELEMETRY_BYTES:,} of {diff_bytes:,} bytes; "
+                    f"run git diff {' '.join(diff_args)} for full hunks]"
+                )
             fence = "``" + "`"
-            builder.add_auto_context("Recent Git Diff Telemetry", f"{diff_label}\n{fence}diff\n" + diff_result.stdout.strip() + f"\n{fence}")
+            builder.add_auto_context("Recent Git Diff Telemetry", f"{diff_label}\n{fence}diff\n{raw_diff}\n{fence}")
     except Exception as e:
         logger.print(f"Warning: Failed to gather git diff telemetry: {e}")
 
@@ -3909,32 +3337,8 @@ def main():
                 preview += f", +{len(autolink_bait) - 5} more"
             print(f"🔎 Autolink exposure (diagnostic): {len(autolink_bait)} bare www-token(s): {preview}")
 
-    # Secrets tripwire: runs on every payload, under every profile. A
-    # 'warn' secrets mode (no-egress local lane only) shouts but emits;
-    # everything else fails closed. No flag reaches this decision.
+    # § THE GATE SPEAKS A VERDICT: print dynamic ARMED hit count unconditionally on every compile.
     secret_hits = scan_secrets(final_output)
-    # THE SILENT-PASS PROBLEM (self-convicted 2026-08-03; this compile's own
-    # existence was the only receipt that the gate had run at all). An ARMED
-    # gate that finds nothing prints NOTHING -- and a DISARMED gate also
-    # prints nothing. The two states are indistinguishable from the output,
-    # which is exactly how this call sat commented out long enough to become
-    # furniture. Mirror of REFUSAL-ONLY WITNESS: that rule names a guard
-    # observed only REFUSING; this is a guard whose PASSING branch has no
-    # witness at all. Same reasoning as the render canary's deliberately
-    # nonzero floor -- an instrument that could read silent forever is
-    # indistinguishable from a dead one. One line, every compile, unconditional.
-    # The emergency-disarm comment that used to sit on the next line is
-    # deleted on purpose: the DESIGNED escape is a disclosure profile with
-    # "secrets": "warn", which shouts and lands in the transcript. A
-    # commented-out disarm sitting one line under an armed gate is an
-    # invitation with no receipt attached.
-    # CASHED 2026-08-28: exactly that invitation was accepted -- a live
-    # `secret_hits = None` rode the working tree for one compile, directly
-    # under this ARMED banner, so the console claimed a guard that no longer
-    # existed. Removed the same morning. The ONLY sanctioned disarm is the
-    # profile escape below ('secrets': 'warn'), which downgrades the failure
-    # while leaving a receipt; a silent None leaves none and would have been
-    # committed to the public repo by the next `m` alongside unrelated work.
     print(f"🔐 Secrets tripwire: ARMED -- {len(secret_hits)} hit(s) in payload.")
     if secret_hits:
         total_secret_hits = len(secret_hits)
