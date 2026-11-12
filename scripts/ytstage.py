@@ -150,12 +150,105 @@ def _local_server_alive(port: int = LOCAL_PORT) -> bool:
         return False
 
 
+def _ensure_local_server(port: int = LOCAL_PORT, auto_start: bool = True, wait_sec: float = 20.0) -> bool:
+    """Ensure Pipulate FastHTML server is answering on 127.0.0.1:port; auto-launch server.py if asleep."""
+    if _local_server_alive(port):
+        return True
+    if not auto_start:
+        return False
+    repo_root = Path(__file__).resolve().parents[1]
+    venv_py = repo_root / ".venv" / "bin" / "python"
+    srv_py = repo_root / "server.py"
+    if not (venv_py.is_file() and srv_py.is_file()):
+        return False
+    print(f"🚀 Local Pipulate server asleep on :{port}; auto-starting {srv_py.name}...")
+    log_f = open("/tmp/pipulate_ytstage_server.log", "a", encoding="utf-8")
+    subprocess.Popen(
+        [str(venv_py), str(srv_py)],
+        cwd=str(repo_root),
+        stdout=log_f,
+        stderr=subprocess.STDOUT,
+        start_new_session=True,
+    )
+    deadline = time.monotonic() + wait_sec
+    while time.monotonic() < deadline:
+        if _local_server_alive(port):
+            print(f"✅ Local Pipulate server ready on http://127.0.0.1:{port}")
+            return True
+        time.sleep(0.5)
+    return False
+
+
 def _tunnel_pids() -> list[str]:
     pattern = f"{REMOTE_TUNNEL_PORT}:127[.]0[.]0[.]1:{LOCAL_PORT}"
     res = subprocess.run(
         ["pgrep", "-f", pattern], capture_output=True, text=True, check=False
     )
     return [p.strip() for p in (res.stdout or "").splitlines() if p.strip()]
+
+
+def _remote_tunnel_healthy() -> bool:
+    """Verify from Honeybot itself that 127.0.0.1:REMOTE_TUNNEL_PORT reaches Prime's FastHTML server."""
+    probe = (
+        "import urllib.request, sys\n"
+        f"r = urllib.request.urlopen('http://127.0.0.1:{REMOTE_TUNNEL_PORT}/', timeout=3)\n"
+        "sys.exit(0 if r.status < 500 else 1)\n"
+    )
+    res = subprocess.run(
+        ["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=5", HONEYBOT_HOST, "python3", "-"],
+        input=probe,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    return res.returncode == 0
+
+
+def _ensure_reverse_tunnel() -> bool:
+    """Guarantee a working end-to-end SSH reverse tunnel (reaping stale local/remote sockets if dead)."""
+    if _tunnel_pids() and _remote_tunnel_healthy():
+        return True
+    for pid in _tunnel_pids():
+        subprocess.run(["kill", pid], check=False)
+    subprocess.run(
+        [
+            "ssh",
+            "-o",
+            "BatchMode=yes",
+            "-o",
+            "ConnectTimeout=5",
+            HONEYBOT_HOST,
+            f"fuser -k {REMOTE_TUNNEL_PORT}/tcp >/dev/null 2>&1 || true",
+        ],
+        check=False,
+    )
+    tun = subprocess.run(
+        [
+            "ssh",
+            "-f",
+            "-N",
+            "-o",
+            "BatchMode=yes",
+            "-o",
+            "ExitOnForwardFailure=yes",
+            "-o",
+            "ServerAliveInterval=15",
+            "-o",
+            "ServerAliveCountMax=2",
+            "-R",
+            f"{REMOTE_TUNNEL_PORT}:127.0.0.1:{LOCAL_PORT}",
+            HONEYBOT_HOST,
+        ],
+        check=False,
+    )
+    if tun.returncode != 0:
+        return False
+    deadline = time.monotonic() + 8.0
+    while time.monotonic() < deadline:
+        if _remote_tunnel_healthy():
+            return True
+        time.sleep(0.4)
+    return False
 
 
 def build_remote_speak_script(say_text: str) -> str:
@@ -256,9 +349,31 @@ import os, pathlib, shutil, subprocess, time
 env = os.environ.copy()
 extra = "/etc/profiles/per-user/mike/bin:/home/mike/.nix-profile/bin:/run/current-system/sw/bin:/usr/bin:/bin"
 env["PATH"] = extra + ":" + env.get("PATH", "")
+for p in sorted(pathlib.Path("/proc").glob("[0-9]*/cmdline")):
+    try:
+        raw_cmd = p.read_bytes().replace(b"\\x00", b" ").decode("utf-8", errors="ignore")
+        if not any(tok in raw_cmd for tok in ("stream.py", "logs.py", "obs", "xfce4-session")):
+            continue
+        for item in (p.parent / "environ").read_bytes().split(b"\\x00"):
+            if b"=" in item:
+                k, v = item.split(b"=", 1)
+                ks = k.decode("utf-8", errors="ignore")
+                vs = v.decode("utf-8", errors="ignore")
+                if ks in ("XAUTHORITY", "XDG_RUNTIME_DIR", "DBUS_SESSION_BUS_ADDRESS") and vs:
+                    env[ks] = vs
+        if env.get("XAUTHORITY"):
+            break
+    except Exception:
+        continue
 env["DISPLAY"] = ":10.0"
+env.setdefault("XDG_RUNTIME_DIR", f"/run/user/{{os.getuid()}}")
+xauth = pathlib.Path.home() / ".Xauthority"
+if not env.get("XAUTHORITY") and xauth.is_file():
+    env["XAUTHORITY"] = str(xauth)
 if {freeze_hud!r}:
     _pause_honeybot_stage(pause_audio={pause_audio!r})
+if shutil.which("xdotool", path=env["PATH"]):
+    subprocess.run(["xdotool", "mousemove", "1916", "540"], env=env, check=False)
 subprocess.run(["pkill", "-f", {STAGE_PROFILE_DIR!r}], check=False)
 time.sleep(0.2)
 prof = pathlib.Path({STAGE_PROFILE_DIR!r})
@@ -275,7 +390,7 @@ prof.mkdir(parents=True, exist_ok=True)
 before_res = subprocess.run(["wmctrl", "-l"], env=env, capture_output=True, text=True, check=False)
 before_wids = {{ln.split()[0] for ln in (before_res.stdout or "").splitlines() if ln.strip()}}
 proc = subprocess.Popen(
-    ["firefox", "--profile", {STAGE_PROFILE_DIR!r}, "--no-remote", "--new-instance", {stage_url!r}],
+    ["firefox", "--kiosk", "--profile", {STAGE_PROFILE_DIR!r}, "--no-remote", "--new-instance", {stage_url!r}],
     env=env,
     stdout=subprocess.DEVNULL,
     stderr=subprocess.DEVNULL,
@@ -283,7 +398,7 @@ proc = subprocess.Popen(
 )
 if {freeze_hud!r}:
     pathlib.Path("/tmp/honeybot_weebo_active").write_text(str(proc.pid), encoding="utf-8")
-for _ in range(25):
+for _ in range(50):
     time.sleep(0.4)
     res = subprocess.run(["wmctrl", "-l"], env=env, capture_output=True, text=True, check=False)
     for line in (res.stdout or "").splitlines():
@@ -292,7 +407,7 @@ for _ in range(25):
             continue
         wid = parts[0]
         if wid not in before_wids and ("Firefox" in line or "Pipulate" in line or "Optics" in line):
-            subprocess.run(["wmctrl", "-i", "-r", wid, "-b", "add,fullscreen,above"], env=env, check=False)
+            subprocess.run(["wmctrl", "-i", "-r", wid, "-b", "add,fullscreen,above,skip_taskbar,skip_pager"], env=env, check=False)
             subprocess.run(["wmctrl", "-i", "-a", wid], env=env, check=False)
             print("STAGE_WINDOW_PINNED=" + wid)
             raise SystemExit(0)
@@ -332,16 +447,16 @@ def run_ytapp(
         )
         try:
             while True:
-                if _local_server_alive(LOCAL_PORT):
-                    chk = subprocess.run(
-                        ["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=5", HONEYBOT_HOST, "python3", "-"],
-                        input=claim_script,
-                        capture_output=True,
-                        text=True,
-                        check=False,
-                    )
-                    if "CLAIMED" in (chk.stdout or ""):
-                        print("🎬 Claimed Honeybot OPTICS_SLOT! Launching 911 LLM Optics stage...")
+                chk = subprocess.run(
+                    ["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=5", HONEYBOT_HOST, "python3", "-"],
+                    input=claim_script,
+                    capture_output=True,
+                    text=True,
+                    check=False,
+                )
+                if "CLAIMED" in (chk.stdout or ""):
+                    print("🎬 Claimed Honeybot OPTICS_SLOT! Ensuring local FastHTML server & launching stage...")
+                    if _ensure_local_server(LOCAL_PORT, auto_start=True):
                         rc = run_ytapp(
                             action="start",
                             subpath="/optics_workflow?demo=1",
@@ -356,11 +471,9 @@ def run_ytapp(
                         )
                         if watch_once:
                             return rc
-                elif watch_once:
-                    return 0
                 if watch_once:
                     return 0
-                time.sleep(2.5)
+                time.sleep(2.0)
         except KeyboardInterrupt:
             print("\n🛑 Stopped watching Honeybot station breaks.")
             return 0
@@ -403,7 +516,13 @@ def run_ytapp(
 
     if action == "stop":
         stop_script = (
-            "import subprocess\n"
+            "import json, pathlib, subprocess\n"
+            f"sp = pathlib.Path({OPTICS_SLOT_FILE!r})\n"
+            "if sp.is_file():\n"
+            "    try:\n"
+            "        sp.write_text(json.dumps({'state': 'done'}), encoding='utf-8')\n"
+            "    except Exception:\n"
+            "        pass\n"
             f"subprocess.run(['pkill', '-f', {STAGE_PROFILE_DIR!r}], check=False)\n"
             + REMOTE_RESUME_SNIPPET
         )
@@ -420,32 +539,16 @@ def run_ytapp(
         return 0
 
     # action == "start"
-    if not _local_server_alive(LOCAL_PORT):
+    if not _ensure_local_server(LOCAL_PORT, auto_start=True):
         print(
             f"⚠️ Local Pipulate server is not answering on http://127.0.0.1:{LOCAL_PORT}. "
             "Start it with `pu` or `nix develop` first."
         )
         return 1
 
-    if not _tunnel_pids():
-        tun = subprocess.run(
-            [
-                "ssh",
-                "-f",
-                "-N",
-                "-o",
-                "ExitOnForwardFailure=yes",
-                "-o",
-                "ServerAliveInterval=30",
-                "-R",
-                f"{REMOTE_TUNNEL_PORT}:127.0.0.1:{LOCAL_PORT}",
-                HONEYBOT_HOST,
-            ],
-            check=False,
-        )
-        if tun.returncode != 0:
-            print(f"❌ Failed to open SSH reverse tunnel to {HONEYBOT_HOST}.")
-            return 1
+    if not _ensure_reverse_tunnel():
+        print(f"❌ Failed to establish verified SSH reverse tunnel ({REMOTE_TUNNEL_PORT}->{LOCAL_PORT}) to {HONEYBOT_HOST}.")
+        return 1
 
     start_ts = time.time()
     _write_stage_audio_bridge(mute_stage=mute_stage)

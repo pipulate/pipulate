@@ -399,8 +399,111 @@ def _spoken_bot_label(raw_ua: str, known_bots=()) -> str:
     return tok.replace("-", " ").replace("_", " ")
 
 
+_REPORT_META_TTL_SEC = 90.0
+
+
+def _approx_count_words(n: int) -> str:
+    """Round counts UP with 'about' so spoken narration stays natural and resilient to live-stream ticks."""
+    import math
+    val = max(0, int(n or 0))
+    if val == 0:
+        return "0"
+    if val < 20:
+        return f"about {val}"
+    if val < 100:
+        return f"about {int(math.ceil(val / 5.0) * 5)}"
+    if val < 1_000:
+        return f"about {int(math.ceil(val / 10.0) * 10):,}"
+    if val < 10_000:
+        return f"about {int(math.ceil(val / 100.0) * 100):,}"
+    if val < 1_000_000:
+        return f"about {int(math.ceil(val / 1000.0) * 1000):,}"
+    return f"about {math.ceil((val / 1_000_000.0) * 10.0) / 10.0:.1f} million"
+
+
+def _approx_pct_words(pct: float, whole_above: float = 10.0) -> str:
+    """Round percentages UP behind 'about' so the last decimal never fights the visual chart."""
+    import math
+    p = max(0.0, float(pct or 0.0))
+    if p == 0.0:
+        return "0 percent"
+    if p >= whole_above:
+        return f"about {int(math.ceil(p))} percent"
+    return f"about {math.ceil(p * 10.0) / 10.0:.1f} percent"
+
+
+def _write_report_speech_snapshot(mode: str, payload: dict) -> None:
+    import json
+    import os
+    import time
+    from pathlib import Path
+    safe = "".join(c for c in str(mode or "overview") if c.isalnum() or c in ("_", "-")) or "overview"
+    p = Path(f"/tmp/honeybot_report_{safe}.meta.json")
+    tmp = p.with_name(f".{p.name}.{os.getpid()}.tmp")
+    data = dict(payload or {})
+    data["updated_at"] = round(time.time(), 3)
+    try:
+        tmp.write_text(json.dumps(data), encoding="utf-8")
+        os.replace(tmp, p)
+    except Exception:
+        pass
+
+
+def _read_report_speech_snapshot(mode: str, max_age: float = _REPORT_META_TTL_SEC):
+    import json
+    import time
+    from pathlib import Path
+    safe = "".join(c for c in str(mode or "overview") if c.isalnum() or c in ("_", "-")) or "overview"
+    p = Path(f"/tmp/honeybot_report_{safe}.meta.json")
+    try:
+        if not p.is_file():
+            return None
+        data = json.loads(p.read_text(encoding="utf-8"))
+        if not isinstance(data, dict):
+            return None
+        if (time.time() - float(data.get("updated_at") or 0.0)) > max_age:
+            return None
+        return data
+    except Exception:
+        return None
+
+
+def _format_overview_speech(total_hits: int, md_reads: int, total_cneg: int, md_pct: float, top_bots: list) -> str:
+    top_parts = []
+    for bname, cnt, share in top_bots[:4]:
+        top_parts.append(f"{bname} with {_approx_count_words(cnt)} reads, or {_approx_pct_words(share)}")
+    leaders_str = ", followed by ".join(top_parts[:2])
+    if len(top_parts) > 2:
+        leaders_str += ", and " + ", ".join(top_parts[2:])
+    return (
+        "Look first at the single cyan bar across the very top of this report. "
+        "That top bar shows the live share of all H T T P responses served as Markdown on a scale from zero to one percent: "
+        f"currently {_approx_pct_words(md_pct)} across {_approx_count_words(total_hits)} total origin responses, "
+        f"with {_approx_count_words(md_reads)} total Markdown deliveries and {_approx_count_words(total_cneg)} strict R F C 9110 Accept text slash markdown negotiations. "
+        "Now look at the stacked horizontal bars below the divider, which break that Markdown activity out by grouped User-Agent: "
+        f"{leaders_str}."
+    )
+
+
+def _format_bimodal_speech(eligible_html: int, js_horizon_hits: int, js_pct: float, top_bots: list) -> str:
+    top_js = []
+    for bname, cnt, share in top_bots[:4]:
+        top_js.append(f"{bname} at {_approx_count_words(cnt)} D O M hydrations, or {_approx_pct_words(share)} of J S")
+    leaders_js = ", followed by ".join(top_js[:2])
+    if len(top_js) > 2:
+        leaders_js += ", and " + ", ".join(top_js[2:])
+    return (
+        "Look first at the single amber bar across the very top of this report. "
+        "That top bar shows the live percentage of eligible H T M L page responses that executed client-side JavaScript and fired our eight-hundred-millisecond J S confirm dot gif sensor: "
+        f"currently {_approx_pct_words(js_pct)} across {_approx_count_words(eligible_html)} eligible H T M L responses, "
+        f"with {_approx_count_words(js_horizon_hits)} total trapdoor executions on our zero to five percent scale. "
+        "Now look at the stacked horizontal bars below the divider, which break those live JavaScript executions out by grouped User-Agent and cloud renderer fleet: "
+        f"{leaders_js}."
+    )
+
+
 def resolve_dynamic_report_speech(text: str) -> str:
-    """Replace {LIVE_REPORT:overview} or {LIVE_REPORT:bimodal} with live SQLite figures matching the on-screen chart."""
+    """Replace {LIVE_REPORT:overview} or {LIVE_REPORT:bimodal} using the chart's own snapshot + 'about' upward rounding."""
     s = str(text or "")
     if "{LIVE_REPORT:" not in s:
         return s
@@ -447,25 +550,29 @@ def resolve_dynamic_report_speech(text: str) -> str:
                 """
             )
             md_reads = int((cur.fetchone() or [0])[0] or 0)
-            cneg_rows = db.get_content_neg_agents(limit=10)
-            total_cneg = max(1, sum(int(c) for _, c in cneg_rows))
-            if total_hits > 0 and cneg_rows:
-                md_pct = round((md_reads / max(1, total_hits)) * 100.0, 2)
-                top_parts = []
-                for ua, cnt in cneg_rows[:4]:
-                    bname = _spoken_bot_label(ua, known_bots=KNOWN_BOTS)
-                    share = round((int(cnt) / total_cneg) * 100.0, 1)
-                    top_parts.append(f"{bname} with {int(cnt):,} reads or {share} percent")
-                leaders_str = ", followed by ".join(top_parts[:2])
-                if len(top_parts) > 2:
-                    leaders_str += ", and " + ", ".join(top_parts[2:])
-                live_ov = (
-                    "Look first at the single cyan bar across the very top of this report. "
-                    f"That top bar shows the live share of all H T T P responses served as Markdown on a scale from zero to one percent: "
-                    f"currently {md_pct} percent across {total_hits:,} total origin responses, with {md_reads:,} total Markdown deliveries and {total_cneg:,} strict R F C 9110 Accept text slash markdown negotiations. "
-                    "Now look at the stacked horizontal bars below the divider, which break that Markdown activity out by grouped User-Agent. "
-                    f"{leaders_str}."
+            snap_ov = _read_report_speech_snapshot("overview")
+            if snap_ov and snap_ov.get("top_bots"):
+                live_ov = _format_overview_speech(
+                    int(snap_ov["total_hits"]),
+                    int(snap_ov["md_reads"]),
+                    int(snap_ov["total_cneg"]),
+                    float(snap_ov["md_pct"]),
+                    snap_ov["top_bots"],
                 )
+            else:
+                cneg_rows = db.get_content_neg_agents(limit=30)
+                total_cneg = max(1, sum(int(c) for _, c in cneg_rows))
+                if total_hits > 0 and cneg_rows:
+                    md_pct = round((md_reads / max(1, total_hits)) * 100.0, 2)
+                    top_bots = [
+                        (_spoken_bot_label(ua, known_bots=KNOWN_BOTS), int(cnt), round((int(cnt) / total_cneg) * 100.0, 1))
+                        for ua, cnt in cneg_rows[:4]
+                    ]
+                    live_ov = _format_overview_speech(total_hits, md_reads, total_cneg, md_pct, top_bots)
+                else:
+                    raise ValueError("empty overview db")
+            if False:
+                live_ov = ""
             else:
                 raise ValueError("empty overview db")
         except Exception:
@@ -538,32 +645,53 @@ def resolve_dynamic_report_speech(text: str) -> str:
             )
             cloud_row = cur.fetchone() or (0, 0)
             cloud_triggers, cloud_ips = int(cloud_row[0] or 0), int(cloud_row[1] or 0)
-            js_rows = list(db.get_js_executors(limit=25))
-            if cloud_triggers > 0:
-                js_rows.append((
-                    f"[+{max(0, cloud_ips - 1)}] Mozilla/5.0 Chrome/135.0.0.0 Edg/135.0.0.0 (Stealth Cloud Renderers)",
-                    cloud_triggers,
-                ))
-            js_rows.sort(key=lambda item: int(item[1]), reverse=True)
-            total_js_execs = max(1, sum(int(c) for _, c in js_rows))
-            js_horizon_hits = js_telem_hits if js_telem_hits > 0 else total_js_execs
-            if eligible_html > 0 and js_rows:
-                js_pct = round((js_horizon_hits / max(1, eligible_html)) * 100.0, 2)
-                top_js = []
-                for ua, cnt in js_rows[:4]:
-                    bname = _spoken_bot_label(ua, known_bots=KNOWN_BOTS)
-                    share = round((int(cnt) / total_js_execs) * 100.0, 1)
-                    top_js.append(f"{bname} at {int(cnt):,} D O M hydrations or {share} percent of J S")
-                leaders_js = ", followed by ".join(top_js[:2])
-                if len(top_js) > 2:
-                    leaders_js += ", and " + ", ".join(top_js[2:])
-                live_bi = (
-                    "Look first at the single amber bar across the very top of this report. "
-                    f"That top bar shows the live percentage of eligible H T M L page responses that executed client-side JavaScript and fired our eight-hundred-millisecond J S confirm dot gif sensor: "
-                    f"currently {js_pct} percent across {eligible_html:,} eligible H T M L responses, with {js_horizon_hits:,} total trapdoor executions on our zero to five percent scale. "
-                    "Now look at the stacked horizontal bars below the divider, which break those live JavaScript executions out by grouped User-Agent and cloud renderer fleet. "
-                    f"{leaders_js}."
+            snap_bi = _read_report_speech_snapshot("bimodal")
+            if snap_bi and snap_bi.get("top_bots"):
+                live_bi = _format_bimodal_speech(
+                    int(snap_bi["eligible_html"]),
+                    int(snap_bi["js_horizon_hits"]),
+                    float(snap_bi["js_pct"]),
+                    snap_bi["top_bots"],
                 )
+            else:
+                cur.execute(
+                    """
+                    SELECT COALESCE(SUM(t.count), 0), COUNT(DISTINCT i.id)
+                    FROM telemetry t
+                    JOIN ips i ON t.ip_id = i.id
+                    JOIN user_agents ua ON t.ua_id = ua.id
+                    JOIN paths p ON t.path_id = p.id
+                    WHERE p.value LIKE '%js_confirm.gif%'
+                      AND ua.value LIKE '%ClaudeBot%'
+                      AND i.value NOT LIKE '127.%'
+                      AND i.value NOT LIKE '10.%'
+                      AND i.value NOT LIKE '192.168.%'
+                    """
+                )
+                c_row = cur.fetchone() or (0, 0)
+                c_triggers, c_ips = int(c_row[0] or 0), int(c_row[1] or 0)
+                js_rows = list(db.get_js_executors(limit=25))
+                if cloud_triggers > 0:
+                    js_rows.append((
+                        f"[+{max(0, cloud_ips - 1)}] Mozilla/5.0 Chrome/135.0.0.0 Edg/135.0.0.0 (Stealth Cloud Renderers)",
+                        cloud_triggers,
+                    ))
+                if c_triggers > 0 and not any("ClaudeBot" in str(u) for u, _ in js_rows):
+                    js_rows.append((f"[+{max(0, c_ips - 1)}] ClaudeBot/1.0", c_triggers))
+                js_rows.sort(key=lambda item: int(item[1]), reverse=True)
+                total_js_execs = max(1, sum(int(c) for _, c in js_rows))
+                js_horizon_hits = js_telem_hits if js_telem_hits > 0 else total_js_execs
+                if eligible_html > 0 and js_rows:
+                    js_pct = round((js_horizon_hits / max(1, eligible_html)) * 100.0, 2)
+                    top_bots = [
+                        (_spoken_bot_label(ua, known_bots=KNOWN_BOTS), int(cnt), round((int(cnt) / total_js_execs) * 100.0, 1))
+                        for ua, cnt in js_rows[:4]
+                    ]
+                    live_bi = _format_bimodal_speech(eligible_html, js_horizon_hits, js_pct, top_bots)
+                else:
+                    raise ValueError("empty bimodal db")
+            if False:
+                live_bi = ""
             else:
                 raise ValueError("empty bimodal db")
         except Exception:
@@ -707,6 +835,19 @@ def _build_station_report_panel(mode="overview", panel_width=None):
         js_horizon_hits = js_telem_hits if js_telem_hits > 0 else total_js_execs
         js_pct = round((js_horizon_hits / max(1, eligible_html_hits)) * 100.0, 2)
         js_horizon_5pct = min(100.0, round((js_pct / 5.0) * 100.0, 1))
+        _write_report_speech_snapshot(
+            mode,
+            {
+                "eligible_html": eligible_html_hits,
+                "js_horizon_hits": js_horizon_hits,
+                "total_js_execs": total_js_execs,
+                "js_pct": js_pct,
+                "top_bots": [
+                    (_spoken_bot_label(ua, known_bots=KNOWN_BOTS), int(cnt), round((int(cnt) / total_js_execs) * 100.0, 1))
+                    for ua, cnt in js_rows[:4]
+                ],
+            },
+        )
 
         title_str = "⚡ JAVASCRIPT DOM HYDRATION TRAPDOOR (0% → 5.0% OF ELIGIBLE HTML RESPONSES) & EXECUTOR BREAKDOWN"
         tbl.add_column("Execs", justify="right", style="bold yellow", width=8, no_wrap=True)
@@ -1086,6 +1227,19 @@ def _build_station_report_panel(mode="overview", panel_width=None):
         md_reads = int((cur.fetchone() or [0])[0] or 0)
         md_pct = round((md_reads / max(1, total_hits)) * 100.0, 2)
         md_horizon_1pct = min(100.0, round((md_pct / 1.0) * 100.0, 1))
+        _write_report_speech_snapshot(
+            "overview",
+            {
+                "total_hits": total_hits,
+                "md_reads": md_reads,
+                "total_cneg": total_cneg,
+                "md_pct": md_pct,
+                "top_bots": [
+                    (_spoken_bot_label(ua, known_bots=KNOWN_BOTS), int(cnt), round((int(cnt) / max(1, total_cneg)) * 100.0, 1))
+                    for ua, cnt in cneg_rows[:4]
+                ],
+            },
+        )
 
         title_str = "🧠 RFC 9110 MARKDOWN ADOPTION (0% → 1.0% OF ALL HTTP RESPONSES) & USER-AGENT BREAKDOWN"
         tbl.add_column("Reads", justify="right", style="bold cyan", width=8, no_wrap=True)

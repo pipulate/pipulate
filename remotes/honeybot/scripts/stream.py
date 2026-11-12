@@ -632,6 +632,13 @@ class Narrator(threading.Thread):
         raw = (text or "").strip()
         if not raw:
             return []
+        if "{LIVE_REPORT:" in raw:
+            try:
+                _reload_forest_module()
+                from forest import resolve_dynamic_report_speech
+                raw = resolve_dynamic_report_speech(raw).strip()
+            except Exception:
+                pass
         is_heading = False
         if raw.startswith("[[HEADING]]"):
             is_heading = True
@@ -1361,8 +1368,27 @@ def ensure_storytime_bgm_alive() -> bool:
 
 MEDIA_OVERLAY_MARKER = "honeybot_media_overlay"
 WEEBO_STAGE_PAUSE_FILE = "/tmp/honeybot_weebo_active"
+NO_MAX_TOGGLE_FILE = "/tmp/honeybot_no_max"
+NO_MAX_BOOT_GRACE_SEC = 180.0
+_show_boot_ts = time.time()
+_in_no_max_zone = False
 POST_WEEBO_BUFFER_SEC = 1.0
 _CACHED_SCREEN_GEOM = None
+
+
+def _is_max_popup_suppressed(media_spec) -> bool:
+    """True when media_spec is a Max Headroom popup and either /tmp/honeybot_no_max is set or the No-Max Zone is active."""
+    raw = str(media_spec.get("path") or media_spec.get("url") or media_spec.get("key") or "") if isinstance(media_spec, dict) else str(media_spec or "")
+    low = Path(raw.split(":", 1)[0]).name.lower() if raw else ""
+    if "max" not in low and "headroom" not in low:
+        return False
+    if Path(NO_MAX_TOGGLE_FILE).exists():
+        return True
+    if _in_no_max_zone or (time.time() - _show_boot_ts) < NO_MAX_BOOT_GRACE_SEC:
+        return True
+    if narrator._stage_dialogue_role in ("prologue", "narrator") and narrator.exclusive_mode.is_set():
+        return True
+    return False
 
 
 def _find_x11_lib(lib_name):
@@ -2033,6 +2059,8 @@ def _resume_honeybot_stage_after_weebo(paused_pids):
 
 def conjure_media(media_spec, duration=15.0, mute=False, _direct=False):
     """Pop up an image or video over the Honeybot :10.0 stream using mpv, feh, or Firefox fallback."""
+    if _is_max_popup_suppressed(media_spec):
+        return
     if isinstance(media_spec, dict):
         raw_target = str(media_spec.get("path") or media_spec.get("url") or media_spec.get("key") or "").strip()
         duration = float(media_spec.get("duration", duration))
@@ -2524,6 +2552,8 @@ def build_hud_circle_specs(mode: str = "OVERTURE", title: str = "") -> list:
 
 def run_hud_circle_tour(mode: str, content, env, profile_dir) -> None:
     """Execute the Opening Overture or Midpoint Intermission over the live Textual HUD."""
+    global _in_no_max_zone
+    _in_no_max_zone = True
     title = content.get("title", "") if isinstance(content, dict) else str(content or "")
     clean_mode = (mode or "OVERTURE").strip().upper()
     prev_role = narrator._stage_dialogue_role
@@ -2557,6 +2587,7 @@ def run_hud_circle_tour(mode: str, content, env, profile_dir) -> None:
                 narrator.enqueue_specs([spec])
         wait_for_voice_or_live_interrupt(env, profile_dir)
     finally:
+        _in_no_max_zone = False
         write_stage_state("narrator", "inactive", "inactive", hud_focus="")
         if clean_mode == "INTERMISSION":
             narrator._stage_dialogue_role = prev_role
@@ -2576,7 +2607,11 @@ def run_optics_station_slot(content, env, profile_dir) -> None:
     claim_grace = float(cfg.get("claim_grace", 35.0))
     max_hold = float(cfg.get("timeout", 180.0))
     slot_p = Path(OPTICS_SLOT_PATH)
-    # Publish "waiting" BEFORE speaking so Prime gets ~6s of free head-start to boot server.py & SSH -R 15001.
+    narrator.say("Checking Pipulate Prime for a live 911 L L M Optics spectrometer demonstration.")
+    wait_for_voice_or_live_interrupt(env, profile_dir)
+    if has_pending_update():
+        return
+    # Publish "waiting" AFTER Norma finishes speaking so Prime's SIGSTOP never clips her mid-sentence.
     try:
         slot_p.write_text(
             _json.dumps({"state": "waiting", "requested_at": round(time.time(), 3), "pid": os.getpid()}),
@@ -2584,14 +2619,6 @@ def run_optics_station_slot(content, env, profile_dir) -> None:
         )
     except OSError:
         pass
-    narrator.say("Checking Pipulate Prime for a live 911 L L M Optics spectrometer demonstration.")
-    wait_for_voice_or_live_interrupt(env, profile_dir)
-    if has_pending_update():
-        try:
-            slot_p.unlink(missing_ok=True)
-        except OSError:
-            pass
-        return
     claimed = False
     deadline = time.time() + handshake_wait
     while time.time() < deadline and not has_pending_update():
@@ -2667,7 +2694,7 @@ def dispatch_cue(command, content, env, profile_dir, pace_say=True):
     if command == "SAY":
         if isinstance(content, str) and "{CURRENT_ARTICLE}" in content:
             content = content.replace("{CURRENT_ARTICLE}", resolve_current_article_line())
-        if isinstance(content, str) and "{LIVE_REPORT:" in content:
+        if pace_say and isinstance(content, str) and "{LIVE_REPORT:" in content:
             try:
                 _reload_forest_module()
                 from forest import resolve_dynamic_report_speech
@@ -3094,7 +3121,9 @@ def perform_show(script):
 
 
     # --- NEW: Start the Timer ---
+    global _show_boot_ts
     start_time = time.time()
+    _show_boot_ts = start_time
     duration_seconds = SHOW_DURATION_MINUTES * 60
 
     # THE PITCH GRID. Derived from start_time, which is set two lines above and
