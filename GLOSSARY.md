@@ -1529,7 +1529,13 @@ Entries are alphabetical, numbers spelled as spoken.
   repo's select list, so the loss is cosmetic and silent, not cosmetic and
   nagging. FOURTH SIBLING of SINGLE-LINE / CASE-BLIND / UNANCHORED, and the
   first one that is about what the AUTHOR of a pattern cannot see rather than
-  what the pattern cannot match.
+  what the pattern cannot match. RULING ON SEALED BYTES (`_build_codebase_content`,
+  2026-09-06): both space-stuffing blank lines in `_build_codebase_content()`
+  before `write_context_cartridge` and teaching `apply.py` to match
+  whitespace-only lines against empty lines are refused -- the first would
+  corrupt the byte-faithful archive record before sealing, and the second
+  would permanently blunt the exact-match interlock (cured instead by
+  `apply.py`'s `BLANK-LINE GAP` and `FIRST DIVERGENCE` diagnostics).
 - **The Continuation Ladder** -- (seeded 2026-07-31, four rungs, one
   variable each): the pedagogical spine of the FDR. Each rung answers
   exactly one question -- WHY does the loop continue? -- and adds exactly
@@ -2648,7 +2654,15 @@ Mechanism, from the deed 467 receipts: the #ticker_bar in remotes/honeybot/scrip
   exact expression the mechanism evaluates, then confirm the probe evaluates
   THAT expression and not a plausible neighbour. Sibling: THE NIX-FILE LINT
   PROBE, where ruff parsed flake.nix as Python and printed 2,544 correct
-  errors about the wrong question.
+  errors about the wrong question. COMPILER SCOPE-PARITY & TREE CONVICTIONS
+  (`prompt_foo.py`, 2026-08-01 / 2026-08-21 / 2026-09-27): (1)
+  `check_topological_integrity()` splices the active `context.txt` overlay
+  into `ADHOC SLOT START/END` identically to `parse_file_list_from_config()`
+  and ignores commented prose tokens (unless followed only by `<--` or `'  #'`)
+  and tokens containing backticks, parens, or trailing `/.`; (2)
+  `run_tree_command()` passes explicit `'.'` to `eza --tree` because `eza`
+  with no path argument reads paths from `stdin` when `stdin` is non-TTY
+  (`/dev/null` -> EOF -> 0 lines).
 - **The Indented Quote Rule** -- *expanded rule; banked 2026-09-03.*
 
 ~~~text
