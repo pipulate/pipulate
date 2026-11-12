@@ -501,7 +501,10 @@ Entries are alphabetical, numbers spelled as spoken.
   discharge it; deleted the day the receipt exists. Debts are features: they
   keep the constitution falsifiable.
 - **Paintbox** -- *coverage ledger.* Files tracked by git but not yet mapped
-  into the Book's chapters; unclaimed colors awaiting a canvas.
+  into the Book's chapters; unclaimed colors awaiting a canvas. Persists its
+  previous `# Coverage: M/T` reading inside `foo_files.py`'s own tracked
+  header (`update_paintbox_in_place`, 2026-09-17) so claimed/tracked deltas
+  print on the console and land in `git diff`.
 - **Pascal's Wager (Playing to the Bleachers)** -- *decision theory under
   universal receipt reconciliation.* Stack two unfalsifiable frames -- the One
   Mind hypothesis (Open Individualism: one consciousness experiencing reality
@@ -749,7 +752,16 @@ Entries are alphabetical, numbers spelled as spoken.
 - **Triptych / Hinge A / Hinge B** -- *the three-panel scrape receipt.*
   View-source, hydrated DOM, wire truth; Hinge A is the structural diff
   (did JS conjure anything), Hinge B is the requestId proving panel 3's
-  Document row IS panel 1, byte for byte.
+  Document row IS panel 1, byte for byte. THREE-VALUED PROVENANCE &
+  EMPTY-PANEL REFUSAL (`print_optics_receipt`, 2026-07-24 / 2026-08-04 /
+  2026-09-05): `source_provenance` in `headers.json` is `'wire'` (witnessed
+  Document body), `'page_source_fallback'` (hydrated DOM fallback -- withheld
+  from `$URL` Raw Source while marking Hinge A `UNMEASURABLE`), or `None`
+  (pre-flag capture annotated at read time without mutating disk). Even when
+  `source_provenance == 'wire'`, a `0`-byte `source.html` (or `<1024` B under
+  a hydrated DOM `>= 8x` larger) refuses Hinge A as an empty-panel capture
+  fault, whereas two small panels (`example.com` at 474 B wire / 559 B disk)
+  pass as a genuinely tiny page.
 - **Two frogs, one pocket** -- *the routing rule.* The summoned Worm (rented,
   brilliant, amnesiac) gets recon and breadth; the pocket Frog (owned,
   persistent) gets receipts, memory, and anything with your name on it. Every
@@ -791,8 +803,10 @@ Entries are alphabetical, numbers spelled as spoken.
   pigment (`optics_deed.zip` or the live 30-second RAG studio bell) first.
   Banked 2026-11-10, articulation-banked.
 - **Wire truth** -- *the CDP network ledger.* What actually crossed the wire,
-  drained to network_log.jsonl; the noun that cannot be faked, distilled but
-  never pasted raw.
+  drained to network_log.jsonl; the noun that cannot be faked, distilled by
+  `distill_network_ledger()` (dropping `chrome://`, `about:`, `data:`, and
+  `blob:` cockpit gate-chatter and partitioning events by `target_domain` on
+  `documentURL`) and never pasted raw.
 - **Yen Sid-ton** -- *the summoned Expendable Familiar persona (Yen Sid + a ton
   of weights).* In Disney's *Fantasia* (1940), Mickey is the overwhelmed
   apprentice and Yen Sid (Disney spelled backward) is the master who owns the
@@ -1049,6 +1063,12 @@ Entries are alphabetical, numbers spelled as spoken.
 # the deed number first so a plain sort reads in order and the door's name on the
 # file so a stranger who receives one knows where it is explained; snapshots minted
 # before that day keep their foo- names, because an archive is never renamed.
+# THE FIXED-POINT ENVELOPE (`cartridge_deed_footer`, 2026-09-06): writing the
+# SHA-stamped filename inside the sealed bytes would change the SHA, so
+# `write_context_cartridge` returns the rotated `snapshot` path at step 7 and
+# `cartridge_deed_footer()` appends `=== QA ARCHIVE SEAL ===` to clipboard
+# `egress_text` OUTSIDE the sealed bytes at step 8 (omitted on `-o` rendered
+# files like `first_wish.md`).
 ~~~
 
 - **The Attributed-Voice Rule** -- *provenance for every utterance, spoken or
@@ -1255,6 +1275,19 @@ Entries are alphabetical, numbers spelled as spoken.
   for the exact tokens that differ between the two worlds), never by COUNT;
   and when a cap is hit exactly, treat the receipt as TRUNCATED rather than
   complete.
+- **Cap Diff Telemetry & Guard Chat Bullet Normalization** -- *expanded rule; banked 2026-11-12, deed 982.*
+
+~~~text
+# § CAP DIFF TELEMETRY & GUARD CHAT BULLET NORMALIZATION (banked 2026-11-12, deed 982) -- Cap auto-injected git diff telemetry with a diffstat header plus a line-bounded byte slice (MAX_DIFF_TELEMETRY_BYTES) so large pruning commits never rebound deleted prose into the next compile's window, and verify asterisk vs. hyphen Markdown list prefixes against disk before patching multi-line Markdown strings across web chat UIs.
+# CONVICTION (deeds 974-982): During the 105 KB Landauer compression pass across foo_files.py and prompt_foo.py, Pass 1's 24-hunk deletion immediately rebounded into Turn 5's compile as 76,324 bytes (20,735 tokens) of uncapped 'AUTO: Recent Git Diff Telemetry', pushing the payload to 1,029,151 bytes. Adding MAX_DIFF_TELEMETRY_BYTES = 24_000 (prepending 'git diff --stat' and slicing raw diff text at a clean line boundary) capped Turn 6's 66,906 B diff at 24,255 B and Turn 7's 86,497 B diff at 23,338 B. In the same pass, a 122-line deletion block targeting PROGRESSIVE_REVEAL_PROMPT was skipped by apply.py's FIRST DIVERGENCE diagnostic because the browser chat UI normalized three '* **' Markdown bullets inside the Python string to '- **'.
+# RETIRED PASS 2 CHOPS (mapped to Chapter XVII Nix derivations in flake.nix) & PRESERVED DIAGNOSTIC ONE-LINERS:
+#   Retired zero-caller symbols (10): ROLLING_PIN_CHOP (! book), EMPTY (foo), WALK_CHOP (compile --frame lean), CONTEXT_LANDSCAPE_PROMPT, CHOP_POST_MORTEM, CHOP_FISHTANK, CHOP_HONEYBOT_HEALTH, PROGRESSIVE_REVEAL_PROMPT, CHOP_PROGRESSIVE_REVEAL (scripts/xp.py now routes to ADHOC_CHOP), and MATCHBOOK_CHOP.
+#   Reusable context.txt '! ' snippets:
+#     Server Post-Mortem: ! tail -n 150 logs/server.log | ! rg -B 2 -A 5 "FINDER_TOKEN" logs/server.log | tail -n 50 | ! rg -A 20 "Traceback" logs/server.log
+#     Honeybot Disk & DB Vitals: ! ssh honeybot 'df -h /; ls -lh ~/www/mikelev.in/honeybot.db*; du -sh ~/www/mikelev.in /var/log/nginx 2>/dev/null; true' | ! cat remotes/honeybot/queries/health_db_vitals.sql | ssh honeybot 'sqlite3 -header -column ~/www/mikelev.in/honeybot.db'
+#     Matchbook Key/Handle Audit: ! rg '^# § ' foo_files.py | ! .venv/bin/python -c 'import re;t=open("GLOSSARY.md",encoding="utf-8").read();[print(h,"--",re.sub(r"\s+"," ",p)) for h,p in re.findall(r"^- \*\*([^*]+)\*\* -- \*(.+?)\*",t,flags=re.M|re.S)]'
+~~~
+
 - **The Car Mints Its Own Twin** -- *a SEARCH must be unique in the file the
   earlier blocks of the same car leave behind.* Banked 2026-09-29, convicted
   at deed 1685 by apply.py's own interlock. Car 1 of the three-door ride
@@ -1999,7 +2032,7 @@ Entries are alphabetical, numbers spelled as spoken.
 # evaluating to an unchanged drv hash across the whole ride.
 ~~~
 
-- **Failed-Probe Receipt** -- (banked 2026-07-20, canary-witnessed same day): the `!` executor lands stderr-only failures as first-class Manifest receipts -- "# NON-ZERO EXIT N" header, "(no stdout -- stderr is the receipt)" placeholder, fenced tail-capped stderr. Witness: the deliberate canary `bash -c "echo canary-stderr >&2; exit 3"` surfaced in the next compile's LIVE COMMAND RECEIPTS exactly as specified. Method note: the fix was proven by MANUFACTURING a known failure and confirming the instrument displayed it -- a QA pipeline is trusted only once it has demonstrably shown red when red was true.
+- **Failed-Probe Receipt** -- (banked 2026-07-20, canary-witnessed same day): the `!` executor lands stderr-only failures as first-class Manifest receipts -- "# NON-ZERO EXIT N" header, "(no stdout -- stderr is the receipt)" placeholder, fenced tail-capped stderr. Witness: the deliberate canary `bash -c "echo canary-stderr >&2; exit 3"` surfaced in the next compile's LIVE COMMAND RECEIPTS exactly as specified. Method note: the fix was proven by MANUFACTURING a known failure and confirming the instrument displayed it -- a QA pipeline is trusted only once it has demonstrably shown red when red was true. SIBLING COMPILER RECEIPT GUARDS (`prompt_foo.py` `main`, 2026-07-24 / 2026-08-03 / 2026-09-27): (1) **Silent-Success Receipt** -- when `proc.returncode != 0` with empty stdout and empty stderr (e.g., a `grep` whose pass condition is no match), land `(no output, no stderr -- the exit code is the whole receipt)` instead of raising; (2) **De-Prefixed Command Hint** -- when a missing router path contains a space or shell metacharacter (`;|>&$`), warn explicitly that a `! ` probe likely lost its leading sigil; (3) `PIPULATE_COMPILE_LOCK=1` prevents Ouroboros self-invocation inside `!` probes, `--tree` (`store_false` on `no_tree`) overrides alias-baked `--no-tree`, and `--quiet` suppresses only step-5 console accounting while never reaching step-6 security gates.
 - **The Filter That Ate the Evidence** -- *a status guard applied to a payload
   channel.* Banked 2026-08-06, self-convicted in-payload.
   PromptBuilder.add_auto_context dropped any channel whose CONTENT contained
@@ -2022,7 +2055,12 @@ Entries are alphabetical, numbers spelled as spoken.
   the channel BY NAME. Sibling of THE VERIFIER THAT NEVER RAN -- that one is a
   witness never reached, this one is a witness reached and thrown away. The
   mechanism landed the same day as the is_telemetry exemption in
-  add_auto_context, which is why the key carries only the design rule.
+  add_auto_context, which is why the key carries only the design rule. Paired
+  with `_build_telemetry_content()` (convicted 2026-08-05 when `Recent Git Diff
+  Telemetry` and `Static Analysis Diagnostics` were counted in the Payload
+  Ledger and Summary but never emitted by `assemble_text()`, making the ledger
+  over-report assembled bytes until `Telemetry` became its own rendered payload
+  section).
 - **The Finding Dory Rule** -- *the procedure every hand step runs through
   before it is emitted.* Banked 2026-09-24, cartridge foo-75b9c41a-94.zip, at
   the operator's instruction. SPELL OUT THE TOOL-CALL YOU ARE MAKING OF THE
@@ -2223,6 +2261,12 @@ Entries are alphabetical, numbers spelled as spoken.
 # THE GATE-OR-STRADDLE RULE (banked 2026-09-03). A probe that prints the same thing in both worlds (a syntax check, a load test) is a GATE: it can prove the patch broke nothing, never that it landed. Every car needs at least one probe whose reading MOVES. Label gates as gates when recommending them, so a green gate is never mistaken for a witnessed landing.
 ~~~
 
+- **The Gate Speaks a Verdict** -- *expanded rule; banked 2026-08-30.*
+
+~~~text
+# § THE GATE SPEAKS A VERDICT (banked 2026-08-30; compile-lane silent-pass convictions 2026-08-03 & 2026-08-28) -- A gate the operator or compiler reads prints an explicit verdict (GO/STOP, OFF/MISSING/N rule(s), or ARMED -- N hit(s)) beside its readings, never bare numbers or silence that makes an armed clean scanner indistinguishable from a missing table or disarmed check. In prompt_foo.py, _identity_table_state() reports 'OFF', 'MISSING (...)', or 'N rule(s)' (excluding pub:-only rules), and scan_secrets() prints '🔐 Secrets tripwire: ARMED -- N hit(s) in payload.' unconditionally on every compile.
+~~~
+
 - **The Generated-Not-Authored Rule** -- *expanded rule; banked 2026-07-20.*
 
 ~~~text
@@ -2236,6 +2280,17 @@ Entries are alphabetical, numbers spelled as spoken.
 # matched the same compile's live_registry_count=21 receipt name-for-name
 # on its first flight; the only stale state it can ever exhibit is a loud
 # GENERATION FAILED banner, which is a wound, not a lie.
+# SECOND & THIRD PROJECTIONS (`update_agents_md_in_place` &
+# `update_readme_md_in_place`, 2026-09-05 / 2026-09-06): splice the CRC-sealed
+# `wand.figurate("workspace_tree", console_output=False)` art between HTML
+# comment sentinels at step 2 of `main()` (before `!` probes run, refusing on
+# CRC drift and printing only when bytes change).
+~~~
+
+- **Guard Awk END Blocks on NR>0** -- *expanded rule; banked 2026-11-06, deed 761.*
+
+~~~text
+# § GUARD AWK END BLOCKS ON NR>0 (banked 2026-11-06, deed 761; paired with 2026-09-21 blackout convictions in fetch_honeybot_stats & update_stats_in_place) -- Guard awk END blocks in shell pipelines with if (NR>0) and validate digits|digits (_HONEYBOT_SHAPE) on both live and cached values, because an empty upstream SSH pipe exits 255 while awk END still exits 0 and prints a bare '|' or '0|0' that clobbers cached telemetry; use a 6h TTL with negative-attempt caching (attempted_epoch separate from fetched_epoch) and skip stats rewrites when a Darwin shadow corpus has 0 dated posts or a non-default path.
 ~~~
 
 - **The Half-Executed Hook** -- *expanded rule; banked 2026-08-05.*
@@ -2759,7 +2814,12 @@ Mechanism, from the deed 435 receipts: heal_corpus_mathjax() (--heal-mathjax [--
   width, the transport, the display. Parent of THE RENDER-GAP RULE (which is
   this rule's foreign-transport instance) and an instance of THE
   DISCRIMINATION QUESTION (a label that cannot distinguish two agents prints
-  identically in both worlds).
+  identically in both worlds). COMPILER INSTANCES (`prompt_foo.py`,
+  2026-07-31): `count_tokens()` warns loudly once per process
+  (`_TOKENIZER_FALLBACK_WARNED`) if `tiktoken` degrades to `len(text.split())`
+  word counts, and `scrub_compile_payload()` logs every individual PII
+  substitution rule that fires on assembled payload text so a rewritten
+  User-Agent or host is never silent.
 - **The LaTeX Transport Collision** -- *expanded rule; banked 2026-10-14.*
 
 ~~~text
@@ -3858,6 +3918,17 @@ Mechanism, from the deed 786 receipts: scripts/articles/googledocizer.py reads o
 # masked Google, Slack, and Anthropic fixtures, left
 # `session = requests.Session()` unchanged, and scan_secrets reported
 # downstream_hits=0.
+# CREDENTIALS VS. IDENTITY IN SECRET_TRIPWIRES (`prompt_foo.py`, 2026-08-26 /
+# 2026-11-01, deed 596): `pii_substitutions.txt` and `commit_denylist.txt`
+# govern client identity (relaxable via `--profile trusted --reason`), while
+# `SECRET_TRIPWIRES` governs credentials (`load_disclosure_profile` fails
+# closed to `FAILSAFE_PROFILE` and clamps `secrets != 'warn'` to `'block'`).
+# Three survival rules keep `SECRET_TRIPWIRES` from false-positive fatigue:
+# (1) require a real-length credential VALUE rather than a bare field name,
+# (2) write one character per literal as a character class (`PRIVAT[E]`) so
+# `prompt_foo.py` never self-matches in payloads, and (3) omit generic entropy
+# rules while excluding `_(FILE|PATH|DIR)` variable suffixes and `/` or `~/`
+# path values from uppercase secret assignments.
 ~~~
 
 - **Speaker-Turn Colons & Horizontal Whitespace in TTS Regexes** -- *expanded rule; banked 2026-11-09, deed 860.*
@@ -4004,7 +4075,7 @@ Mechanism, from the deed 825 and deed 831 receipts: remotes/honeybot/scripts/str
 - **The Success-Only Witness** -- *expanded rule; banked 2026-08-02.*
 
 ~~~text
-# - EARMARK: THE SUCCESS-ONLY WITNESS (banked 2026-08-02, cold-start ride six): a claim observed ONLY succeeding is indistinguishable from a claim that CANNOT fail, exactly as a guard observed only refusing is indistinguishable from one broken shut. Conviction: synthesize_and_play called wait() and DISCARDED the exit code while stderr went to DEVNULL, so a player killed by SIGFPE printed its reason into the void and the function returned True anyway -- speak_text reported success, the rider printed nothing, and the human heard silence beside a green console. The instrument that was supposed to report the failure was the thing hiding it. DISCRIMINATING QUESTION for act-claims: what does this print in the world where the act did not happen? If the answer is "success," it is not a receipt. This is also the missing third suspect from the 2026-07-26 THE DEMO WENT SILENT todo, which named transport and engine and never once looked at the subprocess exit status. Sibling of REFUSAL-ONLY WITNESS (one branch of a state machine) and of the MECHANICAL TEST in ATTRIBUTED-VOICE (a verb naming an act that no code performed).
+# - EARMARK: THE SUCCESS-ONLY WITNESS (banked 2026-08-02, cold-start ride six): a claim observed ONLY succeeding is indistinguishable from a claim that CANNOT fail, exactly as a guard observed only refusing is indistinguishable from one broken shut. Conviction: synthesize_and_play called wait() and DISCARDED the exit code while stderr went to DEVNULL, so a player killed by SIGFPE printed its reason into the void and the function returned True anyway -- speak_text reported success, the rider printed nothing, and the human heard silence beside a green console. The instrument that was supposed to report the failure was the thing hiding it. DISCRIMINATING QUESTION for act-claims: what does this print in the world where the act did not happen? If the answer is "success," it is not a receipt. This is also the missing third suspect from the 2026-07-26 THE DEMO WENT SILENT todo, which named transport and engine and never once looked at the subprocess exit status. Second conviction (`run_static_analysis` in `prompt_foo.py`, 2026-08-21): a pip-installed manylinux `ruff` died on NixOS's stub-ld loader (nonzero exit, empty stdout, discarded stderr) and an unguarded completion line printed a green checkmark anyway; cured by checking `result.returncode` explicitly and using native `pkgs.ruff`. Sibling of REFUSAL-ONLY WITNESS (one branch of a state machine) and of the MECHANICAL TEST in ATTRIBUTED-VOICE (a verb naming an act that no code performed).
 ~~~
 
 - **The Surface-First Routing Rule** -- *expanded rule; banked 2026-07-22.*
