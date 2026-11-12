@@ -455,9 +455,19 @@ def get_playlist(recent_n=10, include_archive=True):
         return []
 
 _TEX_SPOKEN_MAP = (
+    (r'\\(?:left|right)\b', ' '),
+    (r'\\[,;:!]|\\(?:quad|qquad)\b', ' '),
     (r'\\(?:long)?rightarrow\b|\\to\b|\\(?:Long)?Rightarrow\b', ' right arrow '),
     (r'\\(?:long)?leftarrow\b|\\(?:Long)?Leftarrow\b', ' left arrow '),
     (r'\\(?:long)?leftrightarrow\b|\\(?:Long)?Leftrightarrow\b|\\iff\b', ' left right arrow '),
+    (r'\\log_2\b', ' log base 2 '),
+    (r'\\log\b', ' log '),
+    (r'\\nabla\b', ' gradient '),
+    (r'\\partial\b', ' partial '),
+    (r'\\int\b', ' integral '),
+    (r'\\mid\b', ' given '),
+    (r'\\equiv\b', ' is equivalent to '),
+    (r'\\in\b', ' in '),
     (r'\\times\b', ' times '),
     (r'\\cdot\b', ' dot '),
     (r'\\(?:le|leq)\b', ' less than or equal to '),
@@ -557,12 +567,38 @@ def _truncate_after_editorial_take(text):
 def _humanize_tex_expr(expr):
     """Convert inner TeX/MathJax math into natural speech without dollar signs or raw backslashes."""
     s = expr.strip()
-    s = re.sub(r'\\frac\{([^{}]*)\}\{([^{}]*)\}', r' \1 over \2 ', s)
-    s = re.sub(r'\\(?:text|mathrm|mathbf|mathcal|mathit|texttt|operatorname)\{([^{}]*)\}', r'\1', s)
+    s = re.sub(r'(?:\{\})?\^\*\s*\\mathbb\{R\}', ' hyperreal R ', s)
+    s = re.sub(r'\\mathbb\{([^{}]*)\}', r' \1 ', s)
+    for _ in range(2):
+        s = re.sub(r'\\(?:text|mathrm|mathbf|mathcal|mathit|texttt|operatorname)\{([^{}]*)\}', r' \1 ', s)
+        s = re.sub(r'\\sqrt\{([^{}]*)\}', r' square root of \1 ', s)
+        s = re.sub(r'\\(?:overrightarrow|vec)\{([^{}]*)\}', r' vector \1 ', s)
+        s = re.sub(r'\\dot\{([^{}]*)\}', r' \1 dot ', s)
+        s = re.sub(r'\\bar\{([^{}]*)\}', r' \1 bar ', s)
+        s = re.sub(r'\\hat\{([^{}]*)\}', r' \1 hat ', s)
+    for _ in range(2):
+        s = re.sub(r'\\frac\{([^{}]*)\}\{([^{}]*)\}', r' \1 over \2 ', s)
+    s = s.replace(r'\<', '<').replace(r'\>', '>')
     for pat, repl in _TEX_SPOKEN_MAP:
         s = re.sub(pat, repl, s)
+    s = re.sub(r'_\{\s*<\s*([A-Za-z0-9]+)\s*\}', r' sub less than \1 ', s)
+    s = re.sub(r'_\{([^{}]+)\}', r' sub \1 ', s)
+    s = re.sub(r'_([A-Za-z0-9])\b', r' sub \1 ', s)
+    s = re.sub(r'\^T\b', ' transpose ', s)
+    s = re.sub(r'\^\{([^{}]+)\}', r' to the \1 ', s)
+    s = re.sub(r'\^([A-Za-z0-9])\b', r' to the \1 ', s)
+    s = re.sub(r'\[\s*(-?\d[\d.,]*)\s*,\s*(-?\d[\d.,]*)\s*\]', r' from \1 to \2 ', s)
+    s = re.sub(r'([A-Za-z])\[([^\[\]]+)\]', r'\1 of (\2)', s)
+    s = s.replace('[', '(').replace(']', ')')
+    s = s.replace('=', ' equals ').replace('<', ' less than ').replace('>', ' greater than ')
+    s = re.sub(r'([A-Za-z0-9_)\]}])\s*-\s*([A-Za-z0-9_(\[{])', r'\1 minus \2', s)
+    s = re.sub(r'(?:^|(?<=[=(\s]))-\s*(?=[A-Za-z0-9\\])', ' minus ', s)
+    s = s.replace('+', ' plus ')
     s = re.sub(r'\\([A-Za-z]+)', r' \1 ', s)
     s = s.replace('{', ' ').replace('}', ' ')
+    s = re.sub(r'\bdx\b', 'D X', s)
+    s = re.sub(r'\bdy\b', 'D Y', s)
+    s = re.sub(r'\bdt\b', 'D T', s)
     s = re.sub(r'\s+', ' ', s).strip()
     return f" {s} " if s else " "
 
@@ -586,11 +622,11 @@ def _is_single_dollar_mathjax(masked_line, s_pos, e_pos):
         return True
     if re.search(r"[\^_=<>&+]", expr):
         return True
-    if re.match(r"^(?:[A-Za-z]'?|\d+/\d+|[A-Za-z]/[A-Za-z])$", expr):
+    if re.match(r"^(?:[A-Za-z]'?|d[xyzuvt]|\d+/\d+|[A-Za-z]{1,2}/[A-Za-z]{1,2})$", expr):
         return True
     if re.match(r"^[A-Za-z]+\([^()]*\)$", expr):
         return True
-    if re.match(r"^[A-Za-z0-9_]+\s*[-+*/]\s*[A-Za-z0-9_]+$", expr):
+    if re.match(r"^\(?[A-Za-z0-9_]+\s*[-+*/,]\s*[A-Za-z0-9_]+\)?$", expr):
         return True
     return False
 
@@ -630,6 +666,11 @@ def _strip_mathjax_for_tts(text):
     text = re.sub(r'\$\$([\s\S]+?)\$\$', lambda m: _humanize_tex_expr(m.group(1)), text)
     text = re.sub(r'\\\(([\s\S]+?)\\\)', lambda m: _humanize_tex_expr(m.group(1)), text)
     text = re.sub(r'\\\[([\s\S]+?)\\\]', lambda m: _humanize_tex_expr(m.group(1)), text)
+    text = re.sub(
+        r'\$([^$\n]*\\[A-Za-z][^$\n]*)\n[ \t]*([^$\n]+)\$',
+        lambda m: f"${m.group(1)} {m.group(2)}$",
+        text,
+    )
     return "\n".join(_strip_single_dollar_mathjax_line(ln) for ln in text.splitlines())
 
 

@@ -34,7 +34,7 @@ REGEX_TERMS = (
     (re.compile(r"\$(\d[\d,]*(?:\.\d+)?)\s*[kK]\s*/\s*mo(?:nth)?\b"), r"\1 thousand dollars a month"),
     (re.compile(r"\$(\d[\d,]*(?:\.\d+)?)\s*[mM]\s*/\s*mo(?:nth)?\b"), r"\1 million dollars a month"),
     (re.compile(r"\$(\d[\d,]*(?:\.\d+)?)\s*[bB]\s*/\s*mo(?:nth)?\b"), r"\1 billion dollars a month"),
-    (re.compile(r"\$(\d[\d,]*(?:\.\d+)?)\s*/\s*mo(?:nth)?\b"), r"$\1 a month"),
+    (re.compile(r"\$(\d[\d,]*(?:\.\d+)?)\s*/\s*mo(?:nth)?\b"), r"\1 dollars a month"),
     # Hyphenated attributive currency ($10K-a-month, $10,000-a-month)
     (re.compile(r"\$(\d[\d,]*(?:\.\d+)?)\s*[kK]-(?=a\b|per\b|[A-Za-z])"), r"\1 thousand dollar "),
     (re.compile(r"\$(\d[\d,]*(?:\.\d+)?)-(?=a-month\b|per-month\b)"), r"\1 dollar "),
@@ -59,6 +59,7 @@ REGEX_TERMS = (
     (re.compile(r"\$(\d[\d,]*(?:\.\d+)?)\s*[kK]\b"), r"\1 thousand dollars"),
     (re.compile(r"\$(\d[\d,]*(?:\.\d+)?)\s*[mM]\b"), r"\1 million dollars"),
     (re.compile(r"\$(\d[\d,]*(?:\.\d+)?)\s*[bB]\b"), r"\1 billion dollars"),
+    (re.compile(r"\$(\d[\d,]*(?:\.\d+)?)\b"), r"\1 dollars"),
     # SaaS: guard against "SaaS (Software as a Service)" double-expansion before expanding bare SaaS
     (re.compile(r"\bSaaS\b(?=\s*\(\s*Software as a Service)", re.IGNORECASE), "S A A S"),
     # 911 LLM Optics & emergency first-aid phrasing (never "nine hundred eleven")
