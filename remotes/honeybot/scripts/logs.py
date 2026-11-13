@@ -76,14 +76,14 @@ DOOM_FIRE_PALETTE = (
     ("█", "bold #ffffff"),   # 7: White-hot ignition (100% block)
 )
 DEFAULT_TICKER_MESSAGE = (
-    "DON'T GIVE 30 SECS... | "
-    "HONEYBOT STORYTIME | "
-    "DON'T JOIN MY DISCORD | "
+    "LIVE WIRE TELEMETRY | "
+    "SEO -> AI-READINESS | "
+    "3-HOP MARKDOWN WEB | "
+    "INSPECT SUNPUG.IO | "
+    "FOUNDING 1000 GUILD | "
     "MIKELEV.IN/DISCORD | "
-    "DON'T VISIT SUNPUG.IO | "
     "TELL 1 SMART BUILDER | "
-    "CHAT SUMMONS MIKE | "
-    "AI'S @ MIKELEV.IN"
+    "CHAT SUMMONS MIKE"
 )
 STAGE_BOX_WIDTH = 14
 STAGE_LEFT_CURTAIN_LINES = ("", "Mike-E", "the", "Apprentice", "")
@@ -228,7 +228,7 @@ def _center_led_rows(card_str: str, width: int):
 def _classify_card_fire(card_text: str) -> str:
     """Return 'dramatic', 'subtle', or 'none' for a 5-row LED billboard card."""
     up = (card_text or "").upper()
-    if any(k in up for k in ("30 SECS", "GIVE 30", "BURN", "FIRE", "ASH")):
+    if any(k in up for k in ("BURN", "FIRE", "ASH")):
         return "dramatic"
     if any(k in up for k in ("SUMMON", "CHAT SUMMONS", "MIKE")):
         if "MIKELEV" not in up:

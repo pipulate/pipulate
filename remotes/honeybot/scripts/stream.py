@@ -457,9 +457,10 @@ _AI_TURN_PREFIX_RE = re.compile(
     re.IGNORECASE,
 )
 _HOST_TRANSIENT_RE = (
-    "we interrupt", "we now return", "scheduled station", "receiving updates",
-    "minor maintenance", "signal check", "the article currently", "now i read",
-    "resuming storytime", "breaking news", "to hear the next article",
+    "we interrupt", "we now return", "scheduled station", "scheduled observatory",
+    "field note from the wire", "end of wire field note", "field record from the web bot",
+    "receiving updates", "minor maintenance", "signal check", "the article currently",
+    "now i read", "resuming storytime", "breaking news", "to hear the next article",
     "if you are actually here", "none of this is trained", "this live-broadcast",
     "this is the signal",
 )
@@ -2504,7 +2505,7 @@ def build_hud_circle_specs(mode: str = "OVERTURE", title: str = "") -> list:
     return [
         narrator._make_spec(
             "norma",
-            "Around the Observatory stage: at the top of your screen is the live Engine X origin log stream from a home-hosted Nix O S server, highlighting A I crawlers in orange, R F C 94 21 signed bots in blue diamonds, and unmasked exploit scanners in red.",
+            "Field record from the Web Bot A I Observatory. Stay with this screen for twenty seconds before you scroll past: at the top is an unfiltered Engine X origin wire where A I retrieval agents now outpace human browsers — the exact edge telemetry enterprises unlock with Authoritative D N S and Orange-to-Orange C D N streams. Orange marks A I agents, blue diamonds mark R F C 94 21 cryptographic signatures, and red unmasks exploit scanners.",
             "narrator",
             "inactive",
             "inactive",
@@ -3054,7 +3055,10 @@ def run_station_break(env, profile_dir):
             # breaking news); here it is collateral.
             print(f"📉 STATION BREAK DROPPED {dropped} unspoken item(s) -- "
                   f"director ran ahead of the voice; that text was never heard.")
-        narrator.say("We interrupt this program for a station identification break.")
+        narrator.say(
+            "Field note from the wire. Before you scroll past this terminal, look closely at what is missing from the traffic above — "
+            "because the search-referral web most businesses still budget for has already decoupled from human clicks."
+        )
         narrator.queue.join()
         time.sleep(1.2)
         for cue_command, cue_content in bead:
@@ -3066,7 +3070,7 @@ def run_station_break(env, profile_dir):
             except Exception:
                 pass
         time.sleep(1.2)
-        narrator.say("We now return to our regularly scheduled program.")
+        narrator.say("End of wire field note. Returning to the archive reading.")
         wait_for_voice_or_live_interrupt(env, profile_dir)
         time.sleep(1.2)
     finally:
@@ -3078,9 +3082,9 @@ def run_station_break(env, profile_dir):
 
 
 REBOOT_ANNOUNCEMENT_TEXT = (
-    "Scheduled station reset. "
+    "Scheduled observatory reset. "
     "Honeybot is about to perform a routine five second memory refresh and restart the broadcast loop. "
-    "Do not adjust your set. The live stream will stay connected and storytime will resume in just a few seconds."
+    "The live stream will stay connected and the archive reading will resume in a few seconds."
 )
 _reboot_announced = False
 

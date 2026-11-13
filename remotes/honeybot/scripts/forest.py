@@ -47,21 +47,21 @@ REPORT_H_MARGIN = 3
 REPORT_V_MARGIN = 2
 
 WHATS_HAPPENING_BEAT = (
-    "You are watching the live Web Bot AI Observatory on bare metal — not filtered behind a CDN. "
-    "Watching AI crawlers and agents directly on the wire like fish in an aquarium builds an intuition you will never get from social media echo chambers. "
-    "Want your thirty-second ah-ha moment right now? Open ChatGPT or Claude and ask it a live question about mikelev.in. "
-    "When your prompt dispatches a live retrieval agent, a yellow RAG badge lights up on screen and rings the physical studio bell on the air. "
-    "Get your screenshot key ready for the wire-truth proof coming right up, forward this live feed to one sharp builder who needs to see it, "
-    "and join our Founding 1,000 practitioners at mikelev.in/discord."
+    "You are looking at an unmasked origin wire — no vendor dashboard, no sampling, and no proxy hiding the bots. "
+    "Enterprises can capture this exact telemetry at global scale through Authoritative DNS and Orange-to-Orange CDN log streams, yet almost nobody inspects it. "
+    "To verify this instrument live, open ChatGPT or Claude right now and ask a question about mikelev.in. "
+    "The moment its retrieval agent hits this server, a yellow RAG badge fires on screen and rings the physical bell in the studio. "
+    "Keep your screenshot key ready for the empirical chart coming up, send this feed to one engineer or executive still budgeting for legacy search clicks, "
+    "and join the Founding 1,000 practitioners at mikelev.in/discord."
 )
 
 CURRENT_ARTICLE_BEAT = "{CURRENT_ARTICLE}"
 
 CONSULTING_CTA_BEAT = (
-    "Got the SEO blues while AI Overviews eat your clicks and vendors pitch $10K/mo JavaScript pre-render taxes? "
-    "SEO moved to the Edge: one URL serving HTML to humans and clean RFC 9110 Markdown to AI agents, cached cleanly via RFC 9111 Vary Accept. "
-    "Grab your own free Sun Pug and 911 LLM Optics right now at SunPug.io, RFC9110.org, or RFC9111.io — "
-    "and rally with fellow AI-Readiness Consultants on Discord at mikelev.in/discord."
+    "Legacy search optimization was built for ten blue links that fewer humans click every month, while vendors still charge ten thousand dollars a month for JavaScript pre-render middleware. "
+    "AI-Readiness moves publishing to the HTTP edge: one canonical URL serving HTML to browsers and clean RFC 9110 Markdown to AI agents, cached deterministically via RFC 9111 Vary Accept across three small-world hops. "
+    "Inspect the open-source Sun Pug workbench and 911 LLM Optics locally on your own hardware — with zero central servers to bottleneck — at SunPug.io, RFC9110.org, or RFC9111.io, "
+    "or connect for enterprise ADNS and edge architecture at mikelev.in/discord."
 )
 
 
@@ -118,14 +118,14 @@ STATION_SEGMENTS = [
     _make_station_bead(
         "RFC 9110\nMARKDOWN",
         (
-            "Welcome to the Web Bot AI Observatory. "
-            "Like Benjamin Franklin dropping a thermometer into the Gulf Stream, "
-            "we measure which AI agents negotiate clean Markdown directly on the bare-metal wire."
+            "Most analytics suites record zero trace of AI retrieval agents because those agents never execute client-side tracking tags. "
+            "By instrumenting the raw HTTP socket directly — the same visibility enterprises unlock at scale with Authoritative DNS and Orange-to-Orange CDN log streams — "
+            "we measure which AI systems negotiate clean RFC 9110 Markdown on the wire."
         ),
         ("WINDOW", f"forest.py:{REPORT_WINDOW_CAP_SECONDS}:overview"),
         [
             "{LIVE_REPORT:overview}",
-            "Coming up on our next station break, we open 911 LLM Optics — our free, open-source Screaming Frog for the Age of AI at SunPug.io — to X-ray raw HTTP headers, hydrated DOM bloat, and RFC 9110 Markdown readiness side by side.",
+            "Coming up on our next wire field report, we open 911 LLM Optics — our open-source Screaming Frog for the Age of AI at SunPug.io — to X-ray raw HTTP headers, hydrated DOM bloat, and RFC 9110 Markdown readiness side by side.",
         ],
     ),
     # Bead 1 (Beat 3 -> Killer-App Payoff Promoted Ahead of White Rabbit: 911 LLM Optics @ SunPug.io)
@@ -159,17 +159,17 @@ STATION_SEGMENTS = [
     ),
     # Bead 3 (Beat 5b -> Follow the White Rabbit: "SEOs Assemble!" RFC 9110/9111 Edge Manifesto)
     _make_station_bead(
-        "SEOS\nASSEMBLE!",
+        "AI-READINESS\nARCHITECTURE",
         (
-            "Follow the White Rabbit. SEOs, assemble! "
-            "Google is locking down the SERPs, and we are gathering the sharpest practitioners in the world "
-            "who are ready to become real AI-Readiness Consultants."
+            "Follow the White Rabbit into post-search web architecture. "
+            "Google has walled off the SERPs, and technical practitioners who read raw edge logs and serve three-hop Markdown "
+            "are becoming the first generation of AI-Readiness architects."
         ),
         ("PATRONUS", {"key": "white_rabbit", "duration": 65.0}),
         [
             "For years, enterprise teams paid a $10K/mo JavaScript pre-render tax just to spoon-feed bloated HTML snapshots to search crawlers.",
             "Roy Fielding and Mark Nottingham already wired the cure into HTTP: RFC 9110 content negotiation and RFC 9111 Vary Accept caching let your existing CDN serve HTML to humans and clean Markdown to AI agents from one URL with zero SaaS rent.",
-            "Grab your own Sun Pug free at SunPug.io, tell one colleague there is real engineering life after generative doorway-pages, and join the Founding 1,000 on Discord at mikelev.in/discord.",
+            "Unfurl your own local-first Sun Pug workshop free at SunPug.io — running on your own hardware with zero central servers to overload — share it with one builder who needs a real post-search playbook, and join the Founding 1,000 at mikelev.in/discord.",
         ],
     ),
 ]
