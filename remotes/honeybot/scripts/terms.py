@@ -92,8 +92,9 @@ REGEX_TERMS = (
     (re.compile(r"\bWeb\s+3\.0\b", re.IGNORECASE), "Web three point oh"),
     (re.compile(r"\bSHA-?256\b", re.IGNORECASE), "S H A 256"),
     (re.compile(r"\b(?:Neovim|nvim)\b", re.IGNORECASE), "Neo vim"),
-    # Operation GKAAUAH: expand "Piper TTS" / "piper-tts" in full before bare "TTS"
+    # Operation GKAAUAH: expand "Piper TTS" / "piper-tts" and bare "TTS" unless already glossed
     (re.compile(r"\bPiper[- \t]+TTS\b", re.IGNORECASE), "Piper Text to Speech"),
+    (re.compile(r"\bTTS\b(?=\s*\(\s*text to speech)", re.IGNORECASE), "T T S"),
     (re.compile(r"\bdx/dy\b", re.IGNORECASE), "D X over D Y"),
     (re.compile(r"\bdy/dx\b", re.IGNORECASE), "D Y over D X"),
     # Data transfer rates (58.64 MiB/s, 550 KiB/s, 100 MB/s, 1 GB/s)
@@ -265,7 +266,11 @@ EXACT_CASE_TERMS = (
     ("GB", "gigabytes"),
     ("TB", "terabytes"),
     ("BAM", "bam"),
-    ("TTS", "T T S"),
+    ("TTS", "text to speech"),
+    ("OOB", "out of band"),
+    ("FYI", "for your information"),
+    ("SVGs", "S V Gs"),
+    ("SVG", "S V G"),
     ("GKAAUAH", "G K A A U A H"),
 )
 
