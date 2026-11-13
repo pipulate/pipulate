@@ -310,6 +310,80 @@ YT_TITLE_LIMIT = 100
 CONTACT_EMAIL = "miklevin@gmail.com"
 
 
+X_TWEET_LIMIT = 280
+X_URL_WEIGHT = 23
+
+
+def x_tweet_length(text):
+    """Compute X.com (twitter-text v3) weighted character count (URLs=23, wide/joiners=2)."""
+    import unicodedata
+    s = unicodedata.normalize("NFC", text or "")
+    s = re.sub(r"https?://\S+", "x" * X_URL_WEIGHT, s)
+    total = 0
+    for ch in s:
+        cp = ord(ch)
+        if (
+            (0 <= cp <= 0x10FF)
+            or (0x2000 <= cp <= 0x200D)
+            or (0x2010 <= cp <= 0x201F)
+            or (0x2032 <= cp <= 0x2037)
+        ):
+            total += 1
+        else:
+            total += 2
+    return total
+
+
+def _enforce_x_tweet_limit(tweet, limit=X_TWEET_LIMIT):
+    """Keep X promo copy <= 280 weighted chars while preserving article + live links."""
+    if x_tweet_length(tweet) <= limit:
+        return tweet
+    lines = [ln.rstrip() for ln in (tweet or "").strip().splitlines()]
+    prose_lines, link_lines, tag_tokens = [], [], []
+    for ln in lines:
+        s = ln.strip()
+        if not s:
+            continue
+        if s.startswith(("📖", "🔴")) or re.search(r"https?://\S+", s):
+            link_lines.append(s)
+        elif all(tok.startswith("#") for tok in s.split()):
+            tag_tokens.extend(s.split())
+        else:
+            inline_tags = re.findall(r"(?:^|\s)(#[A-Za-z0-9_]+)", s)
+            cleaned_s = re.sub(r"(?:^|\s)#[A-Za-z0-9_]+", "", s).strip()
+            if cleaned_s:
+                prose_lines.append(cleaned_s)
+            for t in inline_tags:
+                if t not in tag_tokens:
+                    tag_tokens.append(t)
+
+    def _assemble(p_text, t_list):
+        blocks = []
+        if p_text:
+            blocks.append(p_text)
+        if link_lines:
+            blocks.append("\n".join(link_lines))
+        if t_list:
+            blocks.append(" ".join(t_list))
+        return "\n\n".join(blocks).strip()
+
+    prose = " ".join(prose_lines).strip()
+    kept_tags = list(tag_tokens[:3])
+    while len(kept_tags) > 1 and x_tweet_length(_assemble(prose, kept_tags)) > limit:
+        kept_tags.pop()
+    candidate = _assemble(prose, kept_tags)
+    if x_tweet_length(candidate) <= limit:
+        return candidate
+    words = prose.split()
+    while words and x_tweet_length(_assemble(" ".join(words).rstrip(".,;:!?-") + "...", kept_tags)) > limit:
+        words.pop()
+    trimmed_prose = (" ".join(words).rstrip(".,;:!?-") + "...") if words else ""
+    candidate = _assemble(trimmed_prose, kept_tags)
+    if x_tweet_length(candidate) > limit and kept_tags:
+        candidate = _assemble(trimmed_prose, [])
+    return candidate
+
+
 def _yt_sanitize(text):
     """YouTube rejects '<' and '>' in both titles and descriptions."""
     return (text or "").replace("<", "[").replace(">", "]")
@@ -499,7 +573,9 @@ def get_broadcast_kit(target_key="1", slug_match=None):
         hero_img_dest = str(repo_root / fm_img_rel.lstrip("/"))
     else:
         hero_img_dest = str(repo_root / "assets" / "images" / f"{slug}.jpeg")
-    tags = " ".join(re.findall(r"#[A-Za-z0-9_]+", tweet))
+    tags = " ".join(dict.fromkeys(re.findall(r"#[A-Za-z0-9_]+", tweet)))
+    tweet = _enforce_x_tweet_limit(tweet)
+    tweet_x_len = x_tweet_length(tweet)
     yt_title = format_youtube_title(title)
     desc_parts = [
         f"📖 Read the full article: {canonical_url}?src=youtube",
@@ -533,23 +609,19 @@ def get_broadcast_kit(target_key="1", slug_match=None):
     yt_description = _yt_sanitize("\n".join(desc_parts).strip())
     li_imprint = _defang_prose_domains(imprint)
     li_meta = _defang_prose_domains(meta_desc)
-    li_parts = [
-        f"🚀 {title}",
-        "",
-        f"📖 Full article & code receipts: {canonical_url}?src=linkedin",
-        f"🔴 Watch/Listen 24/7 on Honeybot Storytime: {yt_live_vanity}",
-        f"🟣 Join the Founding 1,000 on Discord: {DEFAULT_DISCORD_INVITE_URL}",
-    ]
-    if li_imprint:
+    li_lead = li_meta or li_imprint
+    li_parts = [f"🚀 {title}"]
+    if li_lead:
+        li_parts.extend(["", li_lead])
+    if li_imprint and li_meta and li_imprint != li_meta:
         li_parts.extend(["", li_imprint])
-    elif li_meta:
-        li_parts.extend(["", li_meta])
-    if li_meta and li_imprint and li_meta != li_imprint:
-        li_parts.extend(["", f"TL;DR: {li_meta}"])
     li_parts.extend([
         "",
-        f"🎙️ Rather listen than read? Tune into the 24/7 Honeybot Storytime live stream ({yt_live_vanity}) where the latest article is read aloud alongside real-time AI bot telemetry.",
+        f"📖 Full article & code receipts: {canonical_url}?src=linkedin",
+        "🚲 Inspect the self-replicating Nix Flake workbench: curl -fsSL https://sunpug.io | less",
         f"🧪 Test RFC 9110 in your terminal: curl -sI -H \"Accept: text/markdown\" {canonical_url}?src=rfc9110",
+        f"🔴 Watch/Listen 24/7 on Honeybot Storytime: {yt_live_vanity}",
+        f"🟣 Join the Founding 1,000 on Discord: {DEFAULT_DISCORD_INVITE_URL}",
         f"🔭 Got the SEO Blues? SEO moved to the Edge — Your Site Is Your Feed: {base_url}/?src=linkedin#consulting",
     ])
     if tags:
@@ -559,29 +631,26 @@ def get_broadcast_kit(target_key="1", slug_match=None):
         s = re.sub(r"^#{1,6}\s+", "", text or "", flags=re.MULTILINE)
         s = re.sub(r"\*\*([^*]+)\*\*", r"\1", s)
         s = re.sub(r"__([^_]+)__", r"\1", s)
+        s = re.sub(r"`([^`]+)`", r"\1", s)
         s = re.sub(r"\[([^\]]+)\]\((https?://[^)]+)\)", r"\1 (\2)", s)
         return s.strip()
     fb_title = _strip_markdown_for_fb(title)
     fb_imprint = _strip_markdown_for_fb(li_imprint)
     fb_meta = _strip_markdown_for_fb(li_meta)
+    fb_lead = fb_meta or fb_imprint
     yt_live_fb = "youtube\x2e\u2060com/MikeLevin/live"
     discord_fb = f"discord\x2e\u2060gg/{DISCORD_INVITE_CODE}"
-    fb_parts = [
-        f"{fb_title}",
-        "",
-        f"📖 Full article & code receipts: {canonical_url}?src=fb",
-    ]
-    if fb_imprint:
+    fb_parts = [f"{fb_title}"]
+    if fb_lead:
+        fb_parts.extend(["", fb_lead])
+    if fb_imprint and fb_meta and fb_imprint != fb_meta:
         fb_parts.extend(["", fb_imprint])
-    elif fb_meta:
-        fb_parts.extend(["", fb_meta])
-    if fb_meta and fb_imprint and fb_meta != fb_imprint:
-        fb_parts.extend(["", f"TL;DR: {fb_meta}"])
     fb_parts.extend([
         "",
+        f"📖 Full article & code receipts: {canonical_url}?src=fb",
+        "🚲 Inspect the 60-second Nix Flake workbench: curl -fsSL https://sunpug.io | less",
         f"🔴 Watch/Listen 24/7 on Honeybot Storytime: {yt_live_fb}",
         f"🟣 Join the Founding 1,000 on Discord: {discord_fb}",
-        "🚲 Inspect the 60-second Nix Flake (`LPvg` -> `NPvg`) workbench: `curl -fsSL sunpug\x2e\u2060io | less`",
     ])
     if tags:
         fb_parts.extend(["", tags])
@@ -597,6 +666,7 @@ def get_broadcast_kit(target_key="1", slug_match=None):
         "gdoc_url": gdoc_url,
         "preview_url": preview_url,
         "tweet": tweet,
+        "tweet_x_len": tweet_x_len,
         "linkedin": linkedin_post,
         "fb": fb_post,
         "has_fm_image": bool(fm_img_rel),
@@ -1032,7 +1102,8 @@ def print_broadcast_kit(target_key="1", mode="card", slug_match=None):
     if mode == "tweet":
         copied = _copy_to_clipboard(kit["tweet"])
         print(kit["tweet"])
-        print(f"\n{'📋 Copied X.com Promo Tweet to clipboard!' if copied else 'ℹ️  (Non-TTY: printed only)'}")
+        x_len = kit.get("tweet_x_len", x_tweet_length(kit["tweet"]))
+        print(f"\n{'📋 Copied X.com Promo Tweet to clipboard!' if copied else 'ℹ️  (Non-TTY: printed only)'} ({x_len}/{X_TWEET_LIMIT} X chars)")
         return 0
     if mode == "linkedin":
         copied = _copy_to_clipboard(kit["linkedin"])
@@ -1080,7 +1151,8 @@ def print_broadcast_kit(target_key="1", mode="card", slug_match=None):
     print("🖼️  YAML FRONTMATTER OVERRIDE (type `ytyaml` to copy):")
     print(kit["hero_yaml"])
     print(thin)
-    print("🐦 X.COM PROMO TWEET (type `tweet` to copy):")
+    x_len = kit.get("tweet_x_len", x_tweet_length(kit["tweet"]))
+    print(f"🐦 X.COM PROMO TWEET [{x_len}/{X_TWEET_LIMIT} X chars] (type `tweet` to copy):")
     print(kit["tweet"])
     print(thin)
     print("💼 LINKEDIN PROMO POST (type `linkedin` to copy):")

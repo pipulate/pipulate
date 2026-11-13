@@ -66,6 +66,44 @@ def clean_json_string(text):
                 pass
         return None
 
+_INTERNAL_SHARD_FILE_RE = re.compile(
+    r"(?:^|/)[A-Za-z0-9_.-]+\.(?:py|md|txt|json|jsonl|nix|sh|lua|yml|yaml|toml|lock)$",
+    re.IGNORECASE,
+)
+_PUBLIC_SHARD_FILES = frozenset({
+    "llms.txt", "robots.txt", "sitemap.xml", "feed.xml",
+    "agents.md", "skill.md", ".zshrc", ".bashrc",
+})
+
+
+def _normalize_shard(raw_obj, article_data):
+    """Stamp canonical id/date/title and strip internal repo filenames from kw."""
+    if not isinstance(raw_obj, dict):
+        return raw_obj
+    stem = str(article_data.get("filename") or "")
+    fm = article_data.get("frontmatter") or {}
+    fm_date = str(fm.get("date") or "").strip()[:10]
+    stem_date = stem[:10] if re.match(r"^\d{4}-\d{2}-\d{2}$", stem[:10]) else ""
+    raw_obj["id"] = stem or raw_obj.get("id", "")
+    raw_obj["d"] = stem_date or (fm_date if re.match(r"^\d{4}-\d{2}-\d{2}$", fm_date) else raw_obj.get("d", ""))
+    if fm.get("title"):
+        raw_obj["t"] = str(fm["title"])
+    kws = raw_obj.get("kw")
+    if isinstance(kws, list):
+        cleaned_kws = []
+        for k in kws:
+            ks = " ".join(str(k or "").strip().split())
+            if not ks:
+                continue
+            low = ks.lower()
+            if low not in _PUBLIC_SHARD_FILES and _INTERNAL_SHARD_FILE_RE.search(low):
+                continue
+            if ks not in cleaned_kws:
+                cleaned_kws.append(ks)
+        raw_obj["kw"] = cleaned_kws
+    return raw_obj
+
+
 def generate_context_json(article_data, token_count, api_key=None):
     """
     Calls Gemini to compress the article.
@@ -83,16 +121,18 @@ def generate_context_json(article_data, token_count, api_key=None):
 
     **Input Data:**
     - Title: {article_data['frontmatter'].get('title', 'Unknown')}
-    - Date: {article_data['frontmatter'].get('date', 'Unknown')}
+    - Date: {article_data['frontmatter'].get('date') or article_data['filename'][:10]}
     - Filename: {article_data['filename']}
+    - Meta Description: {article_data['frontmatter'].get('meta_description', '')}
+    - Author Keywords: {article_data['frontmatter'].get('meta_keywords', '')}
     - Content: 
     {article_data['content'][:15000]} 
 
     **Instructions:**
-    1. **Analyze:** Read the content. Look past the title. Find specific technologies, concepts, or "aha!" moments.
+    1. **Analyze:** Prioritize the opening macro thesis and reader-facing industry shift, using downstream code diffs as supporting receipts.
     2. **Extract Sub-topics ('sub'):** Identify 3-5 distinct, specific sub-topics.
-    3. **Summarize ('s'):** Write a concise 1-2 sentence summary of the core thesis.
-    4. **Keywords ('kw'):** Extract 3-5 high-value technical keywords.
+    3. **Summarize ('s'):** Write a concise 1-2 sentence summary of the outward-facing thesis and proof (never use `manifesto`, `deterministic`, or `determinism`).
+    4. **Keywords ('kw'):** Extract 4-5 canonical outward-facing technical/industry keywords (e.g., `RFC 9110`, `Nix Flakes`, `Content Negotiation`, `Edge Workers`, `Python`, `MCP`, `K-Means Clustering`) mixing durable domain anchors with specific concepts. NEVER include internal repo filenames (`GLOSSARY.md`, `foo_files.py`, `apply.py`, `context.txt`).
 
     **Output Format:**
     Provide ONLY a valid JSON object. Do not include markdown formatting like ```json.
@@ -139,14 +179,15 @@ def generate_context_json(article_data, token_count, api_key=None):
                 text = text.strip()
 
                 try:
-                    json_obj = json.loads(text)
+                    json_obj = _normalize_shard(json.loads(text), article_data)
                     # Success! Show which model actually did the work.
                     print(f"  ↳ 🧠 Forged by: {current_model}")
-                    return json_obj, duration, 0 
+                    return json_obj, duration, 0
                 except json.JSONDecodeError as e:
                     print(f"  ⚠️ JSON Parse Error: {e}. Attempting cleanup...")
                     cleaned = clean_json_string(text)
                     if cleaned:
+                        cleaned = _normalize_shard(cleaned, article_data)
                         print(f"  ↳ 🧠 Forged by: {current_model} (Cleaned)")
                         return cleaned, duration, 0
                     else:
@@ -254,15 +295,19 @@ def process_batch(batch_files, key_name, api_key, context_dir, dry_run):
             
             print(f"✅ Saved ({duration:.2f}s)")
             processed_count += 1
-            time.sleep(SAFETY_SLEEP_SECONDS)
+            if i + 1 < len(batch_files):
+                time.sleep(SAFETY_SLEEP_SECONDS)
         
         elif status == 1: # Quota Hit
             print("❌ Quota Exceeded. Stopping batch.")
+            batch_files[:] = batch_files[i:]
             break # Stop this key, move to next
         
         elif status == 2: # Skip File
             print("⏭️  Skipping file due to error.")
             continue # Move to next file, SAME key
+    else:
+        batch_files.clear()
 
     return processed_count
 
@@ -299,7 +344,9 @@ def main():
 
     if args.keys:
         # Multi-key Mode
-        requested_keys = [k.strip() for k in args.keys.split(',')]
+        requested_keys = [k.strip() for k in args.keys.split(',') if k.strip()]
+        if requested_keys == ['all']:
+            requested_keys = list(common.load_keys_dict().keys())
         for k in requested_keys:
             val = common.get_api_key(k)  # Ensures interactive prompt if missing
             keys_queue.append((k, val))
@@ -336,8 +383,9 @@ def main():
         count = process_batch(current_batch, key_name, api_key, context_dir, args.dry_run)
         total_processed += count
         
-        if count < len(current_batch):
-            print(f"⚠️ Key '{key_name}' exhausted early. Switching...")
+        if current_batch:
+            to_process = current_batch + to_process
+            print(f"⚠️ Key '{key_name}' exhausted early ({len(current_batch)} re-queued). Switching...")
     
     print(f"\n✨ Grand Total: {total_processed} articles processed across {len(keys_queue)} keys.")
 

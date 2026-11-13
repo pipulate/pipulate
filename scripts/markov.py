@@ -83,6 +83,23 @@ def _norm_topic(raw: str) -> str:
     return " ".join(str(raw or "").strip().split())
 
 
+_PUBLIC_FILE_TOPICS = frozenset({
+    "llms.txt", "robots.txt", "sitemap.xml", "feed.xml",
+    "agents.md", "skill.md", ".zshrc", ".bashrc",
+})
+_INTERNAL_FILE_RE = re.compile(
+    r"(?:^|/)[A-Za-z0-9_.-]+\.(?:py|md|txt|json|jsonl|nix|sh|lua|yml|yaml|toml|lock)$",
+    re.IGNORECASE,
+)
+
+
+def _is_internal_artifact(topic: str) -> bool:
+    low = (topic or "").strip().lower()
+    if not low or low in _PUBLIC_FILE_TOPICS:
+        return False
+    return bool(_INTERNAL_FILE_RE.search(low))
+
+
 def analyze_corpus_shards(target_spec: str = "1", top_k: int = 5) -> int:
     target_name, posts_dir = _resolve_posts_dir(target_spec)
     context_dir = posts_dir / "_context"
@@ -192,7 +209,7 @@ def analyze_corpus_shards(target_spec: str = "1", top_k: int = 5) -> int:
 
     momentum = []
     for topic, r_cnt in recent_counts.items():
-        if r_cnt < 2:
+        if r_cnt < 2 or _is_internal_artifact(topic):
             continue
         r_rate = r_cnt / r_len
         p_rate = prior_counts.get(topic, 0) / p_len
@@ -208,6 +225,7 @@ def analyze_corpus_shards(target_spec: str = "1", top_k: int = 5) -> int:
     connected = [k for k in raw_pool if topic_counts[k] >= 2 and len(trans_1.get(k, ())) > 0]
     cur_states = (connected + [k for k in raw_pool if k not in connected])[:4]
 
+    cur_pool_lower = {k.lower() for k in raw_pool}
     # Aggregate 1st-order predictions from current article's top keywords
     next_candidates: Counter = Counter()
     for st in cur_states:
@@ -215,7 +233,7 @@ def analyze_corpus_shards(target_spec: str = "1", top_k: int = 5) -> int:
         row_total = sum(row.values())
         if row_total > 0:
             for target_st, cnt in row.items():
-                if target_st not in cur_states:
+                if target_st.lower() not in cur_pool_lower and not _is_internal_artifact(target_st):
                     next_candidates[target_st] += cnt / row_total
 
     # HitTail "Step Into Traffic" Bridges: connected to current state, high corpus weight,
