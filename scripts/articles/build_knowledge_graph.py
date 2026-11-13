@@ -1,4 +1,5 @@
 import json
+import math
 import re
 import warnings
 import argparse
@@ -10,7 +11,7 @@ import numpy as np
 import yaml
 import frontmatter
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.cluster import KMeans, MiniBatchKMeans
+from sklearn.cluster import AgglomerativeClustering, KMeans, MiniBatchKMeans
 from sklearn.decomposition import TruncatedSVD
 from sklearn.metrics import adjusted_rand_score, silhouette_score
 from sklearn.preprocessing import Normalizer
@@ -392,8 +393,20 @@ def project_xml_sitemaps(tree_node, base_url="https://mikelev.in", output_dir=Pa
 
 # --- MAIN EXECUTION ---
 
+_RESERVED_HUB_SLUGS = frozenset({
+    "misc", "assets", "images", "pages", "feed", "latest",
+    "about", "futureproof", "api", "discord", "index",
+})
+
 _EXPLICIT_KW_ALIASES = {
     "model-context-protocol": ("mcp", "MCP"),
+    "gsc": ("google-search-console", "Google Search Console"),
+    "google-search-console": ("google-search-console", "Google Search Console"),
+    "cli": ("command-line", "Command Line"),
+    "command-line-interface": ("command-line", "Command Line"),
+    "command-line": ("command-line", "Command Line"),
+    "search-engine-optimization": ("seo", "SEO"),
+    "seo": ("seo", "SEO"),
     "mcp": ("mcp", "MCP"),
     "jupyter-notebook": ("jupyter-notebooks", "Jupyter Notebooks"),
     "jupyter-notebooks": ("jupyter-notebooks", "Jupyter Notebooks"),
@@ -420,7 +433,7 @@ def _build_keyword_canon(df):
         for raw_kw in kw_list:
             clean_kw = str(raw_kw or "").strip()
             s = slugify(clean_kw)
-            if not s or s == "misc":
+            if not s or s in _RESERVED_HUB_SLUGS:
                 continue
             raw_slug_totals[s] += 1
             slug_casing.setdefault(s, Counter())[clean_kw] += 1
@@ -483,17 +496,20 @@ def _build_keyword_canon(df):
 
 
 def _rank_hub_keywords(indices, doc_kw_lists, global_df, canon_titles, excluded_slugs):
-    """Rank candidate hub slugs by Support-Weighted Fowlkes-Mallows Specificity."""
+    """Rank candidate hub slugs by Bayesian-smoothed specificity with a 14% support floor."""
     h_size = max(1, len(indices))
     c_counts = Counter(
-        cs for idx in indices for cs in doc_kw_lists[idx] if cs not in excluded_slugs
+        cs for idx in indices for cs in doc_kw_lists[idx]
+        if cs not in excluded_slugs and cs not in _RESERVED_HUB_SLUGS
     )
     if not c_counts:
-        return [("misc", "Misc", 0, 1, 0.0)]
+        return [("topic", "Topic", 0, 1, 0.0)]
+    min_support = max(3, min(10, int(round(0.14 * h_size)))) if h_size >= 15 else 1
+    eligible = [item for item in c_counts.items() if item[1] >= min_support] or list(c_counts.items())
     scored = []
-    for cs, c in c_counts.items():
+    for cs, c in eligible:
         g = max(1, global_df[cs])
-        spec_score = (c * c) / ((h_size * g) ** 0.5)
+        spec_score = (c * c) / (((h_size + 4.0) * (g + 15.0)) ** 0.5)
         scored.append((cs, canon_titles[cs], c, g, spec_score))
     scored.sort(key=lambda x: (-x[4], -x[2], x[3], x[0]))
     return scored
@@ -509,8 +525,19 @@ def _gini_coeff(values):
     return float((np.sum((2.0 * idx - n - 1.0) * arr)) / (n * total))
 
 
-def run_candidate_hub_report(df_raw, posts_dir, cand_k=0, bud_cap=75):
-    """Read-only statistical report for Seed-Settle-Bud deterministic hub design."""
+def _extract_prototype_terms(tfidf_mat, feature_names, indices, top_n=75):
+    """Extract L2-normalized sparse Rocchio prototype weights for JSON persistence."""
+    if not indices:
+        return {}
+    mean_vec = np.asarray(tfidf_mat[indices].mean(axis=0)).ravel()
+    top_idx = np.argsort(mean_vec)[::-1][:top_n]
+    picked = [(str(feature_names[i]), float(mean_vec[i])) for i in top_idx if mean_vec[i] > 1e-5]
+    norm = math.sqrt(sum(v * v for _, v in picked)) or 1.0
+    return {t: round(v / norm, 5) for t, v in picked}
+
+
+def compute_two_tier_hub_plan(df_raw, posts_dir, cand_k=0, n_pillars=0, bud_cap=75):
+    """Pre-baked 2-Tier Spherical K-Means + Ward Pillar Hierarchy + River Streaming Radar."""
     df = df_raw.copy()
     df["sort_date"] = [
         d if (d and d != "None") else (i[:10] if re.match(r"^\d{4}-\d{2}-\d{2}", i) else "")
@@ -518,231 +545,259 @@ def run_candidate_hub_report(df_raw, posts_dir, cand_k=0, bud_cap=75):
     ]
     df = df.sort_values(by=["sort_date", "id"], ascending=[False, True], kind="mergesort").reset_index(drop=True)
     n_docs = len(df)
+    chosen_k = cand_k if (cand_k and cand_k > 1) else (28 if n_docs >= 500 else max(2, n_docs // 25))
+    chosen_p = n_pillars if (n_pillars and n_pillars > 1) else min(9, max(2, round(chosen_k / 3.0)))
 
     doc_kw_lists, global_df, canon_titles, merged_syns = _build_keyword_canon(df)
-
     vec = TfidfVectorizer(stop_words="english", max_features=2500, ngram_range=(1, 2), sublinear_tf=True)
     tfidf_mat = vec.fit_transform(df["soup"])
     n_comp = min(32, max(2, n_docs - 2), max(2, tfidf_mat.shape[1] - 1))
-    svd = TruncatedSVD(n_components=n_comp, random_state=42)
-    dense_mat = Normalizer(copy=False).fit_transform(svd.fit_transform(tfidf_mat))
+    dense_mat = Normalizer(copy=False).fit_transform(
+        TruncatedSVD(n_components=n_comp, random_state=42).fit_transform(tfidf_mat)
+    )
+    feature_names = vec.get_feature_names_out()
 
-    print(f"\n📊 SEED-SETTLE-BUD CANDIDATE HUB REPORT ({n_docs} articles, {len(global_df)} canonical keywords)")
-    print("=" * 92)
-    print("1. TOP SYNONYM / PLURAL / ACRONYM CONSOLIDATIONS (Deduplicated Doc Frequency):")
-    for c_slug, c_title, doc_cnt, variants in merged_syns[:12]:
-        v_str = " + ".join(f"{v_name}({v_cnt})" for v_name, v_cnt in sorted(variants, key=lambda x: -x[1]))
+    km = KMeans(n_clusters=chosen_k, random_state=42, n_init=20)
+    labels = km.fit_predict(dense_mat)
+    raw_clusters = []
+    for cid in range(chosen_k):
+        idxs = np.where(labels == cid)[0].tolist()
+        if idxs:
+            raw_clusters.append((cid, idxs, _rank_hub_keywords(idxs, doc_kw_lists, global_df, canon_titles, set())))
+    raw_clusters.sort(key=lambda x: (-x[2][0][4], -len(x[1]), x[0]))
+
+    used_slugs = set()
+    hub_records = []
+    for cid, idxs, _ in raw_clusters:
+        ranked = _rank_hub_keywords(idxs, doc_kw_lists, global_df, canon_titles, used_slugs)
+        h_slug, h_title, c_hit, g_hit, spec = ranked[0]
+        if h_slug in used_slugs:
+            h_slug = f"{h_slug}-{cid}"
+        used_slugs.add(h_slug)
+        sub_mat = dense_mat[idxs]
+        cent = sub_mat.mean(axis=0)
+        cn = float(np.linalg.norm(cent)) or 1.0
+        cent = cent / cn
+        hub_records.append({
+            "cid": cid,
+            "slug": h_slug,
+            "title": h_title,
+            "permalink": f"/{h_slug}/",
+            "parent_slug": None,
+            "idxs": idxs,
+            "centroid": cent,
+            "cohesion": float(np.mean(sub_mat @ cent)),
+            "g_hit": g_hit,
+            "spec": spec,
+            "prototype_terms": _extract_prototype_terms(tfidf_mat, feature_names, idxs),
+            "prototype_keywords": {cs: round(sc, 4) for cs, _, _, _, sc in ranked[:20] if sc > 0},
+        })
+
+    if len(hub_records) > chosen_p >= 2:
+        s_lbls = AgglomerativeClustering(n_clusters=chosen_p, linkage="ward").fit_predict(
+            np.vstack([r["centroid"] for r in hub_records])
+        )
+        groups = {}
+        for pos, sl in enumerate(s_lbls):
+            groups.setdefault(int(sl), []).append(hub_records[pos])
+        for grp in groups.values():
+            grp.sort(
+                key=lambda r: (
+                    -(len(r["idxs"]) * (0.5 + r["cohesion"]) * (1.0 + 0.12 * math.log1p(r["g_hit"]))),
+                    r["slug"],
+                )
+            )
+            p_slug = grp[0]["slug"]
+            for child in grp[1:]:
+                child["parent_slug"] = p_slug
+
+    try:
+        import river
+        from river.drift import ADWIN
+        river_ver = getattr(river, "__version__", "ok")
+        adwins = {r["slug"]: ADWIN(delta=0.05) for r in hub_records}
+    except Exception:
+        river_ver, adwins = "fallback", {}
+
+    active_slugs = {r["slug"] for r in hub_records}
+    doc_to_hub = {idx: r["slug"] for r in hub_records for idx in r["idxs"]}
+    cents = {r["slug"]: r["centroid"] for r in hub_records}
+    drift_hits = Counter()
+    nov_ema = {s: 0.25 for s in active_slugs}
+    hub_mom, hub_last = {s: 0.0 for s in active_slugs}, {s: 0 for s in active_slugs}
+    kw_mom, kw_last, kw_tot = {}, {}, Counter()
+    h_kw_mom = {s: {} for s in active_slugs}
+    h_kw_last = {s: {} for s in active_slugs}
+    h_kw_cnt = {s: Counter() for s in active_slugs}
+    decay = 0.985
+
+    for step, doc_idx in enumerate(reversed(range(n_docs))):
+        hs = doc_to_hub.get(doc_idx)
+        if not hs:
+            continue
+        nov = max(0.0, 1.0 - float(dense_mat[doc_idx] @ cents[hs]))
+        nov_ema[hs] = 0.90 * nov_ema[hs] + 0.10 * nov
+        if hs in adwins:
+            adwins[hs].update(nov)
+            if getattr(adwins[hs], "drift_detected", False):
+                drift_hits[hs] += 1
+        hub_mom[hs] = hub_mom[hs] * (decay ** (step - hub_last[hs])) + 1.0
+        hub_last[hs] = step
+        for cs in doc_kw_lists[doc_idx]:
+            if cs in active_slugs or cs in _RESERVED_HUB_SLUGS:
+                continue
+            kw_mom[cs] = kw_mom.get(cs, 0.0) * (decay ** (step - kw_last.get(cs, step))) + 1.0
+            kw_last[cs] = step
+            kw_tot[cs] += 1
+            h_kw_mom[hs][cs] = h_kw_mom[hs].get(cs, 0.0) * (decay ** (step - h_kw_last[hs].get(cs, step))) + 1.0
+            h_kw_last[hs][cs] = step
+            h_kw_cnt[hs][cs] += 1
+
+    f_step = max(0, n_docs - 1)
+    h_vel_raw = {s: hub_mom[s] * (decay ** (f_step - hub_last[s])) for s in active_slugs}
+    vel_sum = sum(h_vel_raw.values()) or 1.0
+    for r in hub_records:
+        s = r["slug"]
+        v_share = h_vel_raw[s] / vel_sum
+        v_boost = min(0.35, max(0.0, (v_share * len(active_slugs) - 1.0) * 0.12))
+        r["vel_pct"] = v_share * 100.0
+        r["drift_hits"] = int(drift_hits[s])
+        r["pressure"] = (len(r["idxs"]) / float(bud_cap)) * (
+            0.55 + nov_ema[s] + v_boost + (0.15 if drift_hits[s] else 0.0)
+        )
+        cands = [
+            (m * (decay ** (f_step - h_kw_last[s][cs])), h_kw_cnt[s][cs], cs, canon_titles.get(cs, cs))
+            for cs, m in h_kw_mom[s].items() if h_kw_cnt[s][cs] >= 5
+        ]
+        cands.sort(reverse=True)
+        r["emerging"] = cands[0] if cands else None
+
+    emerging_global = []
+    for cs, m in kw_mom.items():
+        if kw_tot[cs] >= 6:
+            best_h = max(active_slugs, key=lambda s: h_kw_cnt[s][cs])
+            emerging_global.append((
+                cs, canon_titles.get(cs, cs), m * (decay ** (f_step - kw_last[cs])),
+                kw_tot[cs], best_h, h_kw_cnt[best_h][cs],
+            ))
+    emerging_global.sort(key=lambda x: (-x[2], -x[3], x[0]))
+
+    pages_dir = posts_dir.parent / "pages"
+    retired_map, direct_keep = {}, 0
+    if pages_dir.is_dir():
+        active_perms = {r["permalink"] for r in hub_records}
+        art_to_hub = {df.at[i, "permalink"]: r["permalink"] for r in hub_records for i in r["idxs"]}
+        default_hub = sorted(hub_records, key=lambda r: (-len(r["idxs"]), r["slug"]))[0]["permalink"]
+        stem_perm, stem_arts = {}, {}
+        for mp in sorted(pages_dir.glob("*.md")):
+            txt = mp.read_text(encoding="utf-8", errors="ignore")
+            pm = re.search(r"^permalink:\s*(\S+)", txt, re.M)
+            if pm:
+                p_str = pm.group(1).strip()
+                stem_perm[mp.stem] = p_str if p_str.endswith("/") else p_str + "/"
+                stem_arts[mp.stem] = re.findall(r"^\*\s+\[.*?\]\((/[^)\s]+)\)", txt, re.M)
+        for stem, old_p in sorted(stem_perm.items()):
+            if old_p in active_perms:
+                direct_keep += 1
+                continue
+            sub_a = [
+                ap for s2, al in stem_arts.items()
+                if (stem.startswith("root_") and (s2 == stem or s2.startswith(stem + "_"))) or s2 == stem
+                for ap in al if ap in art_to_hub
+            ]
+            if sub_a:
+                retired_map[old_p] = sorted(
+                    Counter(art_to_hub[ap] for ap in sub_a).items(), key=lambda x: (-x[1], x[0])
+                )[0][0]
+            else:
+                retired_map[old_p] = default_hub
+
+    return {
+        "df": df,
+        "dense_mat": dense_mat,
+        "merged_syns": merged_syns,
+        "chosen_k": chosen_k,
+        "chosen_p": chosen_p,
+        "hub_records": hub_records,
+        "river_ver": river_ver,
+        "emerging_global": emerging_global,
+        "retired_map": retired_map,
+        "direct_keep": direct_keep,
+    }
+
+
+def run_candidate_hub_report(df_raw, posts_dir, cand_k=0, n_pillars=0, bud_cap=75):
+    """Read-only Pass 2 report: 2-Tier Ward Hierarchy + River Streaming Radar + 301 Audit."""
+    plan = compute_two_tier_hub_plan(df_raw, posts_dir, cand_k=cand_k, n_pillars=n_pillars, bud_cap=bud_cap)
+    df, dense_mat = plan["df"], plan["dense_mat"]
+    hub_records = plan["hub_records"]
+
+    print(f"\n📊 PASS 2 SEED-SETTLE-BUD REPORT ({len(df)} articles, River {plan['river_ver']})")
+    print("=" * 96)
+    print("1. TOP SYNONYM / PLURAL / ACRONYM CONSOLIDATIONS:")
+    for c_slug, c_title, doc_cnt, variants in plan["merged_syns"][:10]:
+        v_str = " + ".join(f"{vn}({vc})" for vn, vc in sorted(variants, key=lambda x: -x[1]))
         print(f"   /{c_slug}/ [{doc_cnt} docs] '{c_title}' <= {v_str}")
 
     print("\n2. RELEASED-LIMIT K-SWEEP (Deterministic Spherical K-Means + 1-Post Perturbation ARI):")
     print("   K  |  Silh  | Min | P25 | Med | P75 | Max | Gini | >Cap | N-1_ARI | Composite")
     print("   ---+--------+-----+-----+-----+-----+-----+------+------+---------+----------")
-    k_grid = [7, 10, 12, 14, 16, 18, 20, 24, 28]
-    sweep_Models = {}
-    best_auto_k = 16
-    best_comp = -1.0
-    for k in k_grid:
-        if k >= n_docs:
+    for k in (7, 12, 16, 20, 24, 28):
+        if k >= len(df):
             continue
-        km = KMeans(n_clusters=k, random_state=42, n_init=15)
-        labels = km.fit_predict(dense_mat)
-        sil = float(silhouette_score(dense_mat, labels, metric="cosine"))
-        km_n1 = KMeans(n_clusters=k, random_state=42, n_init=15).fit(dense_mat[1:])
-        ari_n1 = float(adjusted_rand_score(labels[1:], km_n1.labels_))
-        sizes = np.bincount(labels, minlength=k)
-        gini = _gini_coeff(sizes)
-        over_cap = int(np.sum(sizes > bud_cap))
-        comp = sil * (0.5 + 0.5 * ari_n1) * (1.0 - 0.25 * gini)
-        sweep_Models[k] = (labels, sil, ari_n1, sizes)
-        if 12 <= k <= 24 and comp > best_comp:
-            best_comp = comp
-            best_auto_k = k
-        p25, med, p75 = np.percentile(sizes, [25, 50, 75])
+        lbl = KMeans(n_clusters=k, random_state=42, n_init=15).fit_predict(dense_mat)
+        sil = float(silhouette_score(dense_mat, lbl, metric="cosine"))
+        ari = float(adjusted_rand_score(lbl[1:], KMeans(n_clusters=k, random_state=42, n_init=15).fit(dense_mat[1:]).labels_))
+        sz = np.bincount(lbl, minlength=k)
+        gini = _gini_coeff(sz)
+        comp = sil * (0.5 + 0.5 * ari) * (1.0 - 0.25 * gini)
+        p25, med, p75 = np.percentile(sz, [25, 50, 75])
         print(
-            f"   {k:2d} | {sil:6.4f} | {int(sizes.min()):3d} | {int(round(p25)):3d} | "
-            f"{int(round(med)):3d} | {int(round(p75)):3d} | {int(sizes.max()):3d} | "
-            f"{gini:4.2f} | {over_cap:4d} |  {ari_n1:6.4f} |   {comp:6.4f}"
+            f"   {k:2d} | {sil:6.4f} | {int(sz.min()):3d} | {int(round(p25)):3d} | "
+            f"{int(round(med)):3d} | {int(round(p75)):3d} | {int(sz.max()):3d} | "
+            f"{gini:4.2f} | {int(np.sum(sz > bud_cap)):4d} |  {ari:6.4f} |   {comp:6.4f}"
         )
 
-    chosen_k = cand_k if (cand_k and cand_k > 1) else best_auto_k
-    if chosen_k not in sweep_Models:
-        km = KMeans(n_clusters=chosen_k, random_state=42, n_init=15)
-        labels = km.fit_predict(dense_mat)
-        sweep_Models[chosen_k] = (labels, 0.0, 0.0, np.bincount(labels, minlength=chosen_k))
-    labels, _, _, _ = sweep_Models[chosen_k]
+    pillars = [r for r in hub_records if r["parent_slug"] is None]
+    kids_map = {p["slug"]: [r for r in hub_records if r["parent_slug"] == p["slug"]] for p in pillars}
+    pillars.sort(key=lambda p: (-(len(p["idxs"]) + sum(len(c["idxs"]) for c in kids_map[p["slug"]])), p["slug"]))
 
-    # Claim root slugs highest-specificity-first so primary pillars never collide into '-2'
-    raw_clusters = []
-    for cid in range(chosen_k):
-        idxs = np.where(labels == cid)[0].tolist()
-        if not idxs:
-            continue
-        ranked = _rank_hub_keywords(idxs, doc_kw_lists, global_df, canon_titles, set())
-        raw_clusters.append((cid, idxs, ranked))
-    raw_clusters.sort(key=lambda x: (-x[2][0][4], -len(x[1]), x[0]))
-
-    used_root_slugs = set()
-    hub_records = []
-    for cid, idxs, _ in raw_clusters:
-        ranked = _rank_hub_keywords(idxs, doc_kw_lists, global_df, canon_titles, used_root_slugs)
-        h_slug, h_title, c_hit, g_hit, spec = ranked[0]
-        if h_slug in used_root_slugs:
-            h_slug = f"{h_slug}-{cid}"
-        used_root_slugs.add(h_slug)
-        sub_mat = dense_mat[idxs]
-        centroid = sub_mat.mean(axis=0)
-        c_norm = float(np.linalg.norm(centroid))
-        if c_norm > 0.0:
-            centroid = centroid / c_norm
-        cohesion = float(np.mean(sub_mat @ centroid))
-        dispersion = 1.0 - cohesion
-        pressure = (len(idxs) / float(bud_cap)) * (0.5 + dispersion)
-        hub_records.append({
-            "cid": cid,
-            "slug": h_slug,
-            "permalink": f"/{h_slug}/",
-            "title": h_title,
-            "idxs": idxs,
-            "cohesion": cohesion,
-            "pressure": pressure,
-            "spec": spec,
-            "c_hit": c_hit,
-            "g_hit": g_hit,
-            "buds": [],
-        })
-
-    hub_records.sort(key=lambda r: (-len(r["idxs"]), r["slug"]))
-    article_to_root_hub = {}
-    all_candidate_hubs = set()
-
-    for rec in hub_records:
-        all_candidate_hubs.add(rec["permalink"])
-        for idx in rec["idxs"]:
-            article_to_root_hub[df.at[idx, "permalink"]] = rec["permalink"]
-        if len(rec["idxs"]) >= int(bud_cap * 0.8) or rec["pressure"] >= 0.85:
-            n_sub = min(5, max(2, int(round(len(rec["idxs"]) / 40.0))))
-            sub_mat = dense_mat[rec["idxs"]]
-            sub_km = KMeans(n_clusters=n_sub, random_state=42, n_init=15)
-            sub_lbls = sub_km.fit_predict(sub_mat)
-            p_cent = sub_mat.mean(axis=0)
-            p_norm = float(np.linalg.norm(p_cent))
-            if p_norm > 0.0:
-                p_cent = p_cent / p_norm
-            sub_cent_sims = []
-            for sid in range(n_sub):
-                s_mask = np.where(sub_lbls == sid)[0]
-                if len(s_mask) == 0:
-                    continue
-                sc = sub_mat[s_mask].mean(axis=0)
-                sn = float(np.linalg.norm(sc))
-                if sn > 0.0:
-                    sc = sc / sn
-                sub_cent_sims.append((float(sc @ p_cent), len(s_mask), sid))
-            sub_cent_sims.sort(reverse=True)
-            core_sid = sub_cent_sims[0][2] if sub_cent_sims else 0
-            used_bud_slugs = {rec["slug"]} | used_root_slugs
-            for _, _, sid in sub_cent_sims:
-                s_local = np.where(sub_lbls == sid)[0]
-                orig_idxs = [rec["idxs"][m] for m in s_local]
-                if sid == core_sid:
-                    rec["core_kept"] = len(orig_idxs)
-                    continue
-                if len(orig_idxs) < 12:
-                    rec["core_kept"] = rec.get("core_kept", 0) + len(orig_idxs)
-                    continue
-                b_ranked = _rank_hub_keywords(
-                    orig_idxs, doc_kw_lists, global_df, canon_titles, {rec["slug"]}
-                )
-                b_slug, b_title, _, _, _ = b_ranked[0]
-                if b_slug in used_bud_slugs:
-                    for cand_s, cand_t, _, _, _ in b_ranked[1:]:
-                        if cand_s not in used_bud_slugs:
-                            b_slug, b_title = cand_s, cand_t
-                            break
-                used_bud_slugs.add(b_slug)
-                bud_perm = f"/{rec['slug']}/{b_slug}/"
-                rec["buds"].append((bud_perm, b_title, len(orig_idxs)))
-                if rec["pressure"] >= 1.0 or len(rec["idxs"]) > bud_cap:
-                    all_candidate_hubs.add(bud_perm)
-
-    print(f"\n3. CANDIDATE ROOT HUBS AT K={chosen_k} (Bud Capacity={bud_cap}, Specificity-Ranked):")
-    print("   Permalink                | Posts | Cohes | Press | Status  | Core / Additive Sub-Hub Buds")
-    print("   -------------------------+-------+-------+-------+---------+-------------------------------------------")
-    bud_total = 0
-    for rec in hub_records:
-        status = "BUDDING" if (rec["pressure"] >= 1.0 or len(rec["idxs"]) > bud_cap) else (
-            "WATCH" if rec["pressure"] >= 0.85 else "SETTLED"
+    print(
+        f"\n3. TWO-TIER WARD HIERARCHY ({len(pillars)} Macro-Pillars -> "
+        f"{len(hub_records) - len(pillars)} Sub-Hubs = {len(hub_records)} Permanent /<slug>/ Hubs):"
+    )
+    print("   Hierarchy / Permalink               | Posts | Cohes | Vel% | ADWIN | Press | Top Unhomed Emerging Topic")
+    print("   ------------------------------------+-------+-------+------+-------+-------+------------------------------")
+    for p in pillars:
+        em_p = f"{p['emerging'][3]} ({p['emerging'][1]}d, m={p['emerging'][0]:.1f})" if p["emerging"] else "-"
+        print(
+            f"   [P] {p['permalink']:<31} | {len(p['idxs']):5d} | {p['cohesion']:5.3f} | "
+            f"{p['vel_pct']:4.1f} | {p['drift_hits']:5d} | {p['pressure']:5.2f} | {em_p}"
         )
-        if status == "BUDDING" and rec["buds"]:
-            bud_total += len(rec["buds"])
-            bud_str = f"core={rec.get('core_kept', 0)} + " + ", ".join(
-                f"{bp}({bn})" for bp, _, bn in rec["buds"]
+        kids = sorted(kids_map[p["slug"]], key=lambda c: (-len(c["idxs"]), c["slug"]))
+        for i_c, c in enumerate(kids):
+            br = "└─" if i_c == len(kids) - 1 else "├─"
+            em_c = f"{c['emerging'][3]} ({c['emerging'][1]}d, m={c['emerging'][0]:.1f})" if c["emerging"] else "-"
+            print(
+                f"     {br} {c['permalink']:<30} | {len(c['idxs']):5d} | {c['cohesion']:5.3f} | "
+                f"{c['vel_pct']:4.1f} | {c['drift_hits']:5d} | {c['pressure']:5.2f} | {em_c}"
             )
-        elif rec["buds"]:
-            bud_str = "preview: " + ", ".join(f"{bp}({bn})" for bp, _, bn in rec["buds"][:2])
-        else:
-            bud_str = f"all {len(rec['idxs'])} on root hub"
-        print(
-            f"   {rec['permalink']:<24} | {len(rec['idxs']):5d} | {rec['cohesion']:5.3f} | "
-            f"{rec['pressure']:5.2f} | {status:<7} | {bud_str}"
-        )
-    print(f"   => Total Active Hubs: {len(hub_records)} root + {bud_total} budded sub-hubs = {len(hub_records) + bud_total} permanent hubs (vs 488 root_* files)")
 
-    holdout_n = min(50, max(1, n_docs // 10))
-    if n_docs > holdout_n + chosen_k:
-        km_hist = KMeans(n_clusters=chosen_k, random_state=42, n_init=15).fit(dense_mat[holdout_n:])
-        cents_hist = Normalizer(copy=False).fit_transform(km_hist.cluster_centers_.copy())
-        new_assign = np.argmax(dense_mat[:holdout_n] @ cents_hist.T, axis=1)
-        gain_counts = Counter(int(c) for c in new_assign)
-        top_gains = sorted(gain_counts.items(), key=lambda x: -x[1])[:5]
-        print(f"\n4. HOLDOUT STABILITY SIMULATION (T-{holdout_n} -> T0 Assign-Only Replay):")
+    print("\n4. RIVER STREAMING RADAR — TOP UNHOMED KEYWORDS BUILDING BUDDING PRESSURE:")
+    for cs, c_title, mom, tot_cnt, home_s, home_cnt in plan["emerging_global"][:10]:
         print(
-            f"   Replayed newest {holdout_n} articles onto frozen T-{holdout_n} centroids: "
-            f"0 hubs renamed/deleted | 1.00 hub files touched/post | Top velocity bins: {top_gains}"
+            f"   • {c_title:<26} (/{cs}/) | RiverMom={mom:5.2f} | Total={tot_cnt:3d} docs | "
+            f"Host Hub: /{home_s}/ ({home_cnt} docs)"
         )
 
-    pages_dir = posts_dir.parent / "pages"
-    root_pages = sorted(pages_dir.glob("root_*.md")) if pages_dir.is_dir() else []
-    if root_pages:
-        stem_perm = {}
-        stem_arts = {}
-        for rp in root_pages:
-            txt = rp.read_text(encoding="utf-8", errors="ignore")
-            pm = re.search(r"^permalink:\s*(\S+)", txt, re.M)
-            stem_perm[rp.stem] = pm.group(1) if pm else ""
-            stem_arts[rp.stem] = re.findall(r"^\*\s+\[.*?\]\((/[^)\s]+)\)", txt, re.M)
-        direct_keep = 0
-        majority_301 = 0
-        fallback_301 = 0
-        sample_snaps = []
-        for stem, old_p in stem_perm.items():
-            if not old_p:
-                continue
-            if old_p in all_candidate_hubs:
-                direct_keep += 1
-                continue
-            sub_arts = [
-                ap
-                for s2, alist in stem_arts.items()
-                if (s2 == stem or s2.startswith(stem + "_"))
-                for ap in alist
-                if ap in article_to_root_hub
-            ]
-            if sub_arts:
-                target_hub = Counter(article_to_root_hub[ap] for ap in sub_arts).most_common(1)[0][0]
-                majority_301 += 1
-                if len(sample_snaps) < 8 and (old_p.count("/") >= 3 or len(sample_snaps) < 4):
-                    sample_snaps.append((old_p, target_hub, len(sub_arts)))
-            else:
-                fallback_301 += 1
-        print(f"\n5. LIVE pages/root_*.md ({len(root_pages)} files) CONTINUITY & HUB-TO-HUB 301 AUDIT:")
-        print(
-            f"   Direct 200 OK Survivors: {direct_keep} | Article-Majority Hub-to-Hub 301s: {majority_301} | "
-            f"Fallback: {fallback_301} | Unmapped Orphans: 0"
-        )
-        for old_p, new_p, n_shared in sample_snaps:
-            print(f"   301 {old_p:<38} -> {new_p:<22} ({n_shared} shared articles)")
-    print("=" * 92)
+    ret = plan["retired_map"]
+    print(
+        f"\n5. LIVE HUB CONTINUITY & 301 SNAP AUDIT: Direct 200 OK Survivors={plan['direct_keep']} | "
+        f"Hub-to-Hub 301s={len(ret)} | Orphans=0"
+    )
+    for old_p, new_p in list(ret.items())[:8]:
+        print(f"   301 {old_p:<40} -> {new_p}")
+    print("=" * 96)
 
 
 def main():
@@ -754,7 +809,8 @@ def main():
         action="store_true",
         help="Read-only statistical report for deterministic candidate hubs and budding pressure.",
     )
-    parser.add_argument("--cand-k", type=int, default=0, help="Explicit root hub K for --candidates (0=auto).")
+    parser.add_argument("--cand-k", type=int, default=0, help="Explicit total hub K for --candidates (0=auto 28).")
+    parser.add_argument("--pillars", type=int, default=0, help="Explicit Depth-1 Macro-Pillar count (0=auto 9).")
     parser.add_argument("--bud-cap", type=int, default=75, help="Article capacity before budding pressure=1.0.")
     args = parser.parse_args()
 
@@ -771,7 +827,9 @@ def main():
         print("❌ No data found.")
         return
     if args.candidates:
-        run_candidate_hub_report(df, posts_dir, cand_k=args.cand_k, bud_cap=args.bud_cap)
+        run_candidate_hub_report(
+            df, posts_dir, cand_k=args.cand_k, n_pillars=args.pillars, bud_cap=args.bud_cap
+        )
         return
         
 

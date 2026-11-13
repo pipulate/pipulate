@@ -10,6 +10,86 @@ import re
 import difflib
 import common
 
+def resolve_navgraph_path(repo_root):
+    """Locate navgraph.json across CWD, script directory, or target repo root."""
+    candidates = [
+        Path("navgraph.json").resolve(),
+        Path(__file__).resolve().parent / "navgraph.json",
+        repo_root / "navgraph.json",
+    ]
+    return next((p for p in candidates if p.is_file()), candidates[0])
+
+
+def _scan_markdown_permalinks(md_dir):
+    """Fast frontmatter permalink fallback so redirects never run blind without navgraph.json."""
+    found = []
+    if not md_dir or not md_dir.is_dir():
+        return found
+    for md_path in sorted(md_dir.glob("*.md")):
+        try:
+            head = md_path.read_text(encoding="utf-8", errors="ignore")[:2048]
+        except OSError:
+            continue
+        m = re.search(r"^permalink:\s*(\S+)", head, re.M)
+        if m:
+            raw_p = m.group(1).strip().strip('"').strip("'")
+            if raw_p:
+                if not raw_p.startswith("/"):
+                    raw_p = "/" + raw_p
+                if not raw_p.endswith("/"):
+                    raw_p += "/"
+                found.append(raw_p)
+    return found
+
+
+def get_navgraph_sets(navgraph_path, posts_dir=None, pages_dir=None):
+    """Extract living URLs, canonical slashed permalinks, and hub-isolated sets."""
+    living_tissue = set()
+    canonical_all = set()
+    canonical_hubs = set()
+    slug_map = {}
+    hub_slug_map = {}
+
+    def register_url(p, is_hub=False):
+        if not p:
+            return
+        canon = p if p == "/" or p.endswith("/") else enforce_slash(p)
+        living_tissue.add(canon)
+        if canon != "/":
+            living_tissue.add(canon.rstrip("/"))
+        canonical_all.add(canon)
+        clean_p = canon.strip("/")
+        if clean_p:
+            raw_slug = clean_p.split("/")[-1]
+            slug = re.sub(r"^\d{4}-\d{2}-\d{2}-", "", raw_slug)
+            slug_map[slug] = canon
+            if is_hub:
+                canonical_hubs.add(canon)
+                hub_slug_map[slug] = canon
+
+    if navgraph_path and navgraph_path.exists():
+        with open(navgraph_path, "r", encoding="utf-8") as f:
+            nav = json.load(f)
+
+        def traverse(node):
+            ntype = node.get("type", "")
+            if "permalink" in node:
+                register_url(node["permalink"], is_hub=(ntype == "hub"))
+            for child in node.get("children_hubs", []):
+                traverse(child)
+            for child in node.get("children_articles", []):
+                traverse(child)
+
+        traverse(nav)
+
+    for hp in _scan_markdown_permalinks(pages_dir):
+        register_url(hp, is_hub=True)
+    for ap in _scan_markdown_permalinks(posts_dir):
+        register_url(ap, is_hub=False)
+
+    return living_tissue, canonical_all, canonical_hubs, slug_map, hub_slug_map
+
+
 def get_active_permalinks(navgraph_path):
     """Recursively extracts active permalinks AND builds a slug fallback map."""
     active = set()
@@ -59,8 +139,14 @@ def build_nginx_map(csv_input_path, map_output_path, navgraph_path):
         print(f"❌ Error: {csv_input_path} not found.")
         return
 
-    # 1. Establish the Absolute Truth
-    active_permalinks, slug_map = get_active_permalinks(navgraph_path)
+    # 1. Establish the Absolute Truth (hub/article separated + disk frontmatter fallback)
+    repo_root = csv_input_path.parent
+    living_tissue, active_permalinks, active_hubs, slug_map, _ = get_navgraph_sets(
+        navgraph_path, posts_dir=repo_root / "_posts", pages_dir=repo_root / "pages"
+    )
+    if not active_permalinks:
+        print("❌ Error: Zero active permalinks resolved; refusing to prune _raw_map.csv blind.")
+        return
     
     # 1.5 Protect Explicit System Paths (DO NOT REMAP THESE)
     protected_system_paths = [
@@ -71,6 +157,7 @@ def build_nginx_map(csv_input_path, map_output_path, navgraph_path):
         '/sitemap-branch-4.xml', '/sitemap-branch-5.xml',
         '/sitemap-branch-6.xml'
     ]
+    living_tissue.update(protected_system_paths)
     active_permalinks.update(protected_system_paths)
     
     # Define obvious noise signatures that SQL might have missed
@@ -99,7 +186,7 @@ def build_nginx_map(csv_input_path, map_output_path, navgraph_path):
             # 1. The Living Tissue Filter (Protects Hubs, Articles, and Root)
             # Ensure we check both with and without trailing slashes
             check_url = old_url if old_url.endswith('/') else old_url + '/'
-            if check_url in active_permalinks or old_url in active_permalinks:
+            if check_url in living_tissue or old_url in living_tissue:
                 print(f"🛡️ Protected Living URL (Collision Avoided): {old_url}")
                 continue # Drop the row entirely
 
@@ -194,13 +281,34 @@ def build_nginx_map(csv_input_path, map_output_path, navgraph_path):
         outfile.write("    ~^/feed/?$ /feed.xml;\n")
         # ----------------------------------
 
-        for old_url, new_url in valid_mappings.items():
+        combined_mappings = dict(valid_mappings)
+        retired_hubs_path = repo_root / "_data" / "retired_hubs.json"
+        if retired_hubs_path.is_file():
+            try:
+                retired_hubs = json.loads(retired_hubs_path.read_text(encoding="utf-8")) or {}
+            except Exception:
+                retired_hubs = {}
+            lower_hubs = {h.lower(): h for h in active_hubs}
+            for old_h, tgt_h in sorted(retired_hubs.items()):
+                chk_h = old_h if old_h.endswith("/") else old_h + "/"
+                if chk_h in living_tissue or old_h in living_tissue:
+                    continue
+                clean_tgt = enforce_slash(str(tgt_h).strip().lower())
+                if clean_tgt in lower_hubs:
+                    combined_mappings[chk_h] = lower_hubs[clean_tgt]
+
+        seen_bases = {"/feed"}
+        for old_url, new_url in combined_mappings.items():
             safe_old_url = urllib.parse.quote(old_url, safe='/%')
             if not safe_old_url.startswith('/'): safe_old_url = '/' + safe_old_url
             if not new_url.startswith('/'): new_url = '/' + new_url
+            safe_old_base = safe_old_url.rstrip('/')
 
-            # THE REGEX FORGER
-            outfile.write(f"    ~^{safe_old_url}/?$ {new_url};\n")
+            # THE REGEX FORGER (strip trailing slash before /?$ so both /path and /path/ match $uri)
+            if not safe_old_base or safe_old_base in seen_bases:
+                continue
+            seen_bases.add(safe_old_base)
+            outfile.write(f"    ~^{safe_old_base}/?$ {new_url};\n")
 
     print(f"✅ Nginx map forged successfully at {map_output_path.name}")
 
@@ -215,7 +323,7 @@ def main():
     
     csv_input_path = repo_root / '_raw_map.csv'
     map_output_path = repo_root / '_redirects.map'
-    navgraph_path = Path('navgraph.json').resolve()
+    navgraph_path = resolve_navgraph_path(repo_root)
 
     build_nginx_map(csv_input_path, map_output_path, navgraph_path)
 
