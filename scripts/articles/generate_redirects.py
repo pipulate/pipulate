@@ -11,10 +11,10 @@ import difflib
 import common
 
 def resolve_navgraph_path(repo_root):
-    """Locate navgraph.json across CWD, script directory, or target repo root."""
+    """Locate navgraph.json across script directory, CWD, or target repo root."""
     candidates = [
-        Path("navgraph.json").resolve(),
         Path(__file__).resolve().parent / "navgraph.json",
+        Path("navgraph.json").resolve(),
         repo_root / "navgraph.json",
     ]
     return next((p for p in candidates if p.is_file()), candidates[0])

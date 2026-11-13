@@ -7,7 +7,7 @@ import argparse
 import common
 
 
-NAVGRAPH_FILE = Path("navgraph.json")
+NAVGRAPH_FILE = Path(__file__).resolve().parent / "navgraph.json"
 
 THUMB_WIDTH = 480
 THUMB_HEIGHT = 252

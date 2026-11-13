@@ -68,8 +68,8 @@ def run_step(script_name, target_key, extra_args=None, verbose=False):
         cmd.extend(extra_args)
 
     try:
-        # check=True ensures we stop if a step fails
-        subprocess.run(cmd, check=True)
+        # check=True ensures we stop if a step fails; cwd anchors bare pipeline script names
+        subprocess.run(cmd, check=True, cwd=Path(__file__).resolve().parent)
     except subprocess.CalledProcessError:
         print(f"❌ Critical Failure in {script_name}. Stopping pipeline.")
         sys.exit(1)
