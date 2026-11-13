@@ -16,10 +16,11 @@ import lsa
 # common.KEYS_FILE under ~/.config/pipulate/, and nothing in this file ever
 # read the old folder's path; the constant was the last mention of it.
 
-ARTICLE_FILENAME = "article.txt"
-PROMPT_FILENAME = "editing_prompt.txt"
+SCRIPT_DIR = Path(__file__).resolve().parent
+ARTICLE_FILENAME = str(SCRIPT_DIR / "article.txt")
+PROMPT_FILENAME = str(SCRIPT_DIR / "editing_prompt.txt")
 PROMPT_PLACEHOLDER = "[INSERT FULL ARTICLE]"
-INSTRUCTIONS_CACHE_FILE = "instructions.json"
+INSTRUCTIONS_CACHE_FILE = str(SCRIPT_DIR / "instructions.json")
 
 # Model Selection - Prefer Flash, then fail over to Lite immediately on a
 # retriable availability error. Each model keeps its own exponential-backoff
@@ -204,7 +205,7 @@ def build_taken_identities(entries):
     return taken
 
 
-SPINE_FULL_DETAIL_COUNT = 150  # newest N entries carry date+slug+title
+SPINE_FULL_DETAIL_COUNT = 30  # newest N entries carry date+slug+title (keeps retired kitchen-sink titles out of few-shot window)
 
 
 def build_book_spine(entries, full_detail_count=SPINE_FULL_DETAIL_COUNT):
@@ -224,6 +225,111 @@ def build_book_spine(entries, full_detail_count=SPINE_FULL_DETAIL_COUNT):
         lines.append("--- RECENT ENTRIES (full detail) ---")
     lines += [f"{e['date']} {e['slug']} | {e['title']}" for e in recent]
     return "\n".join(lines)
+
+
+_SLUG_STOPWORDS = frozenset({
+    "a", "an", "and", "are", "as", "at", "be", "by", "for", "from", "how",
+    "in", "into", "is", "it", "its", "my", "of", "on", "or", "our", "that",
+    "the", "their", "this", "to", "with", "why", "your",
+})
+
+
+def _derive_slug_from_title(title_text):
+    """Build a concise 4-7 word lowercase hyphen slug from a custom headline."""
+    tokens = re.findall(r"[a-z0-9]+", (title_text or "").lower())
+    if len(tokens) > 7:
+        filtered = [t for t in tokens if t not in _SLUG_STOPWORDS]
+        tokens = (filtered if len(filtered) >= 4 else tokens)[:7]
+    return "-".join(tokens) or "custom-article"
+
+
+def apply_headline_override(instructions, pick_idx=None, retitle=None, custom_slug=None):
+    """Promote title_brainstorm[pick_idx] or inject a custom --retitle at index 0."""
+    editing_instr = instructions.setdefault("editing_instructions", {})
+    yaml_updates = editing_instr.setdefault("yaml_updates", {})
+    analysis = instructions.setdefault("book_analysis_content", {})
+    brainstorm = list(analysis.get("title_brainstorm") or [])
+
+    if retitle and retitle.strip():
+        clean_title = " ".join(retitle.strip().split())
+        raw_slug = (
+            custom_slug.strip().removesuffix(".md").strip("/").lower()
+            if custom_slug and custom_slug.strip()
+            else _derive_slug_from_title(clean_title)
+        )
+        if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", raw_slug):
+            raise ValueError(f"Invalid slug {raw_slug!r}; use lowercase letters, digits, and hyphens.")
+        entry = {
+            "title": clean_title,
+            "filename": f"{raw_slug}.md",
+            "rationale": "[Author Override] Manual headline set via --retitle.",
+        }
+        brainstorm = [entry, *[b for b in brainstorm if b.get("filename") != entry["filename"]]]
+        analysis["title_brainstorm"] = brainstorm
+        yaml_updates["title"] = clean_title
+        print(f"🎯 Applied custom headline override: {clean_title!r} ({raw_slug}.md)")
+        return instructions
+
+    if pick_idx is not None:
+        if not brainstorm:
+            raise ValueError("No title_brainstorm candidates found in instructions.json.")
+        if pick_idx < 0 or pick_idx >= len(brainstorm):
+            raise ValueError(f"--pick must be between 0 and {len(brainstorm) - 1} (got {pick_idx}).")
+        chosen = brainstorm.pop(pick_idx)
+        brainstorm.insert(0, chosen)
+        analysis["title_brainstorm"] = brainstorm
+        yaml_updates["title"] = chosen.get("title", "")
+        print(f"🎯 Promoted brainstorm [{pick_idx}] -> [0]: {chosen.get('title')!r} ({chosen.get('filename')})")
+    return instructions
+
+
+def cleanup_untracked_previous_draft(target_key, output_dir):
+    """Remove today's untracked draft recorded in last_published.json before re-slitting."""
+    import subprocess
+    prev = common.get_last_published(target_key)
+    if not prev:
+        return
+    prev_path = Path(prev).resolve()
+    out_resolved = Path(output_dir).resolve()
+    today_prefix = datetime.now().strftime("%Y-%m-%d") + "-"
+    if not (prev_path.is_file() and prev_path.parent == out_resolved and prev_path.name.startswith(today_prefix)):
+        return
+    repo_root = out_resolved.parent
+    if (repo_root / ".git").exists():
+        tracked = subprocess.run(
+            ["git", "-C", str(repo_root), "ls-files", "--error-unmatch", "--", str(prev_path)],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+        if tracked.returncode == 0:
+            print(f"ℹ️  Prior post {prev_path.name} is already tracked by git; leaving it in place.")
+            return
+    prev_path.unlink(missing_ok=True)
+    print(f"🧹 Removed untracked prior draft: {prev_path.name}")
+
+
+def print_headline_menu(instructions, target_key):
+    """Display the Headline Crucible and numbered brainstorm options for 0-token swapping."""
+    analysis = (instructions or {}).get("book_analysis_content") or {}
+    crucible = analysis.get("headline_crucible") or {}
+    brainstorm = analysis.get("title_brainstorm") or []
+    if not brainstorm:
+        return
+    print("\n" + "=" * 72)
+    print("🧠 HEADLINE CRUCIBLE & 5-LENS BRAINSTORM MENU")
+    if isinstance(crucible, dict) and crucible.get("rejected_plumbing_trap"):
+        print(f"   ✓ Macro Thesis  : {crucible.get('opening_macro_thesis', '')}")
+        print(f"   ✗ Rejected Trap : {crucible.get('rejected_plumbing_trap', '')}")
+    print("-" * 72)
+    for idx, item in enumerate(brainstorm):
+        if not isinstance(item, dict):
+            continue
+        mark = "★" if idx == 0 else " "
+        print(f"  [{idx}] {mark} {item.get('title', 'N/A')}  ({item.get('filename', '')})")
+    print("-" * 72)
+    print(f"💡 Swap angle (0 tokens): .venv/bin/python scripts/articles/articleizer.py -t {target_key} --pick 1")
+    print(f"💡 Custom title (0 tok) : .venv/bin/python scripts/articles/articleizer.py -t {target_key} --retitle \"Your Title\"")
+    print("=" * 72)
 
 def create_jekyll_post(article_content, instructions, output_dir, preview_port, base_url="",
                        *, target_config=None, aside=False):
@@ -552,7 +658,25 @@ def main():
         help="Publish as a public aside: stamps 'storytime: false' in YAML frontmatter so Honeybot "
              "Storytime resumes the current article after maintenance and queues this post for backfill."
     )
+    parser.add_argument(
+        '--angle', type=str, default=None,
+        help="Optional priority hook/angle directive injected into the editing prompt (e.g. `article --angle \"Google moat\"`)."
+    )
+    parser.add_argument(
+        '--pick', type=int, default=None,
+        help="Promote title_brainstorm[N] (0-based) from cached instructions.json and rebuild post in 0 API tokens."
+    )
+    parser.add_argument(
+        '--retitle', type=str, default=None,
+        help="Set an explicit custom headline using cached instructions.json in 0 API tokens."
+    )
+    parser.add_argument(
+        '--slug', type=str, default=None,
+        help="Optional explicit lowercase hyphenated slug when using --retitle."
+    )
     args = parser.parse_args()
+    if args.pick is not None or args.retitle:
+        args.local = True
 
     # Use common to securely lock target
     output_dir = common.get_target_path(args)
@@ -671,6 +795,13 @@ def main():
             prompt_template = prompt_template.replace(SPINE_PLACEHOLDER, spine)
             print(f"📚 Book spine injected: {len(spine_entries)} articles, {len(spine):,} chars.")
 
+        if args.angle and args.angle.strip():
+            angle_note = (
+                "\n**AUTHOR'S PRIORITY HEADLINE ANGLE (OVERRIDE):** Center the primary hook "
+                "(`title_brainstorm[0]` and `yaml_updates.title`) on this reader-facing insight, "
+                f"backed by the article's concrete receipts: {args.angle.strip()}\n\n**Input:**"
+            )
+            prompt_template = prompt_template.replace("\n**Input:**", angle_note, 1)
         full_prompt = prompt_template.replace(PROMPT_PLACEHOLDER, article_text)
         # THE SIZE READING (2026-09-28). "Too big" on a free Gemini key is the
         # per-minute input-token quota and it wears the same quota message as a
@@ -888,6 +1019,17 @@ def main():
                 return
 
     if instructions:
+        if args.pick is not None or args.retitle:
+            try:
+                instructions = apply_headline_override(
+                    instructions, pick_idx=args.pick, retitle=args.retitle, custom_slug=args.slug
+                )
+            except ValueError as exc:
+                print(f"❌ Headline override error: {exc}")
+                sys.exit(1)
+            with open(INSTRUCTIONS_CACHE_FILE, 'w', encoding='utf-8') as f:
+                json.dump(instructions, f, indent=4)
+            cleanup_untracked_previous_draft(args.target, output_dir)
         base_url = target_config.get("base_url")
         if base_url is None:
             base_url = target_config.get("url", "https://mikelev.in")
@@ -896,6 +1038,7 @@ def main():
             target_config=target_config, aside=args.aside)
         if saved_path:
             common.record_last_published(args.target, saved_path, target_config.get("name"))
+            print_headline_menu(instructions, args.target)
             common.print_broadcast_kit(args.target, mode="card")
             vim_cmd = f"vim {saved_path}"
             if common._copy_to_clipboard(vim_cmd):
