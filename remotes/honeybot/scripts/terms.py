@@ -165,6 +165,23 @@ CASE_INSENSITIVE_TERMS = (
     ("ExaUser", "Exa User"),
     ("ClaudeBot", "Claude Bot"),
     ("ShapBot", "Shap Bot"),
+    # Storytime & AI-Readiness ore terms
+    ("Hilkhot Safrut", "Hil-kote Sah-froot"),
+    ("Münchhausen", "Moonk-how-zen"),
+    ("Munchhausen", "Moonk-how-zen"),
+    ("Inter-webs", "inter webs"),
+    ("Interwebs", "inter webs"),
+    ("Inter-web", "inter web"),
+    ("Interweb", "inter web"),
+    ("G.I. Bill", "G I Bill"),
+    ("GI Bill", "G I Bill"),
+    ("blipverts", "blip-verts"),
+    ("blipvert", "blip-vert"),
+    ("Bobiverse", "Bob-ih-verse"),
+    ("Landauer", "Lan-dower"),
+    ("Susskind", "Suss-kinned"),
+    ("Feynman", "Fine-man"),
+    ("Pareto", "Puh-ray-toe"),
 )
 
 # 3. Exact-Case Acronyms & MixedCase Proper Nouns (auto-sorted longest-first)
@@ -245,6 +262,8 @@ EXACT_CASE_TERMS = (
     ("MB", "megabytes"),
     ("GB", "gigabytes"),
     ("TB", "terabytes"),
+    ("BAM", "bam"),
+    ("TTS", "T T S"),
 )
 
 # Multiline speaker-turn normalizers for Storytime Markdown articles
@@ -298,12 +317,107 @@ INLINE_TTS_MAP = tuple(
 
 MARKDOWN_TTS_MAP = SPEAKER_TURN_RULES + INLINE_TTS_MAP
 
+_ZERO_WIDTH_RE = re.compile(r"[\u200b\u200c\u200d\ufeff]")
+_FENCED_BLOCK_RE = re.compile(r"(?ms)^[ \t]*(`{3,}|~{3,})[^\n]*\n.*?^[ \t]*\1[ \t]*$")
+_ORDERED_ITEM_RE = re.compile(r"^[ \t]*(\d{1,2})\.[ \t]+(\S.*)$")
+_BLOCK_BOUNDARY_RE = re.compile(
+    r"^[ \t]*(?:\d{1,2}\.[ \t]+|[-*+][ \t]+|PP4HEADINGSTART|#{1,6}[ \t]|[-*_]{3,}[ \t]*$|>|\||`{3,}|~{3,})"
+)
+_TERMINAL_PUNCT_RE = re.compile(r"[.!?:][*_\"')\]]*$")
+
+_SPOKEN_CARDINALS = {
+    1: "One",
+    2: "Two",
+    3: "Three",
+    4: "Four",
+    5: "Five",
+    6: "Six",
+    7: "Seven",
+    8: "Eight",
+    9: "Nine",
+    10: "Ten",
+    11: "Eleven",
+    12: "Twelve",
+    13: "Thirteen",
+    14: "Fourteen",
+    15: "Fifteen",
+    16: "Sixteen",
+    17: "Seventeen",
+    18: "Eighteen",
+    19: "Nineteen",
+    20: "Twenty",
+}
+
+
+def _expand_numbered_segment(segment: str) -> str:
+    """Expand Markdown numbered list items into spoken cardinals with paragraph pauses."""
+    lines = segment.split("\n")
+    out_lines: list[str] = []
+    prev_allows_list = True
+    just_closed_list = False
+    idx = 0
+    while idx < len(lines):
+        line = lines[idx]
+        stripped = line.strip()
+        item_match = _ORDERED_ITEM_RE.match(line)
+        if item_match and (prev_allows_list or int(item_match.group(1)) == 1):
+            num = int(item_match.group(1))
+            parts = [item_match.group(2).strip()]
+            idx += 1
+            while idx < len(lines) and lines[idx].strip() and not _BLOCK_BOUNDARY_RE.match(lines[idx]):
+                parts.append(lines[idx].strip())
+                idx += 1
+            body = " ".join(parts)
+            if body and not _TERMINAL_PUNCT_RE.search(body):
+                body += "."
+            spoken = _SPOKEN_CARDINALS.get(num, str(num))
+            if out_lines and out_lines[-1] != "":
+                out_lines.append("")
+            out_lines.append(f"{spoken}. {body}")
+            if idx < len(lines):
+                out_lines.append("")
+            prev_allows_list = True
+            just_closed_list = True
+            continue
+        if just_closed_list and not stripped:
+            just_closed_list = True
+            prev_allows_list = True
+            idx += 1
+            continue
+        just_closed_list = False
+        out_lines.append(line)
+        prev_allows_list = (
+            (not stripped)
+            or stripped.endswith(":")
+            or stripped.startswith("#")
+            or stripped.startswith("PP4HEADINGSTART")
+        )
+        idx += 1
+    return "\n".join(out_lines)
+
+
+def expand_markdown_lists_for_tts(text: str) -> str:
+    """Expand Markdown numbered lists outside fenced code blocks for Piper TTS cadence."""
+    if not text:
+        return ""
+    cleaned = _ZERO_WIDTH_RE.sub("", str(text))
+    chunks: list[str] = []
+    last_end = 0
+    for match in _FENCED_BLOCK_RE.finditer(cleaned):
+        if match.start() > last_end:
+            chunks.append(_expand_numbered_segment(cleaned[last_end : match.start()]))
+        chunks.append(match.group(0))
+        last_end = match.end()
+    if last_end < len(cleaned):
+        chunks.append(_expand_numbered_segment(cleaned[last_end:]))
+    return "".join(chunks)
+
 
 def apply_inline_tts_terms(text: str) -> str:
     """Apply phonetic ear-orthography rules to a single title, station break, or spoken line."""
     if not text:
         return ""
-    out = str(text)
+    out = _ZERO_WIDTH_RE.sub("", str(text))
     for pattern, spoken_repl in INLINE_TTS_MAP:
         out = pattern.sub(spoken_repl, out)
     return re.sub(r"[ \t]+,", ",", out)
@@ -313,7 +427,7 @@ def apply_markdown_tts_terms(text: str) -> str:
     """Strip Markdown rules/tables/box-art and apply speaker + phonetic rules for Storytime articles."""
     if not text:
         return ""
-    out = str(text)
+    out = expand_markdown_lists_for_tts(text)
     out = re.sub(r"(?m)^[ \t]*[-*_]{3,}[ \t]*$", "", out)
     out = re.sub(r"(?m)^[ \t]*\|[ \t:|-]+\|[ \t]*$", "", out)
     out = re.sub(
