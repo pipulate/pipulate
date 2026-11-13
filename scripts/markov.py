@@ -204,7 +204,9 @@ def analyze_corpus_shards(target_spec: str = "1", top_k: int = 5) -> int:
     last_3 = records[-3:]
     cur_rec = records[-1]
     prev_rec = records[-2] if total_recs >= 2 else cur_rec
-    cur_states = cur_rec["kws"][:3]
+    raw_pool = list(dict.fromkeys([*cur_rec["kws"], *cur_rec["subs"]]))
+    connected = [k for k in raw_pool if topic_counts[k] >= 2 and len(trans_1.get(k, ())) > 0]
+    cur_states = (connected + [k for k in raw_pool if k not in connected])[:4]
 
     # Aggregate 1st-order predictions from current article's top keywords
     next_candidates: Counter = Counter()
