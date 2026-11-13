@@ -376,6 +376,7 @@ def project_xml_sitemaps(tree_node, base_url="https://mikelev.in", output_dir=Pa
     for old_branch in output_dir.glob("sitemap-branch-*.xml"):
         old_branch.unlink()
     for i, top_hub in enumerate(tree_node.get('children_hubs', [])):
+        hub_urls.append(f"  <url><loc>{base_url}{top_hub['permalink']}</loc><lastmod>{today}</lastmod><changefreq>weekly</changefreq><priority>0.85</priority></url>")
         post_urls = []
         # Traverse this specific branch
         traverse(top_hub, post_urls)
@@ -726,6 +727,221 @@ def compute_two_tier_hub_plan(df_raw, posts_dir, cand_k=0, n_pillars=0, bud_cap=
     }
 
 
+def _score_article_against_hubs(soup_text, doc_kws, hub_defs, analyzer):
+    """Deterministic Rocchio TF + Canonical Keyword scorer for Assign-Only routing."""
+    tf_counts = Counter(analyzer(soup_text))
+    doc_weights = {t: 1.0 + math.log(c) for t, c in tf_counts.items()}
+    d_norm = math.sqrt(sum(v * v for v in doc_weights.values())) or 1.0
+    doc_unit = {t: v / d_norm for t, v in doc_weights.items()}
+    best_slug = hub_defs[0]["slug"]
+    best_score = -1.0
+    for h in hub_defs:
+        p_terms = h.get("prototype_terms", {})
+        cos_sim = sum(w * p_terms[t] for t, w in doc_unit.items() if t in p_terms)
+        p_kws = h.get("prototype_keywords", {})
+        kw_bonus = sum(p_kws.get(cs, 0.0) for cs in doc_kws) * 0.08
+        if h["slug"] in doc_kws:
+            kw_bonus += 0.25
+        score = cos_sim + kw_bonus
+        if score > best_score:
+            best_score = score
+            best_slug = h["slug"]
+    return best_slug
+
+
+def build_settled_canonical_tree(
+    df_raw, posts_dir, site_title, site_blurb, reseed=False, cand_k=0, n_pillars=0, bud_cap=75
+):
+    """Seed once into _data/hubs_manifest.json, settle assign-only thereafter, and harvest 301s."""
+    from datetime import datetime
+
+    repo_root = posts_dir.parent
+    data_dir = repo_root / "_data"
+    data_dir.mkdir(parents=True, exist_ok=True)
+    manifest_path = data_dir / "hubs_manifest.json"
+    retired_path = data_dir / "retired_hubs.json"
+
+    df = df_raw.copy()
+    df["sort_date"] = [
+        d if (d and d != "None") else (i[:10] if re.match(r"^\d{4}-\d{2}-\d{2}", i) else "")
+        for d, i in zip(df["date"], df["id"])
+    ]
+    df = df.sort_values(by=["sort_date", "id"], ascending=[False, True], kind="mergesort").reset_index(drop=True)
+
+    root_node = {
+        "type": "root",
+        "id": "root",
+        "title": site_title,
+        "permalink": "/",
+        "blurb": site_blurb,
+        "gravity": 60,
+        "children_hubs": [],
+        "children_articles": [],
+    }
+    if len(df) <= 12:
+        for _, row in df.iterrows():
+            root_node["children_articles"].append({
+                "type": "article",
+                "id": str(row["id"]),
+                "title": str(row["title"]),
+                "permalink": row["permalink"],
+                "date": row["sort_date"],
+                "gravity": calculate_node_gravity(row["title"], row["keywords"]),
+            })
+        return root_node
+
+    today = datetime.now().strftime("%Y-%m-%d")
+    fresh_retired = {}
+
+    if reseed or not manifest_path.is_file():
+        plan = compute_two_tier_hub_plan(
+            df, posts_dir, cand_k=cand_k, n_pillars=n_pillars, bud_cap=bud_cap
+        )
+        df = plan["df"]
+        fresh_retired = dict(plan["retired_map"])
+        kids_of = {
+            r["slug"]: [c for c in plan["hub_records"] if c["parent_slug"] == r["slug"]]
+            for r in plan["hub_records"]
+        }
+        pillars_seed = sorted(
+            [r for r in plan["hub_records"] if r["parent_slug"] is None],
+            key=lambda p: (-(len(p["idxs"]) + sum(len(c["idxs"]) for c in kids_of[p["slug"]])), p["slug"]),
+        )
+        ordered_recs = []
+        for p in pillars_seed:
+            ordered_recs.append(p)
+            for c in sorted(kids_of[p["slug"]], key=lambda k: (-len(k["idxs"]), k["slug"])):
+                ordered_recs.append(c)
+        hubs_out = []
+        assignments = {}
+        for rec in ordered_recs:
+            hubs_out.append({
+                "slug": rec["slug"],
+                "title": rec["title"],
+                "permalink": rec["permalink"],
+                "parent_slug": rec["parent_slug"],
+                "seeded_at": today,
+                "seeded_count": len(rec["idxs"]),
+                "prototype_terms": rec["prototype_terms"],
+                "prototype_keywords": rec["prototype_keywords"],
+            })
+            for idx in rec["idxs"]:
+                assignments[str(df.at[idx, "id"])] = rec["slug"]
+        manifest = {
+            "schema_version": 1,
+            "seeded_k": plan["chosen_k"],
+            "pillar_count": plan["chosen_p"],
+            "bud_capacity": bud_cap,
+            "hubs": hubs_out,
+            "assignments": dict(sorted(assignments.items())),
+        }
+        print(
+            f"🌱 Seeded 2-Tier Hub Manifest ({plan['chosen_p']} Pillars -> "
+            f"{len(hubs_out)} Permanent Hubs)."
+        )
+    else:
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        hub_defs = list(manifest.get("hubs", []))
+        valid_slugs = {h["slug"] for h in hub_defs}
+        current_ids = set(df["id"].astype(str).tolist())
+        assignments = {
+            aid: hsl
+            for aid, hsl in manifest.get("assignments", {}).items()
+            if aid in current_ids and hsl in valid_slugs
+        }
+        missing_rows = [idx for idx in range(len(df)) if str(df.at[idx, "id"]) not in assignments]
+        if missing_rows and hub_defs:
+            doc_kw_lists, _, _, _ = _build_keyword_canon(df)
+            analyzer = TfidfVectorizer(stop_words="english", ngram_range=(1, 2)).build_analyzer()
+            for idx in missing_rows:
+                aid = str(df.at[idx, "id"])
+                assignments[aid] = _score_article_against_hubs(
+                    df.at[idx, "soup"], doc_kw_lists[idx], hub_defs, analyzer
+                )
+            print(
+                f"🧭 Assign-Only Router: {len(missing_rows)} new article(s) settled into pinned hubs "
+                f"(0 existing hubs or articles churned)."
+            )
+        manifest["assignments"] = dict(sorted(assignments.items()))
+
+    new_m_text = json.dumps(manifest, indent=2) + "\n"
+    old_m_text = manifest_path.read_text(encoding="utf-8") if manifest_path.is_file() else ""
+    if new_m_text != old_m_text:
+        manifest_path.write_text(new_m_text, encoding="utf-8")
+
+    hub_defs = manifest.get("hubs", [])
+    active_hub_perms = {h["permalink"] for h in hub_defs}
+    default_hub = sorted(hub_defs, key=lambda h: (-h.get("seeded_count", 0), h["slug"]))[0]["permalink"]
+    retired_ledger = {}
+    if retired_path.is_file():
+        try:
+            retired_ledger = json.loads(retired_path.read_text(encoding="utf-8")) or {}
+        except Exception:
+            retired_ledger = {}
+    retired_ledger.update(fresh_retired)
+    for live_p in active_hub_perms:
+        retired_ledger.pop(live_p, None)
+    clean_retired = {}
+    for old_p, tgt_p in sorted(retired_ledger.items()):
+        hop = tgt_p
+        seen_hops = {old_p}
+        while hop in retired_ledger and hop not in seen_hops:
+            seen_hops.add(hop)
+            hop = retired_ledger[hop]
+        if hop not in active_hub_perms:
+            hop = default_hub
+        if old_p != hop:
+            clean_retired[old_p] = hop
+    new_r_text = json.dumps(clean_retired, indent=2, sort_keys=True) + "\n"
+    old_r_text = retired_path.read_text(encoding="utf-8") if retired_path.is_file() else ""
+    if new_r_text != old_r_text:
+        retired_path.write_text(new_r_text, encoding="utf-8")
+        print(f"🗺️  Harvested {len(clean_retired)} hub-to-hub 301 redirect(s) -> {retired_path.name}")
+
+    assignments = manifest.get("assignments", {})
+    hub_articles = {h["slug"]: [] for h in hub_defs}
+    for _, row in df.iterrows():
+        aid = str(row["id"])
+        hsl = assignments.get(aid)
+        if hsl in hub_articles:
+            hub_articles[hsl].append({
+                "type": "article",
+                "id": aid,
+                "title": str(row["title"]),
+                "permalink": row["permalink"],
+                "date": row["sort_date"],
+                "gravity": calculate_node_gravity(row["title"], row["keywords"]),
+            })
+
+    nodes_by_slug = {}
+    for h in hub_defs:
+        hsl = h["slug"]
+        arts = hub_articles[hsl]
+        depth_lvl = 1 if not h.get("parent_slug") else 2
+        nodes_by_slug[hsl] = {
+            "type": "hub",
+            "id": hsl,
+            "title": h["title"],
+            "permalink": h["permalink"],
+            "blurb": f"Explore {len(arts)} articles about {h['title']}.",
+            "gravity": max(15, 55 - depth_lvl * 10) + min(30, len(arts) // 3),
+            "children_hubs": [],
+            "children_articles": arts,
+        }
+
+    pillars = []
+    for h in hub_defs:
+        hsl = h["slug"]
+        psl = h.get("parent_slug")
+        if psl and psl in nodes_by_slug and psl != hsl:
+            nodes_by_slug[psl]["children_hubs"].append(nodes_by_slug[hsl])
+        else:
+            pillars.append(nodes_by_slug[hsl])
+
+    root_node["children_hubs"] = pillars
+    return root_node
+
+
 def run_candidate_hub_report(df_raw, posts_dir, cand_k=0, n_pillars=0, bud_cap=75):
     """Read-only Pass 2 report: 2-Tier Ward Hierarchy + River Streaming Radar + 301 Audit."""
     plan = compute_two_tier_hub_plan(df_raw, posts_dir, cand_k=cand_k, n_pillars=n_pillars, bud_cap=bud_cap)
@@ -812,6 +1028,7 @@ def main():
     parser.add_argument("--cand-k", type=int, default=0, help="Explicit total hub K for --candidates (0=auto 28).")
     parser.add_argument("--pillars", type=int, default=0, help="Explicit Depth-1 Macro-Pillar count (0=auto 9).")
     parser.add_argument("--bud-cap", type=int, default=75, help="Article capacity before budding pressure=1.0.")
+    parser.add_argument("--reseed", action="store_true", help="Force fresh K-Means + Ward seed of _data/hubs_manifest.json.")
     args = parser.parse_args()
 
     posts_dir = common.get_target_path(args)
@@ -856,7 +1073,16 @@ def main():
         "children_articles": []
     }
     
-    build_canonical_tree(df, canonical_tree, 0)
+    canonical_tree = build_settled_canonical_tree(
+        df,
+        posts_dir,
+        site_title=site_title,
+        site_blurb=site_blurb,
+        reseed=args.reseed,
+        cand_k=args.cand_k,
+        n_pillars=args.pillars,
+        bud_cap=args.bud_cap,
+    )
 
     # 3. EXPORT NAVGRAPH (JSON Tree for Jekyll)
     with open(NAVGRAPH_FILE, 'w', encoding='utf-8') as f:

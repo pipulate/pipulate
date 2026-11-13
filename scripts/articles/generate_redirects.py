@@ -36,9 +36,7 @@ def _scan_markdown_permalinks(md_dir):
             if raw_p:
                 if not raw_p.startswith("/"):
                     raw_p = "/" + raw_p
-                if not raw_p.endswith("/"):
-                    raw_p += "/"
-                found.append(raw_p)
+                found.append(enforce_slash(raw_p))
     return found
 
 
@@ -152,10 +150,7 @@ def build_nginx_map(csv_input_path, map_output_path, navgraph_path):
     protected_system_paths = [
         '/', '/index.html', '/feed.xml', '/llms.txt', '/robots.txt',
         '/sitemap.xml', '/sitemap-core.xml', '/sitemap-hubs.xml',
-        '/sitemap-branch-0.xml', '/sitemap-branch-1.xml',
-        '/sitemap-branch-2.xml', '/sitemap-branch-3.xml',
-        '/sitemap-branch-4.xml', '/sitemap-branch-5.xml',
-        '/sitemap-branch-6.xml'
+        *[f'/sitemap-branch-{i}.xml' for i in range(16)],
     ]
     living_tissue.update(protected_system_paths)
     active_permalinks.update(protected_system_paths)

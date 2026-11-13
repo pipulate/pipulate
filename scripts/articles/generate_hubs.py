@@ -202,10 +202,7 @@ def update_homepage_recent_posts(posts_dir, target_repo_root, count=10):
 
 
 def clean_and_prep_dirs(hubs_dir):
-    if hubs_dir.exists():
-        shutil.rmtree(hubs_dir)
     hubs_dir.mkdir(parents=True, exist_ok=True)
-    print(f"🧹 Cleaned: {hubs_dir}")
 
 
 def generate_hub_file(node, target_repo_root, hubs_dir, parents=None):
@@ -318,9 +315,13 @@ permalink: {node['permalink']}
         content += json.dumps(json_ld, indent=2)
         content += "\n</script>\n"
 
-    # Write File
-    with open(filepath, 'w', encoding='utf-8') as f:
-        f.write(content)
+    # Write File only when content changed (preserves mtimes and zero-churn git diffs)
+    old_content = filepath.read_text(encoding='utf-8') if filepath.is_file() else None
+    changed = old_content != content
+    if changed:
+        with open(filepath, 'w', encoding='utf-8') as f:
+            f.write(content)
+    return filepath, changed
 
 
 def main():
@@ -354,6 +355,8 @@ def main():
         nav_tree = json.load(f)
 
     clean_and_prep_dirs(hubs_dir)
+    expected_hub_files = set()
+    stats = {"written": 0, "unchanged": 0}
     
     # NOTE: We no longer delete index.md here, because it is now a persistent source file.
    
@@ -361,7 +364,10 @@ def main():
     def recurse(node, parents=None):
         if parents is None: parents = []
         
-        generate_hub_file(node, target_repo_root, hubs_dir, parents)
+        out_path, did_write = generate_hub_file(node, target_repo_root, hubs_dir, parents)
+        if out_path.parent == hubs_dir:
+            expected_hub_files.add(out_path.name)
+            stats["written" if did_write else "unchanged"] += 1
         
         # Current node becomes parent for the next level
         # We capture just the data needed for breadcrumbs
@@ -372,6 +378,15 @@ def main():
             recurse(child, next_parents)
 
     recurse(nav_tree)
+    pruned = 0
+    for stale_md in sorted(hubs_dir.glob("*.md")):
+        if stale_md.name not in expected_hub_files:
+            stale_md.unlink()
+            pruned += 1
+    print(
+        f"📊 Hub Sync: {stats['written']} written, {stats['unchanged']} unchanged, "
+        f"{pruned} retired file(s) pruned."
+    )
 
 
 if __name__ == "__main__":
