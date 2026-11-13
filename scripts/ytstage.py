@@ -48,7 +48,7 @@ DEFAULT_OPTICS_OUTRO_TEXT = (
     "go get your own Sun Pug at SunPug.io, or if you want a strictly enterprise standards door "
     "for your clients, visit RFC9110.org or RFC9111.io. "
     "All three doors install the exact same open-source engine today and are tailoring directly to each audience over time. "
-    "Forward this live stream to one colleague who needs to see life after doorway-page slop, "
+    "Forward this live stream to one colleague who needs to see life after generative doorway-pages, "
     "and join us on Discord at mikelev.in/discord. "
     "Returning now to the Honeybot Observatory."
 )

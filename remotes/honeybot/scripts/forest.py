@@ -169,7 +169,7 @@ STATION_SEGMENTS = [
         [
             "For years, enterprise teams paid a $10K/mo JavaScript pre-render tax just to spoon-feed bloated HTML snapshots to search crawlers.",
             "Roy Fielding and Mark Nottingham already wired the cure into HTTP: RFC 9110 content negotiation and RFC 9111 Vary Accept caching let your existing CDN serve HTML to humans and clean Markdown to AI agents from one URL with zero SaaS rent.",
-            "Grab your own Sun Pug free at SunPug.io, tell one colleague there is real engineering life after GEO doorway-page slop, and join the Founding 1,000 on Discord at mikelev.in/discord.",
+            "Grab your own Sun Pug free at SunPug.io, tell one colleague there is real engineering life after generative doorway-pages, and join the Founding 1,000 on Discord at mikelev.in/discord.",
         ],
     ),
 ]
