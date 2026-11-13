@@ -5,6 +5,7 @@ highly curated "Prime Directive" header with a reverse-chronological
 dump of all article metadata, utilizing the `lsa.py` extraction logic.
 """
 
+import json
 import sys
 import argparse
 from pathlib import Path
@@ -131,6 +132,44 @@ def build_flat_sitemap_xml(target_config: dict, metadata: list[dict]) -> str:
     )
 
 
+def build_hub_topology_section(target_config: dict) -> str:
+    """Render the 2-Tier Hub Map (Macro-Pillars -> Sub-Hubs) when navgraph.json is in pipeline."""
+    if "build_knowledge_graph.py" not in target_config.get("pipeline", []):
+        return ""
+    navgraph_path = SCRIPT_DIR / "navgraph.json"
+    if not navgraph_path.is_file():
+        return ""
+    try:
+        nav_tree = json.loads(navgraph_path.read_text(encoding="utf-8"))
+    except Exception:
+        return ""
+    pillars = nav_tree.get("children_hubs") or []
+    if not pillars:
+        return ""
+    base_url = resolve_base_url(target_config)
+    total_hubs = sum(1 + len(p.get("children_hubs") or []) for p in pillars)
+    lines = [
+        "---",
+        "",
+        f"## THREE-HOP TOPIC HUB DIRECTORY ({len(pillars)} PILLARS -> {total_hubs} PERMANENT HUBS)",
+        "Agents may traverse the corpus in <= 3 Markdown hops (`/` -> `/<hub>/` -> `/futureproof/<slug>/`) via `Accept: text/markdown` (RFC 9110):",
+        f"- **Link-Graph Topology (JSON)**: {base_url}/graph.json",
+        f"- **XML Sitemap Index**: {base_url}/sitemap.xml (`sitemap-hubs.xml` + `sitemap-branch-0..{len(pillars) - 1}.xml`)",
+        "",
+    ]
+    for p in pillars:
+        kids = p.get("children_hubs") or []
+        p_arts = len(p.get("children_articles") or [])
+        branch_arts = p_arts + sum(len(c.get("children_articles") or []) for c in kids)
+        span_note = f"{p_arts} articles; branch total: {branch_arts}" if kids else f"{p_arts} articles"
+        lines.append(f"- **[{p['title']}]({base_url}{p['permalink']}index.md?src=llms.txt)** ({span_note})")
+        for c in kids:
+            c_arts = len(c.get("children_articles") or [])
+            lines.append(f"  - [{c['title']}]({base_url}{c['permalink']}index.md?src=llms.txt) ({c_arts} articles)")
+    lines.extend(["", "---", "", "## CHRONOLOGICAL ARTICLE LEDGER"])
+    return "\n".join(lines)
+
+
 def main():
     parser = argparse.ArgumentParser(description="Generate llms.txt, robots.txt, and flat sitemap.xml")
     common.add_standard_arguments(parser)
@@ -152,10 +191,12 @@ def main():
 
     target_config = targets[target_key]
 
-    # 1. Build Header + Payload for llms.txt
+    # 1. Build Header + Hub Topology + Payload for llms.txt
     header_content = build_header(target_key, target_config)
+    hub_section = build_hub_topology_section(target_config)
     payload_content, metadata = build_payload(target_config)
-    final_content = f"{header_content}\n\n{payload_content}\n" if payload_content else f"{header_content}\n"
+    sections = [s for s in (header_content, hub_section, payload_content) if s]
+    final_content = "\n\n".join(sections) + "\n"
 
     OUTPUT_FILE.write_text(final_content, encoding='utf-8')
     print(f"✅ Successfully generated: {OUTPUT_FILE}")

@@ -268,11 +268,13 @@ def project_d3_graph(tree_node, nodes, links, parent_id=None, depth=0):
         "id": tree_node['id'],
         "label": tree_node['title'],
         # Map canonical type to D3 group (ensures 'root' is preserved)
-        "group": tree_node['type'], 
+        "group": tree_node['type'],
         "val": tree_node.get('gravity', 20),
         "status": "hub",
         "parentId": parent_id,
-        "depth": depth
+        "depth": depth,
+        "url": tree_node.get('permalink', '/'),
+        "count": len(tree_node.get('children_articles', [])),
     }
     nodes.append(d3_node)
 
@@ -284,7 +286,9 @@ def project_d3_graph(tree_node, nodes, links, parent_id=None, depth=0):
             "group": "article",
             "val": article.get('gravity', 5),
             "parentId": tree_node['id'],
-            "depth": depth + 1
+            "depth": depth + 1,
+            "url": article.get('permalink', '/'),
+            "date": article.get('date', ''),
         }
         nodes.append(art_node)
         links.append({

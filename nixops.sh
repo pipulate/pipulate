@@ -56,6 +56,9 @@ echo "🚀 Syncing 8 Domain Doors & Installer..."
 ssh $TARGET "cd ~/www && mkdir -p $INSTALLER_DOORS"
 for door in $INSTALLER_DOORS; do
   rsync $RSYNC_OPTS "remotes/honeybot/www/$door/" "$TARGET:~/www/$door/"
+  if [ ! -f "remotes/honeybot/www/$door/favicon.ico" ] && [ -f "favicon.ico" ]; then
+    rsync $RSYNC_OPTS favicon.ico "$TARGET:~/www/$door/favicon.ico"
+  fi
 done
 rsync $RSYNC_OPTS AUDIT.md assets/installer/mck.sh "$TARGET:~/www/pipulate.com/"
 if [ -f "$HOME/repos/Pipulate.com/key.rot" ]; then
@@ -88,6 +91,9 @@ if [ ! -f "$LEVINUX_CACHE/remark-latest.min.js" ]; then
 fi
 ssh $TARGET "mkdir -p ~/www/levinux.com"
 rsync $RSYNC_OPTS remotes/honeybot/www/levinux.com/ "$LEVINUX_CACHE/" $TARGET:~/www/levinux.com/
+if [ ! -f "remotes/honeybot/www/levinux.com/favicon.ico" ] && [ -f "favicon.ico" ]; then
+  rsync $RSYNC_OPTS favicon.ico "$TARGET:~/www/levinux.com/favicon.ico"
+fi
 rsync --delete $RSYNC_OPTS remotes/honeybot/nixos/ $TARGET:~/nixos-config-staged/
 
 echo "✅ Sync Complete."

@@ -581,7 +581,7 @@ def get_broadcast_kit(target_key="1", slug_match=None):
         f"📖 Read the full article: {canonical_url}?src=youtube",
         *([f"📄 Summarize in Google Docs: {gdoc_url}"] if gdoc_url else []),
         f"🟣 Join the Founding 1,000 Discord (1,000 members + 8 wks = Google-indexed community): {DEFAULT_DISCORD_INVITE_URL}",
-        f"🔭 Got the SEO Blues? SEO moved to the Edge — Your Site Is Your Feed: {base_url}/?src=youtube#consulting | Inspect workshop: curl -fsSL https://sunpug.io | less (Email: {CONTACT_EMAIL})",
+        f"🔭 Enterprise AI-Readiness & Edge Telemetry (RFC 9110 / ADNS / O2O): {base_url}/?src=youtube#consulting | Inspect workshop: curl -fsSL https://sunpug.io | less (Email: {CONTACT_EMAIL})",
         f"🧪 Test RFC 9110 in your terminal: curl -sI -H \"Accept: text/markdown\" {canonical_url}?src=rfc9110",
         "",
         f"🎙️ Now reading live on the Web Bot AI Observatory: \"{title}\"",
@@ -622,7 +622,7 @@ def get_broadcast_kit(target_key="1", slug_match=None):
         f"🧪 Test RFC 9110 in your terminal: curl -sI -H \"Accept: text/markdown\" {canonical_url}?src=rfc9110",
         f"🔴 Watch/Listen 24/7 on Honeybot Storytime: {yt_live_vanity}",
         f"🟣 Join the Founding 1,000 on Discord: {DEFAULT_DISCORD_INVITE_URL}",
-        f"🔭 Got the SEO Blues? SEO moved to the Edge — Your Site Is Your Feed: {base_url}/?src=linkedin#consulting",
+        f"🔭 Enterprise AI-Readiness & Edge Telemetry (RFC 9110 / ADNS / O2O): {base_url}/?src=linkedin#consulting",
     ])
     if tags:
         li_parts.extend(["", tags])
