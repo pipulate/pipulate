@@ -152,21 +152,43 @@ def _pause_honeybot_stage(pause_audio=True):
                 paused.append(int(raw_lp))
             except Exception:
                 pass
-    if pause_audio:
-        for p in sorted(pathlib.Path("/proc").glob("[0-9]*/cmdline")):
-            try:
-                pid = int(p.parent.name)
-                if pid in (my_pid, parent_pid) or pid in paused:
-                    continue
-                raw = p.read_bytes().replace(b"\\x00", b" ").decode("utf-8", errors="ignore")
-                if (
-                    ("aplay" in raw and ("-t raw" in raw or "honeybot_tts" in raw or "tick.wav" in raw or "dripulate.wav" in raw))
-                    or ("piper" in raw and "output_raw" in raw)
-                ):
-                    os.kill(pid, signal.SIGSTOP)
-                    paused.append(pid)
-            except Exception:
+    bgm_running = False
+    for p in sorted(pathlib.Path("/proc").glob("[0-9]*/cmdline")):
+        try:
+            pid = int(p.parent.name)
+            if pid in (my_pid, parent_pid) or pid in paused:
                 continue
+            raw = p.read_bytes().replace(b"\\x00", b" ").decode("utf-8", errors="ignore")
+            if "honeybot-storytime-bgm" in raw or ("aplay" in raw and "dripulate.wav" in raw):
+                bgm_running = True
+                try:
+                    os.kill(pid, signal.SIGCONT)
+                except Exception:
+                    pass
+                continue
+            if pause_audio and (
+                ("aplay" in raw and ("-t raw" in raw or "honeybot_tts" in raw or "tick.wav" in raw))
+                or ("piper" in raw and "output_raw" in raw)
+            ):
+                os.kill(pid, signal.SIGSTOP)
+                paused.append(pid)
+        except Exception:
+            continue
+    bgm_wav = pathlib.Path("/home/mike/www/mikelev.in/assets/sounds/dripulate.wav")
+    if not bgm_running and bgm_wav.is_file() and os.environ.get("HONEYBOT_NO_AUDIO") != "1":
+        try:
+            import subprocess as _sp
+            bgm_env = os.environ.copy()
+            bgm_env["PATH"] = "/etc/profiles/per-user/mike/bin:/home/mike/.nix-profile/bin:/run/current-system/sw/bin:/usr/bin:/bin:" + bgm_env.get("PATH", "")
+            _sp.Popen(
+                ["sh", "-c", 'while :; do aplay -q -D default "/home/mike/www/mikelev.in/assets/sounds/dripulate.wav"; sleep 0.2; done # honeybot-storytime-bgm'],
+                env=bgm_env,
+                stdout=_sp.DEVNULL,
+                stderr=_sp.DEVNULL,
+                preexec_fn=os.setsid,
+            )
+        except Exception:
+            pass
     try:
         pathlib.Path("/tmp/honeybot_ytstage_paused.json").write_text(json.dumps(paused), encoding="utf-8")
     except Exception:

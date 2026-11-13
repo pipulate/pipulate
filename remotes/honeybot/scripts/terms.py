@@ -142,6 +142,7 @@ CASE_INSENSITIVE_TERMS = (
     ("SERP", "surp"),
     ("Sunpugio", "Sun-pug-ee-oh"),
     ("SunPug", "Sun Pug"),
+    ("DetSys", "Det Sys"),
     ("Ahrefs", "H refs"),
     ("360i", "three sixty eye"),
     ("SQLite", "S Q Lite"),
@@ -262,7 +263,7 @@ AI_SPEAKER_LABEL_PAT = (
 SPEAKER_TURN_RULES = (
     (
         re.compile(
-            r"(?m)^[ \t]*(?:\*\*[ \t]*(?:MikeLev\.in|Mike[ \t]+Levin|Mike|Me)[ \t]*:?[ \t]*\*\*[ \t]*:?|(?:MikeLev\.in|Mike[ \t]+Levin|Mike|Me)[ \t]*:)[ \t]*(?:\r?\n[ \t]*(?!\*\*[ \t]*(?:Gemini|Claude|ChatGPT|OpenAI|Opus|Sonnet|Shipmunk|AI|MikeLev\.in|Mike|Me)\b|PP4HEADINGSTART|#{1,6}[ \t]))*",
+            r"(?m)^[ \t]*(?:\*\*[ \t]*(?:MikeLev\.in|Mike[ \t]+Levin|Mike[- ]+E|Mike|Me|Human|Operator)[ \t]*:?[ \t]*\*\*[ \t]*:?|(?:MikeLev\.in|Mike[ \t]+Levin|Mike[- ]+E|Mike|Me|Human|Operator)[ \t]*:)[ \t]*(?:\r?\n[ \t]*(?!\*\*[ \t]*(?:Gemini|Claude|ChatGPT|OpenAI|Opus|Sonnet|Shipmunk|AI|MikeLev\.in|Mike|Me|Human|Operator)\b|PP4HEADINGSTART|#{1,6}[ \t]))*",
             re.IGNORECASE,
         ),
         "\n\nMike: ",

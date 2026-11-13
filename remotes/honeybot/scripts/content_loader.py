@@ -925,6 +925,7 @@ def clean_markdown(text, label=None, census=True):
     text = _simplify_filepaths_for_tts(text)
     # Remove Headers/Bold/Italic markers
     text = re.sub(r'[*_#]', '', text)
+    text = re.sub(r'[ \t]*\n?[ \t]*(PP4HEADINGSTART[ \t]+.+?[ \t]+PP4HEADINGEND)[ \t]*\n?[ \t]*', r'\n\n\1\n\n', text)
 
     # Reflow Logic (The Hard Wrap Fix)
     text = re.sub(r'\n\s*\n', '||PARAGRAPH||', text)

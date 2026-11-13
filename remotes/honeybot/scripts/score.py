@@ -119,9 +119,9 @@ def _append_article_performance(script, article, is_latest=True):
             "label": "SUNPUG.IO &\nMIKELEV.IN",
             "say": (
                 f"That concludes {article['title']}. "
-                "Explore 911 LLM Optics and the FOSS AI-Readiness workshop at SunPug.io, "
-                "or read the full text and raw receipts at mikelev.in. "
-                "Drop a message in the live chat if you are tuning in — "
+                "Grab your own self-replicating Sun Pug and 911 LLM Optics free at SunPug.io, RFC9110.org, or RFC9111.io, "
+                "read the full text and raw receipts at mikelev.in, and forward this broadcast to one sharp builder who needs it. "
+                "Join the Founding 1,000 AI-Readiness Consultants at mikelev.in/discord, or drop a message in the live chat — "
                 "a human operator monitors this observatory and can break in live."
             ),
         },

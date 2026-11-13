@@ -123,6 +123,7 @@ STANDBY_LOOP_LINES = (
     "The author is macheteing his way through the Noosphere of things being experimentally done for maybe the first time ever.",
     "This is The Signal. "
     "It may not be apparent to you right now, but this is the most unique thing you will see today, and if you tune in again later, then the next one will be the same -- and by that I mean different and equally new. "
+    "Grab your own self-replicating Sun Pug free at SunPug.io, forward this broadcast to one sharp builder who needs it, and join the Founding 1,000 on Discord at mikelev.in/discord. "
     "Welcome to The Information.",
 )
 
@@ -671,6 +672,9 @@ class Narrator(threading.Thread):
             self._reannounce_after_break = False
             return [self._make_spec("norma", raw, "narrator", "inactive", "curtain")]
         if is_heading:
+            if low == "the ai-edit method" and self._stage_dialogue_role != "left":
+                self._stage_dialogue_role = "left"
+                self._reannounce_after_break = True
             return [self._make_spec("norma", raw, "narrator", "inactive", "inactive")]
 
         m_human = _HUMAN_TURN_PREFIX_RE.match(raw)
@@ -700,6 +704,17 @@ class Narrator(threading.Thread):
             return out
 
         if self._stage_dialogue_role == "journal_ready":
+            self._stage_dialogue_role = "left"
+            self._reannounce_after_break = False
+            return [
+                self._make_spec("norma", MIKE_TURN_CUE_TEXT, "narrator", "curtain", "inactive"),
+                self._make_spec("mike", raw, "left", "active", "inactive"),
+            ]
+        if self._stage_dialogue_role != "left" and low.startswith((
+            "> same commands, run twice",
+            "same commands, run twice",
+            "1: before (probe):",
+        )):
             self._stage_dialogue_role = "left"
             self._reannounce_after_break = False
             return [
@@ -2480,7 +2495,11 @@ def build_hud_circle_specs(mode: str = "OVERTURE", title: str = "") -> list:
     closing_line = (
         f"Curtain up on Act One of: {clean_title}."
         if clean_mode == "OVERTURE"
-        else f"That concludes our midpoint intermission for: {clean_title}. Full source and receipts live at Mike L E V dot eye N slash latest."
+        else (
+            f"That concludes our midpoint intermission for: {clean_title}. "
+            "Full source and receipts live at Mike L E V dot eye N slash latest, "
+            "grab your own free Sun Pug at Sun Pug dot eye oh, and join us on Discord at Mike L E V dot eye N slash discord."
+        )
     )
     return [
         narrator._make_spec(
@@ -2607,6 +2626,7 @@ def run_optics_station_slot(content, env, profile_dir) -> None:
     claim_grace = float(cfg.get("claim_grace", 35.0))
     max_hold = float(cfg.get("timeout", 180.0))
     slot_p = Path(OPTICS_SLOT_PATH)
+    ensure_storytime_bgm_alive()
     narrator.say("Checking Pipulate Prime for a live 911 L L M Optics spectrometer demonstration.")
     wait_for_voice_or_live_interrupt(env, profile_dir)
     if has_pending_update():
@@ -2668,9 +2688,10 @@ def run_optics_station_slot(content, env, profile_dir) -> None:
                 "911 LLM Optics is our FOSS Screaming Frog for the Age of AI: point it at any URL and it stacks sixteen wire-truth lenses side by side — "
                 "raw HTTP response headers, unrendered source HTML versus hydrated browser DOM, accessibility trees, token bloat, and RFC 9110 plus RFC 9111 Markdown readiness — "
                 "sealing the entire audit into a SHA-256 archive deed so you can retire $10K/mo pre-render stacks with proof. "
-                "Launch it free at SunPug.io."
+                "Launch it free at SunPug.io, RFC9110.org, or RFC9111.io, and join our Founding 1,000 practitioners at mikelev.in/discord."
             )
             wait_for_voice_or_live_interrupt(env, profile_dir)
+        ensure_storytime_bgm_alive()
     finally:
         try:
             slot_p.unlink(missing_ok=True)
@@ -2727,6 +2748,8 @@ def dispatch_cue(command, content, env, profile_dir, pace_say=True):
                     if raw_batch is None:
                         narrator.enqueue_specs(specs)
                         return
+                elif len(specs) >= 2:
+                    narrator._reannounce_after_break = False
                 narrator.play_specs_raw(raw_batch)
             else:
                 narrator.enqueue_specs(specs)
