@@ -23,8 +23,8 @@ AI_PHOOEY_CHOP = r"""#
 # creator of) of Project Pipulate:
 
 # --- START STATS ---
-# There are 1,638 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 22 published in the last 7 days
+# There are 1,639 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 23 published in the last 7 days
 # Markdown negotiated: 6,525 reads (0.38% of all responses)
 # DOM hydration: 14002 trapdoor triggers from 25 non-local IPs (top-N sample, self excluded)
 # Honeybot telemetry fetched 2026-11-13T16:40Z
@@ -1966,7 +1966,7 @@ apply.py
 # ============================================================================
 # Files tracked by git but not yet mixed into the palette above.
 # Move these into the active chapters to paint them onto the context canvas.
-# Coverage: 222/295 tracked files claimed. The compiler reads this line back on the next compile and prints the delta beside the live count, so an unclaimed file rings once.
+# Coverage: 223/295 tracked files claimed. The compiler reads this line back on the next compile and prints the delta beside the live count, so an unclaimed file rings once.
 
 # AGENTS.md  # [1,039 tokens | 4,223 bytes]
 # AUDIT.md  # [2,992 tokens | 13,897 bytes]
@@ -2010,7 +2010,6 @@ apply.py
 # scripts/articles/build_hierarchy.py  # [2,460 tokens | 10,361 bytes]
 # scripts/articles/build_navgraph.py  # [2,119 tokens | 9,029 bytes]
 # scripts/articles/execute_massive_prompt.py  # [491 tokens | 2,209 bytes]
-# scripts/articles/extract_404_ghosts.py  # [931 tokens | 4,009 bytes]
 # scripts/articles/find_duplicates.py  # [1,879 tokens | 7,993 bytes]
 # scripts/articles/generate_semrush_candidates.py  # [658 tokens | 2,747 bytes]
 # scripts/articles/list_models.py  # [102 tokens | 391 bytes]
