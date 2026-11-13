@@ -45,18 +45,32 @@ nix develop .#quiet --command bash << 'EOF'
   # _posts/, so the loop above never publishes their markdown. Without this,
   # a negotiated Accept: text/markdown request to "/" rewrites to /index.md
   # and 404s. index.md with no permalink frontmatter defaults to "/".
-  for page in *.md; do
+  for page in *.md pages/*.md; do
     [ -f "$page" ] || continue
     PERMALINK=$(grep -m 1 '^permalink:' "$page" | sed -e 's/^permalink:[[:space:]]*//' -e 's/["'\''[:space:]]//g')
     if [ -z "$PERMALINK" ] && [ "$page" = "index.md" ]; then
       PERMALINK="/"
     fi
     if [ -n "$PERMALINK" ]; then
+      case "$PERMALINK" in
+        *.html|*.xml|*.txt|*.json) continue ;;
+      esac
+      case "$PERMALINK" in
+        /*) ;;
+        *) PERMALINK="/$PERMALINK" ;;
+      esac
+      case "$PERMALINK" in
+        */) ;;
+        *) PERMALINK="$PERMALINK/" ;;
+      esac
       mkdir -p "_site$PERMALINK"
       cp "$page" "_site${PERMALINK}index.md"
       sed -i -e 's/{% raw %}//g' -e 's/{% endraw %}//g' "_site${PERMALINK}index.md"
     fi
   done
+  if [ -f "_includes/home_hub.md" ] && [ -f "_site/index.md" ]; then
+    python3 -c 'import pathlib; p = pathlib.Path("_site/index.md"); h = pathlib.Path("_includes/home_hub.md").read_text(); t = p.read_text(); p.write_text(t.replace("{% include home_hub.md %}", h)) if "{% include home_hub.md %}" in t else None'
+  fi
 
   # 2. Run the Batch Surgeon ONCE
   python3 /home/mike/www/mikelev.in/scripts/dye_injector_v2.py "/home/mike/www/mikelev.in/_site"
@@ -67,9 +81,14 @@ echo '🗺️  Deploying Nginx Redirect Map...'
 cp _redirects.map _site/redirects.map
 # --------------------------------
 
-# 4. Permissions Fix
+# 4. Permissions Fix & RAM Redirect Reload
 echo "🔒 [Hook] Fixing Permissions..."
 chmod -R 755 $WORK_TREE/_site
+if sudo -n /run/current-system/sw/bin/systemctl reload nginx 2>/dev/null; then
+  echo "🔄 [Hook] Reloaded Nginx redirect map into RAM."
+else
+  echo "ℹ️  [Hook] Nginx reload deferred (run nixos-rebuild switch once to arm NOPASSWD reload)."
+fi
 
 # 5. The Breaking-News Bell: signal the live stream to jump to the newest article.
 # A fresh epoch timestamp on every push makes this retry-able even when the article

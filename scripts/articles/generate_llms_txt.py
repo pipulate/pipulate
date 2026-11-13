@@ -5,7 +5,10 @@ highly curated "Prime Directive" header with a reverse-chronological
 dump of all article metadata, utilizing the `lsa.py` extraction logic.
 """
 
+import html
 import json
+import re
+import shutil
 import sys
 import argparse
 from pathlib import Path

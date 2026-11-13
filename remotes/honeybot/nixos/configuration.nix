@@ -240,10 +240,13 @@
 
     # 1. THE SENSOR: Read the Accept header and define the MIME type
       appendHttpConfig = ''
-      # 1. The Missing Map: Define $serve_markdown based on the Accept header
-      map $http_accept $serve_markdown {
+      # 1. The Missing Map: Define $serve_markdown from Accept header + URI shape
+      # Guard explicit file endpoints (.txt, .xml, .json, .ico, .sh, .zip, .rot)
+      # so /llms.txt and /robots.txt never rewrite to .../index.md on any door.
+      map "$http_accept:$uri" $serve_markdown {
           default 0;
-          "~*text/markdown" 1;
+          "~*text/markdown:.*\.(?:txt|xml|json|ico|png|jpg|jpeg|svg|gif|webp|css|js|sh|zip|rot)$" 0;
+          "~*text/markdown:" 1;
       }
 
       # 1b. Teach Nginx that .md is text/markdown. mime.types has no entry for
@@ -852,10 +855,11 @@
           # THE ACTUAL SWITCH: rewrite to the sibling index.md when the
           # Accept-header sensor ($serve_markdown, from appendHttpConfig)
           # fired. Two rewrite forms cover both permalink shapes: a trailing
-          # slash ("/some-post/") and a bare path ("/some-post").
+          # slash ("/some-post/") and a bare slug ("/some-post"), leaving
+          # direct "/some-post/index.md" untouched so it never double-appends.
           if ($serve_markdown) {
               rewrite ^(.*)/$ $1/index.md break;
-              rewrite ^(.*[^/])$ $1/index.md break;
+              rewrite ^(.*)/([^/.]+)$ $1/$2/index.md break;
           }
 
           # index.html BEFORE index.md: a normal (non-negotiated) request
@@ -883,6 +887,18 @@
   };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
+  security.sudo.extraRules = [
+    {
+      users = [ "mike" ];
+      commands = [
+        {
+          command = "/run/current-system/sw/bin/systemctl reload nginx";
+          options = [ "NOPASSWD" ];
+        }
+      ];
+    }
+  ];
+
   users.users.mike = {
     isNormalUser = true;
     description = "Mike";

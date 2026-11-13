@@ -38,9 +38,7 @@ llms.txt
 robots.txt
 graph-good.json
 *sitemap*.xml
-!remotes/honeybot/www/*/llms.txt
-!remotes/honeybot/www/*/robots.txt
-!remotes/honeybot/www/*/*sitemap*.xml
+remotes/honeybot/www/*/favicon.ico
 
 # ripgrep filters for good search & replaces with `rg | xargs sed` pattern
 assets/js/

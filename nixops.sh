@@ -53,6 +53,9 @@ if [ -f "assets/sounds/dripulate.wav" ]; then
 fi
 
 echo "🚀 Syncing 8 Domain Doors & Installer..."
+if [ -x ".venv/bin/python" ]; then
+  .venv/bin/python scripts/articles/generate_llms_txt.py --doors
+fi
 ssh $TARGET "cd ~/www && mkdir -p $INSTALLER_DOORS"
 for door in $INSTALLER_DOORS; do
   rsync $RSYNC_OPTS "remotes/honeybot/www/$door/" "$TARGET:~/www/$door/"
@@ -95,6 +98,7 @@ if [ ! -f "remotes/honeybot/www/levinux.com/favicon.ico" ] && [ -f "favicon.ico"
   rsync $RSYNC_OPTS favicon.ico "$TARGET:~/www/levinux.com/favicon.ico"
 fi
 rsync --delete $RSYNC_OPTS remotes/honeybot/nixos/ $TARGET:~/nixos-config-staged/
+ssh $TARGET "sudo -n /run/current-system/sw/bin/systemctl reload nginx 2>/dev/null || true"
 
 echo "✅ Sync Complete."
 echo "   To apply NixOS config: ssh -t $TARGET 'sudo cp ~/nixos-config-staged/* /etc/nixos/ && sudo nixos-rebuild switch'"
