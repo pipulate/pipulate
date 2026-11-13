@@ -555,12 +555,12 @@ def _figurate_white_rabbit():
     """Render white_rabbit as (human, ai) tuple for FIGURATE_REGISTRY."""
     art = r"""
  The same URL can serve HTML and Markdown?
-           O        /)  __________
-            o /)\__//  /          \
-          ___(/_ 0 0  |            |
-        *(    ==(_T_)== 911 Optics |
-          \  )   ""\  |            |
-           |__>-\_>_>  \__________/
+            O        /)  ______
+             o /)\__//  /      \
+           ___(/_ 0 0  |  911-  |
+         *(    ==(_T_)==  LLM   |
+           \  )   ""\  | OPTICS |
+            |__>-\_>_>  \______/
 
    curl -fsSL https://sunpug.io | less
     """
