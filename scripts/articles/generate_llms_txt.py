@@ -173,10 +173,127 @@ def build_hub_topology_section(target_config: dict) -> str:
     return "\n".join(lines)
 
 
+SITEMAP_NS = "http://" + "www." + "sitemaps.org/schemas/sitemap/0.9"
+PRIMARY_ORIGIN = "https://" + "mikelev.in"
+INSTALLER_DOOR_SET = frozenset({
+    "pipulate.com", "npvg.org", "qamy.ai", "levinix.org",
+    "sunpug.io", "guerillatech.com", "rfc9110.org", "rfc9111.io",
+})
+EXTRA_DOOR_PATHS = {
+    "pipulate.com": ("/AUDIT.md", "/mck.sh"),
+    "qamy.ai": ("/brain.zip",),
+}
+
+
+def _write_if_changed(path: Path, text: str) -> bool:
+    old = path.read_text(encoding="utf-8") if path.is_file() else None
+    if old != text:
+        path.write_text(text, encoding="utf-8")
+        return True
+    return False
+
+
+def generate_door_discovery_files() -> int:
+    """Materialize robots.txt, sitemap.xml, llms.txt, and favicon.ico across all Honeybot www doors."""
+    www_root = REPO_ROOT / "remotes" / "honeybot" / "www"
+    favicon_src = REPO_ROOT / "favicon.ico"
+    if not www_root.is_dir():
+        print(f"⚠️ Honeybot www root not found: {www_root}")
+        return 1
+    today = datetime.now().strftime("%Y-%m-%d")
+    doors = sorted(d for d in www_root.iterdir() if d.is_dir())
+    written = 0
+    for door_dir in doors:
+        domain = door_dir.name
+        base_url = "https://" + domain
+        md_file = door_dir / "index.md"
+        html_file = door_dir / "index.html"
+        md_text = md_file.read_text(encoding="utf-8", errors="ignore") if md_file.is_file() else ""
+        html_text = html_file.read_text(encoding="utf-8", errors="ignore") if html_file.is_file() else ""
+        title = ""
+        m_h1 = re.search(r"^#\s+(.+)$", md_text, re.M)
+        if m_h1:
+            title = m_h1.group(1).strip()
+        elif html_text:
+            m_t = re.search(r"<title>(.*?)</title>", html_text, re.I | re.S)
+            if m_t:
+                title = " ".join(html.unescape(m_t.group(1)).split()).strip()
+        title = title or domain
+        pitch = ""
+        in_fence = False
+        for raw_ln in md_text.splitlines():
+            s = raw_ln.strip()
+            if s.startswith("```"):
+                in_fence = not in_fence
+                continue
+            if in_fence or not s or s.startswith(("#", ">", "-", "*", "<", "|", "---")):
+                continue
+            pitch = s
+            break
+        robots_txt = build_robots_txt({"base_url": base_url})
+        url_rows = [
+            f"  <url><loc>{base_url}/</loc><lastmod>{today}</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>",
+            f"  <url><loc>{base_url}/llms.txt</loc><lastmod>{today}</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>",
+        ]
+        if domain in INSTALLER_DOOR_SET:
+            url_rows.append(
+                f"  <url><loc>{base_url}/install.sh</loc><lastmod>{today}</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>"
+            )
+        for extra_p in EXTRA_DOOR_PATHS.get(domain, ()):
+            url_rows.append(
+                f"  <url><loc>{base_url}{extra_p}</loc><lastmod>{today}</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>"
+            )
+        sitemap_xml = (
+            '<?xml version="1.0" encoding="UTF-8"?>\n'
+            f'<urlset xmlns="{SITEMAP_NS}">\n'
+            + "\n".join(url_rows)
+            + "\n</urlset>\n"
+        )
+        llms_lines = [f"# {title}", ""]
+        if pitch:
+            llms_lines.extend([f"> {pitch}", ""])
+        llms_lines.extend([
+            "## Wire-Truth & RFC 9110 Content Negotiation",
+            "Send `Accept: text/markdown` on the root URL to receive clean source Markdown directly.",
+            "",
+            f"- **Canonical URL**: {base_url}/",
+            f"- **Markdown Source**: {base_url}/index.md",
+            f"- **XML Sitemap**: {base_url}/sitemap.xml",
+            f"- **Robots Policy**: {base_url}/robots.txt",
+        ])
+        if domain in INSTALLER_DOOR_SET:
+            llms_lines.append(f"- **Inspect Nix Flake Bootstrap**: `curl -fsSL {base_url} | less`")
+        for extra_p in EXTRA_DOOR_PATHS.get(domain, ()):
+            llms_lines.append(f"- **Direct Artifact**: {base_url}{extra_p}")
+        llms_lines.extend([
+            "",
+            "## Parent Knowledge Graph (Three-Hop Hub Directory)",
+            f"- **Primary Corpus & 28 Topic Hubs**: {PRIMARY_ORIGIN}/llms.txt",
+            f"- **Machine-Readable Link Graph**: {PRIMARY_ORIGIN}/graph.json",
+        ])
+        llms_txt = "\n".join(llms_lines) + "\n"
+        written += int(_write_if_changed(door_dir / "robots.txt", robots_txt))
+        written += int(_write_if_changed(door_dir / "sitemap.xml", sitemap_xml))
+        written += int(_write_if_changed(door_dir / "llms.txt", llms_txt))
+        fav_dst = door_dir / "favicon.ico"
+        if favicon_src.is_file() and not fav_dst.is_file():
+            shutil.copy2(favicon_src, fav_dst)
+            written += 1
+    print(f"✅ Door Discovery Sync: {len(doors)} doors checked ({written} file(s) updated).")
+    return 0
+
+
 def main():
     parser = argparse.ArgumentParser(description="Generate llms.txt, robots.txt, and flat sitemap.xml")
     common.add_standard_arguments(parser)
+    parser.add_argument(
+        "--doors",
+        action="store_true",
+        help="Materialize robots.txt, sitemap.xml, llms.txt, and favicon.ico across remotes/honeybot/www/*.",
+    )
     args = parser.parse_args()
+    if args.doors:
+        sys.exit(generate_door_discovery_files())
 
     targets = common.load_targets()
     target_key = args.target
