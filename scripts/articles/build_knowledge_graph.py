@@ -23,11 +23,13 @@ import common
 # --- GLOBAL CONFIGURATION ---
 TARGET_BRANCHING_FACTOR = 7  # The "Rule of 7"
 GOLD_PAN_SIZE = 5            # Top articles kept at hub level
-NAVGRAPH_FILE = "navgraph.json"
-GRAPH_FILE = "graph.json"
-LLMS_TXT_FILE = "llms.txt"
-SITEMAP_CORE_FILE = "sitemap-core.xml"
-SITEMAP_HUBS_FILE = "sitemap-hubs.xml"
+SCRIPT_DIR = Path(__file__).resolve().parent
+NAVGRAPH_FILE = SCRIPT_DIR / "navgraph.json"
+GRAPH_FILE = SCRIPT_DIR / "graph.json"
+LLMS_TXT_FILE = SCRIPT_DIR / "llms.txt"
+SITEMAP_CORE_FILE = SCRIPT_DIR / "sitemap-core.xml"
+SITEMAP_HUBS_FILE = SCRIPT_DIR / "sitemap-hubs.xml"
+SITEMAP_INDEX_FILE = SCRIPT_DIR / "sitemap.xml"
 
 # --- 1. UNIFIED DATA INGESTION ---
 
@@ -336,7 +338,7 @@ def project_llms_txt(tree_node, lines=None, level=0, base_url="https://mikelev.i
         
     return lines
 
-def project_xml_sitemaps(tree_node, base_url="https://mikelev.in", output_dir=Path(".")):
+def project_xml_sitemaps(tree_node, base_url="https://mikelev.in", output_dir=SCRIPT_DIR):
     """
     Projector D: Generates Top-Level Hub Sitemaps for load-balancing.
     """
@@ -1103,7 +1105,7 @@ def main():
     xml_core, xml_hubs, xml_index = project_xml_sitemaps(canonical_tree, base_url=base_url)
     with open(SITEMAP_CORE_FILE, 'w', encoding='utf-8') as f: f.write(xml_core)
     with open(SITEMAP_HUBS_FILE, 'w', encoding='utf-8') as f: f.write(xml_hubs)
-    with open('sitemap.xml', 'w', encoding='utf-8') as f: f.write(xml_index)
+    with open(SITEMAP_INDEX_FILE, 'w', encoding='utf-8') as f: f.write(xml_index)
     
     print(f"✅ Generated Sitemaps: Core, Hubs, Branches, and Root Index")
 

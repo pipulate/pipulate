@@ -92,9 +92,11 @@ REGEX_TERMS = (
     (re.compile(r"\bWeb\s+3\.0\b", re.IGNORECASE), "Web three point oh"),
     (re.compile(r"\bSHA-?256\b", re.IGNORECASE), "S H A 256"),
     (re.compile(r"\b(?:Neovim|nvim)\b", re.IGNORECASE), "Neo vim"),
-    # Operation GKAAUAH: expand "Piper TTS" / "piper-tts" and bare "TTS" unless already glossed
+    # Operation GKAAUAH: expand "Piper TTS" / "piper-tts" and bare "TTS" / "CDN" / "NPC" unless already glossed
     (re.compile(r"\bPiper[- \t]+TTS\b", re.IGNORECASE), "Piper Text to Speech"),
     (re.compile(r"\bTTS\b(?=\s*\(\s*text to speech)", re.IGNORECASE), "T T S"),
+    (re.compile(r"\bCDN\b(?=\s*(?:\(\s*Content Distribution Network|means\s+Content Distribution Network))", re.IGNORECASE), "C D N"),
+    (re.compile(r"\bNPCs?\b(?=\s*\(\s*non-player character)", re.IGNORECASE), "N P C"),
     (re.compile(r"\bdx/dy\b", re.IGNORECASE), "D X over D Y"),
     (re.compile(r"\bdy/dx\b", re.IGNORECASE), "D Y over D X"),
     # Data transfer rates (58.64 MiB/s, 550 KiB/s, 100 MB/s, 1 GB/s)
@@ -185,6 +187,10 @@ CASE_INSENSITIVE_TERMS = (
     ("Susskind", "Suss-kinned"),
     ("Feynman", "Fine-man"),
     ("Pareto", "Puh-ray-toe"),
+    ("scikit-learn", "sci-kit learn"),
+    ("TruncatedSVD", "Truncated S V D"),
+    ("Karpathy", "Kar-path-ee"),
+    ("Kalman", "Kahl-mahn"),
 )
 
 # 3. Exact-Case Acronyms & MixedCase Proper Nouns (auto-sorted longest-first)
@@ -232,8 +238,15 @@ EXACT_CASE_TERMS = (
     ("CRO", "C R O"),
     ("ROI", "R O I"),
     ("CMS", "C M S"),
-    ("CDNs", "C D Ns"),
-    ("CDN", "C D N"),
+    ("CDNs", "Content Distribution Networks"),
+    ("CDN", "Content Distribution Network"),
+    ("NPCs", "non-player characters"),
+    ("NPC", "non-player character"),
+    ("TF-IDF", "T F I D F"),
+    ("SVD", "S V D"),
+    ("ADWIN", "ad-win"),
+    ("HMMs", "Hidden Markov Models"),
+    ("HMM", "Hidden Markov Model"),
     ("DOM", "D O M"),
     ("HTTPS", "H T T P S"),
     ("HTTP", "H T T P"),
