@@ -92,6 +92,8 @@ REGEX_TERMS = (
     (re.compile(r"\bWeb\s+3\.0\b", re.IGNORECASE), "Web three point oh"),
     (re.compile(r"\bSHA-?256\b", re.IGNORECASE), "S H A 256"),
     (re.compile(r"\b(?:Neovim|nvim)\b", re.IGNORECASE), "Neo vim"),
+    # Operation GKAAUAH: expand "Piper TTS" / "piper-tts" in full before bare "TTS"
+    (re.compile(r"\bPiper[- \t]+TTS\b", re.IGNORECASE), "Piper Text to Speech"),
     (re.compile(r"\bdx/dy\b", re.IGNORECASE), "D X over D Y"),
     (re.compile(r"\bdy/dx\b", re.IGNORECASE), "D Y over D X"),
     # Data transfer rates (58.64 MiB/s, 550 KiB/s, 100 MB/s, 1 GB/s)
@@ -264,6 +266,7 @@ EXACT_CASE_TERMS = (
     ("TB", "terabytes"),
     ("BAM", "bam"),
     ("TTS", "T T S"),
+    ("GKAAUAH", "G K A A U A H"),
 )
 
 # Multiline speaker-turn normalizers for Storytime Markdown articles
@@ -319,9 +322,11 @@ MARKDOWN_TTS_MAP = SPEAKER_TURN_RULES + INLINE_TTS_MAP
 
 _ZERO_WIDTH_RE = re.compile(r"[\u200b\u200c\u200d\ufeff]")
 _FENCED_BLOCK_RE = re.compile(r"(?ms)^[ \t]*(`{3,}|~{3,})[^\n]*\n.*?^[ \t]*\1[ \t]*$")
+_HRULE_RE = re.compile(r"^[ \t]*(?:[-*_][ \t]*){3,}$")
 _ORDERED_ITEM_RE = re.compile(r"^[ \t]*(\d{1,2})\.[ \t]+(\S.*)$")
+_UNORDERED_ITEM_RE = re.compile(r"^[ \t]*[-*+][ \t]+(\S.*)$")
 _BLOCK_BOUNDARY_RE = re.compile(
-    r"^[ \t]*(?:\d{1,2}\.[ \t]+|[-*+][ \t]+|PP4HEADINGSTART|#{1,6}[ \t]|[-*_]{3,}[ \t]*$|>|\||`{3,}|~{3,})"
+    r"^[ \t]*(?:\d{1,2}\.[ \t]+|[-*+][ \t]+|PP4HEADINGSTART|#{1,6}[ \t]|(?:[-*_][ \t]*){3,}$|>|\||`{3,}|~{3,})"
 )
 _TERMINAL_PUNCT_RE = re.compile(r"[.!?:][*_\"')\]]*$")
 
@@ -350,7 +355,7 @@ _SPOKEN_CARDINALS = {
 
 
 def _expand_numbered_segment(segment: str) -> str:
-    """Expand Markdown numbered list items into spoken cardinals with paragraph pauses."""
+    """Expand Markdown ordered and bulleted list items with paragraph pauses for TTS."""
     lines = segment.split("\n")
     out_lines: list[str] = []
     prev_allows_list = True
@@ -359,10 +364,18 @@ def _expand_numbered_segment(segment: str) -> str:
     while idx < len(lines):
         line = lines[idx]
         stripped = line.strip()
-        item_match = _ORDERED_ITEM_RE.match(line)
-        if item_match and (prev_allows_list or int(item_match.group(1)) == 1):
-            num = int(item_match.group(1))
-            parts = [item_match.group(2).strip()]
+        is_hrule = bool(_HRULE_RE.match(line))
+        ord_match = None if is_hrule else _ORDERED_ITEM_RE.match(line)
+        unord_match = None if (is_hrule or ord_match) else _UNORDERED_ITEM_RE.match(line)
+        if (ord_match and (prev_allows_list or int(ord_match.group(1)) == 1)) or unord_match:
+            if ord_match:
+                num = int(ord_match.group(1))
+                lead = f"{_SPOKEN_CARDINALS.get(num, str(num))}. "
+                first_part = ord_match.group(2).strip()
+            else:
+                lead = ""
+                first_part = unord_match.group(1).strip()
+            parts = [first_part]
             idx += 1
             while idx < len(lines) and lines[idx].strip() and not _BLOCK_BOUNDARY_RE.match(lines[idx]):
                 parts.append(lines[idx].strip())
@@ -370,10 +383,9 @@ def _expand_numbered_segment(segment: str) -> str:
             body = " ".join(parts)
             if body and not _TERMINAL_PUNCT_RE.search(body):
                 body += "."
-            spoken = _SPOKEN_CARDINALS.get(num, str(num))
             if out_lines and out_lines[-1] != "":
                 out_lines.append("")
-            out_lines.append(f"{spoken}. {body}")
+            out_lines.append(f"{lead}{body}")
             if idx < len(lines):
                 out_lines.append("")
             prev_allows_list = True
@@ -397,7 +409,7 @@ def _expand_numbered_segment(segment: str) -> str:
 
 
 def expand_markdown_lists_for_tts(text: str) -> str:
-    """Expand Markdown numbered lists outside fenced code blocks for Piper TTS cadence."""
+    """Expand Markdown numbered and bulleted lists outside fenced code blocks for Piper TTS cadence."""
     if not text:
         return ""
     cleaned = _ZERO_WIDTH_RE.sub("", str(text))
@@ -428,7 +440,7 @@ def apply_markdown_tts_terms(text: str) -> str:
     if not text:
         return ""
     out = expand_markdown_lists_for_tts(text)
-    out = re.sub(r"(?m)^[ \t]*[-*_]{3,}[ \t]*$", "", out)
+    out = re.sub(r"(?m)^[ \t]*(?:[-*_][ \t]*){3,}$", "", out)
     out = re.sub(r"(?m)^[ \t]*\|[ \t:|-]+\|[ \t]*$", "", out)
     out = re.sub(
         r"(?m)^[ \t]*\|(.+)\|[ \t]*$",
