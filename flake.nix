@@ -343,6 +343,24 @@
           exec ${pkgs.python312}/bin/python /home/mike/repos/nixos/autognome.py --dry-run "$@"
         '';
 
+        # THE `404` COMMAND: One-word iterative non-pirate 404 healer.
+        # Packaged as a derivation (POSIX shell forbids all-digit function names)
+        # so bare `404`, `404 --verify`, `404 --push`, and `! 404 --verify` work everywhere.
+        heal404Command = pkgs.writeShellScriptBin "404" ''
+          set -euo pipefail
+          root="''${PIPULATE_ROOT:-$PWD}"
+          python_bin="$root/.venv/bin/python"
+          if [ ! -x "$python_bin" ]; then
+            echo "404: missing $python_bin; enter the Pipulate Nix shell first." >&2
+            exit 1
+          fi
+          if [ "$#" -eq 0 ]; then
+            exec "$python_bin" "$root/scripts/articles/extract_404_ghosts.py" --heal
+          else
+            exec "$python_bin" "$root/scripts/articles/extract_404_ghosts.py" "$@"
+          fi
+        '';
+
         # OPERATION WEEBO (Planck-quanta media overlay commands):
         # - `weebo [name|path] [sec]` pops a 1:1 native-pixel, alpha-transparent
         #   overlay locally on Pipulate Prime and enrolls any explicit file path
@@ -977,6 +995,7 @@
           latestCommand                # Full markdown body of newest article(s) for ! latest
           markovCommand                # Markov transition matrix + river streaming ML lens for ! markov
           swatCommand                  # 7-at-one-swat JSON dry-run lens for ! swat
+          heal404Command               # 1-word iterative 404 healer + Honeybot Nginx RAM reload
           weeboCommand                 # Local Operation Weebo native-pixel alpha overlay on Prime
           weebohCommand                # Deliberate remote Operation Weebo overlay on Honeybot :10.0
           weebolCommand                # List enrolled Operation Weebo shorthand assets

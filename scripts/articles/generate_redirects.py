@@ -119,6 +119,53 @@ def get_active_permalinks(navgraph_path):
     traverse(nav)
     return active, slug_map
 
+SAFE_MAP_PATH_RE = re.compile(r"^/[A-Za-z0-9/_.-]+$")
+PAGINATION_PATH_RE = re.compile(r"^/page/[1-9]\d*(?:/index\.md|/?)$", re.IGNORECASE)
+NOISE_PREFIX_SIGNATURES = (
+    "/actuator", "/owa", "/rdweb", "/sslvpn",
+    "/api/", "/v1/", "/v2/", "/cgi-bin",
+    "/admin", "/login", "/logout", "/signin", "/signup",
+)
+NOISE_SUBSTRING_SIGNATURES = (
+    "/wp-", "/xmlrpc", "dr0v",
+    "sitemap", ".xml",
+    "/.", "ads.txt", "bingsiteauth", "/phpmyadmin", "/boaform", "/autodiscover",
+    "/vendor/phpunit", "/geoserver", "/solr",
+    "security.txt", "favicon.ico", ".php", ".asp", ".jsp", ".cgi", ".cfm", ".env", ".git", ".bak", ".sql",
+)
+ASSET_EXTENSIONS = (
+    ".png", ".jpg", ".jpeg", ".gif", ".ico", ".txt", ".xml",
+    ".css", ".js", ".svg", ".webp", ".woff", ".woff2", ".ttf",
+    ".zip", ".sh", ".pdf", ".mp3", ".mp4", ".wav",
+)
+
+
+def is_noise_or_unmappable_source(raw_url: str) -> bool:
+    """Shared contract for generate_redirects.py and extract_404_ghosts.py."""
+    s = str(raw_url or "").strip()
+    if not s.startswith("/") or s.startswith("//") or "?" in s or "%" in s:
+        return True
+    low = s.lower()
+    if PAGINATION_PATH_RE.match(s):
+        return True
+    if low.startswith(NOISE_PREFIX_SIGNATURES) or any(sig in low for sig in NOISE_SUBSTRING_SIGNATURES):
+        return True
+    if "..." in s or "placeholder" in low or "<slug>" in low or "{slug}" in low or "/slug/" in low or "attachment" in low:
+        return True
+    probe = low.rstrip("/")
+    if not probe or probe.endswith(ASSET_EXTENSIONS):
+        return True
+    norm = re.sub(r"/+", "/", s)
+    if norm.lower().endswith("/index.md") and len(norm) > len("/index.md"):
+        norm = norm[:-len("index.md")]
+    elif not norm.endswith("/") and not norm.lower().endswith((".html", ".htm")):
+        if "." not in norm.split("/")[-1]:
+            norm = norm + "/"
+        else:
+            return True
+    return not bool(SAFE_MAP_PATH_RE.match(norm))
+
+
 def enforce_slash(url):
     """Ensures directories have trailing slashes while leaving explicit files alone."""
     if not url.endswith('/'):
@@ -155,14 +202,7 @@ def build_nginx_map(csv_input_path, map_output_path, navgraph_path):
     living_tissue.update(protected_system_paths)
     active_permalinks.update(protected_system_paths)
     
-    # Define anchored exploit/system noise signatures without false-matching legitimate slugs like 'actuator-imperative'
-    known_noise_signatures = [
-        '/actuator', '/owa', '/rdweb', '/sslvpn',
-        '/wp-', '/xmlrpc', 'dr0v',
-        'sitemap', '.xml',
-        '/.', 'ads.txt', 'bingsiteauth', '/api/', '/cgi-bin', '/phpmyadmin', '/boaform', '/autodiscover',
-        'security.txt', 'favicon.ico', '.php', '.asp', '.jsp', '.env', '.git'
-    ]
+
 
     retired_to_active = {}
     retired_hubs_clean = {}
@@ -201,12 +241,13 @@ def build_nginx_map(csv_input_path, map_output_path, navgraph_path):
             # 1. The Living Tissue Filter (Protects Hubs, Articles, and Root)
             # Ensure we check both with and without trailing slashes
             check_url = old_url if old_url.endswith('/') else old_url + '/'
-            if check_url in living_tissue or old_url in living_tissue:
+            if check_url in living_tissue or old_url in living_tissue or PAGINATION_PATH_RE.match(old_url):
                 print(f"🛡️ Protected Living URL (Collision Avoided): {old_url}")
                 continue # Drop the row entirely
 
-            # 2. The Noise Filter (Blocks Script Kiddies)
-            is_noise = any(sig in old_url.lower() for sig in known_noise_signatures)
+            # 2. The Noise Filter (Blocks Script Kiddies while preserving multi-segment slugs like /pipulate/llm/api/)
+            old_low = old_url.lower()
+            is_noise = old_low.startswith(NOISE_PREFIX_SIGNATURES) or any(sig in old_low for sig in NOISE_SUBSTRING_SIGNATURES)
             if is_noise:
                 print(f"🗑️ Dropped Known Noise Probe: {old_url}")
                 continue

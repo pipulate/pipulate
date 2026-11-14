@@ -18,15 +18,19 @@ RECENT_END_MARKER = "<!-- END_RECENT_POSTS -->"
 def _ensure_post_thumbnail(target_repo_root, raw_img_path, fallback_rel="/assets/images/AI_Readiness_Consultant_RFC_9111.png"):
     """Create or reuse a 480x252 (1.91:1) PIL thumbnail under /assets/images/thumbs/."""
     from PIL import Image
-    rel_src = (raw_img_path or fallback_rel).strip()
+    rel_src = (raw_img_path or fallback_rel or "").strip()
+    if not rel_src:
+        return ""
     if not rel_src.startswith("/"):
         rel_src = "/" + rel_src
     src_file = target_repo_root / rel_src.lstrip("/")
     if not src_file.is_file():
-        rel_src = fallback_rel
+        if not fallback_rel:
+            return ""
+        rel_src = fallback_rel if fallback_rel.startswith("/") else "/" + fallback_rel
         src_file = target_repo_root / rel_src.lstrip("/")
     if not src_file.is_file():
-        return rel_src
+        return ""
     thumbs_dir = target_repo_root / "assets" / "images" / "thumbs"
     thumbs_dir.mkdir(parents=True, exist_ok=True)
     thumb_name = f"{src_file.stem}-{THUMB_WIDTH}x{THUMB_HEIGHT}.jpg"
@@ -57,60 +61,61 @@ def _ensure_post_thumbnail(target_repo_root, raw_img_path, fallback_rel="/assets
         return rel_src
 
 
-def update_homepage_recent_posts(posts_dir, target_repo_root, count=10):
-    """Build 480x252 PIL thumbnails and splice the 10 newest posts into index.md."""
+def _escape_liquid_html(text: str) -> str:
+    """HTML-escape text and defang Liquid '{{' / '{%' delimiters for static Jekyll markdown pages."""
     import html
+    return (
+        html.escape(str(text or ""), quote=True)
+        .replace("{{", "&#123;&#123;")
+        .replace("{%", "&#123;%")
+    )
+
+
+def _render_pagination_nav(page_num: int, total_pages: int, total_posts: int, per_page: int) -> str:
+    """Render dark-isolated Previous 10 / Next 10 static pagination controls."""
+    if total_pages <= 1:
+        return ""
+    start_i = ((page_num - 1) * per_page) + 1
+    end_i = min(total_posts, page_num * per_page)
+    btn_base = (
+        "display:inline-block;padding:0.42rem 0.9rem;border-radius:8px;"
+        "font-weight:700;font-size:0.85rem;text-decoration:none !important;"
+    )
+    pri_style = btn_base + "background:#1f6feb;border:1px solid #58a6ff;color:#ffffff !important;"
+    sec_style = btn_base + "background:rgba(56,139,253,0.14);border:1px solid rgba(88,166,255,0.45);color:#79c0ff !important;"
+    links = []
+    if page_num > 1:
+        prev_href = "/" if page_num == 2 else f"/page/{page_num - 1}/"
+        if page_num > 2:
+            links.append(f'<a href="/" style="{sec_style}">« Newest</a>')
+        links.append(f'<a href="{prev_href}" rel="prev" style="{sec_style}">← Previous {per_page}</a>')
+    if page_num < total_pages:
+        next_href = f"/page/{page_num + 1}/"
+        links.append(f'<a href="{next_href}" rel="next" style="{pri_style}">Next {per_page} →</a>')
+    return (
+        '<nav class="archive-pagination" aria-label="Journal archive pagination" '
+        'style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:0.75rem;'
+        'margin:1.15rem 0;padding:0.75rem 1rem;border-radius:10px;border:1px solid rgba(88,166,255,0.35);'
+        'background:linear-gradient(135deg,#0d1117 0%,#161b22 100%);color:#e6edf3;">\n'
+        f'  <span style="font-size:0.84rem;color:#c9d1d9;">Showing <strong style="color:#ffffff;">{start_i:,}–{end_i:,}</strong> '
+        f'of <strong style="color:#ffffff;">{total_posts:,}</strong> articles (Page {page_num:,} of {total_pages:,})</span>\n'
+        f'  <div style="display:flex;flex-wrap:wrap;align-items:center;gap:0.55rem;">{" ".join(links)}</div>\n'
+        '</nav>'
+    )
+
+
+def _render_post_cards_html(post_slice, target_repo_root, default_thumb, yaml_loader, stage_rel_paths) -> str:
+    """Render a slice of post paths into a .recent-posts-grid HTML block using 4 KB header reads."""
     import yaml
-    index_path = target_repo_root / "index.md"
-    if not index_path.is_file() or not posts_dir.is_dir():
-        return
-    dated = [p for p in posts_dir.glob("*.md") if common._DATED_POST_RE.match(p.name)]
-    if not dated:
-        return
-    cfg_path = target_repo_root / "_config.yml"
-    site_cfg = {}
-    if cfg_path.is_file():
-        try:
-            site_cfg = yaml.safe_load(cfg_path.read_text(encoding="utf-8", errors="ignore")) or {}
-        except Exception:
-            site_cfg = {}
-    try:
-        count = int(site_cfg.get("recent_posts_limit") or count)
-    except (ValueError, TypeError):
-        pass
-    default_thumb = str(site_cfg.get("default_post_thumb") or "").strip()
-    dated.sort(key=common._post_sort_key)
-    recent = list(dated[-count:][::-1])
-    seen_recent = {p.name for p in recent}
-    for cand_p in dated[-60:][::-1]:
-        if cand_p.name in seen_recent:
-            continue
-        try:
-            c_head = cand_p.read_text(encoding="utf-8", errors="ignore")[:4096]
-        except OSError:
-            continue
-        if c_head.startswith("---"):
-            c_parts = c_head.split("---", 2)
-            if len(c_parts) >= 3:
-                try:
-                    c_fm = yaml.safe_load(c_parts[1]) or {}
-                except Exception:
-                    c_fm = {}
-                c_st = c_fm.get("storytime", True)
-                if (c_fm.get("aside") is True) or (c_st is False) or (str(c_st).strip().lower() in ("false", "0", "no", "off", "aside")):
-                    recent.append(cand_p)
-                    seen_recent.add(cand_p.name)
-    recent.sort(key=common._post_sort_key, reverse=True)
     cards = ['<div class="recent-posts-grid">']
-    stage_rel_paths = ["index.md"]
-    for post_path in recent:
-        raw = post_path.read_text(encoding="utf-8", errors="ignore")
+    for post_path in post_slice:
+        raw_head = post_path.read_text(encoding="utf-8", errors="ignore")[:4096]
         fm = {}
-        if raw.startswith("---"):
-            parts = raw.split("---", 2)
+        if raw_head.startswith("---"):
+            parts = raw_head.split("---", 2)
             if len(parts) >= 3:
                 try:
-                    fm = yaml.safe_load(parts[1]) or {}
+                    fm = yaml.load(parts[1], Loader=yaml_loader) or {}
                 except Exception:
                     fm = {}
         title = str(fm.get("title") or post_path.stem).strip()
@@ -120,21 +125,9 @@ def update_homepage_recent_posts(posts_dir, target_repo_root, count=10):
         summary = str(fm.get("meta_description") or fm.get("excerpt") or fm.get("description") or "").strip()
         if len(summary) > 160:
             summary = summary[:157].rsplit(" ", 1)[0] + "..."
-        st_val = fm.get("storytime", True)
-        is_aside = (
-            (fm.get("aside") is True)
-            or (st_val is False)
-            or (str(st_val).strip().lower() in ("false", "0", "no", "off", "aside"))
-        )
         vod_url = str(fm.get("vod_url") or "").strip()
-        card_cls = "recent-post-card"
-        badge_html = ""
-        if is_aside:
-            card_cls = "recent-post-card is-coming-soon"
-            badge_html = '<span class="recent-post-badge badge-coming-soon">⏳ Coming Soon on YouTube Live Storytime</span>'
-        elif vod_url:
-            card_cls = "recent-post-card has-vod"
-            badge_html = '<span class="recent-post-badge badge-vod">🎬 Watch YouTube VOD</span>'
+        card_cls = "recent-post-card has-vod" if vod_url else "recent-post-card"
+        badge_html = '<span class="recent-post-badge badge-vod">🎬 Watch YouTube VOD</span>' if vod_url else ""
         img_field = fm.get("image")
         if isinstance(img_field, dict):
             raw_img = str(img_field.get("path") or "").strip()
@@ -150,9 +143,9 @@ def update_homepage_recent_posts(posts_dir, target_repo_root, count=10):
             clean_rel = (rel_candidate or "").strip().lstrip("/")
             if clean_rel and (target_repo_root / clean_rel).is_file():
                 stage_rel_paths.append(clean_rel)
-        esc_title = html.escape(title, quote=True)
-        esc_alt = html.escape(raw_alt, quote=True)
-        esc_summary = html.escape(summary, quote=True)
+        esc_title = _escape_liquid_html(title)
+        esc_alt = _escape_liquid_html(raw_alt)
+        esc_summary = _escape_liquid_html(summary)
         img_html = (
             f'    <img class="recent-post-thumb" src="{thumb_url}" alt="{esc_alt}" width="{THUMB_WIDTH}" height="{THUMB_HEIGHT}" loading="lazy">\n'
             if thumb_url else ""
@@ -175,9 +168,39 @@ def update_homepage_recent_posts(posts_dir, target_repo_root, count=10):
             f'    </div>\n'
             f'  </a>'
         )
-    cards.append('  <!-- TODO: Pagination / Archive Horizon Hook (data-next-cursor / stabilized hubs) -->')
     cards.append("</div>")
-    block = f"{RECENT_START_MARKER}\n" + "\n".join(cards) + f"\n{RECENT_END_MARKER}"
+    return "\n".join(cards)
+
+
+def update_homepage_recent_posts(posts_dir, target_repo_root, count=10):
+    """Build 480x252 PIL thumbnails, splice Page 1 into index.md, and build /page/2/..N static archive pages."""
+    import yaml
+    index_path = target_repo_root / "index.md"
+    if not index_path.is_file() or not posts_dir.is_dir():
+        return
+    dated = [p for p in posts_dir.glob("*.md") if common._DATED_POST_RE.match(p.name)]
+    if not dated:
+        return
+    yaml_loader = getattr(yaml, "CSafeLoader", yaml.SafeLoader)
+    cfg_path = target_repo_root / "_config.yml"
+    site_cfg = {}
+    if cfg_path.is_file():
+        try:
+            site_cfg = yaml.load(cfg_path.read_text(encoding="utf-8", errors="ignore"), Loader=yaml_loader) or {}
+        except Exception:
+            site_cfg = {}
+    try:
+        count = max(1, int(site_cfg.get("recent_posts_limit") or count))
+    except (ValueError, TypeError):
+        count = 10
+    default_thumb = str(site_cfg.get("default_post_thumb") or "").strip()
+    ordered_posts = sorted(dated, key=common._post_sort_key, reverse=True)
+    total_posts = len(ordered_posts)
+    total_pages = max(1, (total_posts + count - 1) // count)
+    stage_rel_paths = ["index.md"]
+    page1_grid = _render_post_cards_html(ordered_posts[:count], target_repo_root, default_thumb, yaml_loader, stage_rel_paths)
+    page1_nav = _render_pagination_nav(1, total_pages, total_posts, count)
+    block = f"{RECENT_START_MARKER}\n{page1_grid}" + (f"\n{page1_nav}" if page1_nav else "") + f"\n{RECENT_END_MARKER}"
     idx_text = index_path.read_text(encoding="utf-8")
     if RECENT_START_MARKER in idx_text and RECENT_END_MARKER in idx_text:
         pattern = re.compile(
@@ -187,18 +210,55 @@ def update_homepage_recent_posts(posts_dir, target_repo_root, count=10):
         new_idx = pattern.sub(lambda _: block, idx_text, count=1)
         if new_idx != idx_text:
             index_path.write_text(new_idx, encoding="utf-8")
-        print(f"🖼️  Updated {len(recent)} recent post thumbnails in {index_path}")
-        if (target_repo_root / ".git").exists():
-            import subprocess
-            unique_stage = list(dict.fromkeys(stage_rel_paths))
-            res = subprocess.run(
-                ["git", "-C", str(target_repo_root), "add", "--", *unique_stage],
-                capture_output=True,
-                text=True,
-                check=False,
+        print(f"🖼️  Updated {min(count, total_posts)} recent post cards in {index_path}")
+    pages_sub = target_repo_root / "pages" / "page"
+    expected_page_files = set()
+    written_pages = 0
+    if total_pages > 1:
+        pages_sub.mkdir(parents=True, exist_ok=True)
+        for page_num in range(2, total_pages + 1):
+            slice_start = (page_num - 1) * count
+            slice_posts = ordered_posts[slice_start : slice_start + count]
+            end_num = min(total_posts, slice_start + len(slice_posts))
+            fname = f"page-{page_num}.md"
+            expected_page_files.add(fname)
+            p_file = pages_sub / fname
+            nav_html = _render_pagination_nav(page_num, total_pages, total_posts, count)
+            grid_html = _render_post_cards_html(slice_posts, target_repo_root, default_thumb, yaml_loader, stage_rel_paths)
+            page_md = (
+                "---\n"
+                "layout: default\n"
+                f'title: "Journal Archive — Page {page_num} of {total_pages}"\n'
+                f'meta_description: "Chronological journal entries {slice_start + 1}–{end_num} of {total_posts} on {target_repo_root.name} (Page {page_num} of {total_pages})."\n'
+                f"permalink: /page/{page_num}/\n"
+                "---\n"
+                f"# Journal Archive — Page {page_num} of {total_pages}\n\n"
+                f"{nav_html}\n\n"
+                f"{grid_html}\n\n"
+                f"{nav_html}\n"
             )
-            if res.returncode == 0:
-                print(f"📌 Surgically staged {len(unique_stage)} homepage/image asset(s) in {target_repo_root.name} git index.")
+            old_md = p_file.read_text(encoding="utf-8") if p_file.is_file() else None
+            if old_md != page_md:
+                p_file.write_text(page_md, encoding="utf-8")
+                written_pages += 1
+        stage_rel_paths.append("pages/page")
+    if pages_sub.is_dir():
+        for stale_p in sorted(pages_sub.glob("page-*.md")):
+            if stale_p.name not in expected_page_files:
+                stale_p.unlink()
+    if total_pages > 1:
+        print(f"📖 Paginated {total_posts:,} posts across {total_pages:,} pages (/page/2/..{total_pages}/, {written_pages} written).")
+    if (target_repo_root / ".git").exists():
+        import subprocess
+        unique_stage = list(dict.fromkeys(stage_rel_paths))
+        res = subprocess.run(
+            ["git", "-C", str(target_repo_root), "add", "--", *unique_stage],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if res.returncode == 0:
+            print(f"📌 Surgically staged {len(unique_stage)} homepage/archive/image path(s) in {target_repo_root.name} git index.")
 
 
 def clean_and_prep_dirs(hubs_dir):

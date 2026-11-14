@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 """
 extract_404_ghosts.py
-Resolves trimnoir via blogs.json / ~/repos/trimnoir, loads all active + retired + CSV
-redirect exclusions, extracts unmapped non-pirate 404 ghosts from Honeybot SQLite,
-and deterministically routes them onto the 28 permanent hubs (--apply / --verify).
+Resolves trimnoir via ~/repos/trimnoir, loads all active + retired + CSV redirect
+exclusions, extracts unmapped non-pirate 404 ghosts from Honeybot SQLite using the
+shared literal-key contract, routes them onto the 28 permanent hubs, and reloads
+Honeybot Nginx RAM via `404` (--heal / --apply / --verify).
 """
 import argparse
 import csv
 import json
+import os
 import re
 import subprocess
 import sys
@@ -20,6 +22,7 @@ if str(SCRIPT_DIR) not in sys.path:
 
 import common  # noqa: E402
 import generate_redirects  # noqa: E402
+import sanitize_redirects  # noqa: E402
 
 TOKEN_HUB_ALIASES = {
     "llm": "llms",
@@ -101,6 +104,11 @@ TOKEN_HUB_ALIASES = {
 }
 
 
+def _clean_sys_env() -> dict:
+    """Clear devShell LD_LIBRARY_PATH so system ssh and git binaries never see library skew."""
+    return {**os.environ, "LD_LIBRARY_PATH": ""}
+
+
 def resolve_trimnoir_root() -> Path:
     """Resolve the active trimnoir Jekyll repository without interactive menu prompts."""
     candidates = [
@@ -120,10 +128,13 @@ def resolve_trimnoir_root() -> Path:
 
 
 def _add_exclusion_variants(exclusions: set, raw_url: str) -> None:
-    s = str(raw_url or "").strip().lower()
+    s = re.sub(r"/+", "/", str(raw_url or "").strip().lower())
     if not s:
         return
     exclusions.add(s)
+    if s.endswith("/index.md") and len(s) > len("/index.md"):
+        s = s[:-len("index.md")]
+        exclusions.add(s)
     base = s.rstrip("/")
     if base:
         exclusions.add(base)
@@ -141,6 +152,16 @@ def get_excluded_urls(trimnoir_root: Path = None) -> set:
             for row in csv.reader(f):
                 if row and row[0].strip():
                     _add_exclusion_variants(exclusions, row[0])
+
+    map_path = tr / "_redirects.map"
+    if map_path.is_file():
+        for line in map_path.read_text(encoding="utf-8", errors="ignore").splitlines():
+            stripped = line.strip()
+            if not stripped or stripped.startswith("#"):
+                continue
+            parts = stripped.split()
+            if len(parts) == 2:
+                _add_exclusion_variants(exclusions, parts[0])
 
     retired_path = tr / "_data" / "retired_hubs.json"
     if retired_path.is_file():
@@ -180,7 +201,7 @@ def _run_remote_sql(sql_body: str, exclusions: set) -> list:
         "ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=8",
         "honeybot", "sqlite3 -readonly -noheader -list ~/www/mikelev.in/honeybot.db",
     ]
-    res = subprocess.run(cmd, input=full_sql, text=True, capture_output=True, timeout=20)
+    res = subprocess.run(cmd, input=full_sql, text=True, capture_output=True, timeout=25, env=_clean_sys_env())
     if res.returncode != 0:
         raise RuntimeError(res.stderr.strip() or f"ssh sqlite3 exited {res.returncode}")
     paths = []
@@ -189,8 +210,14 @@ def _run_remote_sql(sql_body: str, exclusions: set) -> list:
         if not raw or not raw.startswith("/"):
             continue
         p = raw.split("|", 1)[0].strip()
-        if p.startswith("/"):
-            paths.append(p)
+        if not p.startswith("/"):
+            continue
+        if generate_redirects.is_noise_or_unmappable_source(p):
+            continue
+        norm_low = re.sub(r"/+", "/", p.lower())
+        if norm_low in exclusions or norm_low.rstrip("/") in exclusions:
+            continue
+        paths.append(p)
     return paths
 
 
@@ -262,7 +289,7 @@ def route_ghost_to_hub(ghost_path: str, hub_permalinks: dict, hub_terms: dict, l
 
 
 def normalize_ghost_source(ghost_path: str) -> str:
-    s = ghost_path.strip()
+    s = re.sub(r"/+", "/", ghost_path.strip())
     if s.lower().endswith("/index.md") and len(s) > len("/index.md"):
         return s[:-len("index.md")]
     if s.lower().endswith((".html", ".htm")) or s.endswith("/"):
@@ -272,38 +299,47 @@ def normalize_ghost_source(ghost_path: str) -> str:
     return s
 
 
-def apply_ghost_remaps(max_rounds: int = 12) -> int:
+def apply_ghost_remaps(max_rounds: int = 30) -> int:
     tr = resolve_trimnoir_root()
-    sql_file = REPO_ROOT / "remotes" / "honeybot" / "queries" / "hot_404_remaps_top.sql"
-    sweep_sql = sql_file.read_text(encoding="utf-8").replace("HAVING total_hits > 1", "HAVING total_hits >= 1").replace("LIMIT 250;", "LIMIT 500;")
+    sql_dir = REPO_ROOT / "remotes" / "honeybot" / "queries"
+    sweep_sql = (sql_dir / "hot_404_remaps_top.sql").read_text(encoding="utf-8").replace(
+        "HAVING total_hits > 1", "HAVING total_hits >= 1"
+    ).replace("LIMIT 250;", "LIMIT 500;")
+    true_sweep_sql = (sql_dir / "intel_true_404s.sql").read_text(encoding="utf-8").replace(
+        "LIMIT 20;", "LIMIT 500;"
+    )
     hub_permalinks, hub_terms, lower_slug_map = _load_hub_router_data(tr)
     csv_path = tr / "_raw_map.csv"
     map_path = tr / "_redirects.map"
     nav_path = generate_redirects.resolve_navgraph_path(tr)
 
-    # First rebuild once so existing _raw_map.csv & retired_hubs.json are clean
     generate_redirects.build_nginx_map(csv_path, map_path, nav_path)
+    sanitize_redirects.sanitize_map_file(map_path)
 
+    exclusions = get_excluded_urls(tr)
     attempted = set()
-    total_added = 0
-    for _ in range(max_rounds):
-        exclusions = get_excluded_urls(tr)
-        ghosts = [g for g in _run_remote_sql(sweep_sql, exclusions) if g.lower() not in attempted]
-        if not ghosts:
-            break
-        new_rows = []
-        for g in ghosts:
-            attempted.add(g.lower())
-            src = normalize_ghost_source(g)
-            tgt = route_ghost_to_hub(g, hub_permalinks, hub_terms, lower_slug_map)
-            new_rows.append([src, tgt])
-        if not new_rows:
-            break
+    all_new_rows = []
+
+    for query_sql in (sweep_sql, true_sweep_sql):
+        for _ in range(max_rounds):
+            ghosts = [g for g in _run_remote_sql(query_sql, exclusions) if g.lower() not in attempted]
+            if not ghosts:
+                break
+            for g in ghosts:
+                attempted.add(g.lower())
+                src = normalize_ghost_source(g)
+                tgt = route_ghost_to_hub(g, hub_permalinks, hub_terms, lower_slug_map)
+                all_new_rows.append([src, tgt])
+                _add_exclusion_variants(exclusions, g)
+                _add_exclusion_variants(exclusions, src)
+
+    if all_new_rows:
         with open(csv_path, "a", newline="", encoding="utf-8") as f:
-            csv.writer(f).writerows(new_rows)
-        total_added += len(new_rows)
+            csv.writer(f).writerows(all_new_rows)
         generate_redirects.build_nginx_map(csv_path, map_path, nav_path)
-    return total_added
+        sanitize_redirects.sanitize_map_file(map_path)
+
+    return len(all_new_rows)
 
 
 def verify_zero_ghosts() -> tuple:
@@ -317,11 +353,81 @@ def verify_zero_ghosts() -> tuple:
     return (len(hot_paths), len(true_paths))
 
 
+def heal_and_reload_honeybot(push_git: bool = False) -> tuple:
+    """Drain all non-pirate 404 ghosts, commit map in trimnoir, and hot-reload Honeybot Nginx RAM."""
+    tr = resolve_trimnoir_root()
+    map_path = tr / "_redirects.map"
+    added = apply_ghost_remaps()
+    map_bytes = map_path.read_bytes()
+    rule_lines = [
+        ln for ln in map_bytes.decode("utf-8", errors="ignore").splitlines()
+        if ln.strip() and not ln.strip().startswith("#")
+    ]
+    if len(rule_lines) <= 10:
+        raise RuntimeError(f"Refusing to deploy _redirects.map with <= 10 rules ({len(rule_lines)} found).")
+
+    env = _clean_sys_env()
+    if (tr / ".git").exists():
+        st = subprocess.run(
+            ["git", "-C", str(tr), "status", "--porcelain", "--", "_raw_map.csv", "_redirects.map"],
+            capture_output=True, text=True, env=env,
+        )
+        if (st.stdout or "").strip():
+            subprocess.run(
+                ["git", "-C", str(tr), "add", "--", "_raw_map.csv", "_redirects.map"],
+                check=True, env=env,
+            )
+            msg = f"chore(404): heal {added} ghost path(s) into O(1) _redirects.map ({len(rule_lines)} rules)"
+            subprocess.run(
+                ["git", "-C", str(tr), "commit", "-m", msg, "--", "_raw_map.csv", "_redirects.map"],
+                check=True, env=env,
+            )
+            print(f"📝 Committed in {tr.name}: {msg}")
+        if push_git:
+            subprocess.run(["git", "-C", str(tr), "push"], check=True, env=env)
+
+    remote_stage_cmd = (
+        "cat > ~/www/mikelev.in/_redirects.map.tmp && "
+        "chmod 644 ~/www/mikelev.in/_redirects.map.tmp && "
+        "cp ~/www/mikelev.in/_redirects.map.tmp ~/www/mikelev.in/_site/redirects.map.tmp && "
+        "mv ~/www/mikelev.in/_redirects.map.tmp ~/www/mikelev.in/_redirects.map && "
+        "mv ~/www/mikelev.in/_site/redirects.map.tmp ~/www/mikelev.in/_site/redirects.map"
+    )
+    subprocess.run(
+        ["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=8", "honeybot", remote_stage_cmd],
+        input=map_bytes, check=True, timeout=20, env=env,
+    )
+    reload_res = subprocess.run(
+        ["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=8", "honeybot", "sudo -n /run/current-system/sw/bin/systemctl reload nginx"],
+        capture_output=True, text=True, timeout=15, env=env,
+    )
+    if reload_res.returncode == 0:
+        print(f"🔄 Reloaded Honeybot Nginx redirect map into RAM ({len(rule_lines):,} rules, zero password needed).")
+    elif sys.stdin.isatty():
+        print("🔐 Honeybot requested sudo password to reload Nginx redirect map:")
+        subprocess.run(
+            ["ssh", "-t", "honeybot", "sudo /run/current-system/sw/bin/systemctl reload nginx"],
+            check=True, env=env,
+        )
+    else:
+        raise RuntimeError(f"Non-interactive Nginx reload failed: {reload_res.stderr.strip()}")
+
+    hot_n, true_n = verify_zero_ghosts()
+    print(f"✅ 404 Healer Complete: +{added} new rule(s) | Live rules={len(rule_lines):,} | ZERO_404_VERIFY: hot={hot_n} true={true_n}")
+    return added, len(rule_lines), hot_n, true_n
+
+
 def main():
-    parser = argparse.ArgumentParser(description="Extract or remap non-pirate 404 ghosts on Honeybot")
-    parser.add_argument("--apply", action="store_true", help=" deterministically remap all remaining 404 ghosts into trimnoir/_raw_map.csv & _redirects.map")
+    parser = argparse.ArgumentParser(description="Extract, remap, or hot-heal non-pirate 404 ghosts on Honeybot")
+    parser.add_argument("--heal", action="store_true", help="End-to-end 1-word `404` flow: remap, sanitize, commit in trimnoir, and reload Honeybot Nginx RAM")
+    parser.add_argument("--push", action="store_true", help="With --heal, also run `git push` in trimnoir (triggers full Jekyll post-receive build)")
+    parser.add_argument("--apply", action="store_true", help="Deterministically remap all remaining 404 ghosts into trimnoir/_raw_map.csv & _redirects.map")
     parser.add_argument("--verify", action="store_true", help="Print remaining unmapped counts across hot_404_remaps_top.sql and intel_true_404s.sql")
     args = parser.parse_args()
+
+    if args.heal:
+        heal_and_reload_honeybot(push_git=args.push)
+        return
 
     if args.apply:
         added = apply_ghost_remaps()
