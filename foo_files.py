@@ -307,28 +307,32 @@ And then we demonstrate a level of competence like so:
 # Numeral sections (I - XIX) below map those chapters directly to executable
 # codebase files, connectors, scripts, and live probes.
 
-# CHAPTER 1: THE SOFTWARE VON NEUMANN PROBE - The time has come, the Walrus says...
-# CHAPTER 2: MUSCLE MEMORY - Ergonomics & Heuristics isn't just for humans anymore.
-# CHAPTER 3: A PERFECT ONBOARDING EXPERIENCE - A journey of 1000 miles starts here.
-# CHAPTER 4: THE CONTEXT COMPILER - This. The sub-project destined to be extracted.
-# CHAPTER 5: POSITIVE FEEDBACK LOOPS - Hand-crank, because Ouroboros aren't stable.
-# CHAPTER 6: RADICAL TRANSPARENCY - Your DictLikeDB visible via server.log and API.
-# CHAPTER 7: HELLO WORKFLOWS - They're Run All Cells Jupyter Notebooks in disguise.
-# CHAPTER 8: THE GHOST DRIVER - Test-coverage, demos, AI-training, floor-wax, more.
-# CHAPTER 9: THE MONOLITH - The tale of the Wand & the Wizard. Wizard is server.py.
-# CHAPTER 10: THE WAND - Portable state machine, crafted from pure Uvicorn core.py.
-# CHAPTER 11: IPYWIDGETS - Special brand of magic possible with immutable Nix core.
-# CHAPTER 12: THE NERVOUS SYSTEM - Cybernetically binds Wizard & Wand for memories.
-# CHAPTER 13: THE HANDS - Progressively revealing tool-calls from [ls] through MCP.
-# CHAPTER 14: THE SKIN - We heavily leverage these few JavaScript static libraries.
-# CHAPTER 15: APPS - How the sausage is made. Some are Workflows and some are CRUD. 
-# CHAPTER 16: JEKYLL - Nowhere to Hyde. This system can't not publish about itself.
-# CHAPTER 17: HONEYPOT TELEMETRY - Wanna home-host to make proprietary discoveries?
-# CHAPTER 18: CLARITY OF THOUGHT - I'll do you one better! Why is NeoVim?! Journal.
-# CHAPTER 19: WET WORKFLOWS - Complex many-steps HTMX code, because domain experts.
-# CHAPTER 20: THE WORKFLOW EXTRUDER - Porting from Jupyter Notebooks to slick apps.
-# CHAPTER 21: ON ACTUATORS - The tale of 2 player pianos. Spinning Turing machines.
-# CHAPTER 22: STEP 3 (PROFIT) - Domain Experts investing internally for ~10K hours.
+# BOOK PART I: THE SOVEREIGN SEED & THE 10-YEAR PROTOCOL SHIFT
+# CHAPTER 1: SUN PUG (sunpug.io) - The Nix Software Von Neumann Probe (curl | less -> | bash).
+# CHAPTER 2: THE 10-YEAR REPLAY - 2010s Mobile RWD vs. 2026s Agent-First Edge (RFC 9110 & 9111).
+# CHAPTER 3: NIXING THE MYTHS - ADNS & Cloudflare O2O edge logs vs. (not provided) blindness.
+# CHAPTER 4: YOUR SITE IS YOUR FEED - 3-hop Markdown hubs, sitemaps, llms.txt & retiring crawlers.
+# CHAPTER 5: MYELINATED MUSCLE MEMORY - The NPvg (Nix/Python/vim/git) Forever Machine & 3-rung ramp.
+# BOOK PART II: THE HIPPOCAMPUS & THE CONTEXT COMPILER
+# CHAPTER 6: THE CONTEXT COMPILER (p, x, c) - Stacking plain text as a navigable book for frontier Models.
+# CHAPTER 7: THE EXACT-MATCH AIRLOCK (apply.py) - Human-actuated SEARCH/REPLACE over vibe-coding.
+# CHAPTER 8: THE HIPPOCAMPUS COVENANT - '# §' scars, Landauer compression, & river/Markov drift lenses.
+# CHAPTER 9: THE MOTHER CAT KATA (qamy.ai) - IKEA-guided human-settled walks, Piper speech & sealed deeds.
+# CHAPTER 10: 911 LLM OPTICS - 1-page wire-truth spectrometer & radial DOM link-graphs ("Screaming Frog for AI").
+# BOOK PART III: THE HONEYBOT BROADCAST OBSERVATORY
+# CHAPTER 11: NAKED ON THE WIRE - Home-hosted NixOS DMZ, bimodal Nginx negotiation, & the 10-site fleet.
+# CHAPTER 12: PINBALL WIZARD TELEMETRY - Textual Matrix-rain HUD, wire denominators, & synced flippers.
+# CHAPTER 13: EAR-ORTHOGRAPHY & THE 3-VOICE CAST - terms.py, Norma Centroid, Mike-E, Shipmunk, & Sunpugio.
+# CHAPTER 14: STAGE CRAFT ON BARE X11 - Operation Weebo, Falling Alice, SVG ambigram spin, & #corpus-graph.
+# CHAPTER 15: JEKYLL & SEED-SETTLE-BUD - One _posts/ master fanning out to 28 permanent hubs, 301s, & GDocs.
+# CHAPTER 16: THE ANTHROPOLOGIST'S BACKFILL - Norma Centroid's "Ding in the Universe" VOD & HTML5 audio digs.
+# BOOK PART IV: LOCAL-FIRST APPS & SOVEREIGN CONSULTING
+# CHAPTER 17: THE WAND & THE WIZARD (core.py + server.py) - Portable state across Jupyter & FastHTML/HTMX.
+# CHAPTER 18: WET WORKFLOWS, DRY CRUD - Procedural causal clarity for domain experts and Models alike.
+# CHAPTER 19: THE GHOST DRIVER (player-piano.js) - Self-running UI demos, tests, & stage punch-throughs.
+# CHAPTER 20: TINY UNIX CONNECTORS (connectors/*.py) - OAuth wallet, ?URL social radar, & pipe receipts.
+# CHAPTER 21: DE-CLOUDING THE COMMONS - Local-first FastHTML Google Photos / Takeout liberation apps.
+# CHAPTER 22: THE AI-READINESS PRACTICE - Selling Year-1 CDN Edge cover while building Year-2 Origin Feeds.
 
 # CHARACTER DEVELOPMENT
 
@@ -1632,10 +1636,18 @@ apply.py
 # 🚨 PRIORITY 0: BOOT THE CONSULTANCY (REVENUE, LEAD-GEN, & PROOF SURFACES)
 # ============================================================================
 # - TODO (2026-11-13, P0.35 SHOPIFY AGENTIC COMMERCE & RASPBERRY PI NIX/PFSENSE ROUTER APPLIANCE): Launch a first-party supporter and AI-Readiness commerce lane via Shopify Agentic Commerce alongside a pre-configured Raspberry Pi Nix/pfSense router kit that eliminates the port-forwarding, Dynamic DNS, and split-DNS barrier to sovereign home-hosting. Gate: appliance flake/router spec and first supporter SKU live.
-# - TODO (2026-11-13, P0.34 D3.JS LINK-GRAPH VISUALIZER RESTORATION & SITEMAP/LLMS.TXT LEVERAGE): Deploy the staged 537-path `trimnoir` hub/301 cutover via `publish --reboot`, restore a 1-click interactive D3.js link-graph visualizer page over the stabilized `1,668`-node (`9`-pillar / `28`-hub) `graph.json` topology, and audit `sitemap.xml`, `sitemap-hubs.xml`, and `llms.txt` end-to-end. Gate: live HTTP `200`/`301` hub and redirect probes green on `mikelev.in` and interactive D3 graph reachable in 1 click.
+# - TODO (2026-11-14, P0.36 WAVE 1A YTWATCH EPISODE PEAK RESET): Fix `ytwatch` / `/tmp/honeybot_viewers.json` excessive `peak_viewers` persistence across article and stream rotations in `scripts/articles/common.py` and `remotes/honeybot/scripts/logs.py`. Gate: episode reset clears stale historical peaks and HUD header matches live session peak.
+# - TODO (2026-11-14, P0.37 WAVE 1B TILDE APPROXIMATION & D3.JS EAR-ORTHOGRAPHY): Expand `~<number>` / `~$<number>` to spoken `"approximately ..."` and add `D3.js` / `d3.js` / `d3.v7` phonetic rules in `remotes/honeybot/scripts/terms.py` (with lowest-priority tail harvesting NeoVim `*.add` spellfiles). Gate: `clean_markdown()` speaks `~10`, `~$10K/mo`, and `D3.js` with zero raw `"tilde"` or `"dot J S"` tokens.
+# - TODO (2026-11-14, P0.38 WAVE 1C ZERO NON-PIRATE 404 GHOSTS): Remap all remaining legitimate non-pirate `404` paths on `mikelev.in` onto the 28 permanent `/<slug>/` hubs via `_raw_map.csv` and `scripts/articles/generate_redirects.py`. Gate: `extract_404_ghosts.py` and `intel_true_404s.sql` report zero unmapped non-pirate 404s.
+# - TODO (2026-11-14, P0.39 WAVE 2A 10-YEAR RWD PARALLEL & NIXING ADNS/O2O MYTHS): Update Honeybot station-identification beats (`forest.py` / `score.py`) with the 2010s Mobile RWD -> 2026s Agent-First Edge (`RFC 9110`/`9111` via `sunpug.io`) consulting arc while preemptively *nixing* / nipping in the bud the "home-hosting only" log myth via `ADNS` and Cloudflare `O2O` edge telemetry. Gate: live station loop speaks both beats inside the 7-minute funnel.
+# - TODO (2026-11-14, P0.40 WAVE 2B SUNPUGIO MASCOT, FALLING ALICE, & SYNCED PINBALL FLIPPERS): Add `Sunpugio` (friendly *Men in Black*-style Pug from the Sun, no pugio dagger) to the station loop, build an Alacritty Falling Alice rabbit-hole drop, and sync CC0 pinball audio with zero-lag `#js_panel` / `#md_panel` HUD flipper flashes in `logs.py` and `stream.py`. Gate: pinball audio onset and flipper border flash fire on the same monotonic tick.
+# - TODO (2026-11-14, P0.41 WAVE 3A 911 LLM OPTICS 1-PAGE RADIAL DOM LINK-GRAPH): Embed an interactive radial D3.js 1-page crawl graph into `apps/911_optics_workflow.py` ("Screaming Frog for the AI generation") centering the crawled URL and clustering link nodes by parent DOM `<div>`/landmark. Gate: `911_optics_workflow.py` renders radial DOM cluster graph and seals snapshot into `optics_deed.zip`.
+# - TODO (2026-11-14, P0.42 WAVE 3B SHARED KIOSK STAGE FOR 360 SVG AMBIGRAM & HERO-SITEMAP PAIR): Build a reusable Firefox stage mode (`ytstage.py`) on `:10.0` for both the 360-degree John Langdon-style Mike Levin SVG ambigram wheel spin (pull-back, release acceleration, cubic-bezier decel, bounce settle) and Storytime's paired Open Graph hero image + `mikelev.in/#corpus-graph` article locator. Gate: both browser overlays animate smoothly on `:10.0` and self-close cleanly.
+# - TODO (2026-11-14, P0.43 WAVE 4A SOCIAL FEED INFLUENCER RADAR): Combine warmed `weblogin` profiles and `?URL` optical captures across X.com, LinkedIn, and Facebook around each published post to identify engaged practitioners/influencers and draft targeted `sunpug.io` holiday outreach. Gate: `?URL` capture distills responder roster across all three social feeds.
+# - TODO (2026-11-14, P0.44 WAVE 4B HOLIDAY DE-CLOUD FASTHTML APP): Build a local-first FastHTML "Fill-the-Bucket" Google Photos / Takeout de-clouding app inside `sunpug.io` / Pipulate to scratch the mainstream holiday cloud-exit itch beyond technical SEOs. Gate: local FastHTML app ingests, deduplicates, and browses a Takeout export offline.
 # - TODO (2026-11-13, P0.33 NINE-SITE MESSAGE IN A BOTTLE ROLLOUT): Propagate the `MikeLev.in` (Site 1 of 9) front-and-center Message in a Bottle SVG + audience-specific cold-start blipvert across the remaining 8 home-hosted doors (`sunpug.io`, `qamy.ai`, `npvg.org`, `pipulate.com`, `levinix.org`, `guerillatech.com`, `rfc9110.org`, `rfc9111.io`) across both `index.html` and RFC 9110 `index.md`. Gate: `curl -fsSL` and `Accept: text/markdown` probes on all 8 doors return their bottle pitch and `?src=bottle` wire dye.
 # - TODO (2026-11-12, P0.32 SPARE HARDWARE CARTRIDGE PROJECTION & FULL-EPISODE SPEAKER-RETURN WATCH): Project `remotes/honeybot/nixos/configuration.nix` onto a second and third junk-pile laptop cartridge to rehearse cold hardware replacement, and audit full-episode speaker-role transitions across every `OPTICS_SLOT` and station-break return. Gate: Cartridge #2 boots identical Observatory HUD + 3-voice Piper cast via `nixos-rebuild switch` and completes a full article cycle with zero speaker-role drift.
-# - TODO (2026-11-11, P0.31 TIMED "ARCHAEOLOGIST FROM THE FUTURE" EPISODE GRID & SPARK HARVESTER): Design a fixed-duration (~7-8 minute) broadcast and YouTube episode template ("And then the surprising thing he did next was..." cold open -> wire-truth receipt -> live FastHTML app punchline) alongside an inline `**SPARK**:` extractor in `scripts/articles/contextualizer.py` so stream-of-consciousness book-ore riffs surface cleanly without bloating `foo_files.py`. Gate: one timed Archaeologist-cut episode rendered and played inside a single Copper grid cycle.
+# - TODO (2026-11-14, P0.31 NORMA CENTROID "DING IN THE UNIVERSE" BACKFILL VODS & SPARK HARVESTER): Record one canonical read-through per article (newest -> oldest continuous backfill, cleaning legacy posts for auto-reading as we go and applying Norma Centroid's *"what I found surprising and what you should notice"* Anthropologist-from-the-Future framing forward) alongside an inline `**SPARK**:` extractor in `scripts/articles/contextualizer.py`. Gate: newest-to-oldest recorded episode loop and HTML5 audio player run hands-free.
 # - TODO (2026-11-11, P0.30 PROMOTE 911 LLM OPTICS TO BEAD 1, TEASE IN BEAD 0, & FIX FIRST-TRIGGER OPTICS_SLOT RACE): Tease `911 LLM Optics` during Bead 0 (`:overview` Accepts Markdown), promote `911 LLM Optics` into Bead 1's slot ahead of White Rabbit (removing cold insider `NPvg` jargon from early breaks), and fix the handshake/tunnel startup race where the first `OPTICS_SLOT` / `ytapp optics` invocation falls back to local-workshop mode while the second invocation succeeds. Gate: cold first-pass `OPTICS_SLOT` claims and pins Firefox on `:10.0` on attempt 1.
 # - TODO (2026-11-11, P0.29 YTWATCH DWELL-TIME & CUE/WEEBO DROP-OFF CORRELATION): Stamp active `(article_slug, cue_idx, heading, active_overlay)` state in `remotes/honeybot/scripts/stream.py` alongside `ytwatch` viewer-delta transitions in `scripts/articles/common.py` and expose a bounded `ytlog --summary` receipt command so long-tail 1-to-N viewer watch-times and bounce points correlate directly against article sections and Weebo/Max Headroom popups. Gate: `ytlog --summary` prints per-article mean watch-time and overlay delta table from live JSONL telemetry.
 # - TODO (2026-11-10, P0.28 SVNP CONSULTING FLYWHEEL & 911 OPTICS DEED OUTREACH): Operationalize the Butterfly Net multi-client retainer mesh by running `apps/911_optics_workflow.py` against prospective client domains, delivering sealed `optics_deed.zip` wire-truth vs. hydrated-DOM audits alongside `qamy.ai` and `sunpug.io` self-verifying doors, and tracking reciprocal `VERIFY:RFC9110` and `DOOR:INSTALL` triggers on Honeybot. Gate: first outbound `optics_deed.zip` delivered to a prospective retainer client and witnessed in live telemetry.
@@ -1654,7 +1666,7 @@ apply.py
 # - TODO (2026-10-21, P0.11 MARKOV STATION-BREAK NARRATION): Wire `scripts/markov.py` into Honeybot `stream.py` station breaks to comment on newly discovered AI-bot User-Agents and anomalous crawler path transitions. Gate: station break speaks live Markov transition summary.
 # - TODO (2026-10-21, P0.13 LIVE YTVIM ON-AIR WITNESS): Field-test `ytvim` live on Honeybot `:10.0` (`script -q -f` into fullscreen Alacritty). Gate: live Neovim buffer session visible on stream with clean teardown.
 # - TODO (2026-10-23, P0.14 PFSENSE SPLIT-DNS FOR LEVINUX/LEVINIX): Add pfSense Host Overrides for `levinux.com`, `levinix.org`, and `levinix.com` pointing to Honeybot's LAN IP. Gate: `dig +short` on Prime resolves all three to LAN IP.
-# - TODO (2026-10-23, P0.16 "WEEBO" PYQT6 FIRE-AND-FORGET MEDIA OVERLAY & SHORTHAND MEME LIBRARY ON HONEYBOT): Replace `feh` in `remotes/honeybot/scripts/stream.py` (`conjure_media`) with a deterministic, self-terminating PyQt (`PyQt6` / `QTimer.singleShot`) overlay script (`remotes/honeybot/scripts/weebo.py`) that renders transparent PNGs, JPEGs, and animated GIFs over a solid `#111111` obsidian background (or clean compositor alpha, never `feh`'s alpha checkerboard) with `FramelessWindowHint | WindowStaysOnTopHint | WindowDoesNotAcceptFocus` so it closes itself cleanly without stealing X11 focus; and sync `ytmedia` files into a persistent Honeybot meme library (`~/www/mikelev.in/assets/weebo/`) addressable by shorthand key (e.g. `ytmedia ambigram`).
+
 # - TODO (2026-10-17, MOBILE BROADCAST BRIDGE): Build a lightweight, authenticated web-app bridge so `ytsay` live break-ins and Honeybot broadcast controls can be triggered from a phone away from the workbench.
 # - TODO (2026-10-17, COMPILER PAYLOAD SIZING GUARD): Add per-item byte/token threshold warnings (or automatic truncation with a loud notice) in `prompt_foo.py`'s Payload Ledger whenever a single file or `!` command receipt exceeds a sane budget (e.g., 50,000 tokens / 200 KB), giving both the operator and the model explicit sizing guardrails before preparing the next `context.txt`.
 # - TODO (2026-10-17, UNIFIED OAUTH WALLET WARMING IN FASTHTML): Replace static `service-account-key.json` dependencies in standalone GSC/Google scripts with user-delegated, admin-revocable OAuth via `connectors/wallet.py` and `warm`, and build a FastHTML Web App Plugin workflow that collects and warms OAuth logins on demand or in a single batch.
@@ -1853,7 +1865,7 @@ apply.py
 # § THE VERIFIER THAT NEVER RAN (banked 2026-08-05) -- Treat an absent expected verification line as a finding that the verifier may never have run, especially when the preceding action can kill its reporter, and never let a surviving success message substitute for that missing witness.
 # § INCOMMENSURABLE MEASUREMENTS (banked 2026-08-05) -- a probe can return a CORRECT number about a DIFFERENT question, and the receipt looks authoritative because the number is right; name the exact expression the mechanism evaluates, then confirm the probe evaluates THAT expression and not a plausible neighbour. Cousin of THE DISCRIMINATION QUESTION's family: it sees something real and irrelevant.
 # § THE STALE OVERLAY (banked 2026-08-05) -- Use the Manifest's LIVE COMMAND RECEIPTS as the sole authority on what this compile ran, and explicitly resolve disagreements in their favor rather than trusting context.txt pasted into the article.
-# - TODO (banked 2026-08-05, receipt-scoped): SEVEN in-window articles are the entire residual on-air bracket noise -- 2026-07-31-absolute-timing-and-side-channel-sanitization, 2026-08-01-agentic-web-content-negotiation-telemetry, 2026-08-01-hatching-the-seed-installer-automation, 2026-08-01-mother-cat-kata-deterministic-walk, 2026-08-03-debugging-self-referential-prompt-guards, 2026-08-04-disposable-installations-durable-backups, 2026-08-05-sentinel-splices-workspace-tree-automation. They age out of the 7-day window unaided, so this backlog SHRINKS without action. HAND-EDIT ONLY: several quote the patch-protocol markers verbatim, which is a DELIMITER COLLISION under the OOB EDIT RULE -- vim, never apply.py. Full 300-article list is 20 and lives in the 2026-08-05 compile receipt.
+
 # - TODO (banked 2026-08-05, publish-transcript convicted): nixops.sh's rsync --delete ships the Z640's __pycache__ (cpython-312) to Honeybot and DELETES Honeybot's own (cpython-313) on every publish -- six lines of churn per deploy for zero benefit, since a 3.12 pyc can never load on 3.13. Add --exclude=__pycache__. Separately, trimnoir tracks scripts/aquarium.py and scripts/aquarium_tui.py and nothing else (receipt: git ls-files scripts/ returns exactly those two), so the post-receive checkout restores them and the rsync deletes them again, forever. Delete them from trimnoir. TWO WRITERS, ONE DIRECTORY -- cosmetic today only because content_loader.py is NOT tracked there, and a live regression path the day it is.
 # - TODO (banked 2026-08-05, two-sided receipt): stream.py's stdout is TTY-ONLY and structurally unreadable as text. Receipt: journalctl over 45 minutes returned journal_lines=761 (the journal is alive) and unbalanced=0 (the warnings are not in it), and configuration.nix defines `stream` as a writeShellScriptBin watchdog in environment.systemPackages with NO systemd unit -- so it runs in a terminal in the XFCE session and its output exists only as pixels for OBS. THE OPERATOR HAS BEEN DIAGNOSING FROM A VIDEO FEED for the whole census ride. Cheapest capture: tee the watchdog's python3 invocation to a file inside the `stream` script. That is a configuration.nix plus nixos-rebuild ride of its own.
 # § THE HEADER-BOUNDED SCANNER (banked 2026-08-05) -- Bound every scanner edit region with explicit author-placed sentinels, never nearby Markdown heading syntax, because fenced code comments can impersonate headings and silently move the blast radius.
@@ -1929,14 +1941,14 @@ apply.py
 # - EARMARK: SPINE/GUARD LIVE-FIRE (staged 2026-07-19): collision guard + book-spine injection have green code receipts but have never fired on a real `article` run. First live publish must show the "📚 Book spine injected" line and a non-colliding new slug; then delete this line.
 # - Monitor for the `db.py` database getting bigger on Honeybot (Textual dashboards?)
 # - Get a UPS for Pipulate Prime (Z640): the 2026-07-18 blackout restarted the machines; the stream survived by luck and watchdog, the box should not have to gamble
-# - EARMARK: pip install river (online/incremental ML) -- design learning-between-turns into the architecture EARLY so static-model loops can adapt; feeds the coin-flip self-prompting Ouroboros whose kill-switch is the Chrome tab holding the drop-hook DOM (User 2026-07-18)
+
 # § THE CONTINUATION LADDER (banked 2026-07-31) -- Put the loop-continuation check in deterministic code, never in the agent's instructions; distinguish mechanism, chance, volition, and competence under deadline as four rungs, each adding exactly one variance source over the rung below.
 # - TODO (2026-10-16, YouTube `liveBroadcasts` Rung 3 API connector): Witness `ytroll` live on article publish and evaluate optional YouTube Data API v3 `liveBroadcasts` rotation. Gate: hands-free per-episode VOD rotation witnessed.
 # - Automate post-outage stream recovery: OBS autostart in XFCE session + persistent YouTube stream key collapses the 8-step manual dance; keep the dead stream as canary, make the resurrection hands-free
 # - Turn the YouTube live-stream into an interactive real-time article-picking Jukebox.
 # - Make sure the live breaking interrupt announces the upcoming article topic
 # - Provide an alternative for link-builders that could spread over LinkedIn
-# - A better book-outliner method than K-means for "real" structure
+
 # - TODO (remainder of the 2026-07-20 OKF/Agent Skills landing): OKF bundle export of trimnoir plus Google's static visualizer as a free hub-structure audit.
 # § THREE-STANDARDS SUPERPOSITION (banked 2026-07-20) -- Make AGENTS.md, SKILL.md, and OKF documents signposts to executable connector commands rather than second implementations, and type-check each wallet entry before descending because top-level metadata need not be an object.
 
