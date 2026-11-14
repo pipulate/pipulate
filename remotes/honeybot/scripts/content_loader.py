@@ -1,3 +1,4 @@
+import html
 import os
 import re
 import sys
@@ -698,6 +699,34 @@ def _simplify_filepaths_for_tts(text):
     return _FILEPATH_RE.sub(_simplify_filepath_match, text)
 
 
+_INLINE_CODE_OR_HTML_TAG_RE = re.compile(
+    r'(`+(?:[^`\n]|\n(?!\s*\n))*`+)'
+    r'|<!--[\s\S]*?-->'
+    r'|<!DOCTYPE[ \t]+[^<>\n]+>'
+    r'|<(https?://[^>\s]+)>'
+    r'|</?[A-Za-z][A-Za-z0-9:-]*(?:(?:[ \t]+|\n[ \t]*(?=[A-Za-z_:][A-Za-z0-9_.:-]*\s*=))(?:[^<>"\'`\n]|"[^"\n]*"|\'[^\'\n]*\')*)?[ \t]*/?>',
+    re.IGNORECASE,
+)
+
+
+def _strip_html_tags_for_tts(text):
+    """Strip real HTML comments and tags outside inline code without eating '<=' or '<' across lines."""
+    def _repl(match):
+        if match.group(1) is not None:
+            return match.group(1)
+        if match.group(2) is not None:
+            return f" {match.group(2)} "
+        return " "
+
+    return _INLINE_CODE_OR_HTML_TAG_RE.sub(_repl, text)
+
+
+def _unwrap_inline_code_for_tts(match):
+    """Unwrap inline backticks and strip angle brackets from tag-name examples like `<div>`."""
+    inner = match.group(1)
+    return re.sub(r'</?([A-Za-z][A-Za-z0-9._:-]*(?:[ \t]+[A-Za-z0-9._:-]+)*)\s*/?>', r'\1', inner)
+
+
 def clean_markdown(text, label=None, census=True):
     """Sanitizes Markdown for the Piper TTS engine.
 
@@ -847,8 +876,11 @@ def clean_markdown(text, label=None, census=True):
     # Strip $$...$$ and single-dollar $...$ MathJax before backticks and underscores are removed
     text = _strip_mathjax_for_tts(text)
 
-    # Remove Inline Code
-    text = re.sub(r'`([^`]+)`', r'\1', text)
+    # Strip HTML comments/tags outside inline code BEFORE unwrapping backticks so '<=' never eats across lines
+    text = _strip_html_tags_for_tts(text)
+    text = html.unescape(text)
+    # Remove Inline Code (unwrapping `<tag>` examples to `tag`)
+    text = re.sub(r'`((?:[^`\n]|\n(?!\s*\n))+)`', _unwrap_inline_code_for_tts, text)
     # Remove Images
     text = re.sub(r'!\[.*?\]\(.*?\)', '', text)
     # Remove Links [text](url) -> text
@@ -915,15 +947,16 @@ def clean_markdown(text, label=None, census=True):
     text = re.sub(r'https?://\S+', simplify_url, text)
     # --------------------------------------
 
-    # Remove HTML tags
-    text = re.sub(r'<[^>]+>', '', text)
+    # Strip any HTML tags exposed inside unwrapped Markdown link labels without matching '<=' across lines
+    text = _strip_html_tags_for_tts(text)
     # Tag Markdown ATX headings on their own paragraph boundaries so Norma Centroid reads every headline
     text = re.sub(r'(?m)^[ \t]*#{1,6}[ \t]+([^\n]*?[^\n#\t ])[ \t#]*$', r'\n\nPP4HEADINGSTART \1 PP4HEADINGEND\n\n', text)
     # Simplify slash-heavy file paths to filename.ext or "file path" first so basenames hit terms.py
     text = _simplify_filepaths_for_tts(text)
     # Abolish horizontal rules, table bars, box-drawing runs, and polish phonetic spellings
     text = _apply_tts_pronunciations(text)
-    # Remove Headers/Bold/Italic markers
+    # Remove leading blockquote markers and Headers/Bold/Italic markers
+    text = re.sub(r'(?m)^[ \t]*>[ \t]?', '', text)
     text = re.sub(r'[*_#]', '', text)
     text = re.sub(r'[ \t]*\n?[ \t]*(PP4HEADINGSTART[ \t]+.+?[ \t]+PP4HEADINGEND)[ \t]*\n?[ \t]*', r'\n\n\1\n\n', text)
 

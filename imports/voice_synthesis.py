@@ -686,7 +686,11 @@ class ChipVoiceSystem:
         spoken_text = re.sub(r'^\s*\*?\*?(?:MikeLev\.in|Me)\*?\*?\s*:\s*', 'Mike: ', text, flags=re.IGNORECASE)
         spoken_text = re.sub(r'\[([^\]]+)\]\([^\)]+\)', r'\1', spoken_text)
         spoken_text = re.sub(r'\[[^\]]+\]', '', spoken_text)
-        spoken_text = re.sub(r'<[^>]+>', ' ', spoken_text)
+        spoken_text = re.sub(
+            r'<!--[\s\S]*?-->|</?[A-Za-z][A-Za-z0-9:-]*(?:[ \t]+(?:[^<>"\'`\n]|"[^"\n]*"|\'[^\'\n]*\')*)?[ \t]*/?>',
+            ' ',
+            spoken_text,
+        )
         spoken_text = re.sub(
             r'\bhttps?://(?:www\.)?([A-Za-z0-9.-]+)/?(?=\s|[.,;!?)]|$)',
             r'\1',

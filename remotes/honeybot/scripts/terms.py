@@ -111,6 +111,8 @@ REGEX_TERMS = (
     (re.compile(r"\bVMs?\b(?=\s*\(\s*Virtual Machine)", re.IGNORECASE), "V M"),
     (re.compile(r"\bdx/dy\b", re.IGNORECASE), "D X over D Y"),
     (re.compile(r"\bdy/dx\b", re.IGNORECASE), "D Y over D X"),
+    (re.compile(r"(?<![<=-])<=(?!=)\s*(?=\$?\d|[A-Za-z])"), "less than or equal to "),
+    (re.compile(r"(?<![>=-])>=(?!=)\s*(?=\$?\d|[A-Za-z])"), "greater than or equal to "),
     # Data transfer rates (58.64 MiB/s, 550 KiB/s, 100 MB/s, 1 GB/s)
     (re.compile(r"(?<![\d.,])\b1\s*[kK][iI]?[bB]\s*/\s*s(?:ec(?:ond)?)?\b"), "1 kilobyte per second"),
     (re.compile(r"\b(\d[\d,]*(?:\.\d+)?)\s*[kK][iI]?[bB]\s*/\s*s(?:ec(?:ond)?)?\b"), r"\1 kilobytes per second"),
@@ -315,14 +317,14 @@ EXACT_CASE_TERMS = (
 
 # Multiline speaker-turn normalizers for Storytime Markdown articles
 AI_SPEAKER_LABEL_PAT = (
-    r"(?:(?:Gemini|Claude|ChatGPT|OpenAI|Opus|Sonnet|Shipmunk)\b"
+    r"(?:(?:Gemini|Claude|ChatGPT|OpenAI|Opus|Sonnet|Shipmunk|Chip)\b"
     r"(?:[ \t]+(?:\d+(?:\.\d+)*"
     r"|Argon|Carbon|Neon|Helium|Krypton|Xenon|Radon"
     r"|Pro|Flash|Ultra|Nano|High|Medium|Low"
     r"|Opus|Sonnet|Haiku|Code|User|Web|Bot"
     r"|Thinking|Exp|Experimental|Preview|Lite|Mini|Max|Plus|Turbo"
     r"|o\d+|O'Theseus"
-    r"|[A-Za-z][A-Za-z0-9-]{1,15}(?=[ \t]+(?:High|Medium|Low|Pro|Flash|Ultra|Nano|Lite|Mini|Max|Plus|Thinking|Preview|Exp)\b))){0,4}"
+    r"|[A-Za-z][A-Za-z0-9-]{1,15}(?=[ \t]+(?:High|Medium|Low|Pro|Flash|Ultra|Nano|Lite|Mini|Max|Plus|Thinking|Preview|Exp)\b))){0,6}"
     r"|AI)"
 )
 
@@ -336,7 +338,7 @@ SPEAKER_TURN_RULES = (
     ),
     (
         re.compile(
-            rf"(?m)^[ \t]*\*\*[ \t]*({AI_SPEAKER_LABEL_PAT})[ \t]*:?[ \t]*\*\*[ \t]*:?[ \t]*(?:\r?\n[ \t]*(?!\*\*[ \t]*(?:Gemini|Claude|ChatGPT|OpenAI|Opus|Sonnet|Shipmunk|AI|MikeLev\.in|Mike|Me)\b|PP4HEADINGSTART|#{1,6}[ \t]))*",
+            rf"(?m)^[ \t]*\*{1,2}[ \t]*({AI_SPEAKER_LABEL_PAT})[ \t]*:?[ \t]*\*{1,2}[ \t]*:?[ \t]*(?:\r?\n[ \t]*(?!\*{1,2}[ \t]*(?:Gemini|Claude|ChatGPT|OpenAI|Opus|Sonnet|Shipmunk|Chip|AI|MikeLev\.in|Mike|Me)\b|PP4HEADINGSTART|#{1,6}[ \t]))*",
             re.IGNORECASE,
         ),
         r"\n\n\1: ",

@@ -479,7 +479,7 @@ _AI_MODEL_MODIFIER_TOKEN = (
     r"|[a-z][a-z0-9-]{1,15}(?=\s+(?:high|medium|low|pro|flash|ultra|nano|lite|mini|max|plus|thinking|preview|exp)\b))"
 )
 _AI_TURN_PREFIX_RE = re.compile(
-    rf"^\s*(?:(?:gemini|claude|chat\s*g\s*p\s*t|chatgpt|openai|opus|sonnet|shipmunk)\b(?:\s+{_AI_MODEL_MODIFIER_TOKEN}){{0,4}}|a\s*i)\s*:\s*",
+    rf"^\s*(?:(?:gemini|claude|chat\s*g\s*p\s*t|chatgpt|openai|opus|sonnet|shipmunk|chip)\b(?:\s+{_AI_MODEL_MODIFIER_TOKEN}){{0,6}}|a\s*i)\s*:\s*",
     re.IGNORECASE,
 )
 _HOST_TRANSIENT_RE = (
@@ -753,6 +753,17 @@ class Narrator(threading.Thread):
             return [
                 self._make_spec("norma", MIKE_TURN_CUE_TEXT, "narrator", "curtain", "inactive"),
                 self._make_spec("mike", raw, "left", "active", "inactive"),
+            ]
+        if self._stage_dialogue_role != "right" and low.startswith((
+            "context verified.",
+            "context verified!",
+            "tool calls this turn:",
+        )):
+            self._stage_dialogue_role = "right"
+            self._reannounce_after_break = False
+            return [
+                self._make_spec("norma", SHIPMUNK_TURN_CUE_TEXT, "narrator", "inactive", "curtain"),
+                self._make_spec("shipmunk", raw, "right", "inactive", "active"),
             ]
         if self._stage_dialogue_role == "left":
             out = []

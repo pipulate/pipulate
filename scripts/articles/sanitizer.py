@@ -152,7 +152,7 @@ def neutralize_inception_artifacts(content: str) -> str:
         seg = parts[idx]
         # 2. Repair inverted bold/inline-code closures using flat character classes (zero backtracking)
         seg = re.sub(r'`\*\*([^`*\n]+)`([^`*\n]+)\*\*`', r'`**\1`\2`**`', seg)
-        seg = re.sub(r'\*\*([^*`\n]*`[^`*\n]+)\*\*`', r'**\1`**', seg)
+        seg = re.sub(r'\*\*((?:[^*`\n]*`[^`*\n]+`)*[^*`\n]*`[^`*\n]+)\*\*`', r'**\1`**', seg)
         # 3. Collapse hard-wrapped newlines inside single-backticked player-piano cue examples
         seg = re.sub(
             r'(?<!`)`(\s*(?:<!--\s*(?:pp4|weebo|media)\b[^`]{1,200}?-->|\[{3}\s*(?:weebo|media|image|video|patronus)\s*:[^`\]]{1,200}?\]{3})\s*)`(?!`)',
