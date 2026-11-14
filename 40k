@@ -78,17 +78,17 @@ scripts/articles/common.py
 # THE JEKYLL BLOG LIKE A HACKER (INVENTED SKILL.md & AGENTS.md FORMAT) PUBLISHING PIPELINE
 ~/repos/nixos/blogs.nix
 ~/.config/pipulate/blogs.json
-# scripts/articles/publishizer.py
+scripts/articles/publishizer.py
 scripts/articles/common.py
-# scripts/articles/articleizer.py
-# scripts/articles/link_injector.py
-# scripts/articles/build_knowledge_graph.py
+scripts/articles/articleizer.py
+scripts/articles/link_injector.py
+scripts/articles/build_knowledge_graph.py
 scripts/articles/editing_prompt.txt
 scripts/articles/sanitizer.py
 scripts/articles/contextualizer.py
-# scripts/articles/generate_hubs.py
-# scripts/articles/generate_llms_txt.py
-# scripts/articles/generate_post_nav.py
+scripts/articles/generate_hubs.py
+scripts/articles/generate_llms_txt.py
+scripts/articles/generate_post_nav.py
 assets/jekyll/common-packages.nix
 
 # TRIMNOIR
