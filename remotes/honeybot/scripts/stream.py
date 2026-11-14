@@ -2531,7 +2531,7 @@ def build_hud_circle_specs(mode: str = "OVERTURE", title: str = "") -> list:
         else (
             f"That concludes our midpoint intermission for: {clean_title}. "
             "Full source and receipts live at Mike L E V dot eye N slash latest, "
-            "grab your own free Sun Pug at Sun Pug dot eye oh, and join us on Discord at Mike L E V dot eye N slash discord."
+            "grab your own free Sun Pug at Sun Pug dot eye oh, and join us on Discord at Mike L E V dot I N. Slash discord."
         )
     )
     return [
