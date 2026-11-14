@@ -919,10 +919,10 @@ def clean_markdown(text, label=None, census=True):
     text = re.sub(r'<[^>]+>', '', text)
     # Tag Markdown ATX headings on their own paragraph boundaries so Norma Centroid reads every headline
     text = re.sub(r'(?m)^[ \t]*#{1,6}[ \t]+([^\n]*?[^\n#\t ])[ \t#]*$', r'\n\nPP4HEADINGSTART \1 PP4HEADINGEND\n\n', text)
+    # Simplify slash-heavy file paths to filename.ext or "file path" first so basenames hit terms.py
+    text = _simplify_filepaths_for_tts(text)
     # Abolish horizontal rules, table bars, box-drawing runs, and polish phonetic spellings
     text = _apply_tts_pronunciations(text)
-    # Simplify slash-heavy file paths to filename.ext or "file path" before stripping underscores
-    text = _simplify_filepaths_for_tts(text)
     # Remove Headers/Bold/Italic markers
     text = re.sub(r'[*_#]', '', text)
     text = re.sub(r'[ \t]*\n?[ \t]*(PP4HEADINGSTART[ \t]+.+?[ \t]+PP4HEADINGEND)[ \t]*\n?[ \t]*', r'\n\n\1\n\n', text)

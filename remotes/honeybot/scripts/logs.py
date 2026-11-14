@@ -569,9 +569,10 @@ _PIRATE_PATH_RE = re.compile(
     r"(?:"
     r"/wp-(?:admin|login|content|includes|json|config)"
     r"|/xmlrpc\.php"
-    r"|/\.(?:env|git|aws|ssh|DS_Store|htaccess|svn|vscode)"
+    r"|/\.(?:env|git|aws|ssh|DS_Store|htaccess|svn|hg|bzr|vscode|well-known/alfacgiapi)"
     r"|/(?:phpmyadmin|pma|myadmin|mysql|adminer|dbadmin)"
     r"|/(?:cgi-bin|vendor/phpunit|boaform|hnap1|actuator|geoserver|solr|evox|autodiscover|owa|ecp)"
+    r"|/(?:api/session/properties|v2/_catalog|debug/default/view|telescope/requests|server-status|login\.action)"
     r"|/(?:shell|alfa|eval-stdin|setup\.php|config\.php|info\.php|test\.php)"
     r"|\.\./|%2e%2e"
     r"|\.(?:php[0-9]?|phtml|asp|aspx|jsp|jspx|cgi|cfm|env|sql|bak|old|orig|ini)(?:$|\?|/)"
@@ -751,13 +752,14 @@ class SonarApp(App):
                 self.live_viewers = None
                 self.peak_viewers = 0
                 return None
-            st_mtime = os.stat(VIEWERS_FILE_PATH).st_mtime
+            st_stat = os.stat(VIEWERS_FILE_PATH)
             now = time.time()
-            if (now - st_mtime) > VIEWERS_TTL_SECONDS:
+            if (now - st_stat.st_mtime) > VIEWERS_TTL_SECONDS:
                 self.live_viewers = None
+                self.peak_viewers = 0
                 return None
-            if st_mtime != getattr(self, "viewers_mtime", None):
-                self.viewers_mtime = st_mtime
+            if st_stat.st_mtime_ns != getattr(self, "viewers_mtime", None):
+                self.viewers_mtime = st_stat.st_mtime_ns
                 import json as _json
                 with open(VIEWERS_FILE_PATH, "r", encoding="utf-8") as vf:
                     data = _json.load(vf)

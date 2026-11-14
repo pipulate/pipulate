@@ -164,6 +164,23 @@ def build_nginx_map(csv_input_path, map_output_path, navgraph_path):
         'security.txt', 'favicon.ico', '.php', '.env', '.git'
     ]
 
+    retired_to_active = {}
+    retired_hubs_clean = {}
+    retired_hubs_path = repo_root / "_data" / "retired_hubs.json"
+    if retired_hubs_path.is_file():
+        try:
+            retired_hubs_raw = json.loads(retired_hubs_path.read_text(encoding="utf-8")) or {}
+        except Exception:
+            retired_hubs_raw = {}
+        lower_hubs = {h.lower(): h for h in active_hubs}
+        for old_h, tgt_h in sorted(retired_hubs_raw.items()):
+            chk_h = old_h if old_h.endswith("/") else old_h + "/"
+            if chk_h in living_tissue or old_h in living_tissue:
+                continue
+            clean_tgt = enforce_slash(str(tgt_h).strip().lower())
+            if clean_tgt in lower_hubs:
+                retired_hubs_clean[chk_h] = lower_hubs[clean_tgt]
+                retired_to_active[chk_h.lower()] = lower_hubs[clean_tgt]
     valid_mappings = {}  # The Deduplication Ledger
     
     # Pass 1: Read, Clean, and Filter the CSV
@@ -221,9 +238,11 @@ def build_nginx_map(csv_input_path, map_output_path, navgraph_path):
 
             # --- THE HEALER & VALIDATOR (FUZZY SNAP) ---
             
-            # 1. Aggressive cleaning: lower, unquote, strip hidden chars
+            # 1. Aggressive cleaning: lower, unquote, strip hidden chars, and collapse retired hubs in 1 hop
             clean_new = urllib.parse.unquote(new_url.lower().replace('\r', '').replace('\u200b', '').strip())
             clean_new = enforce_slash(clean_new)
+            if clean_new in retired_to_active:
+                clean_new = retired_to_active[clean_new].lower()
 
             # Create a lowercased map of active permalinks for resilient checking
             lower_to_actual = {p.lower(): p for p in active_permalinks}
@@ -277,20 +296,7 @@ def build_nginx_map(csv_input_path, map_output_path, navgraph_path):
         # ----------------------------------
 
         combined_mappings = dict(valid_mappings)
-        retired_hubs_path = repo_root / "_data" / "retired_hubs.json"
-        if retired_hubs_path.is_file():
-            try:
-                retired_hubs = json.loads(retired_hubs_path.read_text(encoding="utf-8")) or {}
-            except Exception:
-                retired_hubs = {}
-            lower_hubs = {h.lower(): h for h in active_hubs}
-            for old_h, tgt_h in sorted(retired_hubs.items()):
-                chk_h = old_h if old_h.endswith("/") else old_h + "/"
-                if chk_h in living_tissue or old_h in living_tissue:
-                    continue
-                clean_tgt = enforce_slash(str(tgt_h).strip().lower())
-                if clean_tgt in lower_hubs:
-                    combined_mappings[chk_h] = lower_hubs[clean_tgt]
+        combined_mappings.update(retired_hubs_clean)
 
         seen_bases = {"/feed"}
         for old_url, new_url in combined_mappings.items():

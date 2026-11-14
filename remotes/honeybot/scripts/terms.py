@@ -30,6 +30,8 @@ _NON_ATTRIBUTIVE_FOLLOWERS = (
 
 # 1. Parameterized / Context-Sensitive Rules (evaluated in exact listed order)
 REGEX_TERMS = (
+    # Tilde approximation (~10, ~0.38%, ~$10K/mo -> "approximately ..."; spares HEAD~1, /~user, ~~strike~~)
+    (re.compile(r"(?<![A-Za-z0-9_/.~-])~\s*(?=\$?\d)"), "approximately "),
     # Currency + /mo or /month ($10K/mo, $2.5M/month, $10,000/mo)
     (re.compile(r"\$(\d[\d,]*(?:\.\d+)?)\s*[kK]\s*/\s*mo(?:nth)?\b"), r"\1 thousand dollars a month"),
     (re.compile(r"\$(\d[\d,]*(?:\.\d+)?)\s*[mM]\s*/\s*mo(?:nth)?\b"), r"\1 million dollars a month"),
@@ -92,6 +94,11 @@ REGEX_TERMS = (
     (re.compile(r"\bWeb\s+3\.0\b", re.IGNORECASE), "Web three point oh"),
     (re.compile(r"\bSHA-?256\b", re.IGNORECASE), "S H A 256"),
     (re.compile(r"\b(?:Neovim|nvim)\b", re.IGNORECASE), "Neo vim"),
+    # D3.js versioned bundles & sub-modules (d3.v7.min.js, d3.v7.js, d3.v7, d3-force, d3-zoom)
+    (re.compile(r"\bd3\.v(\d+)\.min\.js\b", re.IGNORECASE), r"D 3 version \1 dot min dot J S"),
+    (re.compile(r"\bd3\.v(\d+)\.js\b", re.IGNORECASE), r"D 3 version \1 dot J S"),
+    (re.compile(r"\bd3\.v(\d+)\b", re.IGNORECASE), r"D 3 version \1"),
+    (re.compile(r"\bd3-([a-z]{2,})\b", re.IGNORECASE), r"D 3 \1"),
     # Operation GKAAUAH: expand "Piper TTS" / "piper-tts" and bare "TTS" / "CDN" / "NPC" unless already glossed
     (re.compile(r"\bPiper[- \t]+TTS\b", re.IGNORECASE), "Piper Text to Speech"),
     (re.compile(r"\bTTS\b(?=\s*\(\s*text to speech)", re.IGNORECASE), "T T S"),
@@ -164,6 +171,9 @@ CASE_INSENSITIVE_TERMS = (
     ("rsync", "R sync"),
     ("JSON-LD", "J S O N L D"),
     ("JSONL", "J S O N L"),
+    ("d3.min.js", "D 3 dot min dot J S"),
+    ("d3.js", "D 3 dot J S"),
+    ("d3js", "D 3 J S"),
     # Crawlers
     ("OAI-SearchBot", "O A I SearchBot"),
     ("ExaSearchBot", "Exa Search Bot"),
@@ -284,6 +294,7 @@ EXACT_CASE_TERMS = (
     ("FYI", "for your information"),
     ("SVGs", "S V Gs"),
     ("SVG", "S V G"),
+    ("D3", "D 3"),
     ("GKAAUAH", "G K A A U A H"),
 )
 

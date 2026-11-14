@@ -1439,7 +1439,7 @@ def run_honeybot_obs(mode="status"):
         text=True,
     )
     if res.returncode == 0 and mode in ("start", "roll", "bell"):
-        vid = sync_live_video_id(push_remote=True, reset_peak=(mode in ("start", "roll")))
+        vid = sync_live_video_id(push_remote=True, reset_peak=True)
         if vid:
             print(f"📺 Synced live_video.json -> {vid} (local + Honeybot)")
     return res.returncode
@@ -2003,6 +2003,30 @@ def _fetch_yt_chat_messages(continuation):
     return messages
 
 
+def _extract_live_watching_count(vvc):
+    """Extract concurrent live viewer integer from videoViewCountRenderer without parsing '12 minutes ago'."""
+    if not isinstance(vvc, dict):
+        return None
+    vc = vvc.get("viewCount") or {}
+    raw_vc = str(vc.get("simpleText") or "")
+    if not raw_vc and isinstance(vc.get("runs"), list):
+        raw_vc = "".join(str(r.get("text") or "") for r in vc["runs"] if isinstance(r, dict))
+    raw_low = raw_vc.strip().lower()
+    m_watch = re.search(r"(\d[\d,]*)\s+watching\b", raw_vc, re.IGNORECASE)
+    orig = str(vvc.get("originalViewCount") or "").strip()
+    if m_watch:
+        if orig.isdigit():
+            return int(orig)
+        return int(m_watch.group(1).replace(",", ""))
+    if not (vvc.get("isLive") or "watching" in raw_low):
+        return None
+    if not raw_low and orig.isdigit():
+        return int(orig)
+    if raw_low.isdigit():
+        return int(raw_low)
+    return 0
+
+
 def _fetch_yt_concurrent_viewers_fast(video_id):
     """Lightweight (~1.5 KB) InnerTube updated_metadata poll for live concurrent viewers."""
     import urllib.request
@@ -2036,18 +2060,9 @@ def _fetch_yt_concurrent_viewers_fast(video_id):
     except Exception:
         return None
     for d in _walk_dicts(data):
-        vvc = d.get("videoViewCountRenderer")
-        if not isinstance(vvc, dict):
-            continue
-        vc = vvc.get("viewCount") or {}
-        raw_vc = str(vc.get("simpleText") or "")
-        if not raw_vc and isinstance(vc.get("runs"), list):
-            raw_vc = "".join(str(r.get("text") or "") for r in vc["runs"] if isinstance(r, dict))
-        if not raw_vc:
-            raw_vc = str(vvc.get("originalViewCount") or "")
-        if vvc.get("isLive") or "watching" in raw_vc.lower():
-            digits = re.sub(r"[^\d]", "", str(vvc.get("originalViewCount") or raw_vc))
-            return int(digits) if digits else 0
+        parsed_vc = _extract_live_watching_count(d.get("videoViewCountRenderer"))
+        if parsed_vc is not None:
+            return parsed_vc
     return None
 
 
@@ -2113,15 +2128,9 @@ def fetch_youtube_live_state(channel_or_url=None):
         vvc = d.get("videoViewCountRenderer")
         if isinstance(vvc, dict) and vvc.get("isLive"):
             is_live = True
-            vc = vvc.get("viewCount") or {}
-            raw_vc = str(vc.get("simpleText") or "")
-            if not raw_vc and isinstance(vc.get("runs"), list):
-                raw_vc = "".join(str(r.get("text") or "") for r in vc["runs"] if isinstance(r, dict))
-            if not raw_vc:
-                raw_vc = str(vvc.get("originalViewCount") or "")
-            digits = re.sub(r"[^\d]", "", raw_vc)
-            if digits:
-                concurrent_viewers = int(digits)
+            parsed_vc = _extract_live_watching_count(vvc)
+            if parsed_vc is not None:
+                concurrent_viewers = parsed_vc
         lcr = d.get("liveChatRenderer")
         if isinstance(lcr, dict) and not chat_continuation:
             for cont in lcr.get("continuations") or []:
@@ -2209,7 +2218,17 @@ def sync_live_video_id(state=None, push_remote=False, reset_peak=False):
         except Exception:
             state = {}
     vid = str((state or {}).get("video_id") or persisted.get("video_id") or "").strip()
+    now_int = int(time.time())
     if not vid:
+        if reset_peak:
+            cur_v = int((state or {}).get("concurrent_viewers") or 0)
+            persisted["concurrent_viewers"] = cur_v
+            persisted["peak_viewers"] = cur_v
+            persisted["peak_reset_at"] = now_int
+            persisted["alerted_in_run"] = False
+            persisted["updated_at"] = now_int
+            _save_ytwatch_state(persisted)
+            _sync_honeybot_viewers(cur_v, running=True, video_id="", peak=cur_v, push_remote=push_remote)
         return ""
     new_vid = bool((state or {}).get("video_id") and state.get("video_id") != persisted.get("video_id"))
     new_title = bool((state or {}).get("title") and persisted.get("title") and state.get("title") != persisted.get("title"))
@@ -2220,9 +2239,10 @@ def sync_live_video_id(state=None, push_remote=False, reset_peak=False):
             persisted["title"] = str(state["title"])
         persisted["concurrent_viewers"] = cur_v
         persisted["peak_viewers"] = cur_v
+        persisted["peak_reset_at"] = now_int
         persisted["alerted_in_run"] = False
         persisted["seen_ids"] = []
-        persisted["updated_at"] = int(time.time())
+        persisted["updated_at"] = now_int
         _save_ytwatch_state(persisted)
         _sync_honeybot_viewers(cur_v, running=True, video_id=vid, peak=cur_v, push_remote=push_remote)
     live_payload = (
@@ -2736,13 +2756,15 @@ def run_youtube_watch(
             cur_v = int(st_p.get("concurrent_viewers") or 0)
             cur_vid = str(st_p.get("video_id") or "")
             cur_t = str(st_p.get("title") or "")
+        now_int = int(time.time())
         st_p = _load_ytwatch_state()
         st_p["video_id"] = cur_vid
         st_p["title"] = cur_t
         st_p["concurrent_viewers"] = cur_v
         st_p["peak_viewers"] = cur_v
+        st_p["peak_reset_at"] = now_int
         st_p["alerted_in_run"] = False
-        st_p["updated_at"] = int(time.time())
+        st_p["updated_at"] = now_int
         _save_ytwatch_state(st_p)
         _sync_honeybot_viewers(cur_v, running=True, video_id=cur_vid, peak=cur_v, push_remote=True)
         print(f"🔄 Reset ytwatch session peak -> {cur_v} (video={cur_vid or 'NONE'}).")
@@ -2937,24 +2959,56 @@ def run_youtube_watch(
             alerted_in_run = False
 
     script_mtime = Path(__file__).stat().st_mtime
+    active_peak_reset_at = int(persisted.get("peak_reset_at") or 0)
+    state_file_mtime = YTWATCH_STATE_FILE.stat().st_mtime if YTWATCH_STATE_FILE.is_file() else 0.0
+    last_live_vid = str(state.get("video_id") or persisted.get("video_id") or "").strip()
+    last_live_title = str(state.get("title") or persisted.get("title") or "").strip()
+    hb_reading_trigger = str(persisted.get("hb_reading_trigger") or "").strip()
+    hb_stage_article = str(persisted.get("hb_stage_article") or "").strip()
+
+    def _sync_external_peak_reset(cur_v_now, vid_now=""):
+        nonlocal active_peak_reset_at, state_file_mtime, peak_viewers, alerted_in_run
+        try:
+            cur_mtime = YTWATCH_STATE_FILE.stat().st_mtime if YTWATCH_STATE_FILE.is_file() else 0.0
+        except OSError:
+            return False
+        if cur_mtime == state_file_mtime:
+            return False
+        state_file_mtime = cur_mtime
+        disk_st = _load_ytwatch_state()
+        disk_reset_at = int(disk_st.get("peak_reset_at") or 0)
+        if disk_reset_at > active_peak_reset_at:
+            active_peak_reset_at = disk_reset_at
+            peak_viewers = max(0, int(cur_v_now or 0))
+            alerted_in_run = False
+            dwell_window.clear()
+            _sync_honeybot_viewers(peak_viewers, running=True, video_id=vid_now, peak=peak_viewers, push_remote=True)
+            print(
+                f"[{_ytlog_ts()}] 🔄 [PEAK RESET] Synced external reset -> session peak={peak_viewers}",
+                flush=True,
+            )
+            return True
+        return False
+
     try:
         while True:
             if Path(__file__).stat().st_mtime != script_mtime:
                 print(f"[{_ytlog_ts()}] 🔄 [HOT-RELOAD] common.py updated on disk — re-execing ytwatch daemon...", flush=True)
                 os.execv(sys.executable, [sys.executable, *sys.argv])
-            cur_vid = state.get("video_id") if state.get("is_live") else ""
-            cur_title = state.get("title") or ""
+            poll_vid = state.get("video_id") if state.get("is_live") else ""
             for _ in range(sub_polls - 1):
                 time.sleep(fast_step)
                 if Path(__file__).stat().st_mtime != script_mtime:
                     print(f"[{_ytlog_ts()}] 🔄 [HOT-RELOAD] common.py updated on disk — re-execing ytwatch daemon...", flush=True)
                     os.execv(sys.executable, [sys.executable, *sys.argv])
-                if not cur_vid:
+                if not poll_vid:
+                    _sync_external_peak_reset(prev_viewers, "")
                     break
-                fast_v = _fetch_yt_concurrent_viewers_fast(cur_vid)
+                fast_v = _fetch_yt_concurrent_viewers_fast(poll_vid)
                 if fast_v is None:
                     continue
                 fast_ts = time.time()
+                reset_fired = _sync_external_peak_reset(fast_v, poll_vid)
                 peak_viewers = max(peak_viewers, int(fast_v))
                 if fast_v > prev_viewers:
                     print(
@@ -2967,8 +3021,8 @@ def run_youtube_watch(
                         f"[{_ytlog_ts()}] 📉 [FAST VIEWER -{prev_viewers - fast_v}] {prev_viewers} -> {fast_v} watching ({fast_step}s InnerTube pulse)",
                         flush=True,
                     )
-                if fast_v != prev_viewers:
-                    _sync_honeybot_viewers(fast_v, running=True, video_id=cur_vid, peak=peak_viewers, push_remote=True)
+                if fast_v != prev_viewers or reset_fired:
+                    _sync_honeybot_viewers(fast_v, running=True, video_id=poll_vid, peak=peak_viewers, push_remote=True)
                 prev_viewers = fast_v
                 _check_dwell(fast_v, fast_ts)
             time.sleep(fast_step)
@@ -2980,16 +3034,25 @@ def run_youtube_watch(
                 continue
             viewers = state["concurrent_viewers"]
             now = time.time()
-            if (state.get("video_id") and cur_vid and state["video_id"] != cur_vid) or (state.get("title") and cur_title and state["title"] != cur_title):
+            _sync_external_peak_reset(viewers, state.get("video_id") or "")
+            new_ep_vid = bool(state.get("video_id") and last_live_vid and state["video_id"] != last_live_vid)
+            new_ep_title = bool(state.get("title") and last_live_title and state["title"] != last_live_title)
+            if new_ep_vid or new_ep_title:
                 peak_viewers = int(viewers or 0)
+                active_peak_reset_at = int(now)
                 alerted_in_run = False
                 dwell_window.clear()
                 seen_ids.clear()
                 sync_live_video_id(state=state, push_remote=True, reset_peak=True)
+                state_file_mtime = YTWATCH_STATE_FILE.stat().st_mtime if YTWATCH_STATE_FILE.is_file() else 0.0
                 print(
                     f"[{_ytlog_ts()}] 🎬 [NEW EPISODE] Reset session peak -> {peak_viewers} for {state.get('title')!r} ({state.get('video_id')})",
                     flush=True,
                 )
+            if state.get("video_id"):
+                last_live_vid = str(state["video_id"]).strip()
+            if state.get("title"):
+                last_live_title = str(state["title"]).strip()
             src_cmp = f"api={state.get('api_viewers')}, html={state.get('html_viewers')}"
             if viewers > prev_viewers:
                 print(
@@ -3100,7 +3163,12 @@ def run_youtube_watch(
             _sync_honeybot_viewers(viewers, running=True, video_id=state["video_id"], peak=peak_viewers, push_remote=False)
             try:
                 last_ref_ts = int(persisted.get("last_referral_ts") or int(now))
-                hb_sync_and_tail = f"{_viewer_payload_shell_cmd(viewers, video_id=state['video_id'], peak=peak_viewers)}; tail -n 20 /tmp/honeybot_referrals.jsonl 2>/dev/null"
+                hb_sync_and_tail = (
+                    f"{_viewer_payload_shell_cmd(viewers, video_id=state['video_id'], peak=peak_viewers)}; "
+                    "printf 'HB_TRIG:%s\\n' \"$(cat ~/www/mikelev.in/.reading_trigger 2>/dev/null)\"; "
+                    "printf 'HB_STAGE:%s\\n' \"$(tr -d '\\n' < /tmp/honeybot_stage.json 2>/dev/null)\"; "
+                    "tail -n 20 /tmp/honeybot_referrals.jsonl 2>/dev/null"
+                )
                 ref_res = subprocess.run(
                     ["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=4", HONEYBOT_SSH_HOST, hb_sync_and_tail],
                     capture_output=True,
@@ -3108,7 +3176,28 @@ def run_youtube_watch(
                     timeout=6,
                 )
                 max_ref_ts = last_ref_ts
+                hb_reset_reason = ""
                 for rline in (ref_res.stdout or "").splitlines():
+                    if rline.startswith("HB_TRIG:"):
+                        new_trig = rline[8:].strip()
+                        if new_trig:
+                            if hb_reading_trigger and new_trig != hb_reading_trigger:
+                                hb_reset_reason = f".reading_trigger={new_trig}"
+                            hb_reading_trigger = new_trig
+                        continue
+                    if rline.startswith("HB_STAGE:"):
+                        raw_st = rline[9:].strip()
+                        if raw_st.startswith("{"):
+                            try:
+                                st_obj = json.loads(raw_st)
+                                new_art = str(st_obj.get("article") or "").strip()
+                                if new_art:
+                                    if hb_stage_article and new_art != hb_stage_article:
+                                        hb_reset_reason = f"article={new_art}"
+                                    hb_stage_article = new_art
+                            except Exception:
+                                pass
+                        continue
                     try:
                         robj = json.loads(rline)
                     except Exception:
@@ -3132,14 +3221,28 @@ def run_youtube_watch(
                                 tags="bell" if is_rag else "link",
                                 topic=resolved_topic,
                             )
+                if hb_reset_reason:
+                    peak_viewers = int(viewers or 0)
+                    active_peak_reset_at = int(now)
+                    alerted_in_run = False
+                    dwell_window.clear()
+                    _sync_honeybot_viewers(viewers, running=True, video_id=state["video_id"], peak=peak_viewers, push_remote=True)
+                    print(
+                        f"[{_ytlog_ts()}] 📖 [NEW ARTICLE] Honeybot {hb_reset_reason} — reset session peak -> {peak_viewers}",
+                        flush=True,
+                    )
                 persisted["last_referral_ts"] = max_ref_ts
             except Exception:
                 pass
             _save_ytwatch_state({
-                "video_id": state["video_id"],
-                "title": state.get("title") or "",
+                "video_id": state["video_id"] or last_live_vid,
+                "title": state.get("title") or last_live_title,
                 "concurrent_viewers": viewers,
                 "peak_viewers": peak_viewers,
+                "peak_reset_at": active_peak_reset_at,
+                "hb_reading_trigger": hb_reading_trigger,
+                "hb_stage_article": hb_stage_article,
+                "last_referral_ts": persisted.get("last_referral_ts", int(now)),
                 "alerted_in_run": alerted_in_run,
                 "comment_count": cur_comments,
                 "discord_members": prev_discord_members,
@@ -3147,6 +3250,7 @@ def run_youtube_watch(
                 "seen_ids": list(seen_ids)[-500:],
                 "updated_at": int(now),
             })
+            state_file_mtime = YTWATCH_STATE_FILE.stat().st_mtime if YTWATCH_STATE_FILE.is_file() else 0.0
     except KeyboardInterrupt:
         _sync_honeybot_viewers(0, running=False, push_remote=True)
         print("\n🛑 Stopped YouTube Watch.")
