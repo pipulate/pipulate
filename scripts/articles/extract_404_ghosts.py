@@ -102,21 +102,20 @@ TOKEN_HUB_ALIASES = {
 
 
 def resolve_trimnoir_root() -> Path:
-    """Resolve the active trimnoir Jekyll repository across blogs.json and standard checkouts."""
-    candidates = []
-    try:
-        posts_dir = common.get_target_path(None)
-        if posts_dir:
-            candidates.append(Path(posts_dir).resolve().parent)
-    except Exception:
-        pass
-    candidates.extend([
+    """Resolve the active trimnoir Jekyll repository without interactive menu prompts."""
+    candidates = [
         Path.home() / "repos" / "trimnoir",
         REPO_ROOT.parent / "trimnoir",
-    ])
+    ]
     for cand in candidates:
         if cand.is_dir() and ((cand / "_posts").is_dir() or (cand / "_raw_map.csv").is_file()):
             return cand
+    try:
+        posts_dir = common.get_target_path("1")
+        if posts_dir:
+            return Path(posts_dir).resolve().parent
+    except Exception:
+        pass
     return candidates[0]
 
 
@@ -273,7 +272,7 @@ def normalize_ghost_source(ghost_path: str) -> str:
     return s
 
 
-def apply_ghost_remaps(max_rounds: int = 4) -> int:
+def apply_ghost_remaps(max_rounds: int = 12) -> int:
     tr = resolve_trimnoir_root()
     sql_file = REPO_ROOT / "remotes" / "honeybot" / "queries" / "hot_404_remaps_top.sql"
     sweep_sql = sql_file.read_text(encoding="utf-8").replace("HAVING total_hits > 1", "HAVING total_hits >= 1").replace("LIMIT 250;", "LIMIT 500;")
