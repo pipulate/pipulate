@@ -2717,13 +2717,14 @@ def run_optics_station_slot(content, env, profile_dir) -> None:
                 else:
                     time.sleep(0.5)
         else:
-            conjure_patronus("optics_triptych", duration=42.0)
+            conjure_patronus("optics_triptych", duration=48.0)
             narrator.say(
-                "Pipulate Prime is currently running in local workshop mode, and you can run this exact spectrometer on your own machine today. "
-                "911 LLM Optics is our FOSS Screaming Frog for the Age of AI: point it at any URL and it stacks sixteen wire-truth lenses side by side — "
-                "raw HTTP response headers, unrendered source HTML versus hydrated browser DOM, accessibility trees, token bloat, and RFC 9110 plus RFC 9111 Markdown readiness — "
+                "Pipulate Prime is running in local workshop mode, and you can run this exact spectrometer on your own hardware in sixty seconds. "
+                "All it takes is Nix on a NIC — plain-text, auditable Nix flakes instead of opaque Docker mystery-meat containers, with zero central servers to bottleneck or bill you. "
+                "911 LLM Optics is our FOSS Screaming Frog for the AI generation: point it at any URL and it stacks sixteen wire-truth lenses side by side — "
+                "raw HTTP response headers, source HTML versus hydrated browser DOM, accessibility trees, token bloat, and RFC 9110 plus RFC 9111 Markdown readiness — "
                 "sealing the entire audit into a SHA-256 archive deed so you can retire $10K/mo pre-render stacks with proof. "
-                "Launch it free at SunPug.io, RFC9110.org, or RFC9111.io, and join our Founding 1,000 practitioners at mikelev.in/discord."
+                "Inspect it safely with curl pipe less at SunPug.io, RFC9110.org, or RFC9111.io, and join the Founding 1,000 practitioners at mikelev.in/discord."
             )
             wait_for_voice_or_live_interrupt(env, profile_dir)
         ensure_storytime_bgm_alive()
@@ -3106,10 +3107,11 @@ def run_station_break(env, profile_dir):
             {
                 "label": "WIRE\nFIELD NOTE",
                 "say": (
-                    "Field note from the wire. Before you scroll past this terminal, look closely at what is missing from the traffic above — "
-                    "because the search-referral web most businesses still budget for has already decoupled from human clicks."
+                    "Field note from the wire. If you work in search, publishing, or web engineering, you already feel the floor shifting: "
+                    "Google is winding down the ten-blue-links referral economy, and spinning generative rewrites only adds zero-information noise that AI retrieval pipelines ignore. "
+                    "Here on the raw wire is what replaces it."
                 ),
-                "duration": 25.0,
+                "duration": 30.0,
                 "linger": 0.4,
             },
             env,

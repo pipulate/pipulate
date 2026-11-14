@@ -47,23 +47,25 @@ REPORT_H_MARGIN = 3
 REPORT_V_MARGIN = 2
 
 WHATS_HAPPENING_BEAT = (
-    "You are looking at an unmasked origin wire — no vendor dashboard, no sampling, and no proxy hiding the bots. "
-    "Let's begin by nixing — and nipping in the bud right up front — the myth that this Matrix-rain visibility only works for home-hosting or impossible logfile exports: "
+    "You are watching an unmasked HTTP origin wire — no vendor dashboard, no sampling, and no proxy hiding the bots. "
+    "First, let's nix — and nip in the bud right up front — the myth that you have to self-host in a closet to get this Matrix-rain visibility: "
     "Authoritative DNS and Cloudflare Orange-to-Orange CDN log streams unlock this exact first-party wire truth on any enterprise stack, "
-    "restoring the strategic intelligence cut off by not-provided keyword blindness and browser-only JavaScript beacons. "
-    "To verify this instrument live, open ChatGPT or Claude right now and ask a question about mikelev.in: "
-    "the moment its retrieval agent hits this server, a yellow RAG badge fires on screen and rings the physical bell in the studio. "
+    "restoring the strategic intelligence lost to not-provided keyword blindness and browser-only JavaScript beacons. "
+    "Test this instrument live right now: open ChatGPT or Claude and ask a question about mikelev.in — "
+    "the second its retrieval agent hits this server, a yellow RAG badge lights up on screen and rings the physical bell in this studio. "
     "Keep your screenshot key ready for the chart ahead, and join the Founding 1,000 practitioners at mikelev.in/discord."
 )
 
 CURRENT_ARTICLE_BEAT = "{CURRENT_ARTICLE}"
 
 CONSULTING_CTA_BEAT = (
-    "What you are watching is the exact same ten-year transition we lived through with Mobile-First Responsive Web Design in the 2010s — "
-    "except this time it is far better for consultants covering the gap at the CDN Edge. "
-    "One bimodal HTTP edge serving HTML to browsers and clean RFC 9110 Markdown to AI agents — cached via RFC 9111 Vary Accept alongside hierarchical sitemap.xml and llms.txt feeds — "
-    "buys every enterprise immediate cover while they turn their origin into a three-hop Markdown feed and retire ten thousand dollars a month in pre-render middleware and legacy crawlers. "
-    "Meet Sunpugio — our friendly Men-in-Black-style Pug from the Sun — and unfurl the open-source Sun Pug workbench and 911 LLM Optics on your own hardware at SunPug.io, "
+    "Who do you call when legacy search optimization breaks? "
+    "HTTP authors Roy Fielding and Mark Nottingham spent years evolving RFC 7231 into RFC 9110 and RFC 9111 — "
+    "literally nine-eleven-zero and nine-eleven-one, binary zero and one wired directly into your existing CDN Edge. "
+    "Just like Mobile-First Responsive Web Design created a decade of consulting in the 2010s, "
+    "serving HTML to browsers and clean RFC 9110 Markdown to AI agents from one URL — cached via RFC 9111 Vary Accept alongside clean sitemap.xml and llms.txt feeds — "
+    "buys every enterprise twelve months of cover to retire six-figure SEO crawlers and $10K/mo JavaScript pre-render middleware while rebuilding their origin as a three-hop Markdown feed. "
+    "All it takes is Nix on a NIC: turn any spare laptop into a transparent, FOSS AI-Readiness workstation in sixty seconds at SunPug.io, "
     "or connect for enterprise ADNS and edge architecture at mikelev.in/discord."
 )
 
@@ -117,29 +119,30 @@ def _make_station_bead(card_label, card_say, capstone_cue, forest_story_lines, p
 #   Beat 5a (+7m) : Bead 2 — DOM TRAPDOOR JS EXECS (:bimodal JS hydration proof)
 #   Beat 5b (+14m): Bead 3 — SEOS ASSEMBLE! (white_rabbit -> RFC 9110/9111 Edge readiness @ SunPug.io)
 STATION_SEGMENTS = [
-    # Bead 0 (Beat 2 -> First Data Proof: Who Accepts Markdown on the Wire + Teaser for 911 LLM Optics)
+    # Bead 0 (Beat 2 -> First Data Proof: Shannon Information & Who Accepts Markdown on the Wire)
     _make_station_bead(
         "RFC 9110\nMARKDOWN",
         (
-            "Most analytics suites record zero trace of AI retrieval agents because those agents never execute client-side tracking tags. "
-            "By instrumenting the raw HTTP socket directly — the same visibility enterprises unlock at scale with Authoritative DNS and Orange-to-Orange CDN log streams — "
-            "we measure which AI systems negotiate clean RFC 9110 Markdown on the wire."
+            "By Claude Shannon's definition of information, rewriting top-ten consensus articles under a Generative Engine Optimization banner carries near-zero surprise. "
+            "AI retrieval agents want primary source Markdown, yet browser analytics record zero trace of them because bots skip client-side JavaScript tags. "
+            "Here on the raw HTTP socket is who actually negotiates RFC 9110 Markdown today."
         ),
         ("WINDOW", f"forest.py:{REPORT_WINDOW_CAP_SECONDS}:overview"),
         [
             "{LIVE_REPORT:overview}",
-            "Coming up on our next wire field report, we open 911 LLM Optics — our open-source Screaming Frog for the Age of AI at SunPug.io — to X-ray raw HTTP headers, hydrated DOM bloat, and RFC 9110 Markdown readiness side by side.",
+            "Coming up on our next wire field note, we open 911 LLM Optics — our FOSS Screaming Frog for the AI generation at SunPug.io — to inspect raw HTTP headers, hydrated DOM bloat, and RFC 9110 Markdown readiness side by side.",
         ],
     ),
-    # Bead 1 (Beat 3 -> Killer-App Payoff Promoted Ahead of White Rabbit: 911 LLM Optics @ SunPug.io)
+    # Bead 1 (Beat 3 -> Killer-App Payoff: 911 LLM Optics & Levinux -> SunPug.io Software Von Neumann Probe)
     [
         (
             "CARD",
             {
                 "label": "911 LLM\nOPTICS",
                 "say": (
-                    "Meet 911 LLM Optics: the FOSS Screaming Frog for the Age of AI, "
-                    "built to inspect exact wire truth inside the portable workshop at SunPug.io."
+                    "Meet 911 LLM Optics: the FOSS Screaming Frog for the AI generation, "
+                    "delivered inside SunPug.io — a self-replicating Software Von Neumann Probe practiced since Levinux, "
+                    "where Nix on a NIC turns any spare laptop into a local-first audit lab with zero cloud bottlenecks."
                 ),
             },
         ),
@@ -151,28 +154,28 @@ STATION_SEGMENTS = [
     _make_station_bead(
         "DOM TRAPDOOR\nJS EXECS",
         (
-            "Conventional SEO wisdom claims AI crawlers never execute client-side JavaScript. "
-            "So we wired an eight-hundred-millisecond JavaScript trapdoor into our HTML pages to measure the truth on the wire."
+            "Conventional SEO wisdom claims AI crawlers never execute client-side JavaScript — a myth vendors use to sell $10K/mo pre-render middleware. "
+            "So we wired an eight-hundred-millisecond JavaScript trapdoor into our HTML pages to measure what actually fires on the wire."
         ),
         ("WINDOW", f"forest.py:{REPORT_WINDOW_CAP_SECONDS}:bimodal"),
         [
             "{LIVE_REPORT:bimodal}",
-            "When OpenAI and Meta already hydrate JavaScript on their own dime and Markdown-native agents ask for text/markdown directly, $10K/mo pre-render middleware becomes pure dead weight.",
+            "When OpenAI and Meta already hydrate JavaScript on their own dime and Markdown-native agents request text/markdown directly, legacy pre-render middleware and six-figure enterprise crawlers become pure dead weight.",
         ],
     ),
-    # Bead 3 (Beat 5b -> Follow the White Rabbit: "SEOs Assemble!" RFC 9110/9111 Edge Manifesto)
+    # Bead 3 (Beat 5b -> Follow the White Rabbit: RFC 7231 -> 911-Zero & 911-One Edge Manifesto)
     _make_station_bead(
-        "AI-READINESS\nARCHITECTURE",
+        "911-ZERO &\n911-ONE",
         (
-            "Follow the White Rabbit into post-search web architecture. "
-            "Google has walled off the SERPs, and technical practitioners who read raw edge logs and serve three-hop Markdown "
-            "are becoming the first generation of AI-Readiness architects."
+            "Follow the White Rabbit into the HTTP specification that makes legacy SEO crawlers obsolete. "
+            "Rarely has a protocol shift been so long in the making — from RFC 7231 straight to RFC 9110 and RFC 9111, "
+            "nine-eleven-zero and nine-eleven-one."
         ),
         ("PATRONUS", {"key": "white_rabbit", "duration": 65.0}),
         [
-            "For years, enterprise teams paid a $10K/mo JavaScript pre-render tax just to spoon-feed bloated HTML snapshots to search crawlers.",
-            "Roy Fielding and Mark Nottingham already wired the cure into HTTP: RFC 9110 content negotiation and RFC 9111 Vary Accept caching let your existing CDN serve HTML to humans and clean Markdown to AI agents from one URL with zero SaaS rent.",
-            "Unfurl your own local-first Sun Pug workshop free at SunPug.io — running on your own hardware with zero central servers to overload — share it with one builder who needs a real post-search playbook, and join the Founding 1,000 at mikelev.in/discord.",
+            "Roy Fielding and Mark Nottingham built bimodal content negotiation and Vary Accept edge caching directly into HTTP so one canonical URL can serve visual HTML to humans and clean Markdown to AI agents.",
+            "Implementing that bridge at your CDN Edge alongside clean sitemap.xml and llms.txt feeds gives any enterprise immediate Year-One cover while they simplify their origin into a three-hop Markdown graph.",
+            "Inspect the plain-text Sun Pug installer safely with curl pipe less at SunPug.io — running locally on your own hardware with zero SaaS rent — forward this stream to one search friend who needs a real plan, and join the Founding 1,000 at mikelev.in/discord.",
         ],
     ),
 ]
