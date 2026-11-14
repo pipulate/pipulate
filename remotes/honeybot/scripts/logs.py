@@ -30,6 +30,7 @@ HUD_PANEL_HEIGHT = HUD_TABLE_ROWS + 4  # +4 rows for top border, panel title, he
 BOT_IDENTITY_WIDTH = 21        # Emoji (2) + space (1) + 18-char bot name (trims 15 chars for Raw Signature)
 TICKER_FILE_PATH = "/tmp/honeybot_ticker.txt"
 WEEBO_ACTIVE_PATH = "/tmp/honeybot_weebo_active"
+WEEBO_ACTIVE_TTL_SECONDS = 210.0
 VIEWERS_FILE_PATH = "/tmp/honeybot_viewers.json"
 VIEWERS_TTL_SECONDS = 120.0
 STAGE_STATE_PATH = "/tmp/honeybot_stage.json"
@@ -406,6 +407,28 @@ def get_stage_frame(side: str, state: str = "curtain") -> Text:
     if st_key not in ("curtain", "active", "inactive"):
         st_key = "curtain"
     return STAGE_FRAMES[s_key][st_key]
+
+
+def is_weebo_stage_active(
+    path: str = WEEBO_ACTIVE_PATH,
+    ttl: float = WEEBO_ACTIVE_TTL_SECONDS,
+    now: float = None,
+) -> bool:
+    """True when /tmp/honeybot_weebo_active exists and is fresher than `ttl`; auto-reaps stale sentinels."""
+    try:
+        if not os.path.exists(path):
+            return False
+        st = os.stat(path)
+        ts_now = time.time() if now is None else float(now)
+        if (ts_now - st.st_mtime) > ttl:
+            try:
+                os.unlink(path)
+            except OSError:
+                pass
+            return False
+        return True
+    except OSError:
+        return False
 
 
 def compute_stage_states_from_payload(payload: dict, now: float = None):
@@ -1119,8 +1142,8 @@ class SonarApp(App):
             self.refresh_tables()
 
     def _is_stage_frozen(self) -> bool:
-        """True when DOOM fire is burning or Weebo/Max holds the broadcast stage."""
-        return bool(getattr(self, "is_fire_burning", False) or os.path.exists(WEEBO_ACTIVE_PATH))
+        """True when DOOM fire is burning or Weebo/Max holds a fresh broadcast stage lock."""
+        return bool(getattr(self, "is_fire_burning", False) or is_weebo_stage_active())
 
     def _is_hud_scrolling(self) -> bool:
         """True during the protected left-then-right HUD scroll sweep."""
@@ -1128,7 +1151,7 @@ class SonarApp(App):
 
     def tick_marquee(self):
         """Drive #ticker_bar: fast-pathed 4.5s still-card hold with pre-baked DOOM fire frames."""
-        if os.path.exists(WEEBO_ACTIVE_PATH):
+        if is_weebo_stage_active():
             self._was_weebo_active = True
             return
         stage_synced = self._sync_stage_from_file()

@@ -99,11 +99,16 @@ REGEX_TERMS = (
     (re.compile(r"\bd3\.v(\d+)\.js\b", re.IGNORECASE), r"D 3 version \1 dot J S"),
     (re.compile(r"\bd3\.v(\d+)\b", re.IGNORECASE), r"D 3 version \1"),
     (re.compile(r"\bd3-([a-z]{2,})\b", re.IGNORECASE), r"D 3 \1"),
-    # Operation GKAAUAH: expand "Piper TTS" / "piper-tts" and bare "TTS" / "CDN" / "NPC" unless already glossed
+    # Operation GKAAUAH: expand "Piper TTS" / "piper-tts" and bare "TTS" / "CDN" / "NPC" / "FOSS" / "FSF" / "NIC" / "VM" unless already glossed
     (re.compile(r"\bPiper[- \t]+TTS\b", re.IGNORECASE), "Piper Text to Speech"),
     (re.compile(r"\bTTS\b(?=\s*\(\s*text to speech)", re.IGNORECASE), "T T S"),
     (re.compile(r"\bCDN\b(?=\s*(?:\(\s*Content Distribution Network|means\s+Content Distribution Network))", re.IGNORECASE), "C D N"),
     (re.compile(r"\bNPCs?\b(?=\s*\(\s*non-player character)", re.IGNORECASE), "N P C"),
+    (re.compile(r"\bFOSS\b(?=\s*\(\s*Free and Open[- ]Source Software)", re.IGNORECASE), "F O S S"),
+    (re.compile(r"\bFSF\s+foundation\b", re.IGNORECASE), "Free Software Foundation"),
+    (re.compile(r"\bFSF\b(?=\s*\(\s*Free Software Foundation)", re.IGNORECASE), "F S F"),
+    (re.compile(r"\bNICs?\b(?=\s*\(\s*Network Interface Card)"), "N I C"),
+    (re.compile(r"\bVMs?\b(?=\s*\(\s*Virtual Machine)", re.IGNORECASE), "V M"),
     (re.compile(r"\bdx/dy\b", re.IGNORECASE), "D X over D Y"),
     (re.compile(r"\bdy/dx\b", re.IGNORECASE), "D Y over D X"),
     # Data transfer rates (58.64 MiB/s, 550 KiB/s, 100 MB/s, 1 GB/s)
@@ -201,6 +206,10 @@ CASE_INSENSITIVE_TERMS = (
     ("TruncatedSVD", "Truncated S V D"),
     ("Karpathy", "Kar-path-ee"),
     ("Kalman", "Kahl-mahn"),
+    ("GNU Guix", "G N U Geeks"),
+    ("Guix", "Geeks"),
+    ("xfreerdp", "X free R D P"),
+    ("freerdp", "free R D P"),
 )
 
 # 3. Exact-Case Acronyms & MixedCase Proper Nouns (auto-sorted longest-first)
@@ -215,7 +224,13 @@ EXACT_CASE_TERMS = (
     ("RLVR", "R L V R"),
     ("RLHF", "R L H F"),
     ("vi", "vee eye"),
-    ("FOSS", "foss"),
+    ("FOSS", "Free and Open Source Software"),
+    ("FSF", "Free Software Foundation"),
+    ("NICs", "Network Interface Cards"),
+    ("NIC", "Network Interface Card"),
+    ("VMs", "Virtual Machines"),
+    ("VM", "Virtual Machine"),
+    ("KVM", "K V M"),
     ("RFCs", "R F C's"),
     ("RFC", "R F C"),
     ("SEOs", "S E O's"),

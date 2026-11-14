@@ -33,7 +33,7 @@ _graceful_reboot_requested = False
 
 
 def _reap_orphaned_tts_and_overlays():
-    """Kill any orphaned aplay/piper TTS pipelines and stale /tmp/honeybot_tts_*.raw files."""
+    """Kill orphaned TTS/overlay processes and clear stale stage/optics sentinels on boot and exit."""
     my_pid = os.getpid()
     for p in sorted(Path("/proc").glob("[0-9]*/cmdline")):
         try:
@@ -41,24 +41,41 @@ def _reap_orphaned_tts_and_overlays():
             if pid == my_pid:
                 continue
             raw = p.read_bytes().replace(b"\x00", b" ").decode("utf-8", errors="ignore")
-            if "--conjure-media" in raw:
-                continue
             if (
-                ("aplay" in raw and ("-t raw" in raw or "honeybot_tts" in raw or "tick.wav" in raw or "dripulate.wav" in raw))
+                "--conjure-media" in raw
+                or ("aplay" in raw and ("-t raw" in raw or "honeybot_tts" in raw or "tick.wav" in raw or "dripulate.wav" in raw))
                 or ("piper" in raw and "output_raw" in raw)
                 or ("honeybot-storytime-bgm" in raw)
                 or ("honeybot-updating-music" in raw)
             ):
+                try:
+                    os.kill(pid, signal.SIGCONT)
+                except Exception:
+                    pass
                 os.kill(pid, signal.SIGKILL)
         except Exception:
             continue
-    for raw_f in Path("/tmp").glob("honeybot_tts_*.raw"):
+    if _is_singleton_owner and os.environ.get("HONEYBOT_NO_AUDIO") != "1":
+        for pat in ("conjure_window_overlay", "patronus_visual_shield", "honeybot_media_overlay", "firefox"):
+            try:
+                subprocess.run(["pkill", "-f", pat], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False)
+            except Exception:
+                pass
+    for glob_pat in ("honeybot_tts_*.raw", "honeybot_card_*.stop"):
+        for tmp_f in Path("/tmp").glob(glob_pat):
+            try:
+                tmp_f.unlink(missing_ok=True)
+            except OSError:
+                pass
+    for sentinel in ("/tmp/honeybot_weebo_active", "/tmp/honeybot_optics_slot.json"):
         try:
-            raw_f.unlink(missing_ok=True)
+            Path(sentinel).unlink(missing_ok=True)
         except OSError:
             pass
     try:
-        Path("/tmp/honeybot_weebo_active").unlink(missing_ok=True)
+        tk_p = Path("/tmp/honeybot_ticker.txt")
+        if tk_p.is_file() and tk_p.read_text(encoding="utf-8", errors="ignore").strip().startswith("SCHEDULED RESET IN"):
+            tk_p.unlink(missing_ok=True)
     except OSError:
         pass
 
@@ -103,6 +120,8 @@ def register_signal_handlers():
 
 # --- Configuration ---
 SHOW_DURATION_MINUTES = 240  # Minutes for the big logfile stream
+REBOOT_WARN_LEAD_SECONDS = 120.0
+REBOOT_ANNOUNCE_LEAD_SECONDS = 45.0
 PITCH_INTERVAL = 420        # 7-minute Copper grid: hits Markdown -> White Rabbit -> Intermission -> JS Trapdoor -> 911 Optics
 
 # Spoken over tick.wav when `publish "msg"` rings .deploy_standby on Honeybot.
@@ -492,10 +511,13 @@ def run_tui_app(script_name, duration=None):
     tail_proc = None
     try:
         if script_name == "logs.py" and duration:
-            deadline = start_ts + (duration * 60)
+            total_sec = duration * 60
+            lead_sec = REBOOT_ANNOUNCE_LEAD_SECONDS if total_sec > (REBOOT_ANNOUNCE_LEAD_SECONDS * 2) else 0.0
+            deadline = start_ts + total_sec - lead_sec
             while not _shutting_down.is_set():
                 rem = deadline - time.time()
                 if rem <= 0:
+                    announce_scheduled_reboot()
                     break
                 tail_proc = subprocess.Popen(
                     ["tail", "-f", "/var/log/nginx/access.log"],
@@ -509,6 +531,7 @@ def run_tui_app(script_name, duration=None):
                 try:
                     proc.wait(timeout=rem)
                 except subprocess.TimeoutExpired:
+                    announce_scheduled_reboot()
                     proc.terminate()
                     break
                 finally:
@@ -551,6 +574,8 @@ def run_tui_app(script_name, duration=None):
                 proc.wait()
 
     except KeyboardInterrupt:
+        if script_name == "logs.py" and _graceful_reboot_requested:
+            announce_scheduled_reboot()
         raise
     finally:
         for child_p in (proc, tail_proc):
@@ -2651,7 +2676,7 @@ def run_optics_station_slot(content, env, profile_dir) -> None:
         pass
     claimed = False
     deadline = time.time() + handshake_wait
-    while time.time() < deadline and not has_pending_update():
+    while time.time() < deadline and not has_pending_update() and not _shutting_down.is_set():
         try:
             if Path(WEEBO_STAGE_PAUSE_FILE).exists():
                 claimed = True
@@ -2669,7 +2694,7 @@ def run_optics_station_slot(content, env, profile_dir) -> None:
             stage_deadline = time.time() + max_hold
             grace_deadline = time.time() + min(max_hold, claim_grace)
             saw_pause_sentinel = Path(WEEBO_STAGE_PAUSE_FILE).exists()
-            while time.time() < stage_deadline and not has_pending_update():
+            while time.time() < stage_deadline and not has_pending_update() and not _shutting_down.is_set():
                 if Path(WEEBO_STAGE_PAUSE_FILE).exists():
                     saw_pause_sentinel = True
                     time.sleep(0.5)
@@ -2707,6 +2732,15 @@ def run_optics_station_slot(content, env, profile_dir) -> None:
             slot_p.unlink(missing_ok=True)
         except OSError:
             pass
+        had_weebo = Path(WEEBO_STAGE_PAUSE_FILE).exists()
+        if had_weebo or claimed:
+            _resume_honeybot_stage_after_weebo([])
+        if had_weebo or _shutting_down.is_set() or has_pending_update():
+            for pat in (MEDIA_OVERLAY_MARKER, "firefox"):
+                try:
+                    subprocess.run(["pkill", "-f", pat], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False)
+                except Exception:
+                    pass
 
 
 def dispatch_cue(command, content, env, profile_dir, pace_say=True):
@@ -3067,12 +3101,22 @@ def run_station_break(env, profile_dir):
             # breaking news); here it is collateral.
             print(f"📉 STATION BREAK DROPPED {dropped} unspoken item(s) -- "
                   f"director ran ahead of the voice; that text was never heard.")
-        narrator.say(
-            "Field note from the wire. Before you scroll past this terminal, look closely at what is missing from the traffic above — "
-            "because the search-referral web most businesses still budget for has already decoupled from human clicks."
+        dispatch_cue(
+            "CARD",
+            {
+                "label": "WIRE\nFIELD NOTE",
+                "say": (
+                    "Field note from the wire. Before you scroll past this terminal, look closely at what is missing from the traffic above — "
+                    "because the search-referral web most businesses still budget for has already decoupled from human clicks."
+                ),
+                "duration": 25.0,
+                "linger": 0.4,
+            },
+            env,
+            profile_dir,
+            pace_say=True,
         )
-        narrator.queue.join()
-        time.sleep(1.2)
+        time.sleep(0.8)
         for cue_command, cue_content in bead:
             dispatch_cue(cue_command, cue_content, env, profile_dir, pace_say=False)
         wait_for_voice_or_live_interrupt(env, profile_dir)
@@ -3095,10 +3139,31 @@ def run_station_break(env, profile_dir):
 
 REBOOT_ANNOUNCEMENT_TEXT = (
     "Scheduled observatory reset. "
-    "Honeybot is about to perform a routine five second memory refresh and restart the broadcast loop. "
-    "The live stream will stay connected and the archive reading will resume in a few seconds."
+    "Refreshing memory now — stay tuned, the live stream stays connected and resumes in five seconds."
 )
+_process_boot_ts = time.time()
+_reboot_warned = False
 _reboot_announced = False
+
+
+def maybe_warn_scheduled_reboot(remaining_sec: float, ticker_path: str = "/tmp/honeybot_ticker.txt") -> bool:
+    """Fire a single non-disruptive 2-minute ticker + spoken advance warning before the 4-hour memory refresh."""
+    global _reboot_warned
+    if _reboot_warned or remaining_sec > REBOOT_WARN_LEAD_SECONDS or remaining_sec <= REBOOT_ANNOUNCE_LEAD_SECONDS:
+        return False
+    _reboot_warned = True
+    try:
+        p = Path(ticker_path)
+        tmp = p.with_name(f".{p.name}.{os.getpid()}.tmp")
+        tmp.write_text("SCHEDULED RESET IN 2 MIN | STREAM STAYS CONNECTED | ARCHIVE RESUMES IN 5S\n", encoding="utf-8")
+        os.replace(tmp, p)
+    except Exception:
+        pass
+    narrator.say(
+        "Observatory notice: scheduled four-hour memory refresh coming up in under two minutes. "
+        "Stay tuned — the live stream remains connected."
+    )
+    return True
 
 
 def announce_scheduled_reboot():
@@ -3123,7 +3188,7 @@ def announce_scheduled_reboot():
             time.sleep(0.2)
             narrator.play_raw(raw_path, fallback_text=REBOOT_ANNOUNCEMENT_TEXT)
             narrator.queue.join()
-            time.sleep(1.5)
+            time.sleep(0.4)
         finally:
             dismiss_card(card_handle)
     except Exception:
@@ -3184,9 +3249,10 @@ def perform_show(script):
             if _shutting_down.is_set():
                 return False
 
-            # --- The Timer Interrupt ---
-            # If we exceed the duration, announce the scheduled reboot and return False.
-            if (time.time() - start_time) > duration_seconds:
+            # --- The Timer Interrupt (2-min warning + 45s live-HUD announcement) ---
+            rem_show = duration_seconds - (time.time() - _process_boot_ts)
+            maybe_warn_scheduled_reboot(rem_show)
+            if rem_show <= REBOOT_ANNOUNCE_LEAD_SECONDS:
                 announce_scheduled_reboot()
                 return False
 
@@ -3418,6 +3484,10 @@ def run_logs():
 
 
 def main():
+    global _process_boot_ts, _reboot_warned, _reboot_announced
+    _process_boot_ts = time.time()
+    _reboot_warned = False
+    _reboot_announced = False
     _reap_orphaned_tts_and_overlays()
     write_stage_state("narrator", "inactive", "inactive")
     atexit.register(stop_storytime_bgm)

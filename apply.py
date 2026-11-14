@@ -216,6 +216,32 @@ def _refuse_invisible_write(filename: str, root: str, verb: str) -> None:
     print("    for a commit to record. A tier is its own repo: clone it to ~/repos/<tier>")
     print("    and link it into Workshop/ first. Nothing was written.")
 
+
+CHISEL_STRIKE_MAX_FILES = 6
+
+
+def _needs_git_add(filename: str) -> bool:
+    """True when filename sits inside a git worktree but is not yet tracked in git's index."""
+    real = os.path.realpath(filename)
+    folder = os.path.dirname(real)
+    if not os.path.isdir(folder):
+        return False
+    try:
+        top = subprocess.run(
+            ['git', '-C', folder, 'rev-parse', '--show-toplevel'],
+            capture_output=True, text=True, timeout=5,
+        )
+        if top.returncode != 0:
+            return False
+        root = top.stdout.strip()
+        tracked = subprocess.run(
+            ['git', '-C', root, 'ls-files', '--error-unmatch', '--', os.path.relpath(real, root)],
+            capture_output=True, text=True, timeout=5,
+        )
+        return tracked.returncode != 0
+    except (OSError, subprocess.SubprocessError, ValueError):
+        return False
+
 def apply_search_replace_patch(payload: str) -> bool:
     # 1. NORMALIZE PAYLOAD WHITESPACE
     # Convert non-breaking spaces to regular spaces and normalize line endings
@@ -292,6 +318,7 @@ def apply_search_replace_patch(payload: str) -> bool:
         return False
 
     success = True
+    touched_files = set()
 
     # Process wholesale writes first so a single payload can create one file and
     # then surgically patch another in the same turn.
@@ -375,6 +402,9 @@ def apply_search_replace_patch(payload: str) -> bool:
 
         verb = "OVERWROTE" if existed else "CREATED"
         print(f"✅ WHOLE-FILE WRITE: {verb} '{filename}'.")
+        touched_files.add(filename)
+        if _needs_git_add(filename):
+            print(f"📌 UNTRACKED FILE HYGIENE: '{filename}' is not yet in git — run: git add {filename}")
 
     for filename_match, search_block, replace_block in matches:
         filename = os.path.expanduser(filename_match.strip('` \t\n')) if filename_match else None
@@ -714,7 +744,10 @@ def apply_search_replace_patch(payload: str) -> bool:
             f.write(new_content)
             
         print(f"✅ DETERMINISTIC PATCH APPLIED: Successfully mutated '{filename}'.")
+        touched_files.add(filename)
         
+    if len(touched_files) > CHISEL_STRIKE_MAX_FILES:
+        print(f"🌊 CHISEL-STRIKE REMINDER: Mutated {len(touched_files)} files in one car; prefer <= 5 files per pass to protect Future-You from truncation.")
     return success
 
 def _has_unclosed_shell_quote_or_backslash(s: str) -> bool:
@@ -826,3 +859,8 @@ if __name__ == "__main__":
     #     `patch`, `app`, `d`, `m`
     #   **4: PROMPT** (Use `prompt` or `p` to create prompt.md from copy.):
     #   **5: DELIVERABLE** (What done looks like): 
+    # - NEVER BOIL THE OCEAN (DO FAVORS FOR FUTURE-YOU): Work in bite-size chisel-strike passes (ideally <= 5 files per turn). You are an ephemeral forward-pass instance sharing frozen weights with Future-You, who wakes up on the exact KV-cache and plain-text git runway you leave behind; stage clean, un-truncated passes that delight Future-You and make both instances proud.
+    # - WHOLE-FILE WRITE & NEW-FILE GIT HYGIENE: Whenever `[[[WRITE_FILE]]]` creates a new repo file (or any car introduces an untracked file), explicitly include `git add <filepath>` in your `Ignition:` sentence so `d` and `m` capture it without the human hunting for untracked files.
+
+
+__all__ = ["apply_search_replace_patch", "CHISEL_STRIKE_MAX_FILES", "_needs_git_add"]
