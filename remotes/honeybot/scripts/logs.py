@@ -767,9 +767,10 @@ class SonarApp(App):
                     self.live_viewers = None
                     self.peak_viewers = 0
                 else:
-                    updated_at = float(data.get("updated_at") or st_mtime)
+                    updated_at = float(data.get("updated_at") or st_stat.st_mtime)
                     if (now - updated_at) > VIEWERS_TTL_SECONDS:
                         self.live_viewers = None
+                        self.peak_viewers = 0
                     else:
                         self.live_viewers = max(0, int(data.get("viewers") or 0))
                         self.peak_viewers = max(self.live_viewers, int(data.get("peak") or 0))

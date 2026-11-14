@@ -88,14 +88,21 @@ def _append_article_performance(script, article, is_latest=True):
         else f"Accessing entry from {article['date']}."
     )
     title_str = str(article.get("title") or "latest entry")
+    art_id = str(
+        article.get("id")
+        or article.get("slug")
+        or article.get("permalink")
+        or f"{article.get('date', '')}:{title_str}"
+    ).strip()
     script.append((
         "CARD",
         {
             "label": f"STORYTIME\n{article['date']}",
             "say": f"{lead} Title: {title_str}.",
+            "article": art_id,
         },
     ))
-    script.append(("OVERTURE", {"title": title_str}))
+    script.append(("OVERTURE", {"title": title_str, "article": art_id}))
     script.append(("BGM", "START"))
     image_path = str(article.get("image") or "").strip()
     if image_path:
@@ -119,7 +126,8 @@ def _append_article_performance(script, article, is_latest=True):
             "label": "SUNPUG.IO &\nMIKELEV.IN",
             "say": (
                 f"That concludes {article['title']}. "
-                "Grab your own self-replicating Sun Pug and 911 LLM Optics free at SunPug.io, RFC9110.org, or RFC9111.io, "
+                "Just like Mobile-First Responsive Web Design in the 2010s, the ten-year shift to the Agent-First Edge is wide open right now: "
+                "follow Sunpugio to grab your own self-replicating Sun Pug and 911 LLM Optics free at SunPug.io, "
                 "read the full text and raw receipts at mikelev.in, and forward this broadcast to one sharp builder who needs it. "
                 "Join the Founding 1,000 AI-Readiness Consultants at mikelev.in/discord, or drop a message in the live chat — "
                 "a human operator monitors this observatory and can break in live."

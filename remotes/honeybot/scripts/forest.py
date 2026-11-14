@@ -48,19 +48,22 @@ REPORT_V_MARGIN = 2
 
 WHATS_HAPPENING_BEAT = (
     "You are looking at an unmasked origin wire — no vendor dashboard, no sampling, and no proxy hiding the bots. "
-    "Enterprises can capture this exact telemetry at global scale through Authoritative DNS and Orange-to-Orange CDN log streams, yet almost nobody inspects it. "
-    "To verify this instrument live, open ChatGPT or Claude right now and ask a question about mikelev.in. "
-    "The moment its retrieval agent hits this server, a yellow RAG badge fires on screen and rings the physical bell in the studio. "
-    "Keep your screenshot key ready for the empirical chart coming up, send this feed to one engineer or executive still budgeting for legacy search clicks, "
-    "and join the Founding 1,000 practitioners at mikelev.in/discord."
+    "Let's begin by nixing — and nipping in the bud right up front — the myth that this Matrix-rain visibility only works for home-hosting or impossible logfile exports: "
+    "Authoritative DNS and Cloudflare Orange-to-Orange CDN log streams unlock this exact first-party wire truth on any enterprise stack, "
+    "restoring the strategic intelligence cut off by not-provided keyword blindness and browser-only JavaScript beacons. "
+    "To verify this instrument live, open ChatGPT or Claude right now and ask a question about mikelev.in: "
+    "the moment its retrieval agent hits this server, a yellow RAG badge fires on screen and rings the physical bell in the studio. "
+    "Keep your screenshot key ready for the chart ahead, and join the Founding 1,000 practitioners at mikelev.in/discord."
 )
 
 CURRENT_ARTICLE_BEAT = "{CURRENT_ARTICLE}"
 
 CONSULTING_CTA_BEAT = (
-    "Legacy search optimization was built for ten blue links that fewer humans click every month, while vendors still charge ten thousand dollars a month for JavaScript pre-render middleware. "
-    "AI-Readiness moves publishing to the HTTP edge: one canonical URL serving HTML to browsers and clean RFC 9110 Markdown to AI agents, cached deterministically via RFC 9111 Vary Accept across three small-world hops. "
-    "Inspect the open-source Sun Pug workbench and 911 LLM Optics locally on your own hardware — with zero central servers to bottleneck — at SunPug.io, RFC9110.org, or RFC9111.io, "
+    "What you are watching is the exact same ten-year transition we lived through with Mobile-First Responsive Web Design in the 2010s — "
+    "except this time it is far better for consultants covering the gap at the CDN Edge. "
+    "One bimodal HTTP edge serving HTML to browsers and clean RFC 9110 Markdown to AI agents — cached via RFC 9111 Vary Accept alongside hierarchical sitemap.xml and llms.txt feeds — "
+    "buys every enterprise immediate cover while they turn their origin into a three-hop Markdown feed and retire ten thousand dollars a month in pre-render middleware and legacy crawlers. "
+    "Meet Sunpugio — our friendly Men-in-Black-style Pug from the Sun — and unfurl the open-source Sun Pug workbench and 911 LLM Optics on your own hardware at SunPug.io, "
     "or connect for enterprise ADNS and edge architecture at mikelev.in/discord."
 )
 

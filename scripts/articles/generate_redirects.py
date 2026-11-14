@@ -155,13 +155,13 @@ def build_nginx_map(csv_input_path, map_output_path, navgraph_path):
     living_tissue.update(protected_system_paths)
     active_permalinks.update(protected_system_paths)
     
-    # Define obvious noise signatures that SQL might have missed
+    # Define anchored exploit/system noise signatures without false-matching legitimate slugs like 'actuator-imperative'
     known_noise_signatures = [
-        'actuator', 'owa', 'rdweb', 'sslvpn', 'remote', 
-        'wp-', 'wordpress', 'sdk', 'dr0v',
-        'sitemap', '.xml', # Aggressively block any sitemap variations
-        '.well-known', 'ads.txt', 'bingsiteauth', 'login', 'admin',
-        'security.txt', 'favicon.ico', '.php', '.env', '.git'
+        '/actuator', '/owa', '/rdweb', '/sslvpn',
+        '/wp-', '/xmlrpc', 'dr0v',
+        'sitemap', '.xml',
+        '/.', 'ads.txt', 'bingsiteauth', '/api/', '/cgi-bin', '/phpmyadmin', '/boaform', '/autodiscover',
+        'security.txt', 'favicon.ico', '.php', '.asp', '.jsp', '.env', '.git'
     ]
 
     retired_to_active = {}
@@ -208,8 +208,14 @@ def build_nginx_map(csv_input_path, map_output_path, navgraph_path):
                 print(f"🗑️ Dropped Known Noise Probe: {old_url}")
                 continue
 
-            # 3. The Placeholder Filter (Blocks LLM Hallucinations)
-            if '...' in old_url or 'placeholder' in old_url.lower() or 'slug' in old_url.lower():
+            # 3. The Placeholder Filter (Blocks LLM Hallucinations while preserving real slugs containing 'slug')
+            if (
+                '...' in old_url
+                or 'placeholder' in old_url.lower()
+                or '<slug>' in old_url.lower()
+                or '{slug}' in old_url.lower()
+                or '/slug/' in old_url.lower()
+            ):
                 print(f"🤖 Dropped LLM Placeholder/Hallucination: {old_url}")
                 continue
 
@@ -230,11 +236,15 @@ def build_nginx_map(csv_input_path, map_output_path, navgraph_path):
                 print(f"⚠️ Dropping asset/parameter URL: {old_url[:30]}...")
                 continue
 
-            # THE BOUNCER: Strict Trailing Slash Enforcer
-            # Drops .php, .html, and ambiguous non-slashed directory paths.
-            if not old_url.endswith('/'):
-                print(f"🗡️ Dropping non-directory URL (No trailing slash): {old_url}")
-                continue
+            # THE BOUNCER: Normalize /index.md and clean extensionless slugs; allow .html/.htm legacy posts
+            if old_url.lower().endswith('/index.md') and len(old_url) > len('/index.md'):
+                old_url = old_url[:-len('index.md')]
+            elif not old_url.endswith('/') and not old_url.lower().endswith(('.html', '.htm')):
+                if old_url.startswith('/') and '.' not in old_url.split('/')[-1]:
+                    old_url = old_url + '/'
+                else:
+                    print(f"🗡️ Dropping non-directory URL (No trailing slash): {old_url}")
+                    continue
 
             # --- THE HEALER & VALIDATOR (FUZZY SNAP) ---
             
@@ -305,11 +315,19 @@ def build_nginx_map(csv_input_path, map_output_path, navgraph_path):
             if not new_url.startswith('/'): new_url = '/' + new_url
             safe_old_base = safe_old_url.rstrip('/')
 
-            # THE REGEX FORGER (strip trailing slash before /?$ so both /path and /path/ match $uri)
+            # THE REGEX FORGER (match /path, /path/, and /path/index.md in one hop; preserve .html/.htm exact)
+            if safe_old_url.lower().endswith(('.html', '.htm')):
+                html_key = safe_old_url.lower()
+                if html_key in seen_bases:
+                    continue
+                seen_bases.add(html_key)
+                escaped_html = safe_old_url.replace('.', r'\.')
+                outfile.write(f"    ~^{escaped_html}$ {new_url};\n")
+                continue
             if not safe_old_base or safe_old_base in seen_bases:
                 continue
             seen_bases.add(safe_old_base)
-            outfile.write(f"    ~^{safe_old_base}/?$ {new_url};\n")
+            outfile.write(f"    ~^{safe_old_base}(?:/index\\.md|/?)$ {new_url};\n")
 
     print(f"✅ Nginx map forged successfully at {map_output_path.name}")
 

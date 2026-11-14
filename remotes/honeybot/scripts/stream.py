@@ -221,7 +221,10 @@ except ImportError:
 def _polish_tts_text(text: str) -> str:
     """Apply master ear-orthography pronunciations from terms.py to any station-break or live line."""
     clean = (text or "").strip()
-    if not clean or _terms_mod is None:
+    if not clean:
+        return clean
+    clean = re.sub(r"\bSunpugio\b", "Sun pug ee oh", clean, flags=re.IGNORECASE)
+    if _terms_mod is None:
         return clean
     try:
         return _terms_mod.apply_inline_tts_terms(clean).strip()
@@ -386,6 +389,7 @@ _STAGE_CURTAIN_INTRO_RE = (
 )
 _stage_seq = 0
 _stage_write_lock = threading.Lock()
+_active_stage_article = ""
 
 
 def write_stage_state(
@@ -396,11 +400,13 @@ def write_stage_state(
     curtain_seconds: float = 0.0,
     stage_path: str = STAGE_STATE_PATH,
     hud_focus: str = "",
+    article: str = None,
 ) -> dict:
     """Atomically write /tmp/honeybot_stage.json so logs.py flips stage portraits and HUD focus in voice-order."""
     import json as _json
     global _stage_seq
     now = time.time()
+    art_val = str(_active_stage_article if article is None else article).strip()
     with _stage_write_lock:
         _stage_seq += 1
         payload = {
@@ -408,6 +414,7 @@ def write_stage_state(
             "left": left,
             "right": right,
             "hud_focus": str(hud_focus or ""),
+            "article": art_val,
             "curtain_side": curtain_side,
             "curtain_until": round(now + curtain_seconds, 3) if (curtain_side and curtain_seconds > 0) else 0.0,
             "seq": _stage_seq,
@@ -2572,8 +2579,10 @@ def build_hud_circle_specs(mode: str = "OVERTURE", title: str = "") -> list:
 
 def run_hud_circle_tour(mode: str, content, env, profile_dir) -> None:
     """Execute the Opening Overture or Midpoint Intermission over the live Textual HUD."""
-    global _in_no_max_zone
+    global _in_no_max_zone, _active_stage_article
     _in_no_max_zone = True
+    if isinstance(content, dict) and content.get("article"):
+        _active_stage_article = str(content["article"]).strip()
     title = content.get("title", "") if isinstance(content, dict) else str(content or "")
     clean_mode = (mode or "OVERTURE").strip().upper()
     prev_role = narrator._stage_dialogue_role
@@ -2759,7 +2768,10 @@ def dispatch_cue(command, content, env, profile_dir, pace_say=True):
             narrator.say(content)
 
     elif command == "CARD":
+        global _active_stage_article
         if isinstance(content, dict):
+            if content.get("article"):
+                _active_stage_article = str(content["article"]).strip()
             label = content.get("label", "HONEYBOT")
             say_text = content.get("say", "")
             hold = float(content.get("duration", 60.0))
@@ -3160,8 +3172,12 @@ def perform_show(script):
     # immediately on a fresh restart cycle.
     next_pitch_time = next_slot(start_time, PITCH_INTERVAL, start_time)
 
+    global _active_stage_article
     profile_dir = tempfile.mkdtemp(prefix="honeybot_fx_")
     active_article_id = get_featured_article_id()
+    if active_article_id:
+        _active_stage_article = str(active_article_id).strip()
+        write_stage_state("narrator", "inactive", "inactive", article=_active_stage_article)
 
     try:
         for command, content in script:
