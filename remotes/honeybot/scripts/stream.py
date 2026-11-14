@@ -56,7 +56,7 @@ def _reap_orphaned_tts_and_overlays():
         except Exception:
             continue
     if _is_singleton_owner and os.environ.get("HONEYBOT_NO_AUDIO") != "1":
-        for pat in ("conjure_window_overlay", "patronus_visual_shield", "honeybot_media_overlay", "firefox"):
+        for pat in ("conjure_window_overlay", "patronus_visual_shield", "honeybot_media_overlay", "HONEYBOT_LIVE_VIM", "firefox"):
             try:
                 subprocess.run(["pkill", "-f", pat], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False)
             except Exception:
@@ -67,7 +67,15 @@ def _reap_orphaned_tts_and_overlays():
                 tmp_f.unlink(missing_ok=True)
             except OSError:
                 pass
-    for sentinel in ("/tmp/honeybot_weebo_active", "/tmp/honeybot_optics_slot.json"):
+    for cue_f in Path("/tmp").glob("honeybot_cue_*.raw"):
+        try:
+            parts = cue_f.stem.split("_")
+            owner_pid = int(parts[2]) if len(parts) >= 3 and parts[2].isdigit() else 0
+            if _shutting_down.is_set() or (owner_pid != my_pid and not Path(f"/proc/{owner_pid}").exists()):
+                cue_f.unlink(missing_ok=True)
+        except OSError:
+            pass
+    for sentinel in ("/tmp/honeybot_weebo_active", "/tmp/honeybot_optics_slot.json", "/tmp/honeybot_ytstage_paused.json"):
         try:
             Path(sentinel).unlink(missing_ok=True)
         except OSError:
@@ -602,6 +610,8 @@ class Narrator(threading.Thread):
         self._play_lock = threading.Lock()
         self._active_procs = []
         self._tts_seq = 0
+        self._cue_cache = {}
+        self._cue_lock = threading.Lock()
         self._dialogue_rate = NORMA_TTS_SAMPLE_RATE
         self._speaker_rate = NORMA_TTS_SAMPLE_RATE
         self._stage_dialogue_role = "prologue"
@@ -661,8 +671,39 @@ class Narrator(threading.Thread):
             return self._make_spec("mike", clean, "left", "active", "inactive")
         return self._make_spec("norma", clean, "narrator", "inactive", "inactive")
 
+    def _split_fast_start_specs(self, specs: list) -> list:
+        """Split the opening clause/sentence of long Mike/Shipmunk turns so voice-switch audio starts immediately."""
+        if not specs:
+            return []
+        out = []
+        split_done = False
+        for spec in specs:
+            txt = (spec.get("text") or "").strip()
+            if not split_done and spec.get("voice") in ("mike", "shipmunk") and len(txt) > 220:
+                split_pos = None
+                m_sent = re.search(r"(?<!\bMr)(?<!\bMs)(?<!\bDr)(?<!\bvs)[.!?]\s+(?=[A-Z0-9\"'(])", txt[45:255])
+                if m_sent:
+                    split_pos = 45 + m_sent.end()
+                else:
+                    m_cl = re.search(r"(?:[;:]\s+|—\s*|,\s+)", txt[65:210])
+                    if m_cl:
+                        split_pos = 65 + m_cl.end()
+                if split_pos and 40 <= split_pos < (len(txt) - 35):
+                    head = txt[:split_pos].strip()
+                    tail = txt[split_pos:].strip()
+                    if head and tail:
+                        out.append(dict(spec, text=head))
+                        out.append(dict(spec, text=tail))
+                        split_done = True
+                        continue
+            out.append(spec)
+        return out
+
     def plan_utterances(self, text: str) -> list:
-        """Plan 1 or 2 zero-lag utterance specs across Norma Centroid, Mike-E, and Shipmunk O'Theseus!"""
+        """Plan zero-lag utterance specs across Norma Centroid, Mike-E, and Shipmunk O'Theseus!"""
+        return self._split_fast_start_specs(self._plan_utterances_core(text))
+
+    def _plan_utterances_core(self, text: str) -> list:
         raw = (text or "").strip()
         if not raw:
             return []
@@ -833,29 +874,64 @@ class Narrator(threading.Thread):
         return write_stage_state("narrator", "curtain", "curtain", "", 0.0, stage_path=stage_path)
 
     def _cleanup_item(self, item):
-        """Remove any unplayed pre-synthesized .raw file when flushing the queue."""
+        """Remove any unplayed pre-synthesized .raw file when flushing the queue (preserving static turn-cue cache)."""
         if isinstance(item, tuple) and len(item) >= 2 and item[0] == "RAW":
             raw_path = item[1]
-            if raw_path and os.path.exists(raw_path):
+            if raw_path and os.path.exists(raw_path) and not os.path.basename(str(raw_path)).startswith("honeybot_cue_"):
                 try:
                     os.remove(raw_path)
                 except OSError:
                     pass
 
     def _synth_raw_with_voice(self, text: str, voice_key: str) -> tuple:
-        """Synthesize `text` using `voice_key` ('norma'|'mike'|'shipmunk'); returns (raw_path, actual_rate) or (None, 0)."""
-        if not text or not shutil.which("piper"):
+        """Synthesize `text` using `voice_key` ('norma'|'mike'|'shipmunk'); caches static turn cues for 0ms switches."""
+        if not text or os.environ.get("HONEYBOT_NO_AUDIO") == "1" or not shutil.which("piper"):
             return None, 0
         model_path, actual_rate = self.resolve_voice_target(voice_key)
         if not model_path.exists():
             return None, 0
+        clean_text = text.strip()
+        vk = (voice_key or "norma").strip().lower()
+        static_cues = {
+            MIKE_TURN_CUE_TEXT,
+            SHIPMUNK_TURN_CUE_TEXT,
+            _polish_tts_text(MIKE_TURN_CUE_TEXT),
+            _polish_tts_text(SHIPMUNK_TURN_CUE_TEXT),
+        }
+        if clean_text in static_cues:
+            with self._cue_lock:
+                cached = self._cue_cache.get((vk, clean_text))
+                if cached and os.path.exists(cached[0]) and os.path.getsize(cached[0]) > 0:
+                    return cached
+                cue_path = f"/tmp/honeybot_cue_{os.getpid()}_{vk}_{len(self._cue_cache) + 1}.raw"
+                try:
+                    with open(cue_path, "wb") as out_f:
+                        res = subprocess.run(
+                            ["piper", "--model", str(model_path), "--output_raw"],
+                            input=clean_text.encode("utf-8"),
+                            stdout=out_f,
+                            stderr=subprocess.DEVNULL,
+                            timeout=30,
+                            check=False,
+                        )
+                    if res.returncode == 0 and os.path.exists(cue_path) and os.path.getsize(cue_path) > 0:
+                        self._cue_cache[(vk, clean_text)] = (cue_path, actual_rate)
+                        return cue_path, actual_rate
+                except Exception:
+                    pass
+                if os.path.exists(cue_path):
+                    try:
+                        os.remove(cue_path)
+                    except OSError:
+                        pass
+                return None, 0
         self._tts_seq += 1
         raw_path = f"/tmp/honeybot_tts_{os.getpid()}_{self._tts_seq}.raw"
         try:
             with open(raw_path, "wb") as out_f:
                 res = subprocess.run(
                     ["piper", "--model", str(model_path), "--output_raw"],
-                    input=text.strip().encode("utf-8"),
+                    input=clean_text.encode("utf-8"),
                     stdout=out_f,
                     stderr=subprocess.DEVNULL,
                     timeout=30,
@@ -871,6 +947,13 @@ class Narrator(threading.Thread):
             except OSError:
                 pass
         return None, 0
+
+    def warm_turn_cues(self) -> None:
+        """Pre-render both static Norma speaker-introduction cues during the 5s boot grace."""
+        if os.environ.get("HONEYBOT_NO_AUDIO") == "1":
+            return
+        for cue_txt in (_polish_tts_text(MIKE_TURN_CUE_TEXT), _polish_tts_text(SHIPMUNK_TURN_CUE_TEXT)):
+            self._synth_raw_with_voice(cue_txt, "norma")
 
     def prep_raw(self, text, voice_key: str = None):
         """Pre-synthesize card narration into a .raw PCM file before showing a card."""
@@ -993,13 +1076,14 @@ class Narrator(threading.Thread):
                         conjure_patronus(str(payload))
                 elif isinstance(item, tuple) and item and item[0] == "WINDOW":
                     win_script, win_dur, win_args = item[1]
+                    win_ready = threading.Event()
                     threading.Thread(
                         target=conjure_window,
                         args=(win_script,),
-                        kwargs={"duration": win_dur, "args": win_args},
+                        kwargs={"duration": win_dur, "args": win_args, "ready_event": win_ready},
                         daemon=True,
                     ).start()
-                    time.sleep(0.5)
+                    win_ready.wait(timeout=25.0)
                 elif isinstance(item, tuple) and item and item[0] == "MEDIA":
                     threading.Thread(
                         target=conjure_media,
@@ -1025,7 +1109,7 @@ class Narrator(threading.Thread):
                 else:
                     self._speak_now(item)
                 self.queue.task_done()
-                time.sleep(0.1)
+                time.sleep(0.02)
             except queue.Empty:
                 continue
 
@@ -1094,11 +1178,13 @@ class Narrator(threading.Thread):
         """Play a pre-synthesized .raw file immediately via aplay and unlink when done."""
         if not raw_path or not os.path.exists(raw_path):
             return
+        is_cached_cue = os.path.basename(str(raw_path)).startswith("honeybot_cue_")
         if self.stop_event.is_set():
-            try:
-                os.remove(raw_path)
-            except OSError:
-                pass
+            if not is_cached_cue:
+                try:
+                    os.remove(raw_path)
+                except OSError:
+                    pass
             return
         rate = int(sample_rate or self._speaker_rate or NORMA_TTS_SAMPLE_RATE)
         with self._play_lock:
@@ -1131,7 +1217,7 @@ class Narrator(threading.Thread):
                         except Exception:
                             pass
                     self._active_procs = []
-                if os.path.exists(raw_path):
+                if os.path.exists(raw_path) and not is_cached_cue:
                     try:
                         os.remove(raw_path)
                     except OSError:
@@ -2311,7 +2397,7 @@ def conjure_media(media_spec, duration=15.0, mute=False, _direct=False):
             shutil.rmtree(tmp_profile, ignore_errors=True)
 
 
-def conjure_window(script_name, duration=30.0, columns=100, lines=30, args=None):
+def conjure_window(script_name, duration=30.0, columns=100, lines=30, args=None, ready_event=None):
     """Process-flavored sibling to conjure_patronus.
 
     Keep the sheet-music API ("report.py" or "report.py:seconds") local to the
@@ -2322,12 +2408,16 @@ def conjure_window(script_name, duration=30.0, columns=100, lines=30, args=None)
     os.environ.update(_hydrate_honeybot_x11_env())
     safe_script = "".join(c for c in str(script_name).strip() if c.isalnum() or c in {"_", "-", "."})
     if not safe_script:
+        if ready_event is not None:
+            ready_event.set()
         return
     duration = max(0.75, min(600.0, float(duration)))
 
     script_dir = Path(__file__).resolve().parent
     script_path = script_dir / safe_script
     if not script_path.exists():
+        if ready_event is not None:
+            ready_event.set()
         return
 
     site_root = Path(__file__).resolve().parents[1]
@@ -2381,11 +2471,11 @@ def conjure_window(script_name, duration=30.0, columns=100, lines=30, args=None)
             from forest import (
                 REPORT_WINDOW_COLUMNS,
                 REPORT_WINDOW_LINES,
-                prerender_station_report_ansi,
+                ensure_station_report_prerendered,
             )
             columns = REPORT_WINDOW_COLUMNS
             lines = REPORT_WINDOW_LINES
-            ansi_path = prerender_station_report_ansi(
+            ansi_path = ensure_station_report_prerendered(
                 mode=mode_arg,
                 width=columns,
                 height=lines,
@@ -2410,16 +2500,21 @@ def conjure_window(script_name, duration=30.0, columns=100, lines=30, args=None)
         if args:
             cmd += [str(a) for a in args]
 
-    shared_conjure_window(
-        cmd,
-        duration=duration,
-        columns=columns,
-        lines=lines,
-        cwd=str(script_dir),
-        title="ConjureWindow",
-        window_class="conjure_window_overlay",
-        display=os.environ.get("DISPLAY") or ":10.0",
-    )
+    try:
+        shared_conjure_window(
+            cmd,
+            duration=duration,
+            columns=columns,
+            lines=lines,
+            cwd=str(script_dir),
+            title="ConjureWindow",
+            window_class="conjure_window_overlay",
+            display=os.environ.get("DISPLAY") or ":10.0",
+            ready_event=ready_event,
+        )
+    finally:
+        if ready_event is not None:
+            ready_event.set()
 
 
 _card_seq = 0
@@ -2779,37 +2874,49 @@ def dispatch_cue(command, content, env, profile_dir, pace_say=True):
             except Exception:
                 pass
         if pace_say:
-            # Double-buffered 3-voice synthesis: plan 1-or-2 utterances (Norma cue +
-            # Mike-E / Shipmunk body), pre-render .raw PCM while prior audio plays,
-            # then enqueue on the real ALSA voice clock for zero-lag curtain lifts.
+            # Pipelined 3-voice synthesis: static turn cues hit /tmp cache in 0ms and
+            # long turns split on their opening sentence so stage highlights flip immediately
+            # while the remainder synthesizes behind active ALSA playback.
             specs = narrator.plan_utterances(content)
             if not specs:
                 return
-            raw_batch = narrator.prep_specs_raw(specs)
-            if raw_batch is not None:
-                wait_for_voice_or_live_interrupt(env, profile_dir)
-                if has_pending_update():
-                    for r_path, _, _ in raw_batch:
-                        narrator._cleanup_item(("RAW", r_path))
+            static_cue_texts = {
+                MIKE_TURN_CUE_TEXT,
+                SHIPMUNK_TURN_CUE_TEXT,
+                _polish_tts_text(MIKE_TURN_CUE_TEXT),
+                _polish_tts_text(SHIPMUNK_TURN_CUE_TEXT),
+            }
+            for idx, spec in enumerate(specs):
+                if has_pending_update() or _shutting_down.is_set():
                     return
-                if (
-                    narrator._reannounce_after_break
-                    and narrator._stage_dialogue_role in ("left", "right")
-                    and len(specs) == 1
-                ):
-                    for r_path, _, _ in raw_batch:
-                        narrator._cleanup_item(("RAW", r_path))
-                    specs = narrator.plan_utterances(content)
-                    raw_batch = narrator.prep_specs_raw(specs)
-                    if raw_batch is None:
-                        narrator.enqueue_specs(specs)
+                raw_batch = narrator.prep_specs_raw([spec])
+                if raw_batch is not None:
+                    wait_for_voice_or_live_interrupt(env, profile_dir)
+                    if has_pending_update() or _shutting_down.is_set():
+                        for r_path, _, _ in raw_batch:
+                            narrator._cleanup_item(("RAW", r_path))
                         return
-                elif len(specs) >= 2:
-                    narrator._reannounce_after_break = False
-                narrator.play_specs_raw(raw_batch)
-            else:
-                narrator.enqueue_specs(specs)
-                time.sleep(len(str(content)) / 20)
+                    if (
+                        idx == 0
+                        and narrator._reannounce_after_break
+                        and narrator._stage_dialogue_role in ("left", "right")
+                        and spec.get("voice") in ("mike", "shipmunk")
+                    ):
+                        narrator._reannounce_after_break = False
+                        cue_spec = (
+                            narrator._make_spec("norma", MIKE_TURN_CUE_TEXT, "narrator", "curtain", "inactive")
+                            if narrator._stage_dialogue_role == "left"
+                            else narrator._make_spec("norma", SHIPMUNK_TURN_CUE_TEXT, "narrator", "inactive", "curtain")
+                        )
+                        cue_batch = narrator.prep_specs_raw([cue_spec])
+                        if cue_batch:
+                            narrator.play_specs_raw(cue_batch)
+                    elif idx == 0 and spec.get("text") in static_cue_texts:
+                        narrator._reannounce_after_break = False
+                    narrator.play_specs_raw(raw_batch)
+                else:
+                    narrator.enqueue_specs([spec])
+                    time.sleep(len(str(spec.get("text", ""))) / 20)
         else:
             narrator.say(content)
 
@@ -3001,6 +3108,13 @@ def run_live_message(msg, env, profile_dir):
         if "MIKE" in str(card_label or "").upper() and not window_spec and not patronus_key:
             narrator.live_operator_mode.set()
         hold = float(msg.get("duration", 120.0)) if isinstance(msg, dict) else 120.0
+        if window_spec and str(window_spec).startswith("forest.py"):
+            w_parts = str(window_spec).split(":", 2)
+            w_mode = w_parts[2].strip() if len(w_parts) > 2 and w_parts[2].strip() else "overview"
+            threading.Thread(
+                target=lambda m=w_mode: (_reload_forest_module() and getattr(_forest_mod, "ensure_station_report_prerendered", lambda *_: None)(m)),
+                daemon=True,
+            ).start()
         # Pre-synthesize during the pre-banner silence so the 3.0s palate cleanser
         # absorbs Piper synthesis time and the banner speaks the instant it pops.
         raw_path = narrator.prep_raw(say_text) if say_text else None
@@ -3021,13 +3135,23 @@ def run_live_message(msg, env, profile_dir):
                 ).start()
                 time.sleep(0.4)
             elif window_spec:
+                w_parts = str(window_spec).split(":", 2)
+                w_script = w_parts[0].strip()
+                w_dur = hold
+                if len(w_parts) > 1 and w_parts[1].strip():
+                    try:
+                        w_dur = float(w_parts[1].strip())
+                    except ValueError:
+                        w_dur = hold
+                w_args = [w_parts[2].strip()] if (len(w_parts) > 2 and w_parts[2].strip()) else None
+                win_ready = threading.Event()
                 threading.Thread(
-                    target=dispatch_cue,
-                    args=("WINDOW", window_spec, env, profile_dir),
-                    kwargs={"pace_say": True},
+                    target=conjure_window,
+                    args=(w_script,),
+                    kwargs={"duration": w_dur, "args": w_args, "ready_event": win_ready},
                     daemon=True,
                 ).start()
-                time.sleep(0.4)
+                win_ready.wait(timeout=25.0)
             if say_text:
                 narrator.play_raw(raw_path, fallback_text=say_text)
                 narrator.queue.join()
@@ -3101,18 +3225,24 @@ def run_station_break(env, profile_dir):
     # finishes instead of being clipped mid-word -- only the queued backlog is
     # dropped. The queue.join() below then rides the real voice clock, so the
     # lead-in lands after the current line ends, not on top of it.
+    report_modes = []
+    for cue_cmd, cue_val in bead:
+        if cue_cmd == "WINDOW" and str(cue_val).startswith("forest.py"):
+            w_parts = str(cue_val).split(":", 2)
+            report_modes.append(w_parts[2].strip() if len(w_parts) > 2 and w_parts[2].strip() else "overview")
+    if report_modes:
+        def _prewarm_bead_reports(modes=tuple(report_modes)):
+            try:
+                from forest import ensure_station_report_prerendered
+                for m in modes:
+                    ensure_station_report_prerendered(mode=m)
+            except Exception:
+                pass
+        threading.Thread(target=_prewarm_bead_reports, daemon=True).start()
+    wait_for_voice_or_live_interrupt(env, profile_dir)
     prev_dialogue_role = narrator._stage_dialogue_role
     narrator.exclusive_mode.set()
     try:
-        dropped = narrator.flush_queue()
-        if dropped:
-            # MEANINGFUL SILENCE OVER UNCONDITIONAL CHATTER: gated on the
-            # interesting case, so a healthy pipeline says nothing and an unhealthy
-            # one says exactly how unhealthy. Deliberately NOT added to interrupt()
-            # -- there, dropping the backlog is the INTENT (you are cutting to
-            # breaking news); here it is collateral.
-            print(f"📉 STATION BREAK DROPPED {dropped} unspoken item(s) -- "
-                  f"director ran ahead of the voice; that text was never heard.")
         dispatch_cue(
             "CARD",
             {
@@ -3190,7 +3320,12 @@ def announce_scheduled_reboot():
     try:
         stop_storytime_bgm()
         narrator.interrupt()
-        for pat in ("conjure_window_overlay", "patronus_visual_shield", MEDIA_OVERLAY_MARKER, "firefox"):
+        for sentinel in ("/tmp/honeybot_weebo_active", "/tmp/honeybot_optics_slot.json", "/tmp/honeybot_ytstage_paused.json"):
+            try:
+                Path(sentinel).unlink(missing_ok=True)
+            except OSError:
+                pass
+        for pat in ("conjure_window_overlay", "patronus_visual_shield", MEDIA_OVERLAY_MARKER, "HONEYBOT_LIVE_VIM", "firefox"):
             try:
                 subprocess.run(["pkill", "-f", pat], check=False)
             except Exception:
@@ -3431,6 +3566,7 @@ def start_director_track():
     """The Script for the Show. Runs in parallel to the Log Stream."""
     t_boot = time.time()
     ensure_cast_voice_models()
+    narrator.warm_turn_cues()
     rem_boot = 5.0 - (time.time() - t_boot)
     if rem_boot > 0:
         time.sleep(rem_boot)

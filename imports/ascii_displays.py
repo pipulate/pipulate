@@ -349,7 +349,8 @@ def patronus(name: str, duration: float = 3.5) -> None:
 def conjure_window(command, duration: float = 30.0, columns: int = 100, lines: int = 30,
                    cwd: Optional[str] = None, title: str = "ConjureWindow",
                    window_class: str = "conjure_window_overlay",
-                   display: Optional[str] = None, fill: bool = False) -> None:
+                   display: Optional[str] = None, fill: bool = False,
+                   ready_event=None) -> None:
     """🪟 CONJURE WINDOW: Run an arbitrary command in a transient Alacritty overlay.
 
     This is the process-flavored sibling of patronus(): patronus renders a
@@ -428,6 +429,8 @@ def conjure_window(command, duration: float = 30.0, columns: int = 100, lines: i
             _center_and_raise(safe_class, env, fill=fill)
         elif sys_platform == "darwin":
             subprocess.run(["osascript", "-e", 'tell application "Alacritty" to activate'], stdout=subprocess.DEVNULL)
+        if ready_event is not None:
+            ready_event.set()
 
         try:
             proc.wait(timeout=duration)
@@ -436,6 +439,8 @@ def conjure_window(command, duration: float = 30.0, columns: int = 100, lines: i
     except Exception as e:
         logger.error(f"🪟 CONJURE_WINDOW connection framework failure encountered: {e}")
     finally:
+        if ready_event is not None:
+            ready_event.set()
         if proc is not None and proc.poll() is None:
             try:
                 proc.terminate()

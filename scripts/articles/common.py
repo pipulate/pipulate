@@ -3453,12 +3453,29 @@ def reboot_honeybot_stream(sync_only=False, dry_run=False):
     if sync_only:
         print("✅ Honeybot scripts synced (stream.py left running; new standby text will load on next .deploy_standby).")
         return 0
+    subprocess.run(
+        ["tmux", "kill-session", "-t", "ytbreaks"],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        check=False,
+    )
+    subprocess.run(
+        ["pkill", "-f", "15001:127[.]0[.]0[.]1:5001"],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        check=False,
+    )
+    Path("/tmp/pipulate_ytstage_audio.json").unlink(missing_ok=True)
     print(f"🔄 Signaling Honeybot stream.py on {HONEYBOT_SSH_HOST} for graceful SCHEDULED REBOOT announcement...")
     remote_sh = r"""
 pattern="/home/mike/www/mikelev[.]in/scripts/stream[.]py"
+rm -f /tmp/honeybot_weebo_active /tmp/honeybot_optics_slot.json /tmp/honeybot_ytstage_paused.json 2>/dev/null || true
+pkill -f "[/]tmp/honeybot_ytapp_profile|HONEYBOT_LIVE_VIM|honeybot_media_overlay|conjure_window_overlay|patronus_visual_shield" 2>/dev/null || true
+pkill -CONT -f "/home/mike/www/mikelev[.]in/scripts/logs[.]py|aplay|piper" 2>/dev/null || true
 old_pids=$(pgrep -f -- "$pattern" || true)
 for old in $old_pids; do
     echo "   signaling stream.py pid=$old for graceful reboot announcement..."
+    kill -CONT "$old" 2>/dev/null || true
     kill -TERM "$old" 2>/dev/null || true
 done
 for wait_s in $(seq 1 25); do
@@ -3480,8 +3497,9 @@ for old in $old_pids; do
         kill -KILL "$old" 2>/dev/null || true
     fi
 done
-pkill -9 -f "aplay.*-t raw|honeybot_tts|piper.*output_raw" 2>/dev/null || true
-rm -f /tmp/honeybot_tts_*.raw 2>/dev/null || true
+pkill -9 -f "aplay.*-t raw|honeybot_tts|honeybot_cue|piper.*output_raw" 2>/dev/null || true
+rm -f /tmp/honeybot_tts_*.raw /tmp/honeybot_cue_*.raw /tmp/honeybot_weebo_active /tmp/honeybot_optics_slot.json /tmp/honeybot_ytstage_paused.json 2>/dev/null || true
+pkill -f "[/]tmp/honeybot_ytapp_profile|HONEYBOT_LIVE_VIM|honeybot_media_overlay|conjure_window_overlay|patronus_visual_shield" 2>/dev/null || true
 pkill -f "/home/mike/www/mikelev[.]in/scripts/logs[.]py" 2>/dev/null || true
 pkill -f "tail -f /var/log/nginx/access[.]log" 2>/dev/null || true
 for i in $(seq 1 14); do

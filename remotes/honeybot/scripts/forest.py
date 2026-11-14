@@ -412,7 +412,81 @@ def _spoken_bot_label(raw_ua: str, known_bots=()) -> str:
     return tok.replace("-", " ").replace("_", " ")
 
 
-_REPORT_META_TTL_SEC = 90.0
+import threading as _threading
+
+_REPORT_META_TTL_SEC = 240.0
+_REPORT_RENDER_LOCK = _threading.Lock()
+
+
+def _query_bimodal_totals(cur) -> tuple:
+    """Compute (eligible_html, js_telem_hits, cloud_triggers, cloud_ips, claude_triggers, claude_ips) without nested-loop LIKE scans."""
+    cur.execute(
+        """
+        SELECT COALESCE(SUM(t.count), 0)
+        FROM telemetry t
+        JOIN ips i ON t.ip_id = i.id
+        JOIN paths p ON t.path_id = p.id
+        WHERE t.served_md = 0
+          AND +i.value NOT LIKE '127.%'
+          AND +i.value NOT LIKE '10.%'
+          AND +i.value NOT LIKE '192.168.%'
+          AND +p.value NOT LIKE '%js_confirm.gif%'
+          AND +p.value NOT LIKE '/assets/%'
+          AND +p.value NOT LIKE '%.md%'
+          AND +p.value NOT LIKE '%.xml%'
+          AND +p.value NOT LIKE '%.txt%'
+          AND +p.value NOT LIKE '%.json%'
+          AND +p.value NOT LIKE '%.css%'
+          AND +p.value NOT LIKE '%.js%'
+          AND +p.value NOT LIKE '%.ico%'
+          AND +p.value NOT LIKE '%.png%'
+          AND +p.value NOT LIKE '%.jpg%'
+          AND +p.value NOT LIKE '%.jpeg%'
+          AND +p.value NOT LIKE '%.gif%'
+          AND +p.value NOT LIKE '%.svg%'
+          AND +p.value NOT LIKE '%.webp%'
+          AND +p.value NOT LIKE '%.woff%'
+          AND +p.value NOT LIKE '%.ttf%'
+          AND +p.value NOT LIKE '%.zip%'
+          AND +p.value NOT LIKE '%.sh%'
+        """
+    )
+    eligible_html = int((cur.fetchone() or [0])[0] or 0)
+    cur.execute("SELECT id FROM paths WHERE value LIKE '%js_confirm.gif%'")
+    js_pids = [int(r[0]) for r in cur.fetchall() if r and r[0] is not None]
+    if not js_pids:
+        return eligible_html, 0, 0, 0, 0, 0
+    if len(js_pids) <= 500:
+        pid_clause = f"t.path_id IN ({','.join(str(pid) for pid in js_pids)})"
+        cte_prefix = ""
+        join_js = ""
+    else:
+        cte_prefix = "WITH js_p AS MATERIALIZED (SELECT id FROM paths WHERE value LIKE '%js_confirm.gif%') "
+        join_js = "JOIN js_p ON t.path_id = js_p.id "
+        pid_clause = "1=1"
+    cur.execute(
+        f"""
+        {cte_prefix}SELECT
+            COALESCE(SUM(CASE WHEN +i.value NOT LIKE '127.%' AND +i.value NOT LIKE '10.%' AND +i.value NOT LIKE '192.168.%' THEN t.count ELSE 0 END), 0),
+            COALESCE(SUM(CASE WHEN (+i.value LIKE '34.%' OR +i.value LIKE '35.%' OR +i.value LIKE '136.65.%') AND +ua.value LIKE 'Mozilla%' AND +ua.value NOT LIKE '%compatible%' THEN t.count ELSE 0 END), 0),
+            COUNT(DISTINCT CASE WHEN (+i.value LIKE '34.%' OR +i.value LIKE '35.%' OR +i.value LIKE '136.65.%') AND +ua.value LIKE 'Mozilla%' AND +ua.value NOT LIKE '%compatible%' THEN i.id END),
+            COALESCE(SUM(CASE WHEN +ua.value LIKE '%ClaudeBot%' AND +i.value NOT LIKE '127.%' AND +i.value NOT LIKE '10.%' AND +i.value NOT LIKE '192.168.%' THEN t.count ELSE 0 END), 0),
+            COUNT(DISTINCT CASE WHEN +ua.value LIKE '%ClaudeBot%' AND +i.value NOT LIKE '127.%' AND +i.value NOT LIKE '10.%' AND +i.value NOT LIKE '192.168.%' THEN i.id END)
+        FROM telemetry t
+        {join_js}JOIN ips i ON t.ip_id = i.id
+        JOIN user_agents ua ON t.ua_id = ua.id
+        WHERE {pid_clause}
+        """
+    )
+    row = cur.fetchone() or (0, 0, 0, 0, 0)
+    return (
+        eligible_html,
+        int(row[0] or 0),
+        int(row[1] or 0),
+        int(row[2] or 0),
+        int(row[3] or 0),
+        int(row[4] or 0),
+    )
 
 
 def _approx_count_words(n: int) -> str:
@@ -520,6 +594,33 @@ def resolve_dynamic_report_speech(text: str) -> str:
     s = str(text or "")
     if "{LIVE_REPORT:" not in s:
         return s
+    if "{LIVE_REPORT:overview}" in s:
+        snap_ov = _read_report_speech_snapshot("overview")
+        if snap_ov and snap_ov.get("top_bots"):
+            s = s.replace(
+                "{LIVE_REPORT:overview}",
+                _format_overview_speech(
+                    int(snap_ov["total_hits"]),
+                    int(snap_ov["md_reads"]),
+                    int(snap_ov["total_cneg"]),
+                    float(snap_ov["md_pct"]),
+                    snap_ov["top_bots"],
+                ),
+            )
+    if "{LIVE_REPORT:bimodal}" in s:
+        snap_bi = _read_report_speech_snapshot("bimodal")
+        if snap_bi and snap_bi.get("top_bots"):
+            s = s.replace(
+                "{LIVE_REPORT:bimodal}",
+                _format_bimodal_speech(
+                    int(snap_bi["eligible_html"]),
+                    int(snap_bi["js_horizon_hits"]),
+                    float(snap_bi["js_pct"]),
+                    snap_bi["top_bots"],
+                ),
+            )
+    if "{LIVE_REPORT:" not in s:
+        return s
     import os
     from pathlib import Path
     os.environ.setdefault("HONEYBOT_DB_READONLY", "1")
@@ -594,66 +695,6 @@ def resolve_dynamic_report_speech(text: str) -> str:
 
     if "{LIVE_REPORT:bimodal}" in s:
         try:
-            cur.execute(
-                """
-                SELECT COALESCE(SUM(t.count), 0)
-                FROM telemetry t
-                JOIN ips i ON t.ip_id = i.id
-                JOIN paths p ON t.path_id = p.id
-                WHERE t.served_md = 0
-                  AND i.value NOT LIKE '127.%'
-                  AND i.value NOT LIKE '10.%'
-                  AND i.value NOT LIKE '192.168.%'
-                  AND p.value NOT LIKE '%js_confirm.gif%'
-                  AND p.value NOT LIKE '/assets/%'
-                  AND p.value NOT LIKE '%.md%'
-                  AND p.value NOT LIKE '%.xml%'
-                  AND p.value NOT LIKE '%.txt%'
-                  AND p.value NOT LIKE '%.json%'
-                  AND p.value NOT LIKE '%.css%'
-                  AND p.value NOT LIKE '%.js%'
-                  AND p.value NOT LIKE '%.ico%'
-                  AND p.value NOT LIKE '%.png%'
-                  AND p.value NOT LIKE '%.jpg%'
-                  AND p.value NOT LIKE '%.jpeg%'
-                  AND p.value NOT LIKE '%.gif%'
-                  AND p.value NOT LIKE '%.svg%'
-                  AND p.value NOT LIKE '%.webp%'
-                  AND p.value NOT LIKE '%.woff%'
-                  AND p.value NOT LIKE '%.ttf%'
-                  AND p.value NOT LIKE '%.zip%'
-                  AND p.value NOT LIKE '%.sh%'
-                """
-            )
-            eligible_html = int((cur.fetchone() or [0])[0] or 0)
-            cur.execute(
-                """
-                SELECT COALESCE(SUM(t.count), 0)
-                FROM telemetry t
-                JOIN ips i ON t.ip_id = i.id
-                JOIN paths p ON t.path_id = p.id
-                WHERE p.value LIKE '%js_confirm.gif%'
-                  AND i.value NOT LIKE '127.%'
-                  AND i.value NOT LIKE '10.%'
-                  AND i.value NOT LIKE '192.168.%'
-                """
-            )
-            js_telem_hits = int((cur.fetchone() or [0])[0] or 0)
-            cur.execute(
-                """
-                SELECT COALESCE(SUM(t.count), 0), COUNT(DISTINCT i.id)
-                FROM telemetry t
-                JOIN ips i ON t.ip_id = i.id
-                JOIN user_agents ua ON t.ua_id = ua.id
-                JOIN paths p ON t.path_id = p.id
-                WHERE p.value LIKE '%js_confirm.gif%'
-                  AND (i.value LIKE '34.%' OR i.value LIKE '35.%' OR i.value LIKE '136.65.%')
-                  AND ua.value LIKE 'Mozilla%'
-                  AND ua.value NOT LIKE '%compatible%'
-                """
-            )
-            cloud_row = cur.fetchone() or (0, 0)
-            cloud_triggers, cloud_ips = int(cloud_row[0] or 0), int(cloud_row[1] or 0)
             snap_bi = _read_report_speech_snapshot("bimodal")
             if snap_bi and snap_bi.get("top_bots"):
                 live_bi = _format_bimodal_speech(
@@ -663,22 +704,14 @@ def resolve_dynamic_report_speech(text: str) -> str:
                     snap_bi["top_bots"],
                 )
             else:
-                cur.execute(
-                    """
-                    SELECT COALESCE(SUM(t.count), 0), COUNT(DISTINCT i.id)
-                    FROM telemetry t
-                    JOIN ips i ON t.ip_id = i.id
-                    JOIN user_agents ua ON t.ua_id = ua.id
-                    JOIN paths p ON t.path_id = p.id
-                    WHERE p.value LIKE '%js_confirm.gif%'
-                      AND ua.value LIKE '%ClaudeBot%'
-                      AND i.value NOT LIKE '127.%'
-                      AND i.value NOT LIKE '10.%'
-                      AND i.value NOT LIKE '192.168.%'
-                    """
-                )
-                c_row = cur.fetchone() or (0, 0)
-                c_triggers, c_ips = int(c_row[0] or 0), int(c_row[1] or 0)
+                (
+                    eligible_html,
+                    js_telem_hits,
+                    cloud_triggers,
+                    cloud_ips,
+                    c_triggers,
+                    c_ips,
+                ) = _query_bimodal_totals(cur)
                 js_rows = list(db.get_js_executors(limit=25))
                 if cloud_triggers > 0:
                     js_rows.append((
@@ -748,82 +781,15 @@ def _build_station_report_panel(mode="overview", panel_width=None):
 
     tbl = Table(expand=True, show_header=True, header_style="bold cyan", border_style="bright_blue")
     if mode in ("bimodal", "trapdoor"):
-        cur.execute(
-            """
-            SELECT COALESCE(SUM(t.count), 0)
-            FROM telemetry t
-            JOIN ips i ON t.ip_id = i.id
-            JOIN paths p ON t.path_id = p.id
-            WHERE t.served_md = 0
-              AND i.value NOT LIKE '127.%'
-              AND i.value NOT LIKE '10.%'
-              AND i.value NOT LIKE '192.168.%'
-              AND p.value NOT LIKE '%js_confirm.gif%'
-              AND p.value NOT LIKE '/assets/%'
-              AND p.value NOT LIKE '%.md%'
-              AND p.value NOT LIKE '%.xml%'
-              AND p.value NOT LIKE '%.txt%'
-              AND p.value NOT LIKE '%.json%'
-              AND p.value NOT LIKE '%.css%'
-              AND p.value NOT LIKE '%.js%'
-              AND p.value NOT LIKE '%.ico%'
-              AND p.value NOT LIKE '%.png%'
-              AND p.value NOT LIKE '%.jpg%'
-              AND p.value NOT LIKE '%.jpeg%'
-              AND p.value NOT LIKE '%.gif%'
-              AND p.value NOT LIKE '%.svg%'
-              AND p.value NOT LIKE '%.webp%'
-              AND p.value NOT LIKE '%.woff%'
-              AND p.value NOT LIKE '%.ttf%'
-              AND p.value NOT LIKE '%.zip%'
-              AND p.value NOT LIKE '%.sh%'
-            """
-        )
-        eligible_html_hits = int((cur.fetchone() or [1])[0] or 1)
-        cur.execute(
-            """
-            SELECT COALESCE(SUM(t.count), 0)
-            FROM telemetry t
-            JOIN ips i ON t.ip_id = i.id
-            JOIN paths p ON t.path_id = p.id
-            WHERE p.value LIKE '%js_confirm.gif%'
-              AND i.value NOT LIKE '127.%'
-              AND i.value NOT LIKE '10.%'
-              AND i.value NOT LIKE '192.168.%'
-            """
-        )
-        js_telem_hits = int((cur.fetchone() or [0])[0] or 0)
-        cur.execute(
-            """
-            SELECT COALESCE(SUM(t.count), 0), COUNT(DISTINCT i.id)
-            FROM telemetry t
-            JOIN ips i ON t.ip_id = i.id
-            JOIN user_agents ua ON t.ua_id = ua.id
-            JOIN paths p ON t.path_id = p.id
-            WHERE p.value LIKE '%js_confirm.gif%'
-              AND (i.value LIKE '34.%' OR i.value LIKE '35.%' OR i.value LIKE '136.65.%')
-              AND ua.value LIKE 'Mozilla%'
-              AND ua.value NOT LIKE '%compatible%'
-            """
-        )
-        cloud_row = cur.fetchone() or (0, 0)
-        cloud_triggers, cloud_ips = int(cloud_row[0] or 0), int(cloud_row[1] or 0)
-        cur.execute(
-            """
-            SELECT COALESCE(SUM(t.count), 0), COUNT(DISTINCT i.id)
-            FROM telemetry t
-            JOIN ips i ON t.ip_id = i.id
-            JOIN user_agents ua ON t.ua_id = ua.id
-            JOIN paths p ON t.path_id = p.id
-            WHERE p.value LIKE '%js_confirm.gif%'
-              AND ua.value LIKE '%ClaudeBot%'
-              AND i.value NOT LIKE '127.%'
-              AND i.value NOT LIKE '10.%'
-              AND i.value NOT LIKE '192.168.%'
-            """
-        )
-        claude_row = cur.fetchone() or (0, 0)
-        claude_triggers, claude_ips = int(claude_row[0] or 0), int(claude_row[1] or 0)
+        (
+            raw_elig_html,
+            js_telem_hits,
+            cloud_triggers,
+            cloud_ips,
+            claude_triggers,
+            claude_ips,
+        ) = _query_bimodal_totals(cur)
+        eligible_html_hits = max(1, int(raw_elig_html or 1))
         js_rows = list(db.get_js_executors(limit=25))
         if cloud_triggers > 0:
             js_rows.append((
@@ -1321,6 +1287,29 @@ def prerender_station_report_ansi(
     tmp.write_text(buf.getvalue().rstrip("\n"), encoding="utf-8")
     tmp.replace(target)
     return str(target)
+
+
+def ensure_station_report_prerendered(
+    mode="overview",
+    width=REPORT_WINDOW_COLUMNS,
+    height=REPORT_WINDOW_LINES,
+    max_age=_REPORT_META_TTL_SEC,
+):
+    """Return a fresh pre-rendered .ansi path, coalescing concurrent pre-warm and window-open callers under one lock."""
+    import time
+    from pathlib import Path
+    safe_mode = "".join(c for c in str(mode or "overview") if c.isalnum() or c in ("_", "-")) or "overview"
+    target = Path(f"/tmp/honeybot_report_{safe_mode}.ansi")
+    with _REPORT_RENDER_LOCK:
+        try:
+            if target.is_file() and target.stat().st_size > 0:
+                age = time.time() - target.stat().st_mtime
+                if age <= float(max_age):
+                    if safe_mode not in ("overview", "bimodal", "trapdoor") or _read_report_speech_snapshot(safe_mode, max_age=max_age):
+                        return str(target)
+        except OSError:
+            pass
+        return prerender_station_report_ansi(mode=safe_mode, width=width, height=height, out_path=target)
 
 
 def render_station_report(mode="overview", hold_seconds=REPORT_WINDOW_CAP_SECONDS):
