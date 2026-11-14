@@ -77,17 +77,21 @@ nix develop .#quiet --command bash << 'EOF'
 EOF
 
 # --- NEW: Deploy the Map File ---
-echo '🗺️  Deploying Nginx Redirect Map...'
-cp _redirects.map _site/redirects.map
+if [ -s _redirects.map ] && [ "$(wc -l < _redirects.map)" -gt 10 ]; then
+  echo '🗺️  Deploying Nginx Redirect Map...'
+  cp _redirects.map _site/redirects.map
+else
+  echo '⚠️  [Hook] _redirects.map has <= 10 lines; preserving existing _site/redirects.map!'
+fi
 # --------------------------------
 
 # 4. Permissions Fix & RAM Redirect Reload
 echo "🔒 [Hook] Fixing Permissions..."
 chmod -R 755 $WORK_TREE/_site
-if sudo -n /run/current-system/sw/bin/systemctl reload nginx 2>/dev/null; then
+if RELOAD_ERR=$(sudo -n /run/current-system/sw/bin/systemctl reload nginx 2>&1); then
   echo "🔄 [Hook] Reloaded Nginx redirect map into RAM."
 else
-  echo "ℹ️  [Hook] Nginx reload deferred (run nixos-rebuild switch once to arm NOPASSWD reload)."
+  echo "⚠️  [Hook] Nginx reload failed (keeping prior RAM map): $RELOAD_ERR"
 fi
 
 # 5. The Breaking-News Bell: signal the live stream to jump to the newest article.

@@ -225,7 +225,7 @@
 
     # ✅ THE NIXOS WAY: Add the memory buckets here as native attributes
     mapHashBucketSize = 256;
-    mapHashMaxSize = 8192;
+    mapHashMaxSize = 32768;
 
     # THE NEW TELEMETRY LOG FORMAT
     commonHttpConfig = ''
@@ -265,8 +265,14 @@
           "~*^wget"  /install.sh;
       }
 
-      # 2. THE GHOST CATCHER: Load the dynamic 404 ledger into RAM
-      map $uri $new_uri {
+      # 2. THE GHOST CATCHER: Normalize /path, /path/, and /path/index.md once,
+      # then resolve redirects in O(1) via Nginx's exact-match hash table.
+      map $uri $redirect_key {
+          default                       $uri;
+          "~^(?<base>/.+?)/index\.md$"  $base;
+          "~^(?<base>/.+?)/+$"          $base;
+      }
+      map $redirect_key $new_uri {
           include /home/mike/www/mikelev.in/_site/redirects.map;
       }
 

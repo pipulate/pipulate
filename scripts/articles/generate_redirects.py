@@ -181,6 +181,9 @@ def build_nginx_map(csv_input_path, map_output_path, navgraph_path):
             if clean_tgt in lower_hubs:
                 retired_hubs_clean[chk_h] = lower_hubs[clean_tgt]
                 retired_to_active[chk_h.lower()] = lower_hubs[clean_tgt]
+    safe_map_path_re = re.compile(r"^/[A-Za-z0-9/_.-]+$")
+    lower_to_actual = {p.lower(): p for p in active_permalinks}
+    lower_slug_map = {k.lower(): v for k, v in slug_map.items()}
     valid_mappings = {}  # The Deduplication Ledger
     
     # Pass 1: Read, Clean, and Filter the CSV
@@ -231,12 +234,17 @@ def build_nginx_map(csv_input_path, map_output_path, navgraph_path):
                 print(f"⚠️ Dropping artifact URL: {old_url[:30]}...")
                 continue
                 
-            # THE BOUNCER: Asset & Parameter Filter
-            if '?' in old_url or old_url.lower().endswith(('.png', '.jpg', '.jpeg', '.gif', '.ico', '.txt', '.xml')):
+            # THE BOUNCER: Asset & Parameter Filter (strip trailing slash so .gif/ probes never slip through)
+            old_probe = old_url.rstrip('/').lower()
+            if '?' in old_url or old_probe.endswith((
+                '.png', '.jpg', '.jpeg', '.gif', '.ico', '.txt', '.xml',
+                '.css', '.js', '.svg', '.webp', '.woff', '.woff2', '.ttf',
+            )):
                 print(f"⚠️ Dropping asset/parameter URL: {old_url[:30]}...")
                 continue
 
             # THE BOUNCER: Normalize /index.md and clean extensionless slugs; allow .html/.htm legacy posts
+            old_url = re.sub(r'/+', '/', old_url)
             if old_url.lower().endswith('/index.md') and len(old_url) > len('/index.md'):
                 old_url = old_url[:-len('index.md')]
             elif not old_url.endswith('/') and not old_url.lower().endswith(('.html', '.htm')):
@@ -245,6 +253,13 @@ def build_nginx_map(csv_input_path, map_output_path, navgraph_path):
                 else:
                     print(f"🗡️ Dropping non-directory URL (No trailing slash): {old_url}")
                     continue
+            if not safe_map_path_re.match(old_url):
+                print(f"🧹 Dropping Nginx-unsafe source path: {old_url}")
+                continue
+            norm_check = old_url if old_url.endswith('/') else old_url + '/'
+            if norm_check in living_tissue or old_url in living_tissue or old_url.rstrip('/') in living_tissue:
+                print(f"🛡️ Protected Living URL (Post-Normalization Collision Avoided): {old_url}")
+                continue
 
             # --- THE HEALER & VALIDATOR (FUZZY SNAP) ---
             
@@ -254,18 +269,20 @@ def build_nginx_map(csv_input_path, map_output_path, navgraph_path):
             if clean_new in retired_to_active:
                 clean_new = retired_to_active[clean_new].lower()
 
-            # Create a lowercased map of active permalinks for resilient checking
-            lower_to_actual = {p.lower(): p for p in active_permalinks}
+            # Check precomputed lower_to_actual and lower_slug_map
 
-            # 2. Try Exact Match (Case-Insensitive)
+            # 2. Try Exact Match (Case-Insensitive), then stripped .md / /index.md fallback
             if clean_new in lower_to_actual:
                 valid_mappings[old_url] = lower_to_actual[clean_new]
                 continue
+            stripped_md_new = re.sub(r'(?:/index\.md|\.md)/?$', '/', clean_new)
+            if stripped_md_new in lower_to_actual:
+                valid_mappings[old_url] = lower_to_actual[stripped_md_new]
+                continue
 
             # 3. Try Slug Match
-            new_slug = clean_new.strip('/').split('/')[-1] if clean_new.strip('/') else ""
+            new_slug = stripped_md_new.strip('/').split('/')[-1] if stripped_md_new.strip('/') else ""
             new_slug = re.sub(r'^\d{4}-\d{2}-\d{2}-', '', new_slug)
-            lower_slug_map = {k.lower(): v for k, v in slug_map.items()}
             
             if new_slug in lower_slug_map:
                 corrected_url = lower_slug_map[new_slug]
@@ -301,33 +318,29 @@ def build_nginx_map(csv_input_path, map_output_path, navgraph_path):
     with open(map_output_path, 'w', encoding='utf-8') as outfile:
         outfile.write("# AI-Generated Semantic Redirects\n")
         
-        # --- HARDCODED SYSTEM REDIRECTS ---
-        outfile.write("    ~^/feed/?$ /feed.xml;\n")
+        # --- HARDCODED SYSTEM REDIRECTS (O(1) exact-match via $redirect_key) ---
+        outfile.write("    /feed /feed.xml;\n")
         # ----------------------------------
 
         combined_mappings = dict(valid_mappings)
         combined_mappings.update(retired_hubs_clean)
 
-        seen_bases = {"/feed"}
+        seen_keys = {"/feed"}
         for old_url, new_url in combined_mappings.items():
-            safe_old_url = urllib.parse.quote(old_url, safe='/%')
-            if not safe_old_url.startswith('/'): safe_old_url = '/' + safe_old_url
-            if not new_url.startswith('/'): new_url = '/' + new_url
-            safe_old_base = safe_old_url.rstrip('/')
+            safe_old_url = re.sub(r'/+', '/', old_url.strip())
+            if not safe_old_url.startswith('/'):
+                safe_old_url = '/' + safe_old_url
+            if not new_url.startswith('/'):
+                new_url = '/' + new_url
+            if not safe_map_path_re.match(safe_old_url) or not safe_map_path_re.match(new_url):
+                continue
 
-            # THE REGEX FORGER (match /path, /path/, and /path/index.md in one hop; preserve .html/.htm exact)
-            if safe_old_url.lower().endswith(('.html', '.htm')):
-                html_key = safe_old_url.lower()
-                if html_key in seen_bases:
-                    continue
-                seen_bases.add(html_key)
-                escaped_html = safe_old_url.replace('.', r'\.')
-                outfile.write(f"    ~^{escaped_html}$ {new_url};\n")
+            # THE O(1) HASH FORGER ($redirect_key strips trailing / and /index.md; .html/.htm stay exact)
+            map_key = safe_old_url if safe_old_url.lower().endswith(('.html', '.htm')) else safe_old_url.rstrip('/')
+            if not map_key or map_key == '/' or map_key in seen_keys:
                 continue
-            if not safe_old_base or safe_old_base in seen_bases:
-                continue
-            seen_bases.add(safe_old_base)
-            outfile.write(f"    ~^{safe_old_base}(?:/index\\.md|/?)$ {new_url};\n")
+            seen_keys.add(map_key)
+            outfile.write(f"    {map_key} {new_url};\n")
 
     print(f"✅ Nginx map forged successfully at {map_output_path.name}")
 
