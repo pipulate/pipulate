@@ -49,7 +49,7 @@ DEFAULT_OPTICS_OUTRO_TEXT = (
     "for your clients, visit RFC9110.org or RFC9111.io. "
     "All three doors install the exact same open-source engine today and are tailoring directly to each audience over time. "
     "Forward this live stream to one colleague who needs to see life after generative doorway-pages, "
-    "and join us on Discord at mikelev.in/discord. "
+    "and join us on Discord at Mike Lev dot I N. Slash discord."
     "Returning now to the Honeybot Observatory."
 )
 
