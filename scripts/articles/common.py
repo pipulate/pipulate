@@ -546,7 +546,7 @@ def get_broadcast_kit(target_key="1", slug_match=None):
         hero_prompt = hero_match.group(1).strip()
     else:
         hero_prompt = (
-            f"Wide 16:9 full-bleed widescreen cinematic illustration for '{title}', "
+            f"Wide 16:9 Open Graph hero image full-bleed widescreen cinematic illustration for '{title}', "
             "vertically centered focal metaphor, dark obsidian-slate (#111111) environment "
             "extending continuously to all four edges, high-contrast cyan and warm brass lighting, "
             "graphic-novel ink-and-wash precision. Full-bleed edge-to-edge composition filling "
