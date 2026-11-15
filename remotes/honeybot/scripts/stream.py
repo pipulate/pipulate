@@ -24,6 +24,35 @@ import fcntl
 import signal
 from pathlib import Path
 
+
+def _find_honeybot_nix_python() -> str:
+    """Locate Honeybot's Nix python3-env (carrying rich/pyfiglet/yaml) for bare-SSH CLI triggers."""
+    wrapper = Path("/run/current-system/sw/bin/stream")
+    if wrapper.is_file():
+        try:
+            m = re.search(r"(/nix/store/[^\s\"']+python3[^\s\"']*-env/bin/python3)", wrapper.read_text(encoding="utf-8", errors="ignore"))
+            if m and os.access(m.group(1), os.X_OK):
+                return m.group(1)
+        except OSError:
+            pass
+    for cmd_p in sorted(Path("/proc").glob("[0-9]*/cmdline")):
+        try:
+            cmd0 = cmd_p.read_bytes().split(b"\x00", 1)[0].decode("utf-8", errors="ignore")
+            if "/nix/store/" in cmd0 and "-env/bin/python" in cmd0 and os.access(cmd0, os.X_OK):
+                return cmd0
+        except OSError:
+            continue
+    return sys.executable
+
+
+if len(sys.argv) >= 2 and sys.argv[1].startswith("--") and os.environ.get("_HB_PY_UPGRADED") != "1":
+    import importlib.util as _ilu
+    if _ilu.find_spec("rich") is None or _ilu.find_spec("yaml") is None:
+        _nix_py = _find_honeybot_nix_python()
+        if _nix_py and os.path.realpath(_nix_py) != os.path.realpath(sys.executable):
+            os.environ["_HB_PY_UPGRADED"] = "1"
+            os.execv(_nix_py, [_nix_py, *sys.argv])
+
 # --- Process Singleton ---
 STREAM_LOCK_PATH = "/tmp/honeybot-stream.py.lock"
 _stream_lock_handle = None
@@ -609,8 +638,9 @@ class Narrator(threading.Thread):
         self.stop_event = threading.Event()
         self.daemon = True
         # Track the live audio pipeline so interrupt() can kill it mid-sentence.
-        self._proc_lock = threading.Lock()
+        self._proc_lock = threading.RLock()
         self._play_lock = threading.Lock()
+        self._onset_event = threading.Event()
         self._active_procs = []
         self._tts_seq = 0
         self._cue_cache = {}
@@ -930,16 +960,16 @@ class Narrator(threading.Thread):
                 return None, 0
         self._tts_seq += 1
         raw_path = f"/tmp/honeybot_tts_{os.getpid()}_{self._tts_seq}.raw"
+        piper_cmd = ["nice", "-n", "10", "piper"] if shutil.which("nice") else ["piper"]
         try:
             with open(raw_path, "wb") as out_f:
                 res = subprocess.run(
-                    ["piper", "--model", str(model_path), "--output_raw"],
+                    [*piper_cmd, "--model", str(model_path), "--output_raw"],
                     input=clean_text.encode("utf-8"),
                     stdout=out_f,
                     stderr=subprocess.DEVNULL,
                     timeout=30,
                     check=False,
-                    preexec_fn=lambda: os.nice(10),
                 )
             if res.returncode == 0 and os.path.exists(raw_path) and os.path.getsize(raw_path) > 0:
                 return raw_path, actual_rate
@@ -982,11 +1012,8 @@ class Narrator(threading.Thread):
     def _get_onset_event(self) -> threading.Event:
         ev = getattr(self, "_onset_event", None)
         if ev is None:
-            with self._proc_lock:
-                ev = getattr(self, "_onset_event", None)
-                if ev is None:
-                    ev = threading.Event()
-                    self._onset_event = ev
+            ev = threading.Event()
+            self._onset_event = ev
         return ev
 
     def wait_for_onset(self, timeout: float = 0.15, settle: float = 0.10) -> None:
@@ -1053,13 +1080,17 @@ class Narrator(threading.Thread):
                 self.queue.task_done()
         except queue.Empty:
             pass
-        with self._proc_lock:
-            for p in self._active_procs:
+        acquired = self._proc_lock.acquire(timeout=1.0)
+        try:
+            for p in list(self._active_procs):
                 try:
                     p.kill()
                 except Exception:
                     pass
             self._active_procs = []
+        finally:
+            if acquired:
+                self._proc_lock.release()
 
     def flush_queue(self):
         """Soft sibling of interrupt(): drop the queued-but-unspoken backlog
@@ -1230,7 +1261,7 @@ class Narrator(threading.Thread):
                         stderr=subprocess.DEVNULL,
                     )
                     self._active_procs = [p_play]
-                    self._get_onset_event().set()
+                self._get_onset_event().set()
                 p_play.wait()
             except Exception:
                 pass
@@ -1718,7 +1749,8 @@ def _build_1bit_alpha_mask_stdlib(img_path, win_w, win_h, threshold=24):
 def _hydrate_honeybot_x11_env(env=None):
     """Ensure DISPLAY=:10.0, NixOS PATH, and XAUTHORITY/XDG_RUNTIME_DIR from live :10.0 session."""
     q_env = (env.copy() if env is not None else os.environ.copy())
-    extra_bins = "/etc/profiles/per-user/mike/bin:/home/mike/.nix-profile/bin:/run/current-system/sw/bin:/usr/bin:/bin"
+    py_bin = str(Path(sys.executable).resolve().parent)
+    extra_bins = f"{py_bin}:/etc/profiles/per-user/mike/bin:/home/mike/.nix-profile/bin:/run/current-system/sw/bin:/usr/bin:/bin"
     cur_path = q_env.get("PATH") or ""
     q_env["PATH"] = f"{extra_bins}:{cur_path}" if cur_path else extra_bins
     my_pid = str(os.getpid())

@@ -3,11 +3,51 @@ import os
 import re
 import sys
 import time
-import yaml
 import random
 from pathlib import Path
 from datetime import datetime
 from urllib.parse import urlparse
+
+try:
+    import yaml
+except ImportError:
+    yaml = None
+
+
+def _safe_load_frontmatter(fm_raw: str) -> dict:
+    """Parse YAML frontmatter via CSafeLoader/safe_load, with stdlib scalar fallback if PyYAML is absent."""
+    if yaml is not None:
+        try:
+            loader = getattr(yaml, "CSafeLoader", yaml.SafeLoader)
+            data = yaml.load(fm_raw, Loader=loader)
+            return data if isinstance(data, dict) else {}
+        except Exception:
+            return {}
+    out, img_path, in_img = {}, "", False
+    for ln in (fm_raw or "").splitlines():
+        if not ln.strip() or ln.lstrip().startswith("#"):
+            continue
+        if in_img and ln.startswith((" ", "\t")):
+            m_sub = re.match(r"^\s+path:\s*(.+?)\s*$", ln)
+            if m_sub:
+                img_path = m_sub.group(1).strip("'\"")
+            continue
+        in_img = False
+        m_kv = re.match(r"^([A-Za-z0-9_]+):\s*(.*?)\s*$", ln)
+        if not m_kv:
+            continue
+        k, v = m_kv.group(1), m_kv.group(2).strip("'\"")
+        if k == "image" and not m_kv.group(2):
+            in_img = True
+        elif v.lower() in ("true", "false"):
+            out[k] = v.lower() == "true"
+        elif re.match(r"^-?\d+$", v):
+            out[k] = int(v)
+        else:
+            out[k] = v
+    if img_path:
+        out["image"] = {"path": img_path}
+    return out
 
 # Path to your Jekyll posts on the Honeybot (with local workstation fallback for probes)
 _HONEYBOT_POSTS_DIR = Path("/home/mike/www/mikelev.in/_posts")
@@ -114,13 +154,20 @@ _jb_catalog_cache = globals().get("_jb_catalog_cache", {"sig": None, "paths": []
 
 
 def get_jukebox_catalog():
-    """Return cached {'paths': [...], 'index_map': {fname: 1..N}} sorted oldest-first (fixed indices)."""
+    """Return O(1)-cached {'paths': [...], 'index_map': {fname: 1..N}} sorted oldest-first."""
     try:
-        dated = [p for p in POSTS_DIR.iterdir() if p.is_file() and _DATED_JB_RE.match(p.name)]
-        sig = (POSTS_DIR.stat().st_mtime_ns, len(dated))
+        dir_mtime = POSTS_DIR.stat().st_mtime_ns
+    except OSError:
+        return {"paths": [], "index_map": {}}
+    if _jb_catalog_cache.get("dir_mtime") == dir_mtime and _jb_catalog_cache.get("paths"):
+        return _jb_catalog_cache
+    try:
+        dated = [Path(e.path) for e in os.scandir(POSTS_DIR) if e.is_file() and _DATED_JB_RE.match(e.name)]
+        sig = (dir_mtime, len(dated))
     except OSError:
         return {"paths": [], "index_map": {}}
     if _jb_catalog_cache.get("sig") == sig and _jb_catalog_cache.get("paths"):
+        _jb_catalog_cache["dir_mtime"] = dir_mtime
         return _jb_catalog_cache
     keyed = []
     for p in dated:
@@ -138,7 +185,7 @@ def get_jukebox_catalog():
     keyed.sort(key=lambda item: item[0])
     paths = [p for _, p in keyed]
     idx_map = {p.name: i + 1 for i, p in enumerate(paths)}
-    _jb_catalog_cache.update({"sig": sig, "paths": paths, "index_map": idx_map})
+    _jb_catalog_cache.update({"dir_mtime": dir_mtime, "sig": sig, "paths": paths, "index_map": idx_map})
     return _jb_catalog_cache
 
 
@@ -155,11 +202,8 @@ def get_article_by_jukebox_index(jb_idx: int):
     if raw_text.startswith("---"):
         parts = raw_text.split("---", 2)
         if len(parts) >= 3:
-            try:
-                fm = yaml.safe_load(parts[1]) or {}
-                body = parts[2]
-            except yaml.YAMLError:
-                pass
+            fm = _safe_load_frontmatter(parts[1])
+            body = parts[2]
     slug = str(fm.get("permalink") or "").strip("/") or filepath.name[11:].rsplit(".", 1)[0]
     fm_img = fm.get("image")
     img_path = str(fm_img.get("path") or "").strip() if isinstance(fm_img, dict) else (fm_img.strip() if isinstance(fm_img, str) else "")
@@ -353,12 +397,9 @@ def get_featured_article_id():
                 continue
             frontmatter = {}
             if head.startswith('---'):
-                try:
-                    parts = head.split('---', 2)
-                    if len(parts) >= 3:
-                        frontmatter = yaml.safe_load(parts[1]) or {}
-                except yaml.YAMLError:
-                    pass
+                parts = head.split('---', 2)
+                if len(parts) >= 3:
+                    frontmatter = _safe_load_frontmatter(parts[1])
             if not _is_storytime_enabled(frontmatter):
                 continue
             try:
@@ -399,74 +440,43 @@ def get_playlist(recent_n=10, include_archive=True):
         if pinned is not None and not include_archive:
             files = [pinned] + [p for p in files if p != pinned]
         cutoff_date = None
-        
+        jb_index_map = get_jukebox_catalog()["index_map"]
+
         for filepath in files:
             filename = filepath.name
-            
-            # 1. Extract Date
             try:
-                date_str = filename[:10]
-                post_date = datetime.strptime(date_str, '%Y-%m-%d').date()
+                post_date = datetime.strptime(filename[:10], '%Y-%m-%d').date()
             except ValueError:
-                continue 
-
+                continue
             if not include_archive and cutoff_date is not None and post_date < cutoff_date:
                 break
-            # 2. Read File & Frontmatter
             with open(filepath, 'r', encoding='utf-8') as f:
-                raw_text = f.read()
-
-            frontmatter = {}
-            body_text = raw_text
-            
+                raw_text = f.read(8192) if not include_archive else f.read()
+                if not include_archive and raw_text.startswith('---') and len(raw_text.split('---', 2)) < 3:
+                    raw_text += f.read()
+            frontmatter, body_text = {}, raw_text
             if raw_text.startswith('---'):
-                try:
-                    parts = raw_text.split('---', 2)
-                    if len(parts) >= 3:
-                        frontmatter = yaml.safe_load(parts[1]) or {}
-                        body_text = parts[2]
-                except yaml.YAMLError:
-                    pass
-
+                parts = raw_text.split('---', 2)
+                if len(parts) >= 3:
+                    frontmatter = _safe_load_frontmatter(parts[1])
+                    body_text = parts[2]
             if not _is_storytime_enabled(frontmatter):
                 continue
-
-            # 3. Extract Sort Order (Default to 0)
             try:
                 sort_order = int(frontmatter.get('sort_order', 0))
             except (ValueError, TypeError):
                 sort_order = 0
-
-            # 4. Construct URL
-            slug = frontmatter.get('permalink', '').strip('/')
-            if not slug:
-                slug = filename[11:].rsplit('.', 1)[0]
+            slug = str(frontmatter.get('permalink') or '').strip('/') or filename[11:].rsplit('.', 1)[0]
             url = f"{BASE_URL}/{slug}/"
-            
-            # 5. Clean Text
-            # 7 days is one publishing week at current velocity (24 posts in the
-            # last 7 days, per the STATS gauge), so the on-air census covers
-            # roughly the newest two dozen articles -- the ones being watched --
-            # and stays silent over the 1300-post archive. One number to tune.
-            clean_text = clean_markdown(
-                body_text,
-                label=filename,
-                census=include_archive and (datetime.now().date() - post_date).days <= 7,
-            )
-            
+            is_recent_census = include_archive and (datetime.now().date() - post_date).days <= 7
+            clean_text = clean_markdown(body_text, label=filename, census=is_recent_census) if include_archive else ""
             fm_image = frontmatter.get('image')
-            image_path = ""
-            image_alt = ""
-            if isinstance(fm_image, dict):
-                image_path = str(fm_image.get('path') or '').strip()
-                image_alt = str(fm_image.get('alt') or '').strip()
-            elif isinstance(fm_image, str):
-                image_path = fm_image.strip()
-
+            image_path = str(fm_image.get('path') or '').strip() if isinstance(fm_image, dict) else (fm_image.strip() if isinstance(fm_image, str) else "")
+            image_alt = str(fm_image.get('alt') or '').strip() if isinstance(fm_image, dict) else ""
             eff_date, eff_order = _storytime_effective_rank(post_date, sort_order, frontmatter)
-            raw_title = str(frontmatter.get('title', slug.replace('-', ' ')) or '')
+            raw_title = str(frontmatter.get('title') or slug.replace('-', ' '))
             spoken_title = _apply_tts_pronunciations(raw_title)
-            jb_idx = get_jukebox_catalog()["index_map"].get(filename, 0)
+            jb_idx = jb_index_map.get(filename, 0)
             all_articles.append({
                 'id': f"#{jb_idx}: {raw_title} ({post_date})" if jb_idx else f"{raw_title} ({post_date})",
                 'slug': slug,
@@ -474,27 +484,32 @@ def get_playlist(recent_n=10, include_archive=True):
                 'jukebox_index': jb_idx,
                 'raw_title': raw_title,
                 'date': post_date,
-                'sort_order': sort_order, # Added for secondary sort key
+                'sort_order': sort_order,
                 'eff_date': eff_date,
                 'eff_order': eff_order,
                 'title': spoken_title,
                 'url': url,
                 'image': image_path,
                 'image_alt': image_alt,
-                'content': clean_text
+                'content': clean_text,
+                '_filepath': filepath,
             })
             if not include_archive and len(all_articles) >= max(recent_n, 15) and cutoff_date is None:
                 cutoff_date = post_date
 
-        # Sort ALL by effective Storytime date/order first, then chronological date/sort_order
         all_articles.sort(
             key=lambda x: (x['eff_date'], x['eff_order'], x['date'], x['sort_order']),
             reverse=True,
         )
-        
-        # Split the lists
         recent_articles = all_articles[:recent_n]
         archive_articles = all_articles[recent_n:]
+        for art in all_articles:
+            fp = art.pop('_filepath', None)
+            if not include_archive and art in recent_articles and fp is not None:
+                full_raw = fp.read_text(encoding='utf-8')
+                parts = full_raw.split('---', 2)
+                b_txt = parts[2] if (full_raw.startswith('---') and len(parts) >= 3) else full_raw
+                art['content'] = clean_markdown(b_txt, label=art['filename'], census=False)
         
         # Shuffle the archive to keep it fresh
         random.shuffle(archive_articles)
