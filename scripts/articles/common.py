@@ -1691,25 +1691,49 @@ HONEYBOT_VIEWERS_FILE = "/tmp/honeybot_viewers.json"
 DEFAULT_YT_LIVE_URL = "https://www.youtube.com/MikeLevin/live"
 
 
-def _viewer_payload_shell_cmd(viewers, video_id="", peak=0):
-    """Return a shell snippet that atomically writes /tmp/honeybot_viewers.json on Honeybot."""
+def _count_jukebox_posts(target_key="1") -> int:
+    """Return total count N of dated Jukebox-addressable posts (1..N) in target 1."""
+    try:
+        targets = load_targets()
+        tcfg = targets.get(str(target_key), targets.get("1", DEFAULT_TARGETS["1"]))
+        pdir = Path(tcfg["path"]).expanduser()
+        if not pdir.is_dir():
+            return 0
+        return sum(1 for fn in os.listdir(pdir) if re.match(r"^\d{4}-\d{2}-\d{2}-.+\.(?:md|markdown)$", fn))
+    except Exception:
+        return 0
+
+
+def _build_viewer_payload(viewers, video_id="", peak=0, discord_members=None) -> dict:
+    """Build /tmp/honeybot_viewers.json payload carrying viewers, Founding-1,000 spots_left, and jukebox_max."""
     import time
     v_cnt = max(0, int(viewers or 0))
     p_cnt = max(v_cnt, int(peak or 0))
-    payload_str = json.dumps({
+    dm = discord_members if discord_members is not None else _load_ytwatch_state().get("discord_members")
+    dm_int = int(dm) if dm is not None else None
+    spots = max(0, DISCORD_FOUNDING_GOAL - dm_int) if dm_int is not None else None
+    jb_max = _count_jukebox_posts()
+    return {
         "viewers": v_cnt,
         "peak": p_cnt,
         "running": True,
         "video_id": str(video_id or ""),
+        "discord_members": dm_int,
+        "spots_left": spots,
+        "jukebox_max": jb_max if jb_max > 0 else None,
         "updated_at": int(time.time()),
-    })
+    }
+
+
+def _viewer_payload_shell_cmd(viewers, video_id="", peak=0, discord_members=None):
+    """Return a shell snippet that atomically writes /tmp/honeybot_viewers.json on Honeybot."""
+    payload_str = json.dumps(_build_viewer_payload(viewers, video_id=video_id, peak=peak, discord_members=discord_members))
     return f"printf '%s\\n' {payload_str!r} > {HONEYBOT_VIEWERS_FILE}.tmp && mv {HONEYBOT_VIEWERS_FILE}.tmp {HONEYBOT_VIEWERS_FILE}"
 
 
-def _sync_honeybot_viewers(viewers, running=True, video_id="", peak=0, push_remote=True):
-    """Sync ytwatch viewer count to local /tmp/honeybot_viewers.json, tmux title, and Honeybot."""
+def _sync_honeybot_viewers(viewers, running=True, video_id="", peak=0, push_remote=True, discord_members=None):
+    """Sync ytwatch viewer count + scarcity/Jukebox metadata to local /tmp/honeybot_viewers.json, tmux, and Honeybot."""
     import subprocess
-    import time
     v_cnt = max(0, int(viewers or 0))
     p_cnt = max(v_cnt, int(peak or 0))
     v_word = "Viewer" if v_cnt == 1 else "Viewers"
@@ -1717,13 +1741,7 @@ def _sync_honeybot_viewers(viewers, running=True, video_id="", peak=0, push_remo
     local_p = Path(HONEYBOT_VIEWERS_FILE)
     try:
         if running:
-            payload = {
-                "viewers": v_cnt,
-                "peak": p_cnt,
-                "running": True,
-                "video_id": str(video_id or ""),
-                "updated_at": int(time.time()),
-            }
+            payload = _build_viewer_payload(v_cnt, video_id=video_id, peak=p_cnt, discord_members=discord_members)
             tmp_p = local_p.with_suffix(".tmp")
             tmp_p.write_text(json.dumps(payload) + "\n", encoding="utf-8")
             tmp_p.replace(local_p)
@@ -1913,6 +1931,78 @@ _YTWATCH_RESERVED_ACTIONS = {
     "attach", "log", "logs", "tail", "tmux", "reset", "reset-peak",
     "chime", "clear", "clear-max", "dwell",
 }
+
+
+YT_CHAT_CMD_COOLDOWN = int(os.environ.get("PIPULATE_YT_CHAT_COOLDOWN", "45"))
+_CHAT_OPTICS_RE = re.compile(r"^[!/]?911$", re.IGNORECASE)
+_CHAT_RABBIT_RE = re.compile(r"^[!/]?rabbit$", re.IGNORECASE)
+_CHAT_JUKEBOX_RE = re.compile(r"^[!/]?jukebox\s+([1-9]\d{0,4})$", re.IGNORECASE)
+_last_chat_cmd_ts = 0.0
+
+
+def parse_allowlisted_chat_command(raw_text: str):
+    """Strict LAN allowlist parser for YouTube chat (# § SENSE FROM THE LAN, NEVER THE DMZ)."""
+    s = (raw_text or "").strip()
+    if not s or len(s) > 24:
+        return None
+    if _CHAT_OPTICS_RE.match(s):
+        return ("optics", None)
+    if _CHAT_RABBIT_RE.match(s):
+        return ("rabbit", None)
+    m_jb = _CHAT_JUKEBOX_RE.match(s)
+    if m_jb:
+        return ("jukebox", int(m_jb.group(1)))
+    return None
+
+
+def _actuate_allowlisted_chat_command(parsed_cmd, dry_run: bool = False) -> bool:
+    """Dispatch a validated ('optics'|'rabbit'|'jukebox', arg) tuple to Honeybot with cooldown guard."""
+    global _last_chat_cmd_ts
+    import subprocess
+    import time
+    if not parsed_cmd:
+        return False
+    kind, arg = parsed_cmd
+    max_jb = _count_jukebox_posts()
+    if kind == "jukebox" and max_jb > 0 and int(arg) > max_jb:
+        print(f"[{_ytlog_ts()}] ⚠️ [CHAT JUKEBOX] Out of range #{int(arg)} (1..{max_jb})", flush=True)
+        return False
+    now_ts = time.time()
+    if not dry_run and _last_chat_cmd_ts > 0 and (now_ts - _last_chat_cmd_ts) < YT_CHAT_CMD_COOLDOWN:
+        rem = int(YT_CHAT_CMD_COOLDOWN - (now_ts - _last_chat_cmd_ts))
+        print(f"[{_ytlog_ts()}] 🛡️ [CHAT TRIGGER COOLDOWN] Holding {kind} ({rem}s remaining)", flush=True)
+        return False
+    if kind == "optics":
+        remote_cmd = "python3 ~/www/mikelev.in/scripts/stream.py --bead optics >/dev/null 2>&1"
+    elif kind == "rabbit":
+        remote_cmd = "python3 ~/www/mikelev.in/scripts/stream.py --bead white_rabbit >/dev/null 2>&1"
+    elif kind == "jukebox":
+        jb_json = json.dumps({"index": int(arg), "ts": int(now_ts)})
+        remote_cmd = (
+            f"printf '%s\\n' {jb_json!r} > ~/www/mikelev.in/.jukebox_request.tmp && "
+            "mv ~/www/mikelev.in/.jukebox_request.tmp ~/www/mikelev.in/.jukebox_request"
+        )
+    else:
+        return False
+    if dry_run:
+        return True
+    _last_chat_cmd_ts = now_ts
+    if kind == "optics":
+        ytstage_p = Path(__file__).resolve().parents[1] / "ytstage.py"
+        if ytstage_p.is_file():
+            subprocess.Popen(
+                [sys.executable, str(ytstage_p), "app", "ensure-daemon"],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+    subprocess.Popen(
+        ["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=4", HONEYBOT_SSH_HOST, remote_cmd],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        start_new_session=True,
+    )
+    print(f"[{_ytlog_ts()}] 🎛️ [CHAT TRIGGER] Actuated allowlisted command: {kind} {arg or ''}".rstrip(), flush=True)
+    return True
 
 
 def _is_self_chat_author(msg_author, channel_author=""):
@@ -3393,6 +3483,9 @@ def run_youtube_watch(
                 if msg["id"] in seen_ids:
                     continue
                 seen_ids.add(msg["id"])
+                parsed_cmd = parse_allowlisted_chat_command(msg["text"])
+                if parsed_cmd is not None:
+                    _actuate_allowlisted_chat_command(parsed_cmd)
                 if _is_self_chat_author(msg["author"], state.get("author")):
                     continue
                 chat_line = f"{msg['author']}: {msg['text']}"

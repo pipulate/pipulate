@@ -82,27 +82,38 @@ HERO_IMAGE_DURATION = 8.0
 
 def _append_article_performance(script, article, is_latest=True):
     """Emit symmetrical Opening Overture + Act I + Midpoint Intermission + Act II."""
+    jb_idx = int(article.get("jukebox_index") or 0)
+    raw_title = str(article.get("raw_title") or article.get("title") or "latest entry")
+    title_str = str(article.get("title") or raw_title)
+    jb_tag = f"Jukebox entry number {jb_idx}, " if jb_idx else ""
     lead = (
-        f"Reading the latest entry from {article['date']}."
+        f"Reading the latest entry, {jb_tag}published {article['date']}."
         if is_latest
-        else f"Accessing entry from {article['date']}."
+        else f"Playing {jb_tag}from {article['date']}."
     )
-    title_str = str(article.get("title") or "latest entry")
     art_id = str(
         article.get("id")
         or article.get("slug")
         or article.get("permalink")
-        or f"{article.get('date', '')}:{title_str}"
+        or f"{article.get('date', '')}:{raw_title}"
     ).strip()
+    card_lbl = f"STORYTIME #{jb_idx}" if jb_idx else "STORYTIME"
     script.append((
         "CARD",
         {
-            "label": f"STORYTIME\n{article['date']}",
-            "say": f"{lead} Title: {title_str}.",
+            "label": card_lbl,
+            "subtitle": f"{raw_title}\n[{article['date']}]",
+            "say": f"{lead} Headline: {title_str}.",
             "article": art_id,
+            "meta": {
+                "title": title_str,
+                "raw_title": raw_title,
+                "image": str(article.get("image") or "").strip(),
+                "jukebox_index": jb_idx,
+            },
         },
     ))
-    script.append(("OVERTURE", {"title": title_str, "article": art_id}))
+    script.append(("OVERTURE", {"title": title_str, "raw_title": raw_title, "jukebox_index": jb_idx, "article": art_id}))
     script.append(("BGM", "START"))
     image_path = str(article.get("image") or "").strip()
     if image_path:
@@ -137,38 +148,46 @@ def _append_article_performance(script, article, is_latest=True):
     script.append(("WAIT", 3))
 
 
-def get_script(breaking=False):
-    """Generate the Honeybot playlist.
-
-    By default (ARCHIVE_WALK=False), both breaking=True and breaking=False read
-    the single newest published article so the stream loops the current post
-    until the next publish or ytroll cut. When breaking=False (cold start), a
-    short station-opening card precedes the first reading.
-    """
+def get_script(breaking=False, jukebox_index=None):
+    """Generate the Honeybot playlist (or a specific 1..N Jukebox selection)."""
     script = []
 
+    if jukebox_index:
+        try:
+            import importlib
+            import content_loader
+            importlib.reload(content_loader)
+            jb_art = content_loader.get_article_by_jukebox_index(int(jukebox_index))
+            if jb_art:
+                _append_article_performance(script, jb_art, is_latest=False)
+                return script
+        except Exception as e:
+            script.append(("SAY", f"Error loading Jukebox entry {jukebox_index}: {e}"))
+
     if breaking or not ARCHIVE_WALK:
-        if not breaking:
-            script.append((
-                "CARD",
-                {
-                    "label": "WEB BOT AI\nOBSERVATORY",
-                    "say": (
-                        "Greetings, entity. You are watching the Web Bot A I Observatory on Honeybot. "
-                        "We are monitoring a home-hosted Nix O S web server and reading "
-                        "the latest published article."
-                    ),
-                },
-            ))
+        articles = []
         try:
             import importlib
             import content_loader
             importlib.reload(content_loader)
             articles = content_loader.get_playlist(recent_n=1, include_archive=False)
-            if articles:
-                _append_article_performance(script, articles[0], is_latest=True)
         except Exception as e:
             script.append(("SAY", f"Error compiling latest article: {e}"))
+        if not breaking:
+            a0 = articles[0] if articles else {}
+            sub0 = f"Up Next #{a0['jukebox_index']}: {a0['raw_title']}" if a0.get("raw_title") else ""
+            say0 = (
+                f"Greetings, entity. You are watching the Web Bot A I Observatory on Honeybot. "
+                f"Up next is Jukebox entry number {a0['jukebox_index']}, titled: {a0['title']}."
+                if a0.get("title") and a0.get("jukebox_index")
+                else (
+                    "Greetings, entity. You are watching the Web Bot A I Observatory on Honeybot. "
+                    "We are monitoring a home-hosted Nix O S web server and reading the latest published article."
+                )
+            )
+            script.append(("CARD", {"label": "WEB BOT AI\nOBSERVATORY", "subtitle": sub0, "say": say0}))
+        if articles:
+            _append_article_performance(script, articles[0], is_latest=True)
         return script
 
     # Optional legacy archive walk (only reached when ARCHIVE_WALK = True)

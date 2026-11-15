@@ -107,8 +107,99 @@ def trigger_is_fresh(max_age_seconds=900):
         return False
 
 
+JUKEBOX_REQUEST_FILE = Path("/home/mike/www/mikelev.in/.jukebox_request")
+_DATED_JB_RE = re.compile(r"^\d{4}-\d{2}-\d{2}-.+\.(?:md|markdown)$")
+_SORT_ORDER_RE = re.compile(r"^\s*sort_order:\s*['\"]?(-?\d+)['\"]?", re.MULTILINE)
+_jb_catalog_cache = globals().get("_jb_catalog_cache", {"sig": None, "paths": [], "index_map": {}})
+
+
+def get_jukebox_catalog():
+    """Return cached {'paths': [...], 'index_map': {fname: 1..N}} sorted oldest-first (fixed indices)."""
+    try:
+        dated = [p for p in POSTS_DIR.iterdir() if p.is_file() and _DATED_JB_RE.match(p.name)]
+        sig = (POSTS_DIR.stat().st_mtime_ns, len(dated))
+    except OSError:
+        return {"paths": [], "index_map": {}}
+    if _jb_catalog_cache.get("sig") == sig and _jb_catalog_cache.get("paths"):
+        return _jb_catalog_cache
+    keyed = []
+    for p in dated:
+        s_ord = 0
+        try:
+            with open(p, "r", encoding="utf-8", errors="ignore") as fh:
+                head = fh.read(2048)
+            if head.startswith("---"):
+                m = _SORT_ORDER_RE.search(head.split("---", 2)[1])
+                if m:
+                    s_ord = int(m.group(1))
+        except Exception:
+            pass
+        keyed.append(((p.name[:10], s_ord, p.name), p))
+    keyed.sort(key=lambda item: item[0])
+    paths = [p for _, p in keyed]
+    idx_map = {p.name: i + 1 for i, p in enumerate(paths)}
+    _jb_catalog_cache.update({"sig": sig, "paths": paths, "index_map": idx_map})
+    return _jb_catalog_cache
+
+
+def get_article_by_jukebox_index(jb_idx: int):
+    """Load a single dated post by its permanent 1-based chronological Jukebox index (1..N)."""
+    paths = get_jukebox_catalog()["paths"]
+    idx = int(jb_idx or 0)
+    if idx < 1 or idx > len(paths):
+        return None
+    filepath = paths[idx - 1]
+    post_date = datetime.strptime(filepath.name[:10], "%Y-%m-%d").date()
+    raw_text = filepath.read_text(encoding="utf-8")
+    fm, body = {}, raw_text
+    if raw_text.startswith("---"):
+        parts = raw_text.split("---", 2)
+        if len(parts) >= 3:
+            try:
+                fm = yaml.safe_load(parts[1]) or {}
+                body = parts[2]
+            except yaml.YAMLError:
+                pass
+    slug = str(fm.get("permalink") or "").strip("/") or filepath.name[11:].rsplit(".", 1)[0]
+    fm_img = fm.get("image")
+    img_path = str(fm_img.get("path") or "").strip() if isinstance(fm_img, dict) else (fm_img.strip() if isinstance(fm_img, str) else "")
+    raw_title = str(fm.get("title") or slug.replace("-", " "))
+    return {
+        "id": f"#{idx}: {raw_title} ({post_date})",
+        "slug": slug,
+        "filename": filepath.name,
+        "jukebox_index": idx,
+        "raw_title": raw_title,
+        "date": post_date,
+        "title": _apply_tts_pronunciations(raw_title),
+        "url": f"{BASE_URL}/{slug}/",
+        "image": img_path,
+        "content": clean_markdown(body, label=filepath.name, census=False),
+    }
+
+
+def check_jukebox_request():
+    """Read and consume a one-shot .jukebox_request {'index': N} if present."""
+    if not JUKEBOX_REQUEST_FILE.exists():
+        return None
+    try:
+        raw = JUKEBOX_REQUEST_FILE.read_text(encoding="utf-8").strip()
+    except OSError:
+        return None
+    finally:
+        JUKEBOX_REQUEST_FILE.unlink(missing_ok=True)
+    try:
+        import json
+        val = json.loads(raw).get("index") if raw.startswith("{") else int(raw)
+        return int(val) if int(val) > 0 else None
+    except Exception:
+        return None
+
+
 def has_pending_update():
-    """Non-consuming peek: True when .deploy_standby or .reading_trigger changed on disk."""
+    """Non-consuming peek: True when .jukebox_request, .deploy_standby, or .reading_trigger changed."""
+    if JUKEBOX_REQUEST_FILE.exists():
+        return True
     try:
         cur_standby = STANDBY_FILE.read_text().strip()
     except FileNotFoundError:
@@ -375,7 +466,13 @@ def get_playlist(recent_n=10, include_archive=True):
             eff_date, eff_order = _storytime_effective_rank(post_date, sort_order, frontmatter)
             raw_title = str(frontmatter.get('title', slug.replace('-', ' ')) or '')
             spoken_title = _apply_tts_pronunciations(raw_title)
+            jb_idx = get_jukebox_catalog()["index_map"].get(filename, 0)
             all_articles.append({
+                'id': f"#{jb_idx}: {raw_title} ({post_date})" if jb_idx else f"{raw_title} ({post_date})",
+                'slug': slug,
+                'filename': filename,
+                'jukebox_index': jb_idx,
+                'raw_title': raw_title,
                 'date': post_date,
                 'sort_order': sort_order, # Added for secondary sort key
                 'eff_date': eff_date,
@@ -424,17 +521,15 @@ def get_playlist(recent_n=10, include_archive=True):
         if main_mod is not None and hasattr(main_mod, "narrator") and hasattr(main_mod, "resolve_current_article_line"):
             try:
                 def _live_resolve_current_article_line(enqueue_media=True, _arts=recent_articles, _m=main_mod):
-                    title = "our latest technical journal entry"
-                    image_path = ""
-                    if _arts:
-                        if _arts[0].get("title"):
-                            title = str(_arts[0]["title"])
-                        if _arts[0].get("image"):
-                            image_path = str(_arts[0]["image"]).strip()
+                    meta = getattr(_m, "_active_article_meta", None) or (_arts[0] if _arts else {})
+                    title = str(meta.get("title") or "our latest technical journal entry")
+                    jb_n = meta.get("jukebox_index")
+                    image_path = str(meta.get("image") or "").strip()
                     if enqueue_media and image_path:
                         _m.narrator.media({"path": image_path, "duration": 14.0})
+                    jb_s = f"Jukebox entry number {jb_n}, titled: {title}" if jb_n else f"titled: {title}"
                     return (
-                        f"The article currently being read on this broadcast is titled: {title}. "
+                        f"The article currently being read on this broadcast is {jb_s}. "
                         "To read the full article text and inspect the raw code receipts at your own pace, "
                         "visit Mike L E V dot eye N slash latest."
                     )

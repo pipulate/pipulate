@@ -1113,6 +1113,93 @@ def falling_alice(console_output=True):
     share_ascii_with_ai(falling_alice_art, "Falling Alice ASCII Art - 🍄 Narrative moment: Alice tumbles down the rabbit hole of radical transparency!", "🍄")
     return falling_alice_art
 
+
+def run_falling_alice_drop(passes: int = 3, step_delay: float = 0.022) -> int:
+    """Animate ASCII Alice tumbling down the rabbit hole across the terminal viewport."""
+    import shutil
+    import sys
+    import time
+    raw_art = strip_rich_formatting(falling_alice(console_output=False)).strip("\n")
+    sprite = [ln.rstrip() for ln in raw_art.splitlines()]
+    cols, rows = shutil.get_terminal_size((76, 42))
+    view_h = max(24, rows - 1)
+    inner_w = max(16, cols - 6)
+    art_w = max((len(ln) for ln in sprite), default=40)
+    pad_x = " " * max(1, (inner_w - art_w) // 2)
+    frames = 0
+    sys.stdout.write("\033[?25l\033[2J")
+    try:
+        for _ in range(max(1, int(passes))):
+            for top_y in range(-len(sprite), view_h + 1):
+                buf = ["\033[H"]
+                for r in range(view_h):
+                    s_idx = r - top_y
+                    wall = "·" if (r + top_y) % 5 == 0 else " "
+                    if 0 <= s_idx < len(sprite):
+                        art_ln = (pad_x + sprite[s_idx])[:inner_w].ljust(inner_w)
+                        buf.append(f" \033[2;36m│{wall}\033[0m\033[1;37m{art_ln}\033[0m\033[2;36m{wall}│\033[0m")
+                    else:
+                        buf.append(f" \033[2;36m│{wall}{' ' * inner_w}{wall}│\033[0m")
+                sys.stdout.write("\n".join(buf))
+                sys.stdout.flush()
+                frames += 1
+                if step_delay > 0:
+                    time.sleep(step_delay)
+    finally:
+        sys.stdout.write("\033[?25h")
+        sys.stdout.flush()
+    return frames
+
+
+def conjure_falling_alice(passes: int = 3, duration: float = 6.5, display: Optional[str] = None) -> None:
+    """Open a centered Alacritty rabbit-hole overlay on :10.0 and drop Falling Alice `passes` times."""
+    import os
+    import sys
+    from pathlib import Path
+    if os.environ.get("HONEYBOT_NO_X11") == "1":
+        return
+    repo_root = Path(__file__).resolve().parents[1].as_posix()
+    payload = (
+        f"import sys; sys.path.insert(0, {repo_root!r}); "
+        "from imports.ascii_displays import run_falling_alice_drop; "
+        f"run_falling_alice_drop(passes={int(passes)})"
+    )
+    conjure_window(
+        [sys.executable, "-u", "-c", payload],
+        duration=duration,
+        columns=76,
+        lines=42,
+        title="FallingAlice",
+        window_class="conjure_window_overlay",
+        display=display,
+    )
+
+
+def render_titled_card_hold(label: str, subtitle: str = "", max_hold: float = 60.0, stop_file: str = "") -> None:
+    """Render a Figlet banner + full-headline subtitle inside a centered Rich Panel until stop_file appears."""
+    import os
+    import sys
+    import time
+    try:
+        from pyfiglet import Figlet
+        fig_txt = Figlet(font="standard", width=92).renderText(str(label)).rstrip("\n")
+    except Exception:
+        fig_txt = str(label)
+    body = Text(fig_txt, style="bold bright_cyan")
+    if subtitle:
+        body.append("\n\n")
+        body.append(str(subtitle).strip(), style="bold bright_white")
+    panel = Panel(Align.center(body), border_style="bright_cyan", box=HEAVY, padding=(1, 3))
+    term_w = console.size.width or 96
+    term_h = console.size.height or 24
+    est_h = len(fig_txt.splitlines()) + (len(str(subtitle).splitlines()) + 2 if subtitle else 0) + 5
+    sys.stdout.write("\033[?25l\033[2J\033[H" + ("\n" * max(0, (term_h - est_h) // 2)))
+    console.print(Align.center(panel, width=max(50, term_w - 1)), end="")
+    sys.stdout.flush()
+    deadline = time.time() + max(0.5, float(max_hold))
+    while time.time() < deadline and not (stop_file and os.path.exists(stop_file)):
+        time.sleep(0.1)
+
 def white_rabbit(console_output=True):
     """🐰 WHITE RABBIT: Thin facade returning the unified dual-output figurate bunny."""
     art = figurate("white_rabbit", context="server startup")

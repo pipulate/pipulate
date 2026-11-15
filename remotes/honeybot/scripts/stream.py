@@ -323,12 +323,15 @@ try:
         check_standby,
         trigger_is_fresh,
         check_live_message,
+        check_jukebox_request,
         has_pending_update,
         get_featured_article_id,
     )
 except ImportError:
     score = None
     def check_live_message():
+        return None
+    def check_jukebox_request():
         return None
     def has_pending_update():
         return False
@@ -1337,6 +1340,8 @@ _PATRONUS_ALIASES = {
     "npvg": "white_rabbit",
     "911_optics": "optics_triptych",
     "triptych": "optics_triptych",
+    "alice": "falling_alice",
+    "falling_alice": "falling_alice",
 }
 
 
@@ -1347,11 +1352,29 @@ def resolve_patronus_key(name: str) -> str:
 
 
 def conjure_patronus(name, duration=3.5):
-    """Launch the shared patronus renderer from a sheet-music directive."""
+    """Launch the shared patronus renderer (or Falling Alice drop) from a sheet-music directive."""
     safe_name = resolve_patronus_key(name)
     duration = max(0.75, min(600.0, float(duration)))
-
     site_root = Path(__file__).resolve().parents[1]
+    if safe_name == "falling_alice":
+        env = _hydrate_honeybot_x11_env()
+        py_alice = (
+            f"import sys; sys.path.insert(0, {str(site_root)!r}); "
+            "from imports.ascii_displays import conjure_falling_alice; "
+            f"conjure_falling_alice(passes=3, duration={max(5.5, duration)})"
+        )
+        try:
+            subprocess.Popen(
+                [sys.executable, "-c", py_alice],
+                cwd=site_root,
+                env=env,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+            time.sleep(0.4)
+        except Exception:
+            pass
+        return
     python_code = (
         "import sys; "
         f"sys.path.insert(0, {str(site_root)!r}); "
@@ -2565,8 +2588,11 @@ def _media_overlay_active() -> bool:
         return False
 
 
-def show_card(label, max_hold=60.0):
-    """Display a transient Figlet title card window on Honeybot until dismiss_card(handle)."""
+_active_article_meta = {}
+
+
+def show_card(label, max_hold=60.0, subtitle=""):
+    """Display a transient Figlet title card (with optional full-headline subtitle) until dismiss_card(handle)."""
     if not label:
         return None
     for pat in (MEDIA_OVERLAY_MARKER, "conjure_window_overlay", "patronus_visual_shield"):
@@ -2583,10 +2609,43 @@ def show_card(label, max_hold=60.0):
         except OSError:
             pass
     label_str = str(label).replace("\\n", "\n")
+    sub_str = str(subtitle or "").replace("\\n", "\n").strip()
 
     def _run():
         try:
-            conjure_window("card.py", duration=max_hold, args=[label_str, str(max_hold), stop_file])
+            if sub_str:
+                os.environ.update(_hydrate_honeybot_x11_env())
+                site_root = Path(__file__).resolve().parents[1]
+                if str(site_root) not in sys.path:
+                    sys.path.insert(0, str(site_root))
+                import textwrap
+                from imports.ascii_displays import conjure_window as shared_cw, measure_figlet
+                fig_w, fig_h = measure_figlet(label_str)
+                wrap_w = max(56, min(78, max(fig_w, 62)))
+                wrapped_sub = "\n".join(
+                    textwrap.fill(ln, width=wrap_w) if ln.strip() else ""
+                    for ln in sub_str.splitlines()
+                )
+                sub_lns = wrapped_sub.splitlines()
+                cols = max(74, max(fig_w, max((len(s) for s in sub_lns), default=0)) + 18)
+                lns = max(16, fig_h + len(sub_lns) + 10)
+                py_code = (
+                    f"import sys; sys.path.insert(0, {str(site_root)!r}); "
+                    "from imports.ascii_displays import render_titled_card_hold; "
+                    "render_titled_card_hold(sys.argv[1], sys.argv[2], float(sys.argv[3]), sys.argv[4])"
+                )
+                shared_cw(
+                    [sys.executable, "-u", "-c", py_code, label_str, wrapped_sub, str(max_hold), stop_file],
+                    duration=max_hold,
+                    columns=cols,
+                    lines=lns,
+                    cwd=str(Path(__file__).resolve().parent),
+                    title="ConjureWindow",
+                    window_class="conjure_window_overlay",
+                    display=os.environ.get("DISPLAY") or ":10.0",
+                )
+            else:
+                conjure_window("card.py", duration=max_hold, args=[label_str, str(max_hold), stop_file])
         except Exception:
             pass
 
@@ -2943,17 +3002,21 @@ def dispatch_cue(command, content, env, profile_dir, pace_say=True):
             narrator.say(content)
 
     elif command == "CARD":
-        global _active_stage_article
+        global _active_stage_article, _active_article_meta
         if isinstance(content, dict):
             if content.get("article"):
                 _active_stage_article = str(content["article"]).strip()
+            if isinstance(content.get("meta"), dict):
+                _active_article_meta = dict(content["meta"])
             label = content.get("label", "HONEYBOT")
+            subtitle = str(content.get("subtitle") or "")
             say_text = content.get("say", "")
             hold = float(content.get("duration", 60.0))
             linger = float(content.get("linger", 0.0))
             pre_raw = content.get("raw_path")
         else:
             label = str(content)
+            subtitle = ""
             say_text = ""
             hold = 60.0
             linger = 0.0
@@ -2962,7 +3025,7 @@ def dispatch_cue(command, content, env, profile_dir, pace_say=True):
         if "STORYTIME" in str(label or "").upper() and not narrator.live_operator_mode.is_set():
             narrator.reset_for_article()
         raw_path = pre_raw if pre_raw is not None else (narrator.prep_raw(say_text) if say_text else None)
-        card_handle = show_card(label, max_hold=hold)
+        card_handle = show_card(label, max_hold=hold, subtitle=subtitle)
         try:
             time.sleep(0.2)
             if say_text:
@@ -3361,6 +3424,12 @@ def announce_scheduled_reboot():
             time.sleep(0.4)
         finally:
             dismiss_card(card_handle)
+        site_root = Path(__file__).resolve().parents[1]
+        if str(site_root) not in sys.path:
+            sys.path.insert(0, str(site_root))
+        from imports.ascii_displays import conjure_falling_alice
+        os.environ.update(_hydrate_honeybot_x11_env())
+        conjure_falling_alice(passes=3, duration=6.5, display=os.environ.get("DISPLAY") or ":10.0")
     except Exception:
         pass
 
@@ -3537,14 +3606,33 @@ def perform_show(script):
             # We check before every command.
             # A fresh push rang the bell; return "BREAKING" (not False) so the director
             # leads the NEXT cycle straight with the newest article, no station-ID spiel.
+            jb_req = check_jukebox_request()
+            if jb_req:
+                stop_storytime_bgm()
+                narrator.interrupt()
+                narrator.say(f"Jukebox request received for entry number {jb_req}.")
+                try:
+                    subprocess.run(["pkill", "firefox"], check=False)
+                except Exception:
+                    pass
+                return ("JUKEBOX", jb_req)
+
             if check_for_updates():
                 stop_storytime_bgm()
                 narrator.interrupt()  # cut current audio + flush backlog, then preempt
-                narrator.say("Breaking news detected.")
-                # Close browser just in case
+                next_headline = ""
+                try:
+                    from content_loader import get_playlist
+                    arts = get_playlist(recent_n=1, include_archive=False)
+                    if arts and arts[0].get("title"):
+                        next_headline = f" Up next: {arts[0]['title']}."
+                except Exception:
+                    pass
+                narrator.say(f"Breaking news detected.{next_headline}")
                 try:
                     subprocess.run(["pkill", "firefox"], check=False)
-                except: pass
+                except Exception:
+                    pass
                 return "BREAKING"
 
             # One dispatcher, two rolls. Loop-control (timer, standby, breaking
@@ -3601,6 +3689,7 @@ def start_director_track():
     # trigger_is_fresh is ever looked up; a stale or absent trigger also yields
     # False, leaving a genuine idle cold start completely unchanged.
     breaking = trigger_is_fresh() if score else False
+    jukebox_idx = None
     while True:
         if score:
             try:
@@ -3608,16 +3697,14 @@ def start_director_track():
                 importlib.reload(score)
             except Exception:
                 pass
-            # Generate a fresh script. On a breaking-news restart we request a minimal
-            # script that leads straight with the newest article, skipping the station-ID
-            # preamble so a just-pushed piece is heard immediately.
-            current_script = score.get_script(breaking=breaking)
-
-            # perform_show returns "BREAKING" when a fresh push interrupted it (lead with
-            # the new article next), False on a normal timer cycle (replay the full
-            # preamble), or None on natural completion.
+            current_script = score.get_script(breaking=breaking, jukebox_index=jukebox_idx)
             result = perform_show(current_script)
-            breaking = (result == "BREAKING")
+            if isinstance(result, tuple) and len(result) == 2 and result[0] == "JUKEBOX":
+                jukebox_idx = int(result[1])
+                breaking = True
+            else:
+                jukebox_idx = None
+                breaking = (result == "BREAKING")
 
         else:
             narrator.say("Error. Show module not found.")
