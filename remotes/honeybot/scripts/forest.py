@@ -65,7 +65,7 @@ CONSULTING_CTA_BEAT = (
     "Just like Mobile-First Responsive Web Design created a decade of consulting in the 2010s, "
     "serving HTML to browsers and clean RFC 9110 Markdown to AI agents from one URL — cached via RFC 9111 Vary Accept alongside clean sitemap.xml and llms.txt feeds — "
     "buys every enterprise twelve months of cover to retire six-figure SEO crawlers and $10K/mo JavaScript pre-render middleware while rebuilding their origin as a three-hop Markdown feed. "
-    "All it takes is Nix on a NIC: turn any spare laptop into a transparent, FOSS AI-Readiness workstation in sixty seconds at SunPug.io, "
+    "All it takes is Nix on a NIC: use your Macbook or Windows laptop into a transparent, FOSS AI-Readiness workstation in sixty seconds at SunPug.io, "
     "or connect for enterprise ADNS and edge architecture at mikelev.in/discord."
 )
 
@@ -142,7 +142,7 @@ STATION_SEGMENTS = [
                 "say": (
                     "Meet 911 LLM Optics: the FOSS Screaming Frog for the AI generation, "
                     "delivered inside SunPug.io — a self-replicating Software Von Neumann Probe practiced since Levinux, "
-                    "where Nix on a NIC turns any spare laptop into a local-first audit lab with zero cloud bottlenecks."
+                    "where Nix on any Macbook or Windows laptop into a local-first audit lab with zero cloud bottlenecks."
                 ),
             },
         ),
