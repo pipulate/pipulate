@@ -400,6 +400,216 @@
           fi
           exec "$python_bin" "$root/scripts/weebo.py" --list "$@"
         '';
+        # PORT-SCOPED SERVER REAPER: stops only the Pipulate server matching $1
+        # (and optional tmux session $2), leaving sibling ports such as :5002 untouched.
+        stopPortScript = pkgs.writeShellScript "pipulate-stop-port" ''
+          set -uo pipefail
+          target_port="''${1:-5001}"
+          tmux_session="''${2:-}"
+          had_tmux=0
+          if [ -n "$tmux_session" ] && ${pkgs.tmux}/bin/tmux has-session -t "$tmux_session" 2>/dev/null; then
+            ${pkgs.tmux}/bin/tmux kill-session -t "$tmux_session" 2>/dev/null || true
+            had_tmux=1
+          fi
+          if ${pkgs.python312}/bin/python - "$target_port" << "PYEOF"
+          import os
+          import pathlib
+          import signal
+          import subprocess
+          import sys
+          import time
+
+          target = str(sys.argv[1]).strip()
+          my_pid = os.getpid()
+          killed = set()
+          proc_root = pathlib.Path("/proc")
+          if proc_root.is_dir():
+              for entry in proc_root.iterdir():
+                  if not entry.name.isdigit():
+                      continue
+                  pid = int(entry.name)
+                  if pid == my_pid:
+                      continue
+                  try:
+                      cmdline = (entry / "cmdline").read_bytes().replace(b"\x00", b" ").decode("utf-8", "ignore")
+                      if "server.py" not in cmdline or "python" not in cmdline:
+                          continue
+                      env_raw = (entry / "environ").read_bytes().split(b"\x00")
+                      port_val = "5001"
+                      for item in env_raw:
+                          if item.startswith(b"PIPULATE_PORT="):
+                              cand = item.split(b"=", 1)[1].decode("utf-8", "ignore").strip()
+                              if cand.isdigit():
+                                  port_val = cand
+                              break
+                      if port_val == target:
+                          os.kill(pid, signal.SIGTERM)
+                          killed.add(pid)
+                  except OSError:
+                      continue
+          else:
+              try:
+                  out = subprocess.run(
+                      ["lsof", "-nP", "-iTCP:" + target, "-sTCP:LISTEN", "-t"],
+                      capture_output=True,
+                      text=True,
+                      timeout=3,
+                  ).stdout.splitlines()
+                  for tok in out:
+                      if tok.strip().isdigit():
+                          pid = int(tok.strip())
+                          cmd = subprocess.run(
+                              ["ps", "-p", str(pid), "-o", "command="],
+                              capture_output=True,
+                              text=True,
+                              timeout=2,
+                          ).stdout
+                          if "server.py" in cmd or "python" in cmd:
+                              os.kill(pid, signal.SIGTERM)
+                              killed.add(pid)
+              except Exception:
+                  pass
+
+          if killed:
+              deadline = time.time() + 2.0
+              alive = list(killed)
+              while time.time() < deadline and alive:
+                  still = []
+                  for pid in alive:
+                      try:
+                          os.kill(pid, 0)
+                          still.append(pid)
+                      except OSError:
+                          pass
+                  alive = still
+                  if alive:
+                      time.sleep(0.1)
+              for pid in alive:
+                  try:
+                      os.kill(pid, signal.SIGKILL)
+                  except OSError:
+                      pass
+          sys.exit(0 if killed else 1)
+          PYEOF
+          then
+            exit 0
+          fi
+          [ "$had_tmux" -eq 1 ] && exit 0 || exit 1
+        '';
+        # THE STAGE APPLIANCE (`stage`): runs a second, Watchdog-free Pipulate
+        # server on :5002 from a detached git worktree with isolated SQLite data/
+        # so live-stream punch-throughs never restart while :5001 is edited.
+        stageCommand = pkgs.writeShellScriptBin "stage" ''
+          set -euo pipefail
+          root="''${PIPULATE_ROOT:-$PWD}"
+          workshop_port="''${PIPULATE_PORT:-5001}"
+          stage_port="''${PIPULATE_STAGE_PORT:-5002}"
+          stage_dir="''${PIPULATE_STAGE_DIR:-$HOME/.local/share/pipulate/stage}"
+          stage_tmux="pipulate-stage"
+          action="''${1:-status}"
+          if [ "$stage_port" = "$workshop_port" ]; then
+            echo "stage: PIPULATE_STAGE_PORT ($stage_port) collides with workshop port ($workshop_port)." >&2
+            exit 1
+          fi
+          if [ ! -x "$root/.venv/bin/python" ]; then
+            echo "stage: missing $root/.venv/bin/python; enter the Pipulate Nix shell first." >&2
+            exit 1
+          fi
+          ensure_worktree() {
+            mkdir -p "$(dirname "$stage_dir")"
+            if [ ! -e "$stage_dir/.git" ]; then
+              ${pkgs.git}/bin/git -C "$root" worktree prune >/dev/null 2>&1 || true
+              rm -rf "$stage_dir"
+              ${pkgs.git}/bin/git -C "$root" worktree add --quiet --detach "$stage_dir" HEAD
+            fi
+            ln -sfn "$root/.venv" "$stage_dir/.venv"
+            mkdir -p "$stage_dir/data" "$stage_dir/logs"
+            if [ -f "$root/whitelabel.txt" ] && [ ! -f "$stage_dir/whitelabel.txt" ]; then
+              cp "$root/whitelabel.txt" "$stage_dir/whitelabel.txt"
+            fi
+            if [ -f "$root/.env" ] && [ ! -e "$stage_dir/.env" ]; then
+              ln -s "$root/.env" "$stage_dir/.env"
+            fi
+            if [ -f "$stage_dir/scripts/link_tiers.sh" ]; then
+              ${pkgs.bash}/bin/bash "$stage_dir/scripts/link_tiers.sh" >/dev/null 2>&1 || true
+            fi
+            mkdir -p "$stage_dir/Workshop/corporate" "$stage_dir/Workshop/personal" "$stage_dir/Workshop/shared"
+          }
+          start_stage() {
+            ensure_worktree
+            local sha
+            sha="$(${pkgs.git}/bin/git -C "$stage_dir" rev-parse --short HEAD 2>/dev/null || echo unknown)"
+            if ${pkgs.curl}/bin/curl -fsS "http://127.0.0.1:$stage_port/" >/dev/null 2>&1; then
+              echo "✅ Stage server already live at http://localhost:$stage_port (commit $sha, Watchdog OFF)"
+              return 0
+            fi
+            ${stopPortScript} "$stage_port" "$stage_tmux" >/dev/null 2>&1 || true
+            local saved_ld="''${LD_LIBRARY_PATH:-}"
+            ${pkgs.tmux}/bin/tmux new-session -d -s "$stage_tmux" -c "$stage_dir" \
+              "export LD_LIBRARY_PATH=\"$saved_ld\" PIPULATE_ROOT=\"$stage_dir\" PIPULATE_PORT=\"$stage_port\" PIPULATE_NO_WATCHDOG=1 PIPULATE_QUIET_START=1 && source \"$stage_dir/.venv/bin/activate\" && exec python server.py --quiet-start"
+            local i=0
+            while [ "$i" -lt 40 ]; do
+              if ${pkgs.curl}/bin/curl -fsS "http://127.0.0.1:$stage_port/" >/dev/null 2>&1; then
+                echo "🎭 Stage server READY at http://localhost:$stage_port (tmux: $stage_tmux, commit $sha, Watchdog OFF)"
+                return 0
+              fi
+              sleep 0.5
+              i=$((i + 1))
+            done
+            echo "⚠️ Stage server did not answer on :$stage_port within 20s; inspect with: stage log" >&2
+            return 1
+          }
+          case "$action" in
+            start)
+              start_stage
+              ;;
+            stop)
+              if ${stopPortScript} "$stage_port" "$stage_tmux"; then
+                echo "🛑 Stopped stage server on :$stage_port (workshop :$workshop_port untouched)."
+              else
+                echo "ℹ️ Stage server was not running on :$stage_port."
+              fi
+              ;;
+            restart)
+              ${stopPortScript} "$stage_port" "$stage_tmux" >/dev/null 2>&1 || true
+              start_stage
+              ;;
+            sync|pull)
+              ensure_worktree
+              target_sha="$(${pkgs.git}/bin/git -C "$root" rev-parse HEAD)"
+              ${pkgs.git}/bin/git -C "$stage_dir" checkout --quiet --detach --force "$target_sha"
+              ${stopPortScript} "$stage_port" "$stage_tmux" >/dev/null 2>&1 || true
+              start_stage
+              ;;
+            status)
+              w_state="DOWN"
+              s_state="DOWN"
+              if ${pkgs.curl}/bin/curl -fsS "http://127.0.0.1:$workshop_port/" >/dev/null 2>&1; then w_state="LIVE"; fi
+              if ${pkgs.curl}/bin/curl -fsS "http://127.0.0.1:$stage_port/" >/dev/null 2>&1; then s_state="LIVE"; fi
+              w_sha="$(${pkgs.git}/bin/git -C "$root" rev-parse --short HEAD 2>/dev/null || echo none)"
+              s_sha="uninitialized"
+              if [ -e "$stage_dir/.git" ]; then
+                s_sha="$(${pkgs.git}/bin/git -C "$stage_dir" rev-parse --short HEAD 2>/dev/null || echo unknown)"
+              fi
+              echo "🔧 Workshop :$workshop_port -> $w_state (HEAD $w_sha, Watchdog ON)"
+              echo "🎭 Stage    :$stage_port -> $s_state (worktree $s_sha at $stage_dir, Watchdog OFF)"
+              ;;
+            log|logs)
+              if [ -t 0 ] && [ -t 1 ] && ${pkgs.tmux}/bin/tmux has-session -t "$stage_tmux" 2>/dev/null; then
+                exec ${pkgs.tmux}/bin/tmux attach -t "$stage_tmux"
+              elif [ -f "$stage_dir/logs/server.log" ]; then
+                exec tail -n 40 "$stage_dir/logs/server.log"
+              else
+                echo "stage: no active tmux session $stage_tmux or $stage_dir/logs/server.log" >&2
+                exit 1
+              fi
+              ;;
+            *)
+              echo "Usage: stage [status|start|sync|restart|stop|log]" >&2
+              exit 2
+              ;;
+          esac
+        '';
         rgxCommand = pkgs.writeShellScriptBin "rgx" ''
           set -euo pipefail
 
@@ -996,10 +1206,11 @@
           markovCommand                # Markov transition matrix + river streaming ML lens for ! markov
           swatCommand                  # 7-at-one-swat JSON dry-run lens for ! swat
           heal404Command               # 1-word iterative 404 healer + Honeybot Nginx RAM reload
-          weeboCommand                 # Local Operation Weebo native-pixel alpha overlay on Prime
-          weebohCommand                # Deliberate remote Operation Weebo overlay on Honeybot :10.0
-          weebolCommand                # List enrolled Operation Weebo shorthand assets
-          rgxCommand                   # Bounded AND-search over article files
+          weeboCommand               # Local Operation Weebo native-pixel alpha overlay on Prime
+          weebohCommand              # Deliberate remote Operation Weebo overlay on Honeybot :10.0
+          weebolCommand              # List enrolled Operation Weebo shorthand assets
+          stageCommand               # Watchdog-free :5002 stage server in isolated git worktree
+          rgxCommand                 # Bounded AND-search over article files
           rgxcCommand                  # rgx plus holographic shards and hit context
           aiCommitCommand              # \g's commit generator resolves in-shell on every platform
           deedCommand                  # Promote one cartridge snapshot out of rotation, verified
@@ -1281,10 +1492,15 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           #     habitual shell-only user would silently drift from upstream and
           #     the magic cookie's forever-forward promise would rot.
           copy_notebook_if_needed
-          # ONE WORKSHOP AT A TIME: stop any previous server, whether in tmux or bare process
-          tmux kill-session -t pipulate 2>/dev/null || true
-          if pkill -f "python server.py"; then
-            echo "🛑 Stopped a Pipulate server that was already running (ports 5001/8888 are shared -- one workshop at a time)."
+          # PORT-SCOPED WORKSHOP: stop only the server bound to WORKSHOP_PORT (never :5002 stage)
+          WORKSHOP_PORT="''${PIPULATE_PORT:-5001}"
+          WORKSHOP_URL="http://localhost:$WORKSHOP_PORT"
+          WORKSHOP_TMUX="pipulate"
+          if [ "$WORKSHOP_PORT" != "5001" ]; then
+            WORKSHOP_TMUX="pipulate-$WORKSHOP_PORT"
+          fi
+          if ${stopPortScript} "$WORKSHOP_PORT" "$WORKSHOP_TMUX"; then
+            echo "🛑 Stopped a Pipulate server that was already running on port $WORKSHOP_PORT (stage ports untouched)."
           fi
           git pull --quiet
           # Propagate one-shot startup voice silence into server.py without leaving PIPULATE_VOICE=0 set for the lifetime of the tmux server
@@ -1295,8 +1511,9 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           case "''${PIPULATE_QUIET_START:-}" in
             1|yes|on|true) SERVER_ARGS="--quiet-start" ;;
           esac
-          # Start Pipulate server in background tmux session so port 5001 is immediately alive
-          tmux new-session -d -s pipulate -c "''${PIPULATE_ROOT:-$PWD}" "unset PIPULATE_VOICE PIPULATE_QUIET_START && source .venv/bin/activate && python server.py $SERVER_ARGS"
+          # Start Pipulate server in background tmux session so $WORKSHOP_URL is immediately alive
+          SAVED_LD_PATH="''${LD_LIBRARY_PATH:-}"
+          tmux new-session -d -s "$WORKSHOP_TMUX" -c "''${PIPULATE_ROOT:-$PWD}" "export LD_LIBRARY_PATH=\"$SAVED_LD_PATH\" PIPULATE_PORT=\"$WORKSHOP_PORT\" && unset PIPULATE_VOICE PIPULATE_QUIET_START && source .venv/bin/activate && python server.py $SERVER_ARGS"
           # THE VOICE ASKS ONCE, OUT LOUD (2026-10-01, the operator's ask: the
           # voice is heard before the first menu, so the menu's spoken hint is
           # the second thing it says). Only where no answer is recorded, at a
@@ -1387,7 +1604,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
                 echo "   http://localhost:8888/lab"
                 echo ""
                 echo "   Pipulate app:"
-                echo "   http://localhost:5001"
+                echo "   $WORKSHOP_URL"
                 echo ""
                 break
               fi
@@ -1405,11 +1622,11 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # Open FastHTML in the browser
           (
             # Wait for server to be ready before opening browser
-            echo "Waiting for $APP_NAME server to start (checking http://localhost:5001)..."
+            echo "Waiting for $APP_NAME server to start (checking $WORKSHOP_URL)..."
             SERVER_STARTED=false
             for i in {1..30}; do
-              if curl -s http://localhost:5001 > /dev/null 2>&1; then
-                echo "✅ $APP_NAME server is ready at http://localhost:5001!"
+              if curl -s "$WORKSHOP_URL" > /dev/null 2>&1; then
+                echo "✅ $APP_NAME server is ready at $WORKSHOP_URL!"
                 SERVER_STARTED=true
                 break
               fi
@@ -1419,20 +1636,20 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
             if [ "$SERVER_STARTED" = true ]; then
               if [ "$OPEN_FASTHTML" = "false" ]; then
                 echo
-                echo "✅ Pipulate server is running at http://localhost:5001 (auto-open suppressed)"
+                echo "✅ Pipulate server is running at $WORKSHOP_URL (auto-open suppressed)"
               elif [ "$OPEN_FASTHTML" = "true" ]; then
                 if [ "${fastHtmlOpenDelay}" -gt 0 ]; then
                   echo "Delaying FastHTML tab by ${fastHtmlOpenDelay} seconds..."
                   sleep ${fastHtmlOpenDelay}
                 fi
                 if command -v xdg-open >/dev/null 2>&1; then
-                  xdg-open http://localhost:5001 >/dev/null 2>&1 &
+                  xdg-open "$WORKSHOP_URL" >/dev/null 2>&1 &
                 elif command -v open >/dev/null 2>&1; then
-                  open http://localhost:5001 >/dev/null 2>&1 &
+                  open "$WORKSHOP_URL" >/dev/null 2>&1 &
                 fi
               else
                 echo
-                echo "✅ Pipulate server is running at http://localhost:5001"
+                echo "✅ Pipulate server is running at $WORKSHOP_URL"
               fi
             else
               echo
@@ -1440,8 +1657,8 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
             fi
           ) &
           # Run server in foreground if not already running in tmux
-          if ! tmux has-session -t pipulate 2>/dev/null; then
-            python server.py $SERVER_ARGS
+          if ! tmux has-session -t "$WORKSHOP_TMUX" 2>/dev/null; then
+            PIPULATE_PORT="$WORKSHOP_PORT" python server.py $SERVER_ARGS
           fi
         '';
         # Logic for installing all Python packages
@@ -1827,7 +2044,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
             fi
           }
           dp() {
-            local url="http://localhost:5001/diff"
+            local url="http://localhost:''${PIPULATE_PORT:-5001}/diff"
             if command -v xdg-open >/dev/null 2>&1; then
               xdg-open "$url" >/dev/null 2>&1 &
             elif command -v open >/dev/null 2>&1; then
@@ -1950,14 +2167,16 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           jn() {
             (cd "$PIPULATE_ROOT" && PIPULATE_BOOT_MENU=0 ${runScript}/bin/run-script)
           }
-          # `pu` is the server-only word. Kill-then-start, so it doubles as a
-          # restart and never collides on :5001. Terminates any background tmux session.
+          # `pu` is the server-only word. Port-scoped kill-then-start, so it
+          # restarts PIPULATE_PORT (default 5001) without touching :5002 stage.
           pu() {
             (
               cd "$PIPULATE_ROOT" || exit 1
-              tmux kill-session -t pipulate 2>/dev/null || true
-              pkill -f "python server.py" || true
-              python server.py
+              local port="''${PIPULATE_PORT:-5001}"
+              local tmux_name="pipulate"
+              if [ "$port" != "5001" ]; then tmux_name="pipulate-$port"; fi
+              ${stopPortScript} "$port" "$tmux_name" || true
+              PIPULATE_PORT="$port" python server.py
             )
           }
           # Bare `pipulate` is the long form of `pu`. WITH arguments it hands
