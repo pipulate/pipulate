@@ -17,6 +17,7 @@ LAST_PUBLISHED_FILE = CONFIG_DIR / "last_published.json"
 # Minimum simultaneous viewers required to ring the bell + send an ntfy push
 # (2 = viewer + their trusted advisor; lone 1-viewer drive-bys stay silent unless they comment)
 YT_VIEWER_ALERT_MIN = int(os.environ.get("PIPULATE_YT_VIEWER_MIN", "2"))
+YT_VIEWER_CLEAR_MAX = int(os.environ.get("PIPULATE_YT_CLEAR_MAX", "1"))  # Max viewers considered 'quiet studio' (1=self, 0=away, <0=off)
 YT_VIEWER_ALERT_DWELL = int(os.environ.get("PIPULATE_YT_VIEWER_DWELL", "60"))  # Seconds viewers must stay >= min before alerting
 YT_VIEWER_ALERT_COOLDOWN = int(os.environ.get("PIPULATE_YT_VIEWER_COOLDOWN", "300"))  # Seconds between any two viewer alerts
 YT_VIEWER_FAST_POLL = int(os.environ.get("PIPULATE_YT_FAST_POLL", "5"))  # Seconds between lightweight updated_metadata viewer checks
@@ -1056,7 +1057,7 @@ def print_broadcast_kit(target_key="1", mode="card", slug_match=None):
         print(thin)
         print("PHASE 4: LIVE OBSERVATORY & AUDIENCE INTERACTION (While Streaming)")
         print(" 12. ytstatus          📡 Check Honeybot OBS PID, port 4455 & timecode")
-        print(" 13. ytwatch           👀 Check live viewers & chat (`ytwatch start|log|status|stop`)")
+        print(" 13. ytwatch           👀 Check live viewers & chat (`ytwatch start|log|clear|chime|stop`)")
         print("     ytlog             📺 Watch live notification stream (`q` or `Ctrl+b d` to exit)")
         print("     ytmax             🎰 Toggle Max Headroom (`off` [default] | `on` | `12` Skinner VR-12)")
         print(" 14. ytsay \"text\"      🎙️ Break in LIVE on-air (`-c \"CARD\"` `-p white_rabbit` `-m IMG`)")
@@ -1910,6 +1911,7 @@ def _walk_dicts(node):
 _YTWATCH_RESERVED_ACTIONS = {
     "start", "stop", "status", "restart", "daemon", "kill",
     "attach", "log", "logs", "tail", "tmux", "reset", "reset-peak",
+    "chime", "clear", "clear-max",
 }
 
 
@@ -2447,7 +2449,105 @@ def _play_local_ding(enabled=True, spoken_text=None):
         _speak_local_alert(spoken_text, enabled=enabled)
 
 
-def _manage_ytwatch_daemon(action, interval=30, channel=None):
+def _resolve_yt_clear_max(override=None) -> int:
+    """Resolve max viewers considered a 'quiet studio' (default 1 self-monitoring, 0 away, <0 off)."""
+    if override is not None:
+        return int(override)
+    for raw in (
+        os.environ.get("PIPULATE_YT_CLEAR_MAX", ""),
+        _load_vault_env().get("PIPULATE_YT_CLEAR_MAX", ""),
+    ):
+        s = str(raw).strip()
+        if s and s.lstrip("-").isdigit():
+            return int(s)
+    return YT_VIEWER_CLEAR_MAX
+
+
+def should_ring_quiet_clear(prev_viewers: int, cur_viewers: int, clear_max: int = YT_VIEWER_CLEAR_MAX) -> bool:
+    """True when concurrent viewers drop from above clear_max into <= clear_max (edge-triggered)."""
+    if int(clear_max) < 0:
+        return False
+    return int(prev_viewers) > int(clear_max) >= int(cur_viewers)
+
+
+def _ensure_quiet_clear_wav():
+    """Ensure a gentle descending G5->C5 'studio all-clear' WAV exists in ~/.local/share/pipulate/."""
+    import array
+    import math
+    import wave
+    repo_root = Path(__file__).resolve().parents[2]
+    for custom in (
+        Path.home() / ".local/share/pipulate/clear.wav",
+        repo_root / "assets/sounds/clear.wav",
+    ):
+        if custom.is_file() and custom.stat().st_size > 44:
+            return custom
+    out_path = Path.home() / ".local/share/pipulate/quiet_clear.wav"
+    if out_path.is_file() and out_path.stat().st_size > 1000:
+        return out_path
+    try:
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        sample_rate = 22050
+        duration = 0.52
+        n_samples = int(sample_rate * duration)
+        notes = (
+            (0.00, 0.20, 783.99, 13.0, 0.34),
+            (0.17, 0.52, 523.25, 8.0, 0.38),
+        )
+        samples = array.array("h", [0] * n_samples)
+        two_pi = 2.0 * math.pi
+        for i in range(n_samples):
+            t = i / sample_rate
+            val = 0.0
+            for start_s, end_s, freq, decay, amp in notes:
+                if start_s <= t <= end_s:
+                    dt = t - start_s
+                    rel_end = end_s - t
+                    attack = min(1.0, dt / 0.006)
+                    release = min(1.0, rel_end / 0.012)
+                    env = attack * release * math.exp(-dt * decay)
+                    tone = 0.85 * math.sin(two_pi * freq * dt) + 0.15 * math.sin(two_pi * (freq * 2.0) * dt)
+                    val += amp * env * tone
+            samples[i] = int(max(-0.95, min(0.95, val)) * 32767.0)
+        if sys.byteorder != "little":
+            samples.byteswap()
+        tmp_path = out_path.with_suffix(".tmp.wav")
+        with wave.open(str(tmp_path), "wb") as wf:
+            wf.setnchannels(1)
+            wf.setsampwidth(2)
+            wf.setframerate(sample_rate)
+            wf.writeframes(samples.tobytes())
+        tmp_path.replace(out_path)
+        return out_path
+    except Exception:
+        return None
+
+
+def _play_local_clear_chime(enabled=True, spoken_text=None):
+    """Play the descending G5->C5 quiet-studio chime locally on Prime when viewers clear."""
+    if not enabled:
+        return None
+    import shutil
+    import subprocess
+    sound_path = _ensure_quiet_clear_wav()
+    if sound_path:
+        for player_cmd in (["pw-play"], ["paplay"], ["aplay", "-q"], ["afplay"]):
+            if shutil.which(player_cmd[0]):
+                try:
+                    subprocess.Popen(
+                        [*player_cmd, str(sound_path)],
+                        stdout=subprocess.DEVNULL,
+                        stderr=subprocess.DEVNULL,
+                    )
+                except Exception:
+                    pass
+                break
+    if spoken_text:
+        _speak_local_alert(spoken_text, enabled=enabled)
+    return sound_path
+
+
+def _manage_ytwatch_daemon(action, interval=30, channel=None, clear_max=None):
     """Start, stop, or inspect the background tmux 'ytwatch' session on Prime."""
     import subprocess
     repo_root = Path(__file__).resolve().parents[2]
@@ -2459,7 +2559,9 @@ def _manage_ytwatch_daemon(action, interval=30, channel=None):
     )
     is_running = (has_res.returncode == 0)
     if action == "status":
-        print(f"📡 ytwatch daemon: {'RUNNING (tmux session: ytwatch)' if is_running else 'STOPPED'}")
+        eff_cm = _resolve_yt_clear_max(clear_max)
+        cm_lbl = "off" if eff_cm < 0 else str(eff_cm)
+        print(f"📡 ytwatch daemon: {'RUNNING (tmux session: ytwatch)' if is_running else 'STOPPED'} | clear_max={cm_lbl}")
         if log_path.is_file():
             lines = log_path.read_text(encoding="utf-8", errors="replace").splitlines()[-8:]
             if lines:
@@ -2506,6 +2608,8 @@ def _manage_ytwatch_daemon(action, interval=30, channel=None):
     if action in ("daemon", "start", "restart"):
         if channel:
             _save_vault_var("PIPULATE_YT_CHANNEL", channel.strip())
+        if clear_max is not None:
+            _save_vault_var("PIPULATE_YT_CLEAR_MAX", str(int(clear_max)))
         if is_running:
             subprocess.run(["tmux", "kill-session", "-t", "ytwatch"], check=False)
         py_bin = repo_root / ".venv/bin/python"
@@ -2735,6 +2839,7 @@ def run_youtube_watch(
     ding=True,
     daemon_action=None,
     dry_run=False,
+    clear_max=None,
 ):
     """Check or continuously monitor YouTube Live viewers + chat/comments on Prime."""
     import subprocess
@@ -2769,11 +2874,38 @@ def run_youtube_watch(
         _sync_honeybot_viewers(cur_v, running=True, video_id=cur_vid, peak=cur_v, push_remote=True)
         print(f"🔄 Reset ytwatch session peak -> {cur_v} (video={cur_vid or 'NONE'}).")
         return _manage_ytwatch_daemon("restart", interval=interval, channel=channel)
+    if daemon_action == "chime":
+        eff_cm = _resolve_yt_clear_max(clear_max)
+        wav_p = _ensure_quiet_clear_wav()
+        if not dry_run:
+            _play_local_clear_chime(ding)
+        print(
+            f"🟢 {'[DRY RUN] ' if dry_run else ''}Quiet-studio down-chime: {wav_p} "
+            f"(active clear_max={'off' if eff_cm < 0 else eff_cm})"
+        )
+        return 0 if wav_p else 1
+    if daemon_action == "clear":
+        if clear_max is not None:
+            if not dry_run:
+                _save_vault_var("PIPULATE_YT_CLEAR_MAX", str(int(clear_max)))
+            eff_cm = int(clear_max)
+            mode_note = "disabled" if eff_cm < 0 else ("away / 0 viewers" if eff_cm == 0 else f"self-monitoring <= {eff_cm}")
+            print(
+                f"🟢 {'[DRY RUN] Would set' if dry_run else 'Saved'} PIPULATE_YT_CLEAR_MAX={eff_cm} "
+                f"({mode_note}; live ytwatch daemon adopts automatically)."
+            )
+            return 0
+        eff_cm = _resolve_yt_clear_max()
+        print(
+            f"🟢 Quiet-studio down-chime threshold: clear_max={'off' if eff_cm < 0 else eff_cm} "
+            "(Usage: `ytwatch clear 1` self-monitoring | `ytwatch clear 0` away | `ytwatch clear off` | `ytwatch chime`)"
+        )
+        return 0
     if daemon_action in ("daemon", "start", "restart", "stop", "status", "attach"):
         if dry_run:
-            print(f"📡 [DRY RUN] ytwatch daemon_action={daemon_action} | interval={interval}")
+            print(f"📡 [DRY RUN] ytwatch daemon_action={daemon_action} | interval={interval} | clear_max={_resolve_yt_clear_max(clear_max)}")
             return 0
-        return _manage_ytwatch_daemon(daemon_action, interval=interval, channel=channel)
+        return _manage_ytwatch_daemon(daemon_action, interval=interval, channel=channel, clear_max=clear_max)
     if channel and channel.strip().lower().lstrip("@") not in _YTWATCH_RESERVED_ACTIONS:
         _save_vault_var("PIPULATE_YT_CHANNEL", channel.strip())
     resolved_channel = _normalize_yt_url(channel or _get_vault_var("PIPULATE_YT_CHANNEL"))
@@ -2786,10 +2918,11 @@ def run_youtube_watch(
         parsed = _extract_yt_json(sample, "ytInitialPlayerResponse =")
         ok = (parsed.get("videoDetails") or {}).get("videoId") == "test1234567"
         t_label = "configured" if resolved_topic else "unconfigured"
+        eff_cm_dry = _resolve_yt_clear_max(clear_max)
         print(
             f"📡 [DRY RUN] YouTube Watch: channel={resolved_channel} | min_viewers={YT_VIEWER_ALERT_MIN} | "
-            f"dwell={YT_VIEWER_ALERT_DWELL}s | discord={DISCORD_INVITE_CODE} (goal={DISCORD_FOUNDING_GOAL}) | "
-            f"ntfy={t_label} | parser_ok={ok}"
+            f"clear_max={eff_cm_dry} | dwell={YT_VIEWER_ALERT_DWELL}s | "
+            f"discord={DISCORD_INVITE_CODE} (goal={DISCORD_FOUNDING_GOAL}) | ntfy={t_label} | parser_ok={ok}"
         )
         return 0 if ok else 1
     try:
@@ -2836,9 +2969,11 @@ def run_youtube_watch(
     c_str = f" | comments={state['comment_count']}" if state["comment_count"] is not None else ""
     d_str = " | daemon=RUNNING" if daemon_running else ""
     v_src = f"api={state.get('api_viewers')}, html={state.get('html_viewers')}"
+    eff_cm_banner = _resolve_yt_clear_max(clear_max)
+    cm_banner_s = "off" if eff_cm_banner < 0 else f"<={eff_cm_banner}"
     print(
         f"[{_ytlog_ts()}] 📡 YouTube Watch: LIVE={'yes' if state['is_live'] else 'no'} | "
-        f"video={state['video_id'] or 'NONE'} | viewers={state['concurrent_viewers']} ({v_src}; alert>={YT_VIEWER_ALERT_MIN} for {YT_VIEWER_ALERT_DWELL}s) | "
+        f"video={state['video_id'] or 'NONE'} | viewers={state['concurrent_viewers']} ({v_src}; alert>={YT_VIEWER_ALERT_MIN} for {YT_VIEWER_ALERT_DWELL}s, clear{cm_banner_s}) | "
         f"chat_items={len(state['chat_messages'])}{c_str}{disc_str}{d_str} | title={state['title']!r}"
     )
     if not loop:
@@ -2881,6 +3016,18 @@ def run_youtube_watch(
     _sync_honeybot_viewers(state["concurrent_viewers"], running=True, video_id=state["video_id"], peak=peak_viewers, push_remote=True)
     for m in state["chat_messages"]:
         seen_ids.add(m["id"])
+    def _check_quiet_clear(prev_v, cur_v):
+        eff_cm = _resolve_yt_clear_max(clear_max)
+        if should_ring_quiet_clear(prev_v, cur_v, eff_cm):
+            print(
+                f"[{_ytlog_ts()}] 🟢 [STUDIO CLEAR] Viewers dropped {prev_v} -> {cur_v} "
+                f"(<= clear_max={eff_cm}) — quiet window open for live stream edits!",
+                flush=True,
+            )
+            _play_local_clear_chime(ding)
+            return True
+        return False
+
     if state["is_live"] and state["concurrent_viewers"] > prev_viewers:
         print(
             f"[{_ytlog_ts()}] 📈 [VIEWER +{state['concurrent_viewers'] - prev_viewers}] "
@@ -2888,6 +3035,13 @@ def run_youtube_watch(
             flush=True,
         )
         _trigger_ytwatch_weebo()
+    elif state["is_live"] and state["concurrent_viewers"] < prev_viewers:
+        print(
+            f"[{_ytlog_ts()}] 📉 [VIEWER -{prev_viewers - state['concurrent_viewers']}] "
+            f"{prev_viewers} -> {state['concurrent_viewers']} watching",
+            flush=True,
+        )
+        _check_quiet_clear(prev_viewers, state["concurrent_viewers"])
     prev_viewers = state["concurrent_viewers"]
     init_ts = time.time()
     dwell_window = [(init_ts, state["concurrent_viewers"])] if state["concurrent_viewers"] >= YT_VIEWER_ALERT_MIN else []
@@ -3021,6 +3175,7 @@ def run_youtube_watch(
                         f"[{_ytlog_ts()}] 📉 [FAST VIEWER -{prev_viewers - fast_v}] {prev_viewers} -> {fast_v} watching ({fast_step}s InnerTube pulse)",
                         flush=True,
                     )
+                    _check_quiet_clear(prev_viewers, fast_v)
                 if fast_v != prev_viewers or reset_fired:
                     _sync_honeybot_viewers(fast_v, running=True, video_id=poll_vid, peak=peak_viewers, push_remote=True)
                 prev_viewers = fast_v
@@ -3065,6 +3220,8 @@ def run_youtube_watch(
                     f"[{_ytlog_ts()}] 📉 [VIEWER -{prev_viewers - viewers}] {prev_viewers} -> {viewers} watching ({src_cmp})",
                     flush=True,
                 )
+                if state["is_live"]:
+                    _check_quiet_clear(prev_viewers, viewers)
             else:
                 if dwell_window and not alerted_in_run:
                     dwell_s = int(round(poll_ts - dwell_window[0][0]))
@@ -4203,6 +4360,12 @@ if __name__ == "__main__":
         help="Disable local ding.wav audio chime on new viewer/chat events.",
     )
     parser.add_argument(
+        "--clear-max",
+        type=int,
+        default=None,
+        help="Max concurrent viewers for 'studio clear' down-chime (default: PIPULATE_YT_CLEAR_MAX or 1; 0 when away; -1 disables).",
+    )
+    parser.add_argument(
         "--daemon",
         action="store_true",
         help="Start ytwatch --loop in a detached background tmux session ('ytwatch').",
@@ -4317,6 +4480,7 @@ if __name__ == "__main__":
         watch_channel = cli_args.channel
         watch_loop = cli_args.loop
         watch_interval = cli_args.interval
+        watch_clear_max = cli_args.clear_max
         daemon_act = "stop" if cli_args.stop else ("daemon" if cli_args.daemon else None)
         if cli_args.message:
             first_arg = cli_args.message[0].strip().lower()
@@ -4324,6 +4488,16 @@ if __name__ == "__main__":
                 daemon_act = "daemon"
             elif first_arg in ("reset", "reset-peak"):
                 daemon_act = "reset"
+            elif first_arg == "chime":
+                daemon_act = "chime"
+            elif first_arg in ("clear", "clear-max"):
+                daemon_act = "clear"
+                if len(cli_args.message) > 1 and watch_clear_max is None:
+                    arg2 = cli_args.message[1].strip().lower()
+                    if arg2 in ("off", "disable", "disabled", "none"):
+                        watch_clear_max = -1
+                    elif arg2.lstrip("-").isdigit():
+                        watch_clear_max = int(arg2)
             elif first_arg in ("stop", "kill"):
                 daemon_act = "stop"
             elif first_arg == "status":
@@ -4346,6 +4520,7 @@ if __name__ == "__main__":
                 ding=not cli_args.no_ding,
                 daemon_action=daemon_act,
                 dry_run=cli_args.dry_run,
+                clear_max=watch_clear_max,
             )
         )
     if cli_args.broadcast == "top":
