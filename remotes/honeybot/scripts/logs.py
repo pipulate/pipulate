@@ -25,7 +25,7 @@ from db import db, KNOWN_BOTS  # Import the list
 
 # --- Configuration ---
 STRIP_MOZILLA_PREFIX = False  # Set to True to save space in bottom panels
-HUD_TABLE_ROWS = 12           # Visible data rows in both bottom HUD tables (freed 3 rows for 5-row #ticker_bar)
+HUD_TABLE_ROWS = 11           # Visible data rows in both bottom HUD tables (freed 3 rows for 5-row #ticker_bar)
 HUD_PANEL_HEIGHT = HUD_TABLE_ROWS + 4  # +4 rows for top border, panel title, header rule, and column headers
 BOT_IDENTITY_WIDTH = 21        # Emoji (2) + space (1) + 18-char bot name (trims 15 chars for Raw Signature)
 TICKER_FILE_PATH = "/tmp/honeybot_ticker.txt"
