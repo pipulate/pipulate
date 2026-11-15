@@ -43,6 +43,32 @@ STAGE_DIR = Path(
 REMOTE_TUNNEL_PORT = 15001
 STAGE_PROFILE_DIR = "/tmp/honeybot_ytapp_profile"
 STAGE_PROFILE_PGREP = "[/]tmp/honeybot_ytapp_profile"
+DARK_FIREFOX_PREFS = (
+    'user_pref("toolkit.legacyUserProfileCustomizations.stylesheets", true);\n'
+    'user_pref("ui.systemUsesDarkTheme", 1);\n'
+    'user_pref("layout.css.prefers-color-scheme.content-override", 0);\n'
+    'user_pref("browser.theme.content-theme", 0);\n'
+    'user_pref("browser.theme.toolbar-theme", 0);\n'
+    'user_pref("browser.display.background_color", "#0b0f19");\n'
+    'user_pref("browser.display.background_color.dark", "#0b0f19");\n'
+    'user_pref("browser.startup.blankWindow", false);\n'
+    'user_pref("browser.sessionstore.resume_from_crash", false);\n'
+    'user_pref("browser.shell.checkDefaultBrowser", false);\n'
+    'user_pref("datareporting.policy.dataSubmissionPolicyBypassNotification", true);\n'
+    'user_pref("trailhead.firstrun.didSeeAboutWelcome", true);\n'
+    'user_pref("browser.startup.homepage_override.mstone", "ignore");\n'
+    'user_pref("media.autoplay.default", 0);\n'
+    'user_pref("media.autoplay.blocking_policy", 0);\n'
+)
+DARK_USERCHROME_CSS = (
+    ":root, window, #main-window, #navigator-toolbox, #tabbrowser-tabpanels, "
+    "tabpanels, browser, #appcontent, #browser { "
+    "background: #0b0f19 !important; background-color: #0b0f19 !important; }\n"
+)
+DARK_USERCONTENT_CSS = (
+    '@-moz-document url("about:blank"), url("about:newtab"), url("about:home") { '
+    "html, body { background: #0b0f19 !important; background-color: #0b0f19 !important; } }\n"
+)
 VIM_ANSI_FIFO = "/tmp/ytvim.ansi"
 WEEBO_STAGE_PAUSE_FILE = "/tmp/honeybot_weebo_active"
 STREAM_LOCK_PATH = "/tmp/honeybot-stream.py.lock"
@@ -558,18 +584,15 @@ if shutil.which("xdotool", path=env["PATH"]):
 subprocess.run(["pkill", "-f", {STAGE_PROFILE_PGREP!r}], check=False)
 time.sleep(0.2)
 prof = pathlib.Path({STAGE_PROFILE_DIR!r})
-shutil.rmtree(prof, ignore_errors=True)
 prof.mkdir(parents=True, exist_ok=True)
-(prof / "user.js").write_text(
-    'user_pref("browser.sessionstore.resume_from_crash", false);\\n'
-    'user_pref("browser.shell.checkDefaultBrowser", false);\\n'
-    'user_pref("datareporting.policy.dataSubmissionPolicyBypassNotification", true);\\n'
-    'user_pref("trailhead.firstrun.didSeeAboutWelcome", true);\\n'
-    'user_pref("browser.startup.homepage_override.mstone", "ignore");\\n'
-    'user_pref("media.autoplay.default", 0);\\n'
-    'user_pref("media.autoplay.blocking_policy", 0);\\n',
-    encoding="utf-8",
-)
+for stale_name in (".parentlock", "lock", "sessionstore.jsonlz4"):
+    (prof / stale_name).unlink(missing_ok=True)
+shutil.rmtree(prof / "sessionstore-backups", ignore_errors=True)
+chrome_dir = prof / "chrome"
+chrome_dir.mkdir(parents=True, exist_ok=True)
+(prof / "user.js").write_text({DARK_FIREFOX_PREFS!r}, encoding="utf-8")
+(chrome_dir / "userChrome.css").write_text({DARK_USERCHROME_CSS!r}, encoding="utf-8")
+(chrome_dir / "userContent.css").write_text({DARK_USERCONTENT_CSS!r}, encoding="utf-8")
 before_res = subprocess.run(["wmctrl", "-l"], env=env, capture_output=True, text=True, check=False)
 before_wids = {{ln.split()[0] for ln in (before_res.stdout or "").splitlines() if ln.strip()}}
 proc = subprocess.Popen(
@@ -581,8 +604,8 @@ proc = subprocess.Popen(
 )
 if {freeze_hud!r}:
     pathlib.Path("/tmp/honeybot_weebo_active").write_text(str(proc.pid), encoding="utf-8")
-for _ in range(50):
-    time.sleep(0.4)
+for _ in range(90):
+    time.sleep(0.2)
     res = subprocess.run(["wmctrl", "-l"], env=env, capture_output=True, text=True, check=False)
     for line in (res.stdout or "").splitlines():
         parts = line.split()
@@ -610,6 +633,7 @@ def run_ytapp(
     wait_timeout: int = 180,
     mute_stage: bool = False,
     watch_once: bool = False,
+    keep_tunnel: bool = False,
 ) -> int:
     if action == "say":
         return speak_on_honeybot(say_text, dry_run=dry_run)
@@ -620,29 +644,47 @@ def run_ytapp(
             print(f"🔭 [DRY RUN] Watching {HONEYBOT_HOST}:{OPTICS_SLOT_FILE} from LAN -> DMZ (once={watch_once}).")
             return 0
         print(f"🔭 Watching {HONEYBOT_HOST}:{OPTICS_SLOT_FILE} for DMZ-safe 911 LLM Optics station breaks...", flush=True)
+        if not watch_once:
+            warm_port = _resolve_target_port()
+            if _ensure_local_server(warm_port, auto_start=True):
+                _ensure_reverse_tunnel(warm_port)
         script_mtime = Path(__file__).stat().st_mtime
         claim_script = (
             "import json, pathlib, time\n"
             f"p = pathlib.Path({OPTICS_SLOT_FILE!r})\n"
             "if p.is_file():\n"
             "    d = json.loads(p.read_text(encoding='utf-8'))\n"
-            "    if d.get('state') == 'waiting' and (time.time() - float(d.get('requested_at', 0))) < 35:\n"
+            "    if d.get('state') == 'waiting' and (time.time() - float(d.get('requested_at', 0))) < 45:\n"
             "        d['state'] = 'claimed'\n"
             "        p.write_text(json.dumps(d), encoding='utf-8')\n"
             "        print('CLAIMED')\n"
         )
+        idle_polls = 0
         try:
             while True:
                 if not watch_once and Path(__file__).stat().st_mtime != script_mtime:
                     print("🔄 [HOT-RELOAD] ytstage.py updated on disk — re-execing ytbreaks watcher...", flush=True)
                     os.execv(sys.executable, [sys.executable, *sys.argv])
-                chk = subprocess.run(
-                    ["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=5", HONEYBOT_HOST, "python3", "-"],
-                    input=claim_script,
-                    capture_output=True,
-                    text=True,
-                    check=False,
-                )
+                idle_polls += 1
+                if not watch_once and idle_polls % 30 == 0:
+                    wp = _resolve_target_port()
+                    if _local_server_alive(wp) and not _tunnel_pids(wp):
+                        _ensure_reverse_tunnel(wp)
+                try:
+                    chk = subprocess.run(
+                        [
+                            "ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=5",
+                            "-o", "ServerAliveInterval=5", "-o", "ServerAliveCountMax=1",
+                            HONEYBOT_HOST, "python3", "-",
+                        ],
+                        input=claim_script,
+                        capture_output=True,
+                        text=True,
+                        timeout=8,
+                        check=False,
+                    )
+                except subprocess.TimeoutExpired:
+                    continue
                 if "CLAIMED" in (chk.stdout or ""):
                     target_port = _resolve_target_port()
                     subprocess.run(
@@ -673,6 +715,7 @@ def run_ytapp(
                             wait_for_deed=True,
                             wait_timeout=wait_timeout,
                             mute_stage=mute_stage,
+                            keep_tunnel=not watch_once,
                         )
                         if watch_once:
                             return rc
@@ -753,9 +796,11 @@ def run_ytapp(
             check=False,
         )
         _clear_stage_audio_bridge()
-        for pid in _tunnel_pids():
-            subprocess.run(["kill", pid], check=False)
-        print("🛑 Dismissed Honeybot FastHTML stage window, cleared sentinel pause, resumed Storytime, & closed SSH tunnel.")
+        if not keep_tunnel:
+            for pid in _tunnel_pids():
+                subprocess.run(["kill", pid], check=False)
+        tun_note = "kept warm SSH tunnel" if keep_tunnel else "closed SSH tunnel"
+        print(f"🛑 Dismissed Honeybot FastHTML stage window, cleared sentinel pause, resumed Storytime, & {tun_note}.")
         return 0
 
     # action == "start"
@@ -830,7 +875,7 @@ def run_ytapp(
                 else:
                     print("⚠️ Timed out waiting for fresh optics_deed.zip; releasing stage cleanly.")
             finally:
-                run_ytapp("stop", dry_run=False)
+                run_ytapp("stop", dry_run=False, keep_tunnel=keep_tunnel)
         else:
             print("   • Speak live stage commentary : ytapp say \"Watch Ghost Driver audit RFC 9110!\"")
             print("   • Return stream to Observatory: ytapp stop")

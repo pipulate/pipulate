@@ -135,14 +135,50 @@
         "type": "mcp_tool_call",
         "tool_name": "voice_synthesis",
         "tool_args": {
-          "text": "SIFT capture complete. Inspecting the hydrated D O M hierarchy tree, ASCII layout boxes, and clean R F C 91 10 origin Markdown."
+          "text": "SIFT capture complete. Centering the D 3 force-radial link graph by parent D O M landmark, then opening the hierarchy tree, layout boxes, and R F C 91 10 origin Markdown."
         },
         "timing": {
           "wait_for_selector": "#optics-step03-accept-btn",
           "timeout": 45000,
           "delay_before": 600
         },
-        "description": "🎤 Announcing optical lens inspection"
+        "description": "🎤 Announcing D3 radial DOM link-graph and optical lens inspection"
+      },
+      {
+        "step_id": "07_focus_d3_graph",
+        "type": "dom_action",
+        "action": "click",
+        "selector": "[data-rg-filter='internal']",
+        "message_template": "🕸️ **D3 Force-Radial Graph Centered:** Clustering internal page links by parent DOM landmark.",
+        "timing": {
+          "delay_before": 400
+        },
+        "description": "Center D3 radial DOM link-graph and filter internal links"
+      },
+      {
+        "step_id": "07_flash_d3_graph",
+        "type": "mcp_tool_call",
+        "tool_name": "ui_flash_element",
+        "tool_args": {
+          "selector": ".optics-rg-card",
+          "color": "gold",
+          "duration": 1600
+        },
+        "timing": {
+          "delay_before": 300
+        },
+        "description": "✨ Highlight D3 Radial DOM Link-Graph card"
+      },
+      {
+        "step_id": "07_reset_d3_graph",
+        "type": "dom_action",
+        "action": "click",
+        "selector": "[data-rg-reset='1']",
+        "message_template": "🌐 **Full Radial Link-Graph Bloomed:** Showing Wire Internal, Wire External, and ⚡ JS-Only hydrated anchors.",
+        "timing": {
+          "delay_before": 2500
+        },
+        "description": "Expand all link classes in D3 force-radial graph"
       },
       {
         "step_id": "07a_open_tree_lens",
@@ -151,7 +187,7 @@
         "selector": "#optics-tree-summary",
         "message_template": "🌳 **Tree Lens Opened:** Inspecting Monokai-colorized DOM Hierarchy Tree (`🌐 Document Root`).",
         "timing": {
-          "delay_before": 400
+          "delay_before": 2600
         },
         "description": "Expand Hydrated DOM Hierarchy Tree details"
       },

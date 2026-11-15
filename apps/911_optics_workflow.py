@@ -436,6 +436,14 @@ def _radial_graph_client_js(mount_id: str, data_id: str) -> str:
   }}
 
   renderStaticFallback();
+  const step3 = document.getElementById('step_03');
+  if (step3 && !step3.dataset.scrollWired) {{
+    step3.dataset.scrollWired = '1';
+    step3.addEventListener('click', function(ev) {{
+      const focusEl = ev.target.closest('summary, button[type="submit"]');
+      if (focusEl) setTimeout(function() {{ focusEl.scrollIntoView({{ behavior: 'smooth', block: 'center' }}); }}, 80);
+    }});
+  }}
   root.addEventListener('click', function(ev) {{
     const fBtn = ev.target.closest('[data-rg-filter]');
     if (fBtn) {{
@@ -444,6 +452,7 @@ def _radial_graph_client_js(mount_id: str, data_id: str) -> str:
         b.style.borderColor = b === fBtn ? '#22d3ee' : 'rgba(255,255,255,0.18)';
         b.style.color = b === fBtn ? '#ffffff' : '#c9d1d9';
       }});
+      root.scrollIntoView({{ behavior: 'smooth', block: 'center' }});
       renderD3();
       return;
     }}
@@ -460,6 +469,7 @@ def _radial_graph_client_js(mount_id: str, data_id: str) -> str:
       filterMode = 'all';
       query = '';
       if (searchEl) searchEl.value = '';
+      root.scrollIntoView({{ behavior: 'smooth', block: 'center' }});
       renderD3();
       if (root._resetZoom) root._resetZoom();
     }}
@@ -480,6 +490,12 @@ def _radial_graph_client_js(mount_id: str, data_id: str) -> str:
       const s2 = document.createElement('script');
       s2.src = {json.dumps(d3_fallback)};
       s2.onload = renderD3;
+      s2.onerror = function() {{
+        const s3 = document.createElement('script');
+        s3.src = 'https:' + '//cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js';
+        s3.onload = renderD3;
+        document.head.appendChild(s3);
+      }};
       document.head.appendChild(s2);
     }};
     document.head.appendChild(s);
@@ -597,6 +613,7 @@ class OpticsWorkflow:
         @self.app.get('/optics/d3.v7.min.js')
         async def serve_local_d3():
             for cand in (
+                Path(__file__).resolve().parents[1] / "assets" / "js" / "d3.v7.min.js",
                 Path("assets/js/d3.v7.min.js"),
                 Path.home() / "repos" / "trimnoir" / "assets" / "js" / "d3.v7.min.js",
             ):
@@ -685,6 +702,7 @@ class OpticsWorkflow:
             Script(NotStr(safe_json), type="application/json", id=data_id),
             Script(NotStr(_radial_graph_client_js(mount_id, data_id))),
             id=mount_id,
+            cls="optics-rg-card",
             style="margin-bottom:1rem;border:1px solid rgba(34,211,238,0.35);border-radius:10px;background:#090d12;color:#e6edf3;overflow:hidden;",
         )
 

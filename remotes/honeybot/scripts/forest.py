@@ -146,7 +146,7 @@ STATION_SEGMENTS = [
                 ),
             },
         ),
-        ("OPTICS_SLOT", {"handshake_wait": 20.0, "claim_grace": 35.0, "timeout": 180.0}),
+        ("OPTICS_SLOT", {"handshake_wait": 25.0, "claim_grace": 45.0, "timeout": 180.0}),
         ("SAY", CURRENT_ARTICLE_BEAT),
         ("CARD", {"label": "TRY SUNPUG.IO\n911 OPTICS", "say": CONSULTING_CTA_BEAT}),
     ],
