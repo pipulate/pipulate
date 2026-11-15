@@ -84,9 +84,9 @@ DEFAULT_OPTICS_SIFT_TEXT = (
 )
 DEFAULT_OPTICS_OUTRO_TEXT = (
     "Every tool you just watched can be yours right now, in this single sitting. "
-    "Go get your own Sun Pug at SunPug.io "
-    "and join us on Discord at Mike Lev dot I N. Slash discord. "
-    "Returning now to the Honeybot Observatory."
+    "Go get your own Sun Pug at Sun Pug dot I O "
+    "and join us on Discord at Mike Lev dot I N slash discord. "
+    "Returning now to the web bot AI Observatory."
 )
 
 
