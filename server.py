@@ -67,7 +67,15 @@ from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
 
 import config as CFG
-from config import get_db_filename, get_app_name, APP_NAME, get_current_environment
+from config import (
+    get_db_filename,
+    get_app_name,
+    APP_NAME,
+    get_current_environment,
+    SERVER_PORT,
+    SERVER_URL,
+    WATCHDOG_ENABLED,
+)
 
 import imports.ascii_displays as aa
 import tools.mcp_tools as mcp_tools
@@ -783,7 +791,7 @@ async def execute_and_respond_to_tool_call(conversation_history: list, mcp_block
 
         logger.info(f"🔧 FINDER_TOKEN: MCP_EXECUTION_START - Tool '{tool_name}' with params: {params}")
         async with aiohttp.ClientSession() as session:
-            url = "http://127.0.0.1:5001/mcp-tool-executor"
+            url = f"http://127.0.0.1:{SERVER_PORT}/mcp-tool-executor"
             payload = {"tool": tool_name, "params": params}
 
             mcp_request_start = time.time()
@@ -4711,16 +4719,16 @@ async def send_startup_environment_message():
             env_message = demo_comeback_message
             logger.info("🎭 DEMO_COMEBACK: Using special demo comeback message as startup message")
         elif current_env == 'Development':
-            env_message = f"🚀 Server started in {env_display} mode on local host colon 5001. Ready for experimentation and testing!"
+            env_message = f"🚀 Server started in {env_display} mode on local host colon {SERVER_PORT}. Ready for experimentation and testing!"
         else:
-            env_message = f"🚀 Server started in {env_display} mode on local host colon 5001. Ready for production use."
+            env_message = f"🚀 Server started in {env_display} mode on local host colon {SERVER_PORT}. Ready for production use."
         # 🎤 Speak it into existence! (unless one-shot quiet-start was requested, e.g. via autognome.py)
         quiet_start = os.environ.pop('PIPULATE_QUIET_START', '').strip().lower() in ('1', 'true', 'yes', 'on')
         if quiet_start:
             logger.info("🔇 Startup voice announcement silenced once (PIPULATE_QUIET_START / --quiet-start)")
         else:
             pronounce = {"DEV": "Developer", "Prod": "Production"}
-            pipulate.speak(f"Server started in {pronounce[env_display]} mode on local host colon 5001.", wait=False)
+            pipulate.speak(f"Server started in {pronounce[env_display]} mode on local host colon {SERVER_PORT}.", wait=False)
 
         # Ensure message queue is ready with retry logic
         max_retries = 3
@@ -4824,7 +4832,7 @@ async def send_startup_environment_message():
                         aa.reading_legend()
                         aa.system_diagram()
                         pipulate.figurate("white_rabbit")
-                        logger.info(f"🌐 OPEN THIS LINK--> http://localhost:5001/ <--OPEN THIS LINK")
+                        logger.info(f"🌐 OPEN THIS LINK--> {SERVER_URL}/ <--OPEN THIS LINK")
 
                         # Mark as sent in coordination system
                         message_coordination['endpoint_messages_sent'].add(message_id)
@@ -5253,7 +5261,7 @@ def check_server_already_running():
     try:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.settimeout(1)
-        result = sock.connect_ex(('localhost', 5001))
+        result = sock.connect_ex(('localhost', SERVER_PORT))
         sock.close()
 
         if result == 0:  # Port is in use
@@ -5265,7 +5273,7 @@ def check_server_already_running():
             slog.console.print("   There is NO NEED to manually start the server.")
             slog.safe_print()
             slog.console.print("🎯 [bold yellow]KEY INSIGHTS:[/bold yellow]")
-            slog.console.print("   • Server running at: [bold cyan]http://localhost:5001[/bold cyan]")
+            slog.console.print(f"   • Server running at: [bold cyan]{SERVER_URL}[/bold cyan]")
             slog.console.print("   • Watchdog auto-restarts on ANY .py file changes")
             slog.console.print("   • Force restart if needed: [bold white]touch server.py[/bold white]")
             slog.console.print("   • Check logs: [bold white]cat logs/server.log[/bold white]")
@@ -5273,7 +5281,7 @@ def check_server_already_running():
             slog.console.print("🤖 [bold magenta]EXPECTED AI RESPONSE:[/bold magenta]")
             slog.console.print('   "I attempted to start the server with `python server.py` but it informed me')
             slog.console.print('    another instance is already running with watchdog auto-restart enabled.')
-            slog.console.print('    No manual restart needed. Server available at http://localhost:5001.')
+            slog.console.print(f'    No manual restart needed. Server available at {SERVER_URL}.')
             slog.console.print('    Use `touch server.py` to trigger restart if testing changes."')
             slog.safe_print()
             slog.console.print("🎣 [bold cyan]TEACH YOURSELF TO FISH - RADICAL TRANSPARENCY SYSTEM:[/bold cyan]")
@@ -5543,27 +5551,36 @@ def run_server_with_watchdog():
     if STATE_TABLES:
         log.startup('State tables enabled', details='Edit server.py and set STATE_TABLES=False to disable')
         print_routes()
-    event_handler = ServerRestartHandler()
-    observer = Observer()
-    observer.schedule(event_handler, path='.', recursive=True)
-    observer.start()
+    observer = None
+    if WATCHDOG_ENABLED:
+        event_handler = ServerRestartHandler()
+        observer = Observer()
+        observer.schedule(event_handler, path='.', recursive=True)
+        observer.start()
+    else:
+        logger.info('🛡️ FINDER_TOKEN: WATCHDOG_DISABLED - File-change auto-restart disabled (PIPULATE_NO_WATCHDOG=1)')
     try:
-        log.startup('Server starting on http://localhost:5001')
-        logger.info('🌐 FINDER_TOKEN: UVICORN_START - Starting uvicorn server on http://localhost:5001')
+        log.startup(f'Server starting on {SERVER_URL}')
+        logger.info(f'🌐 FINDER_TOKEN: UVICORN_START - Starting uvicorn server on {SERVER_URL}')
         # ascii_banner("Digital Workshop Online", "Ready for creative exploration at http://localhost:5001", "bright_green")
         log_level = 'debug' if DEBUG_MODE else 'warning'
         logger.info(f'📊 FINDER_TOKEN: UVICORN_CONFIG - Log level: {log_level}, Access log: {DEBUG_MODE}')
         log_config = {'version': 1, 'disable_existing_loggers': False, 'formatters': {'default': {'()': 'uvicorn.logging.DefaultFormatter', 'fmt': '%(levelprefix)s %(asctime)s | %(message)s', 'use_colors': True}}, 'handlers': {'default': {'formatter': 'default', 'class': 'logging.StreamHandler', 'stream': 'ext://sys.stderr'}}, 'loggers': {'uvicorn': {'handlers': ['default'], 'level': log_level.upper()}, 'uvicorn.error': {'level': log_level.upper()}, 'uvicorn.access': {'handlers': ['default'], 'level': log_level.upper(), 'propagate': False}, 'uvicorn.asgi': {'handlers': ['default'], 'level': log_level.upper(), 'propagate': False}}}
-        uvicorn.run(app, host='0.0.0.0', port=5001, log_level=log_level, access_log=DEBUG_MODE, log_config=log_config)
+        uvicorn.run(app, host='0.0.0.0', port=SERVER_PORT, log_level=log_level, access_log=DEBUG_MODE, log_config=log_config)
     except KeyboardInterrupt:
         log.event('server', 'Server shutdown requested by user')
-        observer.stop()
+        if observer is not None:
+            observer.stop()
     except Exception as e:
         log.error('Server error', e)
-        log.startup('Attempting to restart')
-        restart_server()
+        if WATCHDOG_ENABLED:
+            log.startup('Attempting to restart')
+            restart_server()
+        else:
+            raise
     finally:
-        observer.join()
+        if observer is not None:
+            observer.join()
 
 
 if __name__ == '__main__':

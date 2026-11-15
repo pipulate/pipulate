@@ -369,10 +369,28 @@ sys.path.insert(0, '{os.getcwd()}')'''
 # These constants define the absolute system truths for Pipulate.
 # Use these for deterministic testing, browser automation, and system verification.
 
-# 🌐 Server Configuration (IMMUTABLE)
+def _resolve_server_port(default: int = 5001) -> int:
+    raw = os.environ.get("PIPULATE_PORT", "").strip()
+    if raw.isdigit():
+        port = int(raw)
+        if 1 <= port <= 65535:
+            return port
+    return default
+
+
+def _resolve_watchdog_enabled() -> bool:
+    if os.environ.get("PIPULATE_NO_WATCHDOG", "").strip().lower() in ("1", "true", "yes", "on"):
+        return False
+    if os.environ.get("PIPULATE_WATCHDOG", "").strip().lower() in ("0", "false", "no", "off"):
+        return False
+    return True
+
+
+# 🌐 Server Configuration (Configurable via PIPULATE_PORT / PIPULATE_NO_WATCHDOG)
 SERVER_HOST = "localhost"
-SERVER_PORT = 5001
-SERVER_URL = "http://localhost:5001"
+SERVER_PORT = _resolve_server_port()
+SERVER_URL = f"http://{SERVER_HOST}:{SERVER_PORT}"
+WATCHDOG_ENABLED = _resolve_watchdog_enabled()
 CHAT_ENDPOINT = "/chat"
 MCP_ENDPOINT = "/mcp-tool-executor"
 
