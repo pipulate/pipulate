@@ -2826,7 +2826,7 @@ def run_optics_station_slot(content, env, profile_dir) -> None:
             conjure_patronus("optics_triptych", duration=48.0)
             narrator.say(
                 "Pipulate Prime is running in local workshop mode, and you yourself can be an AI-Readiness consultant right now using your own hardware. "
-                "All it takes is 60 seconds using your Macbook or Windows laptop to grab a Sun Pug seconds at SunPug.io, "
+                "All it takes is 60 seconds using your Macbook or Windows laptop to grab a Sun Pug at SunPug.io. "
                 "911 LLM Optics is our FOSS Screaming Frog for the AI generation: point it at any URL and it stacks sixteen wire-truth lenses side by side — "
                 "raw HTTP response headers, source HTML versus hydrated browser DOM, accessibility trees, token bloat, and RFC 9110 plus RFC 9111 Markdown readiness — "
                 "sealing the entire audit into a SHA-256 archive deed so you can retire $10K/mo pre-render stacks with proof. "
