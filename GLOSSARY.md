@@ -3093,6 +3093,8 @@ Mechanism, from the deed 435 receipts: heal_corpus_mathjax() (--heal-mathjax [--
 #   themselves; a marker word in the variable NAME buys nothing.
 ~~~
 
+- **Never Strip HTML With Multiline <[^>]+> in Markdown TTS** -- *a tag stripper must not span newlines; banked 2026-11-14, deed 1085.* Running `re.sub(r'<[^>]+>', '', text)` over Markdown prose lets `[^>]` match newlines. A bare comparison operator such as `<= 5` then opens a "tag" that stays open until the next arrow (`->`) dozens of lines below, and everything between is deleted. CONVICTION: Storytime read the 2026-11-14 upstream-bot-stream article with two `**Gemini 4 Carbon High**:` speaker headers missing. The stripper in content_loader.py had matched from `(<= 5 files):` to `-> Shannon` and from `/api -> /api/`, deleting 42 lines and both headers, so the AI turns merged into the human voice. THE CURE: strip only tag-shaped spans (`<` followed by a letter, `!` or `/`), and run the strip while inline backticks are still intact so `<=` and `->` inside prose or code survive. `_strip_html_tags_for_tts()` now does this in both content_loader.py and imports/voice_synthesis.py, and terms.py reads `<=` and `>=` aloud. RENT THIS PAYS: it predicts that deleted speaker headers come from a regex whose negated class crosses lines, so check the character class before blaming the speaker-turn logic. WITNESSED at deed 1085: GEMINI_TURNS 3 -> 5 and CLEANED_AI_TURNS 102 -> 104. Sibling of SPEAKER-TURN COLONS & HORIZONTAL WHITESPACE IN TTS REGEXES (another pattern that swallowed newlines) and THE LAST-INCH RULE (a correct article damaged by the stage nearest the listener).
+
 - **The New-B Gradient Rule** -- *expanded rule; banked 2026-07-22.*
 
 ~~~text
