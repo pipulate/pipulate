@@ -479,7 +479,7 @@ _HUMAN_TURN_PREFIX_RE = re.compile(
 )
 _AI_MODEL_MODIFIER_TOKEN = (
     r"(?:\d+(?:\.\d+)*"
-    r"|argon|carbon|neon|helium|krypton|xenon|radon"
+    r"|argon|carbon|hydrogen|nitrogen|oxygen|neon|helium|krypton|xenon|radon"
     r"|pro|flash|ultra|nano|high|medium|low"
     r"|opus|sonnet|haiku|code|user|web|bot"
     r"|thinking|exp|experimental|preview|lite|mini|max|plus|turbo"
@@ -487,7 +487,7 @@ _AI_MODEL_MODIFIER_TOKEN = (
     r"|[a-z][a-z0-9-]{1,15}(?=\s+(?:high|medium|low|pro|flash|ultra|nano|lite|mini|max|plus|thinking|preview|exp)\b))"
 )
 _AI_TURN_PREFIX_RE = re.compile(
-    rf"^\s*(?:(?:gemini|claude|chat\s*g\s*p\s*t|chatgpt|openai|opus|sonnet|shipmunk|chip)\b(?:\s+{_AI_MODEL_MODIFIER_TOKEN}){{0,6}}|a\s*i)\s*:\s*",
+    rf"^\s*(?:(?:gemini|claude|chat\s*g\s*p\s*t|chatgpt|openai|opus|sonnet|grok|shipmunk|chip)\b(?:\s+{_AI_MODEL_MODIFIER_TOKEN}){{0,6}}|a\s*i)\s*:\s*",
     re.IGNORECASE,
 )
 _HOST_TRANSIENT_RE = (
@@ -679,16 +679,16 @@ class Narrator(threading.Thread):
         split_done = False
         for spec in specs:
             txt = (spec.get("text") or "").strip()
-            if not split_done and spec.get("voice") in ("mike", "shipmunk") and len(txt) > 220:
+            if not split_done and spec.get("voice") in ("mike", "shipmunk") and len(txt) > 110:
                 split_pos = None
-                m_sent = re.search(r"(?<!\bMr)(?<!\bMs)(?<!\bDr)(?<!\bvs)[.!?]\s+(?=[A-Z0-9\"'(])", txt[45:255])
+                m_sent = re.search(r"(?<!\bMr)(?<!\bMs)(?<!\bDr)(?<!\bvs)[.!?]\s+(?=[A-Z0-9\"'(*`])", txt[12:170])
                 if m_sent:
-                    split_pos = 45 + m_sent.end()
+                    split_pos = 12 + m_sent.end()
                 else:
-                    m_cl = re.search(r"(?:[;:]\s+|—\s*|,\s+)", txt[65:210])
+                    m_cl = re.search(r"(?:[;:]\s+|—\s*|,\s+)", txt[25:145])
                     if m_cl:
-                        split_pos = 65 + m_cl.end()
-                if split_pos and 40 <= split_pos < (len(txt) - 35):
+                        split_pos = 25 + m_cl.end()
+                if split_pos and 14 <= split_pos < (len(txt) - 25):
                     head = txt[:split_pos].strip()
                     tail = txt[split_pos:].strip()
                     if head and tail:
@@ -936,6 +936,7 @@ class Narrator(threading.Thread):
                     stderr=subprocess.DEVNULL,
                     timeout=30,
                     check=False,
+                    preexec_fn=lambda: os.nice(10),
                 )
             if res.returncode == 0 and os.path.exists(raw_path) and os.path.getsize(raw_path) > 0:
                 return raw_path, actual_rate
@@ -975,13 +976,33 @@ class Narrator(threading.Thread):
             batch.append((raw_path, actual_rate, spec))
         return batch
 
+    def _get_onset_event(self) -> threading.Event:
+        ev = getattr(self, "_onset_event", None)
+        if ev is None:
+            with self._proc_lock:
+                ev = getattr(self, "_onset_event", None)
+                if ev is None:
+                    ev = threading.Event()
+                    self._onset_event = ev
+        return ev
+
+    def wait_for_onset(self, timeout: float = 0.15, settle: float = 0.10) -> None:
+        """Yield 100ms right after aplay spawns so logs.py repaints stage/tour frames before next piper synthesis."""
+        if not self.is_alive() or self.stop_event.is_set() or os.environ.get("HONEYBOT_NO_AUDIO") == "1":
+            return
+        self._get_onset_event().wait(timeout=timeout)
+        if settle > 0 and not self.stop_event.is_set():
+            time.sleep(settle)
+
     def play_specs_raw(self, batch: list) -> None:
-        """Enqueue pre-synthesized (raw_path, actual_rate, spec) items in exact voice-order."""
+        """Enqueue pre-synthesized (raw_path, actual_rate, spec) items and yield briefly at PCM onset."""
+        self._get_onset_event().clear()
         for raw_path, actual_rate, spec in (batch or []):
             if raw_path and os.path.exists(raw_path):
                 self.queue.put(("RAW", str(raw_path), int(actual_rate), spec))
             elif spec.get("text"):
                 self.queue.put(("SPEC", spec))
+        self.wait_for_onset()
 
     def enqueue_specs(self, specs: list) -> None:
         """Enqueue planned utterance specs for live synthesis when pre-rendering is skipped."""
@@ -1206,6 +1227,7 @@ class Narrator(threading.Thread):
                         stderr=subprocess.DEVNULL,
                     )
                     self._active_procs = [p_play]
+                    self._get_onset_event().set()
                 p_play.wait()
             except Exception:
                 pass

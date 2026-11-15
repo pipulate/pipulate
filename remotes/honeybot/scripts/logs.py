@@ -36,6 +36,34 @@ VIEWERS_TTL_SECONDS = 120.0
 STAGE_STATE_PATH = "/tmp/honeybot_stage.json"
 STAGE_STATE_TTL_SECONDS = 900.0
 BASE_APP_TITLE = "Web Bot AI Observatory — https://mikelev.in · https://sunpug.io"
+FOUNDING_COHORT_GOAL = 1000
+
+
+def format_chat_sliver(width: int = 180, spots_left: int = None, jukebox_max: int = None) -> Text:
+    """Render the 1-row bottom chyron: allowlisted chat triggers, Founding-1,000 scarcity, and LinkedIn CTA."""
+    jb_range = f"1..{int(jukebox_max)}" if (jukebox_max and int(jukebox_max) > 0) else "1..N"
+    scarcity_label = f"{int(spots_left)} Spots Left" if (spots_left is not None and int(spots_left) >= 0) else "Founding-1,000"
+    txt = Text(no_wrap=True, overflow="crop")
+    if int(width or 180) < 136:
+        txt.append(" 💬 Chat: ", style="bold #94a3b8")
+        txt.append("911", style="bold #ffd700")
+        txt.append(f" · jukebox {jb_range} · rabbit", style="bold #38bdf8")
+        txt.append(f" │ 🎟 {scarcity_label}: ", style="bold #ffd700")
+        txt.append("mikelev.in/discord", style="bold #7ee787")
+        txt.append(" │ in/mikelevin ", style="bold #38bdf8")
+        return txt
+    txt.append(" 💬 Type in Chat: ", style="bold #94a3b8")
+    txt.append("911", style="bold #ffd700")
+    txt.append(" (Live Optics) · ", style="#cbd5e1")
+    txt.append(f"jukebox {jb_range}", style="bold #38bdf8")
+    txt.append(" · ", style="#cbd5e1")
+    txt.append("rabbit", style="bold #38bdf8")
+    txt.append("  │  ", style="dim #475569")
+    txt.append(f"🎟 Founding-1,000 Guild: {scarcity_label} ➔ ", style="bold #ffd700")
+    txt.append("mikelev.in/discord", style="bold #7ee787")
+    txt.append("  │  Connect: ", style="#94a3b8")
+    txt.append("linkedin.com/in/mikelevin ", style="bold #38bdf8")
+    return txt
 
 
 def format_sunpug_border_banner(width: int = 180) -> str:
@@ -718,26 +746,37 @@ class SonarApp(App):
     }
 
     #log_stream.tour_focus {
-        border: heavy #ffd700;
+        outline: heavy #ffd700;
     }
 
     .stage_box.tour_focus {
         background: #1e293b;
+        outline: heavy #ffd700;
     }
 
     #ticker_bar.tour_focus {
         background: #1e293b;
+        outline: heavy #ffd700;
     }
 
     .half_panel.tour_focus {
-        border: heavy #ffd700;
+        outline: heavy #ffd700;
     }
 
     .panel_header.tour_focus {
-        background: #3b2f00;
-        color: #ffd700;
+        background: #ffd700;
+        color: #051515;
         text-style: bold;
         border-bottom: solid #ffd700;
+    }
+
+    #chat_sliver {
+        height: 1;
+        width: 100%;
+        background: #071118;
+        color: #e2e8f0;
+        content-align: center middle;
+        overflow: hidden;
     }
 
     DataTable {
@@ -786,6 +825,13 @@ class SonarApp(App):
                 import json as _json
                 with open(VIEWERS_FILE_PATH, "r", encoding="utf-8") as vf:
                     data = _json.load(vf)
+                if isinstance(data, dict):
+                    if data.get("spots_left") is not None:
+                        self.spots_left = max(0, int(data["spots_left"]))
+                    elif data.get("discord_members") is not None:
+                        self.spots_left = max(0, FOUNDING_COHORT_GOAL - int(data["discord_members"]))
+                    if data.get("jukebox_max") is not None:
+                        self.jukebox_max = max(0, int(data["jukebox_max"]))
                 if not isinstance(data, dict) or not data.get("running", True):
                     self.live_viewers = None
                     self.peak_viewers = 0
@@ -839,17 +885,36 @@ class SonarApp(App):
             with Vertical(id="md_panel", classes="half_panel"):
                 yield Label(MD_PANEL_TITLE, id="md_header", classes="panel_header")
                 yield DataTable(id="md_table")
-        # ----------------------------------------
-            
-        # yield Footer()
+        yield Static(format_chat_sliver(180), id="chat_sliver")
+
+    def refresh_chat_sliver(self, width: int = None) -> None:
+        """Update #chat_sliver in O(1) only when width, spots_left, or jukebox_max changes."""
+        try:
+            w = int(width or self.size.width or shutil.get_terminal_size((180, 48)).columns)
+        except Exception:
+            w = 180
+        sig = (w, getattr(self, "spots_left", None), getattr(self, "jukebox_max", None))
+        if sig == getattr(self, "_chat_sliver_sig", None):
+            return
+        self._chat_sliver_sig = sig
+        try:
+            self.query_one("#chat_sliver", Static).update(
+                format_chat_sliver(w, spots_left=sig[1], jukebox_max=sig[2])
+            )
+        except Exception:
+            pass
 
     def on_mount(self) -> None:
         self.ua_counter = Counter()
         self.countdown_str = "--:--"
         self.viewers_mtime = None
         self.live_viewers = None
+        self.spots_left = None
+        self.jukebox_max = None
+        self._chat_sliver_sig = None
         self.title = self.get_app_title()
         self.sub_title = self.get_sub_title()
+        self.refresh_chat_sliver()
         self.spoof_flip = False
         self.verified_tokens = {"ExaSearchBot", "AhrefsBot", "DesearchBot"}
         self.stream_logs()
@@ -1009,8 +1074,16 @@ class SonarApp(App):
             if pair is None:
                 self.update_hud_tour_focus("")
                 return False
+            prev_visual = (
+                getattr(self, "left_stage_state", None),
+                getattr(self, "right_stage_state", None),
+                getattr(self, "hud_tour_focus", ""),
+            )
+            focus_val = extract_hud_focus_from_payload(self.stage_payload, now=now)
             self.update_stage_boxes(pair[0], pair[1])
-            self.update_hud_tour_focus(extract_hud_focus_from_payload(self.stage_payload, now=now))
+            self.update_hud_tour_focus(focus_val)
+            if (pair[0], pair[1], focus_val) != prev_visual:
+                self.refresh(repaint=True, layout=False)
             return True
         except Exception:
             return False
@@ -1517,9 +1590,10 @@ class SonarApp(App):
         if self.title != new_title:
             self.title = new_title
         self.sub_title = self.get_sub_title() # Trigger header update
+        self.refresh_chat_sliver()
 
     def _trigger_hud_bottom_bump(self, target: str, active_table: DataTable, max_y: int):
-        """Flash the active HUD header/table gold and perform a 1-row recoil bounce on hitting bottom."""
+        """Highlight the active HUD header/table cleanly and hold steady at bottom without recoil jitter."""
         self.hud_bump_active = True
         header_id = "#js_header" if target == "js" else "#md_header"
         bump_title = JS_BUMP_TITLE if target == "js" else MD_BUMP_TITLE
@@ -1530,20 +1604,6 @@ class SonarApp(App):
             active_table.add_class("hit_bottom")
         except Exception:
             pass
-        if max_y > 0:
-            recoil_y = max(0, max_y - 1)
-            self.set_timer(
-                0.06,
-                lambda: active_table.scroll_to(y=recoil_y, animate=False)
-                if getattr(self, "hud_bump_active", False) and self.hud_scroll_target == target
-                else None,
-            )
-            self.set_timer(
-                0.12,
-                lambda: active_table.scroll_to(y=max_y, animate=False)
-                if getattr(self, "hud_bump_active", False) and self.hud_scroll_target == target
-                else None,
-            )
 
     def _clear_hud_bottom_bump(self):
         """Clear bottom-hit flash classes and restore standard HUD headers before baton handoff."""
@@ -1578,7 +1638,7 @@ class SonarApp(App):
 
     def scroll_hud_tables(self):
         """Protected 3-phase HUD cadence: scroll left ('js'), hold 2.5s, scroll right ('md'), hold 2.5s, relax 30s."""
-        if self._is_stage_frozen():
+        if self._is_stage_frozen() or getattr(self, "hud_tour_focus", ""):
             return
 
         now_mono = time.monotonic()
