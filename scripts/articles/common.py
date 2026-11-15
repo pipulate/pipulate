@@ -1911,7 +1911,7 @@ def _walk_dicts(node):
 _YTWATCH_RESERVED_ACTIONS = {
     "start", "stop", "status", "restart", "daemon", "kill",
     "attach", "log", "logs", "tail", "tmux", "reset", "reset-peak",
-    "chime", "clear", "clear-max",
+    "chime", "clear", "clear-max", "dwell",
 }
 
 
@@ -2321,6 +2321,7 @@ def _sustained_viewer_count(dwell_window, now_ts, dwell_secs):
 
 SPOKEN_ALERT_TABLE = {
     "viewers_threshold": "Web Bot Observatory alert. YouTube concurrent viewers reached {count}, meeting the summon threshold of {min_viewers}.",
+    "viewers_dwell": "YouTube viewer sustained for {dwell_secs} seconds, {count} watching now.",
     "viewers_above_2": "Web Bot Observatory alert. YouTube concurrent viewers climbed above two, now at {count}.",
     "live_comment": "Web Bot Observatory alert. A new comment was posted on the live stream by {author}.",
     "discord_member": "Web Bot Observatory alert. A new founding member joined the Discord server, now at {count} of {goal}.",
@@ -2375,8 +2376,8 @@ def _ensure_local_piper_model():
     return None
 
 
-def _speak_local_alert(text, enabled=True):
-    """Speak an alert out loud on Pipulate Prime using Piper TTS after ding.wav."""
+def _speak_local_alert(text, enabled=True, delay=0.45):
+    """Speak an alert out loud on Pipulate Prime using native 16 kHz Piper TTS."""
     if not enabled or not text:
         return
     import shutil
@@ -2392,9 +2393,10 @@ def _speak_local_alert(text, enabled=True):
     clean_text = " ".join(clean_text.split())[:220]
     if not clean_text:
         return
+    delay_s = max(0.0, float(delay))
     worker_code = (
         "import os, shutil, subprocess, sys, time; "
-        "time.sleep(0.45); "
+        f"time.sleep({delay_s:.2f}); "
         "wav = f'/tmp/pipulate_alert_{os.getpid()}.wav'; "
         "subprocess.run([sys.argv[2], '--model', sys.argv[3], '--output_file', wav], "
         "input=sys.argv[1].encode('utf-8'), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL); "
@@ -2463,6 +2465,41 @@ def _resolve_yt_clear_max(override=None) -> int:
     return YT_VIEWER_CLEAR_MAX
 
 
+def _resolve_yt_dwell_secs(override=None) -> int:
+    """Resolve N-second sustained dwell required before Piper TTS announces a viewer."""
+    if override is not None:
+        return max(0, int(override))
+    for raw in (
+        os.environ.get("PIPULATE_YT_VIEWER_DWELL", ""),
+        _load_vault_env().get("PIPULATE_YT_VIEWER_DWELL", ""),
+    ):
+        s = str(raw).strip()
+        if s and s.lstrip("-").isdigit():
+            return max(0, int(s))
+    return max(0, int(YT_VIEWER_ALERT_DWELL))
+
+
+def _resolve_yt_alert_min(clear_max_val=None) -> int:
+    """Resolve viewer count required for dwell speech (explicit PIPULATE_YT_VIEWER_MIN or clear_max + 1)."""
+    for raw in (
+        os.environ.get("PIPULATE_YT_VIEWER_MIN", ""),
+        _load_vault_env().get("PIPULATE_YT_VIEWER_MIN", ""),
+    ):
+        s = str(raw).strip()
+        if s and s.isdigit():
+            return max(1, int(s))
+    if clear_max_val is not None and int(clear_max_val) >= 0:
+        return max(1, int(clear_max_val) + 1)
+    return max(1, int(YT_VIEWER_ALERT_MIN))
+
+
+def should_ring_quiet_arrive(prev_viewers: int, cur_viewers: int, clear_max: int = YT_VIEWER_CLEAR_MAX) -> bool:
+    """True when concurrent viewers climb from <= clear_max into > clear_max (inverse of clear)."""
+    if int(clear_max) < 0:
+        return False
+    return int(prev_viewers) <= int(clear_max) < int(cur_viewers)
+
+
 def should_ring_quiet_clear(prev_viewers: int, cur_viewers: int, clear_max: int = YT_VIEWER_CLEAR_MAX) -> bool:
     """True when concurrent viewers drop from above clear_max into <= clear_max (edge-triggered)."""
     if int(clear_max) < 0:
@@ -2470,19 +2507,11 @@ def should_ring_quiet_clear(prev_viewers: int, cur_viewers: int, clear_max: int 
     return int(prev_viewers) > int(clear_max) >= int(cur_viewers)
 
 
-def _ensure_quiet_clear_wav():
-    """Ensure a gentle descending G5->C5 'studio all-clear' WAV exists in ~/.local/share/pipulate/."""
+def _synthesize_two_note_marimba_wav(out_path: Path, notes: tuple):
+    """Synthesize a 16-bit 22,050 Hz two-note marimba WAV atomically via stdlib wave."""
     import array
     import math
     import wave
-    repo_root = Path(__file__).resolve().parents[2]
-    for custom in (
-        Path.home() / ".local/share/pipulate/clear.wav",
-        repo_root / "assets/sounds/clear.wav",
-    ):
-        if custom.is_file() and custom.stat().st_size > 44:
-            return custom
-    out_path = Path.home() / ".local/share/pipulate/quiet_clear.wav"
     if out_path.is_file() and out_path.stat().st_size > 1000:
         return out_path
     try:
@@ -2490,10 +2519,6 @@ def _ensure_quiet_clear_wav():
         sample_rate = 22050
         duration = 0.52
         n_samples = int(sample_rate * duration)
-        notes = (
-            (0.00, 0.20, 783.99, 13.0, 0.34),
-            (0.17, 0.52, 523.25, 8.0, 0.38),
-        )
         samples = array.array("h", [0] * n_samples)
         two_pi = 2.0 * math.pi
         for i in range(n_samples):
@@ -2523,13 +2548,48 @@ def _ensure_quiet_clear_wav():
         return None
 
 
-def _play_local_clear_chime(enabled=True, spoken_text=None):
-    """Play the descending G5->C5 quiet-studio chime locally on Prime when viewers clear."""
+def _ensure_quiet_clear_wav():
+    """Ensure a gentle descending G5->C5 'studio all-clear' WAV exists in ~/.local/share/pipulate/."""
+    repo_root = Path(__file__).resolve().parents[2]
+    for custom in (
+        Path.home() / ".local/share/pipulate/clear.wav",
+        repo_root / "assets/sounds/clear.wav",
+    ):
+        if custom.is_file() and custom.stat().st_size > 44:
+            return custom
+    return _synthesize_two_note_marimba_wav(
+        Path.home() / ".local/share/pipulate/quiet_clear.wav",
+        (
+            (0.00, 0.20, 783.99, 13.0, 0.34),
+            (0.17, 0.52, 523.25, 8.0, 0.38),
+        ),
+    )
+
+
+def _ensure_quiet_arrive_wav():
+    """Ensure a gentle ascending C5->G5 'viewer arrival' WAV exists in ~/.local/share/pipulate/."""
+    repo_root = Path(__file__).resolve().parents[2]
+    for custom in (
+        Path.home() / ".local/share/pipulate/arrive.wav",
+        repo_root / "assets/sounds/arrive.wav",
+    ):
+        if custom.is_file() and custom.stat().st_size > 44:
+            return custom
+    return _synthesize_two_note_marimba_wav(
+        Path.home() / ".local/share/pipulate/quiet_arrive.wav",
+        (
+            (0.00, 0.20, 523.25, 13.0, 0.32),
+            (0.17, 0.52, 783.99, 8.0, 0.36),
+        ),
+    )
+
+
+def _play_local_wav_nonblocking(sound_path, enabled=True, spoken_text=None):
+    """Play a local WAV file non-blockingly on Prime via PipeWire/PulseAudio/ALSA/macOS."""
     if not enabled:
         return None
     import shutil
     import subprocess
-    sound_path = _ensure_quiet_clear_wav()
     if sound_path:
         for player_cmd in (["pw-play"], ["paplay"], ["aplay", "-q"], ["afplay"]):
             if shutil.which(player_cmd[0]):
@@ -2545,6 +2605,16 @@ def _play_local_clear_chime(enabled=True, spoken_text=None):
     if spoken_text:
         _speak_local_alert(spoken_text, enabled=enabled)
     return sound_path
+
+
+def _play_local_clear_chime(enabled=True, spoken_text=None):
+    """Play the descending G5->C5 quiet-studio chime locally on Prime when viewers clear."""
+    return _play_local_wav_nonblocking(_ensure_quiet_clear_wav(), enabled=enabled, spoken_text=spoken_text)
+
+
+def _play_local_arrive_chime(enabled=True, spoken_text=None):
+    """Play the ascending C5->G5 soft arrival chime locally on Prime when a viewer arrives."""
+    return _play_local_wav_nonblocking(_ensure_quiet_arrive_wav(), enabled=enabled, spoken_text=spoken_text)
 
 
 def _manage_ytwatch_daemon(action, interval=30, channel=None, clear_max=None):
@@ -2840,6 +2910,8 @@ def run_youtube_watch(
     daemon_action=None,
     dry_run=False,
     clear_max=None,
+    dwell=None,
+    chime_dir=None,
 ):
     """Check or continuously monitor YouTube Live viewers + chat/comments on Prime."""
     import subprocess
@@ -2876,14 +2948,45 @@ def run_youtube_watch(
         return _manage_ytwatch_daemon("restart", interval=interval, channel=channel)
     if daemon_action == "chime":
         eff_cm = _resolve_yt_clear_max(clear_max)
-        wav_p = _ensure_quiet_clear_wav()
+        up_p = _ensure_quiet_arrive_wav()
+        dn_p = _ensure_quiet_clear_wav()
+        mode_c = (chime_dir or "both").strip().lower()
+        prefix_c = "[DRY RUN] " if dry_run else ""
+        cm_s = "off" if eff_cm < 0 else str(eff_cm)
+        if mode_c in ("up", "arrive", "+"):
+            if not dry_run:
+                _play_local_arrive_chime(ding)
+            print(f"🔵 {prefix_c}Quiet-studio up-chime (C5->G5): {up_p} (active clear_max={cm_s})")
+            return 0 if up_p else 1
+        if mode_c in ("down", "clear", "-"):
+            if not dry_run:
+                _play_local_clear_chime(ding)
+            print(f"🟢 {prefix_c}Quiet-studio down-chime (G5->C5): {dn_p} (active clear_max={cm_s})")
+            return 0 if dn_p else 1
         if not dry_run:
+            _play_local_arrive_chime(ding)
+            time.sleep(0.65)
             _play_local_clear_chime(ding)
         print(
-            f"🟢 {'[DRY RUN] ' if dry_run else ''}Quiet-studio down-chime: {wav_p} "
-            f"(active clear_max={'off' if eff_cm < 0 else eff_cm})"
+            f"🎶 {prefix_c}Calm-studio bounce pair: up={up_p} (C5->G5) -> down={dn_p} (G5->C5) "
+            f"(active clear_max={cm_s}, dwell={_resolve_yt_dwell_secs(dwell)}s)"
         )
-        return 0 if wav_p else 1
+        return 0 if (up_p and dn_p) else 1
+    if daemon_action == "dwell":
+        if dwell is not None:
+            eff_dw = max(0, int(dwell))
+            if not dry_run:
+                _save_vault_var("PIPULATE_YT_VIEWER_DWELL", str(eff_dw))
+            print(
+                f"⏳ {'[DRY RUN] Would set' if dry_run else 'Saved'} PIPULATE_YT_VIEWER_DWELL={eff_dw}s "
+                "(Piper TTS speaks only after sustained dwell; viewer_ntfy=off; live daemon adopts automatically)."
+            )
+            return 0
+        print(
+            f"⏳ Calm-studio Piper TTS dwell threshold: dwell={_resolve_yt_dwell_secs()}s | viewer_ntfy=off "
+            "(Usage: `ytwatch dwell 60` | `ytwatch dwell 30` | `ytwatch chime [up|down]`)"
+        )
+        return 0
     if daemon_action == "clear":
         if clear_max is not None:
             if not dry_run:
@@ -2897,13 +3000,18 @@ def run_youtube_watch(
             return 0
         eff_cm = _resolve_yt_clear_max()
         print(
-            f"🟢 Quiet-studio down-chime threshold: clear_max={'off' if eff_cm < 0 else eff_cm} "
-            "(Usage: `ytwatch clear 1` self-monitoring | `ytwatch clear 0` away | `ytwatch clear off` | `ytwatch chime`)"
+            f"🟢 Quiet-studio chime threshold: clear_max={'off' if eff_cm < 0 else eff_cm} "
+            "(Usage: `ytwatch clear 1` self-monitoring | `ytwatch clear 0` away | `ytwatch clear off` | `ytwatch chime [up|down]`)"
         )
         return 0
     if daemon_action in ("daemon", "start", "restart", "stop", "status", "attach"):
+        if dwell is not None and not dry_run and daemon_action in ("daemon", "start", "restart"):
+            _save_vault_var("PIPULATE_YT_VIEWER_DWELL", str(max(0, int(dwell))))
         if dry_run:
-            print(f"📡 [DRY RUN] ytwatch daemon_action={daemon_action} | interval={interval} | clear_max={_resolve_yt_clear_max(clear_max)}")
+            print(
+                f"📡 [DRY RUN] ytwatch daemon_action={daemon_action} | interval={interval} | "
+                f"clear_max={_resolve_yt_clear_max(clear_max)} | dwell={_resolve_yt_dwell_secs(dwell)}s | viewer_ntfy=off"
+            )
             return 0
         return _manage_ytwatch_daemon(daemon_action, interval=interval, channel=channel, clear_max=clear_max)
     if channel and channel.strip().lower().lstrip("@") not in _YTWATCH_RESERVED_ACTIONS:
@@ -2919,9 +3027,11 @@ def run_youtube_watch(
         ok = (parsed.get("videoDetails") or {}).get("videoId") == "test1234567"
         t_label = "configured" if resolved_topic else "unconfigured"
         eff_cm_dry = _resolve_yt_clear_max(clear_max)
+        eff_dw_dry = _resolve_yt_dwell_secs(dwell)
+        eff_min_dry = _resolve_yt_alert_min(eff_cm_dry)
         print(
-            f"📡 [DRY RUN] YouTube Watch: channel={resolved_channel} | min_viewers={YT_VIEWER_ALERT_MIN} | "
-            f"clear_max={eff_cm_dry} | dwell={YT_VIEWER_ALERT_DWELL}s | "
+            f"📡 [DRY RUN] YouTube Watch: channel={resolved_channel} | min_viewers={eff_min_dry} | "
+            f"clear_max={eff_cm_dry} | dwell={eff_dw_dry}s | viewer_ntfy=off | "
             f"discord={DISCORD_INVITE_CODE} (goal={DISCORD_FOUNDING_GOAL}) | ntfy={t_label} | parser_ok={ok}"
         )
         return 0 if ok else 1
@@ -2970,10 +3080,12 @@ def run_youtube_watch(
     d_str = " | daemon=RUNNING" if daemon_running else ""
     v_src = f"api={state.get('api_viewers')}, html={state.get('html_viewers')}"
     eff_cm_banner = _resolve_yt_clear_max(clear_max)
+    eff_dw_banner = _resolve_yt_dwell_secs(dwell)
+    eff_min_banner = _resolve_yt_alert_min(eff_cm_banner)
     cm_banner_s = "off" if eff_cm_banner < 0 else f"<={eff_cm_banner}"
     print(
         f"[{_ytlog_ts()}] 📡 YouTube Watch: LIVE={'yes' if state['is_live'] else 'no'} | "
-        f"video={state['video_id'] or 'NONE'} | viewers={state['concurrent_viewers']} ({v_src}; alert>={YT_VIEWER_ALERT_MIN} for {YT_VIEWER_ALERT_DWELL}s, clear{cm_banner_s}) | "
+        f"video={state['video_id'] or 'NONE'} | viewers={state['concurrent_viewers']} ({v_src}; tts>={eff_min_banner} for {eff_dw_banner}s, clear{cm_banner_s}, viewer_ntfy=off) | "
         f"chat_items={len(state['chat_messages'])}{c_str}{disc_str}{d_str} | title={state['title']!r}"
     )
     if not loop:
@@ -3028,12 +3140,26 @@ def run_youtube_watch(
             return True
         return False
 
+    def _check_quiet_arrive(prev_v, cur_v):
+        eff_cm = _resolve_yt_clear_max(clear_max)
+        if should_ring_quiet_arrive(prev_v, cur_v, eff_cm):
+            eff_dw = _resolve_yt_dwell_secs(dwell)
+            print(
+                f"[{_ytlog_ts()}] 🔵 [VIEWER ARRIVE] Viewers climbed {prev_v} -> {cur_v} "
+                f"(> clear_max={eff_cm}) — soft C5->G5 chime (TTS after {eff_dw}s dwell)",
+                flush=True,
+            )
+            _play_local_arrive_chime(ding)
+            return True
+        return False
+
     if state["is_live"] and state["concurrent_viewers"] > prev_viewers:
         print(
             f"[{_ytlog_ts()}] 📈 [VIEWER +{state['concurrent_viewers'] - prev_viewers}] "
             f"{prev_viewers} -> {state['concurrent_viewers']} watching",
             flush=True,
         )
+        _check_quiet_arrive(prev_viewers, state["concurrent_viewers"])
         _trigger_ytwatch_weebo()
     elif state["is_live"] and state["concurrent_viewers"] < prev_viewers:
         print(
@@ -3044,7 +3170,8 @@ def run_youtube_watch(
         _check_quiet_clear(prev_viewers, state["concurrent_viewers"])
     prev_viewers = state["concurrent_viewers"]
     init_ts = time.time()
-    dwell_window = [(init_ts, state["concurrent_viewers"])] if state["concurrent_viewers"] >= YT_VIEWER_ALERT_MIN else []
+    init_min_v = _resolve_yt_alert_min(_resolve_yt_clear_max(clear_max))
+    dwell_window = [(init_ts, state["concurrent_viewers"])] if state["concurrent_viewers"] >= init_min_v else []
     _save_ytwatch_state({
         "video_id": state["video_id"],
         "title": state.get("title") or "",
@@ -3061,52 +3188,47 @@ def run_youtube_watch(
     sub_polls = max(1, full_interval // fast_step)
     print(
         f"[{_ytlog_ts()}] 🔭 Watching {resolved_channel} (fast InnerTube pulse every {fast_step}s, "
-        f"full HTML+chat sync every {full_interval}s, dwell={YT_VIEWER_ALERT_DWELL}s)..."
+        f"full HTML+chat sync every {full_interval}s, dwell={_resolve_yt_dwell_secs(dwell)}s, "
+        f"clear_max={_resolve_yt_clear_max(clear_max)}, viewer_ntfy=off)..."
     )
     print(f"[{_ytlog_ts()}] 💡 [HOW TO EXIT TMUX WITHOUT STOPPING]: Press 'q' OR press Ctrl+b, release, then press d")
 
     def _check_dwell(v_now, ts_now):
         nonlocal dwell_window, alerted_in_run, peak_viewers, last_viewer_alert
-        if v_now >= YT_VIEWER_ALERT_MIN:
+        eff_min = _resolve_yt_alert_min(_resolve_yt_clear_max(clear_max))
+        eff_dwell = _resolve_yt_dwell_secs(dwell)
+        if v_now >= eff_min:
             dwell_window.append((ts_now, v_now))
-            cutoff_ts = ts_now - max(YT_VIEWER_ALERT_DWELL * 3, int(interval) * 4)
+            cutoff_ts = ts_now - max(eff_dwell * 3, int(interval) * 4)
             dwell_window = [(ts, v) for ts, v in dwell_window if ts >= cutoff_ts]
-            if len(dwell_window) == 1 and YT_VIEWER_ALERT_DWELL > 0:
+            if len(dwell_window) == 1 and eff_dwell > 0:
                 print(
-                    f"[{_ytlog_ts()}] ⏳ [VIEWER DWELL] {v_now} watching (min={YT_VIEWER_ALERT_MIN}) — "
-                    f"holding {YT_VIEWER_ALERT_DWELL}s to confirm they stick around...",
+                    f"[{_ytlog_ts()}] ⏳ [VIEWER DWELL] {v_now} watching (min={eff_min}) — "
+                    f"holding {eff_dwell}s before Piper TTS speaks...",
                     flush=True,
                 )
-            sustained = _sustained_viewer_count(dwell_window, ts_now, YT_VIEWER_ALERT_DWELL)
+            sustained = _sustained_viewer_count(dwell_window, ts_now, eff_dwell)
             cooldown_ok = (ts_now - last_viewer_alert) > YT_VIEWER_ALERT_COOLDOWN
-            if sustained >= YT_VIEWER_ALERT_MIN and (not alerted_in_run or sustained > peak_viewers) and cooldown_ok:
+            if sustained >= eff_min and (not alerted_in_run or sustained > peak_viewers) and cooldown_ok:
                 alerted_in_run = True
                 peak_viewers = max(peak_viewers, sustained)
                 last_viewer_alert = ts_now
                 dwell_elapsed = int(round(ts_now - dwell_window[0][0]))
                 alert_msg = (
-                    f"{v_now} watching now (sustained >={dwell_elapsed}s, min={YT_VIEWER_ALERT_MIN}) — "
+                    f"{v_now} watching now (sustained >={dwell_elapsed}s, min={eff_min}) — "
                     f"{state['title']}"
                 )
-                print(f"[{_ytlog_ts()}] 👀 [VIEWER] {alert_msg}", flush=True)
-                spoken_v = SPOKEN_ALERT_TABLE["viewers_threshold"].format(
-                    count=v_now, min_viewers=YT_VIEWER_ALERT_MIN
+                print(f"[{_ytlog_ts()}] 🗣️ [VIEWER DWELL MET] {alert_msg} (Piper TTS spoken; viewer_ntfy=off)", flush=True)
+                spoken_v = SPOKEN_ALERT_TABLE["viewers_dwell"].format(
+                    dwell_secs=max(eff_dwell, dwell_elapsed), count=v_now
                 )
-                _play_local_ding(ding, spoken_text=spoken_v)
-                if resolved_topic:
-                    send_ntfy_notification(
-                        alert_msg,
-                        title="👀 Honeybot Live Viewer",
-                        priority="default",
-                        tags="eyes",
-                        topic=resolved_topic,
-                    )
+                _speak_local_alert(spoken_v, enabled=ding, delay=0.0)
         else:
-            if dwell_window and not alerted_in_run and YT_VIEWER_ALERT_DWELL > 0:
+            if dwell_window and not alerted_in_run and eff_dwell > 0:
                 dwell_elapsed = int(round(ts_now - dwell_window[0][0]))
                 print(
-                    f"[{_ytlog_ts()}] 💨 [VIEWER DWELL] Dropped to {v_now} after {dwell_elapsed}s "
-                    f"(<{YT_VIEWER_ALERT_DWELL}s dwell) — notification suppressed.",
+                    f"[{_ytlog_ts()}] 💨 [QUICK BOUNCE] Dropped to {v_now} after {dwell_elapsed}s "
+                    f"(<{eff_dwell}s dwell) — Piper TTS suppressed.",
                     flush=True,
                 )
             dwell_window.clear()
@@ -3164,11 +3286,13 @@ def run_youtube_watch(
                 fast_ts = time.time()
                 reset_fired = _sync_external_peak_reset(fast_v, poll_vid)
                 peak_viewers = max(peak_viewers, int(fast_v))
+                changed_fast = (fast_v != prev_viewers)
                 if fast_v > prev_viewers:
                     print(
                         f"[{_ytlog_ts()}] ⚡ [FAST VIEWER +{fast_v - prev_viewers}] {prev_viewers} -> {fast_v} watching ({fast_step}s InnerTube pulse)",
                         flush=True,
                     )
+                    _check_quiet_arrive(prev_viewers, fast_v)
                     _trigger_ytwatch_weebo()
                 elif fast_v < prev_viewers:
                     print(
@@ -3176,10 +3300,28 @@ def run_youtube_watch(
                         flush=True,
                     )
                     _check_quiet_clear(prev_viewers, fast_v)
-                if fast_v != prev_viewers or reset_fired:
+                if changed_fast or reset_fired:
                     _sync_honeybot_viewers(fast_v, running=True, video_id=poll_vid, peak=peak_viewers, push_remote=True)
                 prev_viewers = fast_v
                 _check_dwell(fast_v, fast_ts)
+                if changed_fast:
+                    _save_ytwatch_state({
+                        "video_id": state.get("video_id") or last_live_vid,
+                        "title": state.get("title") or last_live_title,
+                        "concurrent_viewers": fast_v,
+                        "peak_viewers": peak_viewers,
+                        "peak_reset_at": active_peak_reset_at,
+                        "hb_reading_trigger": hb_reading_trigger,
+                        "hb_stage_article": hb_stage_article,
+                        "last_referral_ts": persisted.get("last_referral_ts", int(fast_ts)),
+                        "alerted_in_run": alerted_in_run,
+                        "comment_count": prev_comments,
+                        "discord_members": prev_discord_members,
+                        "last_viewer_alert": last_viewer_alert,
+                        "seen_ids": list(seen_ids)[-500:],
+                        "updated_at": int(fast_ts),
+                    })
+                    state_file_mtime = YTWATCH_STATE_FILE.stat().st_mtime if YTWATCH_STATE_FILE.is_file() else 0.0
             time.sleep(fast_step)
             poll_ts = time.time()
             try:
@@ -3214,6 +3356,8 @@ def run_youtube_watch(
                     f"[{_ytlog_ts()}] 📈 [VIEWER +{viewers - prev_viewers}] {prev_viewers} -> {viewers} watching ({src_cmp})",
                     flush=True,
                 )
+                if state["is_live"]:
+                    _check_quiet_arrive(prev_viewers, viewers)
                 _trigger_ytwatch_weebo()
             elif viewers < prev_viewers:
                 print(
@@ -4366,6 +4510,12 @@ if __name__ == "__main__":
         help="Max concurrent viewers for 'studio clear' down-chime (default: PIPULATE_YT_CLEAR_MAX or 1; 0 when away; -1 disables).",
     )
     parser.add_argument(
+        "--dwell",
+        type=int,
+        default=None,
+        help="Seconds concurrent viewers must sustain before Piper TTS speaks (default: PIPULATE_YT_VIEWER_DWELL or 60).",
+    )
+    parser.add_argument(
         "--daemon",
         action="store_true",
         help="Start ytwatch --loop in a detached background tmux session ('ytwatch').",
@@ -4481,6 +4631,8 @@ if __name__ == "__main__":
         watch_loop = cli_args.loop
         watch_interval = cli_args.interval
         watch_clear_max = cli_args.clear_max
+        watch_dwell = cli_args.dwell
+        watch_chime_dir = None
         daemon_act = "stop" if cli_args.stop else ("daemon" if cli_args.daemon else None)
         if cli_args.message:
             first_arg = cli_args.message[0].strip().lower()
@@ -4490,6 +4642,14 @@ if __name__ == "__main__":
                 daemon_act = "reset"
             elif first_arg == "chime":
                 daemon_act = "chime"
+                if len(cli_args.message) > 1:
+                    watch_chime_dir = cli_args.message[1].strip().lower()
+            elif first_arg == "dwell":
+                daemon_act = "dwell"
+                if len(cli_args.message) > 1 and watch_dwell is None:
+                    arg2 = cli_args.message[1].strip()
+                    if arg2.lstrip("-").isdigit():
+                        watch_dwell = max(0, int(arg2))
             elif first_arg in ("clear", "clear-max"):
                 daemon_act = "clear"
                 if len(cli_args.message) > 1 and watch_clear_max is None:
@@ -4521,6 +4681,8 @@ if __name__ == "__main__":
                 daemon_action=daemon_act,
                 dry_run=cli_args.dry_run,
                 clear_max=watch_clear_max,
+                dwell=watch_dwell,
+                chime_dir=watch_chime_dir,
             )
         )
     if cli_args.broadcast == "top":
