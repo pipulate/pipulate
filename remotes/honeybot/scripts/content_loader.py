@@ -976,7 +976,7 @@ def clean_markdown(text, label=None, census=True):
     # was harmless while nothing stripped them -- and becomes self-deleting the
     # instant the side-channel stripper below lands. Brackets are the notation
     # for "do not speak this," so a cue meant to be HEARD must not wear them.
-    text = text.replace(CODE_SENTINEL, 'See the code at Mike L E V dot eye N slash latest.')
+    text = text.replace(CODE_SENTINEL, 'See the code at Mike L E V dot I N slash latest.')
     # Global cap: no article should repeat this more than once.
     spoken = 'See the code at Mike L E V dot eye N slash latest.'
     if text.count(spoken) > 1:
