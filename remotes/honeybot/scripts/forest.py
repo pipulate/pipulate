@@ -65,7 +65,7 @@ CONSULTING_CTA_BEAT = (
     "Just like Mobile-First Responsive Web Design created a decade of consulting in the 2010s, "
     "serving HTML to browsers and clean RFC 9110 Markdown to AI agents from one URL — cached via RFC 9111 Vary Accept alongside clean sitemap.xml and llms.txt feeds — "
     "buys every enterprise twelve months of cover to retire six-figure SEO crawlers and $10K/mo JavaScript pre-render middleware while rebuilding their origin as a three-hop Markdown feed. "
-    "All it takes is Nix on a NIC: use your Macbook or Windows laptop into a transparent, FOSS AI-Readiness workstation in sixty seconds at SunPug.io, "
+    "All it takes is 60 seconds using your Macbook or Windows laptop to grab a Sun Pug seconds at SunPug.io, "
     "or connect for enterprise ADNS and edge architecture at mikelev.in/discord."
 )
 
