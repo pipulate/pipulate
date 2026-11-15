@@ -1833,21 +1833,7 @@ apply.py
 # § THE DECLARED-FIXTURE RELIEF VALVE (banked 2026-08-28) -- Exempt a synthetic secret-scan fixture only when its marker occurs inside the matched credential value, never in the variable name or elsewhere on the line, and print every exemption so a live secret cannot pass silently.
 # § THE NAME IS NOT THE VALUE (banked 2026-08-28) -- Apply fixture exemptions to the credential value alone, separating it from any assignment name at the first equals sign or colon, and put fixture markers inside the value rather than relying on a marker in the variable name.
 # § THE LOCATOR THAT POINTED AT NOTHING (banked 2026-08-28) -- Make a refusal locate evidence in an existing source file or section marker, with an explicit pre-section fallback, rather than pointing to an output artifact that the refusal prevented from being written.
-# - TODO (banked 2026-08-28, census-scoped, LATENT NOT OUTAGE): 18 published
-#   articles carry 52 credential-shaped strings; NONE blocks anything until it
-#   rides in a payload. Bulk is generic-assignment config-shape prose (29 hits
-#   across 13 files) plus one 17-hit Slack cluster in
-#   2026-08-03-debugging-self-referential-prompt-guards.md -- all fixture
-#   candidates. TWO LINES NEED A HUMAN EYE, because an Anthropic-shaped value
-#   and an uppercase secret-named assignment matched the SAME line:
-#   2026-02-16-digital-sovereignty-secured-openclaw-nixos-claude-code-bridge.md
-#   line 813, and 2026-02-16-openclaw-nixos-claude-opus-4-6-golden-master-test.md
-#   line 646. Read them locally with sed; NEVER echo them into a payload, or
-#   the probe hands the gate a reason to block the compile being used to fix
-#   it. Fixture -> add a marker word inside the value BY HAND (several of these
-#   articles quote patch-protocol markers, so DELIMITER COLLISION class, vim
-#   only). Real -> sed is NOT the fix: the value is already published and in
-#   git history, so ROTATE first and edit second.
+# - TODO (2026-08-28, census-scoped, LATENT NOT OUTAGE): Read the two flagged published lines locally with sed (never echo them into a payload) and mark each fixture with a marker word inside the value by hand, or ROTATE the credential first if it is real. Gate: the 52 credential-shaped strings across 18 published articles are each marked fixture or rotated.
 
 # § THE WARNING THAT WAS THE HAZARD (banked 2026-08-25) -- Spell an outer parser's hazardous delimiter in words inside comments embedded in its strings, because comment syntax for an inner language cannot prevent interpolation or delimiter parsing by the outer language.
 # § THE NIX-FILE LINT PROBE (banked 2026-08-21) -- Pass only Python files to Ruff in lint probes and use a language-appropriate syntax check for Nix, so invalid-syntax counts cannot turn a wrong-language probe into a false report of repository damage.
