@@ -62,6 +62,7 @@ remotes/honeybot/queries/content_neg_agents.sql
 # HOME-HOSTED (NOT BEHIND CDN) NGINX WEBSERVER HONEYBOT AI OBSERVATORY
 flake.nix
 nixops.sh
+scripts/articles/common.py
 remotes/honeybot/hooks/post-receive
 remotes/honeybot/nixos/configuration.nix
 remotes/honeybot/scripts/stream.py
@@ -72,7 +73,6 @@ remotes/honeybot/scripts/test_forest.py
 remotes/honeybot/scripts/logs.py
 remotes/honeybot/scripts/content_loader.py
 remotes/honeybot/scripts/db.py
-scripts/articles/common.py
 /home/mike/pipulate/scripts/ytstage.py
 
 # THE JEKYLL BLOG LIKE A HACKER (INVENTED SKILL.md & AGENTS.md FORMAT) PUBLISHING PIPELINE
