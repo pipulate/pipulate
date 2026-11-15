@@ -62,7 +62,7 @@ def format_chat_sliver(width: int = 180, spots_left: int = None, jukebox_max: in
     txt.append(f"🎟 Founding-1,000 Guild: {scarcity_label} ➔ ", style="bold #ffd700")
     txt.append("mikelev.in/discord", style="bold #7ee787")
     txt.append("  │  Connect: ", style="#94a3b8")
-    txt.append("linkedin.com/in/mikelevin ", style="bold #38bdf8")
+    txt.append("linkedin.com/in/miklevin ", style="bold #38bdf8")
     return txt
 
 
