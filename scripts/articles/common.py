@@ -3460,7 +3460,7 @@ def reboot_honeybot_stream(sync_only=False, dry_run=False):
         check=False,
     )
     subprocess.run(
-        ["pkill", "-f", "15001:127[.]0[.]0[.]1:5001"],
+        ["pkill", "-f", "15001:127[.]0[.]0[.]1:[0-9]+"],
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
         check=False,
