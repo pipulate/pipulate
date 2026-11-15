@@ -16,7 +16,7 @@ from fastlite import Database, NotFoundError  # CORRECTED: Use the Database clas
 from loguru import logger
 import imports.server_logging as slog
 import config as CFG
-from config import COLOR_MAP
+from config import COLOR_MAP, SERVER_PORT
 from imports.stream_orchestrator import stream_orchestrator
 from typing import AsyncGenerator, Optional
 import imports.server_logging as slog
@@ -962,7 +962,7 @@ class Pipulate:
         if request_payload:
             log_entry_parts.append('')  # Extra space for visual separation
             log_entry_parts.append(f'  MCP Tool Executor Request:')
-            log_entry_parts.append(f'    URL: http://127.0.0.1:5001/mcp-tool-executor')
+            log_entry_parts.append(f'    URL: http://127.0.0.1:{SERVER_PORT}/mcp-tool-executor')
             log_entry_parts.append(f'    Method: POST')
             try:
                 # Use Rich JSON display for MCP request payload

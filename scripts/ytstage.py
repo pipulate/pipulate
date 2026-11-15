@@ -25,8 +25,21 @@ import sys
 import time
 import urllib.request
 
+def _parse_port_env(var_name: str, default: int) -> int:
+    raw = os.environ.get(var_name, "").strip()
+    if raw.isdigit():
+        port = int(raw)
+        if 1 <= port <= 65535:
+            return port
+    return default
+
+
 HONEYBOT_HOST = os.environ.get("PIPULATE_HONEYBOT_HOST", "honeybot")
-LOCAL_PORT = int(os.environ.get("PIPULATE_PORT", "5001"))
+LOCAL_PORT = _parse_port_env("PIPULATE_PORT", 5001)
+STAGE_PORT = _parse_port_env("PIPULATE_STAGE_PORT", 5002)
+STAGE_DIR = Path(
+    os.path.expanduser(os.environ.get("PIPULATE_STAGE_DIR", "~/.local/share/pipulate/stage"))
+)
 REMOTE_TUNNEL_PORT = 15001
 STAGE_PROFILE_DIR = "/tmp/honeybot_ytapp_profile"
 STAGE_PROFILE_PGREP = "[/]tmp/honeybot_ytapp_profile"
@@ -113,11 +126,12 @@ def _manage_ytbreaks_daemon(action: str, dry_run: bool = False) -> int:
         check=False,
     )
     if res.returncode == 0:
+        target_port = _resolve_target_port()
         for opt, val in (
             ("status", "on"),
             ("status-style", "bg=colour235,fg=colour46,bold"),
             ("status-left-length", "48"),
-            ("status-left", " 🎬 YTBREAKS OPTICS WATCHER (15001->5001) "),
+            ("status-left", f" 🎬 YTBREAKS OPTICS WATCHER ({REMOTE_TUNNEL_PORT}->{target_port}) "),
             ("status-right-length", "64"),
             ("status-right", " EXIT (KEEP RUNNING): Press q OR Ctrl+b then d "),
         ):
@@ -291,6 +305,13 @@ def _local_server_alive(port: int = LOCAL_PORT) -> bool:
         return False
 
 
+def _resolve_target_port() -> int:
+    """Prefer STAGE_PORT (default 5002) when listening on 127.0.0.1; fall back to LOCAL_PORT (5001)."""
+    if STAGE_PORT != LOCAL_PORT and _local_server_alive(STAGE_PORT):
+        return STAGE_PORT
+    return LOCAL_PORT
+
+
 def _ensure_local_server(port: int = LOCAL_PORT, auto_start: bool = True, wait_sec: float = 20.0) -> bool:
     """Ensure Pipulate FastHTML server is answering on 127.0.0.1:port; auto-launch server.py if asleep."""
     if _local_server_alive(port):
@@ -304,9 +325,12 @@ def _ensure_local_server(port: int = LOCAL_PORT, auto_start: bool = True, wait_s
         return False
     print(f"🚀 Local Pipulate server asleep on :{port}; auto-starting {srv_py.name}...")
     log_f = open("/tmp/pipulate_ytstage_server.log", "a", encoding="utf-8")
+    sub_env = os.environ.copy()
+    sub_env["PIPULATE_PORT"] = str(port)
     subprocess.Popen(
         [str(venv_py), str(srv_py)],
         cwd=str(repo_root),
+        env=sub_env,
         stdout=log_f,
         stderr=subprocess.STDOUT,
         start_new_session=True,
@@ -320,12 +344,29 @@ def _ensure_local_server(port: int = LOCAL_PORT, auto_start: bool = True, wait_s
     return False
 
 
-def _tunnel_pids() -> list[str]:
-    pattern = f"{REMOTE_TUNNEL_PORT}:127[.]0[.]0[.]1:{LOCAL_PORT}"
+def _tunnel_entries() -> list[tuple[str, int]]:
+    pattern = f"{REMOTE_TUNNEL_PORT}:127[.]0[.]0[.]1:[0-9]+"
     res = subprocess.run(
-        ["pgrep", "-f", pattern], capture_output=True, text=True, check=False
+        ["pgrep", "-af", pattern], capture_output=True, text=True, check=False
     )
-    return [p.strip() for p in (res.stdout or "").splitlines() if p.strip()]
+    entries: list[tuple[str, int]] = []
+    marker = f"{REMOTE_TUNNEL_PORT}:127.0.0.1:"
+    for raw in (res.stdout or "").splitlines():
+        parts = raw.strip().split(None, 1)
+        if len(parts) < 2 or not parts[0].isdigit() or marker not in parts[1]:
+            continue
+        tok = parts[1].split(marker, 1)[1].split()[0]
+        if tok.isdigit():
+            entries.append((parts[0], int(tok)))
+    return entries
+
+
+def _tunnel_pids(target_port: int | None = None) -> list[str]:
+    return [
+        pid
+        for pid, port in _tunnel_entries()
+        if target_port is None or port == target_port
+    ]
 
 
 def _remote_tunnel_healthy() -> bool:
@@ -345,11 +386,13 @@ def _remote_tunnel_healthy() -> bool:
     return res.returncode == 0
 
 
-def _ensure_reverse_tunnel() -> bool:
+def _ensure_reverse_tunnel(target_port: int | None = None) -> bool:
     """Guarantee a working end-to-end SSH reverse tunnel (reaping stale local/remote sockets if dead)."""
-    if _tunnel_pids() and _remote_tunnel_healthy():
+    port = target_port if target_port is not None else _resolve_target_port()
+    entries = _tunnel_entries()
+    if entries and all(p == port for _, p in entries) and _remote_tunnel_healthy():
         return True
-    for pid in _tunnel_pids():
+    for pid, _ in entries:
         subprocess.run(["kill", pid], check=False)
     subprocess.run(
         [
@@ -377,7 +420,7 @@ def _ensure_reverse_tunnel() -> bool:
             "-o",
             "ServerAliveCountMax=2",
             "-R",
-            f"{REMOTE_TUNNEL_PORT}:127.0.0.1:{LOCAL_PORT}",
+            f"{REMOTE_TUNNEL_PORT}:127.0.0.1:{port}",
             HONEYBOT_HOST,
         ],
         check=False,
@@ -397,11 +440,11 @@ def build_remote_speak_script(say_text: str) -> str:
     return f"import base64\nTEXT_B64 = {b64!r}\n" + REMOTE_SPEAK_SNIPPET
 
 
-def _write_stage_audio_bridge(mute_stage: bool = False) -> None:
+def _write_stage_audio_bridge(mute_stage: bool = False, local_port: int | None = None) -> None:
     payload = {
         "host": HONEYBOT_HOST,
         "remote_port": REMOTE_TUNNEL_PORT,
-        "local_port": LOCAL_PORT,
+        "local_port": local_port if local_port is not None else _resolve_target_port(),
         "mute": bool(mute_stage),
         "updated_at": round(time.time(), 3),
     }
@@ -604,8 +647,24 @@ def run_ytapp(
                     check=False,
                 )
                 if "CLAIMED" in (chk.stdout or ""):
-                    print("🎬 Claimed Honeybot OPTICS_SLOT! Ensuring local FastHTML server & launching stage...")
-                    if _ensure_local_server(LOCAL_PORT, auto_start=True):
+                    target_port = _resolve_target_port()
+                    subprocess.run(
+                        [
+                            "tmux",
+                            "set-option",
+                            "-t",
+                            YTBREAKS_TMUX_SESSION,
+                            "status-left",
+                            f" 🎬 YTBREAKS OPTICS WATCHER ({REMOTE_TUNNEL_PORT}->{target_port}) ",
+                        ],
+                        stdout=subprocess.DEVNULL,
+                        stderr=subprocess.DEVNULL,
+                        check=False,
+                    )
+                    print(
+                        f"🎬 Claimed Honeybot OPTICS_SLOT! Ensuring FastHTML server on :{target_port} & launching stage..."
+                    )
+                    if _ensure_local_server(target_port, auto_start=True):
                         rc = run_ytapp(
                             action="start",
                             subpath="/optics_workflow?demo=1",
@@ -631,15 +690,18 @@ def run_ytapp(
     stage_url = f"http://127.0.0.1:{REMOTE_TUNNEL_PORT}{clean_path}"
 
     if dry_run:
+        target_port = _resolve_target_port()
         print(
-            f"🎬 [DRY RUN] ytapp action={action} | local=127.0.0.1:{LOCAL_PORT} -> "
+            f"🎬 [DRY RUN] ytapp action={action} | local=127.0.0.1:{target_port} -> "
             f"{HONEYBOT_HOST}:{stage_url} | sentinel_pause={freeze_hud} | "
             f"pause_audio={pause_audio} | say={bool(say_text)}"
         )
         return 0
 
     if action == "status":
-        pids = _tunnel_pids()
+        entries = _tunnel_entries()
+        pids = [pid for pid, _ in entries]
+        tun_port = entries[0][1] if entries else _resolve_target_port()
         rem = subprocess.run(
             [
                 "ssh",
@@ -670,7 +732,7 @@ def run_ytapp(
             f"📡 ytbreaks watcher (tmux)   : {'RUNNING (session: ' + YTBREAKS_TMUX_SESSION + ')' if watcher_on else 'STOPPED (start with `ytapp daemon` or `ytreboot`)'}"
         )
         print(
-            f"📡 ytapp tunnel (15001->5001): {'RUNNING pid=' + ','.join(pids) if pids else 'STOPPED'}"
+            f"📡 ytapp tunnel ({REMOTE_TUNNEL_PORT}->{tun_port}): {'RUNNING pid=' + ','.join(pids) if pids else 'STOPPED'}"
         )
         print(f"📺 Honeybot :10.0 stage      : {(rem.stdout or '').strip()}")
         return 0
@@ -700,19 +762,22 @@ def run_ytapp(
         return 0
 
     # action == "start"
-    if not _ensure_local_server(LOCAL_PORT, auto_start=True):
+    target_port = _resolve_target_port()
+    if not _ensure_local_server(target_port, auto_start=True):
         print(
-            f"⚠️ Local Pipulate server is not answering on http://127.0.0.1:{LOCAL_PORT}. "
-            "Start it with `pu` or `nix develop` first."
+            f"⚠️ Local Pipulate server is not answering on http://127.0.0.1:{target_port}. "
+            "Start it with `stage start`, `pu`, or `nix develop` first."
         )
         return 1
 
-    if not _ensure_reverse_tunnel():
-        print(f"❌ Failed to establish verified SSH reverse tunnel ({REMOTE_TUNNEL_PORT}->{LOCAL_PORT}) to {HONEYBOT_HOST}.")
+    if not _ensure_reverse_tunnel(target_port):
+        print(
+            f"❌ Failed to establish verified SSH reverse tunnel ({REMOTE_TUNNEL_PORT}->{target_port}) to {HONEYBOT_HOST}."
+        )
         return 1
 
     start_ts = time.time()
-    _write_stage_audio_bridge(mute_stage=mute_stage)
+    _write_stage_audio_bridge(mute_stage=mute_stage, local_port=target_port)
     remote_launch = build_remote_firefox_launch(
         stage_url=stage_url, freeze_hud=freeze_hud, pause_audio=pause_audio
     )
@@ -735,7 +800,12 @@ def run_ytapp(
                 deed_sealed = None
                 sift_spoken = bool(say_text)
                 repo_root = Path(__file__).resolve().parents[1]
-                watch_roots = [repo_root / "browser_cache" / "mikelev.in", repo_root / "browser_cache" / "looking_at"]
+                candidate_roots = [STAGE_DIR, repo_root] if target_port == STAGE_PORT else [repo_root, STAGE_DIR]
+                watch_roots = [
+                    sub
+                    for base in candidate_roots
+                    for sub in (base / "browser_cache" / "mikelev.in", base / "browser_cache" / "looking_at")
+                ]
                 while time.time() < deadline:
                     if not sift_spoken and (time.time() - start_ts) >= 5.0:
                         sift_spoken = True
