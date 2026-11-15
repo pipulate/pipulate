@@ -57,12 +57,9 @@ DEFAULT_OPTICS_SIFT_TEXT = (
     "and step inside our Founding 1,000 practitioner chat at mikelev.in/discord."
 )
 DEFAULT_OPTICS_OUTRO_TEXT = (
-    "Every tool you just watched can be yours right now, in this single sitting — "
-    "go get your own Sun Pug at SunPug.io, or if you want a strictly enterprise standards door "
-    "for your clients, visit RFC9110.org or RFC9111.io. "
-    "All three doors install the exact same open-source engine today and are tailoring directly to each audience over time. "
-    "Forward this live stream to one colleague who needs to see life after generative doorway-pages, "
-    "and join us on Discord at Mike Lev dot I N. Slash discord."
+    "Every tool you just watched can be yours right now, in this single sitting. "
+    "Go get your own Sun Pug at SunPug.io "
+    "and join us on Discord at Mike Lev dot I N. Slash discord. "
     "Returning now to the Honeybot Observatory."
 )
 
