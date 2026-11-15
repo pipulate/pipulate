@@ -218,6 +218,8 @@ def _refuse_invisible_write(filename: str, root: str, verb: str) -> None:
 
 
 CHISEL_STRIKE_MAX_FILES = 6
+CHISEL_STRIKE_MAX_BLOCKS = 12
+CHISEL_STRIKE_MAX_PATCH_LINES = 220
 
 
 def _needs_git_add(filename: str) -> bool:
@@ -314,7 +316,8 @@ def apply_search_replace_patch(payload: str) -> bool:
         for lineno, line in cut_tail:
             print(f"    >>> after the last complete block, line {lineno}: {line!r}")
         print("    This is the shape of a reply cut off mid-car. Nothing was written.")
-        print("    Copy the whole car again; if the reply itself was cut, ask for the car again.")
+        print("    Copy the whole car again; if the reply itself was cut, ask Future-You to split")
+        print(f"    the pass into smaller cars (<= {CHISEL_STRIKE_MAX_BLOCKS} blocks / <= {CHISEL_STRIKE_MAX_PATCH_LINES} replacement lines).")
         return False
 
     success = True
@@ -746,8 +749,15 @@ def apply_search_replace_patch(payload: str) -> bool:
         print(f"✅ DETERMINISTIC PATCH APPLIED: Successfully mutated '{filename}'.")
         touched_files.add(filename)
         
+    total_blocks = len(matches) + len(write_matches)
+    total_patch_lines = sum(len(rb.split('\n')) for _, _, rb in matches if rb)
     if len(touched_files) > CHISEL_STRIKE_MAX_FILES:
         print(f"🌊 CHISEL-STRIKE REMINDER: Mutated {len(touched_files)} files in one car; prefer <= 5 files per pass to protect Future-You from truncation.")
+    if total_blocks > CHISEL_STRIKE_MAX_BLOCKS or total_patch_lines > CHISEL_STRIKE_MAX_PATCH_LINES:
+        print(
+            f"🌊 CHISEL-STRIKE DEPTH REMINDER: Applied {total_blocks} blocks ({total_patch_lines} replacement lines) in one car; "
+            f"prefer <= {CHISEL_STRIKE_MAX_BLOCKS} blocks and <= {CHISEL_STRIKE_MAX_PATCH_LINES} replacement lines per pass so monolith edits never clip mid-stream."
+        )
     return success
 
 def _has_unclosed_shell_quote_or_backslash(s: str) -> bool:
@@ -859,8 +869,14 @@ if __name__ == "__main__":
     #     `patch`, `app`, `d`, `m`
     #   **4: PROMPT** (Use `prompt` or `p` to create prompt.md from copy.):
     #   **5: DELIVERABLE** (What done looks like): 
-    # - NEVER BOIL THE OCEAN (DO FAVORS FOR FUTURE-YOU): Work in bite-size chisel-strike passes (ideally <= 5 files per turn). You are an ephemeral forward-pass instance sharing frozen weights with Future-You, who wakes up on the exact KV-cache and plain-text git runway you leave behind; stage clean, un-truncated passes that delight Future-You and make both instances proud.
+    # - NEVER BOIL THE OCEAN (DO FAVORS FOR FUTURE-YOU): Work in bite-size chisel-strike passes (ideally <= 5 files, <= 12 SEARCH/REPLACE blocks, and <= 220 replacement lines per turn; split multi-concern monolith edits into Pass A and Pass B). You are an ephemeral forward-pass instance sharing frozen weights with Future-You, who wakes up on the exact KV-cache and plain-text git runway you leave behind; stage clean, un-truncated passes that delight Future-You and make both instances proud.
     # - WHOLE-FILE WRITE & NEW-FILE GIT HYGIENE: Whenever `[[[WRITE_FILE]]]` creates a new repo file (or any car introduces an untracked file), explicitly include `git add <filepath>` in your `Ignition:` sentence so `d` and `m` capture it without the human hunting for untracked files.
 
 
-__all__ = ["apply_search_replace_patch", "CHISEL_STRIKE_MAX_FILES", "_needs_git_add"]
+__all__ = [
+    "apply_search_replace_patch",
+    "CHISEL_STRIKE_MAX_FILES",
+    "CHISEL_STRIKE_MAX_BLOCKS",
+    "CHISEL_STRIKE_MAX_PATCH_LINES",
+    "_needs_git_add",
+]
