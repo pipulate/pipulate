@@ -21,6 +21,11 @@ import contextlib
 import logging
 import warnings
 
+_REPO_ROOT = str(Path(__file__).resolve().parent.parent)
+if _REPO_ROOT not in sys.path:
+    sys.path.insert(0, _REPO_ROOT)
+from config import SERVER_PORT
+
 # Try to import voice synthesis dependencies
 try:
     from piper import PiperVoice
@@ -618,7 +623,7 @@ class ChipVoiceSystem:
             return None
         host = str(data.get("host") or "").strip()
         rport = int(data.get("remote_port") or 15001)
-        lport = int(data.get("local_port") or 5001)
+        lport = int(data.get("local_port") or SERVER_PORT)
         if not host:
             return None
         res = subprocess.run(
@@ -632,6 +637,8 @@ class ChipVoiceSystem:
                 bridge_path.unlink(missing_ok=True)
             except OSError:
                 pass
+            return None
+        if lport != SERVER_PORT:
             return None
         return host
 

@@ -19,6 +19,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
+from config import SERVER_PORT
 from tools import auto_tool
 from . import dom_tools
 
@@ -111,7 +112,7 @@ def _is_ytstage_audio_active(bridge_path=None) -> bool:
     if bridge_path is not None:
         return (time.time() - float(data.get("updated_at") or time.time())) < 600
     rport = int(data.get("remote_port") or 15001)
-    lport = int(data.get("local_port") or 5001)
+    lport = int(data.get("local_port") or SERVER_PORT)
     import subprocess
     res = subprocess.run(
         ["pgrep", "-f", f"{rport}:127[.]0[.]0[.]1:{lport}"],

@@ -42,6 +42,8 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 from urllib.parse import urlparse
 
+from config import SERVER_PORT, SERVER_URL
+
 import aiohttp
 
 # Import tools with graceful fallback
@@ -1849,7 +1851,7 @@ async def browser_automate_workflow_walkthrough(params: dict) -> dict:
         from selenium.webdriver.support.ui import WebDriverWait
 
         plugin_filename = params.get("plugin_filename", "")
-        base_url = params.get("base_url", "http://localhost:5001")
+        base_url = params.get("base_url", SERVER_URL)
         take_screenshots = params.get("take_screenshots", True)
         use_existing_pipeline_id = params.get("use_existing_pipeline_id", False)
 
@@ -3169,13 +3171,13 @@ async def test_ui_accessibility() -> dict:
         # Test if server is running and accessible
         try:
             async with aiohttp.ClientSession() as session:
-                async with session.get('http://localhost:5001/', timeout=5) as response:
+                async with session.get(f'{SERVER_URL}/', timeout=5) as response:
                     if response.status == 200:
                         return {
                             "success": True,
                             "ui_accessible": True,
                             "server_running": True,
-                            "test_result": "UI accessible via HTTP on port 5001"
+                            "test_result": f"UI accessible via HTTP on port {SERVER_PORT}"
                         }
                     else:
                         return {
@@ -3193,7 +3195,7 @@ async def test_ui_accessibility() -> dict:
             return {
                 "success": False,
                 "error": f"HTTP connection failed: {str(http_error)}",
-                "suggestion": "Check if server is running on port 5001"
+                "suggestion": f"Check if server is running on port {SERVER_PORT}"
             }
 
     except Exception as e:
@@ -3448,7 +3450,7 @@ async def browser_automate_instructions(params: dict) -> dict:
         from pathlib import Path
 
         instructions = params.get('instructions', '')
-        target_url = params.get('target_url', 'http://localhost:5001')
+        target_url = params.get('target_url', SERVER_URL)
         wait_seconds = params.get('wait_seconds', 3)
 
         if not instructions:

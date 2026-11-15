@@ -155,6 +155,9 @@ CASE_INSENSITIVE_TERMS = (
     ("SKILL.md", "SKILL dot M D"),
     ("AUDIT.md", "AUDIT dot M D"),
     # Industry & stack terms
+    ("Feedonomics", "Feed-oh-nomics"),
+    ("Clickgeddon", "Click-geddon"),
+    ("Botgeddon", "Bot-geddon"),
     ("SaaS", "Software as a Service"),
     ("SerpApi", "surp A P I"),
     ("SERPs", "surps"),
@@ -237,6 +240,8 @@ EXACT_CASE_TERMS = (
     ("RFC", "R F C"),
     ("SEOs", "S E O's"),
     ("SEO", "S E O"),
+    ("ARCs", "arks"),
+    ("ARC", "ark"),
     ("AEOs", "A E O's"),
     ("AEO", "A E O"),
     ("GEOs", "G E O's"),
