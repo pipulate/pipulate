@@ -83,9 +83,9 @@ DEFAULT_OPTICS_SIFT_TEXT = (
     "and step inside our Founding 1,000 practitioner chat at mikelev.in/discord."
 )
 DEFAULT_OPTICS_OUTRO_TEXT = (
-    "Every tool you just watched can be yours right now, in this single sitting. "
-    "Go get your own Sun Pug at Sun Pug dot I O "
-    "and join us on Discord at Mike Lev dot I N slash discord. "
+    # "Every tool you just watched can be yours right now, in this single sitting. "
+    # "Go get your own Sun Pug at Sun Pug dot I O "
+    # "and join us on Discord at Mike Lev dot I N slash discord. "
     "Returning now to the web bot AI Observatory."
 )
 
