@@ -50,7 +50,7 @@ def format_chat_sliver(width: int = 180, spots_left: int = None, jukebox_max: in
         txt.append(f" · jukebox {jb_range} · rabbit", style="bold #38bdf8")
         txt.append(f" │ 🎟 {scarcity_label}: ", style="bold #ffd700")
         txt.append("mikelev.in/discord", style="bold #7ee787")
-        txt.append(" │ in/mikelevin ", style="bold #38bdf8")
+        txt.append(" │ in/miklevin ", style="bold #38bdf8")
         return txt
     txt.append(" 💬 Type in Chat: ", style="bold #94a3b8")
     txt.append("911", style="bold #ffd700")
@@ -746,26 +746,20 @@ class SonarApp(App):
     }
 
     #log_stream.tour_focus {
-        outline: heavy #ffd700;
+        border: solid #ffd700;
     }
 
     .stage_box.tour_focus {
         background: #1e293b;
-        outline: heavy #ffd700;
-    }
-
-    #ticker_bar.tour_focus {
-        background: #1e293b;
-        outline: heavy #ffd700;
     }
 
     .half_panel.tour_focus {
-        outline: heavy #ffd700;
+        border: solid #ffd700;
     }
 
     .panel_header.tour_focus {
-        background: #ffd700;
-        color: #051515;
+        background: #3b2f00;
+        color: #ffd700;
         text-style: bold;
         border-bottom: solid #ffd700;
     }
@@ -1036,7 +1030,7 @@ class SonarApp(App):
             "logs": ("#log_stream",),
             "js": ("#js_panel", "#js_header"),
             "md": ("#md_panel", "#md_header"),
-            "cast": ("#left_stage", "#ticker_bar", "#right_stage"),
+            "cast": ("#left_stage", "#right_stage"),
         }
         for zone, selectors in zone_map.items():
             active = zone == clean_focus
@@ -1082,7 +1076,9 @@ class SonarApp(App):
             focus_val = extract_hud_focus_from_payload(self.stage_payload, now=now)
             self.update_stage_boxes(pair[0], pair[1])
             self.update_hud_tour_focus(focus_val)
-            if (pair[0], pair[1], focus_val) != prev_visual:
+            if focus_val != prev_visual[2]:
+                self.refresh(repaint=True, layout=True)
+            elif (pair[0], pair[1]) != prev_visual[:2]:
                 self.refresh(repaint=True, layout=False)
             return True
         except Exception:

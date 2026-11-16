@@ -156,27 +156,13 @@
         "description": "Center D3 radial DOM link-graph and filter internal links"
       },
       {
-        "step_id": "07_flash_d3_graph",
-        "type": "mcp_tool_call",
-        "tool_name": "ui_flash_element",
-        "tool_args": {
-          "selector": ".optics-rg-card",
-          "color": "gold",
-          "duration": 1600
-        },
-        "timing": {
-          "delay_before": 300
-        },
-        "description": "✨ Highlight D3 Radial DOM Link-Graph card"
-      },
-      {
         "step_id": "07_reset_d3_graph",
         "type": "dom_action",
         "action": "click",
         "selector": "[data-rg-reset='1']",
         "message_template": "🌐 **Full Radial Link-Graph Bloomed:** Showing Wire Internal, Wire External, and ⚡ JS-Only hydrated anchors.",
         "timing": {
-          "delay_before": 2500
+          "delay_before": 2800
         },
         "description": "Expand all link classes in D3 force-radial graph"
       },

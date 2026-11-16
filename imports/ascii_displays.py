@@ -448,7 +448,7 @@ def conjure_window(command, duration: float = 30.0, columns: int = 100, lines: i
                 pass
 
 
-def measure_figlet(label: str, font: str = "standard") -> tuple:
+def measure_figlet(label: str, font: str = "standard", width: int = 80) -> tuple:
     """📏 MEASURE_FIGLET: Deterministic footprint of a Figlet banner.
 
     Returns (width, height) in terminal cells for `label` rendered in `font`,
@@ -470,7 +470,7 @@ def measure_figlet(label: str, font: str = "standard") -> tuple:
     rendered = label
     try:
         from pyfiglet import Figlet
-        rendered = Figlet(font=font).renderText(label)
+        rendered = Figlet(font=font, width=max(40, int(width))).renderText(label)
     except Exception:
         rendered = label
     lines = [ln.rstrip() for ln in rendered.splitlines()]
@@ -1176,25 +1176,36 @@ def conjure_falling_alice(passes: int = 3, duration: float = 6.5, display: Optio
 
 
 def render_titled_card_hold(label: str, subtitle: str = "", max_hold: float = 60.0, stop_file: str = "") -> None:
-    """Render a Figlet banner + full-headline subtitle inside a centered Rich Panel until stop_file appears."""
+    """Render a wide, un-squeezed Figlet banner + centered headline subtitle inside a Rich Panel."""
     import os
+    import shutil
     import sys
     import time
+    from rich.console import Group
+    term_size = shutil.get_terminal_size((116, 20))
+    term_w = max(88, term_size.columns)
+    term_h = max(16, term_size.lines)
+    fig_max_w = max(160, term_w - 10)
     try:
         from pyfiglet import Figlet
-        fig_txt = Figlet(font="standard", width=92).renderText(str(label)).rstrip("\n")
+        fig_txt = Figlet(font="standard", width=fig_max_w).renderText(str(label)).rstrip("\n")
     except Exception:
         fig_txt = str(label)
-    body = Text(fig_txt, style="bold bright_cyan")
+    fig_lines = [ln.rstrip() for ln in fig_txt.splitlines()]
+    while fig_lines and not fig_lines[0].strip():
+        fig_lines.pop(0)
+    while fig_lines and not fig_lines[-1].strip():
+        fig_lines.pop()
+    clean_fig = "\n".join(fig_lines) if fig_lines else str(label)
+    parts = [Align.center(Text(clean_fig, style="bold bright_cyan", no_wrap=True))]
     if subtitle:
-        body.append("\n\n")
-        body.append(str(subtitle).strip(), style="bold bright_white")
-    panel = Panel(Align.center(body), border_style="bright_cyan", box=HEAVY, padding=(1, 3))
-    term_w = console.size.width or 96
-    term_h = console.size.height or 24
-    est_h = len(fig_txt.splitlines()) + (len(str(subtitle).splitlines()) + 2 if subtitle else 0) + 5
+        parts.append(Text(""))
+        parts.append(Align.center(Text(str(subtitle).strip(), style="bold bright_white", justify="center")))
+    panel = Panel(Group(*parts), border_style="bright_cyan", box=HEAVY, padding=(1, 4), expand=False)
+    est_h = len(fig_lines) + (len(str(subtitle).strip().splitlines()) + 2 if subtitle else 0) + 4
+    card_console = Console(width=term_w, force_terminal=True, color_system="truecolor")
     sys.stdout.write("\033[?25l\033[2J\033[H" + ("\n" * max(0, (term_h - est_h) // 2)))
-    console.print(Align.center(panel, width=max(50, term_w - 1)), end="")
+    card_console.print(Align.center(panel, width=max(60, term_w - 2)), end="")
     sys.stdout.flush()
     deadline = time.time() + max(0.5, float(max_hold))
     while time.time() < deadline and not (stop_file and os.path.exists(stop_file)):

@@ -2529,7 +2529,7 @@ def conjure_window(script_name, duration=30.0, columns=100, lines=30, args=None,
     # ones.
     if safe_script == "card.py" and args:
         fig_w, fig_h = measure_figlet(str(args[0]))
-        columns = max(68, fig_w + 16)
+        columns = max(78, fig_w + 22)
         lines = max(13, fig_h + 8)
         cmd = [sys.executable, "-u", str(script_path)] + [str(a) for a in args]
     elif safe_script == "forest.py":
@@ -2652,15 +2652,16 @@ def show_card(label, max_hold=60.0, subtitle=""):
                     sys.path.insert(0, str(site_root))
                 import textwrap
                 from imports.ascii_displays import conjure_window as shared_cw, measure_figlet
-                fig_w, fig_h = measure_figlet(label_str)
-                wrap_w = max(56, min(78, max(fig_w, 62)))
+                fig_w, fig_h = measure_figlet(label_str, width=160)
+                wrap_w = max(72, min(104, max(fig_w + 6, 84)))
                 wrapped_sub = "\n".join(
                     textwrap.fill(ln, width=wrap_w) if ln.strip() else ""
                     for ln in sub_str.splitlines()
                 )
                 sub_lns = wrapped_sub.splitlines()
-                cols = max(74, max(fig_w, max((len(s) for s in sub_lns), default=0)) + 18)
-                lns = max(16, fig_h + len(sub_lns) + 10)
+                content_w = max(fig_w, max((len(s) for s in sub_lns), default=0))
+                cols = min(168, max(116, content_w + 28))
+                lns = max(18, fig_h + len(sub_lns) + 10)
                 py_code = (
                     f"import sys; sys.path.insert(0, {str(site_root)!r}); "
                     "from imports.ascii_displays import render_titled_card_hold; "
