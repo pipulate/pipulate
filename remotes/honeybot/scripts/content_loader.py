@@ -978,7 +978,7 @@ def clean_markdown(text, label=None, census=True):
     # for "do not speak this," so a cue meant to be HEARD must not wear them.
     text = text.replace(CODE_SENTINEL, 'See the code at Mike L E V dot I N slash latest.')
     # Global cap: no article should repeat this more than once.
-    spoken = 'See the code at Mike L E V dot eye N slash latest.'
+    spoken = 'See the code at Mike L E V dot I N slash latest.'
     if text.count(spoken) > 1:
         idx = text.index(spoken)
         text = text[:idx + len(spoken)] + text[idx + len(spoken):].replace(spoken, '')
