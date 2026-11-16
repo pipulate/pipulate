@@ -327,7 +327,7 @@ def _write_text_preserving_mtime(path, text, preserve_mtime):
     st = path.stat() if preserve_mtime else None
     path.write_text(text, encoding="utf-8")
     if st is not None:
-        os.utime(path, (st.st_atime, st.st_mtime))
+        os.utime(path, ns=(st.st_atime_ns, st.st_mtime_ns))
 
 
 # ----------------------------------------------------------------------------
@@ -449,11 +449,7 @@ def _post_sort_key(md_path):
                 sort_order = int(m.group(1))
     except Exception:
         pass
-    try:
-        mtime = md_path.stat().st_mtime
-    except OSError:
-        mtime = 0.0
-    return (date_part, sort_order, mtime, md_path.name)
+    return (date_part, sort_order, md_path.name)
 
 
 def _latest_post_for_target(target_key="1", slug_match=None):
@@ -466,7 +462,16 @@ def _latest_post_for_target(target_key="1", slug_match=None):
         if _DATED_POST_RE.match(p.name)
     ]
     if slug_match:
-        needle = slug_match.lower().strip()
+        raw_s = str(slug_match).strip()
+        m_id = re.fullmatch(r"#?([1-9]\d*)", raw_s)
+        if m_id:
+            wanted_id = int(m_id.group(1))
+            for p in dated:
+                if read_article_id(p) == wanted_id:
+                    return p, tcfg
+            if raw_s.startswith("#"):
+                return None, tcfg
+        needle = raw_s.lower()
         dated = [p for p in dated if needle in p.name.lower()]
         if not dated:
             return None, tcfg
@@ -686,6 +691,7 @@ def get_broadcast_kit(target_key="1", slug_match=None):
     preview_url = f"http://localhost:{preview_port}{permalink}"
     return {
         "path": str(post_path),
+        "article_id": read_article_id(post_path),
         "slug": slug,
         "title": title,
         "base_url": base_url,
@@ -1725,7 +1731,16 @@ def _count_jukebox_posts(target_key="1") -> int:
         pdir = Path(tcfg["path"]).expanduser()
         if not pdir.is_dir():
             return 0
-        return sum(1 for fn in os.listdir(pdir) if re.match(r"^\d{4}-\d{2}-\d{2}-.+\.(?:md|markdown)$", fn))
+        dated = sorted(fn for fn in os.listdir(pdir) if re.match(r"^\d{4}-\d{2}-\d{2}-.+\.(?:md|markdown)$", fn))
+        if not dated:
+            return 0
+        sig = (str(pdir), pdir.stat().st_mtime_ns, len(dated), (pdir / dated[-1]).stat().st_size)
+        memo = getattr(_count_jukebox_posts, "_memo", None)
+        if memo and memo[0] == sig:
+            return memo[1]
+        high = max([len(dated), *(read_article_id(pdir / fn) or 0 for fn in dated)])
+        _count_jukebox_posts._memo = (sig, high)
+        return high
     except Exception:
         return 0
 

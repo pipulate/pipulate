@@ -150,7 +150,10 @@ def trigger_is_fresh(max_age_seconds=900):
 JUKEBOX_REQUEST_FILE = Path("/home/mike/www/mikelev.in/.jukebox_request")
 _DATED_JB_RE = re.compile(r"^\d{4}-\d{2}-\d{2}-.+\.(?:md|markdown)$")
 _SORT_ORDER_RE = re.compile(r"^\s*sort_order:\s*['\"]?(-?\d+)['\"]?", re.MULTILINE)
-_jb_catalog_cache = globals().get("_jb_catalog_cache", {"sig": None, "paths": [], "index_map": {}})
+_ARTICLE_ID_RE = re.compile(r"^article_id\s*:\s*['\"]?([1-9]\d*)['\"]?\s*(?:#.*)?$")
+_jb_catalog_cache = globals().get("_jb_catalog_cache", {})
+if "id_map" not in _jb_catalog_cache:
+    _jb_catalog_cache = {"sig": None, "paths": [], "id_map": {}, "index_map": {}}
 
 
 def get_jukebox_catalog():
@@ -171,31 +174,47 @@ def get_jukebox_catalog():
         return _jb_catalog_cache
     keyed = []
     for p in dated:
-        s_ord = 0
+        s_ord, aid = 0, None
         try:
             with open(p, "r", encoding="utf-8", errors="ignore") as fh:
-                head = fh.read(2048)
-            if head.startswith("---"):
-                m = _SORT_ORDER_RE.search(head.split("---", 2)[1])
-                if m:
-                    s_ord = int(m.group(1))
+                if fh.readline().strip() == "---":
+                    for ln in fh:
+                        if ln.strip() == "---":
+                            break
+                        m_so = _SORT_ORDER_RE.match(ln)
+                        if m_so:
+                            s_ord = int(m_so.group(1))
+                        m_id = _ARTICLE_ID_RE.match(ln.rstrip("\r\n"))
+                        if m_id and aid is None:
+                            aid = int(m_id.group(1))
         except Exception:
             pass
-        keyed.append(((p.name[:10], s_ord, p.name), p))
+        keyed.append(((p.name[:10], s_ord, p.name), aid, p))
     keyed.sort(key=lambda item: item[0])
-    paths = [p for _, p in keyed]
-    idx_map = {p.name: i + 1 for i, p in enumerate(paths)}
-    _jb_catalog_cache.update({"dir_mtime": dir_mtime, "sig": sig, "paths": paths, "index_map": idx_map})
+    paths = [p for _, _, p in keyed]
+    id_map, idx_map, unstamped = {}, {}, []
+    for _, aid, p in keyed:
+        if aid is not None and aid not in id_map:
+            id_map[aid] = p
+            idx_map[p.name] = aid
+        else:
+            unstamped.append(p)
+    next_id = max(id_map, default=0)
+    for p in unstamped:
+        next_id += 1
+        id_map[next_id] = p
+        idx_map[p.name] = next_id
+    _jb_catalog_cache.update({"dir_mtime": dir_mtime, "sig": sig, "paths": paths, "id_map": id_map, "index_map": idx_map})
     return _jb_catalog_cache
 
 
 def get_article_by_jukebox_index(jb_idx: int):
     """Load a single dated post by its permanent 1-based chronological Jukebox index (1..N)."""
-    paths = get_jukebox_catalog()["paths"]
+    id_map = get_jukebox_catalog().get("id_map") or {}
     idx = int(jb_idx or 0)
-    if idx < 1 or idx > len(paths):
+    filepath = id_map.get(idx)
+    if filepath is None or not filepath.is_file():
         return None
-    filepath = paths[idx - 1]
     post_date = datetime.strptime(filepath.name[:10], "%Y-%m-%d").date()
     raw_text = filepath.read_text(encoding="utf-8")
     fm, body = {}, raw_text

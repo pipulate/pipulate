@@ -460,6 +460,14 @@ def main():
     # 1.5 THE BRANDING SWEEP (Run this right before the JIU-JITSU Sweep!)
     brand_markdown_files(target_path, verbose=args.verbose)
     prune_orphan_shards(target_path, verbose=args.verbose)
+    if target_path.is_dir():
+        import stamp_article_ids
+        id_res = stamp_article_ids.apply_article_id_plan(target_path, preserve_mtime=True)
+        if not id_res["ok"]:
+            print(f"❌ Article ID integrity error in {target_path} ({id_res['error']}).")
+            sys.exit(1)
+        if id_res["stamped"] > 0:
+            print(f"🔢 Auto-stamped {common.ARTICLE_ID_KEY} on {id_res['stamped']} post(s) (max #{id_res['next_high_water']}).")
     common.ensure_indexnow_key_file(target_key)
     yt_thumb = common.ensure_latest_yt_studio_thumbnail(target_key)
     if yt_thumb:

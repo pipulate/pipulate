@@ -609,8 +609,16 @@ def create_jekyll_post(article_content, instructions, output_dir, preview_port, 
     output_path = os.path.join(output_dir, output_filename)
     os.makedirs(output_dir, exist_ok=True)
 
+    prior_aid = common.read_article_id(output_path) if os.path.isfile(output_path) else None
     with open(output_path, 'w', encoding='utf-8') as f:
         f.write(final_content)
+    if prior_aid is not None:
+        common.stamp_frontmatter_value(output_path, common.ARTICLE_ID_KEY, str(prior_aid), preserve_mtime=False)
+    import stamp_article_ids
+    stamp_article_ids.apply_article_id_plan(Path(output_dir), preserve_mtime=False)
+    minted_aid = common.read_article_id(output_path)
+    if minted_aid is not None:
+        print(f"🔢 Permanent {common.ARTICLE_ID_KEY}: #{minted_aid}")
 
     print(f"✨ Success! Article saved to: {output_path}")
     print("Collect new 404s: python prompt_foo.py assets/prompts/find404s.md --chop CHOP_404_AFFAIR -l [:] --no-tree")

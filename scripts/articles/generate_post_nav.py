@@ -58,7 +58,10 @@ def build_nav(metadata: list) -> dict:
         if i > 0:                             # newer neighbour
             newer = metadata[i - 1]
             entry["next"] = {"url": article_url(newer), "title": newer.get("title", "")}
-        entry["position"] = total - i         # 1 = oldest, total = newest
+        aid = item.get("article_id")
+        entry["position"] = aid if isinstance(aid, int) and aid > 0 else (total - i)
+        if isinstance(aid, int) and aid > 0:
+            entry["article_id"] = aid
         nav[article_url(item)] = entry
     return nav
 
