@@ -2255,6 +2255,82 @@ def check_topological_integrity(chop_var: str = "AI_PHOOEY_CHOP", format_kwargs:
         logger.print(f"\n✅ Topological Integrity Verified: {len(potential_refs)} candidate reference(s) scanned, all exist.")
 
 
+def _collect_git_diff_telemetry(repo_root: str, max_bytes: int = 24_000) -> Tuple[str, str]:
+    """Return (heading, diff_body) for non-stats working-tree changes plus last 3 non-foo_files.py commits."""
+    sections: List[str] = []
+    stat_headers: List[str] = []
+    wt_names_res = subprocess.run(
+        ['git', 'diff', '--name-only', 'HEAD'], capture_output=True, text=True, cwd=repo_root
+    )
+    wt_names = [ln.strip() for ln in wt_names_res.stdout.splitlines() if ln.strip()]
+    if wt_names:
+        wt_diff = subprocess.run(['git', 'diff', 'HEAD'], capture_output=True, text=True, cwd=repo_root).stdout.strip()
+        is_stats_only = (
+            set(wt_names) == {'foo_files.py'}
+            and '# --- START STATS ---' in wt_diff
+            and wt_diff.count('@@') == 1
+        )
+        if wt_diff and not is_stats_only:
+            wt_stat = subprocess.run(
+                ['git', 'diff', '--stat', 'HEAD'], capture_output=True, text=True, cwd=repo_root
+            ).stdout.strip()
+            sections.append(f"# Working Tree Changes Since HEAD\n{wt_diff}")
+            stat_headers.append(f"# Working Tree (--stat)\n{wt_stat}")
+    log_res = subprocess.run(
+        ['git', 'log', '-n', '50', '--no-merges', '--name-only', '--format=COMMIT:%H'],
+        capture_output=True, text=True, cwd=repo_root,
+    )
+    substantive_shas: List[str] = []
+    cur_sha: Optional[str] = None
+    cur_files: List[str] = []
+    for raw_ln in (log_res.stdout or '').splitlines() + ['COMMIT:END']:
+        if raw_ln.startswith('COMMIT:'):
+            if cur_sha and any(f != 'foo_files.py' for f in cur_files):
+                substantive_shas.append(cur_sha)
+                if len(substantive_shas) >= 3:
+                    break
+            cur_sha = raw_ln.split(':', 1)[1].strip()
+            if cur_sha == 'END':
+                cur_sha = None
+            cur_files = []
+        elif raw_ln.strip():
+            cur_files.append(raw_ln.strip())
+    if not substantive_shas and not sections:
+        substantive_shas = ['HEAD']
+    for sha in substantive_shas:
+        show_res = subprocess.run(
+            ['git', '--no-pager', 'show', '--stat', '--patch', '--format=commit %h (%cs) %s', sha],
+            capture_output=True, text=True, cwd=repo_root,
+        )
+        stat_only = subprocess.run(
+            ['git', '--no-pager', 'show', '--stat', '--format=commit %h (%cs) %s', sha],
+            capture_output=True, text=True, cwd=repo_root,
+        )
+        if show_res.stdout.strip():
+            sections.append(show_res.stdout.strip())
+        if stat_only.stdout.strip():
+            stat_headers.append(stat_only.stdout.strip())
+    raw_diff = "\n\n".join(sections).strip()
+    if not raw_diff:
+        return "", ""
+    has_wt = len(sections) > len(substantive_shas)
+    label = (
+        f"### Working Tree + Last {len(substantive_shas)} Substantive Code Commit(s) (Past foo_files.py-Only Commits)"
+        if has_wt
+        else f"### Last {len(substantive_shas)} Substantive Code Commit(s) (Past foo_files.py-Only Commits)"
+    )
+    diff_bytes = len(raw_diff.encode('utf-8'))
+    if diff_bytes > max_bytes:
+        stat_block = "\n\n".join(stat_headers).strip()
+        budget = max(2000, max_bytes - len(stat_block.encode('utf-8')) - 200)
+        sliced = raw_diff.encode('utf-8')[:budget].decode('utf-8', errors='ignore').rsplit('\n', 1)[0]
+        raw_diff = (
+            f"{stat_block}\n\n{sliced}\n\n"
+            f"... [Git diff telemetry capped at {max_bytes:,} of {diff_bytes:,} bytes]"
+        )
+    return label, raw_diff
+
+
 # ============================================================================
 # --- Main Execution Logic ---
 # ============================================================================
@@ -3135,27 +3211,11 @@ def main():
         if analysis_output:
             builder.add_auto_context("Static Analysis Diagnostics", analysis_output)   
 
-    # Git Diff Telemetry Validation (Backpropagation Channel, Hybrid Stat + Slice capped so giant commits never rebound)
+    # Git Diff Telemetry Validation (Backpropagation Channel: Working Tree + Last 3 Substantive Code Commits)
     MAX_DIFF_TELEMETRY_BYTES = 24_000
     try:
-        diff_args = ['HEAD']
-        diff_result = subprocess.run(['git', 'diff', *diff_args], capture_output=True, text=True, cwd=REPO_ROOT)
-        diff_label = "### Working Tree Changes Since HEAD"
-        if not diff_result.stdout.strip():
-            diff_args = ['HEAD~1', 'HEAD']
-            diff_result = subprocess.run(['git', 'diff', *diff_args], capture_output=True, text=True, cwd=REPO_ROOT)
-            diff_label = "### Most Recent Commit Changes"
-        raw_diff = diff_result.stdout.strip()
+        diff_label, raw_diff = _collect_git_diff_telemetry(REPO_ROOT, MAX_DIFF_TELEMETRY_BYTES)
         if raw_diff:
-            diff_bytes = len(raw_diff.encode('utf-8'))
-            if diff_bytes > MAX_DIFF_TELEMETRY_BYTES:
-                stat_res = subprocess.run(['git', 'diff', '--stat', *diff_args], capture_output=True, text=True, cwd=REPO_ROOT)
-                sliced = raw_diff[:MAX_DIFF_TELEMETRY_BYTES].rsplit('\n', 1)[0]
-                raw_diff = (
-                    f"{stat_res.stdout.strip()}\n\n{sliced}\n\n"
-                    f"... [Git diff telemetry capped at {MAX_DIFF_TELEMETRY_BYTES:,} of {diff_bytes:,} bytes; "
-                    f"run git diff {' '.join(diff_args)} for full hunks]"
-                )
             fence = "``" + "`"
             builder.add_auto_context("Recent Git Diff Telemetry", f"{diff_label}\n{fence}diff\n{raw_diff}\n{fence}")
     except Exception as e:

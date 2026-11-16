@@ -217,7 +217,7 @@ def _refuse_invisible_write(filename: str, root: str, verb: str) -> None:
     print("    and link it into Workshop/ first. Nothing was written.")
 
 
-CHISEL_STRIKE_MAX_FILES = 6
+CHISEL_STRIKE_MAX_FILES = 5
 CHISEL_STRIKE_MAX_BLOCKS = 12
 CHISEL_STRIKE_MAX_PATCH_LINES = 220
 
@@ -319,6 +319,33 @@ def apply_search_replace_patch(payload: str) -> bool:
         print("    Copy the whole car again; if the reply itself was cut, ask Future-You to split")
         print(f"    the pass into smaller cars (<= {CHISEL_STRIKE_MAX_BLOCKS} blocks / <= {CHISEL_STRIKE_MAX_PATCH_LINES} replacement lines).")
         return False
+
+    planned_files = (
+        {os.path.expanduser(fm.strip('` \t\n')) for fm, _ in write_matches if fm and fm.strip('` \t\n')}
+        | {os.path.expanduser(fm.strip('` \t\n')) for fm, _, _ in matches if fm and fm.strip('` \t\n')}
+    )
+    total_blocks = len(matches) + len(write_matches)
+    total_patch_lines = sum(len(rb.split('\n')) for _, _, rb in matches if rb)
+    deep_car_ok = os.environ.get("PIPULATE_DEEP_CAR", "").strip().lower() in ("1", "true", "yes")
+    if (
+        len(planned_files) > CHISEL_STRIKE_MAX_FILES
+        or total_blocks > CHISEL_STRIKE_MAX_BLOCKS
+        or total_patch_lines > CHISEL_STRIKE_MAX_PATCH_LINES
+    ):
+        if not deep_car_ok:
+            print(
+                f"❌ Error: Chisel-strike depth fence refused car before writing "
+                f"({len(planned_files)} file(s), {total_blocks} block(s), {total_patch_lines} replacement line(s); "
+                f"limits: <= {CHISEL_STRIKE_MAX_FILES} files, <= {CHISEL_STRIKE_MAX_BLOCKS} blocks, "
+                f"<= {CHISEL_STRIKE_MAX_PATCH_LINES} replacement lines)."
+            )
+            print("    Split the pass into smaller sequential cars, or run `PIPULATE_DEEP_CAR=1 app` when explicitly authorized.")
+            print("    Nothing was written.")
+            return False
+        print(
+            f"🌊 PIPULATE_DEEP_CAR=1 override active: permitting {len(planned_files)} file(s), "
+            f"{total_blocks} block(s), {total_patch_lines} replacement line(s)."
+        )
 
     success = True
     touched_files = set()
@@ -749,15 +776,6 @@ def apply_search_replace_patch(payload: str) -> bool:
         print(f"✅ DETERMINISTIC PATCH APPLIED: Successfully mutated '{filename}'.")
         touched_files.add(filename)
         
-    total_blocks = len(matches) + len(write_matches)
-    total_patch_lines = sum(len(rb.split('\n')) for _, _, rb in matches if rb)
-    if len(touched_files) > CHISEL_STRIKE_MAX_FILES:
-        print(f"🌊 CHISEL-STRIKE REMINDER: Mutated {len(touched_files)} files in one car; prefer <= 5 files per pass to protect Future-You from truncation.")
-    if total_blocks > CHISEL_STRIKE_MAX_BLOCKS or total_patch_lines > CHISEL_STRIKE_MAX_PATCH_LINES:
-        print(
-            f"🌊 CHISEL-STRIKE DEPTH REMINDER: Applied {total_blocks} blocks ({total_patch_lines} replacement lines) in one car; "
-            f"prefer <= {CHISEL_STRIKE_MAX_BLOCKS} blocks and <= {CHISEL_STRIKE_MAX_PATCH_LINES} replacement lines per pass so monolith edits never clip mid-stream."
-        )
     return success
 
 def _has_unclosed_shell_quote_or_backslash(s: str) -> bool:
