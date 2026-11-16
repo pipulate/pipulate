@@ -600,7 +600,7 @@ def main():
 
             source_paths.append(str(resolved))
     else:
-        source_paths = [os.path.join(blog_dir, filename) for blog_dir in target_dirs for filename in os.listdir(blog_dir)]
+        source_paths = [os.path.join(blog_dir, filename) for blog_dir in target_dirs for filename in sorted(os.listdir(blog_dir))]
 
     for filepath in source_paths:
         filename = os.path.basename(filepath)
@@ -637,8 +637,8 @@ def main():
     if fm_memo.misses:
         print(f"# fm cache: {fm_memo.hits} hits, {fm_memo.misses} misses", file=sys.stderr)
 
-    # Sort first by date, then by the YAML sort_order
-    metadata.sort(key=lambda p: (p['date'], p['sort_order']), reverse=args.reverse)
+    # Sort by date, YAML sort_order, and path so same-day ties are deterministic across OSes
+    metadata.sort(key=lambda p: (p['date'], p['sort_order'], p['path']), reverse=args.reverse)
 
     # --- PASS 1.5: FILTERING ---
     # --slugs: exact slug selection (free, no I/O)
@@ -875,7 +875,7 @@ def get_holographic_article_data(target_dir: str) -> list[dict]:
     
     metadata = []
     
-    for filename in os.listdir(target_path):
+    for filename in sorted(os.listdir(target_path)):
         filepath = target_path / filename
         if not filepath.is_file() or not filename.endswith(('.md', '.markdown')):
             continue
@@ -914,11 +914,14 @@ def get_holographic_article_data(target_dir: str) -> list[dict]:
                 except Exception:
                     pass
 
+            raw_aid = fm.get('article_id')
+            article_id = int(raw_aid) if str(raw_aid or '').isdigit() and int(raw_aid) > 0 else None
             metadata.append({
                 'path': str(filepath),
                 'filename': filename,
                 'date': post_date,
                 'sort_order': sort_order,
+                'article_id': article_id,
                 'title': fm.get('title', 'Untitled'),
                 'permalink': fm.get('permalink', ''),
                 'summary': fm.get('meta_description', fm.get('description', '')),
@@ -931,8 +934,8 @@ def get_holographic_article_data(target_dir: str) -> list[dict]:
         except Exception:
             continue
             
-    # Sort first by date (newest first), then by the YAML sort_order
-    metadata.sort(key=lambda p: (p['date'], p['sort_order']), reverse=True)
+    # Sort by date (newest first), YAML sort_order, and filename for deterministic ties
+    metadata.sort(key=lambda p: (p['date'], p['sort_order'], p['filename']), reverse=True)
     return metadata
 
 if __name__ == "__main__":

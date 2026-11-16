@@ -240,9 +240,35 @@ def add_standard_arguments(parser):
 
 
 # ----------------------------------------------------------------------------
-# Frontmatter stamping -- the 1-to-1 ledger (Jekyll post <-> Google Doc)
+# Frontmatter stamping -- the 1-to-1 ledger (Jekyll post <-> Google Doc & Static Article ID)
 # ----------------------------------------------------------------------------
 GDOC_URL_KEY = "gdoc_url"
+ARTICLE_ID_KEY = "article_id"
+
+
+def read_frontmatter_int(md_path, key):
+    """Read an integer top-level YAML frontmatter key without loading the post body."""
+    key_re = re.compile(rf"^{re.escape(key)}\s*:\s*['\"]?(-?\d+)['\"]?\s*(?:#.*)?$")
+    try:
+        with open(md_path, "r", encoding="utf-8", errors="replace") as f:
+            if f.readline().strip() != "---":
+                return None
+            for line in f:
+                if line.strip() == "---":
+                    break
+                probe_line = line.strip() if key == "sort_order" else line.rstrip("\r\n")
+                m = key_re.match(probe_line)
+                if m:
+                    return int(m.group(1))
+    except OSError:
+        return None
+    return None
+
+
+def read_article_id(md_path):
+    """Return the post's positive integer article_id from frontmatter, or None."""
+    val = read_frontmatter_int(md_path, ARTICLE_ID_KEY)
+    return val if (val is not None and val > 0) else None
 
 
 def gdoc_share_url(file_id):
