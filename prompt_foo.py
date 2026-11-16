@@ -1264,8 +1264,41 @@ def clipboard_egress_allowed(profile: dict, no_clipboard: bool) -> bool:
     )
 
 
+_PYPROBE_RUFF_STUB = (
+    "import ast, contextlib, hashlib, io, json, math, os, pathlib, re, shlex, shutil, sqlite3, subprocess, subprocess as sp, sys, tempfile, time\n"
+    "from pathlib import Path\n"
+    "REPO_ROOT = Path('.'); SEARCH_MARK = DIVIDER_MARK = REPLACE_MARK = ''\n"
+    "def quiet_call(*a, **k): return None\n"
+    "def capture_call(*a, **k): return (None, '')\n"
+    "def temp_dir(*a, **k): return Path('.')\n"
+    "def with_env(*a, **k): return None\n"
+    "def ruff_check(*a, **k): return 0\n"
+    "def make_patch_block(*a, **k): return ''\n"
+)
+
+
+def _ruff_undefined_name_error(code: str, is_pyprobe: bool = False) -> Optional[str]:
+    """Run Ruff F821/F823 undefined-name preflight on inline probe code when ruff is on PATH."""
+    ruff_exec = shutil.which("ruff")
+    if not ruff_exec:
+        return None
+    src = f"{_PYPROBE_RUFF_STUB}{code}\n" if is_pyprobe else f"{code}\n"
+    try:
+        res = subprocess.run(
+            [ruff_exec, "check", "--isolated", "--no-cache", "--select", "F821,F823", "--stdin-filename", "probe.py", "-"],
+            input=src, capture_output=True, text=True, timeout=5,
+        )
+    except Exception:
+        return None
+    if res.returncode == 1:
+        m = re.search(r"\bF82[13]\b[^\n]*", res.stdout or "")
+        label = "pyprobe" if is_pyprobe else "python -c"
+        return f"{label} undefined name: {m.group(0).strip() if m else (res.stdout or '').strip()[:120]}"
+    return None
+
+
 def _check_probe_command(cmd: str) -> Optional[str]:
-    """Refuse bash loops (for/while/until ... do) and broken python -c syntax in '! ' probes."""
+    """Refuse bash loops, broken python -c / pyprobe syntax, and F821 undefined names in '! ' probes."""
     import ast
     import shlex
     unquoted = re.sub(r"'[^']*'|\"(?:\\.|[^\"\\])*\"", "", cmd)
@@ -1278,14 +1311,39 @@ def _check_probe_command(cmd: str) -> Optional[str]:
         tokens = shlex.split(cmd)
     except ValueError as e:
         return f"shell quote error: {e}"
-    for i, tok in enumerate(tokens[:-1]):
-        base = os.path.basename(tok)
-        if (base == "python" or base.startswith("python3")) and tokens[i + 1] == "-c":
-            if i + 2 < len(tokens):
-                try:
-                    ast.parse(tokens[i + 2])
-                except SyntaxError as e:
-                    return f"python -c SyntaxError: {e.msg} (line {e.lineno}, offset {e.offset})"
+    i = 0
+    while i < len(tokens):
+        base = os.path.basename(tokens[i])
+        is_py = base == "python" or base.startswith("python3")
+        code, is_pyprobe, label = None, False, "python -c"
+        if is_py and i + 2 < len(tokens) and tokens[i + 1] == "-c":
+            code = tokens[i + 2]
+            i += 3
+        elif is_py and i + 2 < len(tokens) and os.path.basename(tokens[i + 1]) == "pyprobe.py":
+            if tokens[i + 2] in ("-h", "--help"):
+                i += 3
+                continue
+            c_idx = i + 3 if (tokens[i + 2] == "-c" and i + 3 < len(tokens)) else i + 2
+            code, is_pyprobe, label = tokens[c_idx], True, "pyprobe"
+            i = c_idx + 1
+        elif base in ("pyprobe", "pyprobe.py") and i + 1 < len(tokens):
+            if tokens[i + 1] in ("-h", "--help"):
+                i += 2
+                continue
+            c_idx = i + 2 if (tokens[i + 1] == "-c" and i + 2 < len(tokens)) else i + 1
+            code, is_pyprobe, label = tokens[c_idx], True, "pyprobe"
+            i = c_idx + 1
+        else:
+            i += 1
+            continue
+        if code is not None:
+            try:
+                ast.parse(code)
+            except SyntaxError as e:
+                return f"{label} SyntaxError: {e.msg} (line {e.lineno}, offset {e.offset})"
+            undef_err = _ruff_undefined_name_error(code, is_pyprobe=is_pyprobe)
+            if undef_err:
+                return undef_err
     return None
 
 
