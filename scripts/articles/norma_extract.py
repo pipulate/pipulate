@@ -8,9 +8,12 @@ Unties the Jukebox Coin nested-dependency knot in two plain-Python steps:
        • RFC_9110 : Section 12 HTTP Content Negotiation (`Accept: text/markdown`)
        • RFC_9111 : Bimodal CDN Edge Caching (`Vary: Accept`, ADNS/O2O, 3-Hop Web)
        • SUNPUG   : `sunpug.io` Self-Replicating Nix/Python/vim/git Workbench
-  2. PINBALL PLUNGER: Strips bulky code diffs via `articleizer.strip_fences()`
-     and assembles a clipboard-ready 900–1,200 word (~6–8 min @ 16 kHz) Norma
-     Centroid extraction prompt with Thomas Kuhn's below-the-fold trapdoor.
+  2. PINBALL PLUNGER: Strips bulky code diffs via `articleizer.strip_fences()`,
+     assembles a clipboard-ready 900–1,200 word 3-Voice Socratic Puppet-Theater
+     extraction prompt (`Norma Centroid` intro/headings + `**Me**:` / `**Gemini**:`
+     parable turns + Kuhnian below-the-fold trapdoor), and saves validated masters
+     into `_posts/_abstracts/<YYYY-MM-DD-slug>.md` (the single source projected to
+     Honeybot Storytime and `SunPug.io`).
 """
 
 import argparse
@@ -60,6 +63,13 @@ PILLAR_TERMS = {
 
 _KV_RE = re.compile(r"^([A-Za-z0-9_]+)\s*:\s*(.*?)\s*$")
 _RAW_LIQUID_RE = re.compile(r"^\s*\{%\s*(?:raw|endraw)\s*%\}\s*$", re.MULTILINE)
+ABSTRACTS_SUBDIR = "_abstracts"
+
+
+def abstract_path_for_post(md_path: Path) -> Path:
+    """Return the 1-to-1 `_posts/_abstracts/<YYYY-MM-DD-slug>.md` master path."""
+    p = Path(md_path).expanduser().resolve()
+    return p.parent / ABSTRACTS_SUBDIR / p.name
 
 
 def _read_header_and_preview(md_path: Path) -> dict:
@@ -120,6 +130,8 @@ def rank_candidates(posts_dir: Path, limit: int = 10) -> list[dict]:
         meta = info["meta"]
         if meta.get("jukebox_coin", "").lower() in ("true", "yes", "1"):
             continue
+        if abstract_path_for_post(md_path).is_file():
+            continue
         raw_aid = meta.get(common.ARTICLE_ID_KEY, "").split("#", 1)[0].strip()
         aid = int(raw_aid) if raw_aid.isdigit() and int(raw_aid) > 0 else 0
         stem = md_path.stem
@@ -177,34 +189,44 @@ def build_extraction_prompt(md_path: Path) -> dict:
     lean_body, fences_stripped = articleizer.strip_fences(clean_body)
     _, pillars = score_pillars(title, f"{fm_block}\n{lean_body[:4000]}")
     coin_cmd = f"jukebox {aid}" if aid else "jukebox <ID>"
+    canon_url = "https://" + f"mikelev.in{permalink}"
+    sunpug_cmd = "curl -fsSL https://" + "sunpug.io | less"
     prompt = (
-        "You are NORMA CENTROID (`en_US-amy-low.onnx` at 16,000 Hz natural cadence),\n"
-        "Anthropologist from the Future distilling raw R&D lab ore into an ideal\n"
-        "spoken-and-read field guide for smart newcomers in the middle of the bell curve.\n\n"
+        "You are crafting a SEED-GROUNDED 3-VOICE SOCRATIC PUPPET-THEATER ABSTRACT\n"
+        "for Honeybot YouTube Storytime and the newcomer-facing SunPug.io blog.\n"
+        "Do NOT copy or summarize the author's raw workshop rambling verbatim, and do\n"
+        "NOT write a single-voice monologue. Use the primary lab receipt below as your\n"
+        "factual seed to write BRAND-NEW, entertaining, plain-English Socratic dialogue\n"
+        "with a clear parable/moral for smart newcomers in the middle of the bell curve.\n\n"
         f"SOURCE ARTICLE: #{aid} — {title}\n"
-        f"CANONICAL PATH: https://mikelev.in{permalink}\n"
+        f"CANONICAL LAB RECEIPT: {canon_url}\n"
         f"DETECTED PILLARS: {', '.join(pillars) or 'EVALUATE_STRICTLY'}\n\n"
         "HARD COMMERCIAL FILTER (ZERO WASTED SYLLABLES):\n"
-        "Every section MUST directly advance at least one of these three goals:\n"
+        "Every exchange MUST directly advance at least one of these three goals:\n"
         "  1. RFC 9110 (Section 12) Semantics Consulting: serving clean `Accept: text/markdown`\n"
         "     at canonical URLs for the helpful AI man-in-the-middle between Alice and Bob.\n"
         "  2. RFC 9111 Bimodal CDN Caching Consulting: `Vary: Accept` cache keys, ADNS /\n"
         "     Cloudflare O2O edge log visibility, and 3-Hop Markdown navigation.\n"
         "  3. SunPug.io Workbench Adoption: inspiring practitioners to inspect and run\n"
-        "     `curl -fsSL https://sunpug.io | less` for a local-first Nix/Python/vim/git lab.\n"
-        f"If the source cannot honestly support any of these three goals, reply ONLY:\n"
+        f"     `{sunpug_cmd}` for a local-first Nix/Python/vim/git lab.\n"
+        "If the source cannot honestly support any of these three goals, reply ONLY:\n"
         f"SKIP_CANDIDATE #{aid}: <one-sentence reason>\n\n"
-        "GESTALT NEGATIVE-SPACE AUDIO BUDGET & KUHNIAN STRUCTURE:\n"
-        f"- Length: strictly {STORYTIME_MIN_WORDS}–{STORYTIME_MAX_WORDS} spoken words (~6–8 minutes at 150 wpm),\n"
-        "  sized to fit cleanly between Honeybot Storytime's 20-minute station breaks.\n"
-        "- Beat 1 (Above the Fold): Plain-English newcomer hook—no unexplained repo filenames.\n"
-        "- Beat 2 (The Wire Receipt): The concrete measurement, protocol contrast, or pre-flight\n"
-        "  bug catch proving Claude Shannon surprisal over zero-bit consensus filler.\n"
-        "- Beat 3 (Below the Fold — Kuhnian Gatekeeper Trapdoor): State the exact knee-jerk\n"
-        "  dismissal a skimming Marketing/IT gatekeeper is about to make, followed immediately\n"
-        "  by the plain-spoken Emperor's New Clothes wire refutation (Blank Stare ready).\n"
-        f"- Beat 4 (Doorway & Jukebox Coin): Close naturally with `curl -fsSL https://sunpug.io | less`\n"
-        f"  (or an RFC 9110/9111 audit check) and name permanent Jukebox Coin `{coin_cmd}`.\n\n"
+        "3-VOICE PUPPET-THEATER MARKDOWN CONTRACT (ENCLOSE ENTIRE REPLY IN ONE ```markdown FENCE):\n"
+        f"- Total spoken length: strictly {STORYTIME_MIN_WORDS}–{STORYTIME_MAX_WORDS} words (~6–8 min between 20-min breaks).\n"
+        "- Zero fenced code blocks and zero unexplained internal repo filenames inside the story.\n"
+        "- Start with YAML frontmatter (`title`, `article_id: " + f"{aid}`, `jukebox_coin: true`, `source_url: {canon_url}`, `layout: post`).\n"
+        "- Prologue (`## Setting the Stage: Context for the Curious Book Reader`): 1–2 short paragraphs\n"
+        "  spoken by NORMA CENTROID (16,000 Hz narrator) framing the everyday human stakes.\n"
+        "- Body (`## Technical Journal Entry Begins` + 3–4 `## ` Act Headings also read by NORMA CENTROID):\n"
+        "  Alternate crisp Socratic turns using ONLY these exact speaker prefixes at column 0:\n"
+        "    • `**Me**:` (Stage Left — Mike-E the Apprentice @ 19,200 Hz: voices the curious newcomer's\n"
+        "      grounded questions, pushback, and practical 'so what does this mean for my site?' stakes).\n"
+        "    • `**Gemini**:` (Stage Right — Shipmunk O'Theseus! @ 22,050 Hz: answers with vivid parables,\n"
+        "      the real wire/bug receipt from the lab session proving Shannon surprisal over zero-bit slop,\n"
+        "      and—under a Below-the-Fold heading—the pre-registered Kuhnian Gatekeeper Trapdoor naming\n"
+        "      the exact knee-jerk Marketing/IT dismissal and its plain-spoken refutation).\n"
+        f"- Final turn: close naturally with `{sunpug_cmd}` (or an RFC 9110/9111 check),\n"
+        f"  link back to Lab Receipt #{aid} ({canon_url}), and name Jukebox Coin `{coin_cmd}`.\n\n"
         "--- SOURCE ARTICLE (CODE FENCES CONDENSED) ---\n"
         f"{lean_body}\n"
         "--- END SOURCE ARTICLE ---\n"
@@ -214,8 +236,38 @@ def build_extraction_prompt(md_path: Path) -> dict:
         "title": title,
         "pillars": pillars,
         "fences_stripped": fences_stripped,
+        "abstract_path": str(abstract_path_for_post(path)),
         "prompt": prompt,
     }
+
+
+def save_abstract_for_post(md_path: Path, raw_text: str) -> dict:
+    """Validate 3-voice Socratic puppet-theater structure, write `_posts/_abstracts/<name>`, and stamp coin."""
+    path = Path(md_path).expanduser().resolve()
+    text = (raw_text or "").replace("\r\n", "\n").strip()
+    m_fence = re.match(r"^```[a-zA-Z0-9_-]*\n([\s\S]*?)\n```\s*$", text)
+    if m_fence:
+        text = m_fence.group(1).strip()
+    missing = [
+        lbl for lbl, ok in (
+            ("YAML frontmatter", text.startswith("---\n") and "\n---\n" in text[4:]),
+            ("## Setting the Stage heading", "## Setting the Stage" in text),
+            ("**Me**: turn", bool(re.search(r"^\*\*Me\*\*:", text, re.MULTILINE))),
+            ("**Gemini**: turn", bool(re.search(r"^\*\*Gemini\*\*:", text, re.MULTILINE))),
+        )
+        if not ok
+    ]
+    if missing:
+        return {"ok": False, "error": f"Missing required 3-voice puppet-theater element(s): {', '.join(missing)}"}
+    dest = abstract_path_for_post(path)
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    dest.write_text(text.rstrip("\n") + "\n", encoding="utf-8")
+    aid = common.read_article_id(path)
+    if aid:
+        common.stamp_frontmatter_value(dest, common.ARTICLE_ID_KEY, str(aid), preserve_mtime=False)
+    coin_st = common.stamp_frontmatter_value(path, "jukebox_coin", "true", preserve_mtime=True)
+    words = len(re.findall(r"\b\w+\b", text))
+    return {"ok": True, "abstract_path": str(dest), "coin_status": coin_st, "words": words, "article_id": aid}
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -225,6 +277,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--best", action="store_true", help="Pull the plunger on the #1 radar candidate.")
     parser.add_argument("--limit", type=int, default=10, help="Number of radar candidates to display (default: 10).")
     parser.add_argument("--copy", action="store_true", help="Copy the assembled extraction prompt to the clipboard.")
+    parser.add_argument("--save-clipboard", action="store_true", help="Validate & save Socratic abstract from clipboard into `_posts/_abstracts/` + stamp coin.")
     parser.add_argument("--stamp-coin", action="store_true", help="Stamp `jukebox_coin: true` on -s <post>.")
     args = parser.parse_args(argv)
 
@@ -239,6 +292,21 @@ def main(argv: list[str] | None = None) -> int:
             return 1
         st = common.stamp_frontmatter_value(post_p, "jukebox_coin", "true", preserve_mtime=True)
         print(f"🪙 [{st}] Stamped jukebox_coin: true on {post_p.name} (#{common.read_article_id(post_p)}).")
+        return 0
+
+    if args.save_clipboard:
+        if not args.slug:
+            print("❌ Pass `-s #<article_id>` (or slug) with `--save-clipboard`.")
+            return 1
+        post_p, _ = common._latest_post_for_target(args.target, slug_match=args.slug)
+        if not post_p or not post_p.is_file():
+            print(f"❌ No post matched {args.slug!r}.")
+            return 1
+        res = save_abstract_for_post(post_p, articleizer.clipboard_paste())
+        if not res["ok"]:
+            print(f"❌ Refused abstract for {post_p.name}: {res['error']}")
+            return 1
+        print(f"🎭 Saved 3-voice Socratic abstract ({res['words']} words) -> {res['abstract_path']} & [{res['coin_status']}] jukebox_coin on #{res['article_id']}!")
         return 0
 
     if not args.slug and not args.best:
