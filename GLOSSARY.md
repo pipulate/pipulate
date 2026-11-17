@@ -4312,6 +4312,8 @@ Mechanism, from the deed 825 and deed 831 receipts: remotes/honeybot/scripts/str
 # an explicit or implicit "your turn" = the Tortoise is being summoned.
 ~~~
 
+- **Track flake.lock & Guard Unfree Interpolations** -- *track the pinned lockfile in git, and allow unfree packages before interpolating them into a shell hook; banked 2026-11-08, deed 814.* Never list flake.lock in .gitignore on a standalone Nix flake repository. Nix's git+file:// evaluator ignores untracked files, so an ignored lockfile is invisible to it. Nixpkgs then re-resolves from the network on every invocation, and the pin that was meant to make two installs the same tree stops pinning anything. The second half: always set config.allowUnfree = true when a shell hook string interpolates an unfree package (the cudatoolkit case, written dollar-brace pkgs.cudatoolkit), because evaluation refuses the unfree attribute before any hook runs. That makes it an eval-time refusal and not a runtime bug. CONTEXT: banked at deed 814, the same ride as the door migration in PRESERVE BOOTSTRAP ASSETS ACROSS DOOR MIGRATIONS. The open debt is the 2026-09-26 TODO to track flake.lock in the Grimoire and Vault repos. RENT THIS PAYS: it predicts that a repo with an ignored lockfile re-resolves nixpkgs on every build, so "worked on my machine" is a seedling claim until the lock is in git, and that an unfree interpolation fails at eval and leaves no hook to debug. No witness for the Grimoire and Vault half sits in this compile's window; read git at deed 814 for the original receipt. Sibling of GRAFT, NOT SEED (the pin is the pawl) and THE CROSS-PLATFORM EVAL RULE (an eval-time refusal outranks every runtime bug).
+
 - **The Train Has No Switches** -- *expanded rule; banked 2026-09-18.*
 
 ~~~text
@@ -4604,6 +4606,8 @@ Mechanism, from the deed 825 and deed 831 receipts: remotes/honeybot/scripts/str
   failing lane in miniature -- prompt_foo's ! executor spawns children that
   inherit the pollution and never the nix() function -- so a shim of this
   class can be witnessed from a compile without another install.
+- **Unmask Hostile Probes, Anonymize Good-Faith Visitors** -- *mask the address of a polite reader, and print the full address of an attacker in a loud alert; banked 2026-11-07, deed 794.* Reserve subnet masking (a `1.2.*.*` prefix plus a short hash) on the public telemetry stream for good-faith readers and crawlers. When a request targets an exploit path (/wp-admin, /.env, /.git, anything ending .php) or carries a vulnerability-scanner User-Agent, strip the anonymization and print the full IP with a high-contrast crimson PIRATE badge. MECHANISM: the Honeybot HUD calls detect_pirate_probe() to decide, and the P0.20 TODO records that it landed across deeds 784-794. RENT THIS PAYS: it predicts that masking everyone hides the one signal an operator needs to act on, and that unmasking everyone leaks visitor privacy on a public broadcast. Splitting by request intent keeps both. OPEN: P0.48 (the HTTP 418 teapot response, an RDAP and XARF abuse reporter, and a federated threat feed) builds on this split and is not yet witnessed. Sibling of THE SPOOFED USER-AGENT TRAPDOOR (a self-reported identity is checked against the wire before it is credited) and THE LAST-INCH RULE (the display stage decides what the reader can identify).
+
 - **The Unreachable Guard** -- (banked 2026-08-07, traceback-witnessed): a
   check placed AFTER a line that can raise the same class of error is dead
   code, and its message is a promise the program cannot keep. CONVICTION:
