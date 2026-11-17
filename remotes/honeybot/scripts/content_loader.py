@@ -154,21 +154,61 @@ _ARTICLE_ID_RE = re.compile(r"^article_id\s*:\s*['\"]?([1-9]\d*)['\"]?\s*(?:#.*)
 _jb_catalog_cache = globals().get("_jb_catalog_cache", {})
 if "id_map" not in _jb_catalog_cache:
     _jb_catalog_cache = {"sig": None, "paths": [], "id_map": {}, "index_map": {}}
+ABSTRACTS_SUBDIR = "_abstracts"
+_PARENT_BACKFILL_KEYS = ("permalink", "sort_order", "image", "article_id", "storytime_featured", "storytime_order")
+
+def _read_frontmatter_dict(filepath: Path) -> dict:
+    """Stream YAML frontmatter up to closing `---` without reading the post body."""
+    try:
+        with open(filepath, "r", encoding="utf-8", errors="ignore") as fh:
+            if fh.readline().strip() == "---":
+                lines = []
+                for ln in fh:
+                    if ln.strip() == "---":
+                        return _safe_load_frontmatter("".join(lines))
+                    lines.append(ln)
+    except OSError:
+        pass
+    return {}
+
+def resolve_storytime_dir(posts_dir: Path | None = None) -> Path:
+    """Return `POSTS_DIR / '_abstracts'` when it holds >=1 Storytime-eligible dated `.md` file, else `POSTS_DIR`."""
+    base = Path(posts_dir) if posts_dir is not None else POSTS_DIR
+    abs_dir = base / ABSTRACTS_SUBDIR
+    try:
+        if abs_dir.is_dir() and any(
+            e.is_file() and _DATED_JB_RE.match(e.name) and _is_storytime_enabled(_read_frontmatter_dict(Path(e.path)))
+            for e in os.scandir(abs_dir)
+        ):
+            return abs_dir
+    except OSError:
+        pass
+    return base
+
+def _with_parent_frontmatter(filepath: Path, fm: dict, posts_dir: Path | None = None) -> dict:
+    base = Path(posts_dir) if posts_dir is not None else POSTS_DIR
+    pfm = _read_frontmatter_dict(base / filepath.name) if filepath.parent != base else {}
+    return {**fm, **{k: pfm[k] for k in _PARENT_BACKFILL_KEYS if k in pfm and fm.get(k) in (None, "")}} if pfm else fm
+
+def _resolve_canonical_slug(fm: dict, filename: str) -> str:
+    perm = str(fm.get("permalink") or "").strip("/")
+    if not perm and fm.get("source_url"):
+        perm = urlparse(str(fm["source_url"]).strip()).path.strip("/")
+    return perm or filename[11:].rsplit(".", 1)[0]
 
 
 def get_jukebox_catalog():
     """Return O(1)-cached {'paths': [...], 'index_map': {fname: 1..N}} sorted oldest-first."""
+    active_dir = resolve_storytime_dir()
+    active_key = str(active_dir)
     try:
-        dir_mtime = POSTS_DIR.stat().st_mtime_ns
+        dir_mtime = active_dir.stat().st_mtime_ns
+        if (_jb_catalog_cache.get("sig") or (None,))[0] == active_key and _jb_catalog_cache.get("dir_mtime") == dir_mtime and _jb_catalog_cache.get("paths"):
+            return _jb_catalog_cache
+        dated = [Path(e.path) for e in os.scandir(active_dir) if e.is_file() and _DATED_JB_RE.match(e.name)]
+        sig = (active_key, dir_mtime, len(dated))
     except OSError:
-        return {"paths": [], "index_map": {}}
-    if _jb_catalog_cache.get("dir_mtime") == dir_mtime and _jb_catalog_cache.get("paths"):
-        return _jb_catalog_cache
-    try:
-        dated = [Path(e.path) for e in os.scandir(POSTS_DIR) if e.is_file() and _DATED_JB_RE.match(e.name)]
-        sig = (dir_mtime, len(dated))
-    except OSError:
-        return {"paths": [], "index_map": {}}
+        return {"paths": [], "id_map": {}, "index_map": {}}
     if _jb_catalog_cache.get("sig") == sig and _jb_catalog_cache.get("paths"):
         _jb_catalog_cache["dir_mtime"] = dir_mtime
         return _jb_catalog_cache
@@ -189,6 +229,10 @@ def get_jukebox_catalog():
                             aid = int(m_id.group(1))
         except Exception:
             pass
+        if active_dir != POSTS_DIR and (aid is None or s_ord == 0):
+            pfm = _read_frontmatter_dict(POSTS_DIR / p.name)
+            s_ord = int(pfm["sort_order"]) if (s_ord == 0 and str(pfm.get("sort_order") or "").lstrip("-").isdigit()) else s_ord
+            aid = int(pfm["article_id"]) if (aid is None and str(pfm.get("article_id") or "").isdigit()) else aid
         keyed.append(((p.name[:10], s_ord, p.name), aid, p))
     keyed.sort(key=lambda item: item[0])
     paths = [p for _, _, p in keyed]
@@ -223,7 +267,8 @@ def get_article_by_jukebox_index(jb_idx: int):
         if len(parts) >= 3:
             fm = _safe_load_frontmatter(parts[1])
             body = parts[2]
-    slug = str(fm.get("permalink") or "").strip("/") or filepath.name[11:].rsplit(".", 1)[0]
+    fm = _with_parent_frontmatter(filepath, fm)
+    slug = _resolve_canonical_slug(fm, filepath.name)
     fm_img = fm.get("image")
     img_path = str(fm_img.get("path") or "").strip() if isinstance(fm_img, dict) else (fm_img.strip() if isinstance(fm_img, str) else "")
     raw_title = str(fm.get("title") or slug.replace("-", " "))
@@ -289,11 +334,12 @@ def check_for_updates():
     
     try:
         # Get directory stats
-        stat = POSTS_DIR.stat()
+        active_dir = resolve_storytime_dir()
+        stat = active_dir.stat()
         current_mtime = stat.st_mtime
-        
+
         # Also check file count (sometimes mtime on dir doesn't update on all FS)
-        current_files = list(POSTS_DIR.glob("*.md")) + list(POSTS_DIR.glob("*.markdown"))
+        current_files = list(active_dir.glob("*.md")) + list(active_dir.glob("*.markdown"))
         current_count = len(current_files)
 
         # Read the breaking-news bell rung by the post-receive hook on every push.
@@ -382,7 +428,7 @@ def _get_pinned_storytime_file():
             data = json.loads(st_file.read_text(encoding='utf-8'))
             fname = str((data or {}).get('filename') or '').strip()
             if fname:
-                cand = POSTS_DIR / fname
+                cand = resolve_storytime_dir() / fname
                 if cand.is_file():
                     return cand
     except Exception:
@@ -394,8 +440,9 @@ def get_featured_article_id():
     """Return (eff_date_str, eff_order, filename) of the active Storytime-eligible post on disk."""
     best = None
     try:
+        active_dir = resolve_storytime_dir()
         files = sorted(
-            list(POSTS_DIR.glob("*.md")) + list(POSTS_DIR.glob("*.markdown")),
+            list(active_dir.glob("*.md")) + list(active_dir.glob("*.markdown")),
             key=lambda p: p.name,
             reverse=True,
         )
@@ -419,6 +466,7 @@ def get_featured_article_id():
                 parts = head.split('---', 2)
                 if len(parts) >= 3:
                     frontmatter = _safe_load_frontmatter(parts[1])
+            frontmatter = _with_parent_frontmatter(filepath, frontmatter)
             if not _is_storytime_enabled(frontmatter):
                 continue
             try:
@@ -444,8 +492,9 @@ def get_playlist(recent_n=10, include_archive=True):
     try:
         # Find all markdown files, newest date prefixes first so include_archive=False
         # can stop scanning once the newest N articles (and same-day siblings) are read.
+        active_dir = resolve_storytime_dir()
         files = sorted(
-            list(POSTS_DIR.glob("*.md")) + list(POSTS_DIR.glob("*.markdown")),
+            list(active_dir.glob("*.md")) + list(active_dir.glob("*.markdown")),
             key=lambda p: p.name,
             reverse=True,
         )
@@ -479,13 +528,14 @@ def get_playlist(recent_n=10, include_archive=True):
                 if len(parts) >= 3:
                     frontmatter = _safe_load_frontmatter(parts[1])
                     body_text = parts[2]
+            frontmatter = _with_parent_frontmatter(filepath, frontmatter)
             if not _is_storytime_enabled(frontmatter):
                 continue
             try:
                 sort_order = int(frontmatter.get('sort_order', 0))
             except (ValueError, TypeError):
                 sort_order = 0
-            slug = str(frontmatter.get('permalink') or '').strip('/') or filename[11:].rsplit('.', 1)[0]
+            slug = _resolve_canonical_slug(frontmatter, filename)
             url = f"{BASE_URL}/{slug}/"
             is_recent_census = include_archive and (datetime.now().date() - post_date).days <= 7
             clean_text = clean_markdown(body_text, label=filename, census=is_recent_census) if include_archive else ""
@@ -535,10 +585,9 @@ def get_playlist(recent_n=10, include_archive=True):
         
         global _last_scan_time, _last_file_count, _last_trigger
         try:
-            stat = POSTS_DIR.stat()
+            stat = active_dir.stat()
             _last_scan_time = stat.st_mtime
-            files = list(POSTS_DIR.glob("*.md")) + list(POSTS_DIR.glob("*.markdown"))
-            _last_file_count = len(files)
+            _last_file_count = len(list(active_dir.glob("*.md")) + list(active_dir.glob("*.markdown")))
             try:
                 _last_trigger = TRIGGER_FILE.read_text().strip()
             except FileNotFoundError:
