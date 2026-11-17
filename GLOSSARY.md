@@ -1266,6 +1266,12 @@ Entries are alphabetical, numbers spelled as spoken.
 # - EARMARK: CACHE-CHURN EXCLUSION PRINCIPLE (banked 2026-07-20): a hash-gated backup reduces writes only if its manifest excludes always-churning files; token_cache.json/fm_cache.json carrying the compile's own mtime is the conviction.
 ~~~
 
+- **Cache Static Turn Cues, Fast-Split First Sentences, & Gate Screenshot Speech on Window Ready** -- *expanded rule; banked 2026-11-14, deed 1085.*
+
+~~~text
+# § CACHE STATIC TURN CUES, FAST-SPLIT FIRST SENTENCES, & GATE SCREENSHOT SPEECH ON WINDOW READY (banked 2026-11-14, deed 1085) -- Pre-cache static speaker-introduction PCM files under /tmp, split opening sentences of >220-character Mike-E/Shipmunk paragraphs at their first sentence or clause boundary to pipeline voice-switch playback ahead of tail synthesis, pre-warm Rich report ANSI snapshots, and gate screenshot narration on an X11 window ready_event; convicted by pipulate commits c291ea6 and 8eb5c32, with Honeybot BIMODAL cue2 falling from 1.3185s to 0.0004s and bi_warm from -1.0 to 0.0001s, sealed in qamy.ai_1085-c64c1394.zip.
+~~~
+
 - **The Cap That Hid the Answer** -- *a count-bounded probe hides the
   discriminator.* Banked 2026-08-05, convicted three times in three compiles.
   A `head -N` cap set to bound noise silently truncates the decisive line when
