@@ -1879,12 +1879,7 @@ apply.py
 
 # - EARMARK (2026-09-18, publishing lane): Jekyll article navigation is asymmetric -- Previous renders, but Next is missing even when viewing an older article that does have a newer neighbor. Reproduce on localhost and live Web, then trace the template/data source that computes the forward neighbor; not part of THE ONE DOOR ride.
 # - TODO (2026-09-04, demoted from the THREE-TIER WORKSPACE earmark; the tiers and the ladder are vocabulary now, rg -in 'three-tier workspace' GLOSSARY.md): extend server.py's app scanner to APP_SEARCH_PATHS across apps/, Notebooks/Corporate/apps/ and Notebooks/Personal/apps/; register the workspace tree as sealed figurate art before any surface copies it; one figlet banner per Prompt Fu alias, then silence; recolor startup_environment_warnings() off bright_red on onboarding surfaces. Gate: a tool dropped in Notebooks/Personal/apps/ appears in the APP menu with no core commit.
-# - TODO: commit the unattended-tty guard in ~/repos/nixos (autognome.py's
-#   "Pipulate Server" tab, PIPULATE_BOOT_MENU=0 prefix). It is on disk and
-#   visible in context, but no compile receipt shows it committed;
-#   configuration.nix:273 invokes autognome.py by absolute repo path, so
-#   tomorrow's `init` runs whatever is on disk either way -- the commit is for
-#   the record, not the behavior.
+# - TODO (undated, ~/repos/nixos autognome.py): commit the unattended-tty guard ("Pipulate Server" tab, PIPULATE_BOOT_MENU=0 prefix); it is for the record only, since init already runs the on-disk file. Gate: git -C ~/repos/nixos status --porcelain lists no autognome.py.
 # - EARMARK: GOOGLE DOCS CONNECTOR (seeded 2026-07-23, mcp-roster ride):
 #   scripts/articles/googledocizer.py already WRITES to Docs in the publish
 #   lane; there is no READ connector, so a Doc cannot ride into a compile the
