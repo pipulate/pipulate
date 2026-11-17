@@ -2937,14 +2937,10 @@ def run_optics_station_slot(content, env, profile_dir) -> None:
                 else:
                     time.sleep(0.5)
         else:
-            conjure_patronus("optics_triptych", duration=48.0)
+            conjure_patronus("optics_triptych", duration=24.0)
             narrator.say(
-                "Pipulate Prime is running in local workshop mode, and you yourself can be an AI-Readiness consultant right now using your own hardware. "
-                "All it takes is 60 seconds using your Macbook or Windows laptop to grab a Sun Pug at SunPug.io. "
-                "911 LLM Optics is our FOSS Screaming Frog for the AI generation: point it at any URL and it stacks sixteen wire-truth lenses side by side — "
-                "raw HTTP response headers, source HTML versus hydrated browser DOM, accessibility trees, token bloat, and RFC 9110 plus RFC 9111 Markdown readiness — "
-                "sealing the entire audit into a SHA-256 archive deed so you can retire $10K/mo pre-render stacks with proof. "
-                "Inspect it safely with curl pipe less at SunPug.io, RFC9110.org, or RFC9111.io, and join the Founding 1,000 practitioners at mikelev.in/discord."
+                "911 L L M Optics stacks sixteen wire-truth lenses on any U R L — raw H T T P headers, source H T M L versus hydrated D O M, and R F C 9110 Markdown readiness — sealed in a S H A 256 deed. "
+                "Run it locally on Mac or Windows in sixty seconds with curl pipe less at SunPug.io."
             )
             wait_for_voice_or_live_interrupt(env, profile_dir)
         ensure_storytime_bgm_alive()
@@ -3101,8 +3097,10 @@ def dispatch_cue(command, content, env, profile_dir, pace_say=True):
         else:
             start_storytime_bgm()
 
-    elif command in ("OVERTURE", "INTERMISSION"):
+    elif command == "OVERTURE":
         run_hud_circle_tour(command, content, env, profile_dir)
+    elif command == "INTERMISSION":
+        run_station_break(env, profile_dir)
 
     elif command == "OPTICS_SLOT":
         run_optics_station_slot(content, env, profile_dir)
@@ -3357,28 +3355,15 @@ def run_station_break(env, profile_dir):
             except Exception:
                 pass
         threading.Thread(target=_prewarm_bead_reports, daemon=True).start()
+    global _in_no_max_zone
     wait_for_voice_or_live_interrupt(env, profile_dir)
     prev_dialogue_role = narrator._stage_dialogue_role
+    _in_no_max_zone = True
     narrator.exclusive_mode.set()
     try:
-        dispatch_cue(
-            "CARD",
-            {
-                "label": "WIRE\nFIELD NOTE",
-                "say": (
-                    "Field note from the wire. If you work in search, publishing, or web engineering, you already feel the floor shifting: "
-                    "Google is winding down the ten-blue-links referral economy, and spinning generative rewrites only adds zero-information noise that AI retrieval pipelines ignore. "
-                    "Here on the raw wire is what replaces it."
-                ),
-                "duration": 30.0,
-                "linger": 0.4,
-            },
-            env,
-            profile_dir,
-            pace_say=True,
-        )
-        time.sleep(0.8)
         for cue_command, cue_content in bead:
+            if has_pending_update() or _shutting_down.is_set():
+                break
             dispatch_cue(cue_command, cue_content, env, profile_dir, pace_say=False)
         wait_for_voice_or_live_interrupt(env, profile_dir)
         for pat in ("patronus_visual_shield", "conjure_window_overlay", MEDIA_OVERLAY_MARKER):
@@ -3386,11 +3371,13 @@ def run_station_break(env, profile_dir):
                 subprocess.run(["pkill", "-f", pat], check=False)
             except Exception:
                 pass
-        time.sleep(1.2)
-        narrator.say("End of wire field note. Returning to the archive reading.")
-        wait_for_voice_or_live_interrupt(env, profile_dir)
-        time.sleep(1.2)
+        if _bgm_desired and not has_pending_update() and not _shutting_down.is_set():
+            time.sleep(0.5)
+            narrator.say("Returning to storytime.")
+            wait_for_voice_or_live_interrupt(env, profile_dir)
+        time.sleep(0.4)
     finally:
+        _in_no_max_zone = False
         narrator._stage_dialogue_role = prev_dialogue_role
         if prev_dialogue_role in ("left", "right"):
             narrator._reannounce_after_break = True
@@ -3689,13 +3676,12 @@ def perform_show(script):
 
             dispatch_cue(command, content, env, profile_dir, pace_say=True)
             ensure_storytime_bgm_alive()
-            if command == "OVERTURE":
-                _station_index = 0
-                next_pitch_time = next_slot(start_time, PITCH_INTERVAL, time.time() + 180.0)
-            elif command == "INTERMISSION":
+            if command in ("OVERTURE", "INTERMISSION"):
                 next_pitch_time = next_slot(start_time, PITCH_INTERVAL, time.time() + 180.0)
             elif command in ("MEDIA", "IMAGE", "VIDEO"):
                 next_pitch_time = max(next_pitch_time, time.time() + 30.0)
+        if script and not _shutting_down.is_set() and not has_pending_update():
+            run_station_break(env, profile_dir)
     finally:
         stop_storytime_bgm()
         # CLEANUP: Destroy the memory of this session
@@ -3921,7 +3907,7 @@ def trigger_station_bead_live(target_spec="pirates", out_path="/home/mike/www/mi
             window_spec = str(val)
         elif cmd == "PATRONUS":
             patronus_key = val.get("key") if isinstance(val, dict) else str(val)
-        elif idx >= 4 and cmd == "SAY":
+        elif idx >= 1 and cmd == "SAY":
             line_str = str(val)
             if "{LIVE_REPORT:" in line_str:
                 try:

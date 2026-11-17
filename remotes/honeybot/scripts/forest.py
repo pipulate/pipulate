@@ -38,9 +38,9 @@ must not itself contain a colon. Bare labels like "THE ITCH" are fine.
 # total on-screen time, 3x the original 15s preview without excessive dead air).
 # REPORT_WINDOW_CAP_SECONDS: Safety ceiling for the Alacritty overlay window;
 # run_station_break() closes the window deterministically once post_linger ends.
-REPORT_POST_LINGER_SECONDS = 25
-PATRONUS_POST_LINGER_SECONDS = 8
-REPORT_WINDOW_CAP_SECONDS = 90
+REPORT_POST_LINGER_SECONDS = 10
+PATRONUS_POST_LINGER_SECONDS = 6
+REPORT_WINDOW_CAP_SECONDS = 55
 REPORT_WINDOW_COLUMNS = 138
 REPORT_WINDOW_LINES = 38
 REPORT_H_MARGIN = 3
@@ -71,40 +71,14 @@ CONSULTING_CTA_BEAT = (
 
 
 def _make_station_bead(card_label, card_say, capstone_cue, forest_story_lines, post_linger=None):
-    """Assemble a 5-part station identification bead alternating Rich WINDOW reports and PATRONUS art."""
-    cues = [
-        # 1. Figlet Banner Intro
-        ("CARD", {"label": card_label, "say": card_say}),
-        # 2. What's Happening Here (spoken over the live Web Bot AI Observatory HUD)
-        ("SAY", WHATS_HAPPENING_BEAT),
-        # 3. What Article Is Being Read & How to Read It in Full
-        ("SAY", CURRENT_ARTICLE_BEAT),
-        # 4. Practitioner Call-to-Action (View-Source SEO -> Wire-Truth AI-Readiness)
-        ("CARD", {"label": "YOUR SITE\nIS YOUR FEED", "say": CONSULTING_CTA_BEAT}),
-        # 5. Visual Capstone: Alternates between a Rich Data Report (WINDOW) and Forest ASCII Art (PATRONUS)
-        capstone_cue,
-        ("WAIT", 2),
-    ]
-    is_window_report = (
-        isinstance(capstone_cue, tuple)
-        and len(capstone_cue) >= 2
-        and capstone_cue[0] == "WINDOW"
-        and any(tag in str(capstone_cue[1]) for tag in (":overview", ":markdown", ":bimodal", ":trapdoor", ":schism", ":rfc9421", ":doors", ":pirates"))
-    )
-    is_patronus_art = (
-        isinstance(capstone_cue, tuple)
-        and len(capstone_cue) >= 2
-        and capstone_cue[0] == "PATRONUS"
-    )
-    if is_window_report:
-        cues.append((
-            "SAY",
-            "This is the moment — take your screenshot right now! Both MikeLev.in and SunPug.io are stamped right on the report frame so you have the links.",
-        ))
+    """Assemble a brisk station showcase bead: Title Card -> Report/Art Overlay -> Top-Level Findings."""
+    cues = [("CARD", {"label": card_label, "say": card_say}), capstone_cue, ("WAIT", 1)]
+    is_win = isinstance(capstone_cue, tuple) and capstone_cue[:1] == ("WINDOW",)
+    is_art = isinstance(capstone_cue, tuple) and capstone_cue[:1] == ("PATRONUS",)
     for line in forest_story_lines:
         cues.append(("SAY", line))
     if post_linger is None:
-        post_linger = REPORT_POST_LINGER_SECONDS if is_window_report else (PATRONUS_POST_LINGER_SECONDS if is_patronus_art else 0)
+        post_linger = REPORT_POST_LINGER_SECONDS if is_win else (PATRONUS_POST_LINGER_SECONDS if is_art else 0)
     if post_linger > 0:
         cues.append(("WAIT", int(post_linger)))
     return cues
@@ -119,63 +93,32 @@ def _make_station_bead(card_label, card_say, capstone_cue, forest_story_lines, p
 #   Beat 5a (+7m) : Bead 2 — DOM TRAPDOOR JS EXECS (:bimodal JS hydration proof)
 #   Beat 5b (+14m): Bead 3 — SEOS ASSEMBLE! (white_rabbit -> RFC 9110/9111 Edge readiness @ SunPug.io)
 STATION_SEGMENTS = [
-    # Bead 0 (Beat 2 -> First Data Proof: Shannon Information & Who Accepts Markdown on the Wire)
     _make_station_bead(
         "RFC 9110\nMARKDOWN",
-        (
-            "By Claude Shannon's definition of information, rewriting top-ten consensus articles under a Generative Engine Optimization banner carries near-zero surprise. "
-            "AI retrieval agents want primary source Markdown, yet browser analytics record zero trace of them because bots skip client-side JavaScript tags. "
-            "Here on the raw HTTP socket is who actually negotiates RFC 9110 Markdown today."
-        ),
+        "Live wire report: who actually negotiates R F C 9110 Markdown on this origin.",
         ("WINDOW", f"forest.py:{REPORT_WINDOW_CAP_SECONDS}:overview"),
         [
             "{LIVE_REPORT:overview}",
-            "Coming up on our next wire field note, we open 911 LLM Optics — our FOSS Screaming Frog for the AI generation at SunPug.io — to inspect raw HTTP headers, hydrated DOM bloat, and RFC 9110 Markdown readiness side by side.",
+            "Serving clean Markdown from the same canonical U R L via R F C 9111 Vary Accept gives A I agents primary signal without duplicate pages.",
         ],
     ),
-    # Bead 1 (Beat 3 -> Killer-App Payoff: 911 LLM Optics & Levinux -> SunPug.io Software Von Neumann Probe)
     [
         (
             "CARD",
             {
                 "label": "911 LLM\nOPTICS",
-                "say": (
-                    "Meet 911 LLM Optics: the FOSS Screaming Frog for the AI generation, "
-                    "delivered inside SunPug.io — a self-replicating Software Von Neumann Probe practiced since Levinux, "
-                    "turning any Macbook or Windows laptop into a local-first audit lab with zero cloud bottlenecks."
-                ),
+                "say": "Live audit showcase: 911 L L M Optics, our local-first A I-Readiness spectrometer at SunPug.io.",
             },
         ),
-        ("OPTICS_SLOT", {"handshake_wait": 25.0, "claim_grace": 45.0, "timeout": 180.0}),
-        ("SAY", CURRENT_ARTICLE_BEAT),
-        ("CARD", {"label": "TRY SUNPUG.IO\n911 OPTICS", "say": CONSULTING_CTA_BEAT}),
+        ("OPTICS_SLOT", {"handshake_wait": 12.0, "claim_grace": 40.0, "timeout": 180.0}),
     ],
-    # Bead 2 (Beat 5a -> Second Data Proof: JavaScript DOM Hydration Trapdoor)
     _make_station_bead(
         "DOM TRAPDOOR\nJS EXECS",
-        (
-            "Conventional SEO wisdom claims AI crawlers never execute client-side JavaScript — a myth vendors use to sell $10K/mo pre-render middleware. "
-            "So we wired an eight-hundred-millisecond JavaScript trapdoor into our HTML pages to measure what actually fires on the wire."
-        ),
+        "Live wire report: testing the conventional assumption that A I crawlers skip client-side JavaScript.",
         ("WINDOW", f"forest.py:{REPORT_WINDOW_CAP_SECONDS}:bimodal"),
         [
             "{LIVE_REPORT:bimodal}",
-            "When OpenAI and Meta already hydrate JavaScript on their own dime and Markdown-native agents request text/markdown directly, legacy pre-render middleware and six-figure enterprise crawlers become pure dead weight.",
-        ],
-    ),
-    # Bead 3 (Beat 5b -> Follow the White Rabbit: RFC 7231 -> 911-Zero & 911-One Edge Manifesto)
-    _make_station_bead(
-        "911-ZERO &\n911-ONE",
-        (
-            "Follow the White Rabbit into the HTTP specification that makes legacy SEO crawlers obsolete. "
-            "Rarely has a protocol shift been so long in the making — from RFC 7231 straight to RFC 9110 and RFC 9111, "
-            "nine-eleven-zero and nine-eleven-one."
-        ),
-        ("PATRONUS", {"key": "white_rabbit", "duration": 65.0}),
-        [
-            "Roy Fielding and Mark Nottingham built bimodal content negotiation and Vary Accept edge caching directly into HTTP so one canonical URL can serve visual HTML to humans and clean Markdown to AI agents.",
-            "Implementing that bridge at your CDN Edge alongside clean sitemap.xml and llms.txt feeds gives any enterprise immediate Year-One cover while they simplify their origin into a three-hop Markdown graph.",
-            "Inspect the plain-text Sun Pug installer safely with curl pipe less at SunPug.io — running locally on your own hardware with zero SaaS rent — forward this stream to one search friend who needs a real plan, and join the Founding 1,000 at mikelev.in/discord.",
+            "Inspect your own pages across sixteen wire-truth lenses free with curl pipe less at SunPug.io.",
         ],
     ),
 ]
@@ -184,6 +127,12 @@ STATION_SEGMENTS = [
 # Preserved intact so no Patronus or Rich telemetry piece is ever buried in git history.
 # Summon any archived bead live with: `ytapp tiktok`, `ytapp pachinko`, `ytapp pirates`, etc.
 ARCHIVED_STATION_BEADS = {
+    "white_rabbit": _make_station_bead(
+        "911-ZERO &\n911-ONE",
+        "Follow the White Rabbit from R F C 7231 straight to R F C 9110 and R F C 9111.",
+        ("PATRONUS", {"key": "white_rabbit", "duration": 30.0}),
+        ["Bimodal content negotiation and Vary Accept edge caching let one U R L serve visual H T M L to browsers and clean Markdown to A I agents."],
+    ),
     "ai_pachinko": _make_station_bead(
         "AI PACHINKO",
         (
@@ -556,36 +505,20 @@ def _read_report_speech_snapshot(mode: str, max_age: float = _REPORT_META_TTL_SE
 
 
 def _format_overview_speech(total_hits: int, md_reads: int, total_cneg: int, md_pct: float, top_bots: list) -> str:
-    top_parts = []
-    for bname, cnt, share in top_bots[:4]:
-        top_parts.append(f"{bname} with {_approx_count_words(cnt)} reads, or {_approx_pct_words(share)}")
-    leaders_str = ", followed by ".join(top_parts[:2])
-    if len(top_parts) > 2:
-        leaders_str += ", and " + ", ".join(top_parts[2:])
+    names = [bname for bname, _, _ in top_bots[:3] if bname]
+    lead = f", led by {', '.join(names[:-1])}, and {names[-1]}" if len(names) > 2 else (f", led by {' and '.join(names)}" if names else "")
     return (
-        "Look first at the single cyan bar across the very top of this report. "
-        "That top bar shows the live share of all H T T P responses served as Markdown on a scale from zero to one percent: "
-        f"currently {_approx_pct_words(md_pct)} across {_approx_count_words(total_hits)} total origin responses, "
-        f"with {_approx_count_words(md_reads)} total Markdown deliveries and {_approx_count_words(total_cneg)} strict R F C 9110 Accept text slash markdown negotiations. "
-        "Now look at the stacked horizontal bars below the divider, which break that Markdown activity out by grouped User-Agent: "
-        f"{leaders_str}."
+        f"Top-level finding: Markdown accounts for {_approx_pct_words(md_pct)} of {_approx_count_words(total_hits)} origin responses — "
+        f"{_approx_count_words(md_reads)} Markdown deliveries and {_approx_count_words(total_cneg)} strict R F C 9110 negotiations{lead}."
     )
 
 
 def _format_bimodal_speech(eligible_html: int, js_horizon_hits: int, js_pct: float, top_bots: list) -> str:
-    top_js = []
-    for bname, cnt, share in top_bots[:4]:
-        top_js.append(f"{bname} at {_approx_count_words(cnt)} D O M hydrations, or {_approx_pct_words(share)} of J S")
-    leaders_js = ", followed by ".join(top_js[:2])
-    if len(top_js) > 2:
-        leaders_js += ", and " + ", ".join(top_js[2:])
+    names = [bname for bname, _, _ in top_bots[:3] if bname]
+    lead = f", led by {', '.join(names[:-1])}, and {names[-1]}" if len(names) > 2 else (f", led by {' and '.join(names)}" if names else "")
     return (
-        "Look first at the single amber bar across the very top of this report. "
-        "That top bar shows the live percentage of eligible H T M L page responses that executed client-side JavaScript and fired our eight-hundred-millisecond J S confirm dot gif sensor: "
-        f"currently {_approx_pct_words(js_pct)} across {_approx_count_words(eligible_html)} eligible H T M L responses, "
-        f"with {_approx_count_words(js_horizon_hits)} total trapdoor executions on our zero to five percent scale. "
-        "Now look at the stacked horizontal bars below the divider, which break those live JavaScript executions out by grouped User-Agent and cloud renderer fleet: "
-        f"{leaders_js}."
+        f"Top-level finding: {_approx_pct_words(js_pct)} of {_approx_count_words(eligible_html)} eligible H T M L responses executed JavaScript — "
+        f"{_approx_count_words(js_horizon_hits)} live trapdoor D O M hydrations{lead}."
     )
 
 
@@ -686,11 +619,7 @@ def resolve_dynamic_report_speech(text: str) -> str:
                 else:
                     raise ValueError("empty overview db")
         except Exception:
-            live_ov = (
-                "Look first at the single cyan bar across the very top of this report. "
-                "That top bar shows the live share of all H T T P responses served as Markdown on a scale from zero to one percent. "
-                "Now look at the stacked horizontal bars below the divider, which break that Markdown activity out by grouped User-Agent, led by Exa Search Bot, Parallel dot A I's ShapBot, and Anthropic's Claude User."
-            )
+            live_ov = "Top-level finding: R F C 9110 Markdown negotiations are led on the live wire by Exa Search Bot, Parallel dot A I's ShapBot, and Anthropic's Claude User."
         s = s.replace("{LIVE_REPORT:overview}", live_ov)
 
     if "{LIVE_REPORT:bimodal}" in s:
@@ -733,11 +662,7 @@ def resolve_dynamic_report_speech(text: str) -> str:
                 else:
                     raise ValueError("empty bimodal db")
         except Exception:
-            live_bi = (
-                "Look first at the single amber bar across the very top of this report. "
-                "That top bar shows the live percentage of eligible H T M L page responses that executed client-side JavaScript and fired our eight-hundred-millisecond J S confirm dot gif sensor on a zero to five percent scale. "
-                "Now look at the stacked horizontal bars below the divider, which break those JavaScript executions out by grouped User-Agent, led by Meta's External Agent, Open A I's SearchBot, and unbadged Google Cloud Chrome and Edge renderers."
-            )
+            live_bi = "Top-level finding: live JavaScript trapdoor hydrations are led by Meta's External Agent, Open A I's SearchBot, and Google Cloud headless renderers."
         s = s.replace("{LIVE_REPORT:bimodal}", live_bi)
 
     return s
