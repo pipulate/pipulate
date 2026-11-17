@@ -2049,6 +2049,15 @@ Entries are alphabetical, numbers spelled as spoken.
 ~~~
 
 - **Failed-Probe Receipt** -- (banked 2026-07-20, canary-witnessed same day): the `!` executor lands stderr-only failures as first-class Manifest receipts -- "# NON-ZERO EXIT N" header, "(no stdout -- stderr is the receipt)" placeholder, fenced tail-capped stderr. Witness: the deliberate canary `bash -c "echo canary-stderr >&2; exit 3"` surfaced in the next compile's LIVE COMMAND RECEIPTS exactly as specified. Method note: the fix was proven by MANUFACTURING a known failure and confirming the instrument displayed it -- a QA pipeline is trusted only once it has demonstrably shown red when red was true. SIBLING COMPILER RECEIPT GUARDS (`prompt_foo.py` `main`, 2026-07-24 / 2026-08-03 / 2026-09-27): (1) **Silent-Success Receipt** -- when `proc.returncode != 0` with empty stdout and empty stderr (e.g., a `grep` whose pass condition is no match), land `(no output, no stderr -- the exit code is the whole receipt)` instead of raising; (2) **De-Prefixed Command Hint** -- when a missing router path contains a space or shell metacharacter (`;|>&$`), warn explicitly that a `! ` probe likely lost its leading sigil; (3) `PIPULATE_COMPILE_LOCK=1` prevents Ouroboros self-invocation inside `!` probes, `--tree` (`store_false` on `no_tree`) overrides alias-baked `--no-tree`, and `--quiet` suppresses only step-5 console accounting while never reaching step-6 security gates.
+
+- **Filter Both Raw and Normalized Keys & Anchor Prefix Noise** -- *expanded rule; banked 2026-11-14, deed 1076.*
+
+~~~text
+# § FILTER BOTH RAW AND NORMALIZED KEYS & ANCHOR PREFIX NOISE (banked 2026-11-14, deed 1076) -- Anchor exploit-prefix filters like /api/ at path start so multi-segment topic slugs (/pipulate/llm/api/) survive, and run noise/exclusion predicates against both the raw request URI and its slash-normalized form so bare probes (/api -> /api/) never pass intake only to be dropped by the map builder.
+~~~
+
+WITNESSED: unified literal-key noise & slash-normalization guards across scripts/articles/{generate_redirects.py,extract_404_ghosts.py} with a Tree-Shaker Scoreboard and passwordless Honeybot Nginx RAM reload (pipulate commits e359581, ce14eb6, 159f878; trimnoir commits 1e6415a8c0, 882fc157a8, 8ba979933d). HAS_SCOREBOARD/NO_API_LEAK/FOO_PRUNED False -> True, Ruff exit 0, deed qamy.ai_1076-e45275ee.zip. Sibling of THE PROBE ECONOMY RULE and THE ACTUATION-BOUNDARY RULE.
+
 - **The Filter That Ate the Evidence** -- *a status guard applied to a payload
   channel.* Banked 2026-08-06, self-convicted in-payload.
   PromptBuilder.add_auto_context dropped any channel whose CONTENT contained
