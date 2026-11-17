@@ -361,6 +361,51 @@
           fi
         '';
 
+        # THE `norma` COMMAND: 1-word Norma Centroid Storytime backfill & plunger.
+        # `norma` lists the newest-first un-minted queue; `norma next` pulls the
+        # newest un-minted post onto the clipboard; `norma save` validates & saves
+        # the Socratic parable from clipboard into `_posts/_abstracts/` + stamps coin.
+        normaCommand = pkgs.writeShellScriptBin "norma" ''
+          set -euo pipefail
+          root="''${PIPULATE_ROOT:-$PWD}"
+          python_bin="$root/.venv/bin/python"
+          if [ ! -x "$python_bin" ]; then
+            echo "norma: missing $python_bin; enter the Pipulate Nix shell first." >&2
+            exit 1
+          fi
+          case "''${1:-}" in
+            next|pull)
+              shift
+              exec "$python_bin" "$root/scripts/articles/norma_extract.py" --next --copy "$@"
+              ;;
+            save)
+              shift
+              exec "$python_bin" "$root/scripts/articles/norma_extract.py" --save-clipboard "$@"
+              ;;
+            \#[0-9]*|[0-9]*)
+              aid="''${1#\#}"
+              shift
+              exec "$python_bin" "$root/scripts/articles/norma_extract.py" -s "#$aid" --copy "$@"
+              ;;
+            *)
+              exec "$python_bin" "$root/scripts/articles/norma_extract.py" "$@"
+              ;;
+          esac
+        '';
+
+        # THE `pyprobe` COMMAND: Tempered probe harness usable as bare `pyprobe '...'`
+        # in interactive shells and `! pyprobe '...'` in context.txt receipts.
+        pyprobeCommand = pkgs.writeShellScriptBin "pyprobe" ''
+          set -euo pipefail
+          root="''${PIPULATE_ROOT:-$PWD}"
+          python_bin="$root/.venv/bin/python"
+          if [ ! -x "$python_bin" ]; then
+            echo "pyprobe: missing $python_bin; enter the Pipulate Nix shell first." >&2
+            exit 1
+          fi
+          exec "$python_bin" "$root/scripts/pyprobe.py" "$@"
+        '';
+
         # OPERATION WEEBO (Planck-quanta media overlay commands):
         # - `weebo [name|path] [sec]` pops a 1:1 native-pixel, alpha-transparent
         #   overlay locally on Pipulate Prime and enrolls any explicit file path
@@ -1206,6 +1251,8 @@
           markovCommand                # Markov transition matrix + river streaming ML lens for ! markov
           swatCommand                  # 7-at-one-swat JSON dry-run lens for ! swat
           heal404Command               # 1-word iterative 404 healer + Honeybot Nginx RAM reload
+          normaCommand                 # 1-word Norma Centroid Storytime backfill & plunger
+          pyprobeCommand               # Tempered probe harness for bare `pyprobe '...'`
           weeboCommand               # Local Operation Weebo native-pixel alpha overlay on Prime
           weebohCommand              # Deliberate remote Operation Weebo overlay on Honeybot :10.0
           weebolCommand              # List enrolled Operation Weebo shorthand assets

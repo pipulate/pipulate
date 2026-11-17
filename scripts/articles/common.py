@@ -1222,7 +1222,7 @@ def print_broadcast_kit(target_key="1", mode="card", slug_match=None):
     if yt_thumb:
         print(thin)
         print(f"📺 YT STUDIO THUMBNAIL (1280x720 16:9): {yt_thumb} (Checklist: Upload thumb + Enable DVR)")
-    print("🎛️  Quick Words:  yt (help) | ythero | ytyaml | tweet | linkedin | fb | ytpebble | yttitle | ytdesc | ytfeature | ytcard | yttop | ytoutro | ytreboot | ytsay | ytticker | ytwatch | ytping | ytroll | ytbell | ytstatus")
+    print("🎛️  Quick Words:  yt (help) | norma | ythero | ytyaml | tweet | linkedin | fb | ytpebble | yttitle | ytdesc | ytfeature | ytcard | yttop | ytoutro | ytreboot | ytsay | ytticker | ytwatch | ytping | ytroll | ytbell | ytstatus")
     print(thin)
     print(f"🔗 Preview URL:   {kit['preview_url']}")
     print(f"✏️  Edit Command:  vim {kit['path']}")
