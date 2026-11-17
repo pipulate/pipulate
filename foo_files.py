@@ -1813,10 +1813,7 @@ apply.py
 #
 # - TODO (2026-08-28, publish credential-shape scan): Extract the canonical Python credential patterns and fixture logic into one dependency-light module consumed by prompt_foo.py and scripts/articles/sanitizer.py so the publish sanitizer scans credential shapes, keeping init.lua's Lua subset deliberately duplicated. Gate: sanitizer.py refuses a synthetic credential-shaped string in a draft.
 #
-# - TODO (seeded 2026-08-28, deliberately deferred): extend scrub_oauth only
-#   for client_secret, signing_secret, and app_secret assignments carrying a
-#   contiguous literal value of at least 20 characters. Negative controls
-#   `session = requests.Session()` and `code = compile(source)` must survive.
+# - TODO (2026-08-28, deferred): extend scrub_oauth to client_secret, signing_secret and app_secret assignments with a literal value of 20+ characters. Gate: negative controls `session = requests.Session()` and `code = compile(source)` survive the scrub.
 
 # - TODO (orphaned 2026-09-04; the url-widening plan that carried it was discharged by THE DUAL-LANE WALK SCHEMA, so only the debt survives): _ignored_or_outside returns safe on the FIRST check-ignore hit and never consults a nested repo; it gates the public catalog repo and nothing else. Own ride; gate: a nested-repo fixture whose ignore rules disagree with the outer repo's, and a receipt naming which repo answered.
 # § THE DECLARED-FIXTURE RELIEF VALVE (banked 2026-08-28) -- Exempt a synthetic secret-scan fixture only when its marker occurs inside the matched credential value, never in the variable name or elsewhere on the line, and print every exemption so a live secret cannot pass silently.
