@@ -1811,12 +1811,7 @@ apply.py
 #
 # § THE WARN-MODE NO-EGRESS RULE (banked 2026-08-28) -- Keep secrets=WARN disclosure profiles in the local inspection lane, allowing local archive and explicit output-file writes while disabling clipboard and SSH-bridge egress.
 #
-# - TODO (seeded 2026-08-28, source-reviewed): the publish sanitizer protects
-#   private spans, IPs, PII substitutions, and the identity denylist, but no
-#   publish-stage credential-shape scan exists. Extract the canonical Python
-#   patterns and fixture logic into one dependency-light module consumed by
-#   prompt_foo.py and scripts/articles/sanitizer.py; keep init.lua's
-#   conservative Lua subset deliberately duplicated.
+# - TODO (2026-08-28, publish credential-shape scan): Extract the canonical Python credential patterns and fixture logic into one dependency-light module consumed by prompt_foo.py and scripts/articles/sanitizer.py so the publish sanitizer scans credential shapes, keeping init.lua's Lua subset deliberately duplicated. Gate: sanitizer.py refuses a synthetic credential-shaped string in a draft.
 #
 # - TODO (seeded 2026-08-28, deliberately deferred): extend scrub_oauth only
 #   for client_secret, signing_secret, and app_secret assignments carrying a
