@@ -6,10 +6,6 @@ The Human Actuated AI Editor (AI-EDIT METHOD), or "How AI tool-calls the Human."
 Reads a raw LLM response from stdin, extracts the SEARCH/REPLACE blocks,
 and performs a deterministic string replacement patch on the target file.
 
-# TO-DO LIST TO NEVER FORGET
-1. Left-Right Git diff scrubber
-2. 911 Optics
-3. MCP OAuth Useless Machine
 """
 
 import sys

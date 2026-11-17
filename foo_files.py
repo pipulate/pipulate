@@ -23,8 +23,8 @@ AI_PHOOEY_CHOP = r"""#
 # creator of) of Project Pipulate:
 
 # --- START STATS ---
-# There are 1,652 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 27 published in the last 7 days
+# There are 1,653 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 25 published in the last 7 days
 # Markdown negotiated: 6,584 reads (0.37% of all responses)
 # DOM hydration: 14408 trapdoor triggers from 25 non-local IPs (top-N sample, self excluded)
 # Honeybot telemetry fetched 2026-11-17T01:10Z
