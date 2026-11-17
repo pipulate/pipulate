@@ -26,8 +26,8 @@ AI_PHOOEY_CHOP = r"""#
 # There are 1,652 already-written articles about this repo at MikeLev.in (Public)
 # Velocity: 27 published in the last 7 days
 # Markdown negotiated: 6,584 reads (0.37% of all responses)
-# DOM hydration: 14381 trapdoor triggers from 25 non-local IPs (top-N sample, self excluded)
-# Honeybot telemetry fetched 2026-11-16T19:06Z
+# DOM hydration: 14408 trapdoor triggers from 25 non-local IPs (top-N sample, self excluded)
+# Honeybot telemetry fetched 2026-11-17T01:10Z
 # --- END STATS ---
 
 # Project Pipulate is known as (and installable from) various domains:
@@ -1960,7 +1960,7 @@ apply.py
 # ============================================================================
 # Files tracked by git but not yet mixed into the palette above.
 # Move these into the active chapters to paint them onto the context canvas.
-# Coverage: 225/297 tracked files claimed. The compiler reads this line back on the next compile and prints the delta beside the live count, so an unclaimed file rings once.
+# Coverage: 225/298 tracked files claimed. The compiler reads this line back on the next compile and prints the delta beside the live count, so an unclaimed file rings once.
 
 # AGENTS.md  # [1,039 tokens | 4,223 bytes]
 # AUDIT.md  # [2,992 tokens | 13,897 bytes]
@@ -2007,6 +2007,7 @@ apply.py
 # scripts/articles/find_duplicates.py  # [1,879 tokens | 7,993 bytes]
 # scripts/articles/generate_semrush_candidates.py  # [658 tokens | 2,747 bytes]
 # scripts/articles/list_models.py  # [102 tokens | 391 bytes]
+# scripts/articles/norma_extract.py  # [3,236 tokens | 12,075 bytes]
 # scripts/articles/other/make_article.py  # [1,518 tokens | 6,587 bytes]
 # scripts/articles/scrub_tags.py  # [1,055 tokens | 4,082 bytes]
 # scripts/articles/wrap_tags.py  # [537 tokens | 2,329 bytes]
