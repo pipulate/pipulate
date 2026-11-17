@@ -1687,6 +1687,8 @@ Entries are alphabetical, numbers spelled as spoken.
 # § DECOUPLED HOST DISCOVERY (banked 2026-10-17, deed 4) -- Never hardcode a single repository checkout path in parent OS configuration or desktop automation when the guest flake can be installed under multiple door names (pipulate, npvg, qamyai, qamy) or parent directories (~/repos, ~/); resolve the active root dynamically by probing candidate paths for qualifying markers (.venv/bin/python3 and init.lua) and anchor heavy downloaded assets (such as Piper TTS models) in ~/.config/pipulate/ so workspace moves and renames never strand the host.
 ~~~
 
+- **Defang Secondary URLs for Single-Card Composers** -- *leave one live link in a plain-text composer, and break every other URL on purpose; banked 2026-11-06, deed 761.* Plain-text social composers such as Facebook's scrape every URL in a post, and a trailing link can override the primary OpenGraph preview card. Leave only the canonical article URL (carrying ?src=fb) as a live https link. Defang secondary stream and community URLs by appending a dot followed by the invisible U+2060 word joiner, so the composer binds only to the article's og:image hero banner. RENT THIS PAYS: it predicts that a post with two live URLs shows the wrong card, and that the card follows the last or loudest link, not the first. No witness sits in this compile's window, so read git at deed 761 for the original receipt. Sibling of FIRST-URL-WINS OPENGRAPH ORDERING (which URL a scraper binds to) and STOP SHORT OF THE BREAKY SEAM (clipboard-lane social distribution).
+
 - **Delta-Not-Absolute Counter Rule** -- *predict a count as a delta, never as
   an absolute.* Banked 2026-07-20. A grep -c probe predicts reliably only as a
   DELTA straddling the patch; its absolute value requires a hand-run baseline
@@ -4014,6 +4016,8 @@ Mechanism, from the deed 786 receipts: scripts/articles/googledocizer.py reads o
 ~~~text
 # - EARMARK: THE STALE OVERLAY (banked 2026-08-05, Manifest-arbitrated): the context.txt pasted into an article and the context.txt the compiler READ can disagree within a single turn, and only the Manifest's LIVE COMMAND RECEIPTS can tell them apart. CONVICTION: a turn pasted three new probe lines while the compile executed the five from two compiles earlier -- the pasted context described a file the compiler never opened. STANDING CONSEQUENCE: the Manifest is the sole authority on what ran; when the pasted overlay and the receipts disagree, rule from the receipts and say so out loud. The map can outrun the territory inside one turn.
 ~~~
+
+- **Stamp Before the Push** -- *run every post-mutating metadata adapter before the commit that publishes, not after; banked 2026-11-07, deed 790.* A script that rewrites a post's frontmatter after publishing (googledocizer.py stamping gdoc_url into the YAML) must run BEFORE staging, committing and pushing the publishing repository. Then the deployed site and the Broadcast Kit carry the link on the first publish, instead of trailing by one article. RENT THIS PAYS: it predicts that a link stamped after the push shows up one article late, and that the push which deploys the page is the one that has to carry the stamp. No witness sits in this compile's window, so read git at deed 790 for the original receipt. Sibling of THE PUBLISH LANE IS NOT THE PUSH (the push is not the delivery) and THE ACTUATION-BOUNDARY RULE (the stamp must run before the act it is meant to appear in).
 
 - **The Stat-Cache False Positive** -- *expanded rule; banked 2026-08-04.*
 
