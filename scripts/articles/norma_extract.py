@@ -1,0 +1,281 @@
+#!/usr/bin/env python3
+"""
+norma_extract.py — The Pinball Plunger for Norma Centroid Storytime Extractions.
+
+Unties the Jukebox Coin nested-dependency knot in two plain-Python steps:
+  1. CANDIDATE RADAR: Scans `_posts/` + `_posts/_context/*.json` shards to rank
+     un-minted articles (#1..#N) against the Three Commercial Pillars:
+       • RFC_9110 : Section 12 HTTP Content Negotiation (`Accept: text/markdown`)
+       • RFC_9111 : Bimodal CDN Edge Caching (`Vary: Accept`, ADNS/O2O, 3-Hop Web)
+       • SUNPUG   : `sunpug.io` Self-Replicating Nix/Python/vim/git Workbench
+  2. PINBALL PLUNGER: Strips bulky code diffs via `articleizer.strip_fences()`
+     and assembles a clipboard-ready 900–1,200 word (~6–8 min @ 16 kHz) Norma
+     Centroid extraction prompt with Thomas Kuhn's below-the-fold trapdoor.
+"""
+
+import argparse
+import json
+import os
+import re
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import articleizer
+import common
+
+STORYTIME_MIN_WORDS = 900
+STORYTIME_MAX_WORDS = 1200
+
+PILLAR_TERMS = {
+    "RFC_9110": (
+        "rfc 9110",
+        "content negotiation",
+        "text/markdown",
+        "accept: text/markdown",
+        "markdown feed",
+        "section 12",
+    ),
+    "RFC_9111": (
+        "rfc 9111",
+        "vary: accept",
+        "edge caching",
+        "bimodal",
+        "cloudflare o2o",
+        "authoritative dns",
+        "adns",
+        "three-hop",
+        "3-hop",
+    ),
+    "SUNPUG": (
+        "sunpug",
+        "von neumann",
+        "magic cookie",
+        "nix flake",
+        "install.sh",
+        "local-first",
+        "reproducible",
+    ),
+}
+
+_KV_RE = re.compile(r"^([A-Za-z0-9_]+)\s*:\s*(.*?)\s*$")
+_RAW_LIQUID_RE = re.compile(r"^\s*\{%\s*(?:raw|endraw)\s*%\}\s*$", re.MULTILINE)
+
+
+def _read_header_and_preview(md_path: Path) -> dict:
+    """Stream YAML frontmatter + a 2 KB body preview without parsing full posts."""
+    meta = {}
+    body_preview = ""
+    has_fm = False
+    try:
+        with open(md_path, "r", encoding="utf-8", errors="replace") as f:
+            if f.readline().strip() == "---":
+                for line in f:
+                    if line.strip() == "---":
+                        has_fm = True
+                        break
+                    m = _KV_RE.match(line.rstrip("\r\n"))
+                    if m and m.group(1) not in meta:
+                        meta[m.group(1)] = m.group(2).strip().strip("'\"")
+                if has_fm:
+                    body_preview = f.read(2048)
+    except OSError:
+        pass
+    return {"has_fm": has_fm, "meta": meta, "body_preview": body_preview}
+
+
+def score_pillars(title_text: str, meta_text: str) -> tuple[int, list[str]]:
+    """Score text against the 3 commercial pillars; return (score, matched_pillars)."""
+    t_low = (title_text or "").lower()
+    m_low = (meta_text or "").lower()
+    matched = []
+    score = 0
+    for pillar, terms in PILLAR_TERMS.items():
+        t_hits = sum(1 for term in terms if term in t_low)
+        m_hits = sum(1 for term in terms if term in m_low)
+        if t_hits or m_hits:
+            matched.append(pillar)
+            score += (t_hits * 3) + (m_hits * 2)
+    if len(matched) == 2:
+        score += 4
+    elif len(matched) == 3:
+        score += 8
+    return score, matched
+
+
+def rank_candidates(posts_dir: Path, limit: int = 10) -> list[dict]:
+    """Return top un-minted Jukebox Coin candidates ranked by 3-Pillar alignment."""
+    pdir = Path(posts_dir).expanduser().resolve()
+    if not pdir.is_dir():
+        return []
+    ctx_dir = pdir / "_context"
+    candidates = []
+    for fname in sorted(os.listdir(pdir)):
+        if not common._DATED_POST_RE.match(fname):
+            continue
+        md_path = pdir / fname
+        info = _read_header_and_preview(md_path)
+        if not info["has_fm"]:
+            continue
+        meta = info["meta"]
+        if meta.get("jukebox_coin", "").lower() in ("true", "yes", "1"):
+            continue
+        raw_aid = meta.get(common.ARTICLE_ID_KEY, "").split("#", 1)[0].strip()
+        aid = int(raw_aid) if raw_aid.isdigit() and int(raw_aid) > 0 else 0
+        stem = md_path.stem
+        slug = stem[11:] if len(stem) > 11 else stem
+        title = meta.get("title") or slug
+        shard_blob = ""
+        shard_path = ctx_dir / f"{stem}.json"
+        if shard_path.is_file():
+            try:
+                sh = json.loads(shard_path.read_text(encoding="utf-8"))
+                shard_blob = " ".join([
+                    str(sh.get("s") or ""),
+                    " ".join(sh.get("kw") or []),
+                    " ".join(sh.get("sub") or []),
+                ])
+            except Exception:
+                shard_blob = ""
+        meta_blob = " ".join([
+            shard_blob,
+            meta.get("meta_description", ""),
+            meta.get("meta_keywords", ""),
+            meta.get("description", ""),
+            info["body_preview"] if not shard_blob else "",
+        ])
+        score, pillars = score_pillars(title, meta_blob)
+        if score <= 0:
+            continue
+        candidates.append({
+            "article_id": aid,
+            "score": score,
+            "pillars": pillars,
+            "date": fname[:10],
+            "slug": slug,
+            "title": title,
+            "path": str(md_path),
+        })
+    candidates.sort(key=lambda c: (-c["score"], -c["article_id"], c["slug"]))
+    return candidates[: max(1, int(limit))]
+
+
+def build_extraction_prompt(md_path: Path) -> dict:
+    """Strip code fences and build the Norma Centroid Storytime extraction prompt."""
+    path = Path(md_path).expanduser().resolve()
+    raw = path.read_text(encoding="utf-8", errors="replace")
+    fm_block, body = "", raw
+    if raw.startswith("---"):
+        parts = raw.split("---", 2)
+        if len(parts) >= 3:
+            fm_block, body = parts[1], parts[2]
+    aid = common.read_article_id(path) or 0
+    info = _read_header_and_preview(path)
+    title = info["meta"].get("title") or path.stem
+    permalink = info["meta"].get("permalink") or f"/futureproof/{path.stem[11:]}/"
+    clean_body = _RAW_LIQUID_RE.sub("", body).strip()
+    lean_body, fences_stripped = articleizer.strip_fences(clean_body)
+    _, pillars = score_pillars(title, f"{fm_block}\n{lean_body[:4000]}")
+    coin_cmd = f"jukebox {aid}" if aid else "jukebox <ID>"
+    prompt = (
+        "You are NORMA CENTROID (`en_US-amy-low.onnx` at 16,000 Hz natural cadence),\n"
+        "Anthropologist from the Future distilling raw R&D lab ore into an ideal\n"
+        "spoken-and-read field guide for smart newcomers in the middle of the bell curve.\n\n"
+        f"SOURCE ARTICLE: #{aid} — {title}\n"
+        f"CANONICAL PATH: https://mikelev.in{permalink}\n"
+        f"DETECTED PILLARS: {', '.join(pillars) or 'EVALUATE_STRICTLY'}\n\n"
+        "HARD COMMERCIAL FILTER (ZERO WASTED SYLLABLES):\n"
+        "Every section MUST directly advance at least one of these three goals:\n"
+        "  1. RFC 9110 (Section 12) Semantics Consulting: serving clean `Accept: text/markdown`\n"
+        "     at canonical URLs for the helpful AI man-in-the-middle between Alice and Bob.\n"
+        "  2. RFC 9111 Bimodal CDN Caching Consulting: `Vary: Accept` cache keys, ADNS /\n"
+        "     Cloudflare O2O edge log visibility, and 3-Hop Markdown navigation.\n"
+        "  3. SunPug.io Workbench Adoption: inspiring practitioners to inspect and run\n"
+        "     `curl -fsSL https://sunpug.io | less` for a local-first Nix/Python/vim/git lab.\n"
+        f"If the source cannot honestly support any of these three goals, reply ONLY:\n"
+        f"SKIP_CANDIDATE #{aid}: <one-sentence reason>\n\n"
+        "GESTALT NEGATIVE-SPACE AUDIO BUDGET & KUHNIAN STRUCTURE:\n"
+        f"- Length: strictly {STORYTIME_MIN_WORDS}–{STORYTIME_MAX_WORDS} spoken words (~6–8 minutes at 150 wpm),\n"
+        "  sized to fit cleanly between Honeybot Storytime's 20-minute station breaks.\n"
+        "- Beat 1 (Above the Fold): Plain-English newcomer hook—no unexplained repo filenames.\n"
+        "- Beat 2 (The Wire Receipt): The concrete measurement, protocol contrast, or pre-flight\n"
+        "  bug catch proving Claude Shannon surprisal over zero-bit consensus filler.\n"
+        "- Beat 3 (Below the Fold — Kuhnian Gatekeeper Trapdoor): State the exact knee-jerk\n"
+        "  dismissal a skimming Marketing/IT gatekeeper is about to make, followed immediately\n"
+        "  by the plain-spoken Emperor's New Clothes wire refutation (Blank Stare ready).\n"
+        f"- Beat 4 (Doorway & Jukebox Coin): Close naturally with `curl -fsSL https://sunpug.io | less`\n"
+        f"  (or an RFC 9110/9111 audit check) and name permanent Jukebox Coin `{coin_cmd}`.\n\n"
+        "--- SOURCE ARTICLE (CODE FENCES CONDENSED) ---\n"
+        f"{lean_body}\n"
+        "--- END SOURCE ARTICLE ---\n"
+    )
+    return {
+        "article_id": aid,
+        "title": title,
+        "pillars": pillars,
+        "fences_stripped": fences_stripped,
+        "prompt": prompt,
+    }
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description="3-Pillar Candidate Radar & Norma Centroid Plunger.")
+    common.add_standard_arguments(parser)
+    parser.add_argument("-s", "--slug", type=str, default=None, help="Post #ID (e.g. #1652) or slug substring.")
+    parser.add_argument("--best", action="store_true", help="Pull the plunger on the #1 radar candidate.")
+    parser.add_argument("--limit", type=int, default=10, help="Number of radar candidates to display (default: 10).")
+    parser.add_argument("--copy", action="store_true", help="Copy the assembled extraction prompt to the clipboard.")
+    parser.add_argument("--stamp-coin", action="store_true", help="Stamp `jukebox_coin: true` on -s <post>.")
+    args = parser.parse_args(argv)
+
+    posts_dir = common.get_target_path(args)
+    if args.stamp_coin:
+        if not args.slug:
+            print("❌ Pass `-s #<article_id>` (or slug) with `--stamp-coin`.")
+            return 1
+        post_p, _ = common._latest_post_for_target(args.target, slug_match=args.slug)
+        if not post_p:
+            print(f"❌ No post matched {args.slug!r}.")
+            return 1
+        st = common.stamp_frontmatter_value(post_p, "jukebox_coin", "true", preserve_mtime=True)
+        print(f"🪙 [{st}] Stamped jukebox_coin: true on {post_p.name} (#{common.read_article_id(post_p)}).")
+        return 0
+
+    if not args.slug and not args.best:
+        rows = rank_candidates(posts_dir, limit=args.limit)
+        print(f"🎯 Norma Centroid 3-Pillar Candidate Radar (Top {len(rows)} un-minted in {posts_dir}):")
+        for idx, r in enumerate(rows, 1):
+            p_tag = "+".join(r["pillars"])
+            print(f"  {idx:2d}. #{r['article_id']:<4d} [score={r['score']:2d} | {p_tag:<24s}] {r['title']}")
+            print(f"       ↳ Plunger: .venv/bin/python scripts/articles/norma_extract.py -s #{r['article_id']} --copy")
+        return 0
+
+    if args.best and not args.slug:
+        top = rank_candidates(posts_dir, limit=1)
+        if not top:
+            print("⚠️ No un-minted 3-pillar candidates found.")
+            return 1
+        post_p = Path(top[0]["path"])
+    else:
+        post_p, _ = common._latest_post_for_target(args.target, slug_match=args.slug)
+    if not post_p or not post_p.is_file():
+        print(f"❌ No post matched {args.slug!r}.")
+        return 1
+
+    pkt = build_extraction_prompt(post_p)
+    est_tok = int(len(pkt["prompt"]) / 3.5)
+    print(
+        f"🎰 Pinball Plunger Pulled: #{pkt['article_id']} {pkt['title']!r} | "
+        f"pillars={pkt['pillars']} | fences_stripped={pkt['fences_stripped']} | "
+        f"prompt={len(pkt['prompt']):,} chars (~{est_tok:,} tok)"
+    )
+    if args.copy:
+        articleizer.clipboard_copy(pkt["prompt"])
+        print("📋 Norma Centroid extraction prompt copied to clipboard! Paste into Gemini in your browser.")
+    else:
+        print("💡 Add `--copy` to put this extraction prompt straight onto your clipboard.")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

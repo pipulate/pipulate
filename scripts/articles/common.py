@@ -271,6 +271,24 @@ def read_article_id(md_path):
     return val if (val is not None and val > 0) else None
 
 
+def read_frontmatter_bool(md_path, key):
+    """Read a boolean top-level YAML frontmatter key without loading the post body."""
+    key_re = re.compile(rf"^{re.escape(key)}\s*:\s*['\"]?(true|false|yes|no|1|0)['\"]?\s*(?:#.*)?$", re.IGNORECASE)
+    try:
+        with open(md_path, "r", encoding="utf-8", errors="replace") as f:
+            if f.readline().strip() != "---":
+                return None
+            for line in f:
+                if line.strip() == "---":
+                    break
+                m = key_re.match(line.rstrip("\r\n"))
+                if m:
+                    return m.group(1).lower() in ("true", "yes", "1")
+    except OSError:
+        return None
+    return None
+
+
 def gdoc_share_url(file_id):
     """Canonical anyone-with-link share URL for a Google Doc file id."""
     return f"https://docs.google.com/document/d/{file_id}/edit?usp=sharing"

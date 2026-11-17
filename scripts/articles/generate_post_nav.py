@@ -62,6 +62,10 @@ def build_nav(metadata: list) -> dict:
         entry["position"] = aid if isinstance(aid, int) and aid > 0 else (total - i)
         if isinstance(aid, int) and aid > 0:
             entry["article_id"] = aid
+        jb_coin = item.get("jukebox_coin")
+        if jb_coin is None and item.get("path"):
+            jb_coin = common.read_frontmatter_bool(item["path"], "jukebox_coin")
+        entry["jukebox_coin"] = bool(jb_coin)
         nav[article_url(item)] = entry
     return nav
 
