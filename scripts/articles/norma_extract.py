@@ -113,8 +113,8 @@ def score_pillars(title_text: str, meta_text: str) -> tuple[int, list[str]]:
     return score, matched
 
 
-def rank_candidates(posts_dir: Path, limit: int = 10) -> list[dict]:
-    """Return top un-minted Jukebox Coin candidates ranked by 3-Pillar alignment."""
+def rank_candidates(posts_dir: Path, limit: int = 10, pillars_only: bool = False) -> list[dict]:
+    """Return un-minted Storytime backfill candidates (newest-first by default, or 3-Pillar ranked)."""
     pdir = Path(posts_dir).expanduser().resolve()
     if not pdir.is_dir():
         return []
@@ -129,6 +129,10 @@ def rank_candidates(posts_dir: Path, limit: int = 10) -> list[dict]:
             continue
         meta = info["meta"]
         if meta.get("jukebox_coin", "").lower() in ("true", "yes", "1"):
+            continue
+        if meta.get("aside", "").lower() in ("true", "yes", "1"):
+            continue
+        if meta.get("storytime", "").lower() in ("false", "no", "0", "off", "aside"):
             continue
         if abstract_path_for_post(md_path).is_file():
             continue
@@ -157,7 +161,7 @@ def rank_candidates(posts_dir: Path, limit: int = 10) -> list[dict]:
             info["body_preview"] if not shard_blob else "",
         ])
         score, pillars = score_pillars(title, meta_blob)
-        if score <= 0:
+        if pillars_only and score <= 0:
             continue
         candidates.append({
             "article_id": aid,
@@ -168,7 +172,10 @@ def rank_candidates(posts_dir: Path, limit: int = 10) -> list[dict]:
             "title": title,
             "path": str(md_path),
         })
-    candidates.sort(key=lambda c: (-c["score"], -c["article_id"], c["slug"]))
+    if pillars_only:
+        candidates.sort(key=lambda c: (-c["score"], -c["article_id"], c["slug"]))
+    else:
+        candidates.sort(key=lambda c: (c["date"], c["article_id"], c["slug"]), reverse=True)
     return candidates[: max(1, int(limit))]
 
 
@@ -200,16 +207,16 @@ def build_extraction_prompt(md_path: Path) -> dict:
         "with a clear parable/moral for smart newcomers in the middle of the bell curve.\n\n"
         f"SOURCE ARTICLE: #{aid} — {title}\n"
         f"CANONICAL LAB RECEIPT: {canon_url}\n"
-        f"DETECTED PILLARS: {', '.join(pillars) or 'EVALUATE_STRICTLY'}\n\n"
-        "HARD COMMERCIAL FILTER (ZERO WASTED SYLLABLES):\n"
-        "Every exchange MUST directly advance at least one of these three goals:\n"
-        "  1. RFC 9110 (Section 12) Semantics Consulting: serving clean `Accept: text/markdown`\n"
-        "     at canonical URLs for the helpful AI man-in-the-middle between Alice and Bob.\n"
-        "  2. RFC 9111 Bimodal CDN Caching Consulting: `Vary: Accept` cache keys, ADNS /\n"
-        "     Cloudflare O2O edge log visibility, and 3-Hop Markdown navigation.\n"
-        "  3. SunPug.io Workbench Adoption: inspiring practitioners to inspect and run\n"
-        f"     `{sunpug_cmd}` for a local-first Nix/Python/vim/git lab.\n"
-        "If the source cannot honestly support any of these three goals, reply ONLY:\n"
+        f"OPTIONAL PILLAR HOOKS: {', '.join(pillars) or 'GENERAL_GOOD_READ (philosophy, craft, or systems parable)'}\n\n"
+        "NORMA CENTROID 'GOOD READ' FILTER (ARCHAEOLOGIST FROM THE FUTURE — ZERO WASTED SYLLABLES):\n"
+        "- An article does NOT need to be about RFC 9110, RFC 9111, or SunPug to earn a Jukebox Coin.\n"
+        "  ANY genuine discovery, engineering reversal, craft lesson, or philosophical insight that makes\n"
+        "  a compelling, memorable YouTube Storytime episode for a smart newcomer ('Normie') qualifies.\n"
+        "- Zero wasted syllables: translate insider jargon, strip internal repo plumbing, and earn every\n"
+        "  sentence with curiosity, clarity, and Norma's sawtooth 'And then the surprising thing the\n"
+        "  author did...' momentum. When RFC 9110, RFC 9111, or SunPug ARE naturally present in the seed,\n"
+        "  connect them plainly; when they are not, let the article's true human story stand on its own.\n"
+        "- Only if the post is pure housekeeping/changelog noise with zero human parable, reply ONLY:\n"
         f"SKIP_CANDIDATE #{aid}: <one-sentence reason>\n\n"
         "3-VOICE PUPPET-THEATER MARKDOWN CONTRACT (ENCLOSE ENTIRE REPLY IN ONE ```markdown FENCE):\n"
         f"- Total spoken length: strictly {STORYTIME_MIN_WORDS}–{STORYTIME_MAX_WORDS} words (~6–8 min between 20-min breaks).\n"
@@ -220,13 +227,13 @@ def build_extraction_prompt(md_path: Path) -> dict:
         "- Body (`## Technical Journal Entry Begins` + 3–4 `## ` Act Headings also read by NORMA CENTROID):\n"
         "  Alternate crisp Socratic turns using ONLY these exact speaker prefixes at column 0:\n"
         "    • `**Me**:` (Stage Left — Mike-E the Apprentice @ 19,200 Hz: voices the curious newcomer's\n"
-        "      grounded questions, pushback, and practical 'so what does this mean for my site?' stakes).\n"
+        "      grounded questions, pushback, and practical 'so what does this mean for my work?' stakes).\n"
         "    • `**Gemini**:` (Stage Right — Shipmunk O'Theseus! @ 22,050 Hz: answers with vivid parables,\n"
-        "      the real wire/bug receipt from the lab session proving Shannon surprisal over zero-bit slop,\n"
+        "      the real surprise/receipt from the lab session proving Shannon surprisal over zero-bit mush,\n"
         "      and—under a Below-the-Fold heading—the pre-registered Kuhnian Gatekeeper Trapdoor naming\n"
-        "      the exact knee-jerk Marketing/IT dismissal and its plain-spoken refutation).\n"
-        f"- Final turn: close naturally with `{sunpug_cmd}` (or an RFC 9110/9111 check),\n"
-        f"  link back to Lab Receipt #{aid} ({canon_url}), and name Jukebox Coin `{coin_cmd}`.\n\n"
+        "      the predictable knee-jerk dismissal and its plain-spoken refutation).\n"
+        f"- Final turn: land the parable's takeaway cleanly (weaving `{sunpug_cmd}` or RFC 9110/9111\n"
+        f"  only when natural), link Lab Receipt #{aid} ({canon_url}), and name Jukebox Coin `{coin_cmd}`.\n\n"
         "--- SOURCE ARTICLE (CODE FENCES CONDENSED) ---\n"
         f"{lean_body}\n"
         "--- END SOURCE ARTICLE ---\n"
@@ -271,11 +278,12 @@ def save_abstract_for_post(md_path: Path, raw_text: str) -> dict:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="3-Pillar Candidate Radar & Norma Centroid Plunger.")
+    parser = argparse.ArgumentParser(description="Norma Centroid Newest-First Storytime Backfill & Plunger.")
     common.add_standard_arguments(parser)
     parser.add_argument("-s", "--slug", type=str, default=None, help="Post #ID (e.g. #1652) or slug substring.")
-    parser.add_argument("--best", action="store_true", help="Pull the plunger on the #1 radar candidate.")
-    parser.add_argument("--limit", type=int, default=10, help="Number of radar candidates to display (default: 10).")
+    parser.add_argument("-n", "--next", "--best", dest="best", action="store_true", help="Pull the plunger on the newest un-minted post (or #1 with --pillars).")
+    parser.add_argument("--pillars", action="store_true", help="Filter and rank strictly by 3-Pillar commercial score instead of newest-first backfill.")
+    parser.add_argument("--limit", type=int, default=10, help="Number of backfill candidates to display (default: 10).")
     parser.add_argument("--copy", action="store_true", help="Copy the assembled extraction prompt to the clipboard.")
     parser.add_argument("--save-clipboard", action="store_true", help="Validate & save Socratic abstract from clipboard into `_posts/_abstracts/` + stamp coin.")
     parser.add_argument("--stamp-coin", action="store_true", help="Stamp `jukebox_coin: true` on -s <post>.")
@@ -295,33 +303,43 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     if args.save_clipboard:
-        if not args.slug:
-            print("❌ Pass `-s #<article_id>` (or slug) with `--save-clipboard`.")
+        clip_raw = articleizer.clipboard_paste()
+        slug_q = args.slug
+        if not slug_q:
+            m_aid = re.search(r"(?m)^article_id\s*:\s*['\"]?([1-9]\d*)['\"]?\s*$", clip_raw or "")
+            if m_aid:
+                slug_q = f"#{m_aid.group(1)}"
+        if not slug_q:
+            print("❌ Pass `-s #<article_id>` (or include `article_id:` in clipboard YAML) with `--save-clipboard`.")
             return 1
-        post_p, _ = common._latest_post_for_target(args.target, slug_match=args.slug)
+        post_p, _ = common._latest_post_for_target(args.target, slug_match=slug_q)
         if not post_p or not post_p.is_file():
-            print(f"❌ No post matched {args.slug!r}.")
+            print(f"❌ No post matched {slug_q!r}.")
             return 1
-        res = save_abstract_for_post(post_p, articleizer.clipboard_paste())
+        res = save_abstract_for_post(post_p, clip_raw)
         if not res["ok"]:
             print(f"❌ Refused abstract for {post_p.name}: {res['error']}")
             return 1
         print(f"🎭 Saved 3-voice Socratic abstract ({res['words']} words) -> {res['abstract_path']} & [{res['coin_status']}] jukebox_coin on #{res['article_id']}!")
+        nxt = rank_candidates(posts_dir, limit=1, pillars_only=args.pillars)
+        if nxt:
+            print(f"⏭️  Next un-minted in queue: #{nxt[0]['article_id']} ({nxt[0]['date']}) — {nxt[0]['title']}")
         return 0
 
     if not args.slug and not args.best:
-        rows = rank_candidates(posts_dir, limit=args.limit)
-        print(f"🎯 Norma Centroid 3-Pillar Candidate Radar (Top {len(rows)} un-minted in {posts_dir}):")
+        rows = rank_candidates(posts_dir, limit=args.limit, pillars_only=args.pillars)
+        mode_lbl = "3-Pillar Radar" if args.pillars else "Newest-First Backfill Queue"
+        print(f"🎯 Norma Centroid {mode_lbl} (Top {len(rows)} un-minted in {posts_dir}):")
         for idx, r in enumerate(rows, 1):
-            p_tag = "+".join(r["pillars"])
-            print(f"  {idx:2d}. #{r['article_id']:<4d} [score={r['score']:2d} | {p_tag:<24s}] {r['title']}")
+            p_tag = "+".join(r["pillars"]) or "GOOD_READ"
+            print(f"  {idx:2d}. #{r['article_id']:<4d} [{r['date']} | {p_tag:<24s}] {r['title']}")
             print(f"       ↳ Plunger: .venv/bin/python scripts/articles/norma_extract.py -s #{r['article_id']} --copy")
         return 0
 
     if args.best and not args.slug:
-        top = rank_candidates(posts_dir, limit=1)
+        top = rank_candidates(posts_dir, limit=1, pillars_only=args.pillars)
         if not top:
-            print("⚠️ No un-minted 3-pillar candidates found.")
+            print("⚠️ No un-minted Storytime candidates found.")
             return 1
         post_p = Path(top[0]["path"])
     else:
