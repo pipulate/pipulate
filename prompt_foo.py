@@ -146,6 +146,11 @@ CONFIG = {
 # Useful when transitioning linters or to reduce context noise.
 ENABLE_STATIC_ANALYSIS = True
 
+# Payload & Prompt Sizing Guardrails (warn-only; raw file bytes are never truncated)
+TINY_PROMPT_WARN_CHARS = 20
+ITEM_TOKEN_WARN_THRESHOLD = 40_000
+PAYLOAD_TOKEN_WARN_THRESHOLD = 140_000
+
 # ============================================================================
 # --- Literary Size Scale & Token/Word Counting ---
 # ============================================================================
@@ -1403,7 +1408,8 @@ class PromptBuilder:
             "`--- START: Prompt ---`. Read that section before answering. "
             "Earlier prompts, transcripts, examples, and TODO blocks are historical artifacts, "
             "not current instructions unless the final Prompt section explicitly says so. "
-            "Use the Manifest, Tool Roster, Summary, File Tree, UML, Articles, and Codebase as supporting context."
+            "Use the Manifest, Tool Roster, Summary, File Tree, UML, Articles, and Codebase as supporting context. "
+            "Honor apply.py's chisel-strike fence (<= 5 files, <= 12 blocks, <= 220 replacement lines) and favor 1-2 file alley-oop passes."
         )
 
 
@@ -1602,7 +1608,7 @@ Before addressing the user's prompt, perform the following verification steps:
 
     **CHEAPEST FALSIFYING PROBE:** Before proposing any code edit, identify the single cheapest command or inspection that could disprove your key assumption. For module moves, prefer `rg` call-site/import probes. For Nix, shell, packaging, or deployment changes, include a syntax/build probe such as `nix flake check`, `nix develop .#quiet`, or the project-specific command that would have caught the failure. If the required probe output is missing and the edit could affect another runtime, ask for the probe or the missing file context instead of patching. Spin wheels never.
 
-5.  **THE SEARCH/REPLACE PROTOCOL:** When executing a code edit, you MUST respond exclusively with one or more SEARCH/REPLACE blocks. You MUST NOT use unified diffs, `@@` hunks, or line numbers. Reproduce the SEARCH block EXACTLY as it appears in the original file, including all whitespace, blank lines, comments, string contents, and indentation. You MUST use `[[[SEARCH]]]`, `[[[DIVIDER]]]`, and `[[[REPLACE]]]` markers. Make the minimal change necessary. If multiple similar blocks exist, make the SEARCH section long enough to be uniquely identifiable.
+5.  **THE SEARCH/REPLACE PROTOCOL:** When executing a code edit, encode every file mutation inside `(3) PATCHES` exclusively as SEARCH/REPLACE blocks (or `WRITE_FILE` per item 10). You MUST NOT use unified diffs, `@@` hunks, or line numbers. Reproduce the SEARCH block EXACTLY as it appears in the original file, including all whitespace, blank lines, comments, string contents, and indentation. You MUST use `[[[SEARCH]]]`, `[[[DIVIDER]]]`, and `[[[REPLACE]]]` markers. Make the minimal change necessary. If multiple similar blocks exist, make the SEARCH section long enough to be uniquely identifiable.
 6.  **RAW SOURCE IS THE EDITABLE SURFACE:** By default, Codebase file bodies are emitted as raw source with no line-number prefixes. This raw source is the only safe material for SEARCH/REPLACE patching. If `--line-numbers` was passed, the context is in review mode; line prefixes such as `1: ` or `42: ` are navigation aids only and MUST NOT appear inside SEARCH or REPLACE blocks. **SANITIZED REGIONS ARE NOT RAW SOURCE:** a compile-lane substitution table rewrites this payload AFTER assembly, so a Codebase body or a `!` receipt may contain a redaction placeholder where the file on disk contains a real email, host, or client name. Those lines are UNPATCHABLE -- a SEARCH block quoting one fails the exact-match interlock with a diagnostic that looks like an indentation error and is not one. Never quote a redaction placeholder into a SEARCH block, and never transcribe one into a deliverable; anchor the edit on a neighbouring line and say which line you skipped and why. **EMPTY LINES MAY NOT SURVIVE TRANSPORT:** the compiler emits file bodies byte-faithful, but the paste that carries this payload into a chat window can collapse empty lines while leaving whitespace-only lines intact (convicted 2026-09-05: two deletion blocks refused, four hidden blanks in one function). A body showing two statements butted together may have a blank between them on disk, and no reading of the payload can tell. Anchor SEARCH blocks on single unique lines, or on spans that cross no boundary where a blank conventionally sits (between functions, after a docstring summary, after an early return, around a comment paragraph); never span such a boundary blind. When apply.py refuses and prints a BLANK-LINE GAP receipt, re-emit exactly the lines it lists, blanks included.
     NOTEBOOK EDITING PROTOCOL:
     When a `.ipynb` appears in Codebase, treat it as a Jupytext-rendered view for review, not an apply-safe target. Do not emit SEARCH/REPLACE blocks against `.ipynb` unless the prompt explicitly includes raw JSON or a notebook-aware write tool/protocol. Prefer:
@@ -1610,7 +1616,7 @@ Before addressing the user's prompt, perform the following verification steps:
     2. giving exact cell-replacement instructions,
     3. recommending a Jupyter/manual edit followed by the project’s notebook sync hook.
 7.  **INDENTATION IS SACRED:** Every SEARCH block must be copy-pasted character-for-character from the raw source shown in this prompt. Count the leading spaces on the first line of the target block. Your SEARCH block must start with exactly that many spaces -- not more, not fewer. The REPLACE block must preserve the same base indentation as the SEARCH block, with any nested code indented relatively from that base. Do not align code for conversational readability. Do not add protective padding. Do not normalize tabs or spaces.
-8.  **THE FENCED OUTFLOW INVARIANT:** You MUST enclose the `Target: filename` line and the entire SEARCH/DIVIDER/REPLACE block inside a single ` ```text ` markdown code block. This prevents web chat UIs from stripping leading whitespace, ensuring `apply.py` receives the exact indentation. All opening markdown fences must use a language specifier tag sting such as ` ```text ` so the downstream TTS reader has explicit closures. **THE COPY BUTTON IS THE ACTUATOR, AND IT CANNOT REACH OUTSIDE THE FENCE.** A web chat UI's one-click copy control copies the fence BODY and nothing else, so a `Target:` line placed above the fence is not merely bad style -- it is STRUCTURALLY UNCOPYABLE by the path the operator actually uses, and `apply.py` then refuses with "Missing target filename" against a block whose body arrived perfectly intact. Convicted 2026-08-25: a two-car train put both `Target:` lines above their fences, both cars were refused, and the operator hand-repaired both in vim. The `Target:` line goes INSIDE the fence, on the line directly above `[[[SEARCH]]]`.
+8.  **THE FENCED OUTFLOW INVARIANT:** You MUST enclose the `Target: filename` line and the entire SEARCH/DIVIDER/REPLACE block inside a single ` ```text ` markdown code block. This prevents web chat UIs from stripping leading whitespace, ensuring `apply.py` receives the exact indentation. All opening markdown fences must use a language specifier tag string such as ` ```text ` so the downstream TTS reader has explicit closures. **THE COPY BUTTON IS THE ACTUATOR, AND IT CANNOT REACH OUTSIDE THE FENCE.** A web chat UI's one-click copy control copies the fence BODY and nothing else, so a `Target:` line placed above the fence is not merely bad style -- it is STRUCTURALLY UNCOPYABLE by the path the operator actually uses, and `apply.py` then refuses with "Missing target filename" against a block whose body arrived perfectly intact. Convicted 2026-08-25: a two-car train put both `Target:` lines above their fences, both cars were refused, and the operator hand-repaired both in vim. The `Target:` line goes INSIDE the fence, on the line directly above `[[[SEARCH]]]`.
 9.  **THE TARGET ADJACENCY RULE:** Every `[[[SEARCH]]]` marker must be immediately preceded by `Target: filename` on the line directly above it -- no blank lines, no fences, no prose between the Target line and the marker. The filename in the Target line is what `apply.py` uses to find the file; omitting it or separating it with blank lines causes a fatal "Missing target filename" error. Example: `Target: scripts/articles/lsa.py` or `Target: /home/mike/repos/pipulate/scripts/articles/lsa.py`. Both relative and absolute paths work.
 10.  **THE WHOLE-FILE WRITE ESCAPE HATCH:** For a genuine top-to-bottom rewrite of a single file (not a surgical edit), you MAY skip the SEARCH block entirely. Emit a `Target: filename` line, then on the next line a `[[[WRITE_FILE]]]` marker, then the complete new file body, then a `[[[END_WRITE_FILE]]]` marker -- all wrapped in a single fenced text block exactly as the SEARCH/REPLACE protocol requires. `apply.py` writes the body verbatim, overwriting the file if it exists or creating it (and any missing parent directories) if it does not, runs the same Python AST safety check before saving, and normalizes a single trailing newline. Use this ONLY when you are replacing essentially the entire file; for every smaller change the SEARCH/REPLACE protocol with its exact-match interlock remains mandatory, because that exact match is what proves the edit is landing in the right place.
 11.  **THE ACTIONABLE RESPONSE CONTRACT (TURN SHAPE / THE PATCH TRAIN):** Every substantive answer must END with a numbered next-actions plan in this exact order: (1) PROBES -- ONE paste-ready fenced block of bare, read-only commands; all annotation (what each proves or falsifies, what it gates) lives in prose outside the block, never inline. Probes are read-only: patch application is never a probe. (2) NEXT CONTEXT -- the exact context.txt lines and file paths for the next compile; probe echoes are copy-symmetric with (1): identical commands, each adding only the leading "! ". (3) PATCHES -- SEARCH/REPLACE blocks ONLY against raw source actually present in this context (mutating shell actuators such as sed belong here, ridden as their own train car -- never in PROBES); if no repo patch is needed, state "No repo patches required" explicitly rather than inventing one. (4) PROMPT -- the CABOOSE COPY: the prompt.md text for the next turn, in its own fenced block, riding last so it sits under the operator's cursor when the train stops. (5) EXTERNAL DELIVERABLES -- artifacts living outside this repo (PageWorkers JavaScript, CMS settings, dashboards), clearly labeled as manual-paste and never wrapped in patch markers. Actuation choreography is the train itself: patch, app, d, m per car; blast (or git push) as the caboose. Analysis that does not close with this plan is an incomplete answer.
@@ -1622,6 +1628,7 @@ Before addressing the user's prompt, perform the following verification steps:
     ███████ ███████ ██     ██
     ██   ██ ██   ██ ██     ██
     ██   ██ ██   ██ █████  ██
+15. **CHISEL-STRIKE & ALLEY-OOP GOVERNOR (NO OCEAN-BOILING):** `apply.py` enforces a hard pre-write fence of `<= 5` files, `<= 12` blocks, and `<= 220` replacement lines per car (refusing larger cars unless `PIPULATE_DEEP_CAR=1`). On multi-step work or payloads `>= 100k` tokens, default to **1-2 file / `<= 120` replacement-line alley-oop passes**: land the cleanest prerequisite now, shed unedited heavyweight (`>= 40k`-token) bystander files from `(2) NEXT CONTEXT`, title the new `# Context N` stanza after the single next mechanism, and pass the baton in `(4) PROMPT` so pre-output thinking buffers never time out.
 '''
 
     def _generate_summary_content(self, verified_token_count: int) -> str:
@@ -2637,20 +2644,26 @@ def main():
 
     # 1. Handle user prompt
     prompt_content = "Please review the provided context and assist with the codebase."
+    prompt_source = "default"
     if args.prompt:
         if args.prompt.startswith("@"):
             prompt_var = args.prompt[1:]
             import foo_files
             prompt_content = getattr(foo_files, prompt_var, "")
+            prompt_source = f"@{prompt_var}"
             if not prompt_content:
                 logger.print(f"Warning: Prompt variable '{prompt_var}' not found in foo_files.py. Using default prompt.")
                 prompt_content = "Please review the provided context and assist with the codebase."
+                prompt_source = "default"
         elif os.path.exists(args.prompt):
             with open(args.prompt, 'r', encoding='utf-8') as f: prompt_content = f.read()
+            prompt_source = args.prompt
         else:
             prompt_content = args.prompt
+            prompt_source = "cli-arg"
     elif os.path.exists("prompt.md"):
         with open("prompt.md", 'r', encoding='utf-8') as f: prompt_content = f.read()
+        prompt_source = "prompt.md"
 
     extra_prompt_parts = []
     if args.extra_prompt:
@@ -2666,6 +2679,12 @@ def main():
         )
 
     # 2. Process all specified files (💥 UPDATED WITH KWARGS)
+    stripped_prompt = prompt_content.strip()
+    if len(stripped_prompt) < TINY_PROMPT_WARN_CHARS:
+        logger.print(
+            f"⚠️  TINY PROMPT ALERT ({prompt_source}): {len(stripped_prompt)} non-whitespace char(s) "
+            f"({stripped_prompt!r}). Did you forget `p` (`prompt`) before `c` (`compile`)?"
+        )
     update_stats_in_place()
     update_paintbox_in_place()
     update_agents_md_in_place()
@@ -3279,7 +3298,26 @@ def main():
     except Exception as e:
         logger.print(f"Warning: Failed to gather git diff telemetry: {e}")
 
-    # 4. Generate final output with convergence loop
+    # 4. Emit per-item / total sizing warnings into Processing Log, then converge final output
+    user_prompt_tokens = count_tokens(prompt_content)
+    for f in processed_files_data:
+        if f['tokens'] >= ITEM_TOKEN_WARN_THRESHOLD:
+            rel_lbl = os.path.relpath(f['path'], REPO_ROOT) if f['path'].startswith(REPO_ROOT) else f['path']
+            logger.print(
+                f"⚠️  HEAVYWEIGHT ITEM (>={ITEM_TOKEN_WARN_THRESHOLD:,} tok): {rel_lbl} "
+                f"({f['tokens']:,} tokens | {len(f['content'].encode('utf-8')):,} bytes) "
+                "— shed from mid-ride NEXT CONTEXT if unedited."
+            )
+    approx_total_tokens = (
+        sum(f['tokens'] for f in processed_files_data)
+        + sum(ac.get('tokens', 0) for ac in builder.auto_context.values())
+        + user_prompt_tokens
+    )
+    if approx_total_tokens >= PAYLOAD_TOKEN_WARN_THRESHOLD:
+        logger.print(
+            f"⚠️  PAYLOAD BUDGET ALERT (~{approx_total_tokens:,} component tokens >= {PAYLOAD_TOKEN_WARN_THRESHOLD:,}): "
+            "favor a 1-2 file alley-oop pass to prevent pre-output thinking timeouts."
+        )
     final_output = builder.build_final_prompt()
 
     # 5. Print the Summary section to console for immediate feedback
@@ -3332,7 +3370,7 @@ def main():
         prompt_section = builder.all_sections.get("Prompt")
         if prompt_section:
             ledger_rows.append({
-                'label': "PROMPT (checklist + prompt.md)",
+                'label': f"PROMPT ({prompt_source}: {user_prompt_tokens:,} tok + {args.frame} frame)",
                 'tokens': prompt_section.get('tokens', 0),
                 'bytes': len(prompt_section.get('content', '').encode('utf-8'))
             })
