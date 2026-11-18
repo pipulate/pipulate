@@ -775,23 +775,38 @@ def print_optics_receipt(artifacts: dict, target_url: str, cached: bool = False)
 # ============================================================================
 # --- Helper Functions (File Parsing, Clipboard) ---
 # ============================================================================
+def _fence_for(text: str) -> str:
+    """Return a CommonMark backtick fence strictly longer than any run in text (min 3)."""
+    max_run = max((len(m.group(0)) for m in re.finditer(r'`+', text)), default=2)
+    return '`' * max(3, max_run + 1)
+
+
 def annotate_tree_with_tokens(tree_output: str, processed_files: List[Dict], repo_root: str) -> str:
-    """Injects (X,XXX tokens) next to every included file in the eza tree."""
+    """Injects (X,XXX tokens) next to included repo files in the eza tree by exact relative path."""
     token_map = {}
     for f in processed_files:
-        if f.get('path', '').endswith(('.py', '.ipynb', '.md', '.nix', '.sh')):  # expand as needed
-            rel_path = os.path.relpath(f['path'], repo_root)
+        raw_path = f.get('path', '')
+        if not raw_path or raw_path.startswith(('! ', 'OPTICS ', 'BUMPER:')) or '://' in raw_path:
+            continue
+        abs_path = raw_path if os.path.isabs(raw_path) else os.path.join(repo_root, raw_path)
+        rel_path = os.path.relpath(abs_path, repo_root).replace('\\', '/')
+        if not rel_path.startswith('..'):
             token_map[rel_path] = f['tokens']
-    
-    lines = tree_output.splitlines()
+
+    stack: List[str] = []
     annotated = []
-    for line in lines:
-        for rel_path, tokens in token_map.items():
-            filename = os.path.basename(rel_path)
-            if filename in line and line.strip().endswith(filename):
-                # Preserve the beautiful tree art, just tack on the size
-                line = f"{line}  ({tokens:,} tokens)"
-                break
+    tree_re = re.compile(r'^((?:[│|]   |    )*)(?:[├└]── |[|`]-{2} )(.*)$')
+    for line in tree_output.splitlines():
+        m = tree_re.match(line)
+        if m:
+            depth = len(m.group(1)) // 4
+            entry = m.group(2).split(' -> ', 1)[0].strip()
+            stack = stack[:depth] + [entry]
+            rel_candidate = '/'.join(stack)
+            if rel_candidate in token_map:
+                line = f"{line}  ({token_map[rel_candidate]:,} tokens)"
+        elif line.strip() == '.':
+            stack = []
         annotated.append(line)
     return '\n'.join(annotated)
 
@@ -1508,11 +1523,12 @@ class PromptBuilder:
         
         lines = []
         for f in self.processed_files:
-            # Using Absolute Paths in markers
+            # Using Absolute Paths in markers + CommonMark length-aware outer fence
+            fence = _fence_for(f['content'])
             lines.append(f"--- START: {f['path']} ({f['tokens']:,} tokens) ---")
-            lines.append(f"```{f['lang']}:{f['path']}")
+            lines.append(f"{fence}{f['lang']}:{f['path']}")
             lines.append(f['content'])
-            lines.append("```")
+            lines.append(fence)
             lines.append(f"--- END: {f['path']} ---\n")
         return "\n".join(lines).strip()
 
@@ -1719,10 +1735,15 @@ Before addressing the user's prompt, perform the following verification steps:
         prompt_content = self._build_prompt_content()
 
         # Placeholders
+        tree_status = getattr(self, "tree_status", "skipped")
         placeholders = {
             "Tool Roster": "# TOOL ROSTER GENERATION FAILED: no roster content was produced.",
-            "Story": f"# Narrative context not requested. Use the -l or --list flag to include recent articles.",
-            "File Tree": "# File tree generation failed or was skipped.",
+            "Story": "# Narrative context not requested. Use the -l or --list flag to include recent articles.",
+            "File Tree": (
+                f"# File tree {tree_status}."
+                if tree_status.startswith(("skipped", "failed"))
+                else "# File tree generation failed."
+            ),
             "UML Diagrams": "# No Python files with classes were included, or UML generation failed.",
             "Articles": "# No full articles requested. Use the -a or --article flag to include full article content.",
             "Telemetry": "# No static-analysis or git-diff telemetry was produced for this compile.",
@@ -2701,18 +2722,7 @@ def main():
                 seen_paths.add(file_path)
                 logger.print(f"🎯 Added file from --files: {file_path}")
 
-    # Inject --slugs as direct file paths into the processing queue
-    if args.slugs:
-        all_articles = _get_article_list_data(CONFIG["POSTS_DIRECTORY"], url_config=active_target_config)
-        target_slugs = set(args.slugs)
-        for article in all_articles:
-            stem = os.path.splitext(os.path.basename(article['path']))[0]
-            clean_slug = re.sub(r'^\d{4}-\d{2}-\d{2}-', '', stem)
-            permalink_slug = article.get('permalink', '').strip('/').split('/')[-1] if article.get('permalink') else ''
-            if clean_slug in target_slugs or (permalink_slug and permalink_slug in target_slugs):
-                resolved_slug = permalink_slug if permalink_slug in target_slugs else clean_slug
-                files_to_process.append((article['path'], f"slug:{resolved_slug}"))
-                logger.print(f"🎯 Resolved slug '{resolved_slug}' to: {article['path']}")
+
 
     processed_files_data = []
 
@@ -2762,7 +2772,7 @@ def main():
                 # communicate() open forever; killing the whole group closes
                 # every fd holder, so EOF always arrives.
                 proc = subprocess.Popen(
-                    command_str, shell=True, stdin=subprocess.DEVNULL,
+                    command_str, shell=True, cwd=REPO_ROOT, stdin=subprocess.DEVNULL,
                     stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                     text=True, start_new_session=True
                 )
@@ -2999,17 +3009,20 @@ def main():
                 # STANDARD NAIVE FETCH (For raw text/code)
                 try:
                     logger.print(f"   -> Fetching URL: {target_url}")
-                    with urllib.request.urlopen(target_url) as response:
+                    with urllib.request.urlopen(target_url, timeout=30) as response:
                         content = response.read().decode('utf-8')
                     ext = os.path.splitext(target_url.split('?')[0])[1].lower()
                     lang_map = {'.py': 'python', '.js': 'javascript', '.html': 'html', '.css': 'css', '.md': 'markdown', '.json': 'json', '.nix': 'nix', '.sh': 'bash'}
                     lang = lang_map.get(ext, 'text')
-                except UnicodeDecodeError:
-                    content = f"# [Binary file or incompatible encoding omitted from text context: {os.path.basename(target_url)}]"
-                    lang = "text"
                     processed_files_data.append({
                         "path": target_url, "comment": comment, "content": content,
                         "tokens": count_tokens(content), "words": count_words(content), "lang": lang
+                    })
+                except UnicodeDecodeError:
+                    content = f"# [Binary file or incompatible encoding omitted from text context: {os.path.basename(target_url)}]"
+                    processed_files_data.append({
+                        "path": target_url, "comment": comment, "content": content,
+                        "tokens": count_tokens(content), "words": count_words(content), "lang": "text"
                     })
                 except Exception as e:
                     logger.print(f"Error fetching URL {target_url}: {e}")
@@ -3096,10 +3109,14 @@ def main():
         t_count = tree_data.get('tokens', 0)
         b_count = len(tree_data.get('content', '').encode('utf-8'))
         logger.print(f" ({t_count:,} tokens | {b_count:,} bytes)")
+        builder.tree_status = "ok" if title in builder.auto_context else f"failed ({tree_output.strip()})"
     elif args.no_tree:
         logger.note("Skipping codebase tree (--no-tree flag detected).")
+        builder.tree_status = "skipped (--no-tree flag passed)"
     else:
         logger.note("Skipping codebase tree (no .py files included).")
+        builder.tree_status = "skipped (no Python files in Codebase)"
+    sliced_articles = []
 
     if args.list is not None:
         logger.print("Adding narrative context from articles...", end='', flush=True)
@@ -3148,23 +3165,29 @@ def main():
         else:
             logger.print(" (no articles found or invalid slice)")
     
-    if args.article is not None:
+    if args.article is not None or args.decanter or args.decanter_from or args.slugs:
         logger.print("Adding full article content...")
-        all_articles = _get_article_list_data(CONFIG["POSTS_DIRECTORY"], url_config=active_target_config)
-        sliced_articles = []
-        try:
-            slice_or_index = parse_slice_arg(args.article)
-            if isinstance(slice_or_index, int):
-                sliced_articles = [all_articles[slice_or_index]]
-            elif isinstance(slice_or_index, slice):
-                sliced_articles = all_articles[slice_or_index]
-        except (ValueError, IndexError):
-            logger.print(f" (invalid slice '{args.article}')")
+        all_articles = (
+            _get_article_list_data(CONFIG["POSTS_DIRECTORY"], url_config=active_target_config)
+            if (args.article is not None or args.slugs)
+            else []
+        )
+        article_slice = []
+        if args.article is not None:
+            try:
+                slice_or_index = parse_slice_arg(args.article)
+                if isinstance(slice_or_index, int):
+                    article_slice = [all_articles[slice_or_index]]
+                elif isinstance(slice_or_index, slice):
+                    article_slice = all_articles[slice_or_index]
+            except (ValueError, IndexError):
+                logger.print(f" (invalid slice '{args.article}')")
+            sliced_articles = article_slice
 
         full_content_parts = []
         
-        if sliced_articles:
-            for idx, article in enumerate(sliced_articles, start=1):
+        if article_slice:
+            for idx, article in enumerate(article_slice, start=1):
                 try:
                     with open(article['path'], 'r', encoding='utf-8') as f:
                         content = f.read()
@@ -3193,8 +3216,6 @@ def main():
         if args.slugs:
             if args.decanter is None:
                 args.decanter = []
-            all_articles = _get_article_list_data(CONFIG["POSTS_DIRECTORY"], url_config=active_target_config)
-            
             # Normalize target slugs: extract the raw topic key if a URL or absolute path is passed
             target_slugs = set()
             for s in args.slugs:
@@ -3205,7 +3226,6 @@ def main():
                     if parts:
                         clean = parts[-1]
                 target_slugs.add(clean)
-                
             for article in all_articles:
                 filename = os.path.basename(article['path'])
                 stem = os.path.splitext(filename)[0]
@@ -3213,11 +3233,9 @@ def main():
                 permalink_slug = article.get('permalink', '').strip('/').split('/')[-1] if article.get('permalink') else ''
                 if clean_slug in target_slugs or (permalink_slug and permalink_slug in target_slugs):
                     resolved_slug = permalink_slug if permalink_slug in target_slugs else clean_slug
-                    args.decanter.append(article['path'])
-                    logger.print(f"🎯 Resolved slug '{resolved_slug}' to: {article['path']}")
-            # Ensure article processing runs when only --slugs is passed
-            if args.article is None and args.decanter:
-                args.article = "[-0:]"
+                    if article['path'] not in args.decanter:
+                        args.decanter.append(article['path'])
+                        logger.print(f"🎯 Resolved slug '{resolved_slug}' to: {article['path']}")
 
         # NEW: Process explicitly targeted Decanter files
         if args.decanter:
@@ -3247,9 +3265,9 @@ def main():
             b_count = len(article_data.get('content', '').encode('utf-8'))
             
             # Adjust log message to account for mixed sources
-            total_articles = len(sliced_articles) + (len(args.decanter) if args.decanter else 0)
+            total_articles = len(article_slice) + (len(args.decanter) if args.decanter else 0)
             logger.print(f"  Total: {total_articles} full articles | {t_count:,} tokens | {b_count:,} bytes")
-        elif not args.article and not args.decanter:
+        else:
             logger.print("  (no articles found or invalid slice)")
 
     # After slicing articles for -l or -a...
