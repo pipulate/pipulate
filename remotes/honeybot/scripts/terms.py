@@ -87,6 +87,7 @@ REGEX_TERMS = (
     (re.compile(r"\btext/markdown\b", re.IGNORECASE), "text slash markdown"),
     (re.compile(r"\btext/html\b", re.IGNORECASE), "text slash H T M L"),
     # Special capitonyms & punctuation-bearing shorthands
+    (re.compile(r"(?<![A-Za-z0-9_/:.-])/rant\b(?![/-])", re.IGNORECASE), "End rant"),
     (re.compile(r"\ba\.k\.a\.(?=\s|$|[),;:])", re.IGNORECASE), "A K A"),
     (re.compile(r"\ba\.k\.a\b", re.IGNORECASE), "A K A"),
     (re.compile(r"\*{0,2}\bTL;DR\b\*{0,2}\s*[:.]?", re.IGNORECASE), "T L D R:"),

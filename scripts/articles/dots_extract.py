@@ -2,6 +2,7 @@
 """dots_extract.py — Dual-Head Idea-Refinery Harvester & Anti-Astronaut Scoreboard."""
 
 import argparse
+from collections import Counter
 import json
 import re
 import sys
@@ -20,18 +21,49 @@ _NEXT_STEPS_RE = re.compile(
     r"(?im)^#{2,4}[ \t]+Next[- ]Step Prompts?\b[^\n]*\n([\s\S]{1,4000}?)(?=\n#{1,4}[ \t]+|\n\{%\s*endraw\s*%\}|\Z)"
 )
 _STOPWORDS = frozenset({
-    "about", "after", "again", "against", "articles", "before", "between", "build",
-    "check", "clean", "command", "context", "create", "default", "every", "files",
-    "first", "into", "lines", "local", "model", "models", "never", "other", "output",
-    "patch", "posts", "print", "prints", "probe", "prompt", "prompts", "python",
-    "script", "scripts", "should", "single", "state", "their", "there", "these",
-    "thing", "things", "through", "under", "using", "where", "which", "while", "without",
+    "about", "above", "across", "active", "activating", "added", "after", "again", "against",
+    "along", "alongside", "already", "also", "always", "article", "articles", "audit", "back",
+    "before", "being", "below", "between", "blog", "blogs", "both", "bottom", "build", "builds",
+    "built", "call", "candidates", "capture", "check", "clean", "cleanly", "clear", "code",
+    "command", "commands", "commit", "compile", "config", "context", "copy", "count", "counts",
+    "create", "current", "data", "date", "days", "default", "delete", "does", "done", "down",
+    "drop", "each", "edit", "empty", "every", "exact", "existing", "exit", "exits", "false",
+    "file", "files", "filter", "find", "first", "flag", "flags", "float", "from", "full", "gate",
+    "gates", "give", "good", "hand", "have", "head", "here", "high", "hold", "human", "into",
+    "item", "items", "join", "joining", "json", "just", "keep", "keys", "land", "landed", "lands",
+    "last", "latest", "left", "less", "line", "lines", "link", "list", "live", "load", "local",
+    "long", "loop", "make", "mode", "model", "models", "more", "most", "move", "must", "name",
+    "names", "need", "needs", "never", "next", "none", "nothing", "once", "only", "open", "order",
+    "other", "output", "over", "owed", "page", "pages", "pair", "pass", "past", "patch", "path",
+    "paths", "place", "plain", "plus", "post", "posts", "print", "prints", "probe", "probes",
+    "prompt", "prompts", "public", "pull", "pulls", "push", "python", "queue", "read", "reads",
+    "ready", "real", "recent", "remove", "render", "replace", "repo", "repos", "report", "return",
+    "root", "rule", "rules", "runs", "safe", "same", "save", "script", "scripts", "search", "seed",
+    "seeds", "seen", "self", "send", "shell", "ship", "short", "should", "show", "shows", "side",
+    "single", "site", "sites", "skip", "slug", "slugs", "some", "sort", "source", "split", "stage",
+    "start", "state", "static", "stay", "step", "steps", "still", "stop", "stops", "store", "strip",
+    "sync", "system", "table", "take", "target", "test", "tests", "text", "than", "that", "their",
+    "them", "then", "there", "these", "they", "thing", "things", "this", "three", "through",
+    "tighten", "time", "title", "todo", "todos", "token", "tokens", "tool", "tools", "track",
+    "tracked", "tree", "true", "turn", "turns", "type", "under", "until", "update", "updated",
+    "used", "user", "uses", "using", "value", "values", "verify", "view", "wait", "when", "where",
+    "which", "while", "window", "wire", "wired", "with", "within", "without", "word", "words",
+    "work", "working", "wrap", "write", "writes", "zero",
 })
+_TOKEN_RE = re.compile(r"[a-z0-9]+(?:[._/-][a-z0-9]+)*")
+_NOISE_TOKEN_RE = re.compile(r"^(?:\d[\d._/-]*|p0\.\d+[a-z]?|[0-9a-f]{7,40})$")
+_ALLOW_SHORT = frozenset({"o2o", "gsc", "ast", "tts", "wal", "idf"})
+_PILLAR_PHRASES = frozenset({"rfc 9110", "rfc 9111", "rfc 9421", "nix flakes", "content negotiation", "edge caching", "911 llm optics"})
 
 
 def _tokenize_topics(texts: list[str]) -> set[str]:
-    blob = " ".join(texts).lower()
-    return {t for t in re.findall(r"[a-z0-9][a-z0-9._-]{2,}", blob) if len(t) >= 4 and t not in _STOPWORDS and not t.isdigit()}
+    blob, out = " ".join(texts).lower(), set()
+    for raw in _TOKEN_RE.findall(blob):
+        for tok in (raw, *(p for p in raw.split("/") if p)):
+            t = tok.strip("._-")
+            if (len(t) >= 4 or t in _ALLOW_SHORT) and t not in _STOPWORDS and not _NOISE_TOKEN_RE.match(t):
+                out.add(t)
+    return out
 
 
 def _extract_post_seeds(md_path: Path, ctx_dir: Path, source_tag: str) -> dict:
@@ -100,12 +132,22 @@ def compute_scoreboard(foo_path: Path, head_a: list[dict], head_b: list[dict]) -
     todos = [ln for ln in fl if ln.startswith("# - TODO")]
     p0_count = sum(1 for ln in todos if ", P0." in ln)
     seed_tokens = _tokenize_topics([" ".join([*it["kws"], *it["ideas"], it["next_steps"]]) for it in [*head_a, *head_b]])
+    raw_phrases = {" ".join(re.findall(r"[a-z0-9]+", kw.lower())) for it in [*head_a, *head_b] for kw in it["kws"]}
+    raw_phrases = {p for p in raw_phrases if len(p.split()) >= 2 and p not in _PILLAR_PHRASES}
+    todo_toks = [_tokenize_topics([ln]) for ln in todos]
+    todo_words = [" " + " ".join(re.findall(r"[a-z0-9]+", ln.lower())) + " " for ln in todos]
+    tok_df = Counter(t for ts in todo_toks for t in ts)
+    phr_df = Counter(p for w in todo_words for p in raw_phrases if f" {p} " in w)
+    rare_tokens = {t for t in seed_tokens if 1 <= tok_df[t] <= 6}
+    rare_phrases = {p for p in raw_phrases if 1 <= phr_df[p] <= 6}
     collisions = []
-    for ln in todos:
-        hits = sorted(t for t in seed_tokens if t in ln.lower())
-        if len(hits) >= 2:
+    for ln, ln_w, t_set in zip(todos, todo_words, todo_toks):
+        p_hits = sorted(p for p in rare_phrases if f" {p} " in ln_w)
+        t_hits = sorted(t_set & rare_tokens)
+        if p_hits or len(t_hits) >= 3:
+            shown = [*p_hits, *(t for t in t_hits if all(t not in p.split() for p in p_hits))][:5]
             head_lbl = ln.split(":", 1)[0].replace("# - TODO ", "").strip()
-            collisions.append((len(hits), head_lbl[:72], hits[:5]))
+            collisions.append((len(p_hits) * 2 + len(t_hits), head_lbl[:72], shown))
     collisions.sort(key=lambda x: (-x[0], x[1]))
     axis2 = len(collisions)
     verdict = "OPEN_FOR_MERGES_AND_SPARKS" if (axis1 + axis2) > 0 else "HOLD_NET_ZERO"
