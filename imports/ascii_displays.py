@@ -939,6 +939,96 @@ def _figurate_optics_triptych():
     return human, ai_art
 
 
+def has_tittle_drop(label: str) -> bool:
+    """True when `label` carries an uppercase `.I*` TLD (e.g. SUNPUG.IO, MIKELEV.IN)."""
+    import re
+    return bool(re.search(r"\.I[A-Z0-9]\b", str(label or "").replace("\\n", "\n")))
+
+def ease_out_bounce_drop(u: float, drop_rows: int = 5) -> int:
+    """Quantize parabolic free-fall + two restitution bounces onto `0..drop_rows`."""
+    if u <= 0.0 or u >= 1.0:
+        return 0 if u <= 0.0 else int(drop_rows)
+    if u < 0.40:
+        frac = (u / 0.40) ** 2
+    elif u < 0.76:
+        frac = 0.56 + 0.44 * (((u - 0.58) / 0.18) ** 2)
+    else:
+        frac = 0.78 + 0.22 * (((u - 0.88) / 0.12) ** 2)
+    return max(0, min(int(drop_rows), int(round(drop_rows * frac))))
+
+def build_tittle_drop_spec(label: str, font: str = "standard", fig_width: int = 160) -> Optional[dict]:
+    """Un-smush `.I*` tittles from standard Figlet lines into a fixed sky+glyph canvas."""
+    import re
+    try:
+        from pyfiglet import Figlet
+        fig = Figlet(font=font, width=max(80, int(fig_width)))
+    except Exception:
+        return None
+    text_lines = [ln.strip() for ln in str(label or "").replace("\\n", "\n").splitlines() if ln.strip()]
+    if not text_lines:
+        return None
+    line_grids, dotted_blocks, actors = [], [], []
+    for idx, ln_txt in enumerate(text_lines):
+        dotted_raw = fig.renderText(ln_txt).splitlines()[:5]
+        if len(dotted_raw) < 5:
+            return None
+        w_ln = max((len(r) for r in dotted_raw), default=0)
+        dotted_5 = [r.ljust(w_ln) for r in dotted_raw]
+        base_grid = [list(r) for r in dotted_5]
+        for m in re.finditer(r"\.I(?=[A-Z0-9]\b)", ln_txt):
+            pref_raw = fig.renderText(ln_txt[: m.start()]).splitlines()[:5] if m.start() else [""] * 5
+            approx_x = max((len(r) for r in pref_raw), default=0)
+            for cx in range(max(1, approx_x - 4), min(w_ln - 1, approx_x + 5)):
+                if dotted_5[3][cx] == "_" and dotted_5[4][cx - 1 : cx + 2] == "(_)":
+                    for rr, cc in ((3, cx), (4, cx - 1), (4, cx)):
+                        base_grid[rr][cc] = pref_raw[rr][cc] if len(pref_raw) > rr and cc < len(pref_raw[rr]) else " "
+                    base_grid[4][cx + 1] = "|"
+                    end_x = cx - 1
+                    actors.append({"start_x": end_x + 3, "start_y": idx * 7, "end_x": end_x, "end_y": idx * 7 + 5})
+                    break
+        line_grids.append(base_grid)
+        dotted_blocks.append(dotted_5)
+    if not actors:
+        return None
+    canvas_w = max([len(g[0]) for g in line_grids if g] + [a["start_x"] + 3 for a in actors])
+    base_canvas, settled_canvas = [], []
+    for b_grid, d_5 in zip(line_grids, dotted_blocks):
+        base_canvas.extend([" " * canvas_w, " " * canvas_w])
+        settled_canvas.extend([" " * canvas_w, " " * canvas_w])
+        base_canvas.extend("".join(r).ljust(canvas_w) for r in b_grid)
+        settled_canvas.extend(r.ljust(canvas_w) for r in d_5)
+    return {"base_canvas": base_canvas, "settled_canvas": settled_canvas, "canvas_w": canvas_w, "canvas_h": len(base_canvas), "actors": actors}
+
+def render_tittle_frame_text(spec: dict, actor_states: list) -> tuple:
+    """Blit 2x3 tittle sprites (` _ ` over `(_)`) onto a fresh base-canvas copy."""
+    h, w = spec["canvas_h"], spec["canvas_w"]
+    grid = [list(row) for row in spec["base_canvas"]]
+    styles = [["bold bright_cyan"] * w for _ in range(h)]
+    for actor, (dx, dy, st) in zip(spec["actors"], actor_states):
+        ax, ay = actor["start_x"] + int(dx), actor["start_y"] + int(dy)
+        for dr, dc, ch in ((0, 1, "_"), (1, 0, "("), (1, 1, "_"), (1, 2, ")")):
+            if 0 <= ay + dr < h and 0 <= ax + dc < w:
+                grid[ay + dr][ax + dc] = ch
+                styles[ay + dr][ax + dc] = st
+    txt = Text(no_wrap=True)
+    for r_idx, (row_c, row_s) in enumerate(zip(grid, styles)):
+        if r_idx:
+            txt.append("\n")
+        seg = 0
+        for c_idx in range(1, w + 1):
+            if c_idx == w or row_s[c_idx] != row_s[seg]:
+                txt.append("".join(row_c[seg:c_idx]), style=row_s[seg])
+                seg = c_idx
+    return txt, "\n".join("".join(r) for r in grid)
+
+def _figurate_tittle_drop():
+    """Render poised SUNPUG.IO & MIKELEV.IN tittle-drop frame for FIGURATE_REGISTRY."""
+    spec = build_tittle_drop_spec("SUNPUG.IO &\nMIKELEV.IN")
+    if spec is None:
+        return Panel("SUNPUG.IO &\nMIKELEV.IN", title="🎯 Tittle Drop -- SUNPUG.IO & MIKELEV.IN", border_style="bright_cyan"), "SUNPUG.IO &\nMIKELEV.IN"
+    human_txt, ai_txt = render_tittle_frame_text(spec, [(0, 0, "bold bright_yellow") for _ in spec["actors"]])
+    return Panel(human_txt, title="🎯 Tittle Drop -- SUNPUG.IO & MIKELEV.IN", border_style="bright_cyan", padding=(1, 3, 2, 3), expand=False), ai_txt
+
 # === FIGURATE_RENDER_EXTRUDE_BOTTOM ===
 # Add new _figurate_* render functions immediately above this line
 
@@ -984,6 +1074,9 @@ FIGURATE_REGISTRY: dict = {
     },
     "optics_triptych": {
         "render": _figurate_optics_triptych,
+    },
+    "tittle_drop": {
+        "render": _figurate_tittle_drop,
     },
     # === FIGURATE_REGISTRY_EXTRUDE_BOTTOM ===
     # Add new registry entries immediately above this line
