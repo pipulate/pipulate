@@ -24,7 +24,9 @@ import math
 import os
 from pathlib import Path
 import re
+import subprocess
 import sys
+import time
 
 from river import drift, linear_model, optim, preprocessing, stats
 
@@ -98,6 +100,60 @@ def _is_internal_artifact(topic: str) -> bool:
     if not low or low in _PUBLIC_FILE_TOPICS:
         return False
     return bool(_INTERNAL_FILE_RE.search(low))
+
+
+_REMOTE_REF_PY = """
+import datetime, json, sqlite3, sys
+days, lim = int(sys.argv[1]), int(sys.argv[2])
+db_p = sys.argv[3] if len(sys.argv) > 3 else "/home/mike/www/mikelev.in/honeybot.db"
+conn = sqlite3.connect(f"file:{db_p}?mode=ro", uri=True)
+if not conn.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='referrer_radar'").fetchone():
+    print(json.dumps({"status": "sync_pending", "total_edges": 0, "demand": [], "radar": []}))
+    raise SystemExit(0)
+cut = (datetime.date.today() - datetime.timedelta(days=max(1, days))).isoformat()
+tot = conn.execute("SELECT COUNT(*) FROM referrer_radar").fetchone()[0]
+dem = conn.execute("SELECT rdl.ref_apex, d.value, p.value, SUM(rdl.count) as hits, SUM(rdl.human_count) as hum, SUM(rdl.unique_ips) as ips, MAX(rdl.sample_referrer) FROM referrer_daily_logs rdl JOIN domains d ON rdl.domain_id = d.id JOIN paths p ON rdl.path_id = p.id WHERE rdl.date >= ? AND rdl.human_count > 0 GROUP BY rdl.ref_apex, rdl.domain_id, rdl.path_id ORDER BY hum DESC, ips DESC, hits DESC LIMIT ?", (cut, lim)).fetchall()
+rad = conn.execute("SELECT rr.ref_apex, d.value, p.value, COALESCE(SUM(rdl.count), rr.total_count), COALESCE(SUM(rdl.human_count), rr.human_count), COALESCE(SUM(rdl.unique_ips), 1), substr(rr.first_seen, 1, 16), rr.first_referrer FROM referrer_radar rr JOIN domains d ON rr.domain_id = d.id JOIN paths p ON rr.path_id = p.id LEFT JOIN referrer_daily_logs rdl ON (rdl.ref_apex = rr.ref_apex AND rdl.domain_id = rr.domain_id AND rdl.path_id = rr.path_id AND rdl.date >= ?) WHERE substr(rr.first_seen, 1, 10) >= ? GROUP BY rr.ref_apex, rr.domain_id, rr.path_id ORDER BY rr.first_seen DESC, rr.rowid DESC LIMIT ?", (cut, cut, lim)).fetchall()
+print(json.dumps({"status": "live", "total_edges": tot, "demand": dem, "radar": rad}))
+"""
+
+
+def _fetch_honeybot_referrals(days: int = 30, limit: int = 20, force_refresh: bool = False) -> dict:
+    db_override = os.environ.get("PIPULATE_HONEYBOT_DB", "").strip()
+    if db_override and Path(db_override).is_file():
+        res = subprocess.run([sys.executable, "-", str(int(days)), str(int(limit)), db_override], input=_REMOTE_REF_PY, capture_output=True, text=True, timeout=4, check=False)
+        return json.loads(res.stdout.strip()) if res.returncode == 0 and (res.stdout or "").strip() else {"status": "error", "total_edges": 0, "demand": [], "radar": []}
+    cache_p = CONFIG_DIR / "honeybot_referrals_cache.json"
+    if not force_refresh and cache_p.is_file() and (time.time() - cache_p.stat().st_mtime) < 300:
+        try:
+            return json.loads(cache_p.read_text(encoding="utf-8"))
+        except Exception:
+            pass
+    host = os.environ.get("PIPULATE_HONEYBOT_HOST", "honeybot")
+    try:
+        res = subprocess.run(["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=3", host, "python3", "-", str(int(days)), str(int(limit))], input=_REMOTE_REF_PY, capture_output=True, text=True, timeout=4, check=False)
+        if res.returncode == 0 and (res.stdout or "").strip():
+            data = json.loads(res.stdout.strip())
+            if data.get("status") == "live":
+                CONFIG_DIR.mkdir(parents=True, exist_ok=True)
+                cache_p.write_text(json.dumps(data), encoding="utf-8")
+            return data
+    except Exception:
+        pass
+    if cache_p.is_file():
+        try:
+            return {**json.loads(cache_p.read_text(encoding="utf-8")), "status": "cached"}
+        except Exception:
+            pass
+    return {"status": "offline", "total_edges": 0, "demand": [], "radar": []}
+
+
+def _match_path_keywords(path_str: str, slug_map: dict) -> list[str]:
+    clean = re.sub(r"(?:/index\.md|\.html)$", "", (path_str or "").split("?", 1)[0]).strip("/")
+    if not clean:
+        return ["Home Observatory", "SunPug.io", "RFC 9110"]
+    rec = slug_map.get(clean.rsplit("/", 1)[-1].lower())
+    return rec["kws"][:4] if rec else []
 
 
 def analyze_corpus_shards(target_spec: str = "1", top_k: int = 5) -> int:
@@ -280,6 +336,42 @@ def analyze_corpus_shards(target_spec: str = "1", top_k: int = 5) -> int:
     print("\n## 4. River Streaming Momentum Surge (Last 30 vs. Baseline)")
     for lift, r_cnt, topic in momentum[:top_k]:
         print(f"  • [+{lift:5.1f}x surge | {r_cnt:2d}/30 recent posts] {topic}")
+
+    slug_map = {r["slug"].lower(): r for r in records}
+    ext = _fetch_honeybot_referrals(days=30, limit=max(10, top_k * 2), force_refresh=False)
+    print(f"\n## 5. Post-GSC HitTail External Demand & Shard Intent (30d | {ext.get('status', 'offline')})")
+    if ext.get("demand"):
+        for apex, dom, path_s, hits, hum, ips, _ in ext["demand"][:top_k]:
+            kws = ", ".join(_match_path_keywords(path_s, slug_map)) or "non-post surface"
+            print(f"  • [{apex:<16s} | N={hits:3d}, P={ips:2d} IPs] {dom}{path_s} -> ({kws})")
+    elif ext.get("status") == "sync_pending":
+        print("  • (Honeybot referrer_radar sync pending — run ytreboot to backfill honeybot.db)")
+    else:
+        print(f"  • (No external human referrals in window; source={ext.get('status', 'offline')})")
+    return 0
+
+
+def run_referral_radar(target_spec: str = "1", days: int = 30, top_k: int = 15) -> int:
+    _, posts_dir = _resolve_posts_dir(target_spec)
+    slug_map = {}
+    ctx_dir = posts_dir / "_context"
+    if ctx_dir.is_dir():
+        for jf in ctx_dir.glob("*.json"):
+            m = _DATED_STEM_RE.match(jf.stem)
+            if m:
+                try:
+                    d = json.loads(jf.read_text(encoding="utf-8"))
+                    slug_map[m.group(2).lower()] = {"kws": [_norm_topic(k) for k in (d.get("kw") or []) if _norm_topic(k)]}
+                except Exception:
+                    pass
+    snap = _fetch_honeybot_referrals(days=days, limit=top_k, force_refresh=True)
+    print(f"# 📡 HONEYBOT POST-GSC REFERRAL RADAR ({days}d | status={snap.get('status')} | unique_edges={snap.get('total_edges', 0)})")
+    for idx, (apex, dom, path_s, hits, hum, ips, f_seen, f_ref) in enumerate(snap.get("radar") or [], 1):
+        kws = _match_path_keywords(path_s, slug_map)
+        kw_str = f" -> ({', '.join(kws)})" if kws else ""
+        print(f"  {idx:2d}. [{f_seen}] {apex:<16s} => {dom}{path_s} (N={hits}, P={ips} IPs, hum={hum}) via {f_ref}{kw_str}")
+    if not snap.get("radar"):
+        print("  • (Run ytreboot to deploy remotes/honeybot/scripts/db.py and backfill live Honeybot radar)")
     return 0
 
 
@@ -411,9 +503,13 @@ def main() -> int:
     parser.add_argument("source", nargs="?", default=None, help="Optional file path of series data.")
     parser.add_argument("-t", "--target", type=str, default="1", help="Target blog key/alias (default: 1).")
     parser.add_argument("-k", "--top", type=int, default=5, help="Top K transitions to show (default: 5).")
+    parser.add_argument("--radar", action="store_true", help="Show newest Compound-Key (ref_apex, domain, path) discoveries.")
+    parser.add_argument("--days", type=int, default=30, help="Lookback window in days for --radar (default: 30).")
     parser.add_argument("--stdin", action="store_true", help="Read series observations from stdin.")
     parser.add_argument("--demo-series", action="store_true", help="Run built-in numeric time-series verification.")
     args = parser.parse_args()
+    if args.radar:
+        return run_referral_radar(target_spec=args.target, days=args.days, top_k=max(15, args.top))
 
     if args.demo_series:
         return run_demo_series()

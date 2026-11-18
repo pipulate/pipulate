@@ -38,6 +38,24 @@ def _is_internal_or_invalid_host(host: str) -> bool:
     return any(h == d or h.endswith("." + d) for d in INTERNAL_DOMAINS)
 
 
+_MULTI_PART_SUFFIXES = frozenset({
+    "co.uk", "org.uk", "ac.uk", "gov.uk", "com.au", "net.au", "org.au", "co.jp",
+    "com.br", "com.mx", "co.in", "co.nz", "co.za", "com.sg", "github.io", "gitlab.io",
+    "substack.com", "bsky.social",
+})
+
+
+def extract_registered_domain(host: str) -> str:
+    """Collapse subdomains/packages to registered apex (e.g. old.reddit.com -> reddit.com)."""
+    h = (host or "").strip().lower().rstrip(".").removeprefix("www.")
+    parts = [p for p in h.split(".") if p]
+    if len(parts) <= 2:
+        return h
+    if parts[0] in ("com", "org", "net") and (len(parts[-1]) > 3 or "android" in parts):
+        return f"{parts[1]}.{parts[0]}"
+    return ".".join(parts[-3:] if f"{parts[-2]}.{parts[-1]}" in _MULTI_PART_SUFFIXES else parts[-2:])
+
+
 def normalize_external_referrer(referrer: str | None, raw_path: str = "") -> tuple[str, str] | None:
     """Return (canonical_referrer, ref_host) for external referrals, or None for internal/noise."""
     raw = (referrer or "").replace(r"\x22", "").strip().strip('"').strip()
@@ -253,33 +271,17 @@ class HoneyDB:
         cur.execute("CREATE INDEX IF NOT EXISTS idx_daily_logs_path_id ON daily_logs(path_id)")
         cur.execute("CREATE INDEX IF NOT EXISTS idx_daily_logs_ua_id ON daily_logs(ua_id)")
         cur.execute("CREATE INDEX IF NOT EXISTS idx_telemetry_served_md ON telemetry(served_md, accept_id, path_id)")
-        cur.execute("""
-            CREATE TABLE IF NOT EXISTS external_referrers (
-                referrer TEXT PRIMARY KEY,
-                ref_host TEXT NOT NULL,
-                first_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                last_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        """)
-        cur.execute("""
-            CREATE TABLE IF NOT EXISTS referrer_daily_logs (
-                date TEXT NOT NULL,
-                referrer TEXT NOT NULL,
-                domain_id INTEGER NOT NULL,
-                path_id INTEGER NOT NULL,
-                count INTEGER DEFAULT 1,
-                human_count INTEGER DEFAULT 0,
-                bot_count INTEGER DEFAULT 0,
-                last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                PRIMARY KEY (date, referrer, domain_id, path_id),
-                FOREIGN KEY(referrer) REFERENCES external_referrers(referrer),
-                FOREIGN KEY(domain_id) REFERENCES domains(id),
-                FOREIGN KEY(path_id) REFERENCES paths(id)
-            )
-        """)
+        rdl_cols = {r[1] for r in cur.execute("PRAGMA table_info(referrer_daily_logs)").fetchall()}
+        if rdl_cols and "ref_apex" not in rdl_cols:
+            cur.execute("DROP TABLE IF EXISTS referrer_daily_logs")
+            cur.execute("DROP TABLE IF EXISTS external_referrers")
+        cur.execute("CREATE TABLE IF NOT EXISTS external_referrers (referrer TEXT PRIMARY KEY, ref_host TEXT NOT NULL, ref_apex TEXT NOT NULL DEFAULT '', first_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP, last_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP)")
+        cur.execute("CREATE TABLE IF NOT EXISTS referrer_radar (ref_apex TEXT NOT NULL, domain_id INTEGER NOT NULL, path_id INTEGER NOT NULL, first_referrer TEXT NOT NULL, last_referrer TEXT NOT NULL, first_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP, last_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP, total_count INTEGER DEFAULT 1, human_count INTEGER DEFAULT 0, bot_count INTEGER DEFAULT 0, PRIMARY KEY (ref_apex, domain_id, path_id), FOREIGN KEY(domain_id) REFERENCES domains(id), FOREIGN KEY(path_id) REFERENCES paths(id))")
+        cur.execute("CREATE TABLE IF NOT EXISTS referrer_daily_logs (date TEXT NOT NULL, ref_apex TEXT NOT NULL, domain_id INTEGER NOT NULL, path_id INTEGER NOT NULL, sample_referrer TEXT NOT NULL, count INTEGER DEFAULT 1, human_count INTEGER DEFAULT 0, bot_count INTEGER DEFAULT 0, unique_ips INTEGER DEFAULT 1, last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (date, ref_apex, domain_id, path_id), FOREIGN KEY(domain_id) REFERENCES domains(id), FOREIGN KEY(path_id) REFERENCES paths(id))")
+        cur.execute("CREATE TABLE IF NOT EXISTS referrer_daily_ip_gate (date TEXT NOT NULL, ref_apex TEXT NOT NULL, domain_id INTEGER NOT NULL, path_id INTEGER NOT NULL, ip_id INTEGER NOT NULL, PRIMARY KEY (date, ref_apex, domain_id, path_id, ip_id)) WITHOUT ROWID")
         cur.execute("CREATE INDEX IF NOT EXISTS idx_rfc9421_logs_ua_id ON rfc9421_logs(ua_id)")
         cur.execute("CREATE INDEX IF NOT EXISTS idx_pirate_logs_ip_id ON pirate_logs(ip_id)")
-        cur.execute("CREATE INDEX IF NOT EXISTS idx_external_referrers_host ON external_referrers(ref_host)")
+        cur.execute("CREATE INDEX IF NOT EXISTS idx_referrer_radar_seen ON referrer_radar(first_seen DESC)")
         cur.execute("CREATE INDEX IF NOT EXISTS idx_referrer_daily_date_path ON referrer_daily_logs(date, path_id)")
 
         conn.commit()
@@ -288,41 +290,36 @@ class HoneyDB:
         self.backfill_external_referrers()
 
     def backfill_external_referrers(self):
-        """One-time idempotent backfill of external_referrers & referrer_daily_logs from telemetry."""
+        """One-time idempotent backfill of external_referrers, referrer_radar, & referrer_daily_logs."""
         try:
             conn = self.get_conn()
             cur = conn.cursor()
-            if (cur.execute("SELECT COUNT(*) FROM external_referrers").fetchone() or [0])[0] > 0:
+            if (cur.execute("SELECT COUNT(*) FROM referrer_radar").fetchone() or [0])[0] > 0:
                 return
             rows = cur.execute("SELECT id, value FROM referrers WHERE value IS NOT NULL AND value != '-' AND value != ''").fetchall()
-            valid_refs = {int(rid): norm for rid, rval in rows if (norm := normalize_external_referrer(rval)) is not None}
+            valid_refs = {int(rid): (*norm, extract_registered_domain(norm[1])) for rid, rval in rows if (norm := normalize_external_referrer(rval)) is not None}
             if not valid_refs:
                 return
-            dom_id = self._get_or_create_id("domains", "mikelev.in")
-            ref_ids, agg_daily, ref_bounds = list(valid_refs), {}, {}
+            dom_id, ref_ids, agg_daily, agg_radar, ref_bounds = self._get_or_create_id("domains", "mikelev.in"), list(valid_refs), {}, {}, {}
             for idx in range(0, len(ref_ids), 400):
                 chunk = ref_ids[idx : idx + 400]
-                sql = f"""
-                    SELECT t.date, t.referrer_id, t.path_id, p.value, ua.value, SUM(t.count)
-                    FROM telemetry t JOIN paths p ON t.path_id = p.id
-                    JOIN user_agents ua ON t.ua_id = ua.id JOIN ips i ON t.ip_id = i.id
-                    WHERE t.referrer_id IN ({','.join('?' for _ in chunk)})
-                      AND i.value NOT LIKE '127.%' AND i.value NOT LIKE '10.%' AND i.value NOT LIKE '192.168.%'
-                      AND t.path_id IN (SELECT DISTINCT path_id FROM daily_logs WHERE status BETWEEN 200 AND 299)
-                    GROUP BY t.date, t.referrer_id, t.path_id, ua.id
-                """
-                for d_str, rid, pid, p_val, ua_val, cnt in cur.execute(sql, chunk).fetchall():
+                sql = f"SELECT t.date, t.referrer_id, t.path_id, t.ip_id, p.value, ua.value, SUM(t.count) FROM telemetry t JOIN paths p ON t.path_id = p.id JOIN user_agents ua ON t.ua_id = ua.id JOIN ips i ON t.ip_id = i.id WHERE t.referrer_id IN ({','.join('?' for _ in chunk)}) AND i.value NOT LIKE '127.%' AND i.value NOT LIKE '10.%' AND i.value NOT LIKE '192.168.%' AND t.path_id IN (SELECT DISTINCT path_id FROM daily_logs WHERE status BETWEEN 200 AND 299) GROUP BY t.date, t.referrer_id, t.path_id, t.ip_id, ua.id"
+                for d_str, rid, pid, ip_id, p_val, ua_val, cnt in cur.execute(sql, chunk).fetchall():
                     if _STATIC_SUBRESOURCE_RE.search(p_val or "") or _PIRATE_TARGET_RE.search(p_val or ""):
                         continue
-                    canon_ref, r_host = valid_refs[int(rid)]
+                    canon_ref, r_host, r_apex = valid_refs[int(rid)]
+                    r_pid = self._get_or_create_id("paths", p_val.split("?", 1)[0]) if "?" in (p_val or "") else int(pid)
                     c, is_hum = int(cnt or 0), self.is_likely_human_ua(ua_val)
                     b_cur = ref_bounds.get(canon_ref)
-                    ref_bounds[canon_ref] = (r_host, min(b_cur[1], d_str) if b_cur else d_str, max(b_cur[2], d_str) if b_cur else d_str)
-                    k = (d_str, canon_ref, dom_id, int(pid))
-                    prev = agg_daily.get(k, (0, 0, 0))
-                    agg_daily[k] = (prev[0] + c, prev[1] + (c if is_hum else 0), prev[2] + (0 if is_hum else c))
-            conn.executemany("INSERT OR IGNORE INTO external_referrers (referrer, ref_host, first_seen, last_seen) VALUES (?, ?, ?, ?)", [(r, h, f_dt, l_dt) for r, (h, f_dt, l_dt) in ref_bounds.items()])
-            conn.executemany("INSERT OR REPLACE INTO referrer_daily_logs (date, referrer, domain_id, path_id, count, human_count, bot_count) VALUES (?, ?, ?, ?, ?, ?, ?)", [(d, r, dm, p, tot, hum, bot) for (d, r, dm, p), (tot, hum, bot) in agg_daily.items()])
+                    ref_bounds[canon_ref] = (r_host, r_apex, min(b_cur[2], d_str) if b_cur else d_str, max(b_cur[3], d_str) if b_cur else d_str)
+                    rk, dk = (r_apex, dom_id, r_pid), (d_str, r_apex, dom_id, r_pid)
+                    rc, dc = agg_radar.get(rk), agg_daily.get(dk)
+                    agg_radar[rk] = (canon_ref if not rc or d_str < rc[2] else rc[0], canon_ref if not rc or d_str >= rc[3] else rc[1], min(rc[2], d_str) if rc else d_str, max(rc[3], d_str) if rc else d_str, (rc[4] if rc else 0) + c, (rc[5] if rc else 0) + (c if is_hum else 0), (rc[6] if rc else 0) + (0 if is_hum else c))
+                    s_ref = canon_ref if (not dc or len(canon_ref) > len(dc[0])) else dc[0]
+                    agg_daily[dk] = (s_ref, (dc[1] if dc else 0) + c, (dc[2] if dc else 0) + (c if is_hum else 0), (dc[3] if dc else 0) + (0 if is_hum else c), (dc[4] if dc else set()) | {int(ip_id)})
+            conn.executemany("INSERT OR IGNORE INTO external_referrers (referrer, ref_host, ref_apex, first_seen, last_seen) VALUES (?, ?, ?, ?, ?)", [(r, h, ap, f_dt, l_dt) for r, (h, ap, f_dt, l_dt) in ref_bounds.items()])
+            conn.executemany("INSERT OR REPLACE INTO referrer_radar (ref_apex, domain_id, path_id, first_referrer, last_referrer, first_seen, last_seen, total_count, human_count, bot_count) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [(ap, dm, p, fr, lr, fd, ld, tot, hum, bot) for (ap, dm, p), (fr, lr, fd, ld, tot, hum, bot) in agg_radar.items()])
+            conn.executemany("INSERT OR REPLACE INTO referrer_daily_logs (date, ref_apex, domain_id, path_id, sample_referrer, count, human_count, bot_count, unique_ips) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", [(d, ap, dm, p, sr, tot, hum, bot, len(ips)) for (d, ap, dm, p), (sr, tot, hum, bot, ips) in agg_daily.items()])
             conn.commit()
         except Exception:
             pass
@@ -528,24 +525,22 @@ class HoneyDB:
             """
             conn.execute(sql_pirate, (date_str, ip_id, ua_id, path_id, dom_id_p, int(status)))
 
-        # 7. Handle Normalized External Referrer Sidecar (Post-GSC HitTail Ledger)
+        # 7. Handle Normalized External Referrer Sidecar (Compound-Key Radar & Daily N/P Ledger)
         if not is_pirate and 200 <= int(status) < 300 and not _STATIC_SUBRESOURCE_RE.search(path or ""):
             norm_ref = normalize_external_referrer(referrer, path or "")
             if norm_ref is not None:
                 canon_ref, ref_host = norm_ref
+                ref_apex = extract_registered_domain(ref_host)
                 dom_id_r = self._get_or_create_id("domains", (host or "mikelev.in").lower().strip())
+                r_pid = self._get_or_create_id("paths", path.split("?", 1)[0]) if "?" in (path or "") else path_id
                 is_hum = 1 if self.is_likely_human_ua(ua) else 0
-                conn.execute("INSERT INTO external_referrers (referrer, ref_host) VALUES (?, ?) ON CONFLICT(referrer) DO UPDATE SET last_seen = CURRENT_TIMESTAMP", (canon_ref, ref_host))
-                conn.execute(
-                    """
-                    INSERT INTO referrer_daily_logs (date, referrer, domain_id, path_id, count, human_count, bot_count)
-                    VALUES (?, ?, ?, ?, 1, ?, ?)
-                    ON CONFLICT(date, referrer, domain_id, path_id) DO UPDATE SET
-                        count = count + 1, human_count = human_count + excluded.human_count,
-                        bot_count = bot_count + excluded.bot_count, last_updated = CURRENT_TIMESTAMP
-                    """,
-                    (date_str, canon_ref, dom_id_r, path_id, is_hum, 1 - is_hum),
-                )
+                if getattr(self, "_ip_gate_date", None) != date_str:
+                    conn.execute("DELETE FROM referrer_daily_ip_gate WHERE date < ?", (date_str,))
+                    self._ip_gate_date = date_str
+                new_ip = 1 if conn.execute("INSERT OR IGNORE INTO referrer_daily_ip_gate VALUES (?, ?, ?, ?, ?)", (date_str, ref_apex, dom_id_r, r_pid, ip_id)).rowcount > 0 else 0
+                conn.execute("INSERT INTO external_referrers (referrer, ref_host, ref_apex) VALUES (?, ?, ?) ON CONFLICT(referrer) DO UPDATE SET last_seen = CURRENT_TIMESTAMP", (canon_ref, ref_host, ref_apex))
+                conn.execute("INSERT INTO referrer_radar (ref_apex, domain_id, path_id, first_referrer, last_referrer, total_count, human_count, bot_count) VALUES (?, ?, ?, ?, ?, 1, ?, ?) ON CONFLICT(ref_apex, domain_id, path_id) DO UPDATE SET last_referrer = excluded.last_referrer, last_seen = CURRENT_TIMESTAMP, total_count = total_count + 1, human_count = human_count + excluded.human_count, bot_count = bot_count + excluded.bot_count", (ref_apex, dom_id_r, r_pid, canon_ref, canon_ref, is_hum, 1 - is_hum))
+                conn.execute("INSERT INTO referrer_daily_logs (date, ref_apex, domain_id, path_id, sample_referrer, count, human_count, bot_count, unique_ips) VALUES (?, ?, ?, ?, ?, 1, ?, ?, ?) ON CONFLICT(date, ref_apex, domain_id, path_id) DO UPDATE SET sample_referrer = CASE WHEN length(excluded.sample_referrer) > length(referrer_daily_logs.sample_referrer) THEN excluded.sample_referrer ELSE referrer_daily_logs.sample_referrer END, count = count + 1, human_count = human_count + excluded.human_count, bot_count = bot_count + excluded.bot_count, unique_ips = unique_ips + excluded.unique_ips, last_updated = CURRENT_TIMESTAMP", (date_str, ref_apex, dom_id_r, r_pid, canon_ref, is_hum, 1 - is_hum, new_ip))
 
         conn.commit()
         if ua and ("Googlebot" in ua or "bingbot" in ua.lower() or "Applebot" in ua):
@@ -559,23 +554,18 @@ class HoneyDB:
         return s.startswith("Mozilla/5.0 ") and any(k in s for k in ("AppleWebKit", "Gecko", "Windows NT", "Macintosh", "X11", "Android", "iPhone", "iPad"))
 
     def get_external_referrals(self, days: int = 30, limit: int = 50, humans_only: bool = False):
-        """Return (referrer, ref_host, domain, path, hits, human_hits, bot_hits, first_seen, last_seen)."""
+        """Return (sample_referrer, ref_apex, domain, path, hits, human_hits, bot_hits, first_seen, last_seen, unique_ips)."""
         cutoff = (datetime.date.today() - datetime.timedelta(days=max(1, int(days)))).isoformat()
         hum_clause = "AND rdl.human_count > 0" if humans_only else ""
-        sql = f"""
-            SELECT er.referrer, er.ref_host, d.value, p.value,
-                   SUM(rdl.count) as hits, SUM(rdl.human_count), SUM(rdl.bot_count),
-                   er.first_seen, er.last_seen
-            FROM referrer_daily_logs rdl
-            JOIN external_referrers er ON rdl.referrer = er.referrer
-            JOIN domains d ON rdl.domain_id = d.id
-            JOIN paths p ON rdl.path_id = p.id
-            WHERE rdl.date >= ? {hum_clause}
-            GROUP BY rdl.referrer, rdl.domain_id, rdl.path_id
-            ORDER BY hits DESC
-            LIMIT ?
-        """
+        sql = f"SELECT MAX(rdl.sample_referrer), rdl.ref_apex, d.value, p.value, SUM(rdl.count) as hits, SUM(rdl.human_count), SUM(rdl.bot_count), rr.first_seen, rr.last_seen, SUM(rdl.unique_ips) FROM referrer_daily_logs rdl JOIN referrer_radar rr ON (rdl.ref_apex = rr.ref_apex AND rdl.domain_id = rr.domain_id AND rdl.path_id = rr.path_id) JOIN domains d ON rdl.domain_id = d.id JOIN paths p ON rdl.path_id = p.id WHERE rdl.date >= ? {hum_clause} GROUP BY rdl.ref_apex, rdl.domain_id, rdl.path_id ORDER BY hits DESC, SUM(rdl.unique_ips) DESC LIMIT ?"
         return self.get_conn().execute(sql, (cutoff, int(limit))).fetchall()
+
+    def get_referrer_radar(self, days: int = 30, limit: int = 30, humans_only: bool = False):
+        """Return newest (ref_apex, domain, path, hits, human_hits, bot_hits, unique_ips, first_seen, last_seen, first_referrer)."""
+        cutoff = (datetime.date.today() - datetime.timedelta(days=max(1, int(days)))).isoformat()
+        hum_clause = "AND rr.human_count > 0" if humans_only else ""
+        sql = f"SELECT rr.ref_apex, d.value, p.value, COALESCE(SUM(rdl.count), rr.total_count), COALESCE(SUM(rdl.human_count), rr.human_count), COALESCE(SUM(rdl.bot_count), rr.bot_count), COALESCE(SUM(rdl.unique_ips), 1), rr.first_seen, rr.last_seen, rr.first_referrer FROM referrer_radar rr JOIN domains d ON rr.domain_id = d.id JOIN paths p ON rr.path_id = p.id LEFT JOIN referrer_daily_logs rdl ON (rdl.ref_apex = rr.ref_apex AND rdl.domain_id = rr.domain_id AND rdl.path_id = rr.path_id AND rdl.date >= ?) WHERE substr(rr.first_seen, 1, 10) >= ? {hum_clause} GROUP BY rr.ref_apex, rr.domain_id, rr.path_id ORDER BY rr.first_seen DESC, rr.rowid DESC LIMIT ?"
+        return self.get_conn().execute(sql, (cutoff, cutoff, int(limit))).fetchall()
 
     def get_rfc9421_summary(self):
         """Return (distinct_sig_agents, total_signed_events) from rfc9421_logs."""
