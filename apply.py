@@ -240,6 +240,71 @@ def _needs_git_add(filename: str) -> bool:
     except (OSError, subprocess.SubprocessError, ValueError):
         return False
 
+_SEARCH_SPAN_RE = re.compile(
+    r'[\[{]{3,5}SEARCH[\]}]{3,5}\n.*?\n[\[{]{3,5}DIVIDER[\]}]{3,5}\n(?:.*?\n)??[\[{]{3,5}REPLACE[\]}]{3,5}',
+    re.DOTALL | re.IGNORECASE,
+)
+_OUTER_FENCE_RE = re.compile(r'^[ \t]*`{3,}[a-zA-Z0-9_-]*[ \t]*$', re.MULTILINE)
+
+
+def _strip_outer_fences(payload: str) -> str:
+    """Strip markdown fence lines outside SEARCH...REPLACE spans, preserving line numbers."""
+    out, pos = [], 0
+    for m in _SEARCH_SPAN_RE.finditer(payload):
+        out.append(_OUTER_FENCE_RE.sub('', payload[pos:m.start()]))
+        out.append(m.group(0))
+        pos = m.end()
+    out.append(_OUTER_FENCE_RE.sub('', payload[pos:]))
+    return ''.join(out)
+
+
+def _print_err_window(content: str, err_ln: int) -> None:
+    err_lines = content.split('\n')
+    for i in range(max(0, err_ln - 3), min(len(err_lines), err_ln + 2)):
+        print(f"{' >>>' if i + 1 == err_ln else '    '} {i + 1:4d}: {err_lines[i]}")
+
+
+def _validate_syntax_airlocks(filename: str, content: str, verb: str) -> bool:
+    """Validate .json, .nix, and .py syntax before staging a write."""
+    if filename.endswith('.json'):
+        import json
+        try:
+            json.loads(content)
+        except json.JSONDecodeError as e:
+            print(f"❌ Error: {verb} '{filename}' aborted. Invalid JSON:\n   {e}")
+            _print_err_window(content, e.lineno)
+            return False
+    if filename.endswith('.nix'):
+        import shutil
+        import tempfile
+        nix_inst = shutil.which('nix-instantiate')
+        if nix_inst:
+            with tempfile.NamedTemporaryFile(mode='w', suffix='.nix', delete=False, encoding='utf-8') as tmp:
+                tmp.write(content)
+                tmp_path = tmp.name
+            try:
+                nix_check = subprocess.run(
+                    [nix_inst, '--parse', tmp_path],
+                    capture_output=True, text=True,
+                    env={**os.environ, 'LD_LIBRARY_PATH': ''},
+                )
+            finally:
+                if os.path.exists(tmp_path):
+                    os.unlink(tmp_path)
+            if nix_check.returncode != 0:
+                print(f"❌ Error: {verb} '{filename}' aborted. Invalid Nix syntax:\n   {nix_check.stderr.strip()}")
+                return False
+    if filename.endswith('.py'):
+        import ast
+        try:
+            ast.parse(content)
+        except SyntaxError as e:
+            print(f"❌ Error: {verb} '{filename}' aborted. Invalid Python syntax:\n   {e}")
+            _print_err_window(content, e.lineno or 0)
+            return False
+    return True
+
+
 def apply_search_replace_patch(payload: str) -> bool:
     # 1. NORMALIZE PAYLOAD WHITESPACE
     # Convert non-breaking spaces to regular spaces and normalize line endings
@@ -262,11 +327,10 @@ def apply_search_replace_patch(payload: str) -> bool:
     # body can legitimately contain a complete SEARCH/DIVIDER/REPLACE triple --
     # most likely when rewriting the protocol files themselves -- and without this
     # the same payload would fire once as a write and again as a surgical patch.
-    payload = write_file_pattern.sub('', payload)
+    payload = write_file_pattern.sub(lambda m: '\n' * m.group(0).count('\n'), payload)
 
-    # Strip markdown code fences to bypass web UI whitespace destruction
-    # (This successfully prevents the chat framework from eating our left-indentation!)
-    payload = re.sub(r'^```[a-zA-Z0-9]*\s*$', '', payload, flags=re.MULTILINE)
+    # Strip outer markdown code fences while preserving fences inside SEARCH/REPLACE bodies
+    payload = _strip_outer_fences(payload)
 
     # Parse SEARCH/DIVIDER/REPLACE blocks. The replacement body is OPTIONAL:
     # adjacent DIVIDER/REPLACE markers mean an empty replacement (deletion).
@@ -304,14 +368,14 @@ def apply_search_replace_patch(payload: str) -> bool:
     # reply's end, so a bare marker after the last complete block is a block the
     # cut dropped: refuse before anything is written. A cut between two blocks
     # leaves no marker; the car's stated APPLIED count is the witness for that.
-    last_end = max((m.end() for m in block_pattern.finditer(payload)), default=0)
-    cut_tail = _residual_marker_lines(payload[last_end:])
-    if cut_tail:
-        print(f"❌ Error: {len(matches)} complete block(s) parsed, then protocol "
-              "marker(s) that form no complete block:")
-        for lineno, line in cut_tail:
-            print(f"    >>> after the last complete block, line {lineno}: {line!r}")
-        print("    This is the shape of a reply cut off mid-car. Nothing was written.")
+    unmatched_payload = block_pattern.sub(lambda m: '\n' * m.group(0).count('\n'), payload)
+    orphan_markers = _residual_marker_lines(unmatched_payload)
+    if orphan_markers:
+        print(f"❌ Error: {len(matches) + len(write_matches)} complete block(s) parsed, "
+              "plus orphan protocol marker(s) that form no complete block:")
+        for lineno, line in orphan_markers:
+            print(f"    >>> payload:{lineno}: {line!r}")
+        print("    This is the shape of a malformed or truncated car. Nothing was written.")
         print("    Copy the whole car again; if the reply itself was cut, ask Future-You to split")
         print(f"    the pass into smaller cars (<= {CHISEL_STRIKE_MAX_BLOCKS} blocks / <= {CHISEL_STRIKE_MAX_PATCH_LINES} replacement lines).")
         return False
@@ -321,7 +385,10 @@ def apply_search_replace_patch(payload: str) -> bool:
         | {os.path.expanduser(fm.strip('` \t\n')) for fm, _, _ in matches if fm and fm.strip('` \t\n')}
     )
     total_blocks = len(matches) + len(write_matches)
-    total_patch_lines = sum(len(rb.split('\n')) for _, _, rb in matches if rb)
+    total_patch_lines = (
+        sum(len(rb.split('\n')) for _, _, rb in matches if rb)
+        + sum(len(fc.rstrip('\n').split('\n')) for _, fc in write_matches if fc.strip())
+    )
     deep_car_ok = os.environ.get("PIPULATE_DEEP_CAR", "").strip().lower() in ("1", "true", "yes")
     if (
         len(planned_files) > CHISEL_STRIKE_MAX_FILES
@@ -345,6 +412,8 @@ def apply_search_replace_patch(payload: str) -> bool:
 
     success = True
     touched_files = set()
+    staged_contents = {}
+    commit_plan = {}
 
     # Process wholesale writes first so a single payload can create one file and
     # then surgically patch another in the same turn.
@@ -392,45 +461,20 @@ def apply_search_replace_patch(payload: str) -> bool:
                 print("    PAYLOAD was not. Re-read from a second channel; nothing written.")
                 success = False
                 continue
-        # JSON SYNTAX AIRLOCK (whole-file arm)
-        if filename.endswith('.json'):
-            import json
-            try:
-                json.loads(file_content)
-            except json.JSONDecodeError as e:
-                print(f"❌ Error: Whole-file write of '{filename}' aborted. Invalid JSON:\n   {e}")
-                success = False
-                continue
+        if not _validate_syntax_airlocks(filename, file_content, "Whole-file write of"):
+            success = False
+            continue
 
-        # AST VALIDATION AIRLOCK (same safeguard the surgical path enforces)
-        if filename.endswith('.py'):
-            import ast
-            try:
-                ast.parse(file_content)
-            except SyntaxError as e:
-                print(f"❌ Error: Whole-file write of '{filename}' aborted. Invalid Python syntax:\n   {e}")
-                success = False
-                continue
-
-        # THE INVISIBLE WRITE (whole-file arm), last before the disk.
+        # THE INVISIBLE WRITE (whole-file arm), last before staging.
         ignored_in = _invisible_to_git(filename)
         if ignored_in:
             _refuse_invisible_write(filename, ignored_in, "Whole-file write of")
             success = False
             continue
 
-        existed = os.path.exists(filename)
-        parent = os.path.dirname(filename)
-        if parent:
-            os.makedirs(parent, exist_ok=True)
-        with open(filename, 'w', encoding='utf-8') as f:
-            f.write(file_content)
-
-        verb = "OVERWROTE" if existed else "CREATED"
-        print(f"✅ WHOLE-FILE WRITE: {verb} '{filename}'.")
-        touched_files.add(filename)
-        if _needs_git_add(filename):
-            print(f"📌 UNTRACKED FILE HYGIENE: '{filename}' is not yet in git — run: git add {filename}")
+        abs_key = os.path.abspath(filename)
+        staged_contents[abs_key] = file_content
+        commit_plan[abs_key] = (filename, "write", os.path.exists(filename))
 
     for filename_match, search_block, replace_block in matches:
         filename = os.path.expanduser(filename_match.strip('` \t\n')) if filename_match else None
@@ -458,7 +502,8 @@ def apply_search_replace_patch(payload: str) -> bool:
             success = False
             continue
 
-        if not os.path.exists(filename):
+        abs_key = os.path.abspath(filename)
+        if abs_key not in staged_contents and not os.path.exists(filename):
             print(f"❌ Error: Target file '{filename}' not found.")
             success = False
             continue
@@ -470,8 +515,11 @@ def apply_search_replace_patch(payload: str) -> bool:
             success = False
             continue
 
-        with open(filename, 'r', encoding='utf-8') as f:
-            content = f.read()
+        if abs_key in staged_contents:
+            content = staged_contents[abs_key]
+        else:
+            with open(filename, 'r', encoding='utf-8') as f:
+                content = f.read()
 
         # 2. NORMALIZE TARGET FILE WHITESPACE
         content = content.replace('\xa0', ' ').replace('\r\n', '\n')
@@ -713,66 +761,36 @@ def apply_search_replace_patch(payload: str) -> bool:
         # hand-run json.load echoed as a probe, because this branch did not
         # exist. JSONDecodeError carries lineno/colno, so the refusal names
         # the exact character that broke.
-        if filename.endswith('.json'):
-            import json
-            try:
-                json.loads(new_content)
-            except json.JSONDecodeError as e:
-                print(f"❌ Error: Patching '{filename}' aborted. Invalid JSON:\n   {e}")
-                err_lines = new_content.split('\n')
-                start = max(0, e.lineno - 3)
-                end = min(len(err_lines), e.lineno + 2)
-                print("--- DIAGNOSTIC: Context around JSON error ---")
-                for i, ln in enumerate(err_lines[start:end], start=start + 1):
-                    marker = " >>>" if i == e.lineno else "    "
-                    print(f"{marker} {i:4d}: {ln}")
-                print("--- END DIAGNOSTIC ---")
-                success = False
-                continue
+        if not _validate_syntax_airlocks(filename, new_content, "Patching"):
+            success = False
+            continue
 
-        # NIX SYNTAX AIRLOCK
-        if filename.endswith('.nix'):
-            import tempfile
-            with tempfile.NamedTemporaryFile(mode='w', suffix='.nix', delete=False) as tmp:
-                tmp.write(new_content)
-                tmp_path = tmp.name
-            nix_check = subprocess.run(
-                ['nix-instantiate', '--parse', tmp_path],
-                capture_output=True, text=True,
-                env={**os.environ, 'LD_LIBRARY_PATH': ''}
-            )
-            os.unlink(tmp_path)
-            if nix_check.returncode != 0:
-                print(f"❌ Error: Patching '{filename}' aborted. Invalid Nix syntax:\n   {nix_check.stderr.strip()}")
-                success = False
-                continue
+        staged_contents[abs_key] = new_content
+        if abs_key not in commit_plan:
+            commit_plan[abs_key] = (filename, "patch", True)
 
-        # AST VALIDATION AIRLOCK (The Final Safeguard)
-        if filename.endswith('.py'):
-            import ast
-            try:
-                ast.parse(new_content)
-            except SyntaxError as e:
-                print(f"❌ Error: Patching '{filename}' aborted. Invalid Python syntax:\n   {e}")
-                err_lines = new_content.split('\n')
-                err_lineno = e.lineno or 0
-                start = max(0, err_lineno - 3)
-                end = min(len(err_lines), err_lineno + 2)
-                print("--- DIAGNOSTIC: Context around syntax error ---")
-                for i, ln in enumerate(err_lines[start:end], start=start+1):
-                    marker = " >>>" if i == err_lineno else "    "
-                    print(f"{marker} {i:4d}: {ln}")
-                print("--- END DIAGNOSTIC ---")
-                success = False
-                continue
+    if not success:
+        if staged_contents:
+            print(f"🛑 Atomic rollback: {len(staged_contents)} staged file(s) withheld; nothing was written to disk.")
+        return False
 
+    for abs_key, final_content in staged_contents.items():
+        filename, mode, existed = commit_plan[abs_key]
+        parent = os.path.dirname(filename)
+        if parent:
+            os.makedirs(parent, exist_ok=True)
         with open(filename, 'w', encoding='utf-8') as f:
-            f.write(new_content)
-            
-        print(f"✅ DETERMINISTIC PATCH APPLIED: Successfully mutated '{filename}'.")
+            f.write(final_content)
         touched_files.add(filename)
-        
-    return success
+        if mode == "write":
+            verb = "OVERWROTE" if existed else "CREATED"
+            print(f"✅ WHOLE-FILE WRITE: {verb} '{filename}'.")
+            if _needs_git_add(filename):
+                print(f"📌 UNTRACKED FILE HYGIENE: '{filename}' is not yet in git — run: git add {filename}")
+        else:
+            print(f"✅ DETERMINISTIC PATCH APPLIED: Successfully mutated '{filename}'.")
+
+    return True
 
 def _has_unclosed_shell_quote_or_backslash(s: str) -> bool:
     """True when a shell command line ends inside an unclosed quote or trailing backslash."""

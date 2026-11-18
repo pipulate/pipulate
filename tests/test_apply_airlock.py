@@ -147,5 +147,62 @@ class TestApplyAutolinkAirlock(unittest.TestCase):
             self.assertIn(link_md, target.read_text(encoding="utf-8"))
 
 
+    def test_inner_code_fences_survive_search_replace(self):
+        f3, f4 = "`" * 3, "`" * 4
+        with tempfile.TemporaryDirectory() as temp_dir:
+            target = Path(temp_dir) / "notes.md"
+            target.write_text("hello\n", encoding="utf-8")
+            inner = f"hello\n{f3}bash\necho 1\n{f3}"
+            raw = _build_search_replace_payload(target, "hello", inner)
+            wrapped = f"{f4}text\n{raw}{f4}\n"
+            self.assertTrue(self._apply(wrapped))
+            self.assertEqual(target.read_text(encoding="utf-8"), f"{inner}\n")
+
+    def test_multi_block_failure_rolls_back_atomically(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            a = Path(temp_dir) / "a.py"
+            a.write_text("x = 1\ny = 2\n", encoding="utf-8")
+            p1 = _build_search_replace_payload(a, "x = 1", "")
+            p2 = _build_search_replace_payload(a, "MISSING_ANCHOR", "z = 3")
+            self.assertFalse(self._apply(p1 + p2))
+            self.assertEqual(a.read_text(encoding="utf-8"), "x = 1\ny = 2\n")
+            p_ok = p1 + _build_search_replace_payload(a, "y = 2", "y = 20")
+            self.assertTrue(self._apply(p_ok))
+            self.assertEqual(a.read_text(encoding="utf-8"), "\ny = 20\n")
+
+    def test_write_file_nix_airlock_and_line_governor(self):
+        import os
+        import shutil
+        with tempfile.TemporaryDirectory() as temp_dir:
+            if shutil.which("nix-instantiate"):
+                nx = Path(temp_dir) / "bad.nix"
+                self.assertFalse(self._apply(_build_write_file_payload(nx, "{ broken =\n")))
+                self.assertFalse(nx.exists())
+            big = Path(temp_dir) / "big.py"
+            body = "\n".join(f"v_{i} = {i}" for i in range(230))
+            self.assertFalse(self._apply(_build_write_file_payload(big, body)))
+            self.assertFalse(big.exists())
+            old_env = os.environ.get("PIPULATE_DEEP_CAR")
+            os.environ["PIPULATE_DEEP_CAR"] = "1"
+            try:
+                self.assertTrue(self._apply(_build_write_file_payload(big, body)))
+                self.assertTrue(big.exists())
+            finally:
+                if old_env is None:
+                    os.environ.pop("PIPULATE_DEEP_CAR", None)
+                else:
+                    os.environ["PIPULATE_DEEP_CAR"] = old_env
+
+    def test_mid_payload_orphan_marker_refuses_atomically(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            a = Path(temp_dir) / "a.py"
+            a.write_text("x = 1\n", encoding="utf-8")
+            orphan = "[" * 3 + "SEARCH" + "]" * 3
+            p1 = _build_search_replace_payload(a, "x = 1", "x = 2")
+            p2 = _build_search_replace_payload(a, "x = 2", "x = 3")
+            self.assertFalse(self._apply(f"{p1}\n{orphan}\n{p2}"))
+            self.assertEqual(a.read_text(encoding="utf-8"), "x = 1\n")
+
+
 if __name__ == "__main__":
     unittest.main()
