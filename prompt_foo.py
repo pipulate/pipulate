@@ -1317,18 +1317,6 @@ def _ruff_undefined_name_error(code: str, is_pyprobe: bool = False) -> Optional[
     return None
 
 
-def _local_module_attr_error(code: str, is_pyprobe: bool = False) -> Optional[str]:
-    p = os.path.join(REPO_ROOT, "scripts", "pyprobe.py")
-    if not os.path.isfile(p):
-        return None
-    mod = sys.modules.get("_pyprobe_guard")
-    if mod is None:
-        spec = _foo_cartridge_ilu.spec_from_file_location("_pyprobe_guard", p)
-        mod = sys.modules.setdefault("_pyprobe_guard", _foo_cartridge_ilu.module_from_spec(spec))
-        spec.loader.exec_module(mod)
-    return mod.check_local_module_attrs(code, is_pyprobe=is_pyprobe, label="pyprobe" if is_pyprobe else "python -c")
-
-
 def _check_probe_command(cmd: str) -> Optional[str]:
     """Refuse bash loops, broken python -c / pyprobe syntax, and F821 undefined names in '! ' probes."""
     import ast
@@ -1373,9 +1361,9 @@ def _check_probe_command(cmd: str) -> Optional[str]:
                 ast.parse(code)
             except SyntaxError as e:
                 return f"{label} SyntaxError: {e.msg} (line {e.lineno}, offset {e.offset})"
-            err = _ruff_undefined_name_error(code, is_pyprobe=is_pyprobe) or _local_module_attr_error(code, is_pyprobe=is_pyprobe)
-            if err:
-                return err
+            undef_err = _ruff_undefined_name_error(code, is_pyprobe=is_pyprobe)
+            if undef_err:
+                return undef_err
     return None
 
 
@@ -1680,14 +1668,8 @@ Before addressing the user's prompt, perform the following verification steps:
         if self.processed_files:
             lines.append("--- Codebase Files Included ---")
             for f in self.processed_files:
-                rc_note = f" | ⚠️ EXIT {f['returncode']}" if f.get('returncode', 0) != 0 else ""
-                lines.append(f"# {f['path']}  # [{f['tokens']:,} tokens{rc_note}]")
+                lines.append(f"# {f['path']}  # [{f['tokens']:,} tokens]")
             lines.append("")
-            failed_live = [f for f in self.processed_files if f.get('returncode', 0) != 0]
-            if failed_live:
-                lines.append("--- Failed Live Commands ---")
-                lines.extend(f"⚠️ {f['path']} (exit={f['returncode']})" for f in failed_live)
-                lines.append("")
 
         # 4. Article Narrative Echo
         narrative = self.auto_context.get("Recent Narrative Context")
@@ -2767,7 +2749,7 @@ def main():
                 logger.print(f"   -> ⛔ Refused probe: {raw_command:50} ({probe_err})")
                 processed_files_data.append({
                     "path": f"! {raw_command}", "comment": comment, "content": refusal_msg,
-                    "tokens": count_tokens(refusal_msg), "words": count_words(refusal_msg), "lang": "text", "returncode": -1
+                    "tokens": count_tokens(refusal_msg), "words": count_words(refusal_msg), "lang": "text"
                 })
                 continue
             
@@ -2819,11 +2801,13 @@ def main():
                     content += f"\n--- stderr ---\n{_err}"
                 
                 processed_files_data.append({
+                    # Marker parity: the payload label IS the context.txt line.
+                    # `--- START: ! rgxc foo ---` greps identically to the
+                    # `! rgxc foo` that summoned it, for humans and models alike.
                     "path": f"! {raw_command}", "comment": comment, "content": content,
-                    "tokens": count_tokens(content), "words": count_words(content), "lang": "text", "returncode": proc.returncode
+                    "tokens": count_tokens(content), "words": count_words(content), "lang": "text"
                 })
-                elapsed = f"[{time.perf_counter() - t_start:.4f}s]"
-                logger.print(elapsed if proc.returncode == 0 else f"{elapsed} ⚠️ [EXIT {proc.returncode}]")
+                logger.print(f"[{time.perf_counter() - t_start:.4f}s]")
             except subprocess.CalledProcessError as e:
                 logger.print(f"\n      [Error] Exit {e.returncode}: {e.stderr.strip()}")
             continue
@@ -3446,12 +3430,11 @@ def main():
                 # still carries the totals.
                 pass
 
-        failed_cmds = [f for f in processed_files_data if f.get('returncode', 0) != 0]
-        if failed_cmds:
-            print(f"⚠️  LIVE COMMAND ALERT: {len(failed_cmds)} '! ' command(s) failed or were refused (see Summary).")
         if VERBOSE or not ledger_rendered:
             print(console_summary.strip())
         else:
+            # The ledger sums components; this measures the assembled text.
+            # Sanitization runs next, so these are explicitly pre-scrub units.
             print(f"Assembled payload (pre-scrub): {count_tokens(final_output):,} tokens | "
                   f"{len(final_output.encode('utf-8')):,} bytes")
 
