@@ -1223,6 +1223,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # scripts/articles/extract_404_ghosts.py       # <-- Queries Honeybot SQLite over SSH for unmapped 404 ghosts against _raw_map.csv & navgraph.json
 # scripts/articles/stamp_article_ids.py        # <-- Idempotent, fail-closed monotonic article_id (#1..#N) stamper & audit gate
 # scripts/articles/norma_extract.py            # <-- 3-Pillar Candidate Radar & Socratic Puppet-Theater Pinball Plunger (_posts/_abstracts/)
+# scripts/articles/dots_extract.py             # <-- Dual-Head Idea-Refinery Harvester (Forward ! latest + Retrograde norma cones + Goodhart Scoreboard)
 # scripts/articles/link_injector.py
 # scripts/articles/generate_post_nav.py  # [1,174 tokens | 4,616 bytes]
 # assets/jekyll/common-packages.nix
@@ -1436,6 +1437,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 #   compile / c / xp   -> ADHOC_CHOP     (context.txt + fixed tail)
 #   default / defaultu -> DEFAULT_CHOP   (40K architectural baseline)
 #   forget             -> COMPACT_PROMPT + COMPACT_CHOP (Landauer Forgetting Kata)
+#   dots               -> DOTS_PROMPT + DOTS_CHOP       (Dual-Head Idea-Refinery Kata)
 #   idea               -> IDEATION_CHOP  (30-and-3 + Axis-Forcing harness)
 #   brief              -> INSTALL_CHOP   (First Wish installer guide)
 #   seed               -> SEED_PROMPT + SEED_CHOP (Cold-stranger Book Seed)
@@ -1627,6 +1629,36 @@ COMPACT_CHOP = r"""
 ! .venv/bin/python scripts/pyprobe.py 'import tiktoken; f = (REPO_ROOT / "foo_files.py").read_text(); g = (REPO_ROOT / "GLOSSARY.md").read_text(); fl = f.splitlines(); enc = tiktoken.get_encoding("cl100k_base"); rs = next(i for i, ln in enumerate(fl) if ln.startswith("# --- START RECEIPTS")); re_i = next(i for i, ln in enumerate(fl) if ln.startswith("# --- END RECEIPTS")); r_blk = chr(10).join(fl[rs + 1 : re_i]); norm = lambda s: re.sub("[^a-z0-9]+", " ", s.lower().replace("&", " and ")).strip(); g_norm = " " + norm(g) + " "; keys = [ln for ln in fl if ln.startswith("# § ")]; long_c = [ln for ln in fl if ln.startswith("# ") and len(ln) >= 80]; dupes = sorted({ln for ln in long_c if long_c.count(ln) > 1}); ear = sum(1 for ln in fl if ln.startswith(("# EARMARK", "# - EARMARK"))); miss = [(len(ln), k, "in_receipts" if any(t in r_blk for t in re.findall("deed [0-9]+", ln)) else "see_shards_or_git") for ln in keys for k in [re.sub(" [(][^)]*[)]$", "", re.sub("^# § +", "", ln.split(" --", 1)[0]))] if (" " + norm(re.sub("^THE +", "", k)) + " ") not in g_norm]; print(f"FORGET_LEDGER: foo={len(enc.encode(f)):,} tok ({len(f.encode()):,} B) | glossary={len(enc.encode(g)):,} tok ({len(g.encode()):,} B)"); print(f"COUNTS: keys={len(keys)} receipts={re_i - rs - 1} earmarks={ear} dupes={len(dupes)} missing_values={len(miss)}"); [print("DUPE:", d[:110]) for d in dupes[:5]]; [print(f"MISSING_VAL [{src}]: {w}B | {k}") for w, k, src in miss[:15]]'
 ! .venv/bin/python scripts/pyprobe.py 'fl = (REPO_ROOT / "foo_files.py").read_text().splitlines(); g_stops = ("# - ", "# § ", "# EARMARK", "# CHAPTER", "# ===", "# ---"); g_end = lambda i: next((j for j in range(i + 1, len(fl)) if (not fl[j].startswith("#")) or fl[j].strip() == "#" or fl[j].startswith(g_stops)), len(fl)); g_blks = [(g_end(i) - i, sum(len(x) for x in fl[i:g_end(i)]), ln[:76]) for i, ln in enumerate(fl) if ln.startswith(("# EARMARK", "# - EARMARK")) or (ln.startswith("# THE ") and "202" in ln)]; [print(f"GRAD_RANK: lines={lc} bytes={bc} | {hd}") for lc, bc, hd in sorted(g_blks, key=lambda x: (x[0] > 1, x[1]), reverse=True)[:10]]; t_stops = ("# - ", "# § ", "# THE ", "# CHAPTER", "# ===", "# ---"); t_end = lambda i: next((j for j in range(i + 1, len(fl)) if (not fl[j].startswith("#")) or fl[j].strip() == "#" or fl[j].startswith(t_stops)), len(fl)); t_blks = [(t_end(i) - i, sum(len(x) for x in fl[i:t_end(i)]), ln[:76]) for i, ln in enumerate(fl) if ln.startswith("# - TODO")]; [print(f"TODO_RANK: lines={lc} bytes={bc} | {hd}") for lc, bc, hd in sorted(t_blks, key=lambda x: (x[0] > 1, x[1]), reverse=True)[:12]]'
 GLOSSARY.md
+foo_files.py
+apply.py
+"""
+
+DOTS_PROMPT = r"""You are running THE DOTS IDEA-REFINERY KATA against foo_files.py.
+Read the Two-Axis Goodhart Scoreboard, Forward Head A (! latest ideas & Next Step
+Prompts), Retrograde Head B (norma serotinous cones from older posts), and ! markov
+Section 5 external referral demand (kagi.com, duckduckgo.com, google.com, etc.).
+GOVERNING LAW ( <= 1 file, <= 6 blocks, <= 120 replacement lines ):
+1. CONNECT & MERGE FIRST: When a Forward Head A spark, Retrograde Head B Next-Step
+   seed, or ! markov Section 5 referral cluster collides with an existing P0.* or
+   '# - TODO' line, sharpen that existing 1-line TODO in place rather than minting
+   a duplicate chore.
+2. MINT ONLY ORTHOGONAL BLACK SWANS: Add at most 1-3 net-new 1-line '# - TODO
+   (YYYY-MM-DD, HANDLE): ... Gate: ...' items in Zone 3 for unbanked high-leverage
+   sparks with a concrete, falsifiable Gate. If Verdict is HOLD_NET_ZERO, perform
+   in-place merges/upgrades only with zero net TODO count growth.
+3. SAFETY: Never delete open P0.* gates without a witnessed receipt, span contiguous
+   non-empty lines, and use bare domains (sunpug.io, mikelev.in, never schemes) so
+   chat autolinkers cannot trip apply.py's airlock.
+OUTPUT CONTRACT: enclose the entire reply inside ONE fenced 'text' code block holding
+ONLY Target: foo_files.py + [[[SEARCH]]]/[[[DIVIDER]]]/[[[REPLACE]]] blocks, or
+NOTHING_ELIGIBLE axis1=<n> axis2=<n> inside that single fence, with zero prose outside."""
+
+DOTS_CHOP = r"""
+# THE IDEA-REFINERY KATA (connect Forward ! latest + Retrograde norma cones + ! markov demand)
+# COMMAND: python prompt_foo.py @DOTS_PROMPT --chop DOTS_CHOP --no-tree
+! markov
+! postsc 3
+! .venv/bin/python scripts/articles/dots_extract.py
 foo_files.py
 apply.py
 """
