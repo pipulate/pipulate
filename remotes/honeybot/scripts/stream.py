@@ -3387,7 +3387,7 @@ def run_station_break(env, profile_dir):
 
 REBOOT_ANNOUNCEMENT_TEXT = (
     "Scheduled observatory reset. "
-    "Refreshing memory now — stay tuned, the live stream stays connected and resumes in about a minutes."
+    "Refreshing memory now — stay tuned, the live stream stays connected and resumes in about a minute."
 )
 _process_boot_ts = time.time()
 _reboot_warned = False
