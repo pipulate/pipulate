@@ -406,9 +406,9 @@
           exec "$python_bin" "$root/scripts/pyprobe.py" "$@"
         '';
 
-        # THE `radar` COMMAND: Post-GSC Compound-Key referral discovery lens.
-        # `radar` shows 30d discoveries; `radar 365` sets lookback days; `radar links`
-        # filters to non-search/non-AI web pages (--links).
+        # THE `radar` COMMAND: Post-GSC Compound-Key referral & velocity lens.
+        # `radar [DAYS]` shows discoveries; `radar ai [top] [DAYS]` and
+        # `radar links [top] [DAYS]` show per-URL or per-domain velocity.
         radarCommand = pkgs.writeShellScriptBin "radar" ''
           set -euo pipefail
           root="''${PIPULATE_ROOT:-$PWD}"
@@ -417,21 +417,26 @@
             echo "radar: missing $python_bin; enter the Pipulate Nix shell first." >&2
             exit 1
           fi
-          if [ "''${1:-}" = "links" ] || [ "''${1:-}" = "web" ]; then
-            shift
-            if [[ "''${1:-}" =~ ^[0-9]+$ ]]; then
-              days="$1"
-              shift
-              exec "$python_bin" "$root/scripts/markov.py" --radar --links --days "$days" "$@"
-            fi
-            exec "$python_bin" "$root/scripts/markov.py" --radar --links "$@"
-          fi
-          if [[ "''${1:-}" =~ ^[0-9]+$ ]]; then
-            days="$1"
-            shift
-            exec "$python_bin" "$root/scripts/markov.py" --radar --days "$days" "$@"
-          fi
-          exec "$python_bin" "$root/scripts/markov.py" --radar "$@"
+          py_args=(--radar)
+          while [ "$#" -gt 0 ]; do
+            case "$1" in
+              ai|search) py_args+=(--ai); shift ;;
+              links|web) py_args+=(--links); shift ;;
+              top|domains|domain|rollup|sum) py_args+=(--by-domain); shift ;;
+              -h|--help|help)
+                printf "%s\n" \
+                  "radar [DAYS]            newest (ref_apex -> URL) discoveries" \
+                  "radar ai [DAYS]         Search/AI per-URL velocity + 7d delta" \
+                  "radar ai top [DAYS]     Search/AI per-domain velocity rollup" \
+                  "radar links [DAYS]      clickable web per-URL velocity + 7d delta" \
+                  "radar links top [DAYS]  clickable web per-domain velocity rollup"
+                exit 0 ;;
+              *)
+                if [[ "$1" =~ ^[0-9]+$ ]]; then py_args+=(--days "$1"); shift
+                else py_args+=("$@"); break; fi ;;
+            esac
+          done
+          exec "$python_bin" "$root/scripts/markov.py" "''${py_args[@]}"
         '';
 
         # THE `dots` COMMAND: Dual-Head Idea-Refinery Kata (Forward ! latest +

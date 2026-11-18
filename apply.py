@@ -296,12 +296,22 @@ def _validate_syntax_airlocks(filename: str, content: str, verb: str) -> bool:
                 return False
     if filename.endswith('.py'):
         import ast
+        import shutil
         try:
             ast.parse(content)
         except SyntaxError as e:
             print(f"❌ Error: {verb} '{filename}' aborted. Invalid Python syntax:\n   {e}")
             _print_err_window(content, e.lineno or 0)
             return False
+        ruff_exec = shutil.which('ruff')
+        if ruff_exec:
+            r_chk = subprocess.run(
+                [ruff_exec, 'check', '--isolated', '--no-cache', '--select', 'F821,F823', '--stdin-filename', filename, '-'],
+                input=content, capture_output=True, text=True, timeout=5,
+            )
+            if r_chk.returncode == 1:
+                print(f"❌ Error: {verb} '{filename}' aborted. Undefined/unbound name (Ruff F821/F823):\n   {(r_chk.stdout or '').strip()}")
+                return False
     return True
 
 

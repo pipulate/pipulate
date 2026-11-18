@@ -105,47 +105,75 @@ def _is_internal_artifact(topic: str) -> bool:
 _REMOTE_REF_PY = """
 import datetime, json, sqlite3, sys
 days, lim = int(sys.argv[1]), int(sys.argv[2])
-db_p = sys.argv[3] if len(sys.argv) > 3 else "/home/mike/www/mikelev.in/honeybot.db"
+bkt_req = sys.argv[3] if len(sys.argv) > 3 else "all"
+db_p = sys.argv[4] if len(sys.argv) > 4 and sys.argv[4] else "/home/mike/www/mikelev.in/honeybot.db"
 conn = sqlite3.connect(f"file:{db_p}?mode=ro", uri=True)
 if not conn.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='referrer_radar'").fetchone():
-    print(json.dumps({"status": "sync_pending", "total_edges": 0, "link_edges": 0, "demand": [], "radar": [], "links": []}))
+    print(json.dumps({"status": "sync_pending", "obs_days": max(1, days), "total_edges": 0, "bucket_edges": 0, "bucket_domains": 0, "bucket_hits": 0, "demand": [], "radar": [], "edges": [], "domains": []}))
     raise SystemExit(0)
-_SKIP_APEX = {"bing.com", "duckduckgo.com", "kagi.com", "baidu.com", "yahoo.com", "brave.com", "ecosia.org", "qwant.com", "sogou.com", "so.com", "naver.com", "seznam.cz", "chatgpt.com", "openai.com", "claude.ai", "anthropic.com", "perplexity.ai", "microsoft.com", "you.com", "phind.com", "poe.com", "grok.com", "x.ai", "t.co", "x.com", "twitter.com", "lnkd.in", "linkedin.com", "facebook.com", "fb.com", "instagram.com", "threads.net", "youtube.com", "youtu.be", "pinterest.com", "tiktok.com", "msn.com", "live.com"}
-cut = (datetime.date.today() - datetime.timedelta(days=max(1, days))).isoformat()
+_AI_APEX = {"bing.com", "duckduckgo.com", "ddg.gg", "kagi.com", "baidu.com", "yahoo.com", "brave.com", "ecosia.org", "qwant.com", "sogou.com", "so.com", "naver.com", "seznam.cz", "mojeek.com", "startpage.com", "yep.com", "chatgpt.com", "openai.com", "claude.ai", "anthropic.com", "perplexity.ai", "you.com", "phind.com", "poe.com", "grok.com", "x.ai", "mistral.ai", "deepseek.com", "meta.ai", "genspark.ai", "exa.ai", "copilot.microsoft.com"}
+_SOCIAL_APEX = {"t.co", "x.com", "twitter.com", "lnkd.in", "linkedin.com", "facebook.com", "fb.com", "instagram.com", "threads.net", "youtube.com", "youtu.be", "pinterest.com", "tiktok.com", "msn.com", "live.com"}
+today = datetime.date.today()
+cut = (today - datetime.timedelta(days=max(1, days))).isoformat()
+cut_7d = (today - datetime.timedelta(days=6)).isoformat()
 tot = conn.execute("SELECT COUNT(*) FROM referrer_radar").fetchone()[0]
 dem = conn.execute("SELECT rdl.ref_apex, d.value, p.value, SUM(rdl.count) as hits, SUM(rdl.human_count) as hum, SUM(rdl.unique_ips) as ips, MAX(rdl.sample_referrer) FROM referrer_daily_logs rdl JOIN domains d ON rdl.domain_id = d.id JOIN paths p ON rdl.path_id = p.id WHERE rdl.date >= ? AND rdl.human_count > 0 GROUP BY rdl.ref_apex, rdl.domain_id, rdl.path_id ORDER BY hum DESC, ips DESC, hits DESC LIMIT ?", (cut, lim)).fetchall()
-rows = conn.execute("SELECT rr.ref_apex, d.value, p.value, COALESCE(SUM(rdl.count), rr.total_count), COALESCE(SUM(rdl.human_count), rr.human_count), COALESCE(SUM(rdl.unique_ips), 1), substr(rr.first_seen, 1, 16), rr.first_referrer, rr.last_referrer, COALESCE(MAX(rdl.sample_referrer), '') FROM referrer_radar rr JOIN domains d ON rr.domain_id = d.id JOIN paths p ON rr.path_id = p.id LEFT JOIN referrer_daily_logs rdl ON (rdl.ref_apex = rr.ref_apex AND rdl.domain_id = rr.domain_id AND rdl.path_id = rr.path_id AND rdl.date >= ?) WHERE substr(rr.first_seen, 1, 10) >= ? GROUP BY rr.ref_apex, rr.domain_id, rr.path_id ORDER BY rr.first_seen DESC, rr.rowid DESC", (cut, cut)).fetchall()
-rad, lnk, lnk_tot = [r[:8] for r in rows[:lim]], [], 0
-for ap, dom, p_s, hits, hum, ips, f_seen, f_ref, l_ref, s_ref in rows:
+rad = conn.execute("SELECT rr.ref_apex, d.value, p.value, COALESCE(SUM(rdl.count), rr.total_count), COALESCE(SUM(rdl.human_count), rr.human_count), COALESCE(SUM(rdl.unique_ips), 1), substr(rr.first_seen, 1, 16), rr.first_referrer FROM referrer_radar rr JOIN domains d ON rr.domain_id = d.id JOIN paths p ON rr.path_id = p.id LEFT JOIN referrer_daily_logs rdl ON (rdl.ref_apex = rr.ref_apex AND rdl.domain_id = rr.domain_id AND rdl.path_id = rr.path_id AND rdl.date >= ?) WHERE substr(rr.first_seen, 1, 10) >= ? GROUP BY rr.ref_apex, rr.domain_id, rr.path_id ORDER BY rr.first_seen DESC, rr.rowid DESC LIMIT ?", (cut, cut, lim)).fetchall()
+min_d = (conn.execute("SELECT MIN(date) FROM referrer_daily_logs WHERE date >= ?", (cut,)).fetchone() or [None])[0]
+obs_days = max(1, min(max(1, days), (today - datetime.date.fromisoformat(min_d)).days + 1)) if min_d else max(1, days)
+dom_days = dict(conn.execute("SELECT ref_apex, COUNT(DISTINCT date) FROM referrer_daily_logs WHERE date >= ? GROUP BY ref_apex", (cut,)).fetchall())
+d_rows = conn.execute("SELECT rdl.ref_apex, d.value, p.value, SUM(rdl.count), SUM(rdl.human_count), SUM(rdl.unique_ips), SUM(CASE WHEN rdl.date >= ? THEN rdl.count ELSE 0 END), COUNT(DISTINCT rdl.date), COALESCE(substr(rr.first_seen, 1, 16), MIN(rdl.date)), COALESCE(rr.first_referrer, ''), COALESCE(rr.last_referrer, ''), MAX(rdl.sample_referrer) FROM referrer_daily_logs rdl JOIN domains d ON rdl.domain_id = d.id JOIN paths p ON rdl.path_id = p.id LEFT JOIN referrer_radar rr ON (rr.ref_apex = rdl.ref_apex AND rr.domain_id = rdl.domain_id AND rr.path_id = rdl.path_id) WHERE rdl.date >= ? GROUP BY rdl.ref_apex, rdl.domain_id, rdl.path_id", (cut_7d, cut)).fetchall()
+def _vel(hits, h7):
+    r_all, r_7 = round(hits / obs_days, 2), round(h7 / min(7, obs_days), 2)
+    r_pre = ((hits - h7) / (obs_days - 7)) if obs_days > 7 else r_7
+    return r_all, r_7, round(r_7 - r_pre, 2)
+edges, by_dom = [], {}
+for ap, dom, p_s, hits, hum, ips, h7, p_days, f_seen, f_ref, l_ref, s_ref in d_rows:
     a = (ap or "").lower()
-    if not a or a in _SKIP_APEX or a.startswith(("google.", "yandex.", "com.", "org.", "net.")) or ".google." in a or ".yandex." in a:
+    refs = [r for r in (f_ref, l_ref, s_ref) if r]
+    https_u = [u for u in refs if "://" in u and u.split(":", 1)[0].lower() in ("http", "https")]
+    if not a:
         continue
-    urls = [u for u in (f_ref, l_ref, s_ref) if "://" in (u or "") and u.split(":", 1)[0].lower() in ("http", "https")]
-    if urls:
-        lnk_tot += 1
-        if len(lnk) < lim:
-            lnk.append([max(urls, key=len), ap, dom, p_s, hits, hum, ips, f_seen])
-print(json.dumps({"status": "live", "total_edges": tot, "link_edges": lnk_tot, "demand": dem, "radar": rad, "links": lnk}))
+    if a in _AI_APEX or a.startswith(("google.", "yandex.")) or ".google." in a or ".yandex." in a or "googlequicksearchbox" in a:
+        bkt = "ai"
+    elif a in _SOCIAL_APEX or a.startswith(("com.", "org.", "net.")):
+        bkt = "social"
+    elif https_u:
+        bkt = "links"
+    else:
+        bkt = "other"
+    if bkt_req in ("ai", "links") and bkt != bkt_req:
+        continue
+    best_u = max(https_u, key=len) if https_u else (refs[0] if refs else a)
+    src = best_u if bkt_req == "links" else a
+    h_i, hm_i, ip_i, h7_i = int(hits), int(hum), int(ips), int(h7)
+    edges.append([src, a, dom, p_s, h_i, hm_i, ip_i, h7_i, int(p_days), f_seen, *_vel(h_i, h7_i)])
+    cur, cand = by_dom.get(a), (h_i, hm_i, f"{dom}{p_s}", best_u)
+    by_dom[a] = [h_i, hm_i, ip_i, h7_i, 1, f_seen, cand] if cur is None else [cur[0] + h_i, cur[1] + hm_i, cur[2] + ip_i, cur[3] + h7_i, cur[4] + 1, max(cur[5], f_seen), max(cur[6], cand)]
+edges.sort(key=lambda x: (x[4], x[5], x[6], x[7], x[9]), reverse=True)
+doms = [[a, c[0], c[1], c[2], c[4], int(dom_days.get(a, 1)), c[5], c[6][2], c[6][3], *_vel(c[0], c[3])] for a, c in by_dom.items()]
+doms.sort(key=lambda x: (x[1], x[2], x[3], x[4], x[6]), reverse=True)
+print(json.dumps({"status": "live", "obs_days": obs_days, "total_edges": tot, "bucket_edges": len(edges), "bucket_domains": len(doms), "bucket_hits": sum(x[4] for x in edges), "demand": dem, "radar": rad, "edges": edges[:lim], "domains": doms[:lim]}))
 """
 
 
-def _fetch_honeybot_referrals(days: int = 30, limit: int = 20, force_refresh: bool = False) -> dict:
+def _fetch_honeybot_referrals(days: int = 30, limit: int = 20, force_refresh: bool = False, bucket: str = "all") -> dict:
     db_override = os.environ.get("PIPULATE_HONEYBOT_DB", "").strip()
     if db_override and Path(db_override).is_file():
-        res = subprocess.run([sys.executable, "-", str(int(days)), str(int(limit)), db_override], input=_REMOTE_REF_PY, capture_output=True, text=True, timeout=4, check=False)
+        res = subprocess.run([sys.executable, "-", str(int(days)), str(int(limit)), bucket, db_override], input=_REMOTE_REF_PY, capture_output=True, text=True, timeout=4, check=False)
         return json.loads(res.stdout.strip()) if res.returncode == 0 and (res.stdout or "").strip() else {"status": "error", "total_edges": 0, "demand": [], "radar": []}
     cache_p = CONFIG_DIR / "honeybot_referrals_cache.json"
-    if not force_refresh and cache_p.is_file() and (time.time() - cache_p.stat().st_mtime) < 300:
+    if not force_refresh and bucket == "all" and cache_p.is_file() and (time.time() - cache_p.stat().st_mtime) < 300:
         try:
             return json.loads(cache_p.read_text(encoding="utf-8"))
         except Exception:
             pass
     host = os.environ.get("PIPULATE_HONEYBOT_HOST", "honeybot")
     try:
-        res = subprocess.run(["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=3", host, "python3", "-", str(int(days)), str(int(limit))], input=_REMOTE_REF_PY, capture_output=True, text=True, timeout=4, check=False)
+        res = subprocess.run(["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=3", host, "python3", "-", str(int(days)), str(int(limit)), bucket], input=_REMOTE_REF_PY, capture_output=True, text=True, timeout=4, check=False)
         if res.returncode == 0 and (res.stdout or "").strip():
             data = json.loads(res.stdout.strip())
-            if data.get("status") == "live" and int(days) == 30:
+            if data.get("status") == "live" and int(days) == 30 and bucket == "all":
                 CONFIG_DIR.mkdir(parents=True, exist_ok=True)
                 cache_p.write_text(json.dumps(data), encoding="utf-8")
             return data
@@ -362,7 +390,7 @@ def analyze_corpus_shards(target_spec: str = "1", top_k: int = 5) -> int:
     return 0
 
 
-def run_referral_radar(target_spec: str = "1", days: int = 30, top_k: int = 15, links_only: bool = False) -> int:
+def run_referral_radar(target_spec: str = "1", days: int = 30, top_k: int = 15, links_only: bool = False, ai_only: bool = False, by_domain: bool = False) -> int:
     _, posts_dir = _resolve_posts_dir(target_spec)
     slug_map = {}
     ctx_dir = posts_dir / "_context"
@@ -375,16 +403,28 @@ def run_referral_radar(target_spec: str = "1", days: int = 30, top_k: int = 15, 
                     slug_map[m.group(2).lower()] = {"kws": [_norm_topic(k) for k in (d.get("kw") or []) if _norm_topic(k)]}
                 except Exception:
                     pass
-    snap = _fetch_honeybot_referrals(days=days, limit=top_k, force_refresh=True)
-    if links_only:
-        links = snap.get("links") or []
-        print(f"# 🔗 HONEYBOT CLICKABLE WEB REFERRERS ({days}d | status={snap.get('status')} | link_edges={snap.get('link_edges', len(links))} | unique_edges={snap.get('total_edges', 0)})")
-        for idx, (ref_url, _, dom, path_s, hits, hum, ips, f_seen) in enumerate(links, 1):
+    bkt = "ai" if ai_only else ("links" if links_only else "all")
+    snap = _fetch_honeybot_referrals(days=days, limit=top_k, force_refresh=True, bucket=bkt)
+    obs = snap.get("obs_days", days)
+    if bkt in ("ai", "links") or by_domain:
+        tag = "🤖 HONEYBOT SEARCH & AI" if bkt == "ai" else ("🔗 HONEYBOT CLICKABLE WEB" if bkt == "links" else "📡 HONEYBOT EXTERNAL")
+        if by_domain:
+            doms = snap.get("domains") or []
+            print(f"# {tag} DOMAIN ROLLUP ({days}d, obs={obs}d | status={snap.get('status')} | domains={snap.get('bucket_domains', 0)} | edges={snap.get('bucket_edges', 0)} | hits={snap.get('bucket_hits', 0)})")
+            for idx, (ap, hits, hum, ips, urls, a_days, _, top_t, top_u, r_all, r_7, dv) in enumerate(doms, 1):
+                lead = f"{top_u} => {top_t}" if bkt == "links" and top_u != ap else top_t
+                print(f"  {idx:2d}. {ap:<18s} | N={hits:4d}, P={ips:3d} IPs, hum={hum:4d} | urls={urls:3d}, days={a_days:2d} | {r_all:5.2f}/d, 7d={r_7:5.2f}/d [{dv:+5.2f}/d] | top: {lead}")
+            if not doms:
+                print(f"  • (No {bkt} domain referrals in window)")
+            return 0
+        edges = snap.get("edges") or []
+        print(f"# {tag} REFERRAL VELOCITY ({days}d, obs={obs}d | status={snap.get('status')} | edges={snap.get('bucket_edges', 0)} | hits={snap.get('bucket_hits', 0)})")
+        for idx, (src, _, dom, path_s, hits, hum, ips, _, _, f_seen, r_all, r_7, dv) in enumerate(edges, 1):
             kws = _match_path_keywords(path_s, slug_map)
             kw_str = f" -> ({', '.join(kws)})" if kws else ""
-            print(f"  {idx:2d}. [{f_seen}] {ref_url} => {dom}{path_s} (N={hits}, P={ips} IPs, hum={hum}){kw_str}")
-        if not links:
-            print("  • (No non-search/non-AI web referrers in window; try `radar links 365`)")
+            print(f"  {idx:2d}. [{f_seen[:10]}] {src:<18s} => {dom}{path_s} (N={hits}, P={ips} IPs, hum={hum} | {r_all:.2f}/d, 7d={r_7:.2f}/d [{dv:+.2f}/d]){kw_str}")
+        if not edges:
+            print(f"  • (No {bkt} referrals in window)")
         return 0
     print(f"# 📡 HONEYBOT POST-GSC REFERRAL RADAR ({days}d | status={snap.get('status')} | unique_edges={snap.get('total_edges', 0)})")
     for idx, (apex, dom, path_s, hits, hum, ips, f_seen, f_ref) in enumerate(snap.get("radar") or [], 1):
@@ -525,13 +565,15 @@ def main() -> int:
     parser.add_argument("-t", "--target", type=str, default="1", help="Target blog key/alias (default: 1).")
     parser.add_argument("-k", "--top", type=int, default=5, help="Top K transitions to show (default: 5).")
     parser.add_argument("--radar", action="store_true", help="Show newest Compound-Key (ref_apex, domain, path) discoveries.")
+    parser.add_argument("--ai", action="store_true", help="Filter --radar to Search & AI referral velocity.")
     parser.add_argument("--links", action="store_true", help="Filter --radar to clickable non-search/non-AI referring web URLs.")
+    parser.add_argument("--by-domain", action="store_true", help="Aggregate --radar velocity by referring domain.")
     parser.add_argument("--days", type=int, default=30, help="Lookback window in days for --radar (default: 30).")
     parser.add_argument("--stdin", action="store_true", help="Read series observations from stdin.")
     parser.add_argument("--demo-series", action="store_true", help="Run built-in numeric time-series verification.")
     args = parser.parse_args()
-    if args.radar or args.links:
-        return run_referral_radar(target_spec=args.target, days=args.days, top_k=max(15, args.top), links_only=args.links)
+    if args.radar or args.ai or args.links or args.by_domain:
+        return run_referral_radar(target_spec=args.target, days=args.days, top_k=max(15, args.top), links_only=args.links, ai_only=args.ai, by_domain=args.by_domain)
 
     if args.demo_series:
         return run_demo_series()

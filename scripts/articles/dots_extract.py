@@ -138,8 +138,8 @@ def compute_scoreboard(foo_path: Path, head_a: list[dict], head_b: list[dict]) -
     todo_words = [" " + " ".join(re.findall(r"[a-z0-9]+", ln.lower())) + " " for ln in todos]
     tok_df = Counter(t for ts in todo_toks for t in ts)
     phr_df = Counter(p for w in todo_words for p in raw_phrases if f" {p} " in w)
-    rare_tokens = {t for t in seed_tokens if 1 <= tok_df[t] <= 6}
-    rare_phrases = {p for p in raw_phrases if 1 <= phr_df[p] <= 6}
+    rare_tokens = {t for t in seed_tokens if 1 <= tok_df[t] <= 4}
+    rare_phrases = {p for p in raw_phrases if 1 <= phr_df[p] <= 4}
     collisions = []
     for ln, ln_w, t_set in zip(todos, todo_words, todo_toks):
         p_hits = sorted(p for p in rare_phrases if f" {p} " in ln_w)
