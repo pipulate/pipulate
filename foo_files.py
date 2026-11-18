@@ -1208,6 +1208,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # scripts/articles/common.py                   # <-- Self-explanatory
 # scripts/articles/articleizer.py              # <-- Transforms raw article.txt to formal Jekyll markdown format
 # scripts/articles/editing_prompt.txt          # <-- Forcing response into strict JSON data structure
+# scripts/articles/norma_extract.py
 # scripts/articles/sanitizer.py                # <-- Scrubs PII
 # scripts/articles/gsc_historical_fetch.py     # <-- Retired from blogs.nix pipeline (2026-10-17); static service-account lane superseded by wallet/warm OAuth
 # scripts/articles/contextualizer.py           # <-- Builds JSON summaries of articles in `_posts/context/` called "Holographic Shards".
