@@ -103,7 +103,7 @@ def _is_internal_artifact(topic: str) -> bool:
 
 
 _REMOTE_REF_PY = """
-import datetime, json, sqlite3, sys
+import datetime, json, re, sqlite3, sys
 days, lim = int(sys.argv[1]), int(sys.argv[2])
 bkt_req = sys.argv[3] if len(sys.argv) > 3 else "all"
 db_p = sys.argv[4] if len(sys.argv) > 4 and sys.argv[4] else "/home/mike/www/mikelev.in/honeybot.db"
@@ -111,8 +111,10 @@ conn = sqlite3.connect(f"file:{db_p}?mode=ro", uri=True)
 if not conn.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='referrer_radar'").fetchone():
     print(json.dumps({"status": "sync_pending", "obs_days": max(1, days), "total_edges": 0, "bucket_edges": 0, "bucket_domains": 0, "bucket_hits": 0, "demand": [], "radar": [], "edges": [], "domains": []}))
     raise SystemExit(0)
-_AI_APEX = {"bing.com", "duckduckgo.com", "ddg.gg", "kagi.com", "baidu.com", "yahoo.com", "brave.com", "ecosia.org", "qwant.com", "sogou.com", "so.com", "naver.com", "seznam.cz", "mojeek.com", "startpage.com", "yep.com", "chatgpt.com", "openai.com", "claude.ai", "anthropic.com", "perplexity.ai", "you.com", "phind.com", "poe.com", "grok.com", "x.ai", "mistral.ai", "deepseek.com", "meta.ai", "genspark.ai", "exa.ai", "copilot.microsoft.com"}
+_AI_APEX = {"bing.com", "duckduckgo.com", "ddg.gg", "kagi.com", "baidu.com", "yahoo.com", "brave.com", "ecosia.org", "qwant.com", "sogou.com", "so.com", "naver.com", "seznam.cz", "mojeek.com", "startpage.com", "yep.com", "marginalia-search.com", "chatgpt.com", "openai.com", "claude.ai", "anthropic.com", "perplexity.ai", "you.com", "phind.com", "poe.com", "grok.com", "x.ai", "mistral.ai", "deepseek.com", "meta.ai", "genspark.ai", "exa.ai", "copilot.microsoft.com"}
 _SOCIAL_APEX = {"t.co", "x.com", "twitter.com", "lnkd.in", "linkedin.com", "facebook.com", "fb.com", "instagram.com", "threads.net", "youtube.com", "youtu.be", "pinterest.com", "tiktok.com", "msn.com", "live.com"}
+_NOISE_APEX = {"nip.io", "sslip.io", "verizon.net", "netcraft.com"}
+_BAD_REF_RE = re.compile(r"/wp-admin|/wp-login|xmlrpc\.php|/\.env", re.I)
 today = datetime.date.today()
 cut = (today - datetime.timedelta(days=max(1, days))).isoformat()
 cut_7d = (today - datetime.timedelta(days=6)).isoformat()
@@ -131,14 +133,14 @@ edges, by_dom = [], {}
 for ap, dom, p_s, hits, hum, ips, h7, p_days, f_seen, f_ref, l_ref, s_ref in d_rows:
     a = (ap or "").lower()
     refs = [r for r in (f_ref, l_ref, s_ref) if r]
-    https_u = [u for u in refs if "://" in u and u.split(":", 1)[0].lower() in ("http", "https")]
+    https_u = [u for u in refs if "://" in u and u.split(":", 1)[0].lower() in ("http", "https") and not _BAD_REF_RE.search(u)]
     if not a:
         continue
-    if a in _AI_APEX or a.startswith(("google.", "yandex.")) or ".google." in a or ".yandex." in a or "googlequicksearchbox" in a:
+    if a in _AI_APEX or a.startswith(("google.", "yandex.", "yahoo.")) or ".google." in a or ".yandex." in a or ".yahoo." in a or "googlequicksearchbox" in a:
         bkt = "ai"
     elif a in _SOCIAL_APEX or a.startswith(("com.", "org.", "net.")):
         bkt = "social"
-    elif https_u:
+    elif https_u and a not in _NOISE_APEX:
         bkt = "links"
     else:
         bkt = "other"
@@ -413,7 +415,8 @@ def run_referral_radar(target_spec: str = "1", days: int = 30, top_k: int = 15, 
             print(f"# {tag} DOMAIN ROLLUP ({days}d, obs={obs}d | status={snap.get('status')} | domains={snap.get('bucket_domains', 0)} | edges={snap.get('bucket_edges', 0)} | hits={snap.get('bucket_hits', 0)})")
             for idx, (ap, hits, hum, ips, urls, a_days, _, top_t, top_u, r_all, r_7, dv) in enumerate(doms, 1):
                 lead = f"{top_u} => {top_t}" if bkt == "links" and top_u != ap else top_t
-                print(f"  {idx:2d}. {ap:<18s} | N={hits:4d}, P={ips:3d} IPs, hum={hum:4d} | urls={urls:3d}, days={a_days:2d} | {r_all:5.2f}/d, 7d={r_7:5.2f}/d [{dv:+5.2f}/d] | top: {lead}")
+                dv_s = f"[{dv:+.2f}/d]"
+                print(f"  {idx:2d}. {ap:<18s} | N={hits:4d}, P={ips:3d} IPs, hum={hum:4d} | urls={urls:3d}, days={a_days:2d} | {r_all:5.2f}/d, 7d={r_7:5.2f}/d {dv_s:>10s} | top: {lead}")
             if not doms:
                 print(f"  • (No {bkt} domain referrals in window)")
             return 0
@@ -422,7 +425,8 @@ def run_referral_radar(target_spec: str = "1", days: int = 30, top_k: int = 15, 
         for idx, (src, _, dom, path_s, hits, hum, ips, _, _, f_seen, r_all, r_7, dv) in enumerate(edges, 1):
             kws = _match_path_keywords(path_s, slug_map)
             kw_str = f" -> ({', '.join(kws)})" if kws else ""
-            print(f"  {idx:2d}. [{f_seen[:10]}] {src:<18s} => {dom}{path_s} (N={hits}, P={ips} IPs, hum={hum} | {r_all:.2f}/d, 7d={r_7:.2f}/d [{dv:+.2f}/d]){kw_str}")
+            dv_s = f"[{dv:+.2f}/d]"
+            print(f"  {idx:2d}. [{f_seen[:10]}] | N={hits:4d}, P={ips:3d} IPs, hum={hum:4d} | {r_all:5.2f}/d, 7d={r_7:5.2f}/d {dv_s:>10s} | {src:<18s} => {dom}{path_s}{kw_str}")
         if not edges:
             print(f"  • (No {bkt} referrals in window)")
         return 0

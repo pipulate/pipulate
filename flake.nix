@@ -423,13 +423,24 @@
               ai|search) py_args+=(--ai); shift ;;
               links|web) py_args+=(--links); shift ;;
               top|domains|domain|rollup|sum) py_args+=(--by-domain); shift ;;
-              -h|--help|help)
+              -h|--help|help|\?)
                 printf "%s\n" \
-                  "radar [DAYS]            newest (ref_apex -> URL) discoveries" \
-                  "radar ai [DAYS]         Search/AI per-URL velocity + 7d delta" \
-                  "radar ai top [DAYS]     Search/AI per-domain velocity rollup" \
-                  "radar links [DAYS]      clickable web per-URL velocity + 7d delta" \
-                  "radar links top [DAYS]  clickable web per-domain velocity rollup"
+                  "========================================================================" \
+                  "📡 POST-GSC REFERRAL & VELOCITY RADAR (First-Party Origin Telemetry)" \
+                  "------------------------------------------------------------------------" \
+                  "COMMANDS (Default window: 30d; pass DAYS e.g. 365 anywhere)" \
+                  "  radar [DAYS]            Newest (ref_apex -> URL) edge discoveries" \
+                  "  radar ai [DAYS]         Search & AI per-URL velocity + 7d delta" \
+                  "  radar ai top [DAYS]     Search & AI per-company velocity rollup" \
+                  "  radar links [DAYS]      Clickable web per-URL velocity + 7d delta" \
+                  "  radar links top [DAYS]  Clickable web per-domain velocity rollup" \
+                  "------------------------------------------------------------------------" \
+                  "METRICS DECODER (SQLite compound-key logs; zero SERP scraping)" \
+                  "  N / P / hum    Total hits | Unique daily IPs | Human browser hits" \
+                  "  /d & 7d=/d     Observed daily rate vs. last-7-day daily rate" \
+                  "  [+Δ/d]         7d acceleration (7d/d minus prior baseline /d)" \
+                  "  urls / days    Distinct landing URLs hit | Active referral days" \
+                  "========================================================================"
                 exit 0 ;;
               *)
                 if [[ "$1" =~ ^[0-9]+$ ]]; then py_args+=(--days "$1"); shift
