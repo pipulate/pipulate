@@ -406,6 +406,69 @@
           exec "$python_bin" "$root/scripts/pyprobe.py" "$@"
         '';
 
+        # THE `radar` COMMAND: Post-GSC Compound-Key referral discovery lens.
+        # `radar` shows 30d discoveries; `radar 365` sets lookback days; `radar links`
+        # filters to non-search/non-AI web pages (--links).
+        radarCommand = pkgs.writeShellScriptBin "radar" ''
+          set -euo pipefail
+          root="''${PIPULATE_ROOT:-$PWD}"
+          python_bin="$root/.venv/bin/python"
+          if [ ! -x "$python_bin" ]; then
+            echo "radar: missing $python_bin; enter the Pipulate Nix shell first." >&2
+            exit 1
+          fi
+          if [ "''${1:-}" = "links" ] || [ "''${1:-}" = "web" ]; then
+            shift
+            if [[ "''${1:-}" =~ ^[0-9]+$ ]]; then
+              days="$1"
+              shift
+              exec "$python_bin" "$root/scripts/markov.py" --radar --links --days "$days" "$@"
+            fi
+            exec "$python_bin" "$root/scripts/markov.py" --radar --links "$@"
+          fi
+          if [[ "''${1:-}" =~ ^[0-9]+$ ]]; then
+            days="$1"
+            shift
+            exec "$python_bin" "$root/scripts/markov.py" --radar --days "$days" "$@"
+          fi
+          exec "$python_bin" "$root/scripts/markov.py" --radar "$@"
+        '';
+
+        # THE `dots` COMMAND: Dual-Head Idea-Refinery Kata (Forward ! latest +
+        # Retrograde norma cones + ! markov Section 5 demand). `dots radar` prints
+        # the compact scoreboard; `dots raw` prints full seeds; bare `dots`
+        # compiles DOTS_PROMPT + DOTS_CHOP onto the OS clipboard.
+        dotsCommand = pkgs.writeShellScriptBin "dots" ''
+          set -euo pipefail
+          root="''${PIPULATE_ROOT:-$PWD}"
+          python_bin="$root/.venv/bin/python"
+          if [ ! -x "$python_bin" ]; then
+            echo "dots: missing $python_bin; enter the Pipulate Nix shell first." >&2
+            exit 1
+          fi
+          case "''${1:-}" in
+            radar|--radar)
+              shift
+              exec "$python_bin" "$root/scripts/articles/dots_extract.py" --radar "$@"
+              ;;
+            raw|--raw)
+              shift
+              exec "$python_bin" "$root/scripts/articles/dots_extract.py" "$@"
+              ;;
+            -h|--help|help)
+              printf "%s\n" \
+                "dots — Dual-Head Idea-Refinery Kata" \
+                "  dots              compile DOTS_PROMPT + DOTS_CHOP to clipboard (paste -> patch -> app)" \
+                "  dots radar        print compact scoreboard + Forward/Retrograde heads" \
+                "  dots raw          print full harvested idea blocks & Next-Step Prompts"
+              ;;
+            *)
+              cd "$root"
+              exec "$python_bin" "$root/prompt_foo.py" @DOTS_PROMPT --chop DOTS_CHOP --no-tree "$@"
+              ;;
+          esac
+        '';
+
         # OPERATION WEEBO (Planck-quanta media overlay commands):
         # - `weebo [name|path] [sec]` pops a 1:1 native-pixel, alpha-transparent
         #   overlay locally on Pipulate Prime and enrolls any explicit file path
@@ -1253,6 +1316,8 @@
           heal404Command               # 1-word iterative 404 healer + Honeybot Nginx RAM reload
           normaCommand                 # 1-word Norma Centroid Storytime backfill & plunger
           pyprobeCommand               # Tempered probe harness for bare `pyprobe '...'`
+          radarCommand                 # 1-word Post-GSC Compound-Key referral discovery radar
+          dotsCommand                  # 1-word Dual-Head Idea-Refinery Kata & clipboard compiler
           weeboCommand               # Local Operation Weebo native-pixel alpha overlay on Prime
           weebohCommand              # Deliberate remote Operation Weebo overlay on Honeybot :10.0
           weebolCommand              # List enrolled Operation Weebo shorthand assets

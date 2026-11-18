@@ -167,7 +167,8 @@ CASE_INSENSITIVE_TERMS = (
     ("Sunpugio", "Sun-pug-ee-oh"),
     ("SunPug", "Sun Pug"),
     ("DetSys", "Det Sys"),
-    ("Ahrefs", "H refs"),
+    ("Ahrefs", "A H refs"),
+    ("Semrush", "S E M rush"),
     ("360i", "three sixty eye"),
     ("SQLite", "S Q Lite"),
     ("FastHTML", "Fast H T M L"),
@@ -192,6 +193,8 @@ CASE_INSENSITIVE_TERMS = (
     ("ExaUser", "Exa User"),
     ("ClaudeBot", "Claude Bot"),
     ("ShapBot", "Shap Bot"),
+    ("AhrefsBot", "A H refs Bot"),
+    ("SemrushBot", "S E M rush Bot"),
     # Storytime & AI-Readiness ore terms
     ("Hilkhot Safrut", "Hil-kote Sah-froot"),
     ("Münchhausen", "Moonk-how-zen"),
