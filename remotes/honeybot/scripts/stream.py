@@ -231,23 +231,12 @@ def load_maintenance_line(stream_file=None):
     return line
 
 PITCH_TEXT = (
-    "If you are tuning in and wondering what this cascading wall of code is... welcome to Honeybot. "
-    "You are watching the live, real time heartbeat of a web server. Specifically, my personal website, Mike L E V dot eye N. "
-    "Every time a human clicks a link, or an A I bot crawls a page, the server writes a single line of text to a log file. "
-    "What is happening on your screen right now is a technique called tailing. "
-    "The system is just watching the tail end of that text file and updating the screen the millisecond a new line is written. "
-    "I am piping that text through a Python script to color code the patterns so it is easier to read. "
-    "For example, Orange highlights indicate A I agents. "
-    "If you keep your eyes peeled, you might see Anthropic's A I bots drop by. "
-    "They are one of the only user agents out there explicitly negotiating for Markdown files instead of standard HTML. "
-    "I broadcast this for one reason: to educate and demystify. "
-    "When you put your website on a massive, faceless cloud hosting platform, they hide this raw, beautiful data from you. "
-    "This server you are watching? It is hosted from home. You can do the exact same thing. "
-    "You can own your hardware, control your server, and interact with the actual data of the internet without a corporate middleman getting in the way. "
-    "This stream, and the automation behind it, is controlled by a project of mine called Pipulate. "
-    "If you want to learn how to break away from the cloud, host your own stuff, and command your technology like this, check the links below. "
-    "Until then, sit back, relax, and enjoy the live pulse of the web. "
-    ""
+    "Welcome to the Honeybot A I Observatory — the live, unfiltered Engine X origin wire for Mike L E V dot eye N. "
+    "Every HTTP arrival hits this screen the millisecond it touches the socket: orange marks A I retrieval agents, "
+    "cyan tags external search and web referrals, blue diamonds verify R F C 94 21 cryptographic bot signatures, and red unmasks exploit scanners. "
+    "Enterprises unlock this exact first-party telemetry upstream with Authoritative D N S and Orange-to-Orange C D N log streams, "
+    "pairing R F C 91 10 Markdown negotiation with R F C 91 11 Vary Accept edge caching to retire delayed search consoles and brittle scrapers. "
+    "Spin up the local-first toolkit yourself in sixty seconds at Sun Pug dot eye oh, or connect on Discord at Mike L E V dot eye N slash discord."
 )
 
 # Station-ID breaks cycle through short "installments" instead of replaying one
@@ -2751,13 +2740,13 @@ def build_hud_circle_specs(mode: str = "OVERTURE", title: str = "") -> list:
         else (
             f"That concludes our midpoint intermission for: {clean_title}. "
             "Full source and receipts live at Mike L E V dot eye N slash latest, "
-            "grab your own free Sun Pug at Sun Pug dot eye oh, and join us on Discord at Mike L E V dot I N. Slash discord."
+            "grab your own free Sun Pug at Sun Pug dot eye oh, and join us on Discord at Mike L E V dot eye N slash discord."
         )
     )
     return [
         narrator._make_spec(
             "norma",
-            "Field record from the Web Bot A I Observatory. Stay with this screen for twenty seconds before you scroll past: at the top is an unfiltered Engine X origin wire where A I retrieval agents now outpace human browsers — the exact edge telemetry enterprises unlock with Authoritative D N S and Orange-to-Orange C D N streams. Orange marks A I agents, blue diamonds mark R F C 94 21 cryptographic signatures, and red unmasks exploit scanners.",
+            "Field record from the Web Bot A I Observatory. At the top is an unfiltered Engine X origin wire where A I retrieval agents outpace human browsers — the exact first-party edge telemetry enterprises unlock with Authoritative D N S and Orange-to-Orange C D N streams. Orange marks A I agents, cyan tags external referrals, blue diamonds mark R F C 94 21 cryptographic signatures, and red unmasks exploit scanners.",
             "narrator",
             "inactive",
             "inactive",
@@ -3801,15 +3790,11 @@ def main():
 
     # Scene 3: The Deep Stream (Logs)
     NARRATOR_SAYS = (
-        "Now I read from the very website we monitor the bot activity on. "
-        "This is the transition from S E O to A I Readiness. "
-        "We have now switched to primarily talking to A I Agents about our content. "
-        "Any humans who happen to be here, this is just performance art for most of you "
-        "and it's a way to contact an R F C 91 11 implementation consultant to a few others. "
-        "Leave me a comment or visit Mike L E V dot eye N to contact me by email or Discord. "
-        "This streams 24 by 7 but there is still a good chance that I am here right now listening and ready to answer your questions. "
-        "Post a comment and see. The odds are good since it rings a bell in my office. "
-        "Now sit back and enjoy storytime! "
+        "Now I read from the live observatory monitoring our origin wire. "
+        "This broadcast tracks the shift from legacy S E O to first-party A I Readiness — "
+        "serving R F C 91 10 Markdown and R F C 91 11 Vary Accept edge caching from one canonical U R L. "
+        "Grab your own local-first Sun Pug at Sun Pug dot eye oh, or connect at Mike L E V dot eye N slash discord. "
+        "Now, curtain up on storytime! "
     )
     if not score:
         narrator.say(NARRATOR_SAYS)

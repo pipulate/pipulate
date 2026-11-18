@@ -99,7 +99,7 @@ STATION_SEGMENTS = [
         ("WINDOW", f"forest.py:{REPORT_WINDOW_CAP_SECONDS}:overview"),
         [
             "{LIVE_REPORT:overview}",
-            "Serving clean Markdown from the same canonical U R L via R F C 9111 Vary Accept gives A I agents primary signal without duplicate pages.",
+            "Serving clean Markdown from the same canonical U R L via R F C 9111 Vary Accept gives A I agents primary signal without duplicate pages — unlocked on any enterprise edge via Authoritative D N S and Orange-to-Orange streams.",
         ],
     ),
     [
