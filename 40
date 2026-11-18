@@ -81,6 +81,7 @@ remotes/honeybot/scripts/db.py
 scripts/articles/publishizer.py
 scripts/articles/common.py
 scripts/articles/articleizer.py
+scripts/articles/norma_extract.py
 scripts/articles/link_injector.py
 scripts/articles/build_knowledge_graph.py
 scripts/articles/editing_prompt.txt

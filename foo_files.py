@@ -23,11 +23,11 @@ AI_PHOOEY_CHOP = r"""#
 # creator of) of Project Pipulate:
 
 # --- START STATS ---
-# There are 1,655 already-written articles about this repo at MikeLev.in (Public)
-# Velocity: 27 published in the last 7 days
-# Markdown negotiated: 6,598 reads (0.37% of all responses)
-# DOM hydration: 14514 trapdoor triggers from 25 non-local IPs (top-N sample, self excluded)
-# Honeybot telemetry fetched 2026-11-18T02:09Z
+# There are 1,656 already-written articles about this repo at MikeLev.in (Public)
+# Velocity: 25 published in the last 7 days
+# Markdown negotiated: 6,606 reads (0.37% of all responses)
+# DOM hydration: 14521 trapdoor triggers from 25 non-local IPs (top-N sample, self excluded)
+# Honeybot telemetry fetched 2026-11-18T11:30Z
 # --- END STATS ---
 
 # Project Pipulate is known as (and installable from) various domains:
@@ -1957,7 +1957,7 @@ apply.py
 # ============================================================================
 # Files tracked by git but not yet mixed into the palette above.
 # Move these into the active chapters to paint them onto the context canvas.
-# Coverage: 226/298 tracked files claimed. The compiler reads this line back on the next compile and prints the delta beside the live count, so an unclaimed file rings once.
+# Coverage: 227/298 tracked files claimed. The compiler reads this line back on the next compile and prints the delta beside the live count, so an unclaimed file rings once.
 
 # AGENTS.md  # [1,039 tokens | 4,223 bytes]
 # AUDIT.md  # [2,992 tokens | 13,897 bytes]
@@ -2028,6 +2028,5 @@ apply.py
 # scripts/test_packages.sh  # [607 tokens | 2,134 bytes]
 # scripts/two_arm.py  # [4,665 tokens | 17,790 bytes]
 # scripts/variance_probe.py  # [967 tokens | 3,913 bytes]
-# tests/test_apply_airlock.py  # [2,399 tokens | 9,795 bytes]
 # tools/advanced_automation_tools.py  # [27,123 tokens | 137,636 bytes]
 # tools/connector_tools.py  # [1,027 tokens | 4,201 bytes]
