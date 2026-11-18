@@ -102,8 +102,8 @@ def _is_internal_artifact(topic: str) -> bool:
     return bool(_INTERNAL_FILE_RE.search(low))
 
 
-_REMOTE_REF_PY = """
-import datetime, json, re, sqlite3, sys
+_REMOTE_REF_PY = r"""
+import datetime, json, sqlite3, sys
 days, lim = int(sys.argv[1]), int(sys.argv[2])
 bkt_req = sys.argv[3] if len(sys.argv) > 3 else "all"
 db_p = sys.argv[4] if len(sys.argv) > 4 and sys.argv[4] else "/home/mike/www/mikelev.in/honeybot.db"
@@ -114,7 +114,7 @@ if not conn.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='re
 _AI_APEX = {"bing.com", "duckduckgo.com", "ddg.gg", "kagi.com", "baidu.com", "yahoo.com", "brave.com", "ecosia.org", "qwant.com", "sogou.com", "so.com", "naver.com", "seznam.cz", "mojeek.com", "startpage.com", "yep.com", "marginalia-search.com", "chatgpt.com", "openai.com", "claude.ai", "anthropic.com", "perplexity.ai", "you.com", "phind.com", "poe.com", "grok.com", "x.ai", "mistral.ai", "deepseek.com", "meta.ai", "genspark.ai", "exa.ai", "copilot.microsoft.com"}
 _SOCIAL_APEX = {"t.co", "x.com", "twitter.com", "lnkd.in", "linkedin.com", "facebook.com", "fb.com", "instagram.com", "threads.net", "youtube.com", "youtu.be", "pinterest.com", "tiktok.com", "msn.com", "live.com"}
 _NOISE_APEX = {"nip.io", "sslip.io", "verizon.net", "netcraft.com"}
-_BAD_REF_RE = re.compile(r"/wp-admin|/wp-login|xmlrpc\.php|/\.env", re.I)
+_BAD_REF_SUB = ("/wp-admin", "/wp-login", "xmlrpc.php", "/.env")
 today = datetime.date.today()
 cut = (today - datetime.timedelta(days=max(1, days))).isoformat()
 cut_7d = (today - datetime.timedelta(days=6)).isoformat()
@@ -133,10 +133,10 @@ edges, by_dom = [], {}
 for ap, dom, p_s, hits, hum, ips, h7, p_days, f_seen, f_ref, l_ref, s_ref in d_rows:
     a = (ap or "").lower()
     refs = [r for r in (f_ref, l_ref, s_ref) if r]
-    https_u = [u for u in refs if "://" in u and u.split(":", 1)[0].lower() in ("http", "https") and not _BAD_REF_RE.search(u)]
+    https_u = [u for u in refs if "://" in u and u.split(":", 1)[0].lower() in ("http", "https") and not any(b in u.lower() for b in _BAD_REF_SUB)]
     if not a:
         continue
-    if a in _AI_APEX or a.startswith(("google.", "yandex.", "yahoo.")) or ".google." in a or ".yandex." in a or ".yahoo." in a or "googlequicksearchbox" in a:
+    if a in _AI_APEX or a.startswith(("google.", "yandex.", "yahoo.", "baidu.")) or any(x in a for x in (".google.", ".yandex.", ".yahoo.", ".baidu.", "googlequicksearchbox")):
         bkt = "ai"
     elif a in _SOCIAL_APEX or a.startswith(("com.", "org.", "net.")):
         bkt = "social"
