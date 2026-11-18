@@ -845,6 +845,19 @@ def _ruff_undefined_name_error(code: str, is_pyprobe: bool = False) -> str | Non
     return None
 
 
+def _local_module_attr_error(code: str, is_pyprobe: bool = False) -> str | None:
+    p = os.path.join(os.path.dirname(os.path.abspath(__file__)), "scripts", "pyprobe.py")
+    if not os.path.isfile(p):
+        return None
+    mod = sys.modules.get("_pyprobe_guard")
+    if mod is None:
+        import importlib.util as _ilu
+        spec = _ilu.spec_from_file_location("_pyprobe_guard", p)
+        mod = sys.modules.setdefault("_pyprobe_guard", _ilu.module_from_spec(spec))
+        spec.loader.exec_module(mod)
+    return mod.check_local_module_attrs(code, is_pyprobe=is_pyprobe, label="pyprobe" if is_pyprobe else "python -c")
+
+
 def _check_probe_command(cmd: str) -> str | None:
     """Return an error description if a '! ' probe uses a bash loop, invalid syntax, or F821 undefined names."""
     import ast
@@ -886,9 +899,9 @@ def _check_probe_command(cmd: str) -> str | None:
                 ast.parse(code)
             except SyntaxError as e:
                 return f"{label} SyntaxError: {e.msg} (line {e.lineno}, offset {e.offset})"
-            undef_err = _ruff_undefined_name_error(code, is_pyprobe=is_pyprobe)
-            if undef_err:
-                return undef_err
+            err = _ruff_undefined_name_error(code, is_pyprobe=is_pyprobe) or _local_module_attr_error(code, is_pyprobe=is_pyprobe)
+            if err:
+                return err
     return None
 
 
