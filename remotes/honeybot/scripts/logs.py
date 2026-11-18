@@ -21,7 +21,7 @@ from textual import work
 from rich.text import Text
 from rich.console import Console
 
-from db import db, KNOWN_BOTS  # Import the list
+from db import db, KNOWN_BOTS, normalize_external_referrer  # Import the list
 
 # --- Configuration ---
 STRIP_MOZILLA_PREFIX = False  # Set to True to save space in bottom panels
@@ -1822,12 +1822,15 @@ class SonarApp(App):
 
                         clean_sig = self.clean_sig_agent(data.get('sig'))
                         is_pirate_req = self.detect_pirate_probe(clean_path, int(data['status']), data.get('ua'))
+                        raw_ref = data.get('referrer')
+                        norm_ext = normalize_external_referrer(raw_ref, raw_path) if (not raw_ref or raw_ref == '-') else None
+                        eff_referrer = norm_ext[0] if norm_ext else raw_ref
                         db.log_request(
                             ip=data['ip'],
                             ua=data['ua'],
                             path=clean_path,
                             status=int(data['status']),
-                            referrer=data.get('referrer'),
+                            referrer=eff_referrer,
                             accept=data.get('accept'),
                             served_md=data.get('md'),
                             host=data.get('host') or 'mikelev.in',
@@ -1967,6 +1970,10 @@ class SonarApp(App):
             if ref_tag in path:
                 text.append(f"[REF:{ref_label}] ", style="bold white on magenta")
                 break
+        if not is_pirate:
+            ext_ref = normalize_external_referrer(data.get('referrer'), path)
+            if ext_ref:
+                text.append(f"[EXT:{ext_ref[1]}] ", style="bold black on bright_cyan")
         text.append(f"{method:4} ", style="bold")
         text.append(f"{path} ", style=path_style)
         text.append(f"[{status}] ", style=status_style)

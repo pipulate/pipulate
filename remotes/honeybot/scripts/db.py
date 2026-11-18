@@ -3,6 +3,7 @@ import sqlite3
 import datetime
 import json
 from pathlib import Path
+from urllib.parse import parse_qsl, urlencode, urlsplit
 
 
 INTEL_PATH = Path(__file__).resolve().parent / "bot_intel.json"
@@ -12,6 +13,63 @@ with open(INTEL_PATH, "r") as f:
 
 # Shared Intelligence automatically generated from JSON
 KNOWN_BOTS = list(BOT_INTEL["seen"].keys())
+
+INTERNAL_DOMAINS = frozenset({
+    "mikelev.in", "pipulate.com", "pipulate.org", "npvg.org", "lpvg.org", "qamy.ai",
+    "levinix.org", "levinix.com", "levinux.com", "sunpug.io", "guerillatech.com",
+    "rfc9110.org", "rfc9110.com", "rfc9110.io", "rfc9111.io", "rfc9111.com", "rfc9111.org",
+    "mike-levin.com", "mikelevinseo.com",
+})
+_ALLOWED_REF_QUERY_KEYS = frozenset({"id", "v", "q", "query", "t", "topic", "thread", "item"})
+_STATIC_SUBRESOURCE_RE = re.compile(
+    r"(?:^/api/telemetry/js_confirm\.gif$|\.(?:css|js|mjs|map|png|jpe?g|gif|svg|webp|ico|woff2?|ttf|eot)(?:$|\?))",
+    re.IGNORECASE,
+)
+_PIRATE_TARGET_RE = re.compile(
+    r"(?:/wp-(?:admin|login|content|includes)|/xmlrpc\.php|/\.(?:env|git|aws)|/phpmyadmin|\.(?:php[0-9]?|asp|aspx|jsp|cgi|env|sql|bak)(?:$|\?|/))",
+    re.IGNORECASE,
+)
+
+
+def _is_internal_or_invalid_host(host: str) -> bool:
+    h = (host or "").strip().lower().rstrip(".").removeprefix("www.")
+    if not h or h == "localhost" or h.endswith(".local") or ":" in h or "." not in h or re.match(r"^\d+(?:\.\d+)+$", h):
+        return True
+    return any(h == d or h.endswith("." + d) for d in INTERNAL_DOMAINS)
+
+
+def normalize_external_referrer(referrer: str | None, raw_path: str = "") -> tuple[str, str] | None:
+    """Return (canonical_referrer, ref_host) for external referrals, or None for internal/noise."""
+    raw = (referrer or "").replace(r"\x22", "").strip().strip('"').strip()
+    if raw.lower().startswith("utm:"):
+        src = raw[4:].strip().lower().rstrip(".").removeprefix("www.")
+        if re.match(r"^[a-z0-9._-]{2,80}$", src) and not ("." in src and _is_internal_or_invalid_host(src)):
+            return f"utm:{src}", src
+        return None
+    if not raw or raw == "-":
+        if "?" in (raw_path or ""):
+            for k, v in parse_qsl(raw_path.split("?", 1)[1], keep_blank_values=False):
+                if k.lower() == "utm_source":
+                    return normalize_external_referrer(f"utm:{v}", "")
+        return None
+    if raw.lower().startswith("android-app://"):
+        pkg = raw[14:].split("/", 1)[0].strip().lower()
+        return (f"android-app://{pkg}", pkg) if re.match(r"^[a-z0-9_]+(?:\.[a-z0-9_]+)+$", pkg) else None
+    try:
+        parts = urlsplit(raw)
+    except ValueError:
+        return None
+    host = (parts.hostname or "").strip().lower().rstrip(".").removeprefix("www.")
+    if parts.scheme.lower() not in ("http", "https") or _is_internal_or_invalid_host(host):
+        return None
+    clean_p = re.sub(r"/{2,}", "/", parts.path or "/")
+    clean_p = clean_p if clean_p.startswith("/") else "/" + clean_p
+    kept_q = [(k.lower(), v.strip()[:80]) for k, v in parse_qsl(parts.query, keep_blank_values=False) if k.lower() in _ALLOWED_REF_QUERY_KEYS and v.strip()]
+    if (host.startswith("google.") or ".google." in host) and clean_p in ("/url", "/search") and not kept_q:
+        clean_p = "/"
+    clean_p = clean_p.rstrip("/") if len(clean_p) > 1 and clean_p.endswith("/") else clean_p
+    canon = f"https://{host}{clean_p}" + (f"?{urlencode(kept_q)}" if kept_q else "")
+    return canon[:200], host
 
 # The single file that holds the truth
 DB_PATH = Path("/home/mike/www/mikelev.in/honeybot.db")
@@ -195,12 +253,79 @@ class HoneyDB:
         cur.execute("CREATE INDEX IF NOT EXISTS idx_daily_logs_path_id ON daily_logs(path_id)")
         cur.execute("CREATE INDEX IF NOT EXISTS idx_daily_logs_ua_id ON daily_logs(ua_id)")
         cur.execute("CREATE INDEX IF NOT EXISTS idx_telemetry_served_md ON telemetry(served_md, accept_id, path_id)")
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS external_referrers (
+                referrer TEXT PRIMARY KEY,
+                ref_host TEXT NOT NULL,
+                first_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                last_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS referrer_daily_logs (
+                date TEXT NOT NULL,
+                referrer TEXT NOT NULL,
+                domain_id INTEGER NOT NULL,
+                path_id INTEGER NOT NULL,
+                count INTEGER DEFAULT 1,
+                human_count INTEGER DEFAULT 0,
+                bot_count INTEGER DEFAULT 0,
+                last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (date, referrer, domain_id, path_id),
+                FOREIGN KEY(referrer) REFERENCES external_referrers(referrer),
+                FOREIGN KEY(domain_id) REFERENCES domains(id),
+                FOREIGN KEY(path_id) REFERENCES paths(id)
+            )
+        """)
         cur.execute("CREATE INDEX IF NOT EXISTS idx_rfc9421_logs_ua_id ON rfc9421_logs(ua_id)")
         cur.execute("CREATE INDEX IF NOT EXISTS idx_pirate_logs_ip_id ON pirate_logs(ip_id)")
+        cur.execute("CREATE INDEX IF NOT EXISTS idx_external_referrers_host ON external_referrers(ref_host)")
+        cur.execute("CREATE INDEX IF NOT EXISTS idx_referrer_daily_date_path ON referrer_daily_logs(date, path_id)")
 
         conn.commit()
         self.backfill_rfc9421_from_access_log()
         self.backfill_dns_audit()
+        self.backfill_external_referrers()
+
+    def backfill_external_referrers(self):
+        """One-time idempotent backfill of external_referrers & referrer_daily_logs from telemetry."""
+        try:
+            conn = self.get_conn()
+            cur = conn.cursor()
+            if (cur.execute("SELECT COUNT(*) FROM external_referrers").fetchone() or [0])[0] > 0:
+                return
+            rows = cur.execute("SELECT id, value FROM referrers WHERE value IS NOT NULL AND value != '-' AND value != ''").fetchall()
+            valid_refs = {int(rid): norm for rid, rval in rows if (norm := normalize_external_referrer(rval)) is not None}
+            if not valid_refs:
+                return
+            dom_id = self._get_or_create_id("domains", "mikelev.in")
+            ref_ids, agg_daily, ref_bounds = list(valid_refs), {}, {}
+            for idx in range(0, len(ref_ids), 400):
+                chunk = ref_ids[idx : idx + 400]
+                sql = f"""
+                    SELECT t.date, t.referrer_id, t.path_id, p.value, ua.value, SUM(t.count)
+                    FROM telemetry t JOIN paths p ON t.path_id = p.id
+                    JOIN user_agents ua ON t.ua_id = ua.id JOIN ips i ON t.ip_id = i.id
+                    WHERE t.referrer_id IN ({','.join('?' for _ in chunk)})
+                      AND i.value NOT LIKE '127.%' AND i.value NOT LIKE '10.%' AND i.value NOT LIKE '192.168.%'
+                      AND t.path_id IN (SELECT DISTINCT path_id FROM daily_logs WHERE status BETWEEN 200 AND 299)
+                    GROUP BY t.date, t.referrer_id, t.path_id, ua.id
+                """
+                for d_str, rid, pid, p_val, ua_val, cnt in cur.execute(sql, chunk).fetchall():
+                    if _STATIC_SUBRESOURCE_RE.search(p_val or "") or _PIRATE_TARGET_RE.search(p_val or ""):
+                        continue
+                    canon_ref, r_host = valid_refs[int(rid)]
+                    c, is_hum = int(cnt or 0), self.is_likely_human_ua(ua_val)
+                    b_cur = ref_bounds.get(canon_ref)
+                    ref_bounds[canon_ref] = (r_host, min(b_cur[1], d_str) if b_cur else d_str, max(b_cur[2], d_str) if b_cur else d_str)
+                    k = (d_str, canon_ref, dom_id, int(pid))
+                    prev = agg_daily.get(k, (0, 0, 0))
+                    agg_daily[k] = (prev[0] + c, prev[1] + (c if is_hum else 0), prev[2] + (0 if is_hum else c))
+            conn.executemany("INSERT OR IGNORE INTO external_referrers (referrer, ref_host, first_seen, last_seen) VALUES (?, ?, ?, ?)", [(r, h, f_dt, l_dt) for r, (h, f_dt, l_dt) in ref_bounds.items()])
+            conn.executemany("INSERT OR REPLACE INTO referrer_daily_logs (date, referrer, domain_id, path_id, count, human_count, bot_count) VALUES (?, ?, ?, ?, ?, ?, ?)", [(d, r, dm, p, tot, hum, bot) for (d, r, dm, p), (tot, hum, bot) in agg_daily.items()])
+            conn.commit()
+        except Exception:
+            pass
 
     def verify_fcrdns_ip(self, ip_str, ua_str):
         """Verify Forward-Confirmed Reverse DNS (FCrDNS) for major crawlers (Googlebot, bingbot, Applebot)."""
@@ -403,9 +528,54 @@ class HoneyDB:
             """
             conn.execute(sql_pirate, (date_str, ip_id, ua_id, path_id, dom_id_p, int(status)))
 
+        # 7. Handle Normalized External Referrer Sidecar (Post-GSC HitTail Ledger)
+        if not is_pirate and 200 <= int(status) < 300 and not _STATIC_SUBRESOURCE_RE.search(path or ""):
+            norm_ref = normalize_external_referrer(referrer, path or "")
+            if norm_ref is not None:
+                canon_ref, ref_host = norm_ref
+                dom_id_r = self._get_or_create_id("domains", (host or "mikelev.in").lower().strip())
+                is_hum = 1 if self.is_likely_human_ua(ua) else 0
+                conn.execute("INSERT INTO external_referrers (referrer, ref_host) VALUES (?, ?) ON CONFLICT(referrer) DO UPDATE SET last_seen = CURRENT_TIMESTAMP", (canon_ref, ref_host))
+                conn.execute(
+                    """
+                    INSERT INTO referrer_daily_logs (date, referrer, domain_id, path_id, count, human_count, bot_count)
+                    VALUES (?, ?, ?, ?, 1, ?, ?)
+                    ON CONFLICT(date, referrer, domain_id, path_id) DO UPDATE SET
+                        count = count + 1, human_count = human_count + excluded.human_count,
+                        bot_count = bot_count + excluded.bot_count, last_updated = CURRENT_TIMESTAMP
+                    """,
+                    (date_str, canon_ref, dom_id_r, path_id, is_hum, 1 - is_hum),
+                )
+
         conn.commit()
         if ua and ("Googlebot" in ua or "bingbot" in ua.lower() or "Applebot" in ua):
             self.verify_fcrdns_ip(ip, ua)
+
+    def is_likely_human_ua(self, ua_str: str | None) -> bool:
+        """True when User-Agent matches a standard interactive browser rather than a bot or CLI client."""
+        s = (ua_str or "").strip()
+        if not s or "HeadlessChrome" in s or "Google-InspectionTool" in s or "Nexus 5X" in s or self._detect_rollup_key(s) is not None:
+            return False
+        return s.startswith("Mozilla/5.0 ") and any(k in s for k in ("AppleWebKit", "Gecko", "Windows NT", "Macintosh", "X11", "Android", "iPhone", "iPad"))
+
+    def get_external_referrals(self, days: int = 30, limit: int = 50, humans_only: bool = False):
+        """Return (referrer, ref_host, domain, path, hits, human_hits, bot_hits, first_seen, last_seen)."""
+        cutoff = (datetime.date.today() - datetime.timedelta(days=max(1, int(days)))).isoformat()
+        hum_clause = "AND rdl.human_count > 0" if humans_only else ""
+        sql = f"""
+            SELECT er.referrer, er.ref_host, d.value, p.value,
+                   SUM(rdl.count) as hits, SUM(rdl.human_count), SUM(rdl.bot_count),
+                   er.first_seen, er.last_seen
+            FROM referrer_daily_logs rdl
+            JOIN external_referrers er ON rdl.referrer = er.referrer
+            JOIN domains d ON rdl.domain_id = d.id
+            JOIN paths p ON rdl.path_id = p.id
+            WHERE rdl.date >= ? {hum_clause}
+            GROUP BY rdl.referrer, rdl.domain_id, rdl.path_id
+            ORDER BY hits DESC
+            LIMIT ?
+        """
+        return self.get_conn().execute(sql, (cutoff, int(limit))).fetchall()
 
     def get_rfc9421_summary(self):
         """Return (distinct_sig_agents, total_signed_events) from rfc9421_logs."""
