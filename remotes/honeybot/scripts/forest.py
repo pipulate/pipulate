@@ -99,7 +99,7 @@ STATION_SEGMENTS = [
         ("WINDOW", f"forest.py:{REPORT_WINDOW_CAP_SECONDS}:overview"),
         [
             "{LIVE_REPORT:overview}",
-            "Serving clean Markdown from the same canonical U R L via R F C 9111 Vary Accept gives A I agents primary signal without duplicate pages — read the long-form articles at MikeLev.in, and grab the A I-Readiness tools at SunPug.io.",
+            "Serving clean Markdown from the same canonical U R L via R F C 9111 Vary Accept gives A I agents primary signal without duplicate pages — unlocked on any enterprise edge via Authoritative D N S and Orange-to-Orange streams.",
         ],
     ),
     [
@@ -107,7 +107,7 @@ STATION_SEGMENTS = [
             "CARD",
             {
                 "label": "911 LLM\nOPTICS",
-                "say": "Live audit showcase: 911 L L M Optics, our local-first A I-Readiness spectrometer at SunPug.io.",
+                "say": "Live audit showcase: 911 L L M Optics, our local-first sixteen-lens wire-truth spectrometer.",
             },
         ),
         ("OPTICS_SLOT", {"handshake_wait": 12.0, "claim_grace": 40.0, "timeout": 180.0}),
@@ -118,7 +118,7 @@ STATION_SEGMENTS = [
         ("WINDOW", f"forest.py:{REPORT_WINDOW_CAP_SECONDS}:bimodal"),
         [
             "{LIVE_REPORT:bimodal}",
-            "Read the long-form wire-truth articles at MikeLev.in, and grab the A I-Readiness tools with curl pipe less at SunPug.io.",
+            "An eight-hundred-millisecond image beacon inside client-side JavaScript separates true headless browser renderers from raw H T M L scrapers right in the origin log.",
         ],
     ),
 ]
