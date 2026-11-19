@@ -2618,25 +2618,68 @@ def _media_overlay_active() -> bool:
 _active_article_meta = {}
 
 
-def show_card(label, max_hold=60.0, subtitle=""):
+TITTLE_BUMPER_LABEL = "SUNPUG.IO &\nMIKELEV.IN"
+MIN_TITTLE_BUMPER_GAP_SEC = 30.0
+TITTLE_BUMPER_LINES = (
+    "Long-form articles at MikeLev.in. A I-Readiness tools at SunPug.io.",
+    "Read the full book at MikeLev.in. Grab the free tools at SunPug.io.",
+    "Deep-dive essays at MikeLev.in. Self-replicating tools at SunPug.io.",
+)
+_last_tittle_bumper_mono = 0.0
+_cues_since_tittle_bumper = 99
+_tittle_bumper_rot = 0
+_card_settle_deadlines = {}
+
+def _record_non_bumper_cue(count: int = 1) -> None:
+    global _cues_since_tittle_bumper
+    _cues_since_tittle_bumper += max(1, int(count))
+
+def can_play_tittle_bumper(now_mono: float = None, min_gap_sec: float = MIN_TITTLE_BUMPER_GAP_SEC, min_cues: int = 2) -> bool:
+    if _last_tittle_bumper_mono <= 0.0:
+        return True
+    now_val = time.monotonic() if now_mono is None else float(now_mono)
+    return (now_val - _last_tittle_bumper_mono) >= float(min_gap_sec) and _cues_since_tittle_bumper >= int(min_cues)
+
+def mark_tittle_bumper_played(now_mono: float = None) -> None:
+    global _last_tittle_bumper_mono, _cues_since_tittle_bumper
+    _last_tittle_bumper_mono = time.monotonic() if now_mono is None else float(now_mono)
+    _cues_since_tittle_bumper = 0
+
+def maybe_play_tittle_bumper(env, profile_dir, slot: str = "bumper", say_override: str = None) -> bool:
+    global _tittle_bumper_rot
+    if _shutting_down.is_set() or has_pending_update() or not can_play_tittle_bumper():
+        return False
+    say_line = TITTLE_BUMPER_LINES[_tittle_bumper_rot % len(TITTLE_BUMPER_LINES)] if say_override is None else str(say_override)
+    if say_override is None:
+        _tittle_bumper_rot += 1
+    dispatch_cue("CARD", {"label": TITTLE_BUMPER_LABEL, "pace": "fast", "say": say_line, "duration": 12.0, "linger": 0.25}, env, profile_dir, pace_say=True)
+    return True
+
+def show_card(label, max_hold=60.0, subtitle="", pace="standard"):
     """Display a transient Figlet title card (with optional full-headline subtitle) until dismiss_card(handle)."""
     if not label:
         return None
     for pat in (MEDIA_OVERLAY_MARKER, "conjure_window_overlay", "patronus_visual_shield"):
-        try:
-            subprocess.run(["pkill", "-f", pat], check=False)
-        except Exception:
-            pass
+        subprocess.run(["pkill", "-f", pat], check=False)
     global _card_seq
     _card_seq += 1
     stop_file = f"/tmp/honeybot_card_{os.getpid()}_{_card_seq}.stop"
-    if os.path.exists(stop_file):
-        try:
-            os.remove(stop_file)
-        except OSError:
-            pass
+    Path(stop_file).unlink(missing_ok=True)
     label_str = str(label).replace("\\n", "\n")
     sub_str = str(subtitle or "").replace("\\n", "\n").strip()
+    pace_str = str(pace or "standard").strip().lower() or "standard"
+    if not sub_str:
+        try:
+            site_root = Path(__file__).resolve().parents[1]
+            if str(site_root) not in sys.path:
+                sys.path.insert(0, str(site_root))
+            from imports.ascii_displays import has_tittle_drop, tittle_min_hold_seconds
+            if has_tittle_drop(label_str):
+                min_join = tittle_min_hold_seconds(pace=pace_str) + 0.65
+                _card_settle_deadlines[stop_file] = time.monotonic() + min_join
+                max_hold = max(float(max_hold), min_join + 1.0)
+        except Exception:
+            pass
 
     def _run():
         try:
@@ -2673,7 +2716,7 @@ def show_card(label, max_hold=60.0, subtitle=""):
                     display=os.environ.get("DISPLAY") or ":10.0",
                 )
             else:
-                conjure_window("card.py", duration=max_hold, args=[label_str, str(max_hold), stop_file])
+                conjure_window("card.py", duration=max_hold, args=[label_str, str(max_hold), stop_file, pace_str])
         except Exception:
             pass
 
@@ -2694,8 +2737,10 @@ def dismiss_card(handle):
                 f.write("done\n")
         except OSError:
             pass
+    settle_until = float(_card_settle_deadlines.pop(stop_file, 0.0)) if stop_file else 0.0
     if th:
-        th.join(timeout=1.0)
+        rem_settle = max(0.0, settle_until - time.monotonic())
+        th.join(timeout=max(1.2, rem_settle + 1.0))
     if stop_file and os.path.exists(stop_file):
         try:
             os.remove(stop_file)
@@ -2833,14 +2878,10 @@ def run_hud_circle_tour(mode: str, content, env, profile_dir) -> None:
     narrator.exclusive_mode.set()
     try:
         if clean_mode == "INTERMISSION":
-            dispatch_cue(
-                "CARD",
-                {"label": "MIDPOINT\nINTERMISSION", "say": "Midpoint intermission.", "duration": 10.0, "linger": 0.4},
-                env,
-                profile_dir,
-                pace_say=True,
-            )
+            maybe_play_tittle_bumper(env, profile_dir, slot="pre_intermission")
+            dispatch_cue("CARD", {"label": "MIDPOINT\nINTERMISSION", "say": "Midpoint intermission.", "duration": 10.0, "linger": 0.4}, env, profile_dir, pace_say=True)
         specs = build_hud_circle_specs(mode=clean_mode, title=title)
+        _record_non_bumper_cue(len(specs))
         for spec in specs:
             if has_pending_update():
                 break
@@ -2968,6 +3009,8 @@ def dispatch_cue(command, content, env, profile_dir, pace_say=True):
         sleep here -- run_station_break brackets the bead with interrupt() and
         queue.join() so a report WINDOW can overlap the spiel in real voice-time.
     """
+    if command not in ("CARD", "BUMPER", "WAIT", "BGM", "CLOSE"):
+        _record_non_bumper_cue()
     if command == "SAY":
         if isinstance(content, str) and "{CURRENT_ARTICLE}" in content:
             content = content.replace("{CURRENT_ARTICLE}", resolve_current_article_line())
@@ -3048,8 +3091,10 @@ def dispatch_cue(command, content, env, profile_dir, pace_say=True):
         narrator.queue.join()
         if "STORYTIME" in str(label or "").upper() and not narrator.live_operator_mode.is_set():
             narrator.reset_for_article()
+        pace = str(content.get("pace") or "standard") if isinstance(content, dict) else "standard"
+        is_tittle_card = "SUNPUG.IO" in str(label or "").upper() and "MIKELEV.IN" in str(label or "").upper()
         raw_path = pre_raw if pre_raw is not None else (narrator.prep_raw(say_text) if say_text else None)
-        card_handle = show_card(label, max_hold=hold, subtitle=subtitle)
+        card_handle = show_card(label, max_hold=hold, subtitle=subtitle, pace=pace)
         try:
             time.sleep(0.2)
             if say_text:
@@ -3061,6 +3106,10 @@ def dispatch_cue(command, content, env, profile_dir, pace_say=True):
                 time.sleep(min(hold, max(2.5, linger)))
         finally:
             dismiss_card(card_handle)
+            if is_tittle_card:
+                mark_tittle_bumper_played()
+            else:
+                _record_non_bumper_cue()
 
     elif command == "VISIT":
         narrator.reset_for_article()
@@ -3092,6 +3141,10 @@ def dispatch_cue(command, content, env, profile_dir, pace_say=True):
         else:
             start_storytime_bgm()
 
+    elif command == "BUMPER":
+        slot_lbl = content.get("slot", "bumper") if isinstance(content, dict) else str(content or "bumper")
+        say_ov = content.get("say") if isinstance(content, dict) else None
+        maybe_play_tittle_bumper(env, profile_dir, slot=slot_lbl, say_override=say_ov)
     elif command == "OVERTURE":
         run_hud_circle_tour(command, content, env, profile_dir)
     elif command == "INTERMISSION":
@@ -3356,6 +3409,7 @@ def run_station_break(env, profile_dir):
     _in_no_max_zone = True
     narrator.exclusive_mode.set()
     try:
+        maybe_play_tittle_bumper(env, profile_dir, slot="pre_report")
         for cue_command, cue_content in bead:
             if has_pending_update() or _shutting_down.is_set():
                 break
