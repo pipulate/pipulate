@@ -217,6 +217,21 @@ def _materialize_declared_slot(wallet, slot_name, write=True):
     return declared
 
 
+_SLOT_ALIASES = {'email': 'gmail'}
+_STARTER_SLOTS = ('gmail', 'gsc', 'sheets', 'confluence', 'jira', 'slack')
+
+
+def _split_slot_account(slot_name, account=None):
+    """Normalize slot aliases ('email' -> 'gmail') and 'email:alias' shorthand."""
+    if not slot_name:
+        return None, account
+    if not slot_name.startswith(('http://', 'https://')) and ':' in slot_name:
+        head, tail = slot_name.split(':', 1)
+        if _SLOT_ALIASES.get(head, head) == 'gmail':
+            return 'gmail', (account or tail or None)
+    return _SLOT_ALIASES.get(slot_name, slot_name), account
+
+
 def load_wallet():
     """Read connectors.json (names and paths only).
 
@@ -235,39 +250,16 @@ def load_wallet():
     """
     path = Path(WALLET_PATH).expanduser()
     if not path.exists():
-        # SEED, DON'T LECTURE (2026-09-16). The old card told a stranger to
-        # hand-author JSON in vim; this writes a starter for them instead --
-        # one vendor bearer slot, no token -- so the next `warm vendor` has a
-        # slot to fill. THE URL RIDES IN THE `env` DESCRIPTION, NEVER IN
-        # `defaults`: the README's flake hydrator EXPORTS an env-kind slot's
-        # `defaults` entries as environment variables, so a URL parked in
-        # defaults.VENDOR_API_TOKEN would become the token's VALUE and poison
-        # it. The `env` block is documentation-as-data, never exported, and
-        # _warm_env already prints it under the prompt -- the safe channel.
-        botify_slot = _declared_auth_slot("botify")
-        if botify_slot is None:
-            die("connectors/botify.py declares no AUTH_SLOT; "
-                "cannot seed the starter wallet")
-        seed = {"botify": botify_slot}
+        seed = {}
+        for sname in _STARTER_SLOTS:
+            decl = _declared_auth_slot(sname)
+            if isinstance(decl, dict):
+                seed[sname] = decl
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(seed, indent=2) + "\n", encoding='utf-8')
-        print(f"# Starter wallet created at {path}")
-        print("#")
-        print("# It has one slot -- botify -- with no token yet. To fill it:")
-        print("#")
-        print("#   python connectors/wallet.py warm botify")
-        print("#")
-        print("# That prompts for your Botify API token (get one at")
-        print("# https://app.botify.com/account), saves it to ~/.config/pipulate/.env")
-        print("# (0600, never in git), and confirms. Press Enter with no token to")
-        print("# skip -- the slot waits, empty, until you come back to warm it.")
-        print("#")
-        print("# Then `python connectors/wallet.py check` plays the live")
-        print("# red/green board -- green means the service accepted the credential")
-        print("# just now, not merely that a token exists.")
-        print("#")
-        print("# The slot name is yours; `auth` is one of six kinds (bearer_token")
-        print("# here). See connectors/README.md for the other five.")
+        print(f"# Starter wallet created at {path} ({len(seed)} slot(s): {', '.join(seed)})")
+        print("# Warm a slot (e.g. Gmail / email):  warm email")
+        print("# Live red/green check board:        python connectors/wallet.py check")
         return seed
     try:
         return json.loads(path.read_text(encoding='utf-8'))
@@ -535,9 +527,10 @@ def scoreboard(wallet, max_items, stale_days):
 # login -- mints OAuth by reusing the connector's own walk; for every other
 # kind it NAMES how that kind is warmed instead of pretending it can mint.
 # ---------------------------------------------------------------------------
-def login(slot_name, stale_days):
+def login(slot_name, stale_days, account=None, from_warm=False):
+    slot_name, account = _split_slot_account(slot_name, account)
     if not slot_name:
-        die("Usage: wallet.py login <slot>   (e.g. wallet.py login gmail)\n"
+        die("Usage: wallet.py login <slot> [account]   (e.g. wallet.py login email)\n"
             "Run the bare scoreboard to see every slot, its kind, and state.")
 
     wallet = load_wallet()
@@ -611,7 +604,11 @@ def login(slot_name, stale_days):
             "reuse; refusing to re-implement its OAuth flow here.")
 
     try:
-        get_service()  # refresh headlessly, or browser-mint on a TTY
+        warm_fn = getattr(mod, 'warm_or_switch', None)
+        if callable(warm_fn) and (from_warm or account):
+            warm_fn(account=account)
+        else:
+            get_service()  # refresh headlessly, or browser-mint on a TTY
     except SystemExit:
         raise
     except Exception as e:
@@ -689,13 +686,14 @@ def _save_env(name, value):
     _dotenv_names._cache = None  # the board must re-read what we just wrote
 
 
-def _warm_oauth(name, stale_days, assume_yes):
+def _warm_oauth(name, stale_days, assume_yes, account=None):
     """Reuse login() verbatim. SystemExit is caught so one failed slot cannot
     abort the walk over the rest of the board."""
-    if not _confirm(f"  mint/refresh OAuth for '{name}' (may open a browser)?", assume_yes):
+    tgt = f"'{name}' ({account})" if account else f"'{name}'"
+    if not _confirm(f"  mint/switch/refresh OAuth for {tgt} (may open a browser)?", assume_yes):
         return 'skipped'
     try:
-        login(name, stale_days)
+        login(name, stale_days, account=account, from_warm=True)
     except SystemExit as e:
         return f"login aborted (exit {e.code}) -- see its message above"
     return 'oauth walk finished'
@@ -928,7 +926,7 @@ def _warm_url(url, stale_days, assume_yes=False, dry_run=False):
     print(f"#       {json.dumps(slot)[1:-1]}")
 
 
-def warm(slot_name, stale_days, assume_yes=False, dry_run=False):
+def warm(slot_name, stale_days, assume_yes=False, dry_run=False, account=None):
     """Walk every not-filled slot (or just one) and actually warm it.
 
     AN ADDRESS IS NOT A SLOT NAME. Anything with a scheme or a dot in it
@@ -936,6 +934,7 @@ def warm(slot_name, stale_days, assume_yes=False, dry_run=False):
     address; the wallet is neither consulted nor written. Checked first so
     the "No slot" die() below cannot fire at a URL that was never a slot.
     """
+    slot_name, account = _split_slot_account(slot_name, account)
     if slot_name and ('://' in slot_name or '.' in slot_name):
         return _warm_url(slot_name, stale_days, assume_yes, dry_run)
     wallet = load_wallet()
@@ -993,7 +992,7 @@ def warm(slot_name, stale_days, assume_yes=False, dry_run=False):
         print("\n" + "-" * 70)
         print(f"{_MARK.get(state, '[?]')} {n}  ({_KIND_LABEL.get(kind, kind)}, was {state})")
         if kind == _OAUTH_KIND:
-            note = _warm_oauth(n, stale_days, assume_yes)
+            note = _warm_oauth(n, stale_days, assume_yes, account=account)
         elif kind in _ENV_KINDS:
             note = _warm_env(n, c, assume_yes, force=bool(slot_name))
         elif kind == _BROWSER_KIND:
@@ -1429,18 +1428,19 @@ def main():
     parser.add_argument('--stale-days', type=int, default=7,
                         help='mtime age (days) above which oauth/browser slots '
                              'read stale (default: 7 -- the Testing-mode cliff).')
+    parser.add_argument('account', nargs='?', default=None,
+                        help="optional account alias/email for oauth slots "
+                             "(e.g. 'warm email personal' or 'warm email work').")
     args = parser.parse_args()
 
     if args.command in (None, 'scoreboard', 'status'):
         scoreboard(load_wallet(), args.max, args.stale_days)
     elif args.command in ('check', 'board'):
-        # GOLD is the ONLY exit-0 condition, so "green all the way down" is a
-        # machine-checkable claim and not merely a nice-looking screen.
-        sys.exit(board(load_wallet(), args.slot))
+        sys.exit(board(load_wallet(), _split_slot_account(args.slot)[0]))
     elif args.command == 'login':
-        login(args.slot, args.stale_days)
+        login(args.slot, args.stale_days, account=args.account)
     elif args.command == 'warm':
-        warm(args.slot, args.stale_days, assume_yes=args.yes, dry_run=args.dry_run)
+        warm(args.slot, args.stale_days, assume_yes=args.yes, dry_run=args.dry_run, account=args.account)
     elif '://' in args.command or '.' in args.command:
         # A bare address as the verb: `wallet.py https://...` is `warm <URL>`
         # whichever shell word carries it, so a wrapper forwarding "$@" raw
