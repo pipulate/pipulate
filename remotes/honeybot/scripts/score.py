@@ -147,7 +147,7 @@ def _append_article_performance(script, article, is_latest=True):
             ),
         },
     ))
-    script.append(("ALICE", {"passes": 3, "duration": 6.5}))
+    script.append(("ALICE", {"passes": 60, "duration": 90.0, "min_linger": 4.5}))
 
 
 def get_script(breaking=False, jukebox_index=None):

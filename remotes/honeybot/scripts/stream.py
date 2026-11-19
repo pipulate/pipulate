@@ -1380,8 +1380,49 @@ def resolve_patronus_key(name: str) -> str:
     return _PATRONUS_ALIASES.get(raw, raw or "white_rabbit")
 
 
-def dismiss_reboot_cover_alice() -> None:
-    """Dismiss any detached Falling Alice reboot-cover overlay once the fresh HUD is live."""
+REBOOT_ALICE_STAMP_PATH = "/tmp/honeybot_reboot_alice.ts"
+REBOOT_ALICE_MIN_COVER_SEC = 65.0
+
+def _conjure_detached_alice(passes: int = 120, duration: float = 120.0) -> None:
+    """Spawn detached opacity=0.0 #ffffff Falling Alice in its own POSIX session on :10.0."""
+    site_root = Path(__file__).resolve().parents[1]
+    if str(site_root) not in sys.path:
+        sys.path.insert(0, str(site_root))
+    import importlib
+    import imports.ascii_displays as _aa_mod
+    _aa_mod = importlib.reload(_aa_mod)
+    os.environ.update(_hydrate_honeybot_x11_env())
+    _aa_mod.conjure_falling_alice(
+        passes=max(1, int(passes)),
+        duration=max(1.0, float(duration)),
+        display=os.environ.get("DISPLAY") or ":10.0",
+        detach=True,
+    )
+
+def wait_for_reboot_cover_alice(min_cover_sec: float = REBOOT_ALICE_MIN_COVER_SEC, stamp_path: str = REBOOT_ALICE_STAMP_PATH) -> float:
+    """Hold reboot-cover Alice on screen until min_cover_sec has elapsed since reboot start."""
+    p = Path(stamp_path)
+    if not p.is_file():
+        return 0.0
+    try:
+        stamp_ts = float(p.read_text(encoding="utf-8").strip())
+    except (OSError, ValueError):
+        return 0.0
+    if (time.time() - stamp_ts) > 300.0 or stamp_ts > (time.time() + 5.0):
+        return 0.0
+    waited = 0.0
+    while not _shutting_down.is_set() and not has_pending_update():
+        rem = float(min_cover_sec) - (time.time() - stamp_ts)
+        if rem <= 0.0:
+            break
+        step = min(0.5, rem)
+        time.sleep(step)
+        waited += step
+    return round(waited, 3)
+
+def dismiss_reboot_cover_alice(stamp_path: str = REBOOT_ALICE_STAMP_PATH) -> None:
+    """Clear reboot-cover stamp and dismiss any active Falling Alice overlay."""
+    Path(stamp_path).unlink(missing_ok=True)
     subprocess.run(
         ["pkill", "-f", "[f]alling_alice_overlay"],
         stdout=subprocess.DEVNULL,
@@ -1395,18 +1436,7 @@ def conjure_patronus(name, duration=3.5):
     duration = max(0.75, min(600.0, float(duration)))
     site_root = Path(__file__).resolve().parents[1]
     if safe_name == "falling_alice":
-        if str(site_root) not in sys.path:
-            sys.path.insert(0, str(site_root))
-        import importlib
-        import imports.ascii_displays as _aa_mod
-        _aa_mod = importlib.reload(_aa_mod)
-        os.environ.update(_hydrate_honeybot_x11_env())
-        _aa_mod.conjure_falling_alice(
-            passes=3,
-            duration=max(5.5, duration),
-            display=os.environ.get("DISPLAY") or ":10.0",
-            detach=True,
-        )
+        _conjure_detached_alice(passes=max(3, int(duration // 1.4)), duration=max(5.5, duration))
         return
     python_code = (
         "import sys; "
@@ -2238,11 +2268,8 @@ def _pause_honeybot_stage_for_weebo(pause_audio=True):
                     paused.append(pid)
             except Exception:
                 continue
-    for pat in ("conjure_window_overlay", "patronus_visual_shield"):
-        try:
-            subprocess.run(["pkill", "-f", pat], check=False)
-        except Exception:
-            pass
+    for pat in ("conjure_window_overlay", "patronus_visual_shield", "[f]alling_alice_overlay"):
+        subprocess.run(["pkill", "-f", pat], check=False)
     return paused
 
 
@@ -2928,6 +2955,7 @@ def run_optics_station_slot(content, env, profile_dir) -> None:
     max_hold = float(cfg.get("timeout", 180.0))
     slot_p = Path(OPTICS_SLOT_PATH)
     ensure_storytime_bgm_alive()
+    _conjure_detached_alice(passes=120, duration=max(90.0, handshake_wait + claim_grace + 20.0))
     narrator.say("Checking Pipulate Prime for a live 911 L L M Optics spectrometer demonstration.")
     wait_for_voice_or_live_interrupt(env, profile_dir)
     if has_pending_update():
@@ -2983,6 +3011,7 @@ def run_optics_station_slot(content, env, profile_dir) -> None:
                 else:
                     time.sleep(0.5)
         else:
+            dismiss_reboot_cover_alice()
             conjure_patronus("optics_triptych", duration=24.0)
             narrator.say(
                 "911 L L M Optics stacks sixteen wire-truth lenses on any U R L — raw H T T P headers, source H T M L versus hydrated D O M, and R F C 9110 Markdown readiness — sealed in a S H A 256 deed."
@@ -2990,10 +3019,8 @@ def run_optics_station_slot(content, env, profile_dir) -> None:
             wait_for_voice_or_live_interrupt(env, profile_dir)
         ensure_storytime_bgm_alive()
     finally:
-        try:
-            slot_p.unlink(missing_ok=True)
-        except OSError:
-            pass
+        dismiss_reboot_cover_alice()
+        slot_p.unlink(missing_ok=True)
         had_weebo = Path(WEEBO_STAGE_PAUSE_FILE).exists()
         if had_weebo or claimed:
             _resume_honeybot_stage_after_weebo([])
@@ -3165,21 +3192,12 @@ def dispatch_cue(command, content, env, profile_dir, pace_say=True):
     elif command == "ALICE":
         wait_for_voice_or_live_interrupt(env, profile_dir)
         if not has_pending_update() and not _shutting_down.is_set():
-            passes_n = int(content.get("passes", 3)) if isinstance(content, dict) else 3
-            dur_s = float(content.get("duration", 6.5)) if isinstance(content, dict) else 6.5
-            site_root = Path(__file__).resolve().parents[1]
-            if str(site_root) not in sys.path:
-                sys.path.insert(0, str(site_root))
-            import importlib
-            import imports.ascii_displays as _aa_mod
-            _aa_mod = importlib.reload(_aa_mod)
-            os.environ.update(_hydrate_honeybot_x11_env())
-            _aa_mod.conjure_falling_alice(
-                passes=passes_n,
-                duration=dur_s,
-                display=os.environ.get("DISPLAY") or ":10.0",
-                detach=False,
-            )
+            passes_n = int(content.get("passes", 60)) if isinstance(content, dict) else 60
+            dur_s = float(content.get("duration", 90.0)) if isinstance(content, dict) else 90.0
+            min_linger = float(content.get("min_linger", 4.5)) if isinstance(content, dict) else 4.5
+            _conjure_detached_alice(passes=passes_n, duration=dur_s)
+            if min_linger > 0.0:
+                time.sleep(min_linger)
     elif command == "PATRONUS":
         narrator.patronus(content)
 
@@ -3505,19 +3523,8 @@ def announce_scheduled_reboot():
             Path(sentinel).unlink(missing_ok=True)
         for pat in ("conjure_window_overlay", "patronus_visual_shield", "[f]alling_alice_overlay", MEDIA_OVERLAY_MARKER, "HONEYBOT_LIVE_VIM", "firefox"):
             subprocess.run(["pkill", "-f", pat], check=False)
-        site_root = Path(__file__).resolve().parents[1]
-        if str(site_root) not in sys.path:
-            sys.path.insert(0, str(site_root))
-        import importlib
-        import imports.ascii_displays as _aa_mod
-        _aa_mod = importlib.reload(_aa_mod)
-        os.environ.update(_hydrate_honeybot_x11_env())
-        _aa_mod.conjure_falling_alice(
-            passes=25,
-            duration=45.0,
-            display=os.environ.get("DISPLAY") or ":10.0",
-            detach=True,
-        )
+        Path(REBOOT_ALICE_STAMP_PATH).write_text(f"{time.time():.3f}\n", encoding="utf-8")
+        _conjure_detached_alice(passes=400, duration=300.0)
         raw_path = narrator.prep_raw(REBOOT_ANNOUNCEMENT_TEXT)
         narrator.play_raw(raw_path, fallback_text=REBOOT_ANNOUNCEMENT_TEXT)
         narrator.queue.join()
@@ -3765,12 +3772,16 @@ def perform_show(script):
 def start_director_track():
     """The Script for the Show. Runs in parallel to the Log Stream."""
     t_boot = time.time()
+    reboot_cover_active = Path(REBOOT_ALICE_STAMP_PATH).is_file()
+    if reboot_cover_active:
+        start_storytime_bgm()
     ensure_cast_voice_models()
     narrator.warm_turn_cues()
     rem_boot = 5.0 - (time.time() - t_boot)
     if rem_boot > 0:
         time.sleep(rem_boot)
-    dismiss_reboot_cover_alice()
+    if not reboot_cover_active:
+        dismiss_reboot_cover_alice()
 
     # A publish-triggered restart (the [4/4] kill in flake.nix) births a fresh
     # process while .reading_trigger is still warm. Lead the very first cycle with
@@ -3781,6 +3792,7 @@ def start_director_track():
     # False, leaving a genuine idle cold start completely unchanged.
     breaking = trigger_is_fresh() if score else False
     jukebox_idx = None
+    first_cycle = True
     while True:
         if score:
             try:
@@ -3789,6 +3801,11 @@ def start_director_track():
             except Exception:
                 pass
             current_script = score.get_script(breaking=breaking, jukebox_index=jukebox_idx)
+            if first_cycle:
+                first_cycle = False
+                if reboot_cover_active:
+                    wait_for_reboot_cover_alice()
+                    dismiss_reboot_cover_alice()
             result = perform_show(current_script)
             if isinstance(result, tuple) and len(result) == 2 and result[0] == "JUKEBOX":
                 jukebox_idx = int(result[1])
