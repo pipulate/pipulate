@@ -108,12 +108,107 @@ def parse_gmail_url(url):
 # ----------------------------------------------------------------------------
 # Authentication
 # ----------------------------------------------------------------------------
+_DEFAULT_TOKEN_PATH = TOKEN_PATH
+
+def _vault_paths():
+    tp = Path(os.environ.get('PIPULATE_GMAIL_TOKEN') or _DEFAULT_TOKEN_PATH).expanduser()
+    return tp, tp.resolve().parent / 'gmail_tokens', tp.resolve().parent / 'gmail_accounts.json'
+
+def _slug_account(label: str) -> str:
+    return re.sub(r'[^a-z0-9._@-]+', '_', (label or '').strip().lower()).strip('_') or 'default'
+
+def _load_accounts_meta() -> dict:
+    _, _, mp = _vault_paths()
+    try:
+        d = json.loads(mp.read_text(encoding='utf-8')) if mp.is_file() else {}
+        return d if isinstance(d, dict) else {}
+    except Exception:
+        return {}
+
+def _profile_email(creds) -> str:
+    try:
+        return str(build('gmail', 'v1', credentials=creds).users().getProfile(userId='me').execute().get('emailAddress') or '').strip()
+    except Exception:
+        return ''
+
+def _write_0600(path: Path, text: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(text, encoding='utf-8')
+    path.chmod(0o600)
+
+def _bank_token_json(raw_json: str, email_addr: str = '', alias: str = '', activate: bool = True) -> str:
+    _, adir, mp = _vault_paths()
+    stem = _slug_account(email_addr or alias or 'default')
+    _write_0600(adir / f'{stem}.json', raw_json)
+    meta = _load_accounts_meta()
+    meta['aliases'] = {**(meta.get('aliases') or {}), **{_slug_account(x): stem for x in (alias, email_addr) if x and _slug_account(x) != stem}}
+    if activate:
+        _write_0600(Path(TOKEN_PATH).expanduser(), raw_json)
+        meta['active'] = stem
+    _write_0600(mp, json.dumps(meta, indent=2) + '\n')
+    return stem
+
+def _harvest_active_token() -> None:
+    tp, adir, _ = _vault_paths()
+    active = str(_load_accounts_meta().get('active') or '').strip()
+    if tp.is_file() and tp.stat().st_size > 0 and not (active and (adir / f'{active}.json').is_file()):
+        _bank_token_json(tp.read_text(encoding='utf-8'), alias='default', activate=True)
+
+def _find_banked_token(account: str):
+    _, adir, _ = _vault_paths()
+    key = _slug_account(account) if (adir.is_dir() and account) else ''
+    for cand in (((_load_accounts_meta().get('aliases') or {}).get(key), key) if key else ()):
+        if cand and (adir / f'{cand}.json').is_file():
+            return cand, adir / f'{cand}.json'
+    hits = [p for p in sorted(adir.glob('*.json')) if key in p.stem.lower()] if key else []
+    return (hits[0].stem, hits[0]) if len(hits) == 1 else (None, None)
+
+def list_accounts() -> int:
+    _harvest_active_token()
+    _, adir, _ = _vault_paths()
+    meta = _load_accounts_meta()
+    active, aliases = str(meta.get('active') or ''), (meta.get('aliases') or {})
+    files = sorted(adir.glob('*.json')) if adir.is_dir() else []
+    print(f'# Gmail banked accounts ({adir})')
+    for p in files:
+        als = sorted(al for al, st in aliases.items() if st == p.stem)
+        print(f"  {'[x]' if p.stem == active else '[ ]'} {p.stem}" + (f"  (aliases: {', '.join(als)})" if als else ''))
+    if not files:
+        print('  (none banked yet -- run: warm email)')
+    print('# Switch selected: email --use <account>  |  Link new: warm email <alias>')
+    return 0
+
+def switch_account(account: str, offline: bool = False) -> int:
+    _harvest_active_token()
+    stem, tok_p = _find_banked_token(account)
+    if tok_p is None:
+        sys.stderr.write(f'No banked Gmail account matching {account!r}. Run: warm email {account}\n')
+        return 1
+    _bank_token_json(tok_p.read_text(encoding='utf-8'), email_addr=stem, activate=True)
+    print(f'# Selected Gmail token -> {stem}')
+    return 0 if offline else check()
+
+def warm_or_switch(account: str | None = None) -> None:
+    _harvest_active_token()
+    if not account and _vault_paths()[0].is_file() and sys.stdin.isatty():
+        list_accounts()
+        account = input('  Account to switch/add (Enter to pick in browser, or name): ').strip() or None
+    if account and account.strip().lower() != 'new' and _find_banked_token(account)[1] is not None and switch_account(account) == 0:
+        return
+    if not os.path.exists(CREDS_PATH):
+        sys.exit(f'Missing credentials.json at: {CREDS_PATH}')
+    print('Opening local browser window for Google Account selection...', file=sys.stderr)
+    creds = InstalledAppFlow.from_client_secrets_file(CREDS_PATH, SCOPES).run_local_server(port=0, prompt='consent select_account')
+    email_addr = _profile_email(creds)
+    stem = _bank_token_json(creds.to_json(), email_addr=email_addr, alias='' if (account or '').lower() == 'new' else (account or ''), activate=True)
+    print(f'gmail GREEN {email_addr or stem}')
+
 def _save_token(creds):
-    """Persist the user session token to the durable, gitignored path."""
-    token_path = Path(TOKEN_PATH)
-    token_path.parent.mkdir(parents=True, exist_ok=True)
-    with open(token_path, 'w', encoding='utf-8') as f:
-        f.write(creds.to_json())
+    raw, (tp, adir, _) = creds.to_json(), _vault_paths()
+    _write_0600(Path(TOKEN_PATH).expanduser(), raw)
+    active = str(_load_accounts_meta().get('active') or '').strip()
+    if active and Path(TOKEN_PATH).expanduser().resolve() == tp.resolve() and adir.is_dir():
+        _write_0600(adir / f'{active}.json', raw)
 
 
 def get_service():
@@ -157,9 +252,8 @@ def get_service():
 
     print("Opening local browser window for Workspace OAuth negotiation...",
           file=sys.stderr)
-    flow = InstalledAppFlow.from_client_secrets_file(CREDS_PATH, SCOPES)
-    creds = flow.run_local_server(port=0)
-    _save_token(creds)
+    creds = InstalledAppFlow.from_client_secrets_file(CREDS_PATH, SCOPES).run_local_server(port=0, prompt='consent select_account')
+    _bank_token_json(creds.to_json(), email_addr=_profile_email(creds), activate=True)
     return build('gmail', 'v1', credentials=creds)
 
 
@@ -452,8 +546,18 @@ def main():
                         help='SELECT 1 health check: one GREEN line on stdout and '
                              'exit 0, or one gate-named RED line on stderr and '
                              'exit 1. Never interactive.')
+    parser.add_argument('-a', '--account', help='Query a banked Gmail account without switching default.')
+    parser.add_argument('--accounts', action='store_true', help='List banked Gmail accounts.')
+    parser.add_argument('--use', metavar='ACCOUNT', help='Switch selected Gmail token to a banked account.')
+    parser.add_argument('--offline', action='store_true', help='Skip live API check on --use.')
     args = parser.parse_args()
 
+    if args.accounts or args.use:
+        sys.exit(list_accounts() if args.accounts else switch_account(args.use, offline=args.offline))
+    if args.account:
+        global TOKEN_PATH
+        tok_p = _find_banked_token(args.account)[1] or sys.exit(switch_account(args.account, offline=True))
+        TOKEN_PATH = str(tok_p)
     if args.check:
         sys.exit(check())
     if args.query is None:
