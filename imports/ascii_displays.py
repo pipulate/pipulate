@@ -429,9 +429,11 @@ def conjure_window(command, duration: float = 30.0, columns: int = 100, lines: i
             cmd,
             cwd=working_dir,
             env=env,
+            stdin=subprocess.DEVNULL if detach else None,
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
             start_new_session=bool(detach),
+            close_fds=True,
         )
 
         time.sleep(0.15)
@@ -1058,10 +1060,10 @@ def _tittle_actor_state_at(local_t: float) -> tuple:
     return (-3, 5, "bold bright_cyan")
 
 def _tittle_pace_params(pace: str = "standard") -> tuple:
-    """Return (perch_sec, stagger_sec, speed, settle_pad, dt) with ~1s visible perched hover setup."""
+    """Return (perch_sec, stagger_sec, speed, settle_pad, dt) with ~3.5-4.0s logarithmic perched setup."""
     if str(pace or "standard").strip().lower() in ("fast", "bumper", "brisk"):
-        return (1.05, 0.52, 1.45, 0.50, 0.022)
-    return (1.30, 0.95, 1.0, 0.60, 0.028)
+        return (3.65, 0.52, 1.45, 0.50, 0.022)
+    return (4.00, 0.95, 1.0, 0.60, 0.028)
 
 def tittle_min_hold_seconds(pace: str = "standard", n_actors: int = 2) -> float:
     """Minimum seconds required for all tittles to bounce, flash, and settle into cyan."""
@@ -1419,6 +1421,7 @@ def conjure_falling_alice(passes: int = 3, duration: float = 6.5, display: Optio
         duration=max_dur,
         columns=76,
         lines=42,
+        cwd=repo_root,
         title="FallingAlice",
         window_class=FALLING_ALICE_WINDOW_CLASS,
         display=display,
