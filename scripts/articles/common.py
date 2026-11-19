@@ -629,8 +629,7 @@ def get_broadcast_kit(target_key="1", slug_match=None):
     yt_title = format_youtube_title(title)
     desc_parts = [
         f"📖 Read the full article: {canonical_url}?src=youtube",
-        *([f"📄 Summarize in Google Docs: {gdoc_url}"] if gdoc_url else []),
-        f"🟣 Join the Founding 1,000 Discord (1,000 members + 8 wks = Google-indexed community): {DEFAULT_DISCORD_INVITE_URL}",
+        f"🟣 Join the Founding 1,000 on Discord: {base_url}/discord",
         f"🔭 Enterprise AI-Readiness & Edge Telemetry (RFC 9110 / ADNS / O2O): {base_url}/?src=youtube#consulting | Inspect workshop: curl -fsSL https://sunpug.io | less (Email: {CONTACT_EMAIL})",
         f"🧪 Test RFC 9110 in your terminal: curl -sI -H \"Accept: text/markdown\" {canonical_url}?src=rfc9110",
         "",
