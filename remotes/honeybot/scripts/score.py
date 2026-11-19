@@ -124,15 +124,12 @@ def _append_article_performance(script, article, is_latest=True):
     split_idx = _find_intermission_split(body_cues)
     if 0 < split_idx < len(body_cues):
         script.extend(body_cues[:split_idx])
-        script.append(("BGM", "STOP"))
         script.append(("BUMPER", {"slot": "pre_intermission"}))
         script.append(("INTERMISSION", {"title": title_str}))
-        script.append(("BGM", "START"))
         script.append(("SAY", "Resuming storytime with Act Two."))
         script.extend(body_cues[split_idx:])
     else:
         script.extend(body_cues)
-    script.append(("BGM", "STOP"))
     script.append((
         "CARD",
         {
@@ -147,7 +144,7 @@ def _append_article_performance(script, article, is_latest=True):
             ),
         },
     ))
-    script.append(("ALICE", {"passes": 60, "duration": 90.0, "min_linger": 4.5}))
+    script.append(("WAIT", 1))
 
 
 def get_script(breaking=False, jukebox_index=None):

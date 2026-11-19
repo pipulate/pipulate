@@ -3293,11 +3293,8 @@ def run_live_message(msg, env, profile_dir):
     try:
         t_cut = time.time()
         narrator.interrupt()
-        for pat in ("conjure_window_overlay", "patronus_visual_shield", MEDIA_OVERLAY_MARKER):
-            try:
-                subprocess.run(["pkill", "-f", pat], check=False)
-            except Exception:
-                pass
+        for pat in ("conjure_window_overlay", "patronus_visual_shield", "[f]alling_alice_overlay", MEDIA_OVERLAY_MARKER):
+            subprocess.run(["pkill", "-f", pat], check=False)
         pre_pause = float(msg.get("pre_pause", 3.0)) if isinstance(msg, dict) else 3.0
         linger = float(msg.get("linger", 2.5)) if isinstance(msg, dict) else 2.5
         cues = msg.get("cues") if isinstance(msg, dict) else None
@@ -3414,20 +3411,15 @@ def wait_for_voice_or_live_interrupt(env, profile_dir):
             narrator.queue.all_tasks_done.wait(timeout=0.15)
 
 
-def run_station_break(env, profile_dir):
-    """Play the next forest bead as an out-of-band station break.
-
-    Preempt the voice (flush the article backlog), run the bead's cue-list
-    through the shared dispatcher with queue-paced speech so the proof WINDOW
-    overlaps the spiel, then wait on the real voice clock before resuming the
-    article. No-ops gracefully if the forest module failed to import.
-    """
+def run_station_break(env, profile_dir, is_end_of_loop: bool = False) -> bool:
+    """Play the next forest bead as an out-of-band station break (returns True if OPTICS_SLOT ran)."""
     global _station_index
     _reload_forest_module()
     if not STATION_SEGMENTS:
-        return
+        return False
     bead = STATION_SEGMENTS[_station_index % len(STATION_SEGMENTS)]
     _station_index += 1
+    used_optics = any(cue_cmd == "OPTICS_SLOT" for cue_cmd, _ in bead)
 
     # --- Stage 1: The Soft Preemption ---
     # flush_queue (not interrupt) so the article sentence playing RIGHT NOW
@@ -3453,6 +3445,7 @@ def run_station_break(env, profile_dir):
     prev_dialogue_role = narrator._stage_dialogue_role
     _in_no_max_zone = True
     narrator.exclusive_mode.set()
+    ensure_storytime_bgm_alive()
     try:
         maybe_play_tittle_bumper(env, profile_dir, slot="pre_report")
         for cue_command, cue_content in bead:
@@ -3461,11 +3454,8 @@ def run_station_break(env, profile_dir):
             dispatch_cue(cue_command, cue_content, env, profile_dir, pace_say=False)
         wait_for_voice_or_live_interrupt(env, profile_dir)
         for pat in ("patronus_visual_shield", "conjure_window_overlay", MEDIA_OVERLAY_MARKER):
-            try:
-                subprocess.run(["pkill", "-f", pat], check=False)
-            except Exception:
-                pass
-        if _bgm_desired and not has_pending_update() and not _shutting_down.is_set():
+            subprocess.run(["pkill", "-f", pat], check=False)
+        if _bgm_desired and not is_end_of_loop and not has_pending_update() and not _shutting_down.is_set():
             time.sleep(0.5)
             narrator.say("Returning to storytime.")
             wait_for_voice_or_live_interrupt(env, profile_dir)
@@ -3477,6 +3467,7 @@ def run_station_break(env, profile_dir):
             narrator._reannounce_after_break = True
         narrator.exclusive_mode.clear()
         ensure_storytime_bgm_alive()
+    return used_optics
 
 
 REBOOT_ANNOUNCEMENT_TEXT = (
@@ -3759,7 +3750,10 @@ def perform_show(script):
             elif command in ("MEDIA", "IMAGE", "VIDEO"):
                 next_pitch_time = max(next_pitch_time, time.time() + 30.0)
         if script and not _shutting_down.is_set() and not has_pending_update():
-            run_station_break(env, profile_dir)
+            used_optics = run_station_break(env, profile_dir, is_end_of_loop=True)
+            if not used_optics and not _shutting_down.is_set() and not has_pending_update():
+                _conjure_detached_alice(passes=60, duration=45.0)
+                time.sleep(7.5)
     finally:
         stop_storytime_bgm()
         # CLEANUP: Destroy the memory of this session
