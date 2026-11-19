@@ -171,16 +171,16 @@ STANDBY_MAINTENANCE_LINE = (
 
 STANDBY_LOOP_LINES = (
     "To hear the next article, visit YouTube dot com slash M I K E L E V I N slash live. "
-    "If you want someone else to hear something totally new along with you, this is when you should forward it to them."
-    "If you get there too soon you might have to wait a bit and hit refresh to see the new live-stream appear, but it will be worth it.",
-    "If you are actually here seeing this live-performance wrapping up at the time of first broadcast, then you are seeing something brand new.",
-    "None of this is trained into the parametric memory of today's frontier models, meaning this is genuinely new information per Claude Shannon's second famous paper, A Mathematical Theory of Communication, in which he would tell you that anything that can be produced by prompting an A I that is built from its existing weights is not information. It is noise.",
+    "If you want someone else to hear something totally new along with you, this is when you should forward it to them. "
+    "If you get there too soon you might have to wait a bit and hit refresh to see the new live-stream appear, but it will be worth it. ",
+    "If you are actually here seeing this live-performance wrapping up at the time of first broadcast, then you are seeing something brand new. ",
+    "None of this is trained into the parametric memory of today's frontier models, meaning this is genuinely new information per Claude Shannon's second famous paper, A Mathematical Theory of Communication, in which he would tell you that anything that can be produced by prompting an A I that is built from its existing weights is not information. It is noise. ",
     "This live-broadcast and the articles being read here are not that. "
-    "The author is macheteing his way through the Noosphere of things being experimentally done for maybe the first time ever.",
+    "The author is macheteing his way through the Noosphere of things being experimentally done for maybe the first time ever. ",
     "This is The Signal. "
     "It may not be apparent to you right now, but this is the most unique thing you will see today, and if you tune in again later, then the next one will be the same -- and by that I mean different and equally new. "
     "Grab your own self-replicating Sun Pug free at SunPug.io, forward this broadcast to one sharp builder who needs it, and join the Founding 1,000 on Discord at mikelev.in/discord. "
-    "Welcome to The Information.",
+    "Welcome to The Information. ",
 )
 
 
