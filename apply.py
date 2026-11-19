@@ -216,6 +216,21 @@ def _refuse_invisible_write(filename: str, root: str, verb: str) -> None:
 CHISEL_STRIKE_MAX_FILES = 5
 CHISEL_STRIKE_MAX_BLOCKS = 12
 CHISEL_STRIKE_MAX_PATCH_LINES = 220
+CHISEL_STRIKE_AIM_PATCH_LINES = 120
+
+
+def _format_car_meter(n_files: int, n_blocks: int, n_lines: int) -> str:
+    """Format a compact per-car size receipt against soft aim (120) and hard cap (220)."""
+    aim_s = (
+        f"aim <= {CHISEL_STRIKE_AIM_PATCH_LINES}/car"
+        if n_lines <= CHISEL_STRIKE_AIM_PATCH_LINES
+        else f"over {CHISEL_STRIKE_AIM_PATCH_LINES}-line aim; prefer separate Car 3a/3b fences"
+    )
+    return (
+        f"{n_files}/{CHISEL_STRIKE_MAX_FILES} file(s), "
+        f"{n_blocks}/{CHISEL_STRIKE_MAX_BLOCKS} block(s), "
+        f"{n_lines}/{CHISEL_STRIKE_MAX_PATCH_LINES} line(s) ({aim_s})"
+    )
 
 
 def _needs_git_add(filename: str) -> bool:
@@ -412,7 +427,10 @@ def apply_search_replace_patch(payload: str) -> bool:
                 f"limits: <= {CHISEL_STRIKE_MAX_FILES} files, <= {CHISEL_STRIKE_MAX_BLOCKS} blocks, "
                 f"<= {CHISEL_STRIKE_MAX_PATCH_LINES} replacement lines)."
             )
-            print("    Split the pass into smaller sequential cars, or run `PIPULATE_DEEP_CAR=1 app` when explicitly authorized.")
+            print(
+                f"    Split into separate fenced cars (Car 3a, Car 3b, ...; aim <= {CHISEL_STRIKE_AIM_PATCH_LINES} lines "
+                "& 1 commit story per `patch -> app -> d -> m` fence), or run `PIPULATE_DEEP_CAR=1 app`."
+            )
             print("    Nothing was written.")
             return False
         print(
@@ -799,6 +817,8 @@ def apply_search_replace_patch(payload: str) -> bool:
                 print(f"📌 UNTRACKED FILE HYGIENE: '{filename}' is not yet in git — run: git add {filename}")
         else:
             print(f"✅ DETERMINISTIC PATCH APPLIED: Successfully mutated '{filename}'.")
+    if touched_files:
+        print(f"📏 Car meter: {_format_car_meter(len(planned_files), total_blocks, total_patch_lines)}")
 
     return True
 
