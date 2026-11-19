@@ -259,7 +259,7 @@ def load_wallet():
         path.write_text(json.dumps(seed, indent=2) + "\n", encoding='utf-8')
         print(f"# Starter wallet created at {path} ({len(seed)} slot(s): {', '.join(seed)})")
         print("# Warm a slot (e.g. Gmail / email):  warm email")
-        print("# Live red/green check board:        python connectors/wallet.py check")
+        print("# Live red/green check board:        warm   (or: warm check)")
         return seed
     try:
         return json.loads(path.read_text(encoding='utf-8'))
@@ -527,6 +527,28 @@ def scoreboard(wallet, max_items, stale_days):
 # login -- mints OAuth by reusing the connector's own walk; for every other
 # kind it NAMES how that kind is warmed instead of pretending it can mint.
 # ---------------------------------------------------------------------------
+def _find_oauth_client_candidate(creds_path):
+    """Return first local Desktop-app OAuth client JSON candidate path, or None."""
+    dirs = []
+    if creds_path:
+        dirs.append(Path(creds_path).expanduser().parent)
+    dirs.extend([
+        Path.home() / '.config' / 'pipulate',
+        Path.home() / 'Downloads',
+        Path.home() / 'repos' / 'nixos' / 'credentials',
+    ])
+    seen = set()
+    for d in dirs:
+        if d in seen or not d.is_dir():
+            continue
+        seen.add(d)
+        for p in sorted(d.glob('*.json')):
+            low = p.name.lower()
+            if low.startswith(('client_secret', 'credentials')) or low.endswith('_credentials.json'):
+                return p
+    return None
+
+
 def login(slot_name, stale_days, account=None, from_warm=False):
     slot_name, account = _split_slot_account(slot_name, account)
     if not slot_name:
@@ -564,12 +586,16 @@ def login(slot_name, stale_days, account=None, from_warm=False):
             "Fix the wallet entry first.")
 
     if not creds_path or not Path(creds_path).exists():
+        cand = _find_oauth_client_candidate(creds_path)
+        hint = (f"\nFound existing OAuth client JSON -- adopt it with:\n"
+                f"    cp '{cand}' '{creds_path}'"
+                if cand and creds_path else "")
         die(f"Missing credentials.json for '{slot_name}' at: "
             f"{creds_path or '(no paths.credentials declared)'}\n"
             "Download the Desktop-app OAuth client JSON from the Google Cloud\n"
             "Console and place it there (the same client the other Google\n"
             "connectors use), then re-run:\n"
-            f"    python connectors/wallet.py login {slot_name}")
+            f"    warm {slot_name}{hint}")
 
     connector_file = Path(__file__).resolve().parent / f"{slot_name}.py"
     if not connector_file.exists():
@@ -1031,7 +1057,7 @@ def warm(slot_name, stale_days, assume_yes=False, dry_run=False, account=None):
     # the verb that can say what the services accept.
     still = [r for r in results if r[0] != 'filled']
     print(f"\n# {len(results) - len(still)} filled | {len(still)} still cold "
-          "(offline board -- run `check` to see what the services accept)")
+          "(offline board -- run bare `warm` or `warm check` to see what the services accept)")
     if any(r[1] in _ENV_KINDS for r in results):
         print(f"# Saved to {DOTENV_PATH}. The CHECK board injects that file into")
         print("# every connector it runs, so type `warm` again RIGHT NOW to watch")
@@ -1407,6 +1433,22 @@ def board(wallet, slot_name):
     return 1
 
 
+def _delete_slot_account(slot_name, account, dry_run=False):
+    """Forward banked-account deletion to a connector that supports --delete."""
+    slot_name, tail_acct = _split_slot_account(slot_name)
+    account = account or tail_acct
+    slot_name = slot_name or 'gmail'
+    if not account:
+        die(f"Usage: warm {slot_name} --delete <account>")
+    script = Path(__file__).resolve().parent / f"{slot_name}.py"
+    if not script.is_file():
+        die(f"No connector module for slot '{slot_name}' at: {script}")
+    if dry_run:
+        print(f"# --dry-run: would run {script.name} --delete {account}")
+        return 0
+    return subprocess.call([sys.executable, str(script), '--delete', account], env=_check_env())
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Scoreboard, live check, and warmer for the Pipulate wallet.")
@@ -1431,8 +1473,16 @@ def main():
     parser.add_argument('account', nargs='?', default=None,
                         help="optional account alias/email for oauth slots "
                              "(e.g. 'warm email personal' or 'warm email work').")
+    parser.add_argument('extra', nargs='?', default=None, help=argparse.SUPPRESS)
+    parser.add_argument('--delete', '--forget', dest='delete_account', metavar='ACCOUNT',
+                        help="remove a banked OAuth account (e.g. 'warm email --delete work').")
     args = parser.parse_args()
 
+    if args.delete_account:
+        target_slot = args.slot if args.command in ('warm', 'login', 'delete', 'forget') else args.command
+        sys.exit(_delete_slot_account(target_slot, args.delete_account, dry_run=args.dry_run))
+    if args.command in ('delete', 'forget'):
+        sys.exit(_delete_slot_account(args.slot, args.account, dry_run=args.dry_run))
     if args.command in (None, 'scoreboard', 'status'):
         scoreboard(load_wallet(), args.max, args.stale_days)
     elif args.command in ('check', 'board'):
@@ -1440,6 +1490,12 @@ def main():
     elif args.command == 'login':
         login(args.slot, args.stale_days, account=args.account)
     elif args.command == 'warm':
+        if args.slot in ('check', 'board'):
+            sys.exit(board(load_wallet(), _split_slot_account(args.account)[0]))
+        if args.slot in ('delete', 'forget'):
+            sys.exit(_delete_slot_account(args.account, args.extra, dry_run=args.dry_run))
+        if args.account in ('delete', 'forget') and args.extra:
+            sys.exit(_delete_slot_account(args.slot, args.extra, dry_run=args.dry_run))
         warm(args.slot, args.stale_days, assume_yes=args.yes, dry_run=args.dry_run, account=args.account)
     elif '://' in args.command or '.' in args.command:
         # A bare address as the verb: `wallet.py https://...` is `warm <URL>`
