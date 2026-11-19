@@ -175,7 +175,7 @@ def list_accounts() -> int:
         print(f"  {'[x]' if p.stem == active else '[ ]'} {p.stem}" + (f"  (aliases: {', '.join(als)})" if als else ''))
     if not files:
         print('  (none banked yet -- run: warm email)')
-    print('# Switch selected: email --use <account>  |  Link new: warm email <alias>')
+    print('# Switch: email --use <account>  |  Link new: warm email <alias>  |  Remove: email --delete <account>')
     return 0
 
 def switch_account(account: str, offline: bool = False) -> int:
@@ -187,6 +187,46 @@ def switch_account(account: str, offline: bool = False) -> int:
     _bank_token_json(tok_p.read_text(encoding='utf-8'), email_addr=stem, activate=True)
     print(f'# Selected Gmail token -> {stem}')
     return 0 if offline else check()
+
+def delete_account(account: str) -> int:
+    tp, adir, mp = _vault_paths()
+    stem, tok_p = _find_banked_token(account)
+    if tok_p is None:
+        if _slug_account(account) == 'default' and tp.is_file():
+            tp.unlink(missing_ok=True)
+            meta = _load_accounts_meta()
+            meta.pop('active', None)
+            _write_0600(mp, json.dumps(meta, indent=2) + '\n')
+            print(f'# Cleared unbanked Gmail token ({tp.name})')
+            return 0
+        sys.stderr.write(f'No banked Gmail account matching {account!r}.\n')
+        return 1
+    deleted_raw = tok_p.read_text(encoding='utf-8')
+    meta = _load_accounts_meta()
+    was_active = (
+        str(meta.get('active') or '').strip() == stem
+        or (tp.is_file() and tp.read_text(encoding='utf-8') == deleted_raw)
+    )
+    tok_p.unlink(missing_ok=True)
+    meta['aliases'] = {
+        al: st for al, st in (meta.get('aliases') or {}).items()
+        if st != stem and al != stem
+    }
+    remaining = sorted(adir.glob('*.json')) if adir.is_dir() else []
+    if was_active or not remaining:
+        if remaining:
+            nxt = remaining[0]
+            _write_0600(tp, nxt.read_text(encoding='utf-8'))
+            meta['active'] = nxt.stem
+            print(f"# Deleted Gmail account '{stem}'; active token re-seated -> {nxt.stem}")
+        else:
+            tp.unlink(missing_ok=True)
+            meta.pop('active', None)
+            print(f"# Deleted Gmail account '{stem}'; no banked accounts remain")
+    else:
+        print(f"# Deleted Gmail account '{stem}' (active remains {meta.get('active')})")
+    _write_0600(mp, json.dumps(meta, indent=2) + '\n')
+    return 0
 
 def warm_or_switch(account: str | None = None) -> None:
     _harvest_active_token()
@@ -549,9 +589,13 @@ def main():
     parser.add_argument('-a', '--account', help='Query a banked Gmail account without switching default.')
     parser.add_argument('--accounts', action='store_true', help='List banked Gmail accounts.')
     parser.add_argument('--use', metavar='ACCOUNT', help='Switch selected Gmail token to a banked account.')
+    parser.add_argument('--delete', '--forget', dest='delete_account', metavar='ACCOUNT',
+                        help='Remove a banked Gmail account and its aliases.')
     parser.add_argument('--offline', action='store_true', help='Skip live API check on --use.')
     args = parser.parse_args()
 
+    if args.delete_account:
+        sys.exit(delete_account(args.delete_account))
     if args.accounts or args.use:
         sys.exit(list_accounts() if args.accounts else switch_account(args.use, offline=args.offline))
     if args.account:
