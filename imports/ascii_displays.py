@@ -1070,14 +1070,16 @@ def run_tittle_drop_card(label: str, hold: float = 4.0, stop_file: str = "", res
         sys.stdout.flush()
         return True
     term_sz = shutil.get_terminal_size((84, 24))
-    term_w, term_h = max(68, term_sz.columns), max(19, term_sz.lines)
-    top_pad = "\n" * max(0, (term_h - (spec["canvas_h"] + 5)) // 2)
+    term_w, term_h = max(68, term_sz.columns), max(18, term_sz.lines)
+    pad = (0, 3, 1, 3) if term_h <= 20 else (1, 3, 2, 3)
+    panel_h = spec["canvas_h"] + pad[0] + pad[2] + 2
+    top_pad = "\n" * max(0, (term_h - panel_h) // 2)
     frame_cache: dict = {}
 
     def _get_ansi(state_key: tuple) -> str:
         if state_key not in frame_cache:
             rich_txt, _ = render_tittle_frame_text(spec, list(state_key))
-            panel = Panel(rich_txt, title=title, border_style="bright_cyan", padding=(1, 3, 2, 3), expand=False)
+            panel = Panel(rich_txt, title=title, border_style="bright_cyan", padding=pad, expand=False)
             buf = io.StringIO()
             Console(file=buf, force_terminal=True, color_system="truecolor", width=term_w).print(
                 Align.center(panel, width=max(40, term_w - 1)), end=""

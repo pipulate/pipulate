@@ -1362,6 +1362,9 @@ _PATRONUS_ALIASES = {
     "triptych": "optics_triptych",
     "alice": "falling_alice",
     "falling_alice": "falling_alice",
+    "tittle": "tittle_drop",
+    "tittle_drop": "tittle_drop",
+    "sunpug": "tittle_drop",
 }
 
 
@@ -2490,8 +2493,11 @@ def conjure_window(script_name, duration=30.0, columns=100, lines=30, args=None,
     if str(site_root) not in sys.path:
         sys.path.insert(0, str(site_root))
 
-    from imports.ascii_displays import conjure_window as shared_conjure_window
-    from imports.ascii_displays import measure_figlet
+    import importlib
+    import imports.ascii_displays as _aa_mod
+    _aa_mod = importlib.reload(_aa_mod)
+    shared_conjure_window = _aa_mod.conjure_window
+    measure_figlet = _aa_mod.measure_figlet
 
     # --- 80/20 PULL-TIGHT FOR FIGLET CARDS ---
     # card.py renders a single Figlet banner, and a Figlet footprint is fully
@@ -3940,7 +3946,7 @@ if __name__ == "__main__":
         for pat in ("conjure_window_overlay", "patronus_visual_shield"):
             subprocess.run(["pkill", "-f", pat], check=False)
         resolved_art = resolve_patronus_key(mode_arg)
-        if resolved_art in ("white_rabbit", "optics_triptych", "ai_pachinko", "mechanical_man", "flyball_governor", "canal_lock", "player_piano", "clipboard", "bunny_trail", "ai_stack_combo", "deployment_context", "honeybot_pipeline", "workspace_tree", "forcing_pair"):
+        if resolved_art in ("white_rabbit", "optics_triptych", "ai_pachinko", "mechanical_man", "flyball_governor", "canal_lock", "player_piano", "clipboard", "bunny_trail", "ai_stack_combo", "deployment_context", "honeybot_pipeline", "workspace_tree", "forcing_pair", "tittle_drop"):
             conjure_patronus(resolved_art, duration=dur_arg)
         else:
             conjure_window("forest.py", duration=dur_arg, args=[mode_arg])
