@@ -1052,7 +1052,18 @@ def _tittle_actor_state_at(local_t: float) -> tuple:
         return (-3, 5, "bold bright_yellow")
     return (-3, 5, "bold bright_cyan")
 
-def run_tittle_drop_card(label: str, hold: float = 4.0, stop_file: str = "", restore_cursor: bool = True, title: Optional[str] = None) -> bool:
+def _tittle_pace_params(pace: str = "standard") -> tuple:
+    """Return (perch_sec, stagger_sec, speed, settle_pad, dt) for 'standard' vs brisk 'fast'/'bumper' plays."""
+    if str(pace or "standard").strip().lower() in ("fast", "bumper", "brisk"):
+        return (0.28, 0.52, 1.45, 0.50, 0.022)
+    return (0.70, 0.95, 1.0, 0.60, 0.028)
+
+def tittle_min_hold_seconds(pace: str = "standard", n_actors: int = 2) -> float:
+    """Minimum seconds required for all tittles to bounce, flash, and settle into cyan."""
+    perch_sec, stagger_sec, speed, settle_pad, _ = _tittle_pace_params(pace)
+    return perch_sec + max(0, int(n_actors) - 1) * stagger_sec + (1.48 / speed) + settle_pad
+
+def run_tittle_drop_card(label: str, hold: float = 4.0, stop_file: str = "", restore_cursor: bool = True, title: Optional[str] = None, pace: str = "standard") -> bool:
     """Play double-buffered ANSI tittle-drop entrance, then hold settled banner cleanly."""
     import io
     import os
@@ -1087,25 +1098,22 @@ def run_tittle_drop_card(label: str, hold: float = 4.0, stop_file: str = "", res
             frame_cache[state_key] = "\n".join(ln + "\033[K" for ln in (top_pad + buf.getvalue()).split("\n"))
         return frame_cache[state_key]
 
-    perch_sec, stagger_sec, dt = 0.70, 0.95, 0.028
-    anim_end = perch_sec + max(0, n_actors - 1) * stagger_sec + 1.48
+    perch_sec, stagger_sec, speed, settle_pad, dt = _tittle_pace_params(pace)
+    anim_end = perch_sec + max(0, n_actors - 1) * stagger_sec + (1.48 / speed)
+    min_settle_sec = anim_end + settle_pad
     t = 0.0
     while t <= anim_end + dt:
-        _get_ansi(tuple(_tittle_actor_state_at(t - (perch_sec + i * stagger_sec)) for i in range(n_actors)))
+        _get_ansi(tuple(_tittle_actor_state_at((t - (perch_sec + i * stagger_sec)) * speed) for i in range(n_actors)))
         t += dt
     _get_ansi(settled_key)
     start_ts = time.monotonic()
-    eff_hold = max(anim_end + 0.6, float(hold)) if hold > 0.0 else 0.0
+    eff_hold = max(min_settle_sec, float(hold)) if hold > 0.0 else 0.0
     last_key = None
     sys.stdout.write("\033[?25l\033[2J\033[H")
     sys.stdout.flush()
     try:
         while True:
-            if stop_file and os.path.exists(stop_file):
-                break
             elapsed = time.monotonic() - start_ts
-            if eff_hold > 0.0 and elapsed >= eff_hold:
-                break
             if elapsed >= anim_end:
                 if last_key != settled_key:
                     sys.stdout.write("\033[?2026h\033[H" + _get_ansi(settled_key) + "\033[?2026l")
@@ -1113,9 +1121,19 @@ def run_tittle_drop_card(label: str, hold: float = 4.0, stop_file: str = "", res
                     last_key = settled_key
                 if eff_hold <= 0.0:
                     break
-                time.sleep(min(0.05, max(0.0, (start_ts + eff_hold) - time.monotonic())))
+                if elapsed >= min_settle_sec and (
+                    elapsed >= eff_hold or (stop_file and os.path.exists(stop_file))
+                ):
+                    break
+                rem = eff_hold - (time.monotonic() - start_ts)
+                if stop_file and os.path.exists(stop_file):
+                    rem = min(rem, min_settle_sec - (time.monotonic() - start_ts))
+                time.sleep(min(0.04, max(0.005, rem)))
                 continue
-            cur_key = tuple(_tittle_actor_state_at(elapsed - (perch_sec + i * stagger_sec)) for i in range(n_actors))
+            cur_key = tuple(
+                _tittle_actor_state_at((elapsed - (perch_sec + i * stagger_sec)) * speed)
+                for i in range(n_actors)
+            )
             if cur_key != last_key:
                 sys.stdout.write("\033[?2026h\033[H" + _get_ansi(cur_key) + "\033[?2026l")
                 sys.stdout.flush()
