@@ -73,11 +73,13 @@ def _extract_post_seeds(md_path: Path, ctx_dir: Path, source_tag: str) -> dict:
     title = info["meta"].get("title") or md_path.stem
     aid = common.read_article_id(md_path) or 0
     kws: list[str] = []
+    shard_summary = ""
     shard_p = ctx_dir / f"{md_path.stem}.json"
     if shard_p.is_file():
         try:
             sh = json.loads(shard_p.read_text(encoding="utf-8"))
             kws = [str(k).strip() for k in (sh.get("kw") or []) if str(k).strip()]
+            shard_summary = str(sh.get("s") or sh.get("summary") or "").strip()[:600]
         except Exception:
             kws = []
     lean_body, _ = articleizer.strip_fences(body)
@@ -87,36 +89,55 @@ def _extract_post_seeds(md_path: Path, ctx_dir: Path, source_tag: str) -> dict:
     return {
         "article_id": aid, "date": md_path.name[:10], "name": md_path.name,
         "title": title, "source_tag": source_tag, "kws": kws[:5],
-        "ideas": ideas, "next_steps": next_steps,
+        "ideas": ideas, "next_steps": next_steps, "shard_summary": shard_summary,
     }
 
 
-def harvest_dual_heads(posts_dir: Path, forward_n: int = 2, backfill_n: int = 2) -> tuple[list[dict], list[dict]]:
+RETRO_CURSOR_FILE = common.CONFIG_DIR / "dots_retro_cursor.json"
+
+
+def _resolve_retro_window(args: argparse.Namespace) -> tuple[int, int, str]:
+    if getattr(args, "retro_reset", False):
+        RETRO_CURSOR_FILE.unlink(missing_ok=True)
+        return 0, args.backfill, "reset->norma-up-next"
+    if getattr(args, "offset", 0) > 0:
+        return int(args.offset), args.backfill, f"offset={int(args.offset)}"
+    cur = json.loads(RETRO_CURSOR_FILE.read_text(encoding="utf-8")) if RETRO_CURSOR_FILE.is_file() else {}
+    if getattr(args, "retro", None) is not None:
+        step = max(1, int(args.retro))
+        off = int(cur.get("next_offset") or max(1, int(args.forward)))
+        common.CONFIG_DIR.mkdir(parents=True, exist_ok=True)
+        RETRO_CURSOR_FILE.write_text(json.dumps({"offset": off, "next_offset": off + step, "step": step}, indent=2) + "\n", encoding="utf-8")
+        return off, step, f"retro-step(offset={off}, step={step})"
+    if cur.get("offset"):
+        return int(cur["offset"]), int(cur.get("step") or args.backfill), f"retro-parked(offset={cur['offset']})"
+    return 0, args.backfill, "norma-up-next"
+
+
+def harvest_dual_heads(posts_dir: Path, forward_n: int = 2, backfill_n: int = 2, retro_offset: int = 0) -> tuple[list[dict], list[dict]]:
     pdir = Path(posts_dir).expanduser().resolve()
     ctx_dir = pdir / "_context"
     dated = sorted([p for p in pdir.glob("*.md") if common._DATED_POST_RE.match(p.name)], key=common._post_sort_key)
-    head_a_paths = list(reversed(dated[-max(1, int(forward_n)):])) if dated else []
+    newest_first = list(reversed(dated))
+    head_a_paths = newest_first[: max(0, int(forward_n))] if forward_n > 0 else []
     seen = {p.name for p in head_a_paths}
     head_a = [_extract_post_seeds(p, ctx_dir, "forward-latest") for p in head_a_paths]
     head_b: list[dict] = []
-    abs_dir = pdir / norma_extract.ABSTRACTS_SUBDIR
-    if abs_dir.is_dir():
-        abs_sorted = sorted([p for p in abs_dir.glob("*.md") if common._DATED_POST_RE.match(p.name)], key=lambda p: p.stat().st_mtime_ns, reverse=True)
-        for ap in abs_sorted:
+    if retro_offset > 0:
+        for p in newest_first[retro_offset:]:
             if len(head_b) >= backfill_n:
                 break
-            parent_p = pdir / ap.name
-            if ap.name not in seen and parent_p.is_file():
-                seen.add(ap.name)
-                head_b.append(_extract_post_seeds(parent_p, ctx_dir, "norma-minted"))
-    if len(head_b) < backfill_n:
-        for cand in norma_extract.rank_candidates(pdir, limit=forward_n + backfill_n + 4):
-            if len(head_b) >= backfill_n:
-                break
-            cp = Path(cand["path"])
-            if cp.name not in seen and cp.is_file():
-                seen.add(cp.name)
-                head_b.append(_extract_post_seeds(cp, ctx_dir, "norma-up-next"))
+            if p.name not in seen and not common.read_frontmatter_bool(p, "aside"):
+                seen.add(p.name)
+                head_b.append(_extract_post_seeds(p, ctx_dir, "retro-archive"))
+        return head_a, head_b
+    for cand in norma_extract.rank_candidates(pdir, limit=max(1, forward_n) + backfill_n + 8):
+        if len(head_b) >= backfill_n:
+            break
+        cp = Path(cand["path"])
+        if cp.name not in seen and cp.is_file():
+            seen.add(cp.name)
+            head_b.append(_extract_post_seeds(cp, ctx_dir, "norma-up-next"))
     return head_a, head_b
 
 
@@ -128,10 +149,13 @@ def compute_scoreboard(foo_path: Path, head_a: list[dict], head_b: list[dict]) -
         top_rec = fl[rs + 1 : min(re_i, rs + 4)]
     except StopIteration:
         top_rec = []
+    paint_i = next((i for i, ln in enumerate(fl) if "XIX. THE PAINTBOX" in ln), len(fl))
+    claimed_files = set(re.findall(r"\b[a-z0-9_]+\.(?:py|nix|sh|js)\b", "\n".join(fl[:paint_i]).lower()))
     axis1 = sum(ln.lower().count("discharging") + ln.count("ALL LANDED") + (1 if "pipulate commit" in ln else 0) for ln in top_rec)
     todos = [ln for ln in fl if ln.startswith("# - TODO")]
     p0_count = sum(1 for ln in todos if ", P0." in ln)
-    seed_tokens = _tokenize_topics([" ".join([*it["kws"], *it["ideas"], it["next_steps"]]) for it in [*head_a, *head_b]])
+    over_cap = sum(1 for ln in todos if len(ln) > 320)
+    seed_tokens = _tokenize_topics([" ".join([*it["kws"], *it["ideas"], it["next_steps"], it.get("shard_summary", "")]) for it in [*head_a, *head_b]])
     raw_phrases = {" ".join(re.findall(r"[a-z0-9]+", kw.lower())) for it in [*head_a, *head_b] for kw in it["kws"]}
     raw_phrases = {p for p in raw_phrases if len(p.split()) >= 2 and p not in _PILLAR_PHRASES}
     todo_toks = [_tokenize_topics([ln]) for ln in todos]
@@ -140,6 +164,11 @@ def compute_scoreboard(foo_path: Path, head_a: list[dict], head_b: list[dict]) -
     phr_df = Counter(p for w in todo_words for p in raw_phrases if f" {p} " in w)
     rare_tokens = {t for t in seed_tokens if 1 <= tok_df[t] <= 4}
     rare_phrases = {p for p in raw_phrases if 1 <= phr_df[p] <= 4}
+    for it in [*head_a, *head_b]:
+        blob = " ".join([it["title"], *it["kws"], *it["ideas"], it["next_steps"], it.get("shard_summary", "")])
+        t_ov = sorted(_tokenize_topics([blob]) & rare_tokens)[:4]
+        f_ov = sorted(set(re.findall(r"\b[a-z0-9_]+\.(?:py|nix|sh|js)\b", blob.lower())) & claimed_files)[:4]
+        it["foo_hint"] = f"todo_overlap=({', '.join(t_ov) or 'none'}) | claimed_files=({', '.join(f_ov) or 'none'})"
     collisions = []
     for ln, ln_w, t_set in zip(todos, todo_words, todo_toks):
         p_hits = sorted(p for p in rare_phrases if f" {p} " in ln_w)
@@ -151,35 +180,42 @@ def compute_scoreboard(foo_path: Path, head_a: list[dict], head_b: list[dict]) -
     collisions.sort(key=lambda x: (-x[0], x[1]))
     axis2 = len(collisions)
     verdict = "OPEN_FOR_MERGES_AND_SPARKS" if (axis1 + axis2) > 0 else "HOLD_NET_ZERO"
-    return {"axis1": axis1, "axis2": axis2, "open_todos": len(todos), "p0_todos": p0_count, "verdict": verdict, "collisions": collisions[:6]}
+    return {"axis1": axis1, "axis2": axis2, "open_todos": len(todos), "p0_todos": p0_count, "over_cap": over_cap, "verdict": verdict, "collisions": collisions[:6]}
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Dual-Head Idea-Refinery Harvester (`dots`).")
     common.add_standard_arguments(parser)
     parser.add_argument("-f", "--forward", type=int, default=2, help="Newest _posts/*.md count for Head A (default: 2).")
-    parser.add_argument("-b", "--backfill", type=int, default=2, help="Retrograde _abstracts/ count for Head B (default: 2).")
+    parser.add_argument("-b", "--backfill", type=int, default=2, help="Head B serotinous-cone count (default: 2).")
+    parser.add_argument("--offset", type=int, default=0, help="Stateless backward post offset for Head B (default: 0).")
+    parser.add_argument("--retro", nargs="?", const=3, default=None, type=int, help="Step persisted retrograde cursor back N posts (default: 3).")
+    parser.add_argument("--retro-reset", action="store_true", help="Clear persisted retrograde cursor back to norma-up-next.")
     parser.add_argument("--radar", action="store_true", help="Compact terminal summary without full seed bodies.")
     parser.add_argument("--repo-root", type=str, default=str(DEFAULT_REPO_ROOT), help="Repo root containing foo_files.py.")
     args = parser.parse_args(argv)
     targets = common.load_targets()
     tcfg = targets.get(str(args.target), {"path": common.resolve_default_posts_dir()})
     pdir = Path(tcfg["path"]).expanduser().resolve()
-    head_a, head_b = harvest_dual_heads(pdir, forward_n=args.forward, backfill_n=args.backfill)
+    retro_off, eff_backfill, mode_lbl = _resolve_retro_window(args)
+    head_a, head_b = harvest_dual_heads(pdir, forward_n=args.forward, backfill_n=eff_backfill, retro_offset=retro_off)
     sb = compute_scoreboard(Path(args.repo_root).expanduser().resolve() / "foo_files.py", head_a, head_b)
-    print(f"# 🔵 DOTS DUAL-HEAD IDEA REFINERY — Verdict: {sb['verdict']}")
+    print(f"# 🔵 DOTS DUAL-HEAD IDEA REFINERY — Verdict: {sb['verdict']} | Mode: {mode_lbl} | Over320c={sb['over_cap']}")
     print(f"# ⚖️  Two-Axis Goodhart Scoreboard: Axis1(Discharged)={sb['axis1']} | Axis2(Collisions)={sb['axis2']} | Open_TODOs={sb['open_todos']} (P0={sb['p0_todos']})")
     for cnt, lbl, kws in sb["collisions"]:
         print(f"  • [overlap={cnt}] {lbl} <- ({', '.join(kws)})")
-    for label, items in (("Forward Head A (! latest)", head_a), ("Retrograde Head B (norma cones)", head_b)):
+    for label, items in (("Forward Head A (! latest)", head_a), (f"Retrograde Head B ({mode_lbl})", head_b)):
         print(f"\n## {label}")
         for it in items:
             print(f"- #{it['article_id']} [{it['date']} | {it['source_tag']}] {it['title']} | kw=({', '.join(it['kws'])})")
+            print(f"  [FOO_CHECK]: {it.get('foo_hint', '')}")
             if not args.radar:
                 for blk in it["ideas"]:
                     print(f"  [IDEAS_BLOCK]:\n{blk}")
                 if it["next_steps"]:
                     print(f"  [NEXT_STEP_PROMPTS]:\n{it['next_steps']}")
+                elif not it["ideas"] and it.get("shard_summary"):
+                    print(f"  [SHARD_SUMMARY]:\n{it['shard_summary']}")
     return 0
 
 
