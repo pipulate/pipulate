@@ -223,6 +223,14 @@ def _center_and_raise(window_class, env=None, fill=False, margin=40, retries=10)
 def render_patronus_banner(name: str) -> None:
     """Render a registered figurate ASCII art piece centered inside a visible Rich Panel border."""
     import sys
+    if name == "tittle_drop":
+        run_tittle_drop_card(
+            "SUNPUG.IO &\nMIKELEV.IN",
+            hold=0.0,
+            restore_cursor=False,
+            title="🎯 Tittle Drop -- SUNPUG.IO & MIKELEV.IN",
+        )
+        return
     art_res = figurate(name)
     human_obj = art_res.human
     title = None
@@ -467,6 +475,10 @@ def measure_figlet(label: str, font: str = "standard", width: int = 80) -> tuple
     that to the window. This helper stays single-purpose; composition happens
     one layer up.
     """
+    if has_tittle_drop(label):
+        spec = build_tittle_drop_spec(label, font=font, fig_width=max(80, int(width)))
+        if spec is not None:
+            return spec["canvas_w"], spec["canvas_h"]
     rendered = label
     try:
         from pyfiglet import Figlet
@@ -1020,6 +1032,100 @@ def render_tittle_frame_text(spec: dict, actor_states: list) -> tuple:
                 txt.append("".join(row_c[seg:c_idx]), style=row_s[seg])
                 seg = c_idx
     return txt, "\n".join("".join(r) for r in grid)
+
+def _tittle_actor_state_at(local_t: float) -> tuple:
+    """Perch -> 3-col left blit -> 0.32s Wile E. Coyote hang -> parabolic bounce -> cyan lock."""
+    if local_t < 0.0:
+        return (0, 0, "bold bright_yellow")
+    if local_t < 0.08:
+        return (-1, 0, "bold bright_yellow")
+    if local_t < 0.16:
+        return (-2, 0, "bold bright_yellow")
+    if local_t < 0.48:
+        return (-3, 0, "bold bright_yellow")
+    if local_t < 1.16:
+        dy = ease_out_bounce_drop((local_t - 0.48) / 0.68, 5)
+        return (-3, dy, "bold bright_white" if dy == 5 else "bold bright_yellow")
+    if local_t < 1.28:
+        return (-3, 5, "bold bright_white")
+    if local_t < 1.45:
+        return (-3, 5, "bold bright_yellow")
+    return (-3, 5, "bold bright_cyan")
+
+def run_tittle_drop_card(label: str, hold: float = 4.0, stop_file: str = "", restore_cursor: bool = True, title: Optional[str] = None) -> bool:
+    """Play double-buffered ANSI tittle-drop entrance, then hold settled banner cleanly."""
+    import io
+    import os
+    import shutil
+    import sys
+    import time
+    spec = build_tittle_drop_spec(label)
+    if spec is None:
+        return False
+    n_actors = len(spec["actors"])
+    settled_key = tuple((-3, 5, "bold bright_cyan") for _ in range(n_actors))
+    if not sys.stdout.isatty():
+        _, plain_settled = render_tittle_frame_text(spec, list(settled_key))
+        sys.stdout.write(plain_settled + "\n")
+        sys.stdout.flush()
+        return True
+    term_sz = shutil.get_terminal_size((84, 24))
+    term_w, term_h = max(68, term_sz.columns), max(19, term_sz.lines)
+    top_pad = "\n" * max(0, (term_h - (spec["canvas_h"] + 5)) // 2)
+    frame_cache: dict = {}
+
+    def _get_ansi(state_key: tuple) -> str:
+        if state_key not in frame_cache:
+            rich_txt, _ = render_tittle_frame_text(spec, list(state_key))
+            panel = Panel(rich_txt, title=title, border_style="bright_cyan", padding=(1, 3, 2, 3), expand=False)
+            buf = io.StringIO()
+            Console(file=buf, force_terminal=True, color_system="truecolor", width=term_w).print(
+                Align.center(panel, width=max(40, term_w - 1)), end=""
+            )
+            frame_cache[state_key] = "\n".join(ln + "\033[K" for ln in (top_pad + buf.getvalue()).split("\n"))
+        return frame_cache[state_key]
+
+    perch_sec, stagger_sec, dt = 0.70, 0.95, 0.028
+    anim_end = perch_sec + max(0, n_actors - 1) * stagger_sec + 1.48
+    t = 0.0
+    while t <= anim_end + dt:
+        _get_ansi(tuple(_tittle_actor_state_at(t - (perch_sec + i * stagger_sec)) for i in range(n_actors)))
+        t += dt
+    _get_ansi(settled_key)
+    start_ts = time.monotonic()
+    eff_hold = max(anim_end + 0.6, float(hold)) if hold > 0.0 else 0.0
+    last_key = None
+    sys.stdout.write("\033[?25l\033[2J\033[H")
+    sys.stdout.flush()
+    try:
+        while True:
+            if stop_file and os.path.exists(stop_file):
+                break
+            elapsed = time.monotonic() - start_ts
+            if eff_hold > 0.0 and elapsed >= eff_hold:
+                break
+            if elapsed >= anim_end:
+                if last_key != settled_key:
+                    sys.stdout.write("\033[?2026h\033[H" + _get_ansi(settled_key) + "\033[?2026l")
+                    sys.stdout.flush()
+                    last_key = settled_key
+                if eff_hold <= 0.0:
+                    break
+                time.sleep(min(0.05, max(0.0, (start_ts + eff_hold) - time.monotonic())))
+                continue
+            cur_key = tuple(_tittle_actor_state_at(elapsed - (perch_sec + i * stagger_sec)) for i in range(n_actors))
+            if cur_key != last_key:
+                sys.stdout.write("\033[?2026h\033[H" + _get_ansi(cur_key) + "\033[?2026l")
+                sys.stdout.flush()
+                last_key = cur_key
+            time.sleep(dt)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        if restore_cursor:
+            sys.stdout.write("\033[?25h\n")
+            sys.stdout.flush()
+    return True
 
 def _figurate_tittle_drop():
     """Render poised SUNPUG.IO & MIKELEV.IN tittle-drop frame for FIGURATE_REGISTRY."""

@@ -82,6 +82,22 @@ def render(label: str):
     print(banner)
 
 
+def _try_animated_card(label: str, hold: float, stop_file=None) -> bool:
+    """Play double-buffered tittle-drop entrance + hold when label carries a .I* TLD."""
+    from pathlib import Path
+    norm_label = label.replace("\\n", "\n")
+    for anc in Path(__file__).resolve().parents:
+        if (anc / "imports" / "ascii_displays.py").is_file():
+            if str(anc) not in sys.path:
+                sys.path.insert(0, str(anc))
+            break
+    try:
+        from imports.ascii_displays import has_tittle_drop, run_tittle_drop_card
+        return bool(has_tittle_drop(norm_label) and run_tittle_drop_card(norm_label, hold=hold, stop_file=stop_file or ""))
+    except Exception:
+        return False
+
+
 def main():
     label = sys.argv[1] if len(sys.argv) > 1 else "Station"
 
@@ -98,6 +114,8 @@ def main():
             hold = 900.0
 
     stop_file = sys.argv[3] if len(sys.argv) > 3 else None
+    if _try_animated_card(label, hold=hold, stop_file=stop_file):
+        return
     render(label)
     if stop_file:
         start_time = time.time()
