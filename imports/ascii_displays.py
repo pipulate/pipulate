@@ -358,7 +358,8 @@ def conjure_window(command, duration: float = 30.0, columns: int = 100, lines: i
                    cwd: Optional[str] = None, title: str = "ConjureWindow",
                    window_class: str = "conjure_window_overlay",
                    display: Optional[str] = None, fill: bool = False,
-                   ready_event=None) -> None:
+                   ready_event=None, alacritty_options=None,
+                   detach: bool = False) -> None:
     """🪟 CONJURE WINDOW: Run an arbitrary command in a transient Alacritty overlay.
 
     This is the process-flavored sibling of patronus(): patronus renders a
@@ -409,6 +410,7 @@ def conjure_window(command, duration: float = 30.0, columns: int = 100, lines: i
         env["DISPLAY"] = ":10.0"
 
     working_dir = cwd or os.getcwd()
+    extra_opts = [item for opt in (alacritty_options or ()) if opt for item in ("-o", str(opt))]
     cmd = [
         "alacritty",
         "--title", str(title),
@@ -416,6 +418,7 @@ def conjure_window(command, duration: float = 30.0, columns: int = 100, lines: i
         "-o", "window.decorations='none'",
         "-o", f"window.dimensions={{columns={int(columns)}, lines={int(lines)}}}",
         "-o", "window.position={x=20, y=20}",
+        *extra_opts,
         "-e", *launch_cmd,
     ]
 
@@ -428,6 +431,7 @@ def conjure_window(command, duration: float = 30.0, columns: int = 100, lines: i
             env=env,
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
+            start_new_session=bool(detach),
         )
 
         time.sleep(0.15)
@@ -440,16 +444,17 @@ def conjure_window(command, duration: float = 30.0, columns: int = 100, lines: i
         if ready_event is not None:
             ready_event.set()
 
-        try:
-            proc.wait(timeout=duration)
-        except subprocess.TimeoutExpired:
-            proc.terminate()
+        if not detach:
+            try:
+                proc.wait(timeout=duration)
+            except subprocess.TimeoutExpired:
+                proc.terminate()
     except Exception as e:
         logger.error(f"🪟 CONJURE_WINDOW connection framework failure encountered: {e}")
     finally:
         if ready_event is not None:
             ready_event.set()
-        if proc is not None and proc.poll() is None:
+        if not detach and proc is not None and proc.poll() is None:
             try:
                 proc.terminate()
             except Exception:
@@ -1053,10 +1058,10 @@ def _tittle_actor_state_at(local_t: float) -> tuple:
     return (-3, 5, "bold bright_cyan")
 
 def _tittle_pace_params(pace: str = "standard") -> tuple:
-    """Return (perch_sec, stagger_sec, speed, settle_pad, dt) for 'standard' vs brisk 'fast'/'bumper' plays."""
+    """Return (perch_sec, stagger_sec, speed, settle_pad, dt) with ~1s visible perched hover setup."""
     if str(pace or "standard").strip().lower() in ("fast", "bumper", "brisk"):
-        return (0.28, 0.52, 1.45, 0.50, 0.022)
-    return (0.70, 0.95, 1.0, 0.60, 0.028)
+        return (1.05, 0.52, 1.45, 0.50, 0.022)
+    return (1.30, 0.95, 1.0, 0.60, 0.028)
 
 def tittle_min_hold_seconds(pace: str = "standard", n_actors: int = 2) -> float:
     """Minimum seconds required for all tittles to bounce, flash, and settle into cyan."""
@@ -1333,8 +1338,20 @@ def falling_alice(console_output=True):
     return falling_alice_art
 
 
-def run_falling_alice_drop(passes: int = 3, step_delay: float = 0.022) -> int:
-    """Animate ASCII Alice tumbling down the rabbit hole across the terminal viewport."""
+FALLING_ALICE_WINDOW_CLASS = "falling_alice_overlay"
+FALLING_ALICE_ALACRITTY_OPTIONS = (
+    "window.opacity=0.0",
+    'window.decorations="None"',
+    "colors.draw_bold_text_with_bright_colors=true",
+    'colors.primary.background="#000000"',
+    'colors.primary.foreground="#ffffff"',
+    'colors.primary.bright_foreground="#ffffff"',
+    'colors.normal.white="#ffffff"',
+    'colors.bright.white="#ffffff"',
+)
+
+def run_falling_alice_drop(passes: int = 3, step_delay: float = 0.022, max_duration: float = 0.0) -> int:
+    """Animate borderless pure bright-white (#ffffff) ASCII Alice with DEC Mode 2026 VSync."""
     import shutil
     import sys
     import time
@@ -1342,55 +1359,71 @@ def run_falling_alice_drop(passes: int = 3, step_delay: float = 0.022) -> int:
     sprite = [ln.rstrip() for ln in raw_art.splitlines()]
     cols, rows = shutil.get_terminal_size((76, 42))
     view_h = max(24, rows - 1)
-    inner_w = max(16, cols - 6)
+    inner_w = max(16, cols - 2)
     art_w = max((len(ln) for ln in sprite), default=40)
     pad_x = " " * max(1, (inner_w - art_w) // 2)
     frames = 0
-    sys.stdout.write("\033[?25l\033[2J")
+    start_ts = time.monotonic()
+    sys.stdout.write("\033[?25l\033[2J\033[H")
+    sys.stdout.flush()
     try:
         for _ in range(max(1, int(passes))):
             for top_y in range(-len(sprite), view_h + 1):
-                buf = ["\033[H"]
+                if max_duration > 0.0 and (time.monotonic() - start_ts) >= float(max_duration):
+                    return frames
+                buf = []
                 for r in range(view_h):
                     s_idx = r - top_y
-                    wall = "·" if (r + top_y) % 5 == 0 else " "
-                    if 0 <= s_idx < len(sprite):
-                        art_ln = (pad_x + sprite[s_idx])[:inner_w].ljust(inner_w)
-                        buf.append(f" \033[2;36m│{wall}\033[0m\033[1;37m{art_ln}\033[0m\033[2;36m{wall}│\033[0m")
+                    if 0 <= s_idx < len(sprite) and sprite[s_idx]:
+                        art_ln = (pad_x + sprite[s_idx])[:inner_w]
+                        buf.append(f"\033[1;97m{art_ln}\033[0m\033[K")
                     else:
-                        buf.append(f" \033[2;36m│{wall}{' ' * inner_w}{wall}│\033[0m")
-                sys.stdout.write("\n".join(buf))
+                        buf.append("\033[2K")
+                sys.stdout.write("\033[?2026h\033[H" + "\n".join(buf) + "\033[?2026l")
                 sys.stdout.flush()
                 frames += 1
                 if step_delay > 0:
                     time.sleep(step_delay)
     finally:
-        sys.stdout.write("\033[?25h")
+        sys.stdout.write("\033[0m\033[?25h")
         sys.stdout.flush()
     return frames
 
 
-def conjure_falling_alice(passes: int = 3, duration: float = 6.5, display: Optional[str] = None) -> None:
-    """Open a centered Alacritty rabbit-hole overlay on :10.0 and drop Falling Alice `passes` times."""
+def dismiss_falling_alice() -> None:
+    """Dismiss any active Falling Alice overlay window without touching other Alacritty windows."""
+    import subprocess
+    subprocess.run(
+        ["pkill", "-f", "[f]alling_alice_overlay"],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        check=False,
+    )
+
+def conjure_falling_alice(passes: int = 3, duration: float = 6.5, display: Optional[str] = None, detach: bool = False) -> None:
+    """Open a scoped opacity=0.0 borderless #ffffff Alacritty overlay on :10.0 and drop Falling Alice."""
     import os
     import sys
     from pathlib import Path
     if os.environ.get("HONEYBOT_NO_X11") == "1":
         return
     repo_root = Path(__file__).resolve().parents[1].as_posix()
+    max_dur = max(1.0, float(duration))
     payload = (
         f"import sys; sys.path.insert(0, {repo_root!r}); "
         "from imports.ascii_displays import run_falling_alice_drop; "
-        f"run_falling_alice_drop(passes={int(passes)})"
+        f"run_falling_alice_drop(passes={int(passes)}, max_duration={max_dur})"
     )
     conjure_window(
         [sys.executable, "-u", "-c", payload],
-        duration=duration,
+        duration=max_dur,
         columns=76,
         lines=42,
         title="FallingAlice",
-        window_class="conjure_window_overlay",
+        window_class=FALLING_ALICE_WINDOW_CLASS,
         display=display,
+        alacritty_options=FALLING_ALICE_ALACRITTY_OPTIONS,
+        detach=detach,
     )
 
 
