@@ -115,6 +115,7 @@ def _append_article_performance(script, article, is_latest=True):
     ))
     script.append(("OVERTURE", {"title": title_str, "raw_title": raw_title, "jukebox_index": jb_idx, "article": art_id}))
     script.append(("BGM", "START"))
+    script.append(("BUMPER", {"slot": "post_overture"}))
     image_path = str(article.get("image") or "").strip()
     if image_path:
         script.append(("MEDIA", {"path": image_path, "duration": HERO_IMAGE_DURATION}))
@@ -124,6 +125,7 @@ def _append_article_performance(script, article, is_latest=True):
     if 0 < split_idx < len(body_cues):
         script.extend(body_cues[:split_idx])
         script.append(("BGM", "STOP"))
+        script.append(("BUMPER", {"slot": "pre_intermission"}))
         script.append(("INTERMISSION", {"title": title_str}))
         script.append(("BGM", "START"))
         script.append(("SAY", "Resuming storytime with Act Two."))
@@ -135,12 +137,12 @@ def _append_article_performance(script, article, is_latest=True):
         "CARD",
         {
             "label": "SUNPUG.IO &\nMIKELEV.IN",
+            "pace": "standard",
             "say": (
                 f"That concludes {article['title']}. "
-                "Just like Mobile-First Responsive Web Design in the 2010s, the ten-year shift to the Agent-First Edge is wide open right now: "
-                "follow Sunpugio to grab your own self-replicating Sun Pug and 911 LLM Optics free at SunPug.io, "
-                "read the full text and raw receipts at mikelev.in, and forward this broadcast to one sharp builder who needs it. "
-                "Join the Founding 1,000 AI-Readiness Consultants at mikelev.in/discord, or drop a message in the live chat — "
+                "Remember the two addresses: you get the long-form articles and raw book receipts at MikeLev.in, "
+                "and you get the local-first A I-Readiness tools and 911 L L M Optics free at SunPug.io. "
+                "Join the Founding 1,000 A I-Readiness Consultants at MikeLev.in/discord, or drop a message in the live chat — "
                 "a human operator monitors this observatory and can break in live."
             ),
         },
@@ -150,7 +152,7 @@ def _append_article_performance(script, article, is_latest=True):
 
 def get_script(breaking=False, jukebox_index=None):
     """Generate the Honeybot playlist (or a specific 1..N Jukebox selection)."""
-    script = []
+    script = [("BUMPER", {"slot": "pre_intro"})]
 
     if jukebox_index:
         try:
