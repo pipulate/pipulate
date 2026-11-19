@@ -615,8 +615,11 @@ for _ in range(90):
         if wid not in before_wids and ("Firefox" in line or "Pipulate" in line or "Optics" in line):
             subprocess.run(["wmctrl", "-i", "-r", wid, "-b", "add,fullscreen,above,skip_taskbar,skip_pager"], env=env, check=False)
             subprocess.run(["wmctrl", "-i", "-a", wid], env=env, check=False)
+            time.sleep(0.45)
+            subprocess.run(["pkill", "-f", "[f]alling_alice_overlay"], check=False)
             print("STAGE_WINDOW_PINNED=" + wid)
             raise SystemExit(0)
+subprocess.run(["pkill", "-f", "[f]alling_alice_overlay"], check=False)
 print("STAGE_WINDOW_LAUNCHED")
 """
 
