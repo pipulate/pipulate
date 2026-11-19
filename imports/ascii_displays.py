@@ -1040,24 +1040,24 @@ def render_tittle_frame_text(spec: dict, actor_states: list) -> tuple:
                 seg = c_idx
     return txt, "\n".join("".join(r) for r in grid)
 
+TITTLE_BALL_STYLE = "bold bright_yellow"
+
 def _tittle_actor_state_at(local_t: float) -> tuple:
-    """Perch -> 3-col left blit -> 0.32s Wile E. Coyote hang -> parabolic bounce -> cyan lock."""
+    """Perch -> 3-col left blit -> 0.32s Wile E. Coyote hang -> parabolic bounce -> settled TLD glow."""
     if local_t < 0.0:
-        return (0, 0, "bold bright_yellow")
+        return (0, 0, TITTLE_BALL_STYLE)
     if local_t < 0.08:
-        return (-1, 0, "bold bright_yellow")
+        return (-1, 0, TITTLE_BALL_STYLE)
     if local_t < 0.16:
-        return (-2, 0, "bold bright_yellow")
+        return (-2, 0, TITTLE_BALL_STYLE)
     if local_t < 0.48:
-        return (-3, 0, "bold bright_yellow")
+        return (-3, 0, TITTLE_BALL_STYLE)
     if local_t < 1.16:
         dy = ease_out_bounce_drop((local_t - 0.48) / 0.68, 5)
-        return (-3, dy, "bold bright_white" if dy == 5 else "bold bright_yellow")
+        return (-3, dy, "bold bright_white" if dy == 5 else TITTLE_BALL_STYLE)
     if local_t < 1.28:
         return (-3, 5, "bold bright_white")
-    if local_t < 1.45:
-        return (-3, 5, "bold bright_yellow")
-    return (-3, 5, "bold bright_cyan")
+    return (-3, 5, TITTLE_BALL_STYLE)
 
 def _tittle_pace_params(pace: str = "standard") -> tuple:
     """Return (perch_sec, stagger_sec, speed, settle_pad, dt) with ~3.5-4.0s logarithmic perched setup."""
@@ -1081,7 +1081,7 @@ def run_tittle_drop_card(label: str, hold: float = 4.0, stop_file: str = "", res
     if spec is None:
         return False
     n_actors = len(spec["actors"])
-    settled_key = tuple((-3, 5, "bold bright_cyan") for _ in range(n_actors))
+    settled_key = tuple((-3, 5, TITTLE_BALL_STYLE) for _ in range(n_actors))
     if not sys.stdout.isatty():
         _, plain_settled = render_tittle_frame_text(spec, list(settled_key))
         sys.stdout.write(plain_settled + "\n")
@@ -1352,8 +1352,15 @@ FALLING_ALICE_ALACRITTY_OPTIONS = (
     'colors.bright.white="#ffffff"',
 )
 
-def run_falling_alice_drop(passes: int = 3, step_delay: float = 0.022, max_duration: float = 0.0) -> int:
-    """Animate borderless pure bright-white (#ffffff) ASCII Alice with DEC Mode 2026 VSync."""
+FALLING_ALICE_PAUSE_RATIO = 3.0
+
+def run_falling_alice_drop(
+    passes: int = 3,
+    step_delay: float = 0.022,
+    max_duration: float = 0.0,
+    pause_ratio: float = FALLING_ALICE_PAUSE_RATIO,
+) -> int:
+    """Animate borderless #ffffff ASCII Alice at a 1:4 duty cycle (1 fall : 3 fall-units clear pause)."""
     import shutil
     import sys
     import time
@@ -1365,11 +1372,13 @@ def run_falling_alice_drop(passes: int = 3, step_delay: float = 0.022, max_durat
     art_w = max((len(ln) for ln in sprite), default=40)
     pad_x = " " * max(1, (inner_w - art_w) // 2)
     frames = 0
+    total_passes = max(1, int(passes))
     start_ts = time.monotonic()
     sys.stdout.write("\033[?25l\033[2J\033[H")
     sys.stdout.flush()
     try:
-        for _ in range(max(1, int(passes))):
+        for pass_idx in range(total_passes):
+            pass_t0 = time.monotonic()
             for top_y in range(-len(sprite), view_h + 1):
                 if max_duration > 0.0 and (time.monotonic() - start_ts) >= float(max_duration):
                     return frames
@@ -1386,6 +1395,17 @@ def run_falling_alice_drop(passes: int = 3, step_delay: float = 0.022, max_durat
                 frames += 1
                 if step_delay > 0:
                     time.sleep(step_delay)
+            fall_sec = max(0.0, time.monotonic() - pass_t0)
+            if pause_ratio > 0.0 and step_delay > 0.0 and (pass_idx + 1) < total_passes:
+                pause_until = time.monotonic() + (fall_sec * float(pause_ratio))
+                while True:
+                    now_m = time.monotonic()
+                    if max_duration > 0.0 and (now_m - start_ts) >= float(max_duration):
+                        return frames
+                    rem_p = pause_until - now_m
+                    if rem_p <= 0.0:
+                        break
+                    time.sleep(min(0.05, rem_p))
     finally:
         sys.stdout.write("\033[0m\033[?25h")
         sys.stdout.flush()
