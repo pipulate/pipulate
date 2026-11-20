@@ -3066,10 +3066,10 @@ YT_ULL_GREET_COOLDOWN = int(os.environ.get("PIPULATE_YT_GREET_COOLDOWN", "15"))
 _last_ull_greet_ts = 0.0
 
 _HONEYBOT_ULL_GREET_HELPER = r'''
-import os, pathlib, re, shutil, subprocess, sys, time
+import base64, os, pathlib, re, shutil, subprocess, sys, time
 t0 = time.perf_counter()
 dur = max(0.8, min(15.0, float(sys.argv[1])))
-msg = sys.argv[2] if len(sys.argv) > 2 else "WELCOME, LIVE VIEWER!"
+msg = base64.b64decode(sys.argv[2].encode("ascii")).decode("utf-8") if len(sys.argv) > 2 else "WELCOME, LIVE VIEWER!"
 env = os.environ.copy()
 for p in sorted(pathlib.Path("/proc").glob("[0-9]*/cmdline")):
     try:
@@ -3097,8 +3097,9 @@ if shutil.which("wmctrl", path=p_env):
     if m:
         scr_w, scr_h = int(m.group(1)), int(m.group(2))
 lines = [ln.strip() for ln in msg.splitlines() if ln.strip()][:3] or ["WELCOME, LIVE VIEWER!"]
-cols, rows = max(38, min(68, max(len(ln) for ln in lines) + 8)), len(lines) + 2
-env["ULL_BANNER"] = "\033[?25l\n" + "".join(f"   \033[1;{36 if i == 0 else 33}m{ln}\033[0m\n" for i, ln in enumerate(lines))
+vis_w = lambda s: sum(2 if ord(ch) > 0x1F000 else 1 for ch in s)
+cols, rows = max(40, min(68, max(vis_w(ln) for ln in lines) + 8)), len(lines) + 2
+env["ULL_BANNER"] = "\033[?25l\n" + "".join(f"{' ' * max(1, (cols - vis_w(ln)) // 2)}\033[1;{36 if i == 0 else 33}m{ln}\033[0m\n" for i, ln in enumerate(lines))
 sh_c = f'printf "%s" "$ULL_BANNER"; sleep {dur:.2f}'
 cmd = ["alacritty", "--title", "honeybot_ull_greet", "-o", 'window.decorations="None"', "-o", "window.opacity=0.92", "-o", f"window.dimensions.columns={cols}", "-o", f"window.dimensions.lines={rows}", "-o", "window.position.x=20", "-o", "window.position.y=20", "-o", "font.size=18.0", "-e", "sh", "-c", sh_c]
 proc = subprocess.Popen(cmd, env=env, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True, close_fds=True)
@@ -3140,6 +3141,7 @@ def _resolve_yt_ull_greet(override=None) -> bool:
 def trigger_ull_greeting(message=None, duration=2.8, poll_ms=0.0, trigger="manual", force=False, dry_run=False) -> dict:
     """Pop a bare-minimum frameless greeting on Honeybot :10.0 over warm SSH without cutting audio."""
     global _last_ull_greet_ts
+    import base64
     import subprocess
     import time
     auto_on = _resolve_yt_ull_greet()
@@ -3153,8 +3155,9 @@ def trigger_ull_greeting(message=None, duration=2.8, poll_ms=0.0, trigger="manua
         print(f"⚡ [DRY RUN] ULL Greeting -> {HONEYBOT_SSH_HOST} ({duration:.1f}s, auto_greet={auto_on}): {msg.replace(chr(10), ' | ')}")
         return {"fired": False, "dry_run": True, "auto_greet": auto_on}
     _last_ull_greet_ts = now_ts
+    msg_b64 = base64.b64encode(msg.encode("utf-8")).decode("ascii")
     t0 = time.perf_counter()
-    res = subprocess.run([*_hb_ssh_args(4), "python3", "-", f"{float(duration):.2f}", msg], input=_HONEYBOT_ULL_GREET_HELPER, capture_output=True, text=True, timeout=5, check=False)
+    res = subprocess.run([*_hb_ssh_args(4), "python3", "-", f"{float(duration):.2f}", msg_b64], input=_HONEYBOT_ULL_GREET_HELPER, capture_output=True, text=True, timeout=5, check=False)
     prime_x11_ms = round((time.perf_counter() - t0) * 1000.0, 1)
     m_x11 = re.search(r"x11_ms=([\d.]+)", res.stdout or "")
     x11_ms = float(m_x11.group(1)) if m_x11 else 0.0
