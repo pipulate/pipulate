@@ -177,6 +177,40 @@ def enforce_slash(url):
             return url + '/'
     return url
 
+def _collect_article_id_redirects(posts_dir, living_tissue, lower_to_actual):
+    """Build deterministic {'/1337': '/futureproof/slug/'} map from stamped posts."""
+    id_redirects = {}
+    if not posts_dir or not posts_dir.is_dir():
+        return id_redirects
+    for md_path in sorted(posts_dir.glob("*.md")):
+        aid = common.read_article_id(md_path)
+        if not aid:
+            continue
+        try:
+            head = md_path.read_text(encoding="utf-8", errors="ignore")[:4096]
+        except OSError:
+            continue
+        if not head.startswith("---"):
+            continue
+        fm_part = head.split("---", 2)[1] if head.count("---") >= 2 else head
+        m_perm = re.search(r"^permalink:\s*(\S+)", fm_part, re.M)
+        if not m_perm:
+            continue
+        raw_p = m_perm.group(1).strip().strip('"').strip("'")
+        if not raw_p:
+            continue
+        if not raw_p.startswith("/"):
+            raw_p = "/" + raw_p
+        canon_target = lower_to_actual.get(enforce_slash(raw_p).lower())
+        if not canon_target:
+            continue
+        short_key = f"/{aid}"
+        if short_key in living_tissue or f"{short_key}/" in living_tissue:
+            continue
+        id_redirects[aid] = canon_target
+    return {f"/{aid}": id_redirects[aid] for aid in sorted(id_redirects)}
+
+
 def build_nginx_map(csv_input_path, map_output_path, navgraph_path):
     print(f"🛠️ Forging Nginx map from {csv_input_path.name}...")
     
@@ -224,6 +258,10 @@ def build_nginx_map(csv_input_path, map_output_path, navgraph_path):
     safe_map_path_re = re.compile(r"^/[A-Za-z0-9/_.-]+$")
     lower_to_actual = {p.lower(): p for p in active_permalinks}
     lower_slug_map = {k.lower(): v for k, v in slug_map.items()}
+    article_id_redirects = _collect_article_id_redirects(repo_root / "_posts", living_tissue, lower_to_actual)
+    for id_k in article_id_redirects:
+        living_tissue.add(id_k)
+        living_tissue.add(f"{id_k}/")
     valid_mappings = {}  # The Deduplication Ledger
     
     # Pass 1: Read, Clean, and Filter the CSV
@@ -359,14 +397,19 @@ def build_nginx_map(csv_input_path, map_output_path, navgraph_path):
     with open(map_output_path, 'w', encoding='utf-8') as outfile:
         outfile.write("# AI-Generated Semantic Redirects\n")
         
-        # --- HARDCODED SYSTEM REDIRECTS (O(1) exact-match via $redirect_key) ---
+        # --- HARDCODED SYSTEM & ARTICLE-ID SHORTLINK REDIRECTS (O(1) exact-match via $redirect_key) ---
         outfile.write("    /feed /feed.xml;\n")
+        for id_key, id_target in article_id_redirects.items():
+            if safe_map_path_re.match(id_key) and safe_map_path_re.match(id_target):
+                outfile.write(f"    {id_key} {id_target};\n")
         # ----------------------------------
 
         combined_mappings = dict(valid_mappings)
         combined_mappings.update(retired_hubs_clean)
 
-        seen_keys = {"/feed"}
+        seen_keys = {"/feed", *article_id_redirects.keys()}
+        if article_id_redirects:
+            print(f"🔢 Minted {len(article_id_redirects)} /<article_id> shortlink redirect(s).")
         for old_url, new_url in combined_mappings.items():
             safe_old_url = re.sub(r'/+', '/', old_url.strip())
             if not safe_old_url.startswith('/'):

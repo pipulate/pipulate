@@ -127,6 +127,15 @@ STATION_SEGMENTS = [
 # Preserved intact so no Patronus or Rich telemetry piece is ever buried in git history.
 # Summon any archived bead live with: `ytapp tiktok`, `ytapp pachinko`, `ytapp pirates`, etc.
 ARCHIVED_STATION_BEADS = {
+    "menu": _make_station_bead(
+        "STORY\nMENU",
+        "Here is the live A.I. Fishtank Story-Time menu.",
+        ("WINDOW", f"forest.py:{REPORT_WINDOW_CAP_SECONDS}:menu"),
+        [
+            "{LIVE_REPORT:menu}",
+            "Type any story number from the left column into live chat to take control immediately, or type nine eleven for a live Optics check.",
+        ],
+    ),
     "white_rabbit": _make_station_bead(
         "911-ZERO &\n911-ONE",
         "Follow the White Rabbit from R F C 7231 straight to R F C 9110 and R F C 9111.",
@@ -522,9 +531,39 @@ def _format_bimodal_speech(eligible_html: int, js_horizon_hits: int, js_pct: flo
     )
 
 
+def _format_menu_speech(total_count: int, entries: list) -> str:
+    picks = [
+        f"story {e['jukebox_index']}, {e.get('spoken_title') or e.get('raw_title') or ''}".strip()
+        for e in (entries or [])[:3]
+        if e.get("jukebox_index")
+    ]
+    if total_count > 0 and picks:
+        word = "story" if total_count == 1 else "stories"
+        return f"There are {total_count} Puppet Theater {word} ready on demand. Recent picks include {'; '.join(picks)}."
+    return "Puppet Theater stories are ready on demand — check the bottom bar for playable story numbers."
+
+
 def resolve_dynamic_report_speech(text: str) -> str:
-    """Replace {LIVE_REPORT:overview} or {LIVE_REPORT:bimodal} using the chart's own snapshot + 'about' upward rounding."""
+    """Replace {LIVE_REPORT:overview}, {LIVE_REPORT:bimodal}, or {LIVE_REPORT:menu} using chart snapshots."""
     s = str(text or "")
+    if "{LIVE_REPORT:" not in s:
+        return s
+    if "{LIVE_REPORT:menu}" in s:
+        snap_m = _read_report_speech_snapshot("menu")
+        if snap_m and snap_m.get("entries") is not None:
+            live_m = _format_menu_speech(int(snap_m.get("total_count") or 0), snap_m.get("entries") or [])
+        else:
+            try:
+                import sys as _m_sys
+                from pathlib import Path as _MPath
+                _m_dir = str(_MPath(__file__).resolve().parent)
+                if _m_dir not in _m_sys.path:
+                    _m_sys.path.insert(0, _m_dir)
+                import content_loader as _cl
+                live_m = _format_menu_speech(len(_cl.get_jukebox_playable_ids()), _cl.get_jukebox_menu_entries(limit=3))
+            except Exception:
+                live_m = _format_menu_speech(0, [])
+        s = s.replace("{LIVE_REPORT:menu}", live_m)
     if "{LIVE_REPORT:" not in s:
         return s
     if "{LIVE_REPORT:overview}" in s:
@@ -678,7 +717,7 @@ def _build_station_report_panel(mode="overview", panel_width=None):
     from db import db, KNOWN_BOTS
 
     from pathlib import Path
-    if mode != "doors":
+    if mode not in ("doors", "menu"):
         if not Path(db.db_path).exists():
             db.db_path = ":memory:"
             db.init_db()
@@ -1096,6 +1135,52 @@ def _build_station_report_panel(mode="overview", panel_width=None):
         for d_name, d_tld, d_folder, d_pitch in DOOR_DIAL_ROWS:
             domain_str = f"{d_name}.{d_tld}"
             tbl.add_row(f"🚪 {domain_str}", d_folder, d_pitch)
+    elif mode == "menu":
+        import sys as _m_sys
+        _m_dir = str(Path(__file__).resolve().parent)
+        if _m_dir not in _m_sys.path:
+            _m_sys.path.insert(0, _m_dir)
+        import content_loader as _cl
+        playable_all = _cl.get_jukebox_playable_ids()
+        entries = _cl.get_jukebox_menu_entries(limit=12)
+        _write_report_speech_snapshot(
+            "menu",
+            {
+                "total_count": len(playable_all),
+                "entries": [
+                    {
+                        "jukebox_index": e["jukebox_index"],
+                        "raw_title": e["raw_title"],
+                        "spoken_title": e.get("spoken_title") or e["raw_title"],
+                    }
+                    for e in entries[:4]
+                ],
+            },
+        )
+        title_str = f"🎛️ A.I. FISHTANK STORY-TIME MENU ({len(playable_all)} PLAYABLE STORIES — TYPE # IN CHAT)"
+        tbl.add_column("Type #", justify="right", style="bold #ffd700", width=8, no_wrap=True)
+        tbl.add_column("Topic Tag", style="bold #38bdf8", width=20, no_wrap=True)
+        tbl.add_column("Puppet-Theater Story Episode", style="bold bright_white", ratio=4, no_wrap=True)
+        tbl.add_column("Full Receipt URL", style="bold #7ee787", width=20, no_wrap=True)
+        tbl.add_row(
+            "911",
+            Text("⚡ 16-LENS OPTICS", style="bold #ffd700"),
+            Text("Run a live 911 LLM Optics wire-truth spectrometer check on stream", style="bold bright_yellow"),
+            "SunPug.io",
+        )
+        tbl.add_section()
+        title_budget = max(32, int((panel_width or 124) - 58))
+        for e in entries:
+            t_raw = str(e.get("raw_title") or "")
+            if len(t_raw) > title_budget:
+                t_raw = t_raw[: title_budget - 1] + "…"
+            ep_txt = Text.assemble((t_raw, "bold bright_white"), (f" ({e['date']})", "dim white"))
+            tbl.add_row(
+                str(e["jukebox_index"]),
+                str(e.get("ticker_tag") or "STORY-TIME"),
+                ep_txt,
+                str(e.get("short_url") or f"MikeLev.in/{e['jukebox_index']}"),
+            )
     else:
         cur.execute(
             """
@@ -1230,7 +1315,7 @@ def ensure_station_report_prerendered(
             if target.is_file() and target.stat().st_size > 0:
                 age = time.time() - target.stat().st_mtime
                 if age <= float(max_age):
-                    if safe_mode not in ("overview", "bimodal", "trapdoor") or _read_report_speech_snapshot(safe_mode, max_age=max_age):
+                    if safe_mode not in ("overview", "bimodal", "trapdoor", "menu") or _read_report_speech_snapshot(safe_mode, max_age=max_age):
                         return str(target)
         except OSError:
             pass
