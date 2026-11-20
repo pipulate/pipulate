@@ -1654,27 +1654,31 @@ foo_files.py
 apply.py
 """
 
-DOTS_PROMPT = r"""You are running THE DOTS IDEA-REFINERY KATA against foo_files.py.
-Read the Two-Axis Goodhart Scoreboard, Forward Head A (! latest), Retrograde Head B
-(norma-up-next or retro-archive cones + [FOO_CHECK]), and ! markov Section 5 demand.
-GOVERNING LAW ( <= 1 file, <= 6 blocks, <= 120 replacement lines; CAPTURE ONLY ):
-1. CHECK-REINS & CONVERGENCE (NO BLOAT): Every '# - TODO' stays 1 physical line <= 320
-   chars. NEVER append sub-clauses onto lines already >= 300 chars (Over320c) or reword
-   a TODO that already covers the spark. When all live sparks are already captured,
-   built, or obsolete, return NOTHING_ELIGIBLE so repeated runs converge in one pass.
-2. DISCRIMINATING RETROGRADE FILTER: Use [FOO_CHECK] + foo_files.py (RECEIPTS, '# §'
-   keys, claimed Chapters I-XVIII files, and P0.* goals) to drop ideas already built or
-   superseded by current architecture; promote an older serotinous cone ONLY when its
-   missing prerequisite now exists and it serves active consulting/broadcast goals.
-3. MINT <= 1-3 ORTHOGONAL SPARKS (HOLD_NET_ZERO -> 0 net growth). Never delete open
-   P0.* gates without a receipt, span contiguous non-empty lines, and use bare domains
-   (sunpug.io, mikelev.in, never schemes) so autolinkers never trip apply.py.
+DOTS_PROMPT = r"""You are running THE DOTS TRI-HEAD IDEA-REFINERY KATA against foo_files.py.
+Read the Goodhart Scoreboard, optional In-Flight Head 0 (prompt.md human draft segments),
+Forward Head A (! latest), Retrograde Head B (norma/retro cones + [FOO_CHECK]), & ! markov.
+GOVERNING LAW ( <= 1 file, <= 10 blocks, <= 120 replacement lines; CAPTURE ONLY ):
+1. IDEMPOTENT TREE-SHAKING & CONVERGENCE: Every '# - TODO' stays 1 physical line <= 320
+   chars. Check every candidate spark against RECEIPTS, '# §' keys, claimed Chapters I-XVIII
+   files, and all open '# - TODO' lines: drop anything already built or covered, never
+   append onto lines >= 290 chars (Over320c), and fold a net-new detail into an existing
+   < 290-char TODO only when it is the exact same work item. When every live spark is
+   already on foo_files.py, return NOTHING_ELIGIBLE so repeated runs converge in 1 pass.
+2. TWO-SPEED HARVEST (IN-FLIGHT DRAFT VS. CORPUS SWEEP):
+   - IN_FLIGHT_DRAFT_HARVEST (Head 0 present): prioritize Head 0 first and batch-mint all
+     surviving net-new sparks (up to <= 14 crisp 1-line TODOs grouped under PRIORITY 0 for
+     revenue/lead-gen/chain-of-custody/stream-conversion or operational TODOs for UI/tooling,
+     staying <= 120 replacement lines). Route raw logs (access.log) and cumulative
+     qamy.ai_*.zip deeds strictly to private signed 3-2-1 vaults (P0.63), never public zips.
+   - CORPUS-ONLY SWEEP (Head 0 absent): mint <= 1-3 orthogonal sparks (HOLD_NET_ZERO -> 0).
+3. AIRLOCK SAFETY: Never delete open P0.* gates without a receipt, span contiguous non-empty
+   lines, and use bare domains (sunpug.io, mikelev.in, never schemes) to defeat autolinkers.
 OUTPUT CONTRACT: enclose the entire reply inside ONE fenced 'text' code block holding
 ONLY Target: foo_files.py + [[[SEARCH]]]/[[[DIVIDER]]]/[[[REPLACE]]] blocks, or
-NOTHING_ELIGIBLE axis1=<n> axis2=<n> inside that single fence, with zero prose outside."""
+NOTHING_ELIGIBLE axis0=<n> axis1=<n> axis2=<n> inside that single fence, zero prose outside."""
 
 DOTS_CHOP = r"""
-# THE IDEA-REFINERY KATA (connect Forward ! latest + Retrograde norma cones + ! markov demand)
+# THE IDEA-REFINERY KATA (Tri-Head: In-Flight prompt.md + Forward ! latest + Retrograde norma + ! markov)
 # COMMAND: python prompt_foo.py @DOTS_PROMPT --chop DOTS_CHOP --no-tree
 ! markov
 ! postsc 3
