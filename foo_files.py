@@ -25,9 +25,9 @@ AI_PHOOEY_CHOP = r"""#
 # --- START STATS ---
 # There are 1,663 already-written articles about this repo at MikeLev.in (Public)
 # Velocity: 26 published in the last 7 days
-# Markdown negotiated: 6,650 reads (0.36% of all responses)
-# DOM hydration: 14750 trapdoor triggers from 25 non-local IPs (top-N sample, self excluded)
-# Honeybot telemetry fetched 2026-11-20T10:09Z
+# Markdown negotiated: 6,655 reads (0.36% of all responses)
+# DOM hydration: 14758 trapdoor triggers from 25 non-local IPs (top-N sample, self excluded)
+# Honeybot telemetry fetched 2026-11-20T16:28Z
 # --- END STATS ---
 
 # Project Pipulate is known as (and installable from) various domains:
@@ -2025,7 +2025,7 @@ apply.py
 # ============================================================================
 # Files tracked by git but not yet mixed into the palette above.
 # Move these into the active chapters to paint them onto the context canvas.
-# Coverage: 229/300 tracked files claimed. The compiler reads this line back on the next compile and prints the delta beside the live count, so an unclaimed file rings once.
+# Coverage: 230/300 tracked files claimed. The compiler reads this line back on the next compile and prints the delta beside the live count, so an unclaimed file rings once.
 
 # AGENTS.md  # [1,039 tokens | 4,223 bytes]
 # AUDIT.md  # [2,992 tokens | 13,897 bytes]
@@ -2075,7 +2075,6 @@ apply.py
 # scripts/articles/other/make_article.py  # [1,518 tokens | 6,587 bytes]
 # scripts/articles/scrub_tags.py  # [1,055 tokens | 4,082 bytes]
 # scripts/articles/wrap_tags.py  # [537 tokens | 2,329 bytes]
-# scripts/audit_dye.py  # [256 tokens | 1,009 bytes]
 # scripts/chat_route_probe.py  # [2,813 tokens | 13,033 bytes]
 # scripts/confluence_probe.py  # [4,990 tokens | 20,662 bytes]
 # scripts/continuation_ladder.py  # [2,802 tokens | 11,334 bytes]
