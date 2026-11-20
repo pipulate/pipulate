@@ -84,14 +84,14 @@ def _render_pagination_nav(page_num: int, total_pages: int, total_posts: int, pe
     pri_style = btn_base + "background:#1f6feb;border:1px solid #58a6ff;color:#ffffff !important;"
     sec_style = btn_base + "background:rgba(56,139,253,0.14);border:1px solid rgba(88,166,255,0.45);color:#79c0ff !important;"
     links = []
-    if page_num > 1:
-        prev_href = "/" if page_num == 2 else f"/page/{page_num - 1}/"
-        if page_num > 2:
-            links.append(f'<a href="/" style="{sec_style}">« Newest</a>')
-        links.append(f'<a href="{prev_href}" rel="prev" style="{sec_style}">← Previous {per_page}</a>')
     if page_num < total_pages:
         next_href = f"/page/{page_num + 1}/"
-        links.append(f'<a href="{next_href}" rel="next" style="{pri_style}">Next {per_page} →</a>')
+        links.append(f'<a href="{next_href}" rel="prev" style="{pri_style}">« Older {per_page}</a>')
+    if page_num > 1:
+        prev_href = "/" if page_num == 2 else f"/page/{page_num - 1}/"
+        links.append(f'<a href="{prev_href}" rel="next" style="{sec_style}">Newer {per_page} »</a>')
+        if page_num > 2:
+            links.append(f'<a href="/" style="{sec_style}">Newest 🏠</a>')
     return (
         '<nav class="archive-pagination" aria-label="Journal archive pagination" '
         'style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:0.75rem;'
@@ -102,6 +102,23 @@ def _render_pagination_nav(page_num: int, total_pages: int, total_posts: int, pe
         f'  <div style="display:flex;flex-wrap:wrap;align-items:center;gap:0.55rem;">{" ".join(links)}</div>\n'
         '</nav>'
     )
+
+
+def _peek_permalink(post_path: Path, yaml_loader) -> str:
+    import yaml
+    raw_head = post_path.read_text(encoding="utf-8", errors="ignore")[:4096]
+    fm = {}
+    if raw_head.startswith("---"):
+        parts = raw_head.split("---", 2)
+        if len(parts) >= 3:
+            try:
+                fm = yaml.load(parts[1], Loader=yaml_loader) or {}
+            except Exception:
+                fm = {}
+    pl = str(fm.get("permalink") or f"/{post_path.stem[11:]}/").strip()
+    if not pl.startswith("/"):
+        pl = "/" + pl
+    return pl if pl.endswith("/") else pl + "/"
 
 
 def _render_post_cards_html(post_slice, target_repo_root, default_thumb, yaml_loader, stage_rel_paths) -> str:
@@ -225,12 +242,22 @@ def update_homepage_recent_posts(posts_dir, target_repo_root, count=10):
             p_file = pages_sub / fname
             nav_html = _render_pagination_nav(page_num, total_pages, total_posts, count)
             grid_html = _render_post_cards_html(slice_posts, target_repo_root, default_thumb, yaml_loader, stage_rel_paths)
+            older_p = _peek_permalink(slice_posts[0], yaml_loader) if slice_posts else ""
+            newer_p = _peek_permalink(ordered_posts[slice_start - 1], yaml_loader) if slice_start > 0 else "/"
+            older10 = f"/page/{page_num + 1}/" if page_num < total_pages else ""
+            newer10 = "/" if page_num == 2 else f"/page/{page_num - 1}/"
             page_md = (
                 "---\n"
                 "layout: default\n"
                 f'title: "Journal Archive — Page {page_num} of {total_pages}"\n'
                 f'meta_description: "Chronological journal entries {slice_start + 1}–{end_num} of {total_posts} on {target_repo_root.name} (Page {page_num} of {total_pages})."\n'
                 f"permalink: /page/{page_num}/\n"
+                f"archive_page: {page_num}\n"
+                f"archive_total_pages: {total_pages}\n"
+                f'older_post_url: "{older_p}"\n'
+                f'newer_post_url: "{newer_p}"\n'
+                f'older10_url: "{older10}"\n'
+                f'newer10_url: "{newer10}"\n'
                 "---\n"
                 f"# Journal Archive — Page {page_num} of {total_pages}\n\n"
                 f"{nav_html}\n\n"
@@ -286,12 +313,14 @@ def generate_hub_file(node, target_repo_root, hubs_dir, parents=None):
         filename = f"{safe_id}.md"
         filepath = hubs_dir / filename
     
+        first_art = str((node.get("children_articles") or [{}])[0].get("permalink") or "").strip() if node.get("children_articles") else ""
+        first_art_line = f'first_article_url: "{first_art}"\n' if first_art else ""
         # Build Frontmatter & Title
         frontmatter = f"""---
 layout: default
 title: "{node['title']}"
 permalink: {node['permalink']}
----
+{first_art_line}---
 """
         content = frontmatter + f"# {node['title']}\n\n"
 

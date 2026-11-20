@@ -46,10 +46,11 @@ def article_url(item: dict) -> str:
     return f"/{slug}/"
 
 
-def build_nav(metadata: list) -> dict:
+def build_nav(metadata: list, per_page: int = 10) -> dict:
     """metadata is newest-first; neighbours are taken from that single ordering."""
     nav = {}
     total = len(metadata)
+    total_pages = max(1, (total + per_page - 1) // per_page)
     for i, item in enumerate(metadata):
         entry = {}
         if i + 1 < total:                     # older neighbour
@@ -66,6 +67,11 @@ def build_nav(metadata: list) -> dict:
         if jb_coin is None and item.get("path"):
             jb_coin = common.read_frontmatter_bool(item["path"], "jukebox_coin")
         entry["jukebox_coin"] = bool(jb_coin)
+        cur_pg = (i // per_page) + 1
+        entry["rank"] = i + 1
+        entry["archive_page"] = cur_pg
+        entry["older10_url"] = f"/page/{cur_pg + 1}/" if cur_pg < total_pages else ""
+        entry["newer10_url"] = ("/" if cur_pg <= 2 else f"/page/{cur_pg - 1}/") if i > 0 else ""
         nav[article_url(item)] = entry
     return nav
 
@@ -110,7 +116,18 @@ def main():
     if len(nav) != len(metadata):
         print(f"⚠️ URL collision: {len(metadata)} posts collapsed to {len(nav)} nav keys.")
 
-    payload = {"_meta": {"total": len(metadata)}, **nav}
+    per_page = 10
+    total_pages = max(1, (len(metadata) + per_page - 1) // per_page)
+    meta_info = {
+        "total": len(metadata),
+        "per_page": per_page,
+        "total_pages": total_pages,
+        "newest_url": article_url(metadata[0]),
+        "newest_title": metadata[0].get("title", ""),
+        "newest_id": metadata[0].get("article_id") or len(metadata),
+        "page2_url": "/page/2/" if total_pages > 1 else "",
+    }
+    payload = {"_meta": meta_info, **nav}
     data_dir.mkdir(parents=True, exist_ok=True)
     with open(output_file, "w", encoding="utf-8") as f:
         json.dump(payload, f, indent=1, ensure_ascii=False, sort_keys=True)
