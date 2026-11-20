@@ -120,16 +120,62 @@ DOOM_FIRE_PALETTE = (
     ("▓", "#ffff00"),        # 6: Yellow-hot core (75% block)
     ("█", "bold #ffffff"),   # 7: White-hot ignition (100% block)
 )
+TICKER_TOP_PRIORITY = os.environ.get("HONEYBOT_TICKER_PRIORITY", "MIKELEV.IN/DISCORD").strip().upper()
 DEFAULT_TICKER_MESSAGE = (
-    "LIVE WIRE TELEMETRY | "
-    "SEO -> AI-READINESS | "
-    "3-HOP MARKDOWN WEB | "
-    "INSPECT SUNPUG.IO | "
-    "FOUNDING 1000 GUILD | "
-    "MIKELEV.IN/DISCORD | "
-    "TELL 1 SMART BUILDER | "
-    "CHAT SUMMONS MIKE"
+    "CURRENTLY PLAYING | "
+    "MIKELEV.IN/LATEST | "
+    "TYPE: MENU | "
+    "TAKE CONTROL! | "
+    "MIKELEV.IN/DISCORD"
 )
+_STAGE_ARTICLE_ID_RE = re.compile(r"^#(\d+)(?:\s*\[([^\]]+)\])?")
+_STAGE_FNAME_RE = re.compile(r"(\d{4}-\d{2}-\d{2}-[A-Za-z0-9._-]+\.(?:md|markdown))")
+
+
+def resolve_active_story_ticker_meta(stage_payload: dict = None) -> tuple:
+    """Resolve O(1) (jb_idx, ticker_tag) from /tmp/honeybot_stage.json or newest Norma abstract."""
+    jb_idx, tag = 0, ""
+    art_str = str((stage_payload or {}).get("article") or "").strip()
+    if art_str:
+        m_id = _STAGE_ARTICLE_ID_RE.match(art_str)
+        if m_id:
+            jb_idx = int(m_id.group(1))
+            tag = (m_id.group(2) or "").strip().upper()
+    try:
+        sdir = str(os.path.dirname(os.path.abspath(__file__)))
+        if sdir not in sys.path:
+            sys.path.insert(0, sdir)
+        import content_loader as _cl
+        cat = _cl.get_jukebox_catalog()
+        meta_map = cat.get("meta_map") or {}
+        if jb_idx == 0 and art_str:
+            m_fn = _STAGE_FNAME_RE.search(art_str)
+            if m_fn:
+                jb_idx = int((cat.get("index_map") or {}).get(m_fn.group(1)) or 0)
+        if jb_idx == 0 and cat.get("playable_ids"):
+            jb_idx = int(cat["playable_ids"][0])
+        if jb_idx > 0 and not tag:
+            tag = str((meta_map.get(jb_idx) or {}).get("ticker_tag") or "").strip().upper()
+    except Exception:
+        pass
+    clean_tag = re.sub(r"[^A-Z0-9 ./+&:#!?'-]+", " ", tag)
+    clean_tag = " ".join(clean_tag.split())[:18].rstrip()
+    return jb_idx, clean_tag
+
+
+def build_jukebox_ticker_message(jb_idx: int = 0, ticker_tag: str = "", top_priority: str = None) -> str:
+    """Build the 5-row LED Story-Control billboard sequence."""
+    idx_int = int(jb_idx or 0)
+    url_card = f"MIKELEV.IN/{idx_int}" if idx_int > 0 else "MIKELEV.IN/LATEST"
+    clean_tag = " ".join(re.sub(r"[^A-Z0-9 ./+&:#!?'-]+", " ", str(ticker_tag or "").upper()).split())[:18].rstrip()
+    prio = TICKER_TOP_PRIORITY if top_priority is None else str(top_priority).strip().upper()
+    cards = ["CURRENTLY PLAYING", url_card]
+    if clean_tag:
+        cards.append(clean_tag)
+    cards.extend(["TYPE: MENU", "TAKE CONTROL!"])
+    if prio:
+        cards.append(prio)
+    return " | ".join(cards)
 STAGE_BOX_WIDTH = 14
 STAGE_LEFT_CURTAIN_LINES = ("", "Mike-E", "the", "Apprentice", "")
 STAGE_RIGHT_CURTAIN_LINES = ("", "Shipmunk", "O'", "Theseus!", "")
@@ -275,7 +321,7 @@ def _classify_card_fire(card_text: str) -> str:
     up = (card_text or "").upper()
     if any(k in up for k in ("BURN", "FIRE", "ASH")):
         return "dramatic"
-    if any(k in up for k in ("SUMMON", "CHAT SUMMONS", "MIKE")):
+    if any(k in up for k in ("TAKE CONTROL", "SUMMON", "CHAT SUMMONS", "MIKE")):
         if "MIKELEV" not in up:
             return "subtle"
     return "none"
@@ -956,6 +1002,7 @@ class SonarApp(App):
             
         self.ticker_offset = 0
         self.ticker_mtime = None
+        self.ticker_story_sig = None
         self.ticker_tick_count = 0
         self.ticker_mode = "billboard"  # "billboard" (default still+flip) | "scroll" | "small"
         self.ticker_raw_text = ""
@@ -987,8 +1034,8 @@ class SonarApp(App):
             self.script_mtime = os.stat(__file__).st_mtime
         except OSError:
             self.script_mtime = None
-        self._reload_ticker_source(force=True)
         self._sync_stage_from_file()
+        self._reload_ticker_source(force=True)
         self.set_interval(0.08, self.tick_marquee)
         self.set_interval(1, self.update_countdown)
         self.set_interval(5, self.refresh_tables)
@@ -1084,6 +1131,9 @@ class SonarApp(App):
                     data = _json.load(sf)
                 self.stage_payload = data
                 self.stage_mtime_ns = st.st_mtime_ns
+                if not os.path.exists(TICKER_FILE_PATH):
+                    if resolve_active_story_ticker_meta(data) != getattr(self, "ticker_story_sig", None):
+                        self._reload_ticker_source(force=True)
             pair = compute_stage_states_from_payload(self.stage_payload, now=now)
             if pair is None:
                 self.update_hud_tour_focus("")
@@ -1172,9 +1222,11 @@ class SonarApp(App):
             st_mtime = os.stat(TICKER_FILE_PATH).st_mtime if os.path.exists(TICKER_FILE_PATH) else -1.0
         except OSError:
             st_mtime = -1.0
-        if not force and st_mtime == self.ticker_mtime:
+        story_sig = resolve_active_story_ticker_meta(getattr(self, "stage_payload", None)) if st_mtime <= 0 else None
+        if not force and st_mtime == self.ticker_mtime and (st_mtime > 0 or story_sig == getattr(self, "ticker_story_sig", None)):
             return
         self.ticker_mtime = st_mtime
+        self.ticker_story_sig = story_sig
         raw = ""
         if st_mtime > 0:
             try:
@@ -1184,7 +1236,8 @@ class SonarApp(App):
             except OSError:
                 raw = ""
         if not raw:
-            raw = DEFAULT_TICKER_MESSAGE
+            jb_i, jb_tag = story_sig or resolve_active_story_ticker_meta(getattr(self, "stage_payload", None))
+            raw = build_jukebox_ticker_message(jb_idx=jb_i, ticker_tag=jb_tag)
         mode = "billboard"
         up = raw.upper()
         if up.startswith(("SMALL:", "1ROW:")):
