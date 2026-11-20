@@ -1738,6 +1738,16 @@ VAULT_ENV_FILE = CONFIG_DIR / ".env"
 YTWATCH_STATE_FILE = CONFIG_DIR / "ytwatch_state.json"
 HONEYBOT_VIEWERS_FILE = "/tmp/honeybot_viewers.json"
 DEFAULT_YT_LIVE_URL = "https://www.youtube.com/MikeLevin/live"
+HONEYBOT_SSH_MUX_SOCK = f"/tmp/pipulate-hb-mux-{getattr(os, 'getuid', lambda: 0)()}"
+
+
+def _hb_ssh_args(connect_timeout: int = 4) -> list[str]:
+    """Return SSH argv with persistent ControlMaster multiplexing (~20ms warm vs ~180ms cold)."""
+    return [
+        "ssh", "-o", "BatchMode=yes", "-o", f"ConnectTimeout={int(connect_timeout)}",
+        "-o", "ControlMaster=auto", "-o", f"ControlPath={HONEYBOT_SSH_MUX_SOCK}",
+        "-o", "ControlPersist=300", HONEYBOT_SSH_HOST,
+    ]
 
 
 def _count_jukebox_posts(target_key="1") -> int:
@@ -1855,7 +1865,7 @@ def _sync_honeybot_viewers(viewers, running=True, video_id="", peak=0, push_remo
             else f"rm -f {HONEYBOT_VIEWERS_FILE} {HONEYBOT_VIEWERS_FILE}.tmp"
         )
         subprocess.run(
-            ["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=4", HONEYBOT_SSH_HOST, remote_cmd],
+            [*_hb_ssh_args(4), remote_cmd],
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
             timeout=6,
@@ -2203,43 +2213,95 @@ def _extract_live_watching_count(vvc):
     return 0
 
 
-def _fetch_yt_concurrent_viewers_fast(video_id):
-    """Lightweight (~1.5 KB) InnerTube updated_metadata poll for live concurrent viewers."""
-    import urllib.request
+_yt_keepalive_conn = None
+_YT_API_HOST = "www\x2eyoutube\x2ecom"
+_YT_KEEPALIVE_HDRS = {
+    "Content-Type": "application/json",
+    "Connection": "keep-alive",
+    "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/130.0.0.0 Safari/537.36",
+    "Accept-Language": "en-US,en;q=0.9",
+}
+
+
+def _fetch_yt_concurrent_viewers_keepalive(video_id):
+    """Persistent HTTPS keep-alive InnerTube poll returning (viewers, poll_ms, status, timeout_ms)."""
+    global _yt_keepalive_conn
+    import http.client
+    import time
     if not video_id:
-        return None
-    url = "https://www.youtube.com/youtubei/v1/updated_metadata?prettyPrint=false"
-    payload = {
-        "context": {
-            "client": {
-                "clientName": "WEB",
-                "clientVersion": "2.20250101.00.00",
-                "hl": "en",
-                "gl": "US",
-            }
-        },
+        return (None, 0.0, 0, 0)
+    body = json.dumps({
+        "context": {"client": {"clientName": "WEB", "clientVersion": "2.20250101.00.00", "hl": "en", "gl": "US"}},
         "videoId": str(video_id).strip(),
-    }
-    req = urllib.request.Request(
-        url,
-        data=json.dumps(payload).encode("utf-8"),
-        headers={
-            "Content-Type": "application/json",
-            "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/130.0.0.0 Safari/537.36",
-            "Accept-Language": "en-US,en;q=0.9",
-        },
-        method="POST",
-    )
-    try:
-        with urllib.request.urlopen(req, timeout=6) as resp:
-            data = json.loads(resp.read().decode("utf-8", errors="replace"))
-    except Exception:
-        return None
-    for d in _walk_dicts(data):
-        parsed_vc = _extract_live_watching_count(d.get("videoViewCountRenderer"))
-        if parsed_vc is not None:
-            return parsed_vc
-    return None
+    }).encode("utf-8")
+    for attempt in range(2):
+        t0 = time.perf_counter()
+        try:
+            if _yt_keepalive_conn is None:
+                _yt_keepalive_conn = http.client.HTTPSConnection(_YT_API_HOST, timeout=5)
+            _yt_keepalive_conn.request("POST", "/youtubei/v1/updated_metadata?prettyPrint=false", body=body, headers=_YT_KEEPALIVE_HDRS)
+            resp = _yt_keepalive_conn.getresponse()
+            raw = resp.read()
+            poll_ms = round((time.perf_counter() - t0) * 1000.0, 1)
+            status = int(resp.status)
+            if resp.will_close or status >= 400:
+                _yt_keepalive_conn.close()
+                _yt_keepalive_conn = None
+            if status != 200:
+                return (None, poll_ms, status, 0)
+            data = json.loads(raw.decode("utf-8", errors="replace"))
+            vc_val, t_ms = None, 0
+            for d in _walk_dicts(data):
+                if vc_val is None:
+                    vc_val = _extract_live_watching_count(d.get("videoViewCountRenderer"))
+                tcd = d.get("timedContinuationData")
+                if not t_ms and isinstance(tcd, dict) and str(tcd.get("timeoutMs") or "").isdigit():
+                    t_ms = int(tcd["timeoutMs"])
+            return (vc_val, poll_ms, 200, t_ms)
+        except Exception:
+            if _yt_keepalive_conn is not None:
+                try:
+                    _yt_keepalive_conn.close()
+                except Exception:
+                    pass
+                _yt_keepalive_conn = None
+            if attempt == 1:
+                return (None, round((time.perf_counter() - t0) * 1000.0, 1), 0, 0)
+    return (None, 0.0, 0, 0)
+
+
+def _fetch_yt_concurrent_viewers_fast(video_id):
+    """Compatibility wrapper returning concurrent live viewer count via persistent keep-alive."""
+    return _fetch_yt_concurrent_viewers_keepalive(video_id)[0]
+
+
+def compute_adaptive_poll_delay(
+    is_live: bool,
+    cur_viewers: int,
+    clear_max: int = YT_VIEWER_CLEAR_MAX,
+    since_activity_s: float = 999.0,
+    rtt_ewma_ms: float = 40.0,
+    error_streak: int = 0,
+    server_timeout_ms: int = 0,
+) -> tuple[float, str]:
+    """Compute (delay_secs, gear_name) across HOT/STEADY/PATROL/BACKOFF/OFF_AIR with AIMD quota armor."""
+    pinned = (os.environ.get("PIPULATE_YT_FAST_POLL") or _load_vault_env().get("PIPULATE_YT_FAST_POLL") or "").strip()
+    if pinned.replace(".", "", 1).isdigit() and error_streak <= 0 and is_live:
+        return (max(0.8, float(pinned)), "PINNED")
+    if not is_live:
+        return (15.0, "OFF_AIR")
+    if error_streak > 0:
+        return (round(min(30.0, 2.5 * (2 ** min(int(error_streak), 4))), 2), "BACKOFF")
+    eff_base = max(0, int(clear_max))
+    if since_activity_s < 120.0:
+        base_s, gear = 1.0, "HOT"
+    elif int(cur_viewers) > eff_base:
+        base_s, gear = 1.5, "STEADY"
+    else:
+        base_s, gear = 2.0, "PATROL"
+    rtt_floor = max(0.8, (max(1.0, float(rtt_ewma_ms)) / 1000.0) * 4.0)
+    srv_floor = (float(server_timeout_ms) / 1000.0) if int(server_timeout_ms or 0) > 5000 else 0.0
+    return (round(max(base_s, rtt_floor, srv_floor), 2), gear)
 
 
 def fetch_discord_invite_state(invite_code=None):
