@@ -2014,7 +2014,7 @@ def _walk_dicts(node):
 _YTWATCH_RESERVED_ACTIONS = {
     "start", "stop", "status", "restart", "daemon", "kill",
     "attach", "log", "logs", "tail", "tmux", "reset", "reset-peak",
-    "chime", "clear", "clear-max", "dwell",
+    "chime", "clear", "clear-max", "dwell", "greet",
 }
 
 
@@ -3310,6 +3310,19 @@ def run_youtube_watch(
             f"(active clear_max={cm_s}, dwell={_resolve_yt_dwell_secs(dwell)}s)"
         )
         return 0 if (up_p and dn_p) else 1
+    if daemon_action == "greet":
+        sub_g = (chime_dir or "").strip().lower()
+        if sub_g in ("on", "1", "true", "enable", "enabled", "off", "0", "false", "disable", "disabled"):
+            turn_on = sub_g in ("on", "1", "true", "enable", "enabled")
+            if not dry_run:
+                _save_vault_var("PIPULATE_YT_ULL_GREET", "1" if turn_on else "0")
+            print(f"⚡ {'[DRY RUN] Would set' if dry_run else 'Saved'} PIPULATE_YT_ULL_GREET={'1' if turn_on else '0'} (auto arrival greeting={'ON' if turn_on else 'OFF'}; dry-fire anytime with `ytwatch greet`).")
+            return 0
+        if sub_g == "status":
+            print(f"⚡ ULL Greeting: auto_greet={'ON' if _resolve_yt_ull_greet() else 'OFF'} | mux_sock={HONEYBOT_SSH_MUX_SOCK} (Usage: `ytwatch greet` dry-fire | `ytwatch greet on|off`)")
+            return 0
+        res_g = trigger_ull_greeting(trigger="manual", force=True, dry_run=dry_run)
+        return 0 if (dry_run or res_g.get("fired")) else 1
     if daemon_action == "dwell":
         if dwell is not None:
             eff_dw = max(0, int(dwell))
@@ -3521,13 +3534,14 @@ def run_youtube_watch(
         "seen_ids": list(seen_ids)[-500:],
         "updated_at": int(init_ts),
     })
-    fast_step = max(2, int(YT_VIEWER_FAST_POLL))
-    full_interval = max(fast_step, int(interval))
-    sub_polls = max(1, full_interval // fast_step)
+    full_interval = max(10, int(interval))
+    last_activity_ts = init_ts if state["concurrent_viewers"] > max(0, _resolve_yt_clear_max(clear_max)) else 0.0
+    rtt_ewma_ms, err_streak, srv_timeout_ms = 40.0, 0, 0
+    cur_delay, cur_gear = compute_adaptive_poll_delay(state["is_live"], state["concurrent_viewers"], _resolve_yt_clear_max(clear_max), init_ts - last_activity_ts, rtt_ewma_ms, err_streak, srv_timeout_ms)
     print(
-        f"[{_ytlog_ts()}] 🔭 Watching {resolved_channel} (fast InnerTube pulse every {fast_step}s, "
+        f"[{_ytlog_ts()}] 🔭 Watching {resolved_channel} (adaptive pulse {cur_delay:g}s [{cur_gear}], "
         f"full HTML+chat sync every {full_interval}s, dwell={_resolve_yt_dwell_secs(dwell)}s, "
-        f"clear_max={_resolve_yt_clear_max(clear_max)}, viewer_ntfy=off)..."
+        f"clear_max={_resolve_yt_clear_max(clear_max)}, ull_greet={'on' if _resolve_yt_ull_greet() else 'off'})..."
     )
     print(f"[{_ytlog_ts()}] 💡 [HOW TO EXIT TMUX WITHOUT STOPPING]: Press 'q' OR press Ctrl+b, release, then press d")
 
@@ -3610,31 +3624,54 @@ def run_youtube_watch(
                 print(f"[{_ytlog_ts()}] 🔄 [HOT-RELOAD] common.py updated on disk — re-execing ytwatch daemon...", flush=True)
                 os.execv(sys.executable, [sys.executable, *sys.argv])
             poll_vid = state.get("video_id") if state.get("is_live") else ""
-            for _ in range(sub_polls - 1):
-                time.sleep(fast_step)
+            next_full_mono = time.monotonic() + full_interval
+            while True:
+                cur_delay, cur_gear = compute_adaptive_poll_delay(
+                    bool(poll_vid), prev_viewers, _resolve_yt_clear_max(clear_max),
+                    time.time() - last_activity_ts, rtt_ewma_ms, err_streak, srv_timeout_ms,
+                )
+                rem_s = next_full_mono - time.monotonic()
+                if rem_s <= 0.05:
+                    break
+                time.sleep(min(cur_delay, rem_s))
                 if Path(__file__).stat().st_mtime != script_mtime:
                     print(f"[{_ytlog_ts()}] 🔄 [HOT-RELOAD] common.py updated on disk — re-execing ytwatch daemon...", flush=True)
                     os.execv(sys.executable, [sys.executable, *sys.argv])
+                if time.monotonic() >= next_full_mono:
+                    break
                 if not poll_vid:
                     _sync_external_peak_reset(prev_viewers, "")
                     break
-                fast_v = _fetch_yt_concurrent_viewers_fast(poll_vid)
+                fast_v, poll_ms, p_status, s_tms = _fetch_yt_concurrent_viewers_keepalive(poll_vid)
+                if poll_ms > 0:
+                    rtt_ewma_ms = round(0.7 * rtt_ewma_ms + 0.3 * poll_ms, 1)
+                if s_tms > 0:
+                    srv_timeout_ms = s_tms
                 if fast_v is None:
+                    if p_status in (429, 503) or p_status == 0:
+                        err_streak += 1
+                        bk_s, _ = compute_adaptive_poll_delay(True, prev_viewers, error_streak=err_streak)
+                        print(f"[{_ytlog_ts()}] 🛡️ [POLL BACKOFF] status={p_status} rtt={poll_ms:.1f}ms streak={err_streak} -> next={bk_s:g}s", flush=True)
                     continue
+                err_streak = 0
                 fast_ts = time.time()
                 reset_fired = _sync_external_peak_reset(fast_v, poll_vid)
                 peak_viewers = max(peak_viewers, int(fast_v))
                 changed_fast = (fast_v != prev_viewers)
                 if fast_v > prev_viewers:
+                    last_activity_ts = fast_ts
+                    if fast_v > max(0, _resolve_yt_clear_max(clear_max)):
+                        trigger_ull_greeting(poll_ms=poll_ms, trigger="fast_poll")
                     print(
-                        f"[{_ytlog_ts()}] ⚡ [FAST VIEWER +{fast_v - prev_viewers}] {prev_viewers} -> {fast_v} watching ({fast_step}s InnerTube pulse)",
+                        f"[{_ytlog_ts()}] ⚡ [FAST VIEWER +{fast_v - prev_viewers}] {prev_viewers} -> {fast_v} watching ({cur_delay:g}s {cur_gear}, {poll_ms:.1f}ms keep-alive)",
                         flush=True,
                     )
                     _check_quiet_arrive(prev_viewers, fast_v)
                     _trigger_ytwatch_weebo()
                 elif fast_v < prev_viewers:
+                    last_activity_ts = fast_ts
                     print(
-                        f"[{_ytlog_ts()}] 📉 [FAST VIEWER -{prev_viewers - fast_v}] {prev_viewers} -> {fast_v} watching ({fast_step}s InnerTube pulse)",
+                        f"[{_ytlog_ts()}] 📉 [FAST VIEWER -{prev_viewers - fast_v}] {prev_viewers} -> {fast_v} watching ({cur_delay:g}s {cur_gear}, {poll_ms:.1f}ms keep-alive)",
                         flush=True,
                     )
                     _check_quiet_clear(prev_viewers, fast_v)
@@ -3660,7 +3697,6 @@ def run_youtube_watch(
                         "updated_at": int(fast_ts),
                     })
                     state_file_mtime = YTWATCH_STATE_FILE.stat().st_mtime if YTWATCH_STATE_FILE.is_file() else 0.0
-            time.sleep(fast_step)
             poll_ts = time.time()
             try:
                 state = fetch_youtube_live_state(resolved_channel)
@@ -3690,6 +3726,9 @@ def run_youtube_watch(
                 last_live_title = str(state["title"]).strip()
             src_cmp = f"api={state.get('api_viewers')}, html={state.get('html_viewers')}"
             if viewers > prev_viewers:
+                last_activity_ts = now
+                if state["is_live"] and viewers > max(0, _resolve_yt_clear_max(clear_max)):
+                    trigger_ull_greeting(poll_ms=rtt_ewma_ms, trigger="full_poll")
                 print(
                     f"[{_ytlog_ts()}] 📈 [VIEWER +{viewers - prev_viewers}] {prev_viewers} -> {viewers} watching ({src_cmp})",
                     flush=True,
@@ -3698,6 +3737,7 @@ def run_youtube_watch(
                     _check_quiet_arrive(prev_viewers, viewers)
                 _trigger_ytwatch_weebo()
             elif viewers < prev_viewers:
+                last_activity_ts = now
                 print(
                     f"[{_ytlog_ts()}] 📉 [VIEWER -{prev_viewers - viewers}] {prev_viewers} -> {viewers} watching ({src_cmp})",
                     flush=True,
@@ -3722,7 +3762,7 @@ def run_youtube_watch(
                     else ""
                 )
                 print(
-                    f"[{_ytlog_ts()}] 💓 {viewers} watching (peak {peak_viewers}{dwell_tag}{src_note}) · 💬 {len(state['chat_messages'])}{disc_pulse}",
+                    f"[{_ytlog_ts()}] 💓 {viewers} watching (peak {peak_viewers}{dwell_tag}{src_note}) · ⚙️ {cur_gear} {cur_delay:g}s ({rtt_ewma_ms:.0f}ms) · 💬 {len(state['chat_messages'])}{disc_pulse}",
                     flush=True,
                 )
             prev_viewers = viewers
@@ -3731,6 +3771,7 @@ def run_youtube_watch(
                 if msg["id"] in seen_ids:
                     continue
                 seen_ids.add(msg["id"])
+                last_activity_ts = now
                 parsed_cmd = parse_allowlisted_chat_command(msg["text"])
                 if parsed_cmd is not None:
                     _actuate_allowlisted_chat_command(parsed_cmd)
@@ -3812,7 +3853,7 @@ def run_youtube_watch(
                     "tail -n 20 /tmp/honeybot_referrals.jsonl 2>/dev/null"
                 )
                 ref_res = subprocess.run(
-                    ["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=4", HONEYBOT_SSH_HOST, hb_sync_and_tail],
+                    [*_hb_ssh_args(4), hb_sync_and_tail],
                     capture_output=True,
                     text=True,
                     timeout=6,
@@ -4981,8 +5022,8 @@ if __name__ == "__main__":
                 daemon_act = "daemon"
             elif first_arg in ("reset", "reset-peak"):
                 daemon_act = "reset"
-            elif first_arg == "chime":
-                daemon_act = "chime"
+            elif first_arg in ("chime", "greet"):
+                daemon_act = first_arg
                 if len(cli_args.message) > 1:
                     watch_chime_dir = cli_args.message[1].strip().lower()
             elif first_arg == "dwell":
