@@ -3076,7 +3076,7 @@ DEFAULT_ULL_GREET_MESSAGE = (
 _last_ull_greet_ts = 0.0
 
 _HONEYBOT_ULL_GREET_HELPER = r'''
-import base64, os, pathlib, re, shutil, subprocess, sys, time
+import base64, json, os, pathlib, re, shutil, subprocess, sys, time
 t0 = time.perf_counter()
 dur = max(1.2, min(18.0, float(sys.argv[1])))
 b64_arg = sys.argv[2] if len(sys.argv) > 2 else ""
@@ -3086,17 +3086,21 @@ for needle in (b"stream.py", b"obs"):
     for p in sorted(pathlib.Path("/proc").glob("[0-9]*/cmdline")):
         try:
             raw = p.read_bytes()
-            if needle in raw:
-                for kv in (p.parent / "environ").read_bytes().split(b"\x00"):
-                    if b"=" in kv:
-                        k, v = kv.split(b"=", 1)
-                        ks = k.decode("utf-8", "ignore")
-                        if ks in ("DISPLAY", "XAUTHORITY", "XDG_RUNTIME_DIR", "PATH"):
-                            env[ks] = v.decode("utf-8", "ignore")
-                if needle == b"stream.py":
-                    py_exe = os.readlink(str(p.parent / "exe"))
-                if env.get("DISPLAY"):
-                    break
+            if needle not in raw:
+                continue
+            for kv in (p.parent / "environ").read_bytes().split(b"\x00"):
+                if b"=" in kv:
+                    k, v = kv.split(b"=", 1)
+                    ks, vs = k.decode("utf-8", "ignore"), v.decode("utf-8", "ignore")
+                    if ks in ("DISPLAY", "XAUTHORITY", "XDG_RUNTIME_DIR"):
+                        env[ks] = (env.get(ks) or vs) if needle == b"obs" else vs
+                    elif needle == b"stream.py" and ks in ("PATH", "PYTHONPATH", "NIX_PYTHONPATH", "PYTHONHOME"):
+                        env[ks] = vs
+            if needle == b"stream.py" and not py_exe:
+                pts = [x.decode("utf-8", "ignore") for x in raw.split(b"\x00") if x]
+                py_exe = next((x for x in pts if "python" in os.path.basename(x)), pts[0] if pts else "")
+            if env.get("DISPLAY") and (py_exe or needle == b"obs"):
+                break
         except Exception:
             continue
     if py_exe and env.get("DISPLAY"):
@@ -3105,30 +3109,38 @@ env.setdefault("DISPLAY", ":10.0")
 env.pop("COLUMNS", None)
 env.pop("LINES", None)
 p_env = env["PATH"] = f"{env.get('PATH', '/usr/bin:/bin')}:/run/current-system/sw/bin"
+py_exe = (shutil.which(py_exe, path=p_env) if (py_exe and not os.path.isabs(py_exe)) else py_exe) or shutil.which("python3", path=p_env) or sys.executable
 subprocess.run(["pkill", "-f", "[h]oneybot_ull_greet"], env=env, check=False)
-ra = subprocess.run(["xdotool", "getactivewindow"], env=env, capture_output=True, text=True, check=False) if shutil.which("xdotool", path=p_env) else None
-orig_win = (ra.stdout or "").strip() if (ra and ra.returncode == 0) else ""
+for _ in range(5):
+    if subprocess.run(["pgrep", "-f", "[h]oneybot_ull_greet"], env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False).returncode != 0:
+        break
+    time.sleep(0.015)
 scr_w, scr_h = 1920, 1080
 if shutil.which("wmctrl", path=p_env):
     rd = subprocess.run(["wmctrl", "-d"], env=env, capture_output=True, text=True, check=False)
     m = next((re.search(r"DG:\s*(\d+)x(\d+)", ln) for ln in (rd.stdout or "").splitlines() if "*" in ln), None)
     if m:
         scr_w, scr_h = int(m.group(1)), int(m.group(2))
+if shutil.which("xdotool", path=p_env):
+    subprocess.run(["xdotool", "mousemove", str(max(0, scr_w - 4)), str(scr_h // 2)], env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False)
 lines = [ln.strip() for ln in msg.splitlines() if ln.strip()][:8] or ["SHALL WE PLAY A GAME?"]
-vis_w = lambda s: sum(2 if ord(ch) > 0x1F000 else 1 for ch in s)
-cols, rows = max(50, min(84, max(vis_w(ln) for ln in lines) + 10)), len(lines) + 4
-hb_root = "/home/mike/www/mikelev.in"
-use_tw = bool(py_exe and os.path.isfile(f"{hb_root}/imports/ascii_displays.py"))
+max_ln = max(sum(2 if ord(ch) > 0x1F000 else 1 for ch in ln) for ln in lines)
+cols, rows = max(54, min(86, max_ln + 10)), len(lines) + 4
+est_w, est_h, upper_h = cols * 10, rows * 24, int(scr_h * 0.56)
+px0, py0 = max(0, (scr_w - est_w) // 2), ((36 + max(0, (upper_h - 36 - est_h) // 2)) if (est_h + 44 <= upper_h) else max(32, (scr_h - est_h) // 2))
+hb_root, err_p = "/home/mike/www/mikelev.in", pathlib.Path("/tmp/honeybot_ull_greet.err")
+use_tw = os.path.isfile(f"{hb_root}/imports/ascii_displays.py")
 if use_tw:
     tw_code = f"import base64, sys; sys.path.insert(0, {hb_root!r}); from imports.ascii_displays import run_typewriter_card; run_typewriter_card(base64.b64decode(sys.argv[1]).decode('utf-8'), hold=float(sys.argv[2]))"
     exec_argv = [py_exe, "-u", "-c", tw_code, b64_arg, f"{dur:.2f}"]
 else:
     env["ULL_BANNER"] = "\033[?25l\n" + "".join(f"  \033[1;{92 if i == 0 else 97}m{ln}\033[0m\n" for i, ln in enumerate(lines))
     exec_argv = ["sh", "-c", f'printf "%s" "$ULL_BANNER"; sleep {dur:.2f}']
-cmd = ["alacritty", "--title", "honeybot_ull_greet", "--class", "honeybot_ull_greet", "-o", 'window.decorations="None"', "-o", "window.opacity=0.94", "-o", f"window.dimensions.columns={cols}", "-o", f"window.dimensions.lines={rows}", "-o", "window.position.x=20", "-o", "window.position.y=20", "-o", "font.size=16.0", "-e", *exec_argv]
-proc = subprocess.Popen(cmd, env=env, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True, close_fds=True)
-wid, win_w, win_h = "", cols * 10, rows * 26
-for _ in range(25):
+with open(err_p, "w", encoding="utf-8") as ef:
+    cmd = ["alacritty", "--title", "honeybot_ull_greet", "--class", "honeybot_ull_greet", "-o", 'window.decorations="None"', "-o", "window.opacity=0.96", "-o", 'colors.primary.background="#070d14"', "-o", f"window.dimensions={{columns={cols}, lines={rows}}}", "-o", f"window.position={{x={px0}, y={py0}}}", "-o", "font.size=16.0", "-e", *exec_argv]
+    proc = subprocess.Popen(cmd, env=env, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=ef, start_new_session=True, close_fds=True)
+wid, win_w, win_h = "", est_w, est_h
+for _ in range(30):
     if shutil.which("wmctrl", path=p_env):
         rw = subprocess.run(["wmctrl", "-lG"], env=env, capture_output=True, text=True, check=False)
         for ln in (rw.stdout or "").splitlines():
@@ -3141,15 +3153,24 @@ for _ in range(25):
     if wid or proc.poll() is not None:
         break
     time.sleep(0.02)
+px, py = px0, py0
 if wid and shutil.which("wmctrl", path=p_env):
-    upper_h = int(scr_h * 0.56)
-    px = max(0, (scr_w - win_w) // 2)
-    py = (36 + max(0, (upper_h - 36 - win_h) // 2)) if (win_h + 44 <= upper_h) else max(32, (scr_h - win_h) // 2)
-    subprocess.run(["wmctrl", "-i", "-r", wid, "-e", f"0,{px},{py},-1,-1"], env=env, check=False)
+    px, py = max(0, (scr_w - win_w) // 2), ((36 + max(0, (upper_h - 36 - win_h) // 2)) if (win_h + 44 <= upper_h) else max(32, (scr_h - win_h) // 2))
     subprocess.run(["wmctrl", "-i", "-r", wid, "-b", "add,above,skip_taskbar,skip_pager"], env=env, check=False)
-if orig_win and shutil.which("xdotool", path=p_env):
-    subprocess.run(["xdotool", "windowactivate", orig_win], env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False)
-print(f"ULL_GREET_OK wid={wid or 'spawned'} tw={use_tw} x11_ms={round((time.perf_counter() - t0) * 1000, 1)}")
+    subprocess.run(["wmctrl", "-i", "-r", wid, "-e", f"0,{px},{py},-1,-1"], env=env, check=False)
+    subprocess.run(["wmctrl", "-i", "-a", wid], env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False)
+if wid and shutil.which("xdotool", path=p_env):
+    subprocess.run(["xdotool", "windowraise", wid], env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False)
+time.sleep(0.08)
+alive = (proc.poll() is None) and bool(wid)
+above_ok = bool(alive and shutil.which("xprop", path=p_env) and "_NET_WM_STATE_ABOVE" in (subprocess.run(["xprop", "-id", wid, "_NET_WM_STATE"], env=env, capture_output=True, text=True, check=False).stdout or ""))
+x11_ms = round((time.perf_counter() - t0) * 1000, 1)
+err_txt = (err_p.read_text(encoding="utf-8", errors="ignore").strip().splitlines() or [""])[-1] if err_p.is_file() else ""
+pathlib.Path("/tmp/honeybot_ull_greet_last.json").write_text(json.dumps({"ok": alive, "wid": wid, "pos": [px, py], "spawn_pos": [px0, py0], "size": [win_w, win_h], "above": above_ok, "tw": use_tw, "py": py_exe, "x11_ms": x11_ms, "err": err_txt, "ts": int(time.time())}) + "\n", encoding="utf-8")
+if not alive:
+    print(f"ULL_GREET_FAIL wid={wid or 'none'} rc={proc.poll()} x11_ms={x11_ms} err={err_txt!r}")
+    sys.exit(1)
+print(f"ULL_GREET_OK wid={wid} pos={px},{py} above={above_ok} tw={use_tw} x11_ms={x11_ms}")
 '''
 
 
@@ -3161,7 +3182,12 @@ def _resolve_yt_ull_greet(override=None) -> bool:
     return raw in ("1", "true", "yes", "on", "enable", "enabled")
 
 
-def trigger_ull_greeting(message=None, duration=4.5, poll_ms=0.0, trigger="manual", force=False, dry_run=False) -> dict:
+def should_trigger_ull_arrive(prev_viewers: int, cur_viewers: int, is_live: bool = True) -> bool:
+    """True on any positive live concurrent viewer increment, including a solo 0 -> 1 arrival."""
+    return bool(is_live) and int(cur_viewers) > max(0, int(prev_viewers)) and int(cur_viewers) >= 1
+
+
+def trigger_ull_greeting(message=None, duration=5.5, poll_ms=0.0, trigger="manual", force=False, dry_run=False) -> dict:
     """Pop a bare-minimum frameless greeting on Honeybot :10.0 over warm SSH without cutting audio."""
     global _last_ull_greet_ts
     import base64
@@ -3177,17 +3203,20 @@ def trigger_ull_greeting(message=None, duration=4.5, poll_ms=0.0, trigger="manua
     if dry_run:
         print(f"⚡ [DRY RUN] ULL Greeting -> {HONEYBOT_SSH_HOST} ({duration:.1f}s, auto_greet={auto_on}): {msg.replace(chr(10), ' | ')}")
         return {"fired": False, "dry_run": True, "auto_greet": auto_on}
-    _last_ull_greet_ts = now_ts
     msg_b64 = base64.b64encode(msg.encode("utf-8")).decode("ascii")
     t0 = time.perf_counter()
-    res = subprocess.run([*_hb_ssh_args(4), "python3", "-", f"{float(duration):.2f}", msg_b64], input=_HONEYBOT_ULL_GREET_HELPER, capture_output=True, text=True, timeout=5, check=False)
+    res = subprocess.run([*_hb_ssh_args(4), "python3", "-", f"{float(duration):.2f}", msg_b64], input=_HONEYBOT_ULL_GREET_HELPER, capture_output=True, text=True, timeout=6, check=False)
     prime_x11_ms = round((time.perf_counter() - t0) * 1000.0, 1)
-    m_x11 = re.search(r"x11_ms=([\d.]+)", res.stdout or "")
-    x11_ms = float(m_x11.group(1)) if m_x11 else 0.0
-    ssh_ms = round(max(0.0, prime_x11_ms - x11_ms), 1)
-    chain_ms = round(float(poll_ms or 0.0) + prime_x11_ms, 1)
-    print(f"[{_ytlog_ts()}] ⚡ [ULL GREET] ({trigger}) poll_ms={float(poll_ms or 0.0):.1f} ssh_ms={ssh_ms:.1f} x11_ms={x11_ms:.1f} total_ms={chain_ms:.1f} rc={res.returncode}", flush=True)
-    return {"fired": res.returncode == 0, "poll_ms": float(poll_ms or 0.0), "ssh_ms": ssh_ms, "x11_ms": x11_ms, "total_ms": chain_ms, "rc": res.returncode}
+    out_s = (res.stdout or "").strip()
+    fired_ok = (res.returncode == 0) and ("ULL_GREET_OK" in out_s)
+    if fired_ok:
+        _last_ull_greet_ts = now_ts
+    m_x11, m_wid, m_pos = re.search(r"x11_ms=([\d.]+)", out_s), re.search(r"wid=(\S+)", out_s), re.search(r"pos=(\S+)", out_s)
+    x11_ms, wid_s, pos_s = (float(m_x11.group(1)) if m_x11 else 0.0), (m_wid.group(1) if m_wid else "none"), (m_pos.group(1) if m_pos else "?")
+    ssh_ms, chain_ms = round(max(0.0, prime_x11_ms - x11_ms), 1), round(float(poll_ms or 0.0) + prime_x11_ms, 1)
+    diag_s = "" if fired_ok else f" out={out_s!r} stderr={(res.stderr or '').strip()!r}"
+    print(f"[{_ytlog_ts()}] {'⚡' if fired_ok else '❌'} [ULL GREET] ({trigger}) wid={wid_s} pos={pos_s} poll_ms={float(poll_ms or 0.0):.1f} ssh_ms={ssh_ms:.1f} x11_ms={x11_ms:.1f} total_ms={chain_ms:.1f} rc={res.returncode}{diag_s}", flush=True)
+    return {"fired": fired_ok, "wid": wid_s, "pos": pos_s, "poll_ms": float(poll_ms or 0.0), "ssh_ms": ssh_ms, "x11_ms": x11_ms, "total_ms": chain_ms, "rc": res.returncode}
 
 
 def _trigger_ytwatch_weebo(weebo_spec=None, duration=None):
@@ -3532,6 +3561,8 @@ def run_youtube_watch(
         return False
 
     if state["is_live"] and state["concurrent_viewers"] > prev_viewers:
+        if should_trigger_ull_arrive(prev_viewers, state["concurrent_viewers"], state["is_live"]):
+            trigger_ull_greeting(trigger="loop_init")
         print(
             f"[{_ytlog_ts()}] 📈 [VIEWER +{state['concurrent_viewers'] - prev_viewers}] "
             f"{prev_viewers} -> {state['concurrent_viewers']} watching",
@@ -3687,7 +3718,7 @@ def run_youtube_watch(
                 changed_fast = (fast_v != prev_viewers)
                 if fast_v > prev_viewers:
                     last_activity_ts = fast_ts
-                    if fast_v > max(0, _resolve_yt_clear_max(clear_max)):
+                    if should_trigger_ull_arrive(prev_viewers, fast_v, True):
                         trigger_ull_greeting(poll_ms=poll_ms, trigger="fast_poll")
                     print(
                         f"[{_ytlog_ts()}] ⚡ [FAST VIEWER +{fast_v - prev_viewers}] {prev_viewers} -> {fast_v} watching ({cur_delay:g}s {cur_gear}, {poll_ms:.1f}ms keep-alive)",
@@ -3754,7 +3785,7 @@ def run_youtube_watch(
             src_cmp = f"api={state.get('api_viewers')}, html={state.get('html_viewers')}"
             if viewers > prev_viewers:
                 last_activity_ts = now
-                if state["is_live"] and viewers > max(0, _resolve_yt_clear_max(clear_max)):
+                if should_trigger_ull_arrive(prev_viewers, viewers, state["is_live"]):
                     trigger_ull_greeting(poll_ms=rtt_ewma_ms, trigger="full_poll")
                 print(
                     f"[{_ytlog_ts()}] 📈 [VIEWER +{viewers - prev_viewers}] {prev_viewers} -> {viewers} watching ({src_cmp})",
