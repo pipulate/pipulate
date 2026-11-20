@@ -1123,6 +1123,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # remotes/honeybot/scripts/report.py
 # remotes/honeybot/scripts/build_bot_miner.py
 # remotes/honeybot/scripts/dye_injector_v2.py
+# scripts/audit_dye.py
 # remotes/honeybot/scripts/education.py
 # remotes/honeybot/scripts/radar.py
 # remotes/honeybot/scripts/routing.py
@@ -1242,7 +1243,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 # scripts/articles/extract_404_ghosts.py       # <-- Queries Honeybot SQLite over SSH for unmapped 404 ghosts against _raw_map.csv & navgraph.json
 # scripts/articles/stamp_article_ids.py        # <-- Idempotent, fail-closed monotonic article_id (#1..#N) stamper & audit gate
 # scripts/articles/norma_extract.py            # <-- 3-Pillar Candidate Radar & Socratic Puppet-Theater Pinball Plunger (_posts/_abstracts/)
-# scripts/articles/dots_extract.py             # <-- Dual-Head Idea-Refinery Harvester (Forward ! latest + Retrograde norma cones + Goodhart Scoreboard)
+# scripts/articles/dots_extract.py             # <-- Tri-Head Idea-Refinery Harvester (In-Flight prompt.md + Forward ! latest + Retrograde norma + Scoreboard)
 # scripts/articles/link_injector.py
 # scripts/articles/generate_post_nav.py  # [1,174 tokens | 4,616 bytes]
 # assets/jekyll/common-packages.nix
@@ -1354,7 +1355,7 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 #   ! norma [next|save|#ID]   -- Newest-first Storytime backfill queue & 3-voice Socratic plunger (`_posts/_abstracts/`)
 #   ! pyprobe '<code_str>'    -- Stdlib-preloaded, Ruff-F821-preflighted behavioral probe runner
 #   ! radar [ai|links] [top]  -- Post-GSC Compound-Key discovery, Search/AI & Web daily velocity (`7d` delta), & domain rollup (`markov.py`)
-#   ! dots [radar | raw]      -- Dual-Head Idea-Refinery Kata (`DOTS_PROMPT` + `DOTS_CHOP` to clipboard, or `--radar` terminal summary)
+#   ! dots [radar | raw]      -- Tri-Head Idea-Refinery Kata (In-Flight `prompt.md` + `DOTS_PROMPT`/`DOTS_CHOP` to clipboard, or `--radar` summary)
 
 # ============================================================================
 # XVIII. THE TINY UNIX COMMANDS - One word, one job, stdout is the receipt (the human-callable face)
@@ -1458,22 +1459,9 @@ foo_files.py      #  <-- THIS file. Content compiler router. Makes it very meta.
 #   compile / c / xp   -> ADHOC_CHOP     (context.txt + fixed tail)
 #   default / defaultu -> DEFAULT_CHOP   (40K architectural baseline)
 #   forget             -> COMPACT_PROMPT + COMPACT_CHOP (Landauer Forgetting Kata)
-#   dots               -> DOTS_PROMPT + DOTS_CHOP       (Dual-Head Idea-Refinery Kata)
-#   idea               -> IDEATION_CHOP  (30-and-3 + Axis-Forcing harness)
+#   dots               -> DOTS_PROMPT + DOTS_CHOP       (Tri-Head Idea-Refinery Kata)
 #   brief              -> INSTALL_CHOP   (First Wish installer guide)
 #   seed               -> SEED_PROMPT + SEED_CHOP (Cold-stranger Book Seed)
-
-IDEATION_CHOP = r"""
-# THE IDEATION KATA (30-and-3 + Axis-Forcing, primed for a fan-out turn)
-# COMMAND: python prompt_foo.py --chop IDEATION_CHOP --no-tree
-# ALIAS: `idea` (flake.nix). The two creativity-forcing rules live in the
-# constitution INSIDE foo_files.py, so this chop stays a single-file map that
-# carries them without duplication (GENERATED-NOT-AUTHORED: one source, no
-# drift). Pair with a prompt.md that names the problem space; the four-model
-# fan-out is the human's job, never a generator's.
-
-foo_files.py  # The map + the two forcing-function rules it already carries.
-"""
 
 ADHOC_CHOP = r"""
 # THE CONTEXT FILE (context.txt spliced in above a fixed tail)
@@ -1746,7 +1734,6 @@ apply.py
 # - TODO (2026-11-20, QUOTE TICKER SHORT TITLES & DROP DISCORD SLUG): Audit ticker_tag short-title derivation, wrap the Currently Playing short title in double-quotes on #ticker_bar, and remove MIKELEV.IN/DISCORD from ticker rotation. Gate: quoted title & no Discord ticker on :10.0.
 # - TODO (2026-11-20, TITTLE-DROP TOP BORDER ROW & CENTERED WRAPPED FIGLETS): Add 1 empty top row above the tittle-drop ASCII art in ascii_displays.py for even vertical borders and center-align wrapped multi-line FIGlet text in card.py banners. Gate: balanced border & centered wrap.
 # - TODO (2026-11-20, TIGHTEN STATION-BREAK REPORT VERTICAL MARGINS): Trim excess top and bottom blank rows and Alacritty vertical padding on station-break report windows in forest.py so less black background obscures the live HUD. Gate: tighter report frame on :10.0.
-# - TODO (2026-11-20, RETIRE IDEATION_CHOP & AUDIT UNUSED CHOPS): Remove dead IDEATION_CHOP from foo_files.py (following idea removal in flake.nix c7f576c) and prune any remaining zero-run legacy CHOPs surfaced by prompt_foo.py --chop-stats. Gate: zero IDEATION_CHOP hits.
 # - TODO (2026-11-19, FRONT-LOAD 911 OPTICS D3 FORCE-GRAPH IN ?DEMO=1): Surface the D3 forceRadial DOM link-graph immediately in apps/911_optics_workflow.py and assets/scenarios/optics_test.json instead of scrolling plain link lists first. Gate: force-graph opens first on :10.0.
 # - TODO (2026-11-19, GMAIL 403 CHECK-GATE & 19-FILE LEGACY VENDOR PURGE): Multi-account vault, warm check, & email --delete landed (5e92397..bd81606); OWED: gate warm_or_switch GREEN on check() + --no-browser URL mode in gmail.py, and scrub 19 tracked legacy-vendor files. Gate: honest 403 + 0 legacy hits.
 # - TODO (2026-11-19, README & SOVEREIGN WEIGHT-VAULT REFRESH): Dynamic Story-Control #ticker_bar landed (137959e); OWED: refresh root README.md for 3-Hop Markdown/SunPug positioning and replace zero-byte Ollama :cloud tags with offline weights. Gate: updated README and offline model manifest.
@@ -1758,7 +1745,6 @@ apply.py
 # - TODO (2026-11-14, ON HOLD — HOLIDAY DE-CLOUD GOOGLE TAKEOUT FASTHTML APP): Parked behind lightweight 80/20 Pipulate FastHTML killer apps: local-first Google Photos / Takeout de-clouding workflow. Gate: offline Takeout ingest + dedupe browser.
 # - TODO (2026-10-17, MOBILE BROADCAST BRIDGE): Build a lightweight, authenticated web-app bridge so `ytsay` live break-ins and Honeybot broadcast controls can be triggered from a phone away from the workbench.
 # - TODO (2026-11-17, EMOJI DISPLAY-WIDTH SHIFT-TABLE IN PROMPT_FOO.PY): Scan tracked files for multi-byte / `U+FE0F` variation-selector emojis and auto-inject a compact column-shift warning table into `prompt_foo.py` `Summary` whenever compiled files carry padded emoji alignment so Models never miscount spaces beside `⏹️`/`▶️` vs. `📋`. Gate: `prompt_foo.py` emits emoji-shift notice when `common.py` rides.
-# - TODO (2026-11-16, RETIRE OR RE-POINT PINS ALIAS IN FLAKE.NIX): `PINNED_CHOP` retired from `foo_files.py` in favor of native `lsa.py` (`posts --fmt body --slugs ...` / `postsc`); OWED: remove or re-point `alias pins` in `flake.nix` when `flake.nix` is next authorized. Gate: `rg -n 'PINNED_CHOP' flake.nix` prints nothing.
 # - TODO (2026-10-17, UNIFIED OAUTH WALLET WARMING IN FASTHTML): Replace static `service-account-key.json` dependencies in standalone GSC/Google scripts with user-delegated, admin-revocable OAuth via `connectors/wallet.py` and `warm`, and build a FastHTML Web App Plugin workflow that collects and warms OAuth logins on demand or in a single batch.
 # - TODO (2026-11-15, AUTOGNOME STAGE :5002 COLD-INIT WITNESS): `stage start; ytapp ensure-daemon; ytlog`, Desktop 2 `hydrate_delay: 6.0`, and port-scoped `pkWorkshopScript` landed and activated at `nixos-config` commit `257ce6c` (deed 1133); OWED: witness cold `init` after next workstation reboot. Gate: cold `init` leaves both `HTTP_5001=200` and `HTTP_5002=200` live with `pipulate-stage`, `ytwatch`, and `ytbreaks` in `tmux ls`.
 # - TODO (2026-10-16, DESKTOP 2 PIPULATE SERVER STARTUP AUDIO): During `autognome.py` Desktop 2 initialization, `PIPULATE_VOICE=0 nix develop` suppresses voice inside the foreground shellHook, but if `run-server` / `server.py` spawns in a detached tmux session or reads `~/.config/pipulate/voice` (`yes`) without inheriting `PIPULATE_VOICE=0`, the Pipulate server startup narration still plays audibly; trace `flake.nix` tmux server launch and `server.py` startup voice gate so `PIPULATE_VOICE=0` (or an explicit quiet startup flag) silences background server boot during `init`.
