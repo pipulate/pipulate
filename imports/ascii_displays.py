@@ -1510,23 +1510,30 @@ def render_titled_card_hold(label: str, subtitle: str = "", max_hold: float = 60
     import sys
     import time
     from rich.console import Group
-    term_size = _live_terminal_size((116, 20))
-    term_w, term_h = max(60, term_size.columns), max(16, term_size.lines)
-    clean_fig = render_centered_figlet(str(label), font="standard", width=max(48, term_w - 10)) or str(label)
-    fig_rows = len(clean_fig.splitlines()) or 1
-    parts = [Text(clean_fig, style="bold bright_cyan", no_wrap=True)]
-    if subtitle:
-        parts.append(Text(""))
-        parts.append(Align.center(Text(str(subtitle).strip(), style="bold bright_white", justify="center")))
-    panel = Panel(Group(*parts), border_style="bright_cyan", box=HEAVY, padding=(1, 4), expand=False)
-    est_h = fig_rows + (len(str(subtitle).strip().splitlines()) + 2 if subtitle else 0) + 4
-    card_console = Console(width=term_w, force_terminal=True, color_system="truecolor")
-    sys.stdout.write("\033[?25l\033[2J\033[H" + ("\n" * max(0, (term_h - est_h) // 2)))
-    card_console.print(Align.center(panel, width=term_w, pad=False), end="")
-    sys.stdout.flush()
-    deadline = time.time() + max(0.5, float(max_hold))
+    def _paint(sz) -> None:
+        term_w, term_h = max(60, sz.columns), max(16, sz.lines)
+        clean_fig = render_centered_figlet(str(label), font="standard", width=max(48, term_w - 10)) or str(label)
+        fig_rows = len(clean_fig.splitlines()) or 1
+        parts = [Align.center(Text(clean_fig, style="bold bright_cyan", no_wrap=True))]
+        if subtitle:
+            parts.append(Text(""))
+            parts.append(Align.center(Text(str(subtitle).strip(), style="bold bright_white", justify="center")))
+        panel = Panel(Group(*parts), border_style="bright_cyan", box=HEAVY, padding=(1, 4), expand=False)
+        est_h = fig_rows + (len(str(subtitle).strip().splitlines()) + 2 if subtitle else 0) + 4
+        card_console = Console(width=term_w, force_terminal=True, color_system="truecolor")
+        sys.stdout.write("\033[?25l\033[2J\033[H" + ("\n" * max(0, (term_h - est_h) // 2)))
+        card_console.print(Align.center(panel, width=term_w, pad=False), end="")
+        sys.stdout.flush()
+
+    last_sz = _live_terminal_size((116, 20))
+    _paint(last_sz)
+    deadline = time.time() + max(0.05, float(max_hold))
     while time.time() < deadline and not (stop_file and os.path.exists(stop_file)):
-        time.sleep(0.1)
+        cur_sz = _live_terminal_size((116, 20))
+        if cur_sz != last_sz:
+            last_sz = cur_sz
+            _paint(last_sz)
+        time.sleep(min(0.05, max(0.005, deadline - time.time())))
 
 def white_rabbit(console_output=True):
     """🐰 WHITE RABBIT: Thin facade returning the unified dual-output figurate bunny."""
