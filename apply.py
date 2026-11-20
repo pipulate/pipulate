@@ -789,13 +789,14 @@ def apply_search_replace_patch(payload: str) -> bool:
         # hand-run json.load echoed as a probe, because this branch did not
         # exist. JSONDecodeError carries lineno/colno, so the refusal names
         # the exact character that broke.
-        if not _validate_syntax_airlocks(filename, new_content, "Patching"):
-            success = False
-            continue
-
         staged_contents[abs_key] = new_content
         if abs_key not in commit_plan:
             commit_plan[abs_key] = (filename, "patch", True)
+
+    for abs_key, final_content in staged_contents.items():
+        filename, mode, _ = commit_plan[abs_key]
+        if mode == "patch" and not _validate_syntax_airlocks(filename, final_content, "Patching"):
+            success = False
 
     if not success:
         if staged_contents:
