@@ -633,7 +633,7 @@ def get_broadcast_kit(target_key="1", slug_match=None):
         f"🔭 Enterprise AI-Readiness & Edge Telemetry (RFC 9110 / ADNS / O2O): {base_url}/?src=youtube#consulting | Inspect workshop: curl -fsSL https://sunpug.io | less (Email: {CONTACT_EMAIL})",
         f"🧪 Test RFC 9110 in your terminal: curl -sI -H \"Accept: text/markdown\" {canonical_url}?src=rfc9110",
         "",
-        f"🐠 Now playing on A.I. Fishtank Story-Time: \"{title}\" — Type any Story # from the bottom bar in live chat to switch stories, or type 911 for a live Optics check!",
+        f"🐠 Now playing on A.I. Fishtank Story-Time: \"{title}\" — Type MENU, any Story # from the bottom bar, or 911 in live chat to take control!",
     ]
     if meta_desc:
         desc_parts.extend(["", meta_desc])
@@ -646,7 +646,7 @@ def get_broadcast_kit(target_key="1", slug_match=None):
         "---",
         "🐠 About A.I. Fishtank Story-Time (24/7 Interactive NixOS Broadcast):",
         "You are watching live Nginx origin wire traffic and AI crawler behavior while 3-voice Story-Time plays.",
-        "• Take Control from Chat: Type any Story # shown on the bottom bar into live chat to switch stories, or type 911 for a live 16-lens Optics check.",
+        "• Take Control from Chat: Type MENU to pop up playable episodes, type any Story # to switch stories, or type 911 for a live 16-lens Optics check.",
         "• Agents sending 'Accept: text/markdown' (RFC 9110) receive clean raw Markdown.",
         "• Agents executing JavaScript trigger the DOM trapdoor sensor.",
         "• Zero-Agent Airlock: Deterministic NixOS + Piper TTS player piano (chat reaches a human, never an LLM shell).",
@@ -2010,8 +2010,10 @@ _YTWATCH_RESERVED_ACTIONS = {
 
 YT_CHAT_CMD_COOLDOWN = int(os.environ.get("PIPULATE_YT_CHAT_COOLDOWN", "45"))
 _CHAT_OPTICS_RE = re.compile(r"^[!/]?#?911$", re.IGNORECASE)
+_CHAT_MENU_RE = re.compile(r"^[!/]?(?:type\s*:?\s*)?menu[!?.\s]*$", re.IGNORECASE)
 _CHAT_STORY_NUM_RE = re.compile(r"^[!/]?(?:(?:story|play|jukebox)\s+)?#?([1-9]\d{0,4})$", re.IGNORECASE)
 _last_chat_cmd_ts = 0.0
+_last_chat_cmd_by_kind: dict[str, float] = {}
 
 
 def parse_allowlisted_chat_command(raw_text: str, playable_ids=None):
@@ -2021,6 +2023,8 @@ def parse_allowlisted_chat_command(raw_text: str, playable_ids=None):
         return None
     if _CHAT_OPTICS_RE.match(s):
         return ("optics", None)
+    if _CHAT_MENU_RE.match(s):
+        return ("menu", None)
     m_num = _CHAT_STORY_NUM_RE.match(s)
     if m_num:
         story_id = int(m_num.group(1))
@@ -2033,7 +2037,7 @@ def parse_allowlisted_chat_command(raw_text: str, playable_ids=None):
 
 
 def _actuate_allowlisted_chat_command(parsed_cmd, dry_run: bool = False) -> bool:
-    """Dispatch a validated ('optics'|'jukebox', arg) tuple to Honeybot with cooldown guard."""
+    """Dispatch a validated ('optics'|'menu'|'jukebox', arg) tuple to Honeybot with per-kind cooldown guard."""
     global _last_chat_cmd_ts
     import subprocess
     import time
@@ -2046,12 +2050,15 @@ def _actuate_allowlisted_chat_command(parsed_cmd, dry_run: bool = False) -> bool
             print(f"[{_ytlog_ts()}] ⚠️ [CHAT STORY] Story #{int(arg)} is not in playable _abstracts ({sorted(playable, reverse=True)[:8]})", flush=True)
             return False
     now_ts = time.time()
-    if not dry_run and _last_chat_cmd_ts > 0 and (now_ts - _last_chat_cmd_ts) < YT_CHAT_CMD_COOLDOWN:
-        rem = int(YT_CHAT_CMD_COOLDOWN - (now_ts - _last_chat_cmd_ts))
+    last_kind_ts = float(_last_chat_cmd_by_kind.get(kind) or 0.0)
+    if not dry_run and last_kind_ts > 0 and (now_ts - last_kind_ts) < YT_CHAT_CMD_COOLDOWN:
+        rem = int(YT_CHAT_CMD_COOLDOWN - (now_ts - last_kind_ts))
         print(f"[{_ytlog_ts()}] 🛡️ [CHAT TRIGGER COOLDOWN] Holding {kind} ({rem}s remaining)", flush=True)
         return False
     if kind == "optics":
         remote_cmd = "python3 ~/www/mikelev.in/scripts/stream.py --bead optics >/dev/null 2>&1"
+    elif kind == "menu":
+        remote_cmd = "python3 ~/www/mikelev.in/scripts/stream.py --bead menu >/dev/null 2>&1"
     elif kind == "jukebox":
         jb_json = json.dumps({"index": int(arg), "ts": int(now_ts)})
         remote_cmd = (
@@ -2063,6 +2070,7 @@ def _actuate_allowlisted_chat_command(parsed_cmd, dry_run: bool = False) -> bool
     if dry_run:
         return True
     _last_chat_cmd_ts = now_ts
+    _last_chat_cmd_by_kind[kind] = now_ts
     if kind == "optics":
         ytstage_p = Path(__file__).resolve().parents[1] / "ytstage.py"
         if ytstage_p.is_file():
