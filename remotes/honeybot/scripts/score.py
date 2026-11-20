@@ -83,6 +83,7 @@ HERO_IMAGE_DURATION = 8.0
 def _append_article_performance(script, article, is_latest=True):
     """Emit symmetrical Opening Overture + Act I + Midpoint Intermission + Act II."""
     jb_idx = int(article.get("jukebox_index") or 0)
+    ticker_tag = str(article.get("ticker_tag") or "").strip()
     raw_title = str(article.get("raw_title") or article.get("title") or "latest entry")
     title_str = str(article.get("title") or raw_title)
     jb_tag = f"story number {jb_idx}, " if jb_idx else ""
@@ -91,12 +92,17 @@ def _append_article_performance(script, article, is_latest=True):
         if is_latest
         else f"Playing {jb_tag}from {article['date']}."
     )
-    art_id = str(
-        article.get("id")
-        or article.get("slug")
-        or article.get("permalink")
-        or f"{article.get('date', '')}:{raw_title}"
-    ).strip()
+    tag_seg = f" [{ticker_tag}]" if ticker_tag else ""
+    art_id = (
+        f"#{jb_idx}{tag_seg}: {raw_title} ({article['date']})"
+        if jb_idx
+        else str(
+            article.get("id")
+            or article.get("slug")
+            or article.get("permalink")
+            or f"{article.get('date', '')}:{raw_title}"
+        ).strip()
+    )
     card_lbl = f"STORYTIME #{jb_idx}" if jb_idx else "STORYTIME"
     script.append((
         "CARD",
@@ -110,10 +116,11 @@ def _append_article_performance(script, article, is_latest=True):
                 "raw_title": raw_title,
                 "image": str(article.get("image") or "").strip(),
                 "jukebox_index": jb_idx,
+                "ticker_tag": ticker_tag,
             },
         },
     ))
-    script.append(("OVERTURE", {"title": title_str, "raw_title": raw_title, "jukebox_index": jb_idx, "article": art_id}))
+    script.append(("OVERTURE", {"title": title_str, "raw_title": raw_title, "jukebox_index": jb_idx, "ticker_tag": ticker_tag, "article": art_id}))
     script.append(("BGM", "START"))
     script.append(("BUMPER", {"slot": "post_overture"}))
     image_path = str(article.get("image") or "").strip()
@@ -130,6 +137,7 @@ def _append_article_performance(script, article, is_latest=True):
         script.extend(body_cues[split_idx:])
     else:
         script.extend(body_cues)
+    short_addr = f"MikeLev.in/{jb_idx}" if jb_idx else "MikeLev.in"
     script.append((
         "CARD",
         {
@@ -137,10 +145,10 @@ def _append_article_performance(script, article, is_latest=True):
             "pace": "standard",
             "say": (
                 f"That concludes {article['title']}. "
-                "Remember the two addresses: you get the long-form articles and raw book receipts at MikeLev.in, "
+                f"Remember the two addresses: you get the full lab receipts for this story at {short_addr}, "
                 "and you get the local-first A I-Readiness tools and 911 L L M Optics free at SunPug.io. "
-                "Join the Founding 1,000 A I-Readiness Consultants at MikeLev.in/discord, or drop a message in the live chat — "
-                "a human operator monitors this observatory and can break in live."
+                "Type any story number or menu in live chat to take control, or join the Founding 1,000 at MikeLev.in/discord — "
+                "a human operator monitors this fishtank and can break in live."
             ),
         },
     ))
@@ -161,7 +169,7 @@ def get_script(breaking=False, jukebox_index=None):
                 _append_article_performance(script, jb_art, is_latest=False)
                 return script
         except Exception as e:
-            script.append(("SAY", f"Error loading Jukebox entry {jukebox_index}: {e}"))
+            script.append(("SAY", f"Error loading story number {jukebox_index}: {e}"))
 
     if breaking or not ARCHIVE_WALK:
         articles = []

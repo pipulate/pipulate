@@ -155,7 +155,30 @@ _jb_catalog_cache = globals().get("_jb_catalog_cache", {})
 if "id_map" not in _jb_catalog_cache:
     _jb_catalog_cache = {"sig": None, "paths": [], "id_map": {}, "index_map": {}}
 ABSTRACTS_SUBDIR = "_abstracts"
-_PARENT_BACKFILL_KEYS = ("permalink", "sort_order", "image", "article_id", "storytime_featured", "storytime_order")
+_PARENT_BACKFILL_KEYS = ("permalink", "sort_order", "image", "article_id", "storytime_featured", "storytime_order", "ticker_tag")
+_TICKER_STOPWORDS = frozenset({
+    "THE", "A", "AN", "AND", "OR", "BUT", "FOR", "NOR", "ON", "AT", "TO", "FROM",
+    "BY", "WITH", "IN", "OF", "INTO", "OVER", "AFTER", "UNDER", "HOW", "WHY", "WHAT",
+    "WHEN", "WHERE", "WHO", "YOUR", "OUR", "MY", "THIS", "THAT", "IS", "ARE", "WAS",
+    "WERE", "BE", "IT", "ITS", "AS", "VS", "VIA", "KILL", "KILLING", "KILLS", "RETIRE",
+    "RETIRING", "AUTOMATED", "BUILDING", "MAKING", "USING", "TURNING",
+})
+
+
+def resolve_ticker_tag(fm: dict, raw_title: str = "", slug: str = "", max_chars: int = 18) -> str:
+    """Resolve a <=18-char 1-2 word uppercase LED ticker topic tag from YAML `ticker_tag` or slug/title."""
+    explicit = str((fm or {}).get("ticker_tag") or "").strip().upper()
+    explicit = re.sub(r"[^A-Z0-9 ./+&:#!?'-]+", " ", explicit)
+    explicit = " ".join(explicit.split())
+    if explicit:
+        return explicit[:max_chars].rstrip()
+    src = (slug or "").split("/")[-1].replace("-", " ") or raw_title
+    toks = [t.upper() for t in re.findall(r"[A-Za-z0-9]+", src) if t.upper() not in _TICKER_STOPWORDS]
+    if not toks:
+        return "STORY-TIME"
+    if len(toks) >= 2 and len(f"{toks[0]} {toks[1]}") <= max_chars:
+        return f"{toks[0]} {toks[1]}"
+    return toks[0][:max_chars]
 
 def _read_frontmatter_dict(filepath: Path) -> dict:
     """Stream YAML frontmatter up to closing `---` without reading the post body."""
@@ -219,6 +242,7 @@ def get_jukebox_catalog(posts_dir: Path | None = None):
         _jb_catalog_cache["dir_mtime"] = dir_mtime
         return _jb_catalog_cache
     keyed = []
+    fm_by_path = {}
     for p in dated:
         fm = _with_parent_frontmatter(p, _read_frontmatter_dict(p), posts_dir=base)
         if not _is_storytime_enabled(fm):
@@ -229,14 +253,28 @@ def get_jukebox_catalog(posts_dir: Path | None = None):
         aid = int(raw_aid) if raw_aid.isdigit() and int(raw_aid) > 0 else None
         if aid is None or aid in JUKEBOX_RESERVED_IDS:
             continue
+        fm_by_path[p] = fm
         keyed.append(((p.name[:10], s_ord, p.name), aid, p))
     keyed.sort(key=lambda item: item[0])
-    paths, id_map, idx_map = [], {}, {}
+    paths, id_map, idx_map, meta_map = [], {}, {}, {}
     for _, aid, p in keyed:
         if aid not in id_map:
             paths.append(p)
             id_map[aid] = p
             idx_map[p.name] = aid
+            fm_p = fm_by_path.get(p) or {}
+            slug_p = _resolve_canonical_slug(fm_p, p.name)
+            rtitle_p = str(fm_p.get("title") or slug_p.replace("-", " "))
+            meta_map[aid] = {
+                "jukebox_index": aid,
+                "date": p.name[:10],
+                "filename": p.name,
+                "slug": slug_p,
+                "raw_title": rtitle_p,
+                "spoken_title": _apply_tts_pronunciations(rtitle_p),
+                "ticker_tag": resolve_ticker_tag(fm_p, raw_title=rtitle_p, slug=slug_p),
+                "short_url": f"MikeLev.in/{aid}",
+            }
     seen_ids = set()
     playable_ids = [
         aid for _, aid, _ in reversed(keyed)
@@ -248,6 +286,7 @@ def get_jukebox_catalog(posts_dir: Path | None = None):
         "paths": paths,
         "id_map": id_map,
         "index_map": idx_map,
+        "meta_map": meta_map,
         "playable_ids": playable_ids,
     })
     return _jb_catalog_cache
@@ -256,6 +295,14 @@ def get_jukebox_catalog(posts_dir: Path | None = None):
 def get_jukebox_playable_ids(posts_dir: Path | None = None) -> list[int]:
     """Return newest-first list of playable Norma-converted Story IDs (excluding reserved 911)."""
     return list(get_jukebox_catalog(posts_dir=posts_dir).get("playable_ids") or [])
+
+
+def get_jukebox_menu_entries(limit: int = 12, posts_dir: Path | None = None) -> list[dict]:
+    """Return newest-first O(1)-cached metadata dicts for playable Norma Story-Time episodes."""
+    cat = get_jukebox_catalog(posts_dir=posts_dir)
+    meta_map = cat.get("meta_map") or {}
+    ids = cat.get("playable_ids") or []
+    return [dict(meta_map[aid]) for aid in ids[: max(1, int(limit))] if aid in meta_map]
 
 
 def get_article_by_jukebox_index(jb_idx: int):
@@ -283,6 +330,7 @@ def get_article_by_jukebox_index(jb_idx: int):
         "slug": slug,
         "filename": filepath.name,
         "jukebox_index": idx,
+        "ticker_tag": resolve_ticker_tag(fm, raw_title=raw_title, slug=slug),
         "raw_title": raw_title,
         "date": post_date,
         "title": _apply_tts_pronunciations(raw_title),
@@ -557,6 +605,7 @@ def get_playlist(recent_n=10, include_archive=True):
                 'slug': slug,
                 'filename': filename,
                 'jukebox_index': jb_idx,
+                'ticker_tag': resolve_ticker_tag(frontmatter, raw_title=raw_title, slug=slug),
                 'raw_title': raw_title,
                 'date': post_date,
                 'sort_order': sort_order,
@@ -617,10 +666,11 @@ def get_playlist(recent_n=10, include_archive=True):
                     if enqueue_media and image_path:
                         _m.narrator.media({"path": image_path, "duration": 14.0})
                     jb_s = f"story number {jb_n}, titled: {title}" if jb_n else f"titled: {title}"
+                    short_door = f"Mike L E V dot eye N slash {jb_n}" if jb_n else "Mike L E V dot eye N slash latest"
                     return (
-                        f"The article currently being read on this broadcast is {jb_s}. "
-                        "To read the full article text and inspect the raw code receipts at your own pace, "
-                        "visit Mike L E V dot eye N slash latest."
+                        f"The story currently playing in the fishtank is {jb_s}. "
+                        "Type any story number on the bottom bar in live chat to switch stories, "
+                        f"or inspect the full source at {short_door}."
                     )
                 main_mod.resolve_current_article_line = _live_resolve_current_article_line
                 import importlib
