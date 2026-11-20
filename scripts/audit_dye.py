@@ -8,45 +8,50 @@ from pathlib import Path
 import subprocess
 import sys
 
-DYE_TOKEN = "pipulate-levinix-epoch-01-"
-LEGACY_TOKEN = "pipulate-levinux-epoch-01"
+DYE_PREFIX = "pipulate-levinix-epoch-01-"
+LEGACY_PREFIX = "pipulate-levinux-epoch-01"
+WAIT_6502_HEX = "2b2f2d232a2330482f28"
 DEFAULT_SITE_DIR = "/home/mike/www/mikelev.in/_site"
 DEFAULT_SSH_HOST = os.environ.get("HONEYBOT_SSH_HOST", "honeybot")
 
 REMOTE_AUDIT_PY = """
 import json, pathlib, sys
 root = pathlib.Path(sys.argv[1])
-total, dyed, legacy, missing = 0, 0, 0, []
+total, dyed, wait6502, legacy, missing = 0, 0, 0, 0, []
 if root.is_dir():
     for p in sorted(root.rglob("index.md")):
         total += 1
         txt = p.read_text(encoding="utf-8", errors="replace")
         if "pipulate-levinix-epoch-01-" in txt:
             dyed += 1
+            if "2b2f2d232a2330482f28" in txt:
+                wait6502 += 1
         else:
             if "pipulate-levinux-epoch-01" in txt:
                 legacy += 1
             if len(missing) < 8:
                 missing.append("/" + str(p.relative_to(root)))
-print(json.dumps({"exists": root.is_dir(), "total": total, "dyed": dyed, "legacy": legacy, "missing": missing}))
+print(json.dumps({"exists": root.is_dir(), "total": total, "dyed": dyed, "wait6502": wait6502, "legacy": legacy, "missing": missing}))
 """.strip()
 
 
 def audit_local_dir(site_dir: Path) -> dict:
     root = Path(site_dir).expanduser().resolve()
-    total, dyed, legacy, missing = 0, 0, 0, []
+    total, dyed, wait6502, legacy, missing = 0, 0, 0, 0, []
     if root.is_dir():
         for p in sorted(root.rglob("index.md")):
             total += 1
             txt = p.read_text(encoding="utf-8", errors="replace")
-            if DYE_TOKEN in txt:
+            if DYE_PREFIX in txt:
                 dyed += 1
+                if WAIT_6502_HEX in txt:
+                    wait6502 += 1
             else:
-                if LEGACY_TOKEN in txt:
+                if LEGACY_PREFIX in txt:
                     legacy += 1
                 if len(missing) < 8:
                     missing.append("/" + str(p.relative_to(root)))
-    return {"exists": root.is_dir(), "total": total, "dyed": dyed, "legacy": legacy, "missing": missing}
+    return {"exists": root.is_dir(), "total": total, "dyed": dyed, "wait6502": wait6502, "legacy": legacy, "missing": missing}
 
 
 def run_audit(argv: list[str] | None = None) -> int:
@@ -73,9 +78,9 @@ def run_audit(argv: list[str] | None = None) -> int:
     if args.json:
         print(json.dumps(data, sort_keys=True))
         return 0 if data.get("exists") and data.get("total", 0) > 0 else 1
-    total, dyed, legacy = int(data["total"]), int(data["dyed"]), int(data["legacy"])
+    total, dyed, w6502, legacy = int(data["total"]), int(data["dyed"]), int(data.get("wait6502", 0)), int(data["legacy"])
     gap = total - dyed
-    print(f"Markdown Dye Audit: {dyed}/{total} index.md files carry '{DYE_TOKEN}*' (missing={gap}, legacy_levinux={legacy})")
+    print(f"Markdown Dye Audit: {dyed}/{total} index.md dyed (wait6502={w6502}, missing={gap}, legacy={legacy})")
     for rel in data.get("missing", []):
         print(f"  missing: {rel}")
     return 0 if data.get("exists") and total > 0 else 1
