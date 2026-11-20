@@ -254,14 +254,14 @@ def render_patronus_banner(name: str) -> None:
         padding=(1, 2),
         expand=False,
     )
-    term_w = console.size.width or 100
-    term_h = console.size.height or 24
+    term_sz = _live_terminal_size((100, 24))
+    term_w, term_h = max(40, term_sz.columns), max(12, term_sz.lines)
     top_pad = max(0, (term_h - panel_h) // 2)
     console.clear()
     if top_pad > 0:
         sys.stdout.write("\n" * top_pad)
     console.print(
-        Align.center(panel, width=max(40, term_w - 1)),
+        Align.center(panel, width=term_w, pad=False),
         end="",
     )
     sys.stdout.flush()
@@ -404,6 +404,8 @@ def conjure_window(command, duration: float = 30.0, columns: int = 100, lines: i
         safe_class = "conjure_window_overlay"
 
     env = os.environ.copy()
+    env.pop("COLUMNS", None)
+    env.pop("LINES", None)
     if display is not None:
         env["DISPLAY"] = str(display)
     elif sys_platform == "linux" and not env.get("DISPLAY"):
@@ -463,6 +465,60 @@ def conjure_window(command, duration: float = 30.0, columns: int = 100, lines: i
                 pass
 
 
+def _live_terminal_size(fallback: tuple = (80, 20)):
+    """Query kernel PTY TIOCGWINSZ first when on a TTY, falling back to shutil/env for pipes."""
+    import os
+    import shutil
+    import sys
+    if sys.stdout.isatty():
+        try:
+            return os.get_terminal_size(sys.stdout.fileno())
+        except OSError:
+            pass
+    return shutil.get_terminal_size(fallback)
+
+
+def render_centered_figlet(label: str, font: str = "standard", width: int = 80) -> str:
+    """Render single-line, multi-line, or wrapped FIGlet text with each glyph-row centered."""
+    norm = str(label or "").replace("\\n", "\n").strip("\n")
+    if not norm:
+        return ""
+    try:
+        from pyfiglet import Figlet
+        fig = Figlet(font=font, width=max(40, int(width)))
+        fh = len(fig.renderText("M").splitlines())
+        raw = fig.renderText(norm).splitlines()
+    except Exception:
+        plain = [ln.strip() for ln in norm.splitlines() if ln.strip()]
+        w_p = max((len(ln) for ln in plain), default=0)
+        return "\n".join((" " * ((w_p - len(ln)) // 2) + ln).ljust(w_p) for ln in plain)
+    blocks = [raw[i : i + fh] for i in range(0, len(raw), fh)] if (fh > 0 and len(raw) % fh == 0) else [raw]
+    rects = []
+    for blk in blocks:
+        rstripped = [ln.rstrip() for ln in blk]
+        non_empty = [ln for ln in rstripped if ln.strip()]
+        if not non_empty:
+            rects.append([""])
+            continue
+        min_lead = min(len(ln) - len(ln.lstrip(" ")) for ln in non_empty)
+        trimmed = [ln[min_lead:] if len(ln) >= min_lead else "" for ln in rstripped]
+        bw = max(len(ln) for ln in trimmed)
+        rects.append([ln.ljust(bw) for ln in trimmed])
+    canvas_w = max((len(r[0]) for r in rects if r and r[0]), default=0)
+    if canvas_w <= 0:
+        return norm.strip()
+    centered = [
+        (" " * ((canvas_w - len(r[0])) // 2) + ln).ljust(canvas_w)
+        for r in rects
+        for ln in (r if r[0] else [" " * canvas_w])
+    ]
+    while centered and not centered[0].strip():
+        centered.pop(0)
+    while centered and not centered[-1].strip():
+        centered.pop()
+    return "\n".join(centered) if centered else norm.strip()
+
+
 def measure_figlet(label: str, font: str = "standard", width: int = 80) -> tuple:
     """📏 MEASURE_FIGLET: Deterministic footprint of a Figlet banner.
 
@@ -486,22 +542,9 @@ def measure_figlet(label: str, font: str = "standard", width: int = 80) -> tuple
         spec = build_tittle_drop_spec(label, font=font, fig_width=max(80, int(width)))
         if spec is not None:
             return spec["canvas_w"], spec["canvas_h"]
-    rendered = label
-    try:
-        from pyfiglet import Figlet
-        rendered = Figlet(font=font, width=max(40, int(width))).renderText(label)
-    except Exception:
-        rendered = label
-    lines = [ln.rstrip() for ln in rendered.splitlines()]
-    while lines and not lines[-1].strip():
-        lines.pop()
-    while lines and not lines[0].strip():
-        lines.pop(0)
-    if not lines:
-        lines = [label]
-    width = max((len(line) for line in lines), default=len(label))
-    height = len(lines) or 1
-    return width, height
+    clean = render_centered_figlet(label, font=font, width=max(40, int(width)))
+    lines = clean.splitlines() or [str(label)]
+    return max((len(line) for line in lines), default=len(str(label))), len(lines) or 1
 
 
 # FIGURATE_COLOR_BITS: The color-bits player piano dictionary.
@@ -1003,19 +1046,29 @@ def build_tittle_drop_spec(label: str, font: str = "standard", fig_width: int = 
                         base_grid[rr][cc] = pref_raw[rr][cc] if len(pref_raw) > rr and cc < len(pref_raw[rr]) else " "
                     base_grid[4][cx + 1] = "|"
                     end_x = cx - 1
-                    actors.append({"start_x": end_x + 3, "start_y": idx * 7, "end_x": end_x, "end_y": idx * 7 + 5})
+                    actors.append({"line_idx": idx, "start_x": end_x + 3, "start_y": 1 + idx * 7, "end_x": end_x, "end_y": 1 + idx * 7 + 5})
                     break
         line_grids.append(base_grid)
         dotted_blocks.append(dotted_5)
     if not actors:
         return None
-    canvas_w = max([len(g[0]) for g in line_grids if g] + [a["start_x"] + 3 for a in actors])
-    base_canvas, settled_canvas = [], []
-    for b_grid, d_5 in zip(line_grids, dotted_blocks):
+    line_widths = [
+        max([len(g[0]) if g else 0] + [a["start_x"] + 3 for a in actors if a["line_idx"] == i])
+        for i, g in enumerate(line_grids)
+    ]
+    canvas_w = max(line_widths, default=0)
+    line_pads = [(canvas_w - lw) // 2 for lw in line_widths]
+    for a in actors:
+        px = line_pads[a["line_idx"]]
+        a["start_x"] += px
+        a["end_x"] += px
+    base_canvas, settled_canvas = [" " * canvas_w], [" " * canvas_w]
+    for (b_grid, d_5), px in zip(zip(line_grids, dotted_blocks), line_pads):
+        lead = " " * px
         base_canvas.extend([" " * canvas_w, " " * canvas_w])
         settled_canvas.extend([" " * canvas_w, " " * canvas_w])
-        base_canvas.extend("".join(r).ljust(canvas_w) for r in b_grid)
-        settled_canvas.extend(r.ljust(canvas_w) for r in d_5)
+        base_canvas.extend((lead + "".join(r)).ljust(canvas_w) for r in b_grid)
+        settled_canvas.extend((lead + r).ljust(canvas_w) for r in d_5)
     return {"base_canvas": base_canvas, "settled_canvas": settled_canvas, "canvas_w": canvas_w, "canvas_h": len(base_canvas), "actors": actors}
 
 def render_tittle_frame_text(spec: dict, actor_states: list) -> tuple:
@@ -1087,9 +1140,9 @@ def run_tittle_drop_card(label: str, hold: float = 4.0, stop_file: str = "", res
         sys.stdout.write(plain_settled + "\n")
         sys.stdout.flush()
         return True
-    term_sz = shutil.get_terminal_size((84, 24))
-    term_w, term_h = max(68, term_sz.columns), max(18, term_sz.lines)
-    pad = (0, 3, 1, 3) if term_h <= 20 else (1, 3, 2, 3)
+    term_sz = _live_terminal_size((84, 24))
+    term_w, term_h = max(spec["canvas_w"] + 8, term_sz.columns), max(spec["canvas_h"] + 3, term_sz.lines)
+    pad = (0, 3, 1, 3) if term_h <= 21 else (1, 3, 2, 3)
     panel_h = spec["canvas_h"] + pad[0] + pad[2] + 2
     top_pad = "\n" * max(0, (term_h - panel_h) // 2)
     frame_cache: dict = {}
@@ -1100,7 +1153,7 @@ def run_tittle_drop_card(label: str, hold: float = 4.0, stop_file: str = "", res
             panel = Panel(rich_txt, title=title, border_style="bright_cyan", padding=pad, expand=False)
             buf = io.StringIO()
             Console(file=buf, force_terminal=True, color_system="truecolor", width=term_w).print(
-                Align.center(panel, width=max(40, term_w - 1)), end=""
+                Align.center(panel, width=term_w, pad=False), end=""
             )
             frame_cache[state_key] = "\n".join(ln + "\033[K" for ln in (top_pad + buf.getvalue()).split("\n"))
         return frame_cache[state_key]
@@ -1160,7 +1213,7 @@ def _figurate_tittle_drop():
     if spec is None:
         return Panel("SUNPUG.IO &\nMIKELEV.IN", title="🎯 Tittle Drop -- SUNPUG.IO & MIKELEV.IN", border_style="bright_cyan"), "SUNPUG.IO &\nMIKELEV.IN"
     human_txt, ai_txt = render_tittle_frame_text(spec, [(0, 0, "bold bright_yellow") for _ in spec["actors"]])
-    return Panel(human_txt, title="🎯 Tittle Drop -- SUNPUG.IO & MIKELEV.IN", border_style="bright_cyan", padding=(1, 3, 2, 3), expand=False), ai_txt
+    return Panel(human_txt, title="🎯 Tittle Drop -- SUNPUG.IO & MIKELEV.IN", border_style="bright_cyan", padding=(0, 3, 1, 3), expand=False), ai_txt
 
 # === FIGURATE_RENDER_EXTRUDE_BOTTOM ===
 # Add new _figurate_* render functions immediately above this line
@@ -1457,30 +1510,19 @@ def render_titled_card_hold(label: str, subtitle: str = "", max_hold: float = 60
     import sys
     import time
     from rich.console import Group
-    term_size = shutil.get_terminal_size((116, 20))
-    term_w = max(88, term_size.columns)
-    term_h = max(16, term_size.lines)
-    fig_max_w = max(160, term_w - 10)
-    try:
-        from pyfiglet import Figlet
-        fig_txt = Figlet(font="standard", width=fig_max_w).renderText(str(label)).rstrip("\n")
-    except Exception:
-        fig_txt = str(label)
-    fig_lines = [ln.rstrip() for ln in fig_txt.splitlines()]
-    while fig_lines and not fig_lines[0].strip():
-        fig_lines.pop(0)
-    while fig_lines and not fig_lines[-1].strip():
-        fig_lines.pop()
-    clean_fig = "\n".join(fig_lines) if fig_lines else str(label)
-    parts = [Align.center(Text(clean_fig, style="bold bright_cyan", no_wrap=True))]
+    term_size = _live_terminal_size((116, 20))
+    term_w, term_h = max(60, term_size.columns), max(16, term_size.lines)
+    clean_fig = render_centered_figlet(str(label), font="standard", width=max(48, term_w - 10)) or str(label)
+    fig_rows = len(clean_fig.splitlines()) or 1
+    parts = [Text(clean_fig, style="bold bright_cyan", no_wrap=True)]
     if subtitle:
         parts.append(Text(""))
         parts.append(Align.center(Text(str(subtitle).strip(), style="bold bright_white", justify="center")))
     panel = Panel(Group(*parts), border_style="bright_cyan", box=HEAVY, padding=(1, 4), expand=False)
-    est_h = len(fig_lines) + (len(str(subtitle).strip().splitlines()) + 2 if subtitle else 0) + 4
+    est_h = fig_rows + (len(str(subtitle).strip().splitlines()) + 2 if subtitle else 0) + 4
     card_console = Console(width=term_w, force_terminal=True, color_system="truecolor")
     sys.stdout.write("\033[?25l\033[2J\033[H" + ("\n" * max(0, (term_h - est_h) // 2)))
-    card_console.print(Align.center(panel, width=max(60, term_w - 2)), end="")
+    card_console.print(Align.center(panel, width=term_w, pad=False), end="")
     sys.stdout.flush()
     deadline = time.time() + max(0.5, float(max_hold))
     while time.time() < deadline and not (stop_file and os.path.exists(stop_file)):
