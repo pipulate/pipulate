@@ -63,6 +63,7 @@ PILLAR_TERMS = {
 
 _KV_RE = re.compile(r"^([A-Za-z0-9_]+)\s*:\s*(.*?)\s*$")
 _RAW_LIQUID_RE = re.compile(r"^\s*\{%\s*(?:raw|endraw)\s*%\}\s*$", re.MULTILINE)
+_WEEBO_CUE_RE = re.compile(r"\[\[\[weebo:([^\]]+)\]\]\]", re.IGNORECASE)
 ABSTRACTS_SUBDIR = "_abstracts"
 _TICKER_STOPWORDS = frozenset({
     "THE", "A", "AN", "AND", "OR", "BUT", "FOR", "NOR", "ON", "AT", "TO", "FROM",
@@ -86,6 +87,75 @@ def derive_ticker_tag(meta: dict, title: str = "", slug: str = "", max_chars: in
     if len(toks) >= 2 and len(f"{toks[0]} {toks[1]}") <= max_chars:
         return f"{toks[0]} {toks[1]}"
     return toks[0][:max_chars]
+
+
+def _enrolled_weebo_stems(limit: int = 16) -> list[str]:
+    """Return enrolled local Weebo shorthand stems so the AI Editor can reuse existing assets."""
+    scripts_dir = str(Path(__file__).resolve().parents[1])
+    if scripts_dir not in sys.path:
+        sys.path.insert(0, scripts_dir)
+    try:
+        import weebo
+        stems = []
+        for lbl, p in weebo.list_shorthand_assets(limit=limit):
+            s = "seal" if lbl.startswith("seal ") else p.stem
+            if s not in stems:
+                stems.append(s)
+        return stems or ["seal"]
+    except Exception:
+        return ["seal"]
+
+
+def extract_weebo_cues(text: str) -> list[tuple[str, str]]:
+    """Extract (stem, duration_s) tuples from inline `[[[weebo:stem[:sec]]]]` cues in Markdown body."""
+    body = text.split("\n---\n", 1)[1] if text.startswith("---\n") and "\n---\n" in text[4:] else text
+    cues = []
+    for raw_spec in _WEEBO_CUE_RE.findall(body):
+        spec = raw_spec.strip()
+        stem, dur = spec.rsplit(":", 1) if ":" in spec else (spec, "2.5")
+        cues.append((stem.strip(), dur.strip() or "2.5"))
+    return cues
+
+
+def extract_weebo_brief(meta: dict, body_text: str = "") -> list[dict]:
+    """Combine inline `[[[weebo:...]]]` cues and `weebo_N_*` frontmatter keys with local enrollment status."""
+    enrolled_low = {s.lower() for s in _enrolled_weebo_stems(limit=100)}
+    cues = extract_weebo_cues(body_text)
+    n_slots = max(len(cues), 2 if (meta or {}).get("weebo_1_search") or (meta or {}).get("weebo_2_search") else 0)
+    rows = []
+    for idx in range(n_slots):
+        slot = idx + 1
+        stem, dur = cues[idx] if idx < len(cues) else ("", "2.5")
+        if not stem:
+            parsed = extract_weebo_cues(str((meta or {}).get(f"weebo_{slot}_cue") or ""))
+            if parsed:
+                stem, dur = parsed[0]
+        if not stem:
+            continue
+        rows.append({
+            "slot": slot,
+            "phase": "PRE-BREAK" if slot == 1 else ("POST-BREAK" if slot == 2 else f"CUE-{slot}"),
+            "cue": f"[[[weebo:{stem}:{dur}]]]",
+            "stem": stem,
+            "duration": dur,
+            "kind": str((meta or {}).get(f"weebo_{slot}_kind") or "blip_meme").strip(),
+            "search": str((meta or {}).get(f"weebo_{slot}_search") or "").strip(),
+            "enrolled": stem.lower() in enrolled_low,
+        })
+    return rows
+
+
+def format_weebo_brief_report(brief_rows: list[dict], article_id: int | None = None) -> str:
+    """Format operator search queries and `weeboh` staging commands for a parable's Weebo cues."""
+    if not brief_rows:
+        return ""
+    lines = [f"🤖 Operation Weebo Sourcing Brief (#{article_id or '?'})"]
+    for r in brief_rows:
+        st = "✅ ENROLLED" if r["enrolled"] else f"🔎 STAGE -> weeboh ~/Downloads/{r['stem']}.png {r['duration']}"
+        lines.append(f"   • [{r['phase']} | {r['kind']}] {r['cue']} ({st})")
+        if r["search"]:
+            lines.append(f"     ↳ Search: {r['search']}")
+    return "\n".join(lines)
 
 
 def abstract_path_for_post(md_path: Path) -> Path:
@@ -220,6 +290,7 @@ def build_extraction_prompt(md_path: Path) -> dict:
     lean_body, fences_stripped = articleizer.strip_fences(clean_body)
     _, pillars = score_pillars(title, f"{fm_block}\n{lean_body[:4000]}")
     suggested_tag = derive_ticker_tag(info["meta"], title=title, slug=path.stem[11:])
+    enrolled_hint = ", ".join(_enrolled_weebo_stems(limit=12))
     coin_cmd = str(aid) if aid else "<ID>"
     canon_url = "https://" + f"mikelev.in{permalink}"
     sunpug_cmd = "curl -fsSL https://" + "sunpug.io | less"
@@ -246,7 +317,23 @@ def build_extraction_prompt(md_path: Path) -> dict:
         "3-VOICE PUPPET-THEATER MARKDOWN CONTRACT (ENCLOSE ENTIRE REPLY IN ONE ```markdown FENCE):\n"
         f"- Total spoken length: strictly {STORYTIME_MIN_WORDS}–{STORYTIME_MAX_WORDS} words (~6–8 min between 20-min breaks).\n"
         "- Zero fenced code blocks and zero unexplained internal repo filenames inside the story.\n"
-        "- Start with YAML frontmatter (`title`, `article_id: " + f"{aid}`, `ticker_tag: \"{suggested_tag}\"` [or a sharper 1–2 word uppercase topic <=18 chars], `jukebox_coin: true`, `source_url: {canon_url}`, `layout: post`).\n"
+        "- Start with YAML frontmatter (`title`, `article_id: " + f"{aid}`, `ticker_tag: \"{suggested_tag}\"` [or a sharper 1–2 word uppercase topic <=18 chars], `jukebox_coin: true`, `source_url: {canon_url}`, `layout: post`, plus the 6 single-line double-quoted `weebo_1_*` / `weebo_2_*` sourcing keys below using single quotes inside strings).\n"
+        "- OPERATION WEEBO (2 VISUAL BLIP / PORTRAIT CUES — 1 PRE-INTERMISSION, 1 POST-INTERMISSION):\n"
+        "  Honeybot airs a Midpoint Showcase intermission halfway through each episode, and pops frameless\n"
+        "  X11 overlays over the HUD without interrupting speech whenever it hits a standalone `[[[weebo:<slug>:<sec>]]]` line.\n"
+        "  Place EXACTLY 2 standalone `[[[weebo:<slug>:<sec>]]]` lines (blank line above and below, never inline in a sentence):\n"
+        "    1. Pre-Intermission Cue #1 (in Act 1–2, BEFORE midpoint): `[[[weebo:<pre-slug>:<sec>]]]`\n"
+        "    2. Post-Intermission Cue #2 (in Act 3–4, AFTER midpoint): `[[[weebo:<post-slug>:<sec>]]]`\n"
+        "  Choose the sharpest Content-ID-safe visual archetype for each beat (enrolled local stems if fitting: " + f"{enrolled_hint}; else mint descriptive kebab-case slugs):\n"
+        "    • `blip_meme` (1.8–2.5s silent): 1997 *Flubber* 'Weebo' barely-a-blip visual pun or reaction ('did I just see that?'\n"
+        "      transformative fair-use / public-domain / Prelinger / Wikimedia / silent-era gag — zero copyrighted audio).\n"
+        "    • `literal_photo` (3.5–5.0s PNG/JPEG): Real human builders or historical artifacts behind the ideas — e.g. when\n"
+        "      RFC 9110 or RFC 9111 is discussed, feature the 3 IETF HTTP specification authors: Roy Fielding, Mark Nottingham,\n"
+        "      and Julian Reschke (`[[[weebo:rfc-authors-trio:4.5]]]`), or inventors/patents named in the seed (Margaret E. Knight,\n"
+        "      Norbert Wiener, Claude Shannon, Wilbur & Orville Wright's 1901 wind-tunnel balance).\n"
+        "  Record your sourcing brief in YAML frontmatter (single-line double-quoted strings, never spoken aloud):\n"
+        "    `weebo_1_cue: \"[[[weebo:<pre-slug>:<sec>]]]\"`, `weebo_1_kind: \"blip_meme|literal_photo\"`, `weebo_1_search: \"<2-3 exact Wikimedia/Prelinger/image search queries + comedic/pedagogical beat>\"`\n"
+        "    `weebo_2_cue: \"[[[weebo:<post-slug>:<sec>]]]\"`, `weebo_2_kind: \"literal_photo|blip_meme\"`, `weebo_2_search: \"<2-3 exact search queries (e.g. 'Roy Fielding' 'Mark Nottingham' 'Julian Reschke' IETF HTTP) + beat>\"`\n"
         "- Prologue (`## Setting the Stage: Context for the Curious Book Reader`): 1–2 short paragraphs\n"
         "  spoken by NORMA CENTROID (16,000 Hz narrator) framing the everyday human stakes.\n"
         "- Body (`## Technical Journal Entry Begins` + 3–4 `## ` Act Headings also read by NORMA CENTROID):\n"
@@ -277,9 +364,9 @@ def save_abstract_for_post(md_path: Path, raw_text: str) -> dict:
     """Validate 3-voice Socratic puppet-theater structure, write `_posts/_abstracts/<name>`, and stamp coin."""
     path = Path(md_path).expanduser().resolve()
     text = (raw_text or "").replace("\r\n", "\n").strip()
-    m_fence = re.match(r"^```[a-zA-Z0-9_-]*\n([\s\S]*?)\n```\s*$", text)
+    m_fence = re.match(r"^(`{3,})[a-zA-Z0-9_-]*\n([\s\S]*?)\n\1\s*$", text) or re.search(r"(`{3,})[a-zA-Z0-9_-]*\n(---\n[\s\S]*?)\n\1", text)
     if m_fence:
-        text = m_fence.group(1).strip()
+        text = m_fence.group(2).strip()
     missing = [
         lbl for lbl, ok in (
             ("YAML frontmatter", text.startswith("---\n") and "\n---\n" in text[4:]),
@@ -306,8 +393,12 @@ def save_abstract_for_post(md_path: Path, raw_text: str) -> dict:
     )
     common.stamp_frontmatter_value(dest, "ticker_tag", f'"{t_tag}"', preserve_mtime=False)
     coin_st = common.stamp_frontmatter_value(path, "jukebox_coin", "true", preserve_mtime=True)
-    words = len(re.findall(r"\b\w+\b", text))
-    return {"ok": True, "abstract_path": str(dest), "coin_status": coin_st, "words": words, "article_id": aid, "ticker_tag": t_tag}
+    body_only = text.split("\n---\n", 1)[1] if text.startswith("---\n") and "\n---\n" in text[4:] else text
+    spoken_body = _WEEBO_CUE_RE.sub("", body_only)
+    words = len(re.findall(r"\b\w+\b", spoken_body))
+    w_cues = extract_weebo_cues(text)
+    w_brief = extract_weebo_brief(_read_header_and_preview(dest)["meta"], text)
+    return {"ok": True, "abstract_path": str(dest), "coin_status": coin_st, "words": words, "article_id": aid, "ticker_tag": t_tag, "weebo_cues": w_cues, "weebo_brief": w_brief}
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -319,10 +410,32 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--limit", type=int, default=10, help="Number of backfill candidates to display (default: 10).")
     parser.add_argument("--copy", action="store_true", help="Copy the assembled extraction prompt to the clipboard.")
     parser.add_argument("--save-clipboard", action="store_true", help="Validate & save Socratic abstract from clipboard into `_posts/_abstracts/` + stamp coin.")
+    parser.add_argument("--weebo", action="store_true", help="Inspect Weebo cues, search brief, & local enrollment for a saved Storytime abstract.")
     parser.add_argument("--stamp-coin", action="store_true", help="Stamp `jukebox_coin: true` on -s <post>.")
+    parser.add_argument("extra", nargs="*", help="Optional subcommand (`weebo [#ID]`).")
     args = parser.parse_args(argv)
+    if args.extra and args.extra[0].lower() in ("weebo", "brief"):
+        args.weebo = True
+        if len(args.extra) > 1 and not args.slug:
+            args.slug = args.extra[1]
 
     posts_dir = common.get_target_path(args)
+    if args.weebo:
+        abs_dir = posts_dir / ABSTRACTS_SUBDIR
+        if args.slug:
+            post_p, _ = common._latest_post_for_target(args.target, slug_match=args.slug)
+            abs_p = abstract_path_for_post(post_p) if post_p else None
+        else:
+            abs_files = sorted(abs_dir.glob("*.md")) if abs_dir.is_dir() else []
+            abs_p = abs_files[-1] if abs_files else None
+        if not abs_p or not abs_p.is_file():
+            print("⚠️ No saved `_posts/_abstracts/` file matched for Weebo inspection.")
+            return 1
+        raw_abs = abs_p.read_text(encoding="utf-8", errors="replace")
+        meta_abs = _read_header_and_preview(abs_p)["meta"]
+        brief = extract_weebo_brief(meta_abs, raw_abs)
+        print(format_weebo_brief_report(brief, common.read_article_id(abs_p)) or f"ℹ️  No `[[[weebo:...]]]` cues found in {abs_p.name}.")
+        return 0
     if args.stamp_coin:
         if not args.slug:
             print("❌ Pass `-s #<article_id>` (or slug) with `--stamp-coin`.")
@@ -353,7 +466,9 @@ def main(argv: list[str] | None = None) -> int:
         if not res["ok"]:
             print(f"❌ Refused abstract for {post_p.name}: {res['error']}")
             return 1
-        print(f"🎭 Saved 3-voice Socratic abstract ({res['words']} words, ticker_tag={res.get('ticker_tag')!r}) -> {res['abstract_path']} & [{res['coin_status']}] jukebox_coin on #{res['article_id']}!")
+        print(f"🎭 Saved 3-voice Socratic abstract ({res['words']} words, ticker_tag={res.get('ticker_tag')!r}, weebo_cues={len(res.get('weebo_cues', []))}) -> {res['abstract_path']} & [{res['coin_status']}] jukebox_coin on #{res['article_id']}!")
+        if res.get("weebo_brief"):
+            print(format_weebo_brief_report(res["weebo_brief"], res["article_id"]))
         nxt = rank_candidates(posts_dir, limit=1, pillars_only=args.pillars)
         if nxt:
             print(f"⏭️  Next un-minted in queue: #{nxt[0]['article_id']} ({nxt[0]['date']}) — {nxt[0]['title']}")
