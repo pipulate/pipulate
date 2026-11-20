@@ -3062,31 +3062,49 @@ def manage_ytmax_toggle(arg="status", dry_run=False) -> int:
     return 0
 
 
-YT_ULL_GREET_COOLDOWN = int(os.environ.get("PIPULATE_YT_GREET_COOLDOWN", "15"))
+YT_ULL_GREET_COOLDOWN = int(os.environ.get("PIPULATE_YT_GREET_COOLDOWN", "20"))
+_SUNPUG_PIPE_HINT = "curl -fsSL https\x3a//sunpug.io | less"
+DEFAULT_ULL_GREET_MESSAGE = (
+    "> LIVE VIEWER DETECTED // SHALL WE PLAY A GAME?\n"
+    "Hello! I'm Mike-E, the AI's Apprentice.\n"
+    "I bred Xenopug levinix—a Sun Pug (like Frank from\n"
+    "Men in Black, in portable POSIX; not Tufts Xenobots)\n"
+    "to turn builders into AI Apprentices.\n"
+    "► Chat : Say HI, type MENU, or any Story #\n"
+    f"► Doors: mikelev.in/brain.zip  |  {_SUNPUG_PIPE_HINT}"
+)
 _last_ull_greet_ts = 0.0
 
 _HONEYBOT_ULL_GREET_HELPER = r'''
 import base64, os, pathlib, re, shutil, subprocess, sys, time
 t0 = time.perf_counter()
-dur = max(0.8, min(15.0, float(sys.argv[1])))
-msg = base64.b64decode(sys.argv[2].encode("ascii")).decode("utf-8") if len(sys.argv) > 2 else "WELCOME, LIVE VIEWER!"
-env = os.environ.copy()
-for p in sorted(pathlib.Path("/proc").glob("[0-9]*/cmdline")):
-    try:
-        raw = p.read_bytes()
-        if b"stream.py" in raw or b"obs" in raw:
-            for kv in (p.parent / "environ").read_bytes().split(b"\x00"):
-                if b"=" in kv:
-                    k, v = kv.split(b"=", 1)
-                    ks = k.decode("utf-8", "ignore")
-                    if ks in ("DISPLAY", "XAUTHORITY", "XDG_RUNTIME_DIR", "PATH"):
-                        env[ks] = v.decode("utf-8", "ignore")
-            if env.get("DISPLAY"):
-                break
-    except Exception:
-        continue
+dur = max(1.2, min(18.0, float(sys.argv[1])))
+b64_arg = sys.argv[2] if len(sys.argv) > 2 else ""
+msg = base64.b64decode(b64_arg.encode("ascii")).decode("utf-8") if b64_arg else "SHALL WE PLAY A GAME?"
+env, py_exe = os.environ.copy(), ""
+for needle in (b"stream.py", b"obs"):
+    for p in sorted(pathlib.Path("/proc").glob("[0-9]*/cmdline")):
+        try:
+            raw = p.read_bytes()
+            if needle in raw:
+                for kv in (p.parent / "environ").read_bytes().split(b"\x00"):
+                    if b"=" in kv:
+                        k, v = kv.split(b"=", 1)
+                        ks = k.decode("utf-8", "ignore")
+                        if ks in ("DISPLAY", "XAUTHORITY", "XDG_RUNTIME_DIR", "PATH"):
+                            env[ks] = v.decode("utf-8", "ignore")
+                if needle == b"stream.py":
+                    py_exe = os.readlink(str(p.parent / "exe"))
+                if env.get("DISPLAY"):
+                    break
+        except Exception:
+            continue
+    if py_exe and env.get("DISPLAY"):
+        break
 env.setdefault("DISPLAY", ":10.0")
-p_env = env["PATH"] = f"/run/current-system/sw/bin:{env.get('PATH', '/usr/bin:/bin')}"
+env.pop("COLUMNS", None)
+env.pop("LINES", None)
+p_env = env["PATH"] = f"{env.get('PATH', '/usr/bin:/bin')}:/run/current-system/sw/bin"
 subprocess.run(["pkill", "-f", "[h]oneybot_ull_greet"], env=env, check=False)
 ra = subprocess.run(["xdotool", "getactivewindow"], env=env, capture_output=True, text=True, check=False) if shutil.which("xdotool", path=p_env) else None
 orig_win = (ra.stdout or "").strip() if (ra and ra.returncode == 0) else ""
@@ -3096,17 +3114,20 @@ if shutil.which("wmctrl", path=p_env):
     m = next((re.search(r"DG:\s*(\d+)x(\d+)", ln) for ln in (rd.stdout or "").splitlines() if "*" in ln), None)
     if m:
         scr_w, scr_h = int(m.group(1)), int(m.group(2))
-lines = [ln.strip() for ln in msg.splitlines() if ln.strip()][:3] or ["WELCOME, LIVE VIEWER!"]
+lines = [ln.strip() for ln in msg.splitlines() if ln.strip()][:8] or ["SHALL WE PLAY A GAME?"]
 vis_w = lambda s: sum(2 if ord(ch) > 0x1F000 else 1 for ch in s)
-cols, rows = max(40, min(68, max(vis_w(ln) for ln in lines) + 8)), len(lines) + 2
-env["ULL_BANNER"] = "\033[?25l\n" + "".join(f"{' ' * max(1, (cols - vis_w(ln)) // 2)}\033[1;{36 if i == 0 else 33}m{ln}\033[0m\n" for i, ln in enumerate(lines))
-sh_c = f'printf "%s" "$ULL_BANNER"; sleep {dur:.2f}'
-cmd = ["alacritty", "--title", "honeybot_ull_greet", "-o", 'window.decorations="None"', "-o", "window.opacity=0.92", "-o", f"window.dimensions.columns={cols}", "-o", f"window.dimensions.lines={rows}", "-o", "window.position.x=20", "-o", "window.position.y=20", "-o", "font.size=18.0", "-e", "sh", "-c", sh_c]
+cols, rows = max(50, min(84, max(vis_w(ln) for ln in lines) + 10)), len(lines) + 4
+hb_root = "/home/mike/www/mikelev.in"
+use_tw = bool(py_exe and os.path.isfile(f"{hb_root}/imports/ascii_displays.py"))
+if use_tw:
+    tw_code = f"import base64, sys; sys.path.insert(0, {hb_root!r}); from imports.ascii_displays import run_typewriter_card; run_typewriter_card(base64.b64decode(sys.argv[1]).decode('utf-8'), hold=float(sys.argv[2]))"
+    exec_argv = [py_exe, "-u", "-c", tw_code, b64_arg, f"{dur:.2f}"]
+else:
+    env["ULL_BANNER"] = "\033[?25l\n" + "".join(f"  \033[1;{92 if i == 0 else 97}m{ln}\033[0m\n" for i, ln in enumerate(lines))
+    exec_argv = ["sh", "-c", f'printf "%s" "$ULL_BANNER"; sleep {dur:.2f}']
+cmd = ["alacritty", "--title", "honeybot_ull_greet", "--class", "honeybot_ull_greet", "-o", 'window.decorations="None"', "-o", "window.opacity=0.94", "-o", f"window.dimensions.columns={cols}", "-o", f"window.dimensions.lines={rows}", "-o", "window.position.x=20", "-o", "window.position.y=20", "-o", "font.size=16.0", "-e", *exec_argv]
 proc = subprocess.Popen(cmd, env=env, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True, close_fds=True)
-time.sleep(0.03)
-if proc.poll() is not None:
-    proc = subprocess.Popen(["alacritty", "--title", "honeybot_ull_greet", "-e", "sh", "-c", sh_c], env=env, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True, close_fds=True)
-wid, win_w, win_h = "", cols * 11, rows * 28
+wid, win_w, win_h = "", cols * 10, rows * 26
 for _ in range(25):
     if shutil.which("wmctrl", path=p_env):
         rw = subprocess.run(["wmctrl", "-lG"], env=env, capture_output=True, text=True, check=False)
@@ -3121,12 +3142,14 @@ for _ in range(25):
         break
     time.sleep(0.02)
 if wid and shutil.which("wmctrl", path=p_env):
-    px, py = max(0, (scr_w - win_w) // 2), max(0, (scr_h - win_h) // 2)
+    upper_h = int(scr_h * 0.56)
+    px = max(0, (scr_w - win_w) // 2)
+    py = (36 + max(0, (upper_h - 36 - win_h) // 2)) if (win_h + 44 <= upper_h) else max(32, (scr_h - win_h) // 2)
     subprocess.run(["wmctrl", "-i", "-r", wid, "-e", f"0,{px},{py},-1,-1"], env=env, check=False)
-    subprocess.run(["wmctrl", "-i", "-r", wid, "-b", "add,above"], env=env, check=False)
+    subprocess.run(["wmctrl", "-i", "-r", wid, "-b", "add,above,skip_taskbar,skip_pager"], env=env, check=False)
 if orig_win and shutil.which("xdotool", path=p_env):
     subprocess.run(["xdotool", "windowactivate", orig_win], env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False)
-print(f"ULL_GREET_OK wid={wid or 'spawned'} x11_ms={round((time.perf_counter() - t0) * 1000, 1)}")
+print(f"ULL_GREET_OK wid={wid or 'spawned'} tw={use_tw} x11_ms={round((time.perf_counter() - t0) * 1000, 1)}")
 '''
 
 
@@ -3138,7 +3161,7 @@ def _resolve_yt_ull_greet(override=None) -> bool:
     return raw in ("1", "true", "yes", "on", "enable", "enabled")
 
 
-def trigger_ull_greeting(message=None, duration=2.8, poll_ms=0.0, trigger="manual", force=False, dry_run=False) -> dict:
+def trigger_ull_greeting(message=None, duration=4.5, poll_ms=0.0, trigger="manual", force=False, dry_run=False) -> dict:
     """Pop a bare-minimum frameless greeting on Honeybot :10.0 over warm SSH without cutting audio."""
     global _last_ull_greet_ts
     import base64
@@ -3150,7 +3173,7 @@ def trigger_ull_greeting(message=None, duration=2.8, poll_ms=0.0, trigger="manua
     now_ts = time.time()
     if not force and _last_ull_greet_ts > 0 and (now_ts - _last_ull_greet_ts) < YT_ULL_GREET_COOLDOWN:
         return {"fired": False, "reason": "cooldown", "auto_greet": auto_on}
-    msg = (message or "👋 WELCOME, LIVE VIEWER!\nType MENU or any Story # in chat").strip()
+    msg = (message or DEFAULT_ULL_GREET_MESSAGE).strip()
     if dry_run:
         print(f"⚡ [DRY RUN] ULL Greeting -> {HONEYBOT_SSH_HOST} ({duration:.1f}s, auto_greet={auto_on}): {msg.replace(chr(10), ' | ')}")
         return {"fired": False, "dry_run": True, "auto_greet": auto_on}
@@ -3324,7 +3347,8 @@ def run_youtube_watch(
         if sub_g == "status":
             print(f"⚡ ULL Greeting: auto_greet={'ON' if _resolve_yt_ull_greet() else 'OFF'} | mux_sock={HONEYBOT_SSH_MUX_SOCK} (Usage: `ytwatch greet` dry-fire | `ytwatch greet on|off`)")
             return 0
-        res_g = trigger_ull_greeting(trigger="manual", force=True, dry_run=dry_run)
+        custom_g = chime_dir if (chime_dir and sub_g not in ("on", "1", "true", "enable", "enabled", "off", "0", "false", "disable", "disabled", "status")) else None
+        res_g = trigger_ull_greeting(message=custom_g, trigger="manual", force=True, dry_run=dry_run)
         return 0 if (dry_run or res_g.get("fired")) else 1
     if daemon_action == "dwell":
         if dwell is not None:
@@ -5028,7 +5052,7 @@ if __name__ == "__main__":
             elif first_arg in ("chime", "greet"):
                 daemon_act = first_arg
                 if len(cli_args.message) > 1:
-                    watch_chime_dir = cli_args.message[1].strip().lower()
+                    watch_chime_dir = " ".join(cli_args.message[1:]).strip() if first_arg == "greet" else cli_args.message[1].strip().lower()
             elif first_arg == "dwell":
                 daemon_act = "dwell"
                 if len(cli_args.message) > 1 and watch_dwell is None:

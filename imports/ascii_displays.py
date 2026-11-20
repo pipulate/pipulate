@@ -1535,6 +1535,104 @@ def render_titled_card_hold(label: str, subtitle: str = "", max_hold: float = 60
             _paint(last_sz)
         time.sleep(min(0.05, max(0.005, deadline - time.time())))
 
+def format_typewriter_frame(
+    lines: list[str],
+    typed_counts: list[int],
+    inner_w: int,
+    title: str = "WOPR // XENOPUG LEVINIX",
+    cursor_line: int = -1,
+    show_cursor: bool = True,
+    ansi: bool = True,
+) -> str:
+    """Render one fixed-geometry WOPR teletype box frame (zero box-size pop from char 0 to N)."""
+    vis_w = lambda s: sum(2 if ord(ch) > 0x1F000 else 1 for ch in s)
+    box_in = max(36, int(inner_w), max((vis_w(ln) for ln in lines), default=0) + 2)
+    t_lbl = f" [ {title.strip()} ] "
+    bar_l = max(1, (box_in + 2 - len(t_lbl)) // 2)
+    bar_r = max(1, (box_in + 2) - len(t_lbl) - bar_l)
+    c_bdr = "\033[1;96m" if ansi else ""
+    c_rst = "\033[0m" if ansi else ""
+    out = [f"{c_bdr}╔{'═' * bar_l}{t_lbl}{'═' * bar_r}╗{c_rst}"]
+    for idx, ln in enumerate(lines):
+        cnt = max(0, min(len(ln), int(typed_counts[idx]) if idx < len(typed_counts) else 0))
+        sub = ln[:cnt]
+        has_cur = show_cursor and (idx == cursor_line)
+        cur_glyph = ("\033[1;92m█\033[0m" if ansi else "█") if has_cur else ""
+        pad_n = max(0, box_in - vis_w(sub) - (1 if has_cur else 0))
+        if not ansi:
+            c_txt = ""
+        elif ln.startswith(">"):
+            c_txt = "\033[1;92m"
+        elif ln.startswith(("►", "$")):
+            c_txt = "\033[1;93m"
+        else:
+            c_txt = "\033[1;97m"
+        out.append(f"{c_bdr}║{c_rst} {c_txt}{sub}{c_rst}{cur_glyph}{' ' * pad_n} {c_bdr}║{c_rst}")
+    out.append(f"{c_bdr}╚{'═' * (box_in + 2)}╝{c_rst}")
+    return "\n".join(out)
+
+def run_typewriter_card(
+    message: str,
+    hold: float = 4.5,
+    char_delay: float = 0.012,
+    line_pause: float = 0.08,
+    title: str = "WOPR // XENOPUG LEVINIX",
+    stop_file: str = "",
+    restore_cursor: bool = True,
+) -> dict:
+    """Animate a fixed-box DEC Mode 2026 WOPR teletype greeting with blinking phosphor cursor."""
+    import os
+    import sys
+    import time
+    vis_w = lambda s: sum(2 if ord(ch) > 0x1F000 else 1 for ch in s)
+    lines = [ln.strip() for ln in str(message or "").replace("\\n", "\n").splitlines() if ln.strip()] or ["SHALL WE PLAY A GAME?"]
+    inner_w = max(42, max(vis_w(ln) for ln in lines) + 2)
+    full_counts = [len(ln) for ln in lines]
+    if not sys.stdout.isatty():
+        settled = format_typewriter_frame(lines, full_counts, inner_w, title=title, cursor_line=len(lines) - 1, show_cursor=False, ansi=False)
+        sys.stdout.write(settled + "\n")
+        sys.stdout.flush()
+        return {"lines": len(lines), "chars": sum(full_counts), "frames": 1}
+    sz = _live_terminal_size((inner_w + 8, len(lines) + 4))
+    pad_x = " " * max(0, (sz.columns - (inner_w + 4)) // 2)
+    pad_top = "\n" * max(0, (sz.lines - (len(lines) + 2)) // 2)
+    typed = [0] * len(lines)
+    frames = 0
+    def _paint(cur_ln: int, cur_on: bool) -> None:
+        nonlocal frames
+        raw_box = format_typewriter_frame(lines, typed, inner_w, title=title, cursor_line=cur_ln, show_cursor=cur_on, ansi=True)
+        body = "\n".join(pad_x + r + "\033[K" for r in raw_box.splitlines())
+        sys.stdout.write("\033[?2026h\033[H" + pad_top + body + "\033[?2026l")
+        sys.stdout.flush()
+        frames += 1
+    sys.stdout.write("\033[?25l\033[2J\033[H")
+    sys.stdout.flush()
+    try:
+        _paint(0, True)
+        for li, ln in enumerate(lines):
+            for ci in range(1, len(ln) + 1):
+                if stop_file and os.path.exists(stop_file):
+                    return {"lines": len(lines), "chars": sum(typed), "frames": frames}
+                typed[li] = ci
+                _paint(li, True)
+                if char_delay > 0:
+                    time.sleep(char_delay)
+            if line_pause > 0 and (li + 1) < len(lines):
+                time.sleep(line_pause)
+        deadline = time.monotonic() + max(0.0, float(hold))
+        blink = True
+        while time.monotonic() < deadline:
+            if stop_file and os.path.exists(stop_file):
+                break
+            _paint(len(lines) - 1, blink)
+            blink = not blink
+            time.sleep(min(0.42, max(0.01, deadline - time.monotonic())))
+    finally:
+        if restore_cursor:
+            sys.stdout.write("\033[0m\033[?25h")
+            sys.stdout.flush()
+    return {"lines": len(lines), "chars": sum(typed), "frames": frames}
+
 def white_rabbit(console_output=True):
     """🐰 WHITE RABBIT: Thin facade returning the unified dual-output figurate bunny."""
     art = figurate("white_rabbit", context="server startup")
