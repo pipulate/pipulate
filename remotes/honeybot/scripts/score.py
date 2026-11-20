@@ -85,7 +85,7 @@ def _append_article_performance(script, article, is_latest=True):
     jb_idx = int(article.get("jukebox_index") or 0)
     raw_title = str(article.get("raw_title") or article.get("title") or "latest entry")
     title_str = str(article.get("title") or raw_title)
-    jb_tag = f"Jukebox entry number {jb_idx}, " if jb_idx else ""
+    jb_tag = f"story number {jb_idx}, " if jb_idx else ""
     lead = (
         f"Reading the latest entry, {jb_tag}published {article['date']}."
         if is_latest
@@ -174,17 +174,19 @@ def get_script(breaking=False, jukebox_index=None):
             script.append(("SAY", f"Error compiling latest article: {e}"))
         if not breaking:
             a0 = articles[0] if articles else {}
-            sub0 = f"Up Next #{a0['jukebox_index']}: {a0['raw_title']}" if a0.get("raw_title") else ""
+            jb0 = a0.get("jukebox_index")
+            sub0 = f"Up Next #{jb0}: {a0['raw_title']}" if (a0.get("raw_title") and jb0) else (f"Up Next: {a0['raw_title']}" if a0.get("raw_title") else "")
             say0 = (
-                f"Greetings, entity. You are watching the Web Bot A I Observatory on Honeybot. "
-                f"Up next is Jukebox entry number {a0['jukebox_index']}, titled: {a0['title']}."
-                if a0.get("title") and a0.get("jukebox_index")
+                f"Greetings, entity. You are watching A.I. Fishtank Story-Time on Honeybot. "
+                f"Up next is story number {jb0}, titled: {a0['title']}. "
+                "Type any available story number or nine eleven in live chat to take control."
+                if a0.get("title") and jb0
                 else (
-                    "Greetings, entity. You are watching the Web Bot A I Observatory on Honeybot. "
-                    "We are monitoring a home-hosted Nix O S web server and reading the latest published article."
+                    "Greetings, entity. You are watching A.I. Fishtank Story-Time on Honeybot. "
+                    "We are monitoring a home-hosted Nix O S web server and reading the latest Storytime entry."
                 )
             )
-            script.append(("CARD", {"label": "WEB BOT AI\nOBSERVATORY", "subtitle": sub0, "say": say0}))
+            script.append(("CARD", {"label": "A.I. FISHTANK\nSTORY-TIME", "subtitle": sub0, "say": say0}))
         if articles:
             _append_article_performance(script, articles[0], is_latest=True)
         return script

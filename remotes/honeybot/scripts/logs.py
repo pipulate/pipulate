@@ -35,29 +35,45 @@ VIEWERS_FILE_PATH = "/tmp/honeybot_viewers.json"
 VIEWERS_TTL_SECONDS = 120.0
 STAGE_STATE_PATH = "/tmp/honeybot_stage.json"
 STAGE_STATE_TTL_SECONDS = 900.0
-BASE_APP_TITLE = "Web Bot AI Observatory — https://mikelev.in · https://sunpug.io"
+BASE_APP_TITLE = "A.I. FISHTANK STORY-TIME — https://mikelev.in · https://sunpug.io"
 FOUNDING_COHORT_GOAL = 1000
 
 
-def format_chat_sliver(width: int = 180, spots_left: int = None, jukebox_max: int = None) -> Text:
-    """Render the 1-row bottom chyron: allowlisted chat triggers, Founding-1,000 scarcity, and LinkedIn CTA."""
-    jb_range = f"1..{int(jukebox_max)}" if (jukebox_max and int(jukebox_max) > 0) else "1..N"
+def _local_playable_jukebox_ids() -> tuple:
+    """Return O(1)-cached tuple of playable Norma-abstract Story IDs on disk, or ()."""
+    try:
+        sdir = str(os.path.dirname(os.path.abspath(__file__)))
+        if sdir not in sys.path:
+            sys.path.insert(0, sdir)
+        import content_loader as _cl
+        return tuple(_cl.get_jukebox_playable_ids())
+    except Exception:
+        return ()
+
+
+def format_chat_sliver(width: int = 180, spots_left: int = None, jukebox_max: int = None, jukebox_ids: tuple = None) -> Text:
+    """Render the 1-row bottom chyron: bare Story IDs + 911 Live Optics, Founding-1,000 scarcity, and LinkedIn CTA."""
+    ids = tuple(int(x) for x in (jukebox_ids or ()) if str(x).isdigit() and int(x) > 0 and int(x) != 911)
     scarcity_label = f"{int(spots_left)} Spots Left" if (spots_left is not None and int(spots_left) >= 0) else "Founding-1,000"
     txt = Text(no_wrap=True, overflow="crop")
     if int(width or 180) < 136:
-        txt.append(" 💬 Chat: ", style="bold #94a3b8")
+        txt.append(" 💬 Type #: ", style="bold #94a3b8")
         txt.append("911", style="bold #ffd700")
-        txt.append(f" · jukebox {jb_range} · rabbit", style="bold #38bdf8")
+        if ids:
+            txt.append(f" · {' · '.join(str(i) for i in ids[:2])}", style="bold #38bdf8")
         txt.append(f" │ 🎟 {scarcity_label}: ", style="bold #ffd700")
         txt.append("mikelev.in/discord", style="bold #7ee787")
         txt.append(" │ in/miklevin ", style="bold #38bdf8")
         return txt
-    txt.append(" 💬 Type in Chat: ", style="bold #94a3b8")
+    txt.append(" 💬 Type # in Chat: ", style="bold #94a3b8")
     txt.append("911", style="bold #ffd700")
-    txt.append(" (Live Optics) · ", style="#cbd5e1")
-    txt.append(f"jukebox {jb_range}", style="bold #38bdf8")
-    txt.append(" · ", style="#cbd5e1")
-    txt.append("rabbit", style="bold #38bdf8")
+    if ids:
+        sample = " · ".join(str(i) for i in ids[:3])
+        more = f" (+{len(ids) - 3})" if len(ids) > 3 else ""
+        txt.append(" (Live Optics) · Story #: ", style="#cbd5e1")
+        txt.append(f"{sample}{more}", style="bold #38bdf8")
+    else:
+        txt.append(" (Live Optics) · Story #", style="#cbd5e1")
     txt.append("  │  ", style="dim #475569")
     txt.append(f"🎟 Founding-1,000 Guild: {scarcity_label} ➔ ", style="bold #ffd700")
     txt.append("mikelev.in/discord", style="bold #7ee787")
@@ -824,6 +840,8 @@ class SonarApp(App):
                         self.spots_left = max(0, int(data["spots_left"]))
                     elif data.get("discord_members") is not None:
                         self.spots_left = max(0, FOUNDING_COHORT_GOAL - int(data["discord_members"]))
+                    if isinstance(data.get("jukebox_ids"), list):
+                        self.jukebox_ids = tuple(int(x) for x in data["jukebox_ids"] if str(x).isdigit() and int(x) != 911)
                     if data.get("jukebox_max") is not None:
                         self.jukebox_max = max(0, int(data["jukebox_max"]))
                 if not isinstance(data, dict) or not data.get("running", True):
@@ -882,18 +900,19 @@ class SonarApp(App):
         yield Static(format_chat_sliver(180), id="chat_sliver")
 
     def refresh_chat_sliver(self, width: int = None) -> None:
-        """Update #chat_sliver in O(1) only when width, spots_left, or jukebox_max changes."""
+        """Update #chat_sliver in O(1) only when width, spots_left, or playable jukebox_ids changes."""
         try:
             w = int(width or self.size.width or shutil.get_terminal_size((180, 48)).columns)
         except Exception:
             w = 180
-        sig = (w, getattr(self, "spots_left", None), getattr(self, "jukebox_max", None))
+        jb_ids = getattr(self, "jukebox_ids", None) or _local_playable_jukebox_ids()
+        sig = (w, getattr(self, "spots_left", None), getattr(self, "jukebox_max", None), jb_ids)
         if sig == getattr(self, "_chat_sliver_sig", None):
             return
         self._chat_sliver_sig = sig
         try:
             self.query_one("#chat_sliver", Static).update(
-                format_chat_sliver(w, spots_left=sig[1], jukebox_max=sig[2])
+                format_chat_sliver(w, spots_left=sig[1], jukebox_max=sig[2], jukebox_ids=jb_ids)
             )
         except Exception:
             pass
@@ -905,6 +924,7 @@ class SonarApp(App):
         self.live_viewers = None
         self.spots_left = None
         self.jukebox_max = None
+        self.jukebox_ids = None
         self._chat_sliver_sig = None
         self.title = self.get_app_title()
         self.sub_title = self.get_sub_title()
