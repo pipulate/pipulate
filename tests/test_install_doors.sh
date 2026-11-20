@@ -103,7 +103,8 @@ run_case() {
 
 run_case "pipulate.com (unstamped)" ""   ""   pipulate pipulate yes
 run_case "npvg.org"                 npvg ""   npvg     npvg     yes
-run_case "qamy.ai"                  qamy ""   qamyai   qamy     yes
+run_case "qamy.ai"                  qamy   "" qamyai   qamy     yes
+run_case "sunpug.io"                sunpug "" sunpug   sunpug   yes
 run_case "qamy.ai | bash -s myqa"   qamy myqa myqa     qamy     yes
 run_case "a stamp with no row"      zzz  ""   zzz      zzz      no
 

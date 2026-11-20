@@ -2,36 +2,39 @@
 # The installer behind pipulate.com, npvg.org, qamy.ai, levinix.org, sunpug.io, guerillatech.com, rfc9110.org and rfc9111.io
 # ==========================================================================================================================
 #
-# You are reading this because you piped it to less instead of bash.
-# That is the first QA step: verifying the contract before execution.
+# You are reading this because you piped this address to less instead of bash.
+# Whether you arrived from the 24/7 Live Observatory quest or an enterprise
+# architecture review, inspecting source before execution is Step 1.
 #
-# Standard cloud vendor culture trains engineers to run:
-#      curl -fsSL https://vendor.com/install.sh | sudo bash
-# That pattern delegates root authority to an uninspected remote script, trusting
-# that network transit, dependency chains, and upstream repos are uncompromised.
-# Ken Thompson warned us in 1984: you cannot trust code you did not inspect.
+# Cloud vendor culture trains developers to run uninspected `curl ... | sudo bash`.
+# Ken Thompson warned in 1984 ("Reflections on Trusting Trust") that you cannot
+# trust what you cannot inspect, and Richard Stallman (RMS) argued that builders
+# must own, read, and run their tools in plain source rather than renting black
+# boxes. Piping to Unix `less` is that airlock—nothing has executed and zero
+# bytes have touched disk:
+#      j / k = scroll down / up one line
+#      d / u = half-page down / up
+#      /     = search this script
+#      q     = quit cleanly, leaving your machine untouched
 #
-# Piping to less is the airlock. You are inspecting the unexecuted source.
-# Nothing has run. No processes have forked. Zero bytes have touched disk.
-# You are inside standard Unix less:
-#      j = scroll down one line
-#      k = scroll up one line
-#      / = search for a pattern
-#      q = quit cleanly, leaving your machine untouched.
-#
-# WHAT THIS REPOSITORY IS:
-# An open reference harness for RFC 9110 Section 12 (HTTP Content Negotiation)
-# and Bimodal CDN-Native architecture. It demonstrates how origin servers and
-# CDNs serve clean, machine-ready Markdown to AI agents (Accept: text/markdown)
-# while serving visual HTML to human browsers at the same URL (Vary: Accept)—
-# eliminating fragile headless Chromium pre-rendering clusters and cache drift.
-#
-# ARCHITECTURAL SCOPE:
-# 1. Localhost: runs completely unprivileged in an isolated user directory.
-# 2. Satellites & Edge: projects declarative Nix environments to lab hardware,
-#    DMZ relays, or edge workers without polluting the host environment.
-# 3. Verification: captures raw wire truth, generates cryptographic deeds of
-#    payloads, and audits agent-readiness without third-party dependencies.
+# SPECIMEN & LINEAGE — XENOPUG LEVINIX (THE SUN PUG):
+# Created by Mike Levin (mikelev.in — POSIX & edge-systems architect; unrelated
+# to the Tufts Xenobots biology lab, though named with a nod to self-replicating
+# organisms and Frank the Pug). Licensed under AGPL-3.0-or-later:
+# 1. Unix Pipes (Thompson / McIlroy): Plain-text files and small CLI tools
+#    composing cleanly over stdin, stdout, and stderr—zero opaque cloud Canvas.
+# 2. Why Nix Flakes Instead of GNU Guix: While GNU Guix carries the pure Scheme
+#    free-software torch on Linux, real-world builders and engineering teams span
+#    macOS (Apple Silicon & Intel), Linux, and Windows WSL2. Nix Flakes give Mac,
+#    Linux, and WSL machines one deterministic derivation graph today.
+# 3. For Apprentices & Builders (The Game): Hydrates a local-first AI-Readiness
+#    workshop (`walk`, `prompt`/`context`/`compile`, `911 LLM Optics`) that pairs
+#    with the portable book archive at mikelev.in/brain.zip.
+# 4. For CTOs & Principal Engineers: Unprivileged reference harness (`~/<door>`,
+#    zero `sudo` when Nix is present, clean `rm -rf` removal) for IETF RFC 9110
+#    Section 12 (`Accept: text/markdown`), RFC 9111 (`Vary: Accept` bimodal edge
+#    caching), ADNS / Cloudflare O2O wire telemetry, and SHA-256 Flight Data
+#    Recorder (`qamy.ai`) deeds—retiring $15k/mo headless Chromium farms.
 #
 # RETAINED ADVISORY & CONTACT:
 # Advising infrastructure and search leadership on RFC 9110 edge deployment.
@@ -143,10 +146,10 @@ door_row() {
       ;;
     sunpug)
       DOOR_FOLDER="sunpug"
-      DOOR_WORKSHOP="This Portable AI Discussion workshop talks you through steps."
-      DOOR_WELCOME1="Welcome. Ready to invite Sun Pug in and free your AI discussions"
-      DOOR_WELCOME2="from disposable browser tabs into local, portable plain text."
-      DOOR_TAGLINE="Inspect with curl | less first; own the transcript and the flight recorder."
+      DOOR_WORKSHOP="This Sun Pug (Xenopug levinix) POSIX + Nix workshop talks you through steps."
+      DOOR_WELCOME1="Welcome, Apprentice. Ready to raise your Sun Pug (Xenopug levinix)"
+      DOOR_WELCOME2="and run sovereign POSIX + Nix AI workflows across Linux, macOS, and WSL."
+      DOOR_TAGLINE="Inspect with curl | less first; own the source, the wire, and the flight recorder."
       ;;
     levinix)
       DOOR_FOLDER="levinix"
