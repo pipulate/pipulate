@@ -3062,6 +3062,108 @@ def manage_ytmax_toggle(arg="status", dry_run=False) -> int:
     return 0
 
 
+YT_ULL_GREET_COOLDOWN = int(os.environ.get("PIPULATE_YT_GREET_COOLDOWN", "15"))
+_last_ull_greet_ts = 0.0
+
+_HONEYBOT_ULL_GREET_HELPER = r'''
+import os, pathlib, re, shutil, subprocess, sys, time
+t0 = time.perf_counter()
+dur = max(0.8, min(15.0, float(sys.argv[1])))
+msg = sys.argv[2] if len(sys.argv) > 2 else "WELCOME, LIVE VIEWER!"
+env = os.environ.copy()
+for p in sorted(pathlib.Path("/proc").glob("[0-9]*/cmdline")):
+    try:
+        raw = p.read_bytes()
+        if b"stream.py" in raw or b"obs" in raw:
+            for kv in (p.parent / "environ").read_bytes().split(b"\x00"):
+                if b"=" in kv:
+                    k, v = kv.split(b"=", 1)
+                    ks = k.decode("utf-8", "ignore")
+                    if ks in ("DISPLAY", "XAUTHORITY", "XDG_RUNTIME_DIR", "PATH"):
+                        env[ks] = v.decode("utf-8", "ignore")
+            if env.get("DISPLAY"):
+                break
+    except Exception:
+        continue
+env.setdefault("DISPLAY", ":10.0")
+p_env = env["PATH"] = f"/run/current-system/sw/bin:{env.get('PATH', '/usr/bin:/bin')}"
+subprocess.run(["pkill", "-f", "[h]oneybot_ull_greet"], env=env, check=False)
+ra = subprocess.run(["xdotool", "getactivewindow"], env=env, capture_output=True, text=True, check=False) if shutil.which("xdotool", path=p_env) else None
+orig_win = (ra.stdout or "").strip() if (ra and ra.returncode == 0) else ""
+scr_w, scr_h = 1920, 1080
+if shutil.which("wmctrl", path=p_env):
+    rd = subprocess.run(["wmctrl", "-d"], env=env, capture_output=True, text=True, check=False)
+    m = next((re.search(r"DG:\s*(\d+)x(\d+)", ln) for ln in (rd.stdout or "").splitlines() if "*" in ln), None)
+    if m:
+        scr_w, scr_h = int(m.group(1)), int(m.group(2))
+lines = [ln.strip() for ln in msg.splitlines() if ln.strip()][:3] or ["WELCOME, LIVE VIEWER!"]
+cols, rows = max(38, min(68, max(len(ln) for ln in lines) + 8)), len(lines) + 2
+env["ULL_BANNER"] = "\033[?25l\n" + "".join(f"   \033[1;{36 if i == 0 else 33}m{ln}\033[0m\n" for i, ln in enumerate(lines))
+sh_c = f'printf "%s" "$ULL_BANNER"; sleep {dur:.2f}'
+cmd = ["alacritty", "--title", "honeybot_ull_greet", "-o", 'window.decorations="None"', "-o", "window.opacity=0.92", "-o", f"window.dimensions.columns={cols}", "-o", f"window.dimensions.lines={rows}", "-o", "window.position.x=20", "-o", "window.position.y=20", "-o", "font.size=18.0", "-e", "sh", "-c", sh_c]
+proc = subprocess.Popen(cmd, env=env, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True, close_fds=True)
+time.sleep(0.03)
+if proc.poll() is not None:
+    proc = subprocess.Popen(["alacritty", "--title", "honeybot_ull_greet", "-e", "sh", "-c", sh_c], env=env, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True, close_fds=True)
+wid, win_w, win_h = "", cols * 11, rows * 28
+for _ in range(25):
+    if shutil.which("wmctrl", path=p_env):
+        rw = subprocess.run(["wmctrl", "-lG"], env=env, capture_output=True, text=True, check=False)
+        for ln in (rw.stdout or "").splitlines():
+            if "honeybot_ull_greet" in ln:
+                pts = ln.split()
+                wid = pts[0]
+                if len(pts) >= 6 and pts[4].isdigit() and pts[5].isdigit():
+                    win_w, win_h = int(pts[4]), int(pts[5])
+                break
+    if wid or proc.poll() is not None:
+        break
+    time.sleep(0.02)
+if wid and shutil.which("wmctrl", path=p_env):
+    px, py = max(0, (scr_w - win_w) // 2), max(0, (scr_h - win_h) // 2)
+    subprocess.run(["wmctrl", "-i", "-r", wid, "-e", f"0,{px},{py},-1,-1"], env=env, check=False)
+    subprocess.run(["wmctrl", "-i", "-r", wid, "-b", "add,above"], env=env, check=False)
+if orig_win and shutil.which("xdotool", path=p_env):
+    subprocess.run(["xdotool", "windowactivate", orig_win], env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False)
+print(f"ULL_GREET_OK wid={wid or 'spawned'} x11_ms={round((time.perf_counter() - t0) * 1000, 1)}")
+'''
+
+
+def _resolve_yt_ull_greet(override=None) -> bool:
+    """Return True when automatic ULL arrival greeting is enabled (PIPULATE_YT_ULL_GREET=1)."""
+    if override is not None:
+        return bool(override)
+    raw = (os.environ.get("PIPULATE_YT_ULL_GREET") or _load_vault_env().get("PIPULATE_YT_ULL_GREET") or "").strip().lower()
+    return raw in ("1", "true", "yes", "on", "enable", "enabled")
+
+
+def trigger_ull_greeting(message=None, duration=2.8, poll_ms=0.0, trigger="manual", force=False, dry_run=False) -> dict:
+    """Pop a bare-minimum frameless greeting on Honeybot :10.0 over warm SSH without cutting audio."""
+    global _last_ull_greet_ts
+    import subprocess
+    import time
+    auto_on = _resolve_yt_ull_greet()
+    if not force and not auto_on:
+        return {"fired": False, "reason": "disabled", "auto_greet": auto_on}
+    now_ts = time.time()
+    if not force and _last_ull_greet_ts > 0 and (now_ts - _last_ull_greet_ts) < YT_ULL_GREET_COOLDOWN:
+        return {"fired": False, "reason": "cooldown", "auto_greet": auto_on}
+    msg = (message or "👋 WELCOME, LIVE VIEWER!\nType MENU or any Story # in chat").strip()
+    if dry_run:
+        print(f"⚡ [DRY RUN] ULL Greeting -> {HONEYBOT_SSH_HOST} ({duration:.1f}s, auto_greet={auto_on}): {msg.replace(chr(10), ' | ')}")
+        return {"fired": False, "dry_run": True, "auto_greet": auto_on}
+    _last_ull_greet_ts = now_ts
+    t0 = time.perf_counter()
+    res = subprocess.run([*_hb_ssh_args(4), "python3", "-", f"{float(duration):.2f}", msg], input=_HONEYBOT_ULL_GREET_HELPER, capture_output=True, text=True, timeout=5, check=False)
+    prime_x11_ms = round((time.perf_counter() - t0) * 1000.0, 1)
+    m_x11 = re.search(r"x11_ms=([\d.]+)", res.stdout or "")
+    x11_ms = float(m_x11.group(1)) if m_x11 else 0.0
+    ssh_ms = round(max(0.0, prime_x11_ms - x11_ms), 1)
+    chain_ms = round(float(poll_ms or 0.0) + prime_x11_ms, 1)
+    print(f"[{_ytlog_ts()}] ⚡ [ULL GREET] ({trigger}) poll_ms={float(poll_ms or 0.0):.1f} ssh_ms={ssh_ms:.1f} x11_ms={x11_ms:.1f} total_ms={chain_ms:.1f} rc={res.returncode}", flush=True)
+    return {"fired": res.returncode == 0, "poll_ms": float(poll_ms or 0.0), "ssh_ms": ssh_ms, "x11_ms": x11_ms, "total_ms": chain_ms, "rc": res.returncode}
+
+
 def _trigger_ytwatch_weebo(weebo_spec=None, duration=None):
     """Fire an undampened non-blocking centered Weebo popup on Honeybot :10.0, guarded against mid-clip clobbering."""
     global _last_weebo_trigger_ts
@@ -4010,7 +4112,7 @@ def reboot_honeybot_stream(sync_only=False, dry_run=False):
     remote_sh = r"""
 pattern="/home/mike/www/mikelev[.]in/scripts/stream[.]py"
 rm -f /tmp/honeybot_weebo_active /tmp/honeybot_optics_slot.json /tmp/honeybot_ytstage_paused.json 2>/dev/null || true
-pkill -f "[/]tmp/honeybot_ytapp_profile|HONEYBOT_LIVE_VIM|honeybot_media_overlay|conjure_window_overlay|patronus_visual_shield" 2>/dev/null || true
+pkill -f "[/]tmp/honeybot_ytapp_profile|HONEYBOT_LIVE_VIM|honeybot_media_overlay|honeybot_ull_greet|conjure_window_overlay|patronus_visual_shield" 2>/dev/null || true
 pkill -CONT -f "/home/mike/www/mikelev[.]in/scripts/logs[.]py|aplay|piper" 2>/dev/null || true
 old_pids=$(pgrep -f -- "$pattern" || true)
 for old in $old_pids; do
