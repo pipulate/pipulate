@@ -44,6 +44,7 @@ except ImportError:
 
 
 CONFIG_DIR = Path.home() / ".config" / "pipulate"
+CHOP_USAGE_FILE = CONFIG_DIR / "chop_usage.json"
 TARGETS_FILE = Path(os.environ.get("PIPULATE_BLOGS_CONFIG", CONFIG_DIR / "blogs.json")).expanduser()
 DEFAULT_POSTS_DIR = Path(
     os.environ.get("PIPULATE_DEFAULT_POSTS_DIR", Path.home() / "repos" / "trimnoir" / "_posts")
@@ -1367,6 +1368,60 @@ def _check_probe_command(cmd: str) -> Optional[str]:
     return None
 
 
+def record_chop_usage(chop_var: str, prompt_source: str = "default") -> Dict[str, dict]:
+    """Increment per-CHOP compile counter in ~/.config/pipulate/chop_usage.json (outside git)."""
+    from datetime import datetime, timezone
+    now_iso = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%MZ")
+    data: Dict[str, dict] = {}
+    if CHOP_USAGE_FILE.is_file():
+        try:
+            loaded = json.loads(CHOP_USAGE_FILE.read_text(encoding="utf-8"))
+            if isinstance(loaded, dict):
+                data = loaded
+        except (OSError, ValueError, TypeError):
+            data = {}
+    rec = data.get(chop_var) if isinstance(data.get(chop_var), dict) else {}
+    count = int(rec.get("count") or 0) + 1
+    data[chop_var] = {
+        "count": count,
+        "first_used": rec.get("first_used") or now_iso,
+        "last_used": now_iso,
+        "last_prompt_source": str(prompt_source),
+    }
+    try:
+        CHOP_USAGE_FILE.parent.mkdir(parents=True, exist_ok=True)
+        CHOP_USAGE_FILE.write_text(json.dumps(data, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    except OSError:
+        pass
+    logger.note(f"📈 CHOP telemetry: {chop_var} -> {count} compile(s) ({CHOP_USAGE_FILE})")
+    return data
+
+
+def print_chop_stats() -> None:
+    """Print live CHOP usage scoreboard joined against active *_CHOP symbols in foo_files.py."""
+    if REPO_ROOT not in sys.path:
+        sys.path.insert(0, REPO_ROOT)
+    import foo_files
+    defined = sorted(k for k, v in vars(foo_files).items() if k.endswith("_CHOP") and isinstance(v, str))
+    data: Dict[str, dict] = {}
+    if CHOP_USAGE_FILE.is_file():
+        try:
+            loaded = json.loads(CHOP_USAGE_FILE.read_text(encoding="utf-8"))
+            if isinstance(loaded, dict):
+                data = loaded
+        except (OSError, ValueError, TypeError):
+            data = {}
+    all_names = sorted(set(defined) | set(data), key=lambda k: (-int((data.get(k) or {}).get("count") or 0), k))
+    print(f"📊 CHOP USAGE TELEMETRY ({CHOP_USAGE_FILE})")
+    for name in all_names:
+        rec = data.get(name) if isinstance(data.get(name), dict) else {}
+        cnt = int(rec.get("count") or 0)
+        last_u = rec.get("last_used") or "never"
+        src = rec.get("last_prompt_source") or "-"
+        status = "" if name in defined else " [retired]"
+        print(f"  {name:<18} {cnt:5d} run(s)  last={last_u:<17} src={src}{status}")
+
+
 def check_dependencies():
     logger.print("Checking for required external dependencies...")
     dependencies = {
@@ -2430,6 +2485,9 @@ def main():
     # through the `!` executor's Popen, so a nested invocation sees the lock,
     # emits a one-line receipt to stdout, and exits 0. The receipt lands in
     # the Manifest as evidence the fence held -- a wound, never a hang.
+    if '--chop-stats' in sys.argv[1:]:
+        print_chop_stats()
+        sys.exit(0)
     if os.environ.get('PIPULATE_COMPILE_LOCK'):
         print("🔁 OUROBOROS LOCK: prompt_foo.py refused to run inside its own `!` probe executor. Remove the self-invoking line from context.txt.")
         sys.exit(0)
@@ -2564,6 +2622,7 @@ def main():
     # transport-exposure diagnostics. Neither flag disables integrity checks.
     parser.add_argument('-v', '--verbose', action='store_true', help='Show artwork, progress detail, the full console summary, and the optional autolink-exposure diagnostic. Integrity checks and refusal messages remain enabled without this flag.')
     parser.add_argument('--chop', type=str, default='AI_PHOOEY_CHOP', help='Specify an alternative payload variable from foo_files.py')
+    parser.add_argument('--chop-stats', action='store_true', help='Print per-CHOP compile usage telemetry from ~/.config/pipulate/chop_usage.json and exit.')
     # THE FRAME IS A FLAG, NOT A PROPERTY OF THE CHOP (2026-09-19). A chop
     # selects files; a frame selects what rides ahead of the prompt. Since
     # 2026-09-25 no alias passes it: compile --frame lean is the spelling, and
@@ -2711,6 +2770,7 @@ def main():
     update_agents_md_in_place()
     update_readme_md_in_place()
     files_to_process = parse_file_list_from_config(args.chop, format_kwargs)
+    record_chop_usage(args.chop, prompt_source)
     check_topological_integrity(args.chop, format_kwargs)
 
     # Inject --files as direct codebase paths into the processing queue
