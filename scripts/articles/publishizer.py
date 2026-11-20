@@ -371,29 +371,65 @@ def sync_observatory_metrics(target_key, target_path, verbose=False):
     print(f"🔭 AI Observatory metrics synced: {md_count_fmt} RFC 9110 Markdown reads ({md_pct_s}%), {hyd_trig_fmt} JS trapdoor triggers ({fetched_at}).")
 
 
+BRAIN_ARCHIVE_SCHEMA = 2
 BRAIN_CACHE_DIR = Path.home() / ".cache" / "pipulate"
 BRAIN_ZIP_PATH = BRAIN_CACHE_DIR / "brain.zip"
 BRAIN_META_PATH = BRAIN_CACHE_DIR / "brain.meta.json"
 _TRACER_DYE_RE = re.compile(r"\?src=(?:llms\.txt|a\+href|link\+rel|content_neg)\b")
+_SORT_ORDER_RE = re.compile(r"^sort_order:\s*(-?\d+)\s*$", re.MULTILINE)
+
+
+def _brain_post_rank(md_path: Path) -> tuple[str, int, str]:
+    """Return (YYYY-MM-DD, sort_order, stem) so reverse=True packs newest posts first."""
+    sort_order = 0
+    try:
+        with md_path.open("r", encoding="utf-8", errors="ignore") as fh:
+            head = fh.read(2048)
+        if head.startswith("---"):
+            parts = head.split("---", 2)
+            if len(parts) >= 3:
+                m = _SORT_ORDER_RE.search(parts[1])
+                if m:
+                    sort_order = int(m.group(1))
+    except OSError:
+        pass
+    return (md_path.name[:10], sort_order, md_path.stem)
 
 
 def build_brain_archive(target_key, target_path, verbose=False):
-    """Package dated _posts/*.md (tracer-dye scrubbed) + _posts/_context/*.json into ~/.cache/pipulate/brain.zip."""
+    """Package 00_START_HERE.md + foo_files.py + llms.txt + newest-first _abstracts/_posts/_context into brain.zip."""
     if str(target_key) != "1" or not target_path.is_dir():
         return None
     import json
     import zipfile
-    mds = sorted(p for p in target_path.glob("*.md") if p.name[:4].isdigit())
+    script_dir = Path(__file__).resolve().parent
+    pipulate_root = script_dir.parents[1]
+    start_here_src = pipulate_root / "assets" / "prompts" / "brain_start_here.md"
+    foo_src = pipulate_root / "foo_files.py"
+    llms_candidates = [p for p in (target_path.parent / "llms.txt", script_dir / "llms.txt") if p.is_file()]
+    llms_src = max(llms_candidates, key=lambda p: p.stat().st_mtime_ns) if llms_candidates else None
+    abs_dir = target_path / "_abstracts"
     ctx_dir = target_path / "_context"
-    shards = sorted(p for p in ctx_dir.glob("*.json") if p.name[:4].isdigit()) if ctx_dir.is_dir() else []
+    mds = [p for p in target_path.glob("*.md") if p.name[:4].isdigit()]
     if not mds:
         return None
-    max_mtime = max(
-        max((p.stat().st_mtime_ns for p in mds), default=0),
-        max((p.stat().st_mtime_ns for p in shards), default=0),
-    )
-    total_bytes = sum(p.stat().st_size for p in mds) + sum(p.stat().st_size for p in shards)
-    sig = {"md_count": len(mds), "shard_count": len(shards), "max_mtime_ns": max_mtime, "total_bytes": total_bytes}
+    abstracts = [p for p in abs_dir.glob("*.md") if p.name[:4].isdigit()] if abs_dir.is_dir() else []
+    shards = [p for p in ctx_dir.glob("*.json") if p.name[:4].isdigit()] if ctx_dir.is_dir() else []
+    root_entries = [
+        (arc, src)
+        for arc, src in (("00_START_HERE.md", start_here_src), ("foo_files.py", foo_src), ("llms.txt", llms_src))
+        if src is not None and src.is_file()
+    ]
+    tracked_files = [src for _, src in root_entries] + abstracts + mds + shards
+    sig = {
+        "schema": BRAIN_ARCHIVE_SCHEMA,
+        "root_entries": [arc for arc, _ in root_entries],
+        "abstract_count": len(abstracts),
+        "md_count": len(mds),
+        "shard_count": len(shards),
+        "max_mtime_ns": max((p.stat().st_mtime_ns for p in tracked_files), default=0),
+        "total_bytes": sum(p.stat().st_size for p in tracked_files),
+    }
     if BRAIN_ZIP_PATH.is_file() and BRAIN_META_PATH.is_file():
         try:
             if json.loads(BRAIN_META_PATH.read_text(encoding="utf-8")) == sig:
@@ -402,9 +438,22 @@ def build_brain_archive(target_key, target_path, verbose=False):
                 return BRAIN_ZIP_PATH
         except Exception:
             pass
+    rank_by_stem = {md.stem: _brain_post_rank(md) for md in mds}
+    mds.sort(key=lambda p: rank_by_stem[p.stem], reverse=True)
+    abstracts.sort(key=lambda p: rank_by_stem.get(p.stem, (p.name[:10], 0, p.stem)), reverse=True)
+    shards.sort(key=lambda p: rank_by_stem.get(p.stem, (p.name[:10], 0, p.stem)), reverse=True)
     BRAIN_CACHE_DIR.mkdir(parents=True, exist_ok=True)
     tmp_zip = BRAIN_ZIP_PATH.with_suffix(".zip.tmp")
     with zipfile.ZipFile(tmp_zip, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=6) as zf:
+        for arc, src in root_entries:
+            if arc == "llms.txt":
+                clean_llms = _TRACER_DYE_RE.sub("", src.read_text(encoding="utf-8", errors="replace"))
+                zf.writestr(arc, clean_llms.encode("utf-8"))
+            else:
+                zf.write(src, arcname=arc)
+        for ab in abstracts:
+            clean_ab = _TRACER_DYE_RE.sub("", ab.read_text(encoding="utf-8", errors="replace"))
+            zf.writestr(f"_posts/_abstracts/{ab.name}", clean_ab.encode("utf-8"))
         for md in mds:
             raw_text = md.read_text(encoding="utf-8", errors="replace")
             clean_text = _TRACER_DYE_RE.sub("", raw_text)
@@ -414,7 +463,10 @@ def build_brain_archive(target_key, target_path, verbose=False):
     tmp_zip.replace(BRAIN_ZIP_PATH)
     BRAIN_META_PATH.write_text(json.dumps(sig, indent=2) + "\n", encoding="utf-8")
     mb = BRAIN_ZIP_PATH.stat().st_size / (1024 * 1024)
-    print(f"🧠 Built 2nd Brain archive: {BRAIN_ZIP_PATH} ({len(mds):,} posts, {len(shards):,} shards, {mb:.1f} MB)")
+    print(
+        f"🧠 Built 2nd Brain archive: {BRAIN_ZIP_PATH} "
+        f"({len(root_entries)} root, {len(abstracts):,} abstracts, {len(mds):,} posts, {len(shards):,} shards, {mb:.1f} MB)"
+    )
     return BRAIN_ZIP_PATH
 
 
