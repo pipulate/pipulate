@@ -2015,7 +2015,7 @@ apply.py
 # ============================================================================
 # Files tracked by git but not yet mixed into the palette above.
 # Move these into the active chapters to paint them onto the context canvas.
-# Coverage: 228/300 tracked files claimed. The compiler reads this line back on the next compile and prints the delta beside the live count, so an unclaimed file rings once.
+# Coverage: 229/300 tracked files claimed. The compiler reads this line back on the next compile and prints the delta beside the live count, so an unclaimed file rings once.
 
 # AGENTS.md  # [1,039 tokens | 4,223 bytes]
 # AUDIT.md  # [2,992 tokens | 13,897 bytes]
@@ -2037,7 +2037,6 @@ apply.py
 # apps/810_webbrowser.py  # [2,813 tokens | 12,035 bytes]
 # apps/820_selenium.py  # [3,430 tokens | 15,032 bytes]
 # assets/oz-effect-demo.html  # [3,847 tokens | 16,459 bytes]
-# assets/prompts/brain_start_here.md  # [668 tokens | 2,573 bytes]
 # assets/prompts/find404s.md  # [461 tokens | 2,105 bytes]
 # assets/prompts/llms_header.md  # [1,110 tokens | 5,129 bytes]
 # assets/prompts/pipulate-context.xsd  # [2,286 tokens | 8,129 bytes]
