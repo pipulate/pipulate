@@ -473,9 +473,9 @@
               ;;
             -h|--help|help)
               printf "%s\n" \
-                "dots — Dual-Head Idea-Refinery Kata" \
-                "  dots              compile DOTS_PROMPT + DOTS_CHOP to clipboard (paste -> patch -> app)" \
-                "  dots radar        print compact scoreboard + Forward/Retrograde heads" \
+                "dots — Tri-Head Idea-Refinery Kata" \
+                "  dots              compile DOTS_PROMPT + DOTS_CHOP to clipboard (In-Flight prompt.md + corpus)" \
+                "  dots radar        print compact scoreboard + In-Flight/Forward/Retrograde heads" \
                 "  dots raw          print full harvested idea blocks & Next-Step Prompts"
               ;;
             *)
@@ -2433,7 +2433,7 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # tenth of flake.nix's own row, so --no-tree leaves this body and
           # compile carries the tree whenever a .py file rides; -n turns it off
           # for one compile, --tree is a no-op here and still the override for
-          # every alias that keeps --no-tree (foo, default, idea, forget, pins).
+          # every alias that keeps --no-tree (foo, default, forget).
           # ahcu is ahc's twin from this line on.
           ahc() { (cd "$PIPULATE_ROOT" && python prompt_foo.py --chop ADHOC_CHOP "$@"); }
           ahcu() { (cd "$PIPULATE_ROOT" && python prompt_foo.py --chop ADHOC_CHOP "$@"); }
@@ -2478,7 +2478,8 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           # typed after re-entry ran compile. Load-bearing; never delete it as
           # paranoia: any user's bashrc can carry a one-letter alias, so the
           # guard stays whatever Prime's own system config holds.
-          unalias p pr pro prom promp promt prompt x con cont conte contex c com comp compi compil dp 2>/dev/null || true
+          unalias p pr pro prom promp promt prompt x con cont conte contex c com comp compi compil dp pins 2>/dev/null || true
+          unset -f idea 2>/dev/null || true
           p()      { prompt  "$@"; }
           pr()     { prompt  "$@"; }
           pro()    { prompt  "$@"; }
@@ -2495,16 +2496,11 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
           comp()   { compile "$@"; }
           compi()  { compile "$@"; }
           compil() { compile "$@"; }
-          # THE IDEATION DOOR: `idea` compiles IDEATION_CHOP (the constitution's
-          # two forcing-function rules) primed for a 30-and-3 / axis-forcing
-          # fan-out turn. A function, not an alias, so --profile/--reason pass
-          # straight through, mirroring defaultu/ahc.
-          idea() { (cd "$PIPULATE_ROOT" && python prompt_foo.py --chop IDEATION_CHOP --no-tree "$@"); }
           # THE FORGETTING DOOR: `forget` compiles COMPACT_CHOP with its baked
           # COMPACT_PROMPT -- dedupe, fade, graduate, one car per verb -- so
           # "the router feels heavy" is one word at the prompt, the way `brief`
-          # and `idea` already are. A function, not an alias, so --profile and
-          # --reason pass straight through, mirroring idea/ahc. Typed by a
+          # and `dots` already are. A function, not an alias, so --profile and
+          # --reason pass straight through, mirroring defaultu/ahc. Typed by a
           # human only: the compile lane witnesses it through the generated
           # hook text, never through `type`.
           forget() { (cd "$PIPULATE_ROOT" && python prompt_foo.py @COMPACT_PROMPT --chop COMPACT_CHOP --no-tree "$@"); }
@@ -2647,7 +2643,6 @@ runScript = pkgs.writeShellScriptBin "run-script" ''
             fi
             ahc
           }
-          alias pins='(cd "$PIPULATE_ROOT" && python prompt_foo.py --chop PINNED_CHOP --no-tree)'
           # THE FIRST WISH, RENAMED (2026-08-25). `learn` failed the
           # ATTRIBUTED-VOICE mechanical test: it named an act no code in this
           # pipeline performs. Nobody learns anything -- a payload compiles and
