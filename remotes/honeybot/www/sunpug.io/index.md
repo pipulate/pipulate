@@ -14,7 +14,9 @@ When you have verified the contract and are ready to provision the workspace:
 
 ## What Is a Software Von Neumann Probe? (SVNPvg -> SUNPug)
 
-John von Neumann described a self-contained probe engineered to land on raw substrate and build a complete operational facility from local resources. A **Software Von Neumann Probe** (`SVNP`) does the same on any host machine: a single auditable text script that bootstraps a reproducible engineering workbench on the durable four-letter bedrock of **Nix, Python, vim, and git** (`NPvg`). Overlap the shared `NP` (`SVNP` + `NPvg` -> `SVNPvg`) and vocalize the Classical Latin `V`s as `U`s to get **SUNPug** (`sunpug.io`).
+John von Neumann described a self-contained probe engineered to land on raw substrate and build a complete operational facility from local resources. A **Software Von Neumann Probe** (`SVNP`) does the same on any host machine: a single auditable text script that bootstraps a reproducible engineering workbench on the durable four-letter bedrock of **Nix, Python, vim, and git** (`NPvg`). Overlap the shared `NP` (`SVNP` + `NPvg` -> `SVNPvg`) and vocalize the Classical Latin `V`s as `U`s to get **SUNPug** (`sunpug.io`)—taxonomic name ***Xenopug levinix*** (created by POSIX & edge-systems architect Mike Levin; unrelated to the Tufts Xenobots biology lab, named with a nod to self-replicating organisms and Frank the Pug).
+
+In the lineage of Ken Thompson's inspectable Unix pipes and Richard Stallman's plain-source software freedom, Sun Pug uses **Nix Flakes** (rather than Linux-only GNU Guix) so **macOS**, **Linux**, and **Windows WSL** builders share one deterministic derivation graph with zero root/Docker sprawl.
 
 ## The Tech Industry That Cried "WORA"—And Why It Is Finally True
 
@@ -30,4 +32,4 @@ Cloud chat tabs are ephemeral silos that lose institutional context the moment a
 - `p` (`prompt`) — capture your question from the clipboard.
 - `c` (`compile`) — bundle your files, live receipts, and discussion history into your clipboard while sealing a verifiable SHA-256 archive deed on disk.
 
-Paste that compiled payload into any model—Claude, Gemini, ChatGPT, or a local LLM—and own your transcript for life.
+Paste that compiled payload into any model—Claude, Gemini, ChatGPT, or a local LLM—and own your transcript for life. Want to explore at zero install first? Drop the living book archive at `https://mikelev.in/brain.zip` straight into your favorite AI.

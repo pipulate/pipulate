@@ -40,6 +40,15 @@ if [ "${1:-}" = "--installer" ]; then
   echo "❌ Installer sync failed; one or more doors still serve the previous file."
   exit 1
 fi
+if [ "${1:-}" = "--doors" ]; then
+  ssh $TARGET "cd ~/www && mkdir -p $INSTALLER_DOORS"
+  for door in $INSTALLER_DOORS; do
+    rsync $RSYNC_OPTS "remotes/honeybot/www/$door/" "$TARGET:~/www/$door/"
+  done
+  sync_installer
+  echo "✅ Doors + installer synced to $INSTALLER_DOORS (body only; no rebuild)."
+  exit 0
+fi
 
 echo "🚀 Syncing Hooks & Scripts..."
 scp -q remotes/honeybot/hooks/post-receive $TARGET:~/git/mikelev.in.git/hooks/post-receive
