@@ -138,6 +138,8 @@ def rank_candidates(posts_dir: Path, limit: int = 10, pillars_only: bool = False
             continue
         raw_aid = meta.get(common.ARTICLE_ID_KEY, "").split("#", 1)[0].strip()
         aid = int(raw_aid) if raw_aid.isdigit() and int(raw_aid) > 0 else 0
+        if aid == 911:
+            continue
         stem = md_path.stem
         slug = stem[11:] if len(stem) > 11 else stem
         title = meta.get("title") or slug
@@ -195,7 +197,7 @@ def build_extraction_prompt(md_path: Path) -> dict:
     clean_body = _RAW_LIQUID_RE.sub("", body).strip()
     lean_body, fences_stripped = articleizer.strip_fences(clean_body)
     _, pillars = score_pillars(title, f"{fm_block}\n{lean_body[:4000]}")
-    coin_cmd = f"jukebox {aid}" if aid else "jukebox <ID>"
+    coin_cmd = str(aid) if aid else "<ID>"
     canon_url = "https://" + f"mikelev.in{permalink}"
     sunpug_cmd = "curl -fsSL https://" + "sunpug.io | less"
     prompt = (
@@ -233,7 +235,7 @@ def build_extraction_prompt(md_path: Path) -> dict:
         "      and—under a Below-the-Fold heading—the pre-registered Kuhnian Gatekeeper Trapdoor naming\n"
         "      the predictable knee-jerk dismissal and its plain-spoken refutation).\n"
         f"- Final turn: land the parable's takeaway cleanly (weaving `{sunpug_cmd}` or RFC 9110/9111\n"
-        f"  only when natural), link Lab Receipt #{aid} ({canon_url}), and name Jukebox Coin `{coin_cmd}`.\n\n"
+        f"  only when natural), link Lab Receipt #{aid} ({canon_url}), and invite viewers to type `{coin_cmd}` in live chat to play this story.\n\n"
         "--- SOURCE ARTICLE (CODE FENCES CONDENSED) ---\n"
         f"{lean_body}\n"
         "--- END SOURCE ARTICLE ---\n"

@@ -197,59 +197,65 @@ def _resolve_canonical_slug(fm: dict, filename: str) -> str:
     return perm or filename[11:].rsplit(".", 1)[0]
 
 
-def get_jukebox_catalog():
-    """Return O(1)-cached {'paths': [...], 'index_map': {fname: 1..N}} sorted oldest-first."""
-    active_dir = resolve_storytime_dir()
-    active_key = str(active_dir)
+JUKEBOX_RESERVED_IDS = frozenset({911})
+
+
+def get_jukebox_catalog(posts_dir: Path | None = None):
+    """Return O(1)-cached Norma-abstract Jukebox catalog ({'paths', 'id_map', 'index_map', 'playable_ids'})."""
+    base = Path(posts_dir) if posts_dir is not None else POSTS_DIR
+    abs_dir = base / ABSTRACTS_SUBDIR
+    active_key = str(abs_dir)
+    if not abs_dir.is_dir():
+        return {"paths": [], "id_map": {}, "index_map": {}, "playable_ids": []}
     try:
-        dir_mtime = active_dir.stat().st_mtime_ns
-        if (_jb_catalog_cache.get("sig") or (None,))[0] == active_key and _jb_catalog_cache.get("dir_mtime") == dir_mtime and _jb_catalog_cache.get("paths"):
+        dir_mtime = abs_dir.stat().st_mtime_ns
+        if (_jb_catalog_cache.get("sig") or (None,))[0] == active_key and _jb_catalog_cache.get("dir_mtime") == dir_mtime and "playable_ids" in _jb_catalog_cache:
             return _jb_catalog_cache
-        dated = [Path(e.path) for e in os.scandir(active_dir) if e.is_file() and _DATED_JB_RE.match(e.name)]
+        dated = [Path(e.path) for e in os.scandir(abs_dir) if e.is_file() and _DATED_JB_RE.match(e.name)]
         sig = (active_key, dir_mtime, len(dated))
     except OSError:
-        return {"paths": [], "id_map": {}, "index_map": {}}
-    if _jb_catalog_cache.get("sig") == sig and _jb_catalog_cache.get("paths"):
+        return {"paths": [], "id_map": {}, "index_map": {}, "playable_ids": []}
+    if _jb_catalog_cache.get("sig") == sig and "playable_ids" in _jb_catalog_cache:
         _jb_catalog_cache["dir_mtime"] = dir_mtime
         return _jb_catalog_cache
     keyed = []
     for p in dated:
-        s_ord, aid = 0, None
-        try:
-            with open(p, "r", encoding="utf-8", errors="ignore") as fh:
-                if fh.readline().strip() == "---":
-                    for ln in fh:
-                        if ln.strip() == "---":
-                            break
-                        m_so = _SORT_ORDER_RE.match(ln)
-                        if m_so:
-                            s_ord = int(m_so.group(1))
-                        m_id = _ARTICLE_ID_RE.match(ln.rstrip("\r\n"))
-                        if m_id and aid is None:
-                            aid = int(m_id.group(1))
-        except Exception:
-            pass
-        if active_dir != POSTS_DIR and (aid is None or s_ord == 0):
-            pfm = _read_frontmatter_dict(POSTS_DIR / p.name)
-            s_ord = int(pfm["sort_order"]) if (s_ord == 0 and str(pfm.get("sort_order") or "").lstrip("-").isdigit()) else s_ord
-            aid = int(pfm["article_id"]) if (aid is None and str(pfm.get("article_id") or "").isdigit()) else aid
+        fm = _with_parent_frontmatter(p, _read_frontmatter_dict(p), posts_dir=base)
+        if not _is_storytime_enabled(fm):
+            continue
+        raw_so = str(fm.get("sort_order") or "").strip()
+        s_ord = int(raw_so) if raw_so.lstrip("-").isdigit() else 0
+        raw_aid = str(fm.get("article_id") or "").split("#", 1)[0].strip()
+        aid = int(raw_aid) if raw_aid.isdigit() and int(raw_aid) > 0 else None
+        if aid is None or aid in JUKEBOX_RESERVED_IDS:
+            continue
         keyed.append(((p.name[:10], s_ord, p.name), aid, p))
     keyed.sort(key=lambda item: item[0])
-    paths = [p for _, _, p in keyed]
-    id_map, idx_map, unstamped = {}, {}, []
+    paths, id_map, idx_map = [], {}, {}
     for _, aid, p in keyed:
-        if aid is not None and aid not in id_map:
+        if aid not in id_map:
+            paths.append(p)
             id_map[aid] = p
             idx_map[p.name] = aid
-        else:
-            unstamped.append(p)
-    next_id = max(id_map, default=0)
-    for p in unstamped:
-        next_id += 1
-        id_map[next_id] = p
-        idx_map[p.name] = next_id
-    _jb_catalog_cache.update({"dir_mtime": dir_mtime, "sig": sig, "paths": paths, "id_map": id_map, "index_map": idx_map})
+    seen_ids = set()
+    playable_ids = [
+        aid for _, aid, _ in reversed(keyed)
+        if aid in id_map and not (aid in seen_ids or seen_ids.add(aid))
+    ]
+    _jb_catalog_cache.update({
+        "dir_mtime": dir_mtime,
+        "sig": sig,
+        "paths": paths,
+        "id_map": id_map,
+        "index_map": idx_map,
+        "playable_ids": playable_ids,
+    })
     return _jb_catalog_cache
+
+
+def get_jukebox_playable_ids(posts_dir: Path | None = None) -> list[int]:
+    """Return newest-first list of playable Norma-converted Story IDs (excluding reserved 911)."""
+    return list(get_jukebox_catalog(posts_dir=posts_dir).get("playable_ids") or [])
 
 
 def get_article_by_jukebox_index(jb_idx: int):
@@ -610,7 +616,7 @@ def get_playlist(recent_n=10, include_archive=True):
                     image_path = str(meta.get("image") or "").strip()
                     if enqueue_media and image_path:
                         _m.narrator.media({"path": image_path, "duration": 14.0})
-                    jb_s = f"Jukebox entry number {jb_n}, titled: {title}" if jb_n else f"titled: {title}"
+                    jb_s = f"story number {jb_n}, titled: {title}" if jb_n else f"titled: {title}"
                     return (
                         f"The article currently being read on this broadcast is {jb_s}. "
                         "To read the full article text and inspect the raw code receipts at your own pace, "
