@@ -233,7 +233,7 @@ def load_maintenance_line(stream_file=None):
     return line
 
 PITCH_TEXT = (
-    "Welcome to the Honeybot A I Observatory — the live, unfiltered Engine X origin wire for Mike L E V dot eye N. "
+    "Welcome to A.I. Fishtank Story-Time — the live, unfiltered Engine X origin fishtank for Mike L E V dot eye N. "
     "Every HTTP arrival hits this screen the millisecond it touches the socket: orange marks A I retrieval agents, "
     "cyan tags external search and web referrals, blue diamonds verify R F C 94 21 cryptographic bot signatures, and red unmasks exploit scanners. "
     "Enterprises unlock this exact first-party telemetry upstream with Authoritative D N S and Orange-to-Orange C D N log streams, "
@@ -515,7 +515,10 @@ _AI_TURN_PREFIX_RE = re.compile(
 )
 _HOST_TRANSIENT_RE = (
     "we interrupt", "we now return", "scheduled station", "scheduled observatory",
-    "field note from the wire", "end of wire field note", "field record from the web bot",
+    "scheduled fishtank", "fishtank notice", "welcome inside a.i. fishtank",
+    "welcome inside a i fishtank", "welcome to a.i. fishtank", "welcome to a i fishtank",
+    "field note from the wire", "end of wire field note", "the story currently",
+    "chat takeover", "switching now to story", "you can take control",
     "receiving updates", "minor maintenance", "signal check", "the article currently",
     "now i read", "resuming storytime", "breaking news", "to hear the next article",
     "if you are actually here", "none of this is trained", "this live-broadcast",
@@ -2803,9 +2806,9 @@ def resolve_current_article_info():
     except Exception:
         pass
     spoken_line = (
-        f"The article currently being read on this broadcast is titled: {title}. "
-        "To read the full article text and inspect the raw code receipts at your own pace, "
-        "visit Mike L E V dot eye N slash latest."
+        f"The story currently playing in the fishtank is titled: {title}. "
+        "Type any story number on the bottom bar in live chat to take control and switch stories, "
+        "or inspect the full source at Mike L E V dot eye N slash latest."
     )
     return spoken_line, image_path
 
@@ -2823,18 +2826,18 @@ def build_hud_circle_specs(mode: str = "OVERTURE", title: str = "") -> list:
     clean_mode = (mode or "OVERTURE").strip().upper()
     clean_title = (title or "our latest technical journal entry").strip()
     closing_line = (
-        f"Curtain up on Act One of: {clean_title}."
+        f"You can take control of this fishtank anytime: type a story number from the bottom bar in live chat to switch stories, or type nine eleven for a live Optics check. Curtain up on Act One of: {clean_title}."
         if clean_mode == "OVERTURE"
         else (
             f"That concludes our midpoint intermission for: {clean_title}. "
-            "Full source and receipts live at Mike L E V dot eye N slash latest, "
-            "grab your own free Sun Pug at Sun Pug dot eye oh, and join us on Discord at Mike L E V dot eye N slash discord."
+            "Type any story number from the bottom bar in live chat to take control and switch stories, "
+            "grab your free Sun Pug at Sun Pug dot eye oh, and join us on Discord at Mike L E V dot eye N slash discord."
         )
     )
     return [
         narrator._make_spec(
             "norma",
-            "Field record from the Web Bot A I Observatory. At the top is an unfiltered Engine X origin wire where A I retrieval agents outpace human browsers — the exact first-party edge telemetry enterprises unlock with Authoritative D N S and Orange-to-Orange C D N streams. Orange marks A I agents, cyan tags external referrals, blue diamonds mark R F C 94 21 cryptographic signatures, and red unmasks exploit scanners.",
+            "Welcome inside A.I. Fishtank Story-Time. Swimming across the top glass is our live, unfiltered Engine X origin wire where A I retrieval agents outpace human browsers — the exact first-party edge telemetry enterprises unlock with Authoritative D N S and Orange-to-Orange C D N streams. Orange marks A I agents, cyan tags external referrals, blue diamonds mark R F C 94 21 cryptographic signatures, and red unmasks exploit scanners.",
             "narrator",
             "inactive",
             "inactive",
@@ -3471,8 +3474,8 @@ def run_station_break(env, profile_dir, is_end_of_loop: bool = False) -> bool:
 
 
 REBOOT_ANNOUNCEMENT_TEXT = (
-    "Scheduled observatory reset. "
-    "Refreshing memory now — stay tuned, the live stream stays connected and resumes in about a minute."
+    "Scheduled fishtank refresh. "
+    "Clearing memory now — stay tuned, the live stream stays connected and Story-Time resumes in about a minute."
 )
 _process_boot_ts = time.time()
 _reboot_warned = False
@@ -3493,7 +3496,7 @@ def maybe_warn_scheduled_reboot(remaining_sec: float, ticker_path: str = "/tmp/h
     except Exception:
         pass
     narrator.say(
-        "Observatory notice: scheduled four-hour memory refresh coming up in under two minutes. "
+        "Fishtank notice: scheduled four-hour memory refresh coming up in under two minutes. "
         "Stay tuned — the live stream remains connected."
     )
     return True
@@ -3699,7 +3702,7 @@ def perform_show(script):
             if jb_req:
                 stop_storytime_bgm()
                 narrator.interrupt()
-                narrator.say(f"Jukebox request received for entry number {jb_req}.")
+                narrator.say(f"Chat takeover! Switching now to story number {jb_req}.")
                 try:
                     subprocess.run(["pkill", "firefox"], check=False)
                 except Exception:
@@ -3884,11 +3887,10 @@ def main():
 
     # Scene 3: The Deep Stream (Logs)
     NARRATOR_SAYS = (
-        "Now I read from the live observatory monitoring our origin wire. "
-        "This broadcast tracks the shift from legacy S E O to first-party A I Readiness — "
-        "serving R F C 91 10 Markdown and R F C 91 11 Vary Accept edge caching from one canonical U R L. "
+        "Now I read from inside the live A.I. Fishtank monitoring our origin wire. "
+        "Type any story number on the bottom bar in live chat to take control, or type nine eleven for a live Optics check. "
         "Grab your own local-first Sun Pug at Sun Pug dot eye oh, or connect at Mike L E V dot eye N slash discord. "
-        "Now, curtain up on storytime! "
+        "Now, curtain up on Story-Time! "
     )
     if not score:
         narrator.say(NARRATOR_SAYS)

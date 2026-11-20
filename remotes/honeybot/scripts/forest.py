@@ -95,7 +95,7 @@ def _make_station_bead(card_label, card_say, capstone_cue, forest_story_lines, p
 STATION_SEGMENTS = [
     _make_station_bead(
         "RFC 9110\nMARKDOWN",
-        "Live wire report: who actually negotiates R F C 9110 Markdown on this origin.",
+        "Live fishtank report: who actually negotiates R F C 9110 Markdown on this origin.",
         ("WINDOW", f"forest.py:{REPORT_WINDOW_CAP_SECONDS}:overview"),
         [
             "{LIVE_REPORT:overview}",
@@ -107,14 +107,14 @@ STATION_SEGMENTS = [
             "CARD",
             {
                 "label": "911 LLM\nOPTICS",
-                "say": "Live audit showcase: 911 L L M Optics, our local-first sixteen-lens wire-truth spectrometer.",
+                "say": "Live fishtank showcase: 911 L L M Optics, our local-first sixteen-lens wire-truth spectrometer. Type nine eleven in live chat anytime to trigger an audit, or type any story number on the bottom bar to switch stories.",
             },
         ),
         ("OPTICS_SLOT", {"handshake_wait": 12.0, "claim_grace": 40.0, "timeout": 180.0}),
     ],
     _make_station_bead(
         "DOM TRAPDOOR\nJS EXECS",
-        "Live wire report: testing the conventional assumption that A I crawlers skip client-side JavaScript.",
+        "Live fishtank report: testing the conventional assumption that A I crawlers skip client-side JavaScript.",
         ("WINDOW", f"forest.py:{REPORT_WINDOW_CAP_SECONDS}:bimodal"),
         [
             "{LIVE_REPORT:bimodal}",
@@ -1166,10 +1166,10 @@ def _build_station_report_panel(mode="overview", panel_width=None):
             )
 
     footer = Text.from_markup(
-        "[bold bright_white]📡 Wire:[/bold bright_white] [bold #ffd700]https://MikeLev.in[/bold #ffd700] "
-        "[dim]│[/dim] [bold bright_green]Free 911 Optics:[/bold bright_green] [bold bright_cyan]https://SunPug.io[/bold bright_cyan] "
-        "[dim]│[/dim] [bold bright_magenta]Discord:[/bold bright_magenta] [bold bright_white]MikeLev.in/discord[/bold bright_white] "
-        "[dim]·[/dim] [bold cyan]curl -fsSL sunpug.io | less[/bold cyan]"
+        "[bold bright_white]🐠 Fishtank:[/bold bright_white] [bold #ffd700]MikeLev.in[/bold #ffd700] "
+        "[dim]│[/dim] [bold #38bdf8]💬 Chat:[/bold #38bdf8] [bold bright_white]Type Story # or 911[/bold bright_white] "
+        "[dim]│[/dim] [bold bright_green]Tools:[/bold bright_green] [bold bright_cyan]SunPug.io[/bold bright_cyan] "
+        "[dim]│[/dim] [bold bright_magenta]Discord:[/bold bright_magenta] [bold bright_white]MikeLev.in/discord[/bold bright_white]"
     )
     panel_title = (
         f"[bold bright_cyan]{title_str}[/bold bright_cyan] "
