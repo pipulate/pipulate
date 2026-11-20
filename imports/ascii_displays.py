@@ -152,7 +152,20 @@ def compute_overlay_xy(sw: int, sh: int, w: int, h: int, stage_band: bool = Fals
     return x, max(0, (int(sh) - int(h)) // 2)
 
 
-def _center_and_raise(window_class, env=None, fill=False, margin=40, retries=10):
+def _estimate_initial_xy(columns: int, lines: int, env=None, fill: bool = False, margin: int = 40, cell_px: tuple = (9, 20)) -> tuple:
+    """Pre-compute spawn (x, y) before Alacritty maps so overlays never flash at top-left first."""
+    import os
+    eff_env = env.copy() if env is not None else os.environ.copy()
+    eff_env.setdefault("DISPLAY", ":10.0")
+    if fill:
+        return max(0, int(margin)), max(0, int(margin))
+    sw, sh = _x11_screen_geometry(eff_env) or (1920, 1080)
+    est_w, est_h = max(120, int(columns) * int(cell_px[0])), max(80, int(lines) * int(cell_px[1]))
+    is_stage = str(eff_env.get("DISPLAY", "")).startswith(":10") or os.path.exists("/tmp/honeybot_stage.json")
+    return compute_overlay_xy(sw, sh, est_w, est_h, stage_band=is_stage)
+
+
+def _center_and_raise(window_class, env=None, fill=False, margin=40, retries=20):
     """Raise the overlay above the F11/maximized terminal, then center it using
     the ACTUAL display resolution (xrandr) instead of a hardcoded offset.
 
@@ -187,7 +200,7 @@ def _center_and_raise(window_class, env=None, fill=False, margin=40, retries=10)
         )
         if res.returncode == 0:
             break
-        time.sleep(0.1)
+        time.sleep(0.025)
 
     screen = _x11_screen_geometry(env)
     if screen is None:
@@ -218,6 +231,13 @@ def _center_and_raise(window_class, env=None, fill=False, margin=40, retries=10)
         capture_output=True,
         env=env,
     )
+    if window_class != "honeybot_ull_greet":
+        subprocess.run(
+            ["wmctrl", "-x", "-a", "honeybot_ull_greet"],
+            capture_output=True,
+            env=env,
+            check=False,
+        )
 
 
 def render_patronus_banner(name: str) -> None:
@@ -322,14 +342,15 @@ def patronus(name: str, duration: float = 3.5) -> None:
         f"import time; time.sleep({duration})"
     )
 
-    # Base Alacritty display parameters
+    # Base Alacritty display parameters (pre-centered before MapWindow)
+    px0, py0 = _estimate_initial_xy(columns_needed, lines_needed)
     cmd = [
         "alacritty",
         "--title", "PatronusVisualShield",
         "--class", "patronus_visual_shield",
         "-o", "window.decorations='none'",
         "-o", f"window.dimensions={{columns={columns_needed}, lines={lines_needed}}}",
-        "-o", "window.position={x=350, y=250}",
+        "-o", f"window.position={{x={px0}, y={py0}}}",
         "-e", sys.executable, "-u", "-c", python_payload
     ]
 
@@ -337,8 +358,8 @@ def patronus(name: str, duration: float = 3.5) -> None:
         logger.info(f"🛡️ Conjuring Patronus shield framework window overlay ({columns_needed}x{lines_needed}) for art asset: '{name}'")
         proc = subprocess.Popen(cmd, cwd=repo_root, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         
-        # Settle delay for system display context registration mappings
-        time.sleep(0.15)
+        # Short yield before _center_and_raise's 25ms wmctrl poll loop
+        time.sleep(0.03)
 
         # Center + raise via the shared geometry actuator, which computes the
         # real screen size from xrandr instead of the old hardcoded offset that
@@ -413,13 +434,14 @@ def conjure_window(command, duration: float = 30.0, columns: int = 100, lines: i
 
     working_dir = cwd or os.getcwd()
     extra_opts = [item for opt in (alacritty_options or ()) if opt for item in ("-o", str(opt))]
+    px0, py0 = _estimate_initial_xy(columns, lines, env=env, fill=fill)
     cmd = [
         "alacritty",
         "--title", str(title),
         "--class", safe_class,
         "-o", "window.decorations='none'",
         "-o", f"window.dimensions={{columns={int(columns)}, lines={int(lines)}}}",
-        "-o", "window.position={x=20, y=20}",
+        "-o", f"window.position={{x={px0}, y={py0}}}",
         *extra_opts,
         "-e", *launch_cmd,
     ]
@@ -438,7 +460,7 @@ def conjure_window(command, duration: float = 30.0, columns: int = 100, lines: i
             close_fds=True,
         )
 
-        time.sleep(0.15)
+        time.sleep(0.03)
         # Center + raise via the shared geometry actuator. fill=True grows the
         # overlay to nearly full screen so the live stream behind barely shows.
         if sys_platform == "linux":
@@ -1545,7 +1567,8 @@ def format_typewriter_frame(
     ansi: bool = True,
 ) -> str:
     """Render one fixed-geometry WOPR teletype box frame (zero box-size pop from char 0 to N)."""
-    vis_w = lambda s: sum(2 if ord(ch) > 0x1F000 else 1 for ch in s)
+    def vis_w(s: str) -> int:
+        return sum(2 if ord(ch) > 0x1F000 else 1 for ch in s)
     box_in = max(36, int(inner_w), max((vis_w(ln) for ln in lines), default=0) + 2)
     t_lbl = f" [ {title.strip()} ] "
     bar_l = max(1, (box_in + 2 - len(t_lbl)) // 2)
@@ -1584,7 +1607,8 @@ def run_typewriter_card(
     import os
     import sys
     import time
-    vis_w = lambda s: sum(2 if ord(ch) > 0x1F000 else 1 for ch in s)
+    def vis_w(s: str) -> int:
+        return sum(2 if ord(ch) > 0x1F000 else 1 for ch in s)
     lines = [ln.strip() for ln in str(message or "").replace("\\n", "\n").splitlines() if ln.strip()] or ["SHALL WE PLAY A GAME?"]
     inner_w = max(42, max(vis_w(ln) for ln in lines) + 2)
     full_counts = [len(ln) for ln in lines]
