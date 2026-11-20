@@ -438,7 +438,7 @@ def format_youtube_title(title):
     """Build a <=100-char YouTube Live title from the article title."""
     clean = " ".join(_yt_sanitize(title).split())
     if not clean:
-        return "LIVE: Honeybot AI Observatory"
+        return "LIVE: A.I. Fishtank Story-Time"
     prefixed = f"LIVE: {clean}"
     if len(prefixed) <= YT_TITLE_LIMIT:
         return prefixed
@@ -633,7 +633,7 @@ def get_broadcast_kit(target_key="1", slug_match=None):
         f"🔭 Enterprise AI-Readiness & Edge Telemetry (RFC 9110 / ADNS / O2O): {base_url}/?src=youtube#consulting | Inspect workshop: curl -fsSL https://sunpug.io | less (Email: {CONTACT_EMAIL})",
         f"🧪 Test RFC 9110 in your terminal: curl -sI -H \"Accept: text/markdown\" {canonical_url}?src=rfc9110",
         "",
-        f"🎙️ Now reading live on the Web Bot AI Observatory: \"{title}\"",
+        f"🐠 Now playing on A.I. Fishtank Story-Time: \"{title}\" — Type any Story # from the bottom bar in live chat to switch stories, or type 911 for a live Optics check!",
     ]
     if meta_desc:
         desc_parts.extend(["", meta_desc])
@@ -644,8 +644,9 @@ def get_broadcast_kit(target_key="1", slug_match=None):
     desc_parts.extend([
         "",
         "---",
-        "🔭 About this 24/7 Home-Hosted NixOS Broadcast:",
-        "You are watching real-time Nginx access logs and AI crawler telemetry from mikelev.in.",
+        "🐠 About A.I. Fishtank Story-Time (24/7 Interactive NixOS Broadcast):",
+        "You are watching live Nginx origin wire traffic and AI crawler behavior while 3-voice Story-Time plays.",
+        "• Take Control from Chat: Type any Story # shown on the bottom bar into live chat to switch stories, or type 911 for a live 16-lens Optics check.",
         "• Agents sending 'Accept: text/markdown' (RFC 9110) receive clean raw Markdown.",
         "• Agents executing JavaScript trigger the DOM trapdoor sensor.",
         "• Zero-Agent Airlock: Deterministic NixOS + Piper TTS player piano (chat reaches a human, never an LLM shell).",
@@ -1761,15 +1762,31 @@ def _count_jukebox_posts(target_key="1") -> int:
         return 0
 
 
+def _get_playable_story_ids(target_key="1") -> list[int]:
+    """Return newest-first list of playable Norma-converted `_posts/_abstracts` Story IDs (excluding 911)."""
+    try:
+        targets = load_targets()
+        tcfg = targets.get(str(target_key), targets.get("1", DEFAULT_TARGETS["1"]))
+        pdir = Path(tcfg["path"]).expanduser()
+        hb_dir = str(Path(__file__).resolve().parents[2] / "remotes" / "honeybot" / "scripts")
+        if hb_dir not in sys.path:
+            sys.path.insert(0, hb_dir)
+        import content_loader as _cl
+        return [int(x) for x in _cl.get_jukebox_playable_ids(posts_dir=pdir) if int(x) > 0 and int(x) != 911]
+    except Exception:
+        return []
+
+
 def _build_viewer_payload(viewers, video_id="", peak=0, discord_members=None) -> dict:
-    """Build /tmp/honeybot_viewers.json payload carrying viewers, Founding-1,000 spots_left, and jukebox_max."""
+    """Build /tmp/honeybot_viewers.json payload carrying viewers, Founding-1,000 spots_left, and playable jukebox_ids."""
     import time
     v_cnt = max(0, int(viewers or 0))
     p_cnt = max(v_cnt, int(peak or 0))
     dm = discord_members if discord_members is not None else _load_ytwatch_state().get("discord_members")
     dm_int = int(dm) if dm is not None else None
     spots = max(0, DISCORD_FOUNDING_GOAL - dm_int) if dm_int is not None else None
-    jb_max = _count_jukebox_posts()
+    jb_ids = _get_playable_story_ids()
+    jb_max = max(jb_ids) if jb_ids else _count_jukebox_posts()
     return {
         "viewers": v_cnt,
         "peak": p_cnt,
@@ -1777,6 +1794,7 @@ def _build_viewer_payload(viewers, video_id="", peak=0, discord_members=None) ->
         "video_id": str(video_id or ""),
         "discord_members": dm_int,
         "spots_left": spots,
+        "jukebox_ids": jb_ids,
         "jukebox_max": jb_max if jb_max > 0 else None,
         "updated_at": int(time.time()),
     }
@@ -1818,7 +1836,7 @@ def _sync_honeybot_viewers(viewers, running=True, video_id="", peak=0, push_remo
                 ("status-left-length", "44"),
                 ("status-left", f" 🔭 YTWATCH LIVE (👀 {v_cnt}{peak_tag}) "),
                 ("set-titles", "on"),
-                ("set-titles-string", f"👀 {v_cnt} {v_word}{peak_tag} — Honeybot Storytime"),
+                ("set-titles-string", f"👀 {v_cnt} {v_word}{peak_tag} — A.I. Fishtank Story-Time"),
             ):
                 subprocess.run(
                     ["tmux", "set-option", "-t", "ytwatch", opt, val],
@@ -1991,39 +2009,42 @@ _YTWATCH_RESERVED_ACTIONS = {
 
 
 YT_CHAT_CMD_COOLDOWN = int(os.environ.get("PIPULATE_YT_CHAT_COOLDOWN", "45"))
-_CHAT_OPTICS_RE = re.compile(r"^[!/]?911$", re.IGNORECASE)
-_CHAT_RABBIT_RE = re.compile(r"^[!/]?rabbit$", re.IGNORECASE)
-_CHAT_JUKEBOX_RE = re.compile(r"^[!/]?jukebox\s+([1-9]\d{0,4})$", re.IGNORECASE)
+_CHAT_OPTICS_RE = re.compile(r"^[!/]?#?911$", re.IGNORECASE)
+_CHAT_STORY_NUM_RE = re.compile(r"^[!/]?(?:(?:story|play|jukebox)\s+)?#?([1-9]\d{0,4})$", re.IGNORECASE)
 _last_chat_cmd_ts = 0.0
 
 
-def parse_allowlisted_chat_command(raw_text: str):
+def parse_allowlisted_chat_command(raw_text: str, playable_ids=None):
     """Strict LAN allowlist parser for YouTube chat (# § SENSE FROM THE LAN, NEVER THE DMZ)."""
     s = (raw_text or "").strip()
     if not s or len(s) > 24:
         return None
     if _CHAT_OPTICS_RE.match(s):
         return ("optics", None)
-    if _CHAT_RABBIT_RE.match(s):
-        return ("rabbit", None)
-    m_jb = _CHAT_JUKEBOX_RE.match(s)
-    if m_jb:
-        return ("jukebox", int(m_jb.group(1)))
+    m_num = _CHAT_STORY_NUM_RE.match(s)
+    if m_num:
+        story_id = int(m_num.group(1))
+        if story_id == 911:
+            return ("optics", None)
+        allowed = set(_get_playable_story_ids() if playable_ids is None else playable_ids)
+        if story_id in allowed:
+            return ("jukebox", story_id)
     return None
 
 
 def _actuate_allowlisted_chat_command(parsed_cmd, dry_run: bool = False) -> bool:
-    """Dispatch a validated ('optics'|'rabbit'|'jukebox', arg) tuple to Honeybot with cooldown guard."""
+    """Dispatch a validated ('optics'|'jukebox', arg) tuple to Honeybot with cooldown guard."""
     global _last_chat_cmd_ts
     import subprocess
     import time
     if not parsed_cmd:
         return False
     kind, arg = parsed_cmd
-    max_jb = _count_jukebox_posts()
-    if kind == "jukebox" and max_jb > 0 and int(arg) > max_jb:
-        print(f"[{_ytlog_ts()}] ⚠️ [CHAT JUKEBOX] Out of range #{int(arg)} (1..{max_jb})", flush=True)
-        return False
+    if kind == "jukebox":
+        playable = set(_get_playable_story_ids())
+        if int(arg) == 911 or int(arg) not in playable:
+            print(f"[{_ytlog_ts()}] ⚠️ [CHAT STORY] Story #{int(arg)} is not in playable _abstracts ({sorted(playable, reverse=True)[:8]})", flush=True)
+            return False
     now_ts = time.time()
     if not dry_run and _last_chat_cmd_ts > 0 and (now_ts - _last_chat_cmd_ts) < YT_CHAT_CMD_COOLDOWN:
         rem = int(YT_CHAT_CMD_COOLDOWN - (now_ts - _last_chat_cmd_ts))
@@ -2031,8 +2052,6 @@ def _actuate_allowlisted_chat_command(parsed_cmd, dry_run: bool = False) -> bool
         return False
     if kind == "optics":
         remote_cmd = "python3 ~/www/mikelev.in/scripts/stream.py --bead optics >/dev/null 2>&1"
-    elif kind == "rabbit":
-        remote_cmd = "python3 ~/www/mikelev.in/scripts/stream.py --bead white_rabbit >/dev/null 2>&1"
     elif kind == "jukebox":
         jb_json = json.dumps({"index": int(arg), "ts": int(now_ts)})
         remote_cmd = (
