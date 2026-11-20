@@ -64,6 +64,28 @@ PILLAR_TERMS = {
 _KV_RE = re.compile(r"^([A-Za-z0-9_]+)\s*:\s*(.*?)\s*$")
 _RAW_LIQUID_RE = re.compile(r"^\s*\{%\s*(?:raw|endraw)\s*%\}\s*$", re.MULTILINE)
 ABSTRACTS_SUBDIR = "_abstracts"
+_TICKER_STOPWORDS = frozenset({
+    "THE", "A", "AN", "AND", "OR", "BUT", "FOR", "NOR", "ON", "AT", "TO", "FROM",
+    "BY", "WITH", "IN", "OF", "INTO", "OVER", "AFTER", "UNDER", "HOW", "WHY", "WHAT",
+    "WHEN", "WHERE", "WHO", "YOUR", "OUR", "MY", "THIS", "THAT", "IS", "ARE", "WAS",
+    "WERE", "BE", "IT", "ITS", "AS", "VS", "VIA", "KILL", "KILLING", "KILLS", "RETIRE",
+    "RETIRING", "AUTOMATED", "BUILDING", "MAKING", "USING", "TURNING",
+})
+
+
+def derive_ticker_tag(meta: dict, title: str = "", slug: str = "", max_chars: int = 18) -> str:
+    """Resolve a <=18-char 1-2 word uppercase LED ticker topic tag from frontmatter or slug/title."""
+    explicit = str((meta or {}).get("ticker_tag") or "").strip().upper()
+    explicit = " ".join(re.sub(r"[^A-Z0-9 ./+&:#!?'-]+", " ", explicit).split())
+    if explicit:
+        return explicit[:max_chars].rstrip()
+    src = (slug or "").split("/")[-1].replace("-", " ") or title
+    toks = [t.upper() for t in re.findall(r"[A-Za-z0-9]+", src) if t.upper() not in _TICKER_STOPWORDS]
+    if not toks:
+        return "STORY-TIME"
+    if len(toks) >= 2 and len(f"{toks[0]} {toks[1]}") <= max_chars:
+        return f"{toks[0]} {toks[1]}"
+    return toks[0][:max_chars]
 
 
 def abstract_path_for_post(md_path: Path) -> Path:
@@ -197,6 +219,7 @@ def build_extraction_prompt(md_path: Path) -> dict:
     clean_body = _RAW_LIQUID_RE.sub("", body).strip()
     lean_body, fences_stripped = articleizer.strip_fences(clean_body)
     _, pillars = score_pillars(title, f"{fm_block}\n{lean_body[:4000]}")
+    suggested_tag = derive_ticker_tag(info["meta"], title=title, slug=path.stem[11:])
     coin_cmd = str(aid) if aid else "<ID>"
     canon_url = "https://" + f"mikelev.in{permalink}"
     sunpug_cmd = "curl -fsSL https://" + "sunpug.io | less"
@@ -223,7 +246,7 @@ def build_extraction_prompt(md_path: Path) -> dict:
         "3-VOICE PUPPET-THEATER MARKDOWN CONTRACT (ENCLOSE ENTIRE REPLY IN ONE ```markdown FENCE):\n"
         f"- Total spoken length: strictly {STORYTIME_MIN_WORDS}–{STORYTIME_MAX_WORDS} words (~6–8 min between 20-min breaks).\n"
         "- Zero fenced code blocks and zero unexplained internal repo filenames inside the story.\n"
-        "- Start with YAML frontmatter (`title`, `article_id: " + f"{aid}`, `jukebox_coin: true`, `source_url: {canon_url}`, `layout: post`).\n"
+        "- Start with YAML frontmatter (`title`, `article_id: " + f"{aid}`, `ticker_tag: \"{suggested_tag}\"` [or a sharper 1–2 word uppercase topic <=18 chars], `jukebox_coin: true`, `source_url: {canon_url}`, `layout: post`).\n"
         "- Prologue (`## Setting the Stage: Context for the Curious Book Reader`): 1–2 short paragraphs\n"
         "  spoken by NORMA CENTROID (16,000 Hz narrator) framing the everyday human stakes.\n"
         "- Body (`## Technical Journal Entry Begins` + 3–4 `## ` Act Headings also read by NORMA CENTROID):\n"
@@ -235,7 +258,7 @@ def build_extraction_prompt(md_path: Path) -> dict:
         "      and—under a Below-the-Fold heading—the pre-registered Kuhnian Gatekeeper Trapdoor naming\n"
         "      the predictable knee-jerk dismissal and its plain-spoken refutation).\n"
         f"- Final turn: land the parable's takeaway cleanly (weaving `{sunpug_cmd}` or RFC 9110/9111\n"
-        f"  only when natural), link Lab Receipt #{aid} ({canon_url}), and invite viewers to type `{coin_cmd}` in live chat to play this story.\n\n"
+        f"  only when natural), link Lab Receipt #{aid} ({canon_url}), and invite viewers to type `{coin_cmd}` (or `MENU`) in live chat to play this story.\n\n"
         "--- SOURCE ARTICLE (CODE FENCES CONDENSED) ---\n"
         f"{lean_body}\n"
         "--- END SOURCE ARTICLE ---\n"
@@ -274,9 +297,17 @@ def save_abstract_for_post(md_path: Path, raw_text: str) -> dict:
     aid = common.read_article_id(path)
     if aid:
         common.stamp_frontmatter_value(dest, common.ARTICLE_ID_KEY, str(aid), preserve_mtime=False)
+    dest_meta = _read_header_and_preview(dest)["meta"]
+    parent_meta = _read_header_and_preview(path)["meta"]
+    t_tag = derive_ticker_tag(
+        {**parent_meta, **dest_meta},
+        title=dest_meta.get("title") or parent_meta.get("title") or "",
+        slug=path.stem[11:],
+    )
+    common.stamp_frontmatter_value(dest, "ticker_tag", f'"{t_tag}"', preserve_mtime=False)
     coin_st = common.stamp_frontmatter_value(path, "jukebox_coin", "true", preserve_mtime=True)
     words = len(re.findall(r"\b\w+\b", text))
-    return {"ok": True, "abstract_path": str(dest), "coin_status": coin_st, "words": words, "article_id": aid}
+    return {"ok": True, "abstract_path": str(dest), "coin_status": coin_st, "words": words, "article_id": aid, "ticker_tag": t_tag}
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -322,7 +353,7 @@ def main(argv: list[str] | None = None) -> int:
         if not res["ok"]:
             print(f"❌ Refused abstract for {post_p.name}: {res['error']}")
             return 1
-        print(f"🎭 Saved 3-voice Socratic abstract ({res['words']} words) -> {res['abstract_path']} & [{res['coin_status']}] jukebox_coin on #{res['article_id']}!")
+        print(f"🎭 Saved 3-voice Socratic abstract ({res['words']} words, ticker_tag={res.get('ticker_tag')!r}) -> {res['abstract_path']} & [{res['coin_status']}] jukebox_coin on #{res['article_id']}!")
         nxt = rank_candidates(posts_dir, limit=1, pillars_only=args.pillars)
         if nxt:
             print(f"⏭️  Next un-minted in queue: #{nxt[0]['article_id']} ({nxt[0]['date']}) — {nxt[0]['title']}")
