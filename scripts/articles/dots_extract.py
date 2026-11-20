@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""dots_extract.py — Dual-Head Idea-Refinery Harvester & Anti-Astronaut Scoreboard."""
+"""dots_extract.py — Tri-Head Idea-Refinery Harvester & Anti-Astronaut Scoreboard."""
 
 import argparse
 from collections import Counter
@@ -93,8 +93,9 @@ def _extract_post_seeds(md_path: Path, ctx_dir: Path, source_tag: str) -> dict:
     }
 
 
+_BEGIN_ARTICLE_RE = re.compile(r"(?m)^---\s*BEGIN NEW ARTICLE\s*---[ \t]*$")
 _META_PROMPT_PREFIXES = (
-    "You are running THE DOTS IDEA-REFINERY KATA",
+    "You are running THE DOTS",
     "You are running THE FORGETTING KATA",
     "If this arrived as a zip, treat",
 )
@@ -113,16 +114,20 @@ _DELIV_SKIP = frozenset({
 
 
 def _strip_fences_commonmark(text: str) -> str:
-    out, fence_ch, fence_len = [], "", 0
+    out, fence_ch, fence_len, fence_open = [], "", 0, ""
     for ln in text.splitlines():
+        s = ln.strip()
         if not fence_len:
             m = re.match(r"^[ \t]*(`{3,}|~{3,})(.*)$", ln)
             if m and not (m.group(1)[0] == "`" and "`" in m.group(2)):
-                fence_ch, fence_len = m.group(1)[0], len(m.group(1))
+                fence_ch, fence_len, fence_open = m.group(1)[0], len(m.group(1)), s
                 continue
             out.append(ln)
-        elif len(ln.strip()) >= fence_len and ln.strip() == fence_ch * len(ln.strip()):
-            fence_ch, fence_len = "", 0
+        elif (len(s) >= fence_len and s == fence_ch * len(s)) or (fence_open and s == fence_open):
+            fence_ch, fence_len, fence_open = "", 0, ""
+        elif _TURN_ME_RE.match(ln) or _TURN_DELIV_RE.match(ln) or _TURN_STOP_RE.match(ln):
+            fence_ch, fence_len, fence_open = "", 0, ""
+            out.append(ln)
     return "\n".join(out)
 
 
@@ -132,8 +137,8 @@ def _extract_draft_seeds(prompt_path: Path, max_chars: int = 20000) -> list[dict
     raw = prompt_path.read_text(encoding="utf-8", errors="replace").strip()
     if len(raw) < 25 or raw.startswith(_META_PROMPT_PREFIXES):
         return []
-    has_begin = "--- BEGIN NEW ARTICLE ---" in raw
-    lean = _strip_fences_commonmark(raw.rsplit("--- BEGIN NEW ARTICLE ---", 1)[-1] if has_begin else raw)
+    has_begin = bool(_BEGIN_ARTICLE_RE.search(raw))
+    lean = _strip_fences_commonmark(_BEGIN_ARTICLE_RE.split(raw, maxsplit=1)[-1] if has_begin else raw)
     segments: list[tuple[str, str]] = []
     mode, buf = "", []
     for ln in [*lean.splitlines(), "## THE AI-EDIT METHOD"]:
