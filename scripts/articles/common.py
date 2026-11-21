@@ -357,6 +357,7 @@ CONTACT_EMAIL = "miklevin@gmail.com"
 
 X_TWEET_LIMIT = 280
 X_URL_WEIGHT = 23
+_HASHTAG_RE = re.compile(r"(?<!\S)(#(?=[A-Za-z0-9_]*[A-Za-z])[A-Za-z0-9_]+)")
 
 
 def x_tweet_length(text):
@@ -391,11 +392,11 @@ def _enforce_x_tweet_limit(tweet, limit=X_TWEET_LIMIT):
             continue
         if s.startswith(("📖", "🔴")) or re.search(r"https?://\S+", s):
             link_lines.append(s)
-        elif all(tok.startswith("#") for tok in s.split()):
+        elif all(_HASHTAG_RE.fullmatch(tok) for tok in s.split()):
             tag_tokens.extend(s.split())
         else:
-            inline_tags = re.findall(r"(?:^|\s)(#[A-Za-z0-9_]+)", s)
-            cleaned_s = re.sub(r"(?:^|\s)#[A-Za-z0-9_]+", "", s).strip()
+            inline_tags = _HASHTAG_RE.findall(s)
+            cleaned_s = re.sub(r"(?:^|\s)#(?=[A-Za-z0-9_]*[A-Za-z])[A-Za-z0-9_]+", "", s).strip()
             if cleaned_s:
                 prose_lines.append(cleaned_s)
             for t in inline_tags:
@@ -552,13 +553,29 @@ def get_broadcast_kit(target_key="1", slug_match=None):
         body,
         re.DOTALL,
     )
+    def _strip_inline_markdown(text):
+        s = re.sub(r"^#{1,6}\s+", "", text or "", flags=re.MULTILINE)
+        s = re.sub(r"\*\*([^*]+)\*\*", r"\1", s)
+        s = re.sub(r"__([^_]+)__", r"\1", s)
+        s = re.sub(r"`([^`]+)`", r"\1", s)
+        s = re.sub(r"\[([^\]]+)\]\((https?://[^)]+)\)", r"\1 (\2)", s)
+        return s.strip()
+
     def _defang_prose_domains(text):
-        cleaned = re.sub(r"\b[Xx]\.com\b", "X (Twitter)", text or "")
-        return re.sub(
+        urls = []
+        def _stash_url(m):
+            urls.append(m.group(0))
+            return f"__URL_MASK_{len(urls) - 1}__"
+        masked = re.sub(r"https?://\S+", _stash_url, text or "")
+        cleaned = re.sub(r"\b[Xx]\.com\b", "X (Twitter)", masked)
+        defanged = re.sub(
             r"(?<!/)\b([A-Za-z0-9_-]+)\.(com|org|net|io|ai|eu|dev|sh|py|md|nix)\b",
             "\\1.\u2060\\2",
             cleaned,
         )
+        for idx_u, orig_u in enumerate(urls):
+            defanged = defanged.replace(f"__URL_MASK_{idx_u}__", orig_u)
+        return defanged
     if tweet_match:
         raw_tweet = tweet_match.group(1).strip()
     else:
@@ -623,24 +640,28 @@ def get_broadcast_kit(target_key="1", slug_match=None):
         hero_img_dest = str(repo_root / fm_img_rel.lstrip("/"))
     else:
         hero_img_dest = str(repo_root / "assets" / "images" / f"{slug}.jpeg")
-    tags = " ".join(dict.fromkeys(re.findall(r"#[A-Za-z0-9_]+", tweet)))
+    tags = " ".join(dict.fromkeys(_HASHTAG_RE.findall(tweet)))
     tweet = _enforce_x_tweet_limit(tweet)
     tweet_x_len = x_tweet_length(tweet)
-    yt_title = format_youtube_title(title)
+    clean_title = _strip_inline_markdown(title)
+    yt_meta = _strip_inline_markdown(meta_desc)
+    yt_take = _strip_inline_markdown(ai_take)
+    yt_imprint = _strip_inline_markdown(imprint)
+    yt_title = format_youtube_title(clean_title)
     desc_parts = [
         f"📖 Read the full article: {canonical_url}?src=youtube",
-        f"🟣 Join the Founding 1,000 on Discord: {base_url}/discord",
+        "📦 Drop the 2nd Brain into your AI (zero-install archive): https://mikelev.in/brain.zip",
         f"🔭 Enterprise AI-Readiness & Edge Telemetry (RFC 9110 / ADNS / O2O): {base_url}/?src=youtube#consulting | Inspect workshop: curl -fsSL https://sunpug.io | less (Email: {CONTACT_EMAIL})",
         f"🧪 Test RFC 9110 in your terminal: curl -sI -H \"Accept: text/markdown\" {canonical_url}?src=rfc9110",
         "",
-        f"🐠 Now playing on A.I. Fishtank Story-Time: \"{title}\" — Type MENU, any Story # from the bottom bar, or 911 in live chat to take control!",
+        f"🐠 Now playing on A.I. Fishtank Story-Time: \"{clean_title}\" — Type MENU, any Story # from the bottom bar, or 911 in live chat to take control!",
     ]
-    if meta_desc:
-        desc_parts.extend(["", meta_desc])
-    if ai_take:
-        desc_parts.extend(["", "🤖 AI Editorial Take:", ai_take])
-    elif imprint and imprint != meta_desc:
-        desc_parts.extend(["", imprint])
+    if yt_meta:
+        desc_parts.extend(["", yt_meta])
+    if yt_take:
+        desc_parts.extend(["", "🤖 AI Editorial Take:", yt_take])
+    elif yt_imprint and yt_imprint != yt_meta:
+        desc_parts.extend(["", yt_imprint])
     desc_parts.extend([
         "",
         "---",
@@ -649,18 +670,19 @@ def get_broadcast_kit(target_key="1", slug_match=None):
         "• Take Control from Chat: Type MENU to pop up playable episodes, type any Story # to switch stories, or type 911 for a live 16-lens Optics check.",
         "• Agents sending 'Accept: text/markdown' (RFC 9110) receive clean raw Markdown.",
         "• Agents executing JavaScript trigger the DOM trapdoor sensor.",
-        "• Zero-Agent Airlock: Deterministic NixOS + Piper TTS player piano (chat reaches a human, never an LLM shell).",
+        "• Zero-Agent Airlock: Reproducible NixOS + Piper TTS player piano (chat reaches a human, never an LLM shell).",
         f"• Ephemeral Broadcast: Continuous streams over 12h are not archived by YouTube. Permanent text & code: {base_url}/latest",
         f"• AI Context Manifest: {base_url}/llms.txt",
+        f"• Founding 1,000 Community: {base_url}/discord",
         "• Doors: https://sunpug.io | https://qamy.ai | https://npvg.org | https://levinix.org | https://guerillatech.com | https://rfc9110.org | https://rfc9111.io | https://pipulate.com",
     ])
     if tags:
         desc_parts.extend(["", tags])
     yt_description = _yt_sanitize("\n".join(desc_parts).strip())
-    li_imprint = _defang_prose_domains(imprint)
-    li_meta = _defang_prose_domains(meta_desc)
+    li_imprint = _strip_inline_markdown(_defang_prose_domains(imprint))
+    li_meta = _strip_inline_markdown(_defang_prose_domains(meta_desc))
     li_lead = li_meta or li_imprint
-    li_parts = [f"🚀 {title}"]
+    li_parts = [f"🚀 {clean_title}"]
     if li_lead:
         li_parts.extend(["", li_lead])
     if li_imprint and li_meta and li_imprint != li_meta:
@@ -677,16 +699,9 @@ def get_broadcast_kit(target_key="1", slug_match=None):
     if tags:
         li_parts.extend(["", tags])
     linkedin_post = "\n".join(li_parts).strip()
-    def _strip_markdown_for_fb(text):
-        s = re.sub(r"^#{1,6}\s+", "", text or "", flags=re.MULTILINE)
-        s = re.sub(r"\*\*([^*]+)\*\*", r"\1", s)
-        s = re.sub(r"__([^_]+)__", r"\1", s)
-        s = re.sub(r"`([^`]+)`", r"\1", s)
-        s = re.sub(r"\[([^\]]+)\]\((https?://[^)]+)\)", r"\1 (\2)", s)
-        return s.strip()
-    fb_title = _strip_markdown_for_fb(title)
-    fb_imprint = _strip_markdown_for_fb(li_imprint)
-    fb_meta = _strip_markdown_for_fb(li_meta)
+    fb_title = clean_title
+    fb_imprint = li_imprint
+    fb_meta = li_meta
     fb_lead = fb_meta or fb_imprint
     yt_live_fb = "youtube\x2e\u2060com/MikeLevin/live"
     discord_fb = f"discord\x2e\u2060gg/{DISCORD_INVITE_CODE}"
@@ -1220,10 +1235,9 @@ def print_broadcast_kit(target_key="1", mode="card", slug_match=None):
     print("📝 YOUTUBE LIVE DESCRIPTION (type `ytdesc` to copy):")
     print(kit["yt_description"])
     print(thin)
-    yt_thumb = _ensure_yt_studio_thumbnail(kit["hero_img_dest"])
     if yt_thumb:
-        print(thin)
         print(f"📺 YT STUDIO THUMBNAIL (1280x720 16:9): {yt_thumb} (Checklist: Upload thumb + Enable DVR)")
+        print(thin)
     print("🎛️  Quick Words:  yt (help) | norma | ythero | ytyaml | tweet | linkedin | fb | ytpebble | yttitle | ytdesc | ytfeature | ytcard | yttop | markov | radar | ytoutro | ytbgm | ytreboot | ytsay | ytticker | ytapp | ytvim | ytbreaks | weeboh | stage | ytwatch | ytlog | ytmax | ytping | ytroll | ytbell | ytstatus")
     print(thin)
     print(f"🔗 Preview URL:   {kit['preview_url']}")
@@ -3309,7 +3323,7 @@ def _ship_honeybot_yt_pulses(events, dry_run: bool = False) -> list[dict]:
         ev, dm, ts_v, atag = item if len(item) == 4 else (item[1], item[2], item[3], item[4])
         ev_s = re.sub(r"[^A-Za-z0-9_:.-]", "", str(ev or ""))[:40]
         dm_s = re.sub(r"[^A-Za-z0-9_:+.#-]", "", str(dm or ""))[:40]
-        tg_s = re.sub(r"[^a-f0-9:]", "", str(atag or "").lower())[:16]
+        tg_s = re.sub(r"[^a-z0-9:]", "", str(atag or "").lower())[:16]
         if ev_s:
             batch.append({"surface": "yt", "event": ev_s, "dim": dm_s, "ts": int(ts_v or time.time()), "actor_tag": tg_s})
     if not batch or dry_run:
@@ -5248,6 +5262,8 @@ if __name__ == "__main__":
             SPOKEN_ALERT_TABLE[spoken_key].format(
                 count=YT_VIEWER_ALERT_MIN,
                 min_viewers=YT_VIEWER_ALERT_MIN,
+                dwell_secs=YT_VIEWER_ALERT_DWELL,
+                goal=DISCORD_FOUNDING_GOAL,
                 author="viewer",
                 message=msg_text or "Ping from Pipulate Prime",
             )
