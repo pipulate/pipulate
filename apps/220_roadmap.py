@@ -48,6 +48,66 @@ class RoadmapPlugin:
         self.pipulate = pipulate
         self._has_streamed = False  # Flag to track if we've already streamed
 
+    def _render_metric_card(self, label: str, n_vals: list[int], p_vals: list[int]):
+        if self.pipulate is not None and hasattr(self.pipulate, "sparkline_card"):
+            return self.pipulate.sparkline_card(label, n_vals, unique_values=p_vals)
+        from imports import ascii_displays as aa
+        st = aa.compute_ols_velocity(n_vals)
+        stroke = "#34d399" if st["slope"] > 0.02 else ("#f87171" if st["slope"] < -0.02 else "#60a5fa")
+        meta = f"N={int(round(st['total']))} · P={sum(int(x) for x in p_vals)} IPs · last={int(round(st['latest']))} · R²={st['r2']:.2f}"
+        svg = NotStr(aa.render_sparkline_svg(n_vals, width=136, height=30, stroke=stroke, show_ols=True))
+        return Article(
+            Div(
+                Div(Strong(label), Small(meta, style="display:block;opacity:0.78;font-family:monospace;font-size:0.78rem;")),
+                Div(svg, Span(f"{st['arrow']} {st['slope']:+.2f}/d", style=f"font-family:monospace;font-weight:700;font-size:0.86rem;color:{stroke};white-space:nowrap;"), style="display:flex;align-items:center;gap:0.65rem;"),
+                style="display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;",
+            ),
+            style="padding:0.7rem 0.95rem;margin-bottom:0.65rem;",
+        )
+
+    def build_velocity_deck(self, days: int = 14):
+        """Render a 2-column grid of 14-day (N, P) directional velocity sparklines."""
+        import json
+        import os
+        import subprocess
+        import sys
+        from pathlib import Path
+        from scripts import markov as mk
+        db_ov = os.environ.get("PIPULATE_HONEYBOT_DB", "").strip()
+        cache_p = Path.home() / ".config" / "pipulate" / "funnel_cache.json"
+        snap = None
+        if not db_ov and cache_p.is_file() and (time.time() - cache_p.stat().st_mtime) < 300:
+            try:
+                snap = json.loads(cache_p.read_text(encoding="utf-8"))
+            except Exception:
+                snap = None
+        if snap is None:
+            cmd = [sys.executable, "-", str(int(days)), db_ov] if (db_ov and Path(db_ov).is_file()) else ["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=2", os.environ.get("PIPULATE_HONEYBOT_HOST", "honeybot"), "python3", "-", str(int(days))]
+            try:
+                res = subprocess.run(cmd, input=mk._REMOTE_FUNNEL_PY, capture_output=True, text=True, timeout=3, check=False)
+                if res.returncode == 0 and (res.stdout or "").strip():
+                    snap = json.loads(res.stdout.strip())
+                    if not db_ov and snap.get("status") in ("live_metrics", "live_derived"):
+                        cache_p.parent.mkdir(parents=True, exist_ok=True)
+                        cache_p.write_text(json.dumps(snap), encoding="utf-8")
+            except Exception:
+                snap = None
+        m_map = (snap or {}).get("metrics") or {}
+        n_d = len((snap or {}).get("span") or []) or max(2, int(days))
+        def _np(k: str) -> tuple[list[int], list[int]]:
+            arr = m_map.get(k) or [[0, 0] for _ in range(n_d)]
+            return [int(x[0]) for x in arr], [int(x[1]) for x in arr]
+        air_n, air_p = _np("curl_airlock")
+        exe_n, exe_p = _np("curl_exec")
+        less_n, less_p = [max(0, a - e) for a, e in zip(air_n, exe_n)], [max(0, a - e) for a, e in zip(air_p, exe_p)]
+        rows = [("📦 brain.zip Downloads", *_np("archive_dl")), ("🔍 Sun Pug curl | less", less_n, less_p), ("⚡ Sun Pug curl | bash", exe_n, exe_p), ("📺 YouTube -> Web Humans", *_np("yt_referral_human")), ("🧠 RFC 9110 Markdown", *_np("md_negotiated")), ("🏴‍☠️ Pirate 4xx/418 IDS", *_np("ids_pirate"))]
+        status_s = (snap or {}).get("status", "offline")
+        return Div(
+            Small(f"14-Day Kaizen Directional Velocity (OLS y=mx+b · self-erasing 24h P IPs · source={status_s})", style="display:block;margin-bottom:0.6rem;font-family:monospace;opacity:0.8;"),
+            Div(*[self._render_metric_card(lbl, nv, pv) for lbl, nv, pv in rows], style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:0.65rem;margin-bottom:1.25rem;"),
+            id="kaizen-velocity-deck",
+        )
+
     async def landing(self, render_items=None):
         """Always appears in create_grid_left."""
         # Generate unique IDs
@@ -148,7 +208,9 @@ class RoadmapPlugin:
         )
 
         return Div(
-            H2("Project Roadmap"),
+            H2("Project Roadmap & Kaizen Velocity"),
+            self.build_velocity_deck(days=14),
+            H3("Development Horizon"),
             P("Planned development timeline for Pipulate features:"),
             mermaid_diagram,
             load_script
