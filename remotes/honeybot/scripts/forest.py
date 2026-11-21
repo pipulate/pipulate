@@ -221,6 +221,14 @@ ARCHIVED_STATION_BEADS = {
             "Because this is a declarative Nix O S appliance serving static representations and an S Q Lite telemetry ledger, there is no P H P runtime or admin login to breach -- every exploit probe simply unmasks the attacker's I P address on the live broadcast and records their exact fingerprint for instant Engine X filtering.",
         ],
     ),
+    "funnel": _make_station_bead(
+        "KAIZEN\nVELOCITY",
+        "Live directional velocity report: fourteen-day Ordinary Least Squares slopes and self-erasing twenty-four-hour unique I P counts across archives, Sun Pug airlocks, and R F C 9110 Markdown.",
+        ("WINDOW", f"forest.py:{REPORT_WINDOW_CAP_SECONDS}:funnel"),
+        [
+            "Cumulative counters flatter the ego because they only ever go up. Fourteen-day sparklines and linear regression slopes show real daily momentum while a twenty-four-hour gate purges raw I P addresses at midnight.",
+        ],
+    ),
 }
 
 DOOR_DIAL_ROWS = (
@@ -1180,6 +1188,42 @@ def _build_station_report_panel(mode="overview", panel_width=None):
                 str(e.get("ticker_tag") or "STORY-TIME"),
                 ep_txt,
                 str(e.get("short_url") or f"MikeLev.in/{e['jukebox_index']}"),
+            )
+    elif mode == "funnel":
+        import sys as _f_sys
+        for _cand in (Path(__file__).resolve().parents[1], *Path(__file__).resolve().parents[2:4]):
+            if (_cand / "imports" / "ascii_displays.py").is_file() and str(_cand) not in _f_sys.path:
+                _f_sys.path.insert(0, str(_cand))
+        from imports.ascii_displays import compute_ols_velocity, render_sparkline
+        title_str = "🧭 14-DAY KAIZEN VELOCITY COMPASS (OLS SLOPE · N HITS · P 24H UNIQUE IPS)"
+        tbl.add_column("14d N / P", justify="right", style="bold bright_white", width=15, no_wrap=True)
+        tbl.add_column("Directional Counter / Door", style="bold cyan", width=26, no_wrap=True)
+        tbl.add_column("14d Sparkline", style="bold bright_green", width=18, no_wrap=True)
+        tbl.add_column("OLS Velocity Slope (y = mx + b) & Signal", ratio=4, no_wrap=True)
+        has_dm = bool(cur.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='daily_metrics'").fetchone())
+        air_s = db.get_daily_series("curl_airlock", "*", days=14) if has_dm else []
+        exe_s = db.get_daily_series("curl_exec", "*", days=14) if has_dm else []
+        air_p = db.get_daily_series("curl_airlock", "*", days=14, unique_ips=True) if has_dm else []
+        exe_p = db.get_daily_series("curl_exec", "*", days=14, unique_ips=True) if has_dm else []
+        less_n = [max(0, a - e) for (_, a), (_, e) in zip(air_s, exe_s)]
+        less_p = [max(0, a - e) for (_, a), (_, e) in zip(air_p, exe_p)]
+        specs = [
+            ("📦 brain.zip", [v for _, v in db.get_daily_series("archive_dl", "*", 14)], [v for _, v in db.get_daily_series("archive_dl", "*", 14, unique_ips=True)], "Zero-install AI book archive"),
+            ("🔍 curl | less", less_n, less_p, "Stage-1 terminal source inspections"),
+            ("⚡ curl | bash", [v for _, v in exe_s], [v for _, v in exe_p], "Stage-2 verified Sun Pug executions"),
+            ("📺 YT -> Web", [v for _, v in db.get_daily_series("yt_referral_human", "*", 14)], [v for _, v in db.get_daily_series("yt_referral_human", "*", 14, unique_ips=True)], "Human YouTube-to-site arrivals"),
+            ("🔗 Social Out", [v for _, v in db.get_daily_series("social_out", "*", 14)], [v for _, v in db.get_daily_series("social_out", "*", 14, unique_ips=True)], "First-party /discord & /go/* clicks"),
+            ("🧠 RFC 9110 MD", [v for _, v in db.get_daily_series("md_negotiated", "*", 14)], [v for _, v in db.get_daily_series("md_negotiated", "*", 14, unique_ips=True)], "Strict Accept: text/markdown deliveries"),
+            ("🏴‍☠️ Pirate IDS", [v for _, v in db.get_daily_series("ids_pirate", "*", 14)], [v for _, v in db.get_daily_series("ids_pirate", "*", 14, unique_ips=True)], "4xx/418 exploit probes unmasked"),
+        ] if has_dm else []
+        for lbl, nv, pv, note in specs:
+            st = compute_ols_velocity(nv)
+            c_st = "bold bright_green" if st["slope"] > 0.02 else ("bold red" if st["slope"] < -0.02 else "bold bright_yellow")
+            tbl.add_row(
+                f"{int(st['total']):,} / {sum(pv):,}",
+                lbl,
+                render_sparkline(nv, width=14) or "▁" * 14,
+                Text.assemble((f"{st['arrow']} {st['slope']:+6.2f}/d ", c_st), (f"(last={int(st['latest'])}, R²={st['r2']:.2f}) · {note}", "white")),
             )
     else:
         cur.execute(
