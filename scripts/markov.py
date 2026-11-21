@@ -612,7 +612,21 @@ else:
     if "referrer_daily_logs" in tbls:
         [_bump(m, dy, c, u) for m, dy, c, u in conn.execute("SELECT CASE WHEN ref_apex IN ('youtube.com', 'youtu.be') THEN 'yt_referral_human' ELSE 'social_in' END, date, SUM(human_count), SUM(unique_ips) FROM referrer_daily_logs WHERE date BETWEEN ? AND ? AND human_count > 0 AND ref_apex IN ('youtube.com', 'youtu.be', 't.co', 'x.com', 'twitter.com', 'linkedin.com', 'lnkd.in', 'reddit.com', 'facebook.com', 'bsky.app', 'news.ycombinator.com', 'lobste.rs') GROUP BY 1, 2", (d0, d1))]
     mode = "live_derived"
-print(json.dumps({"status": mode, "span": span, "metrics": metrics, "doors": doors, "transitions": trans}))
+bundles = []
+if "pulse_events" in tbls:
+    try:
+        import os, pathlib
+        os.environ["HONEYBOT_DB_READONLY"] = "1"
+        for cand in (str(pathlib.Path(db_p).resolve().parent / "scripts"), "/home/mike/www/mikelev.in/scripts", "remotes/honeybot/scripts"):
+            if pathlib.Path(cand, "db.py").is_file() and cand not in sys.path:
+                sys.path.insert(0, cand)
+        from db import HoneyDB
+        h_ro = HoneyDB(db_p, read_only=True)
+        if hasattr(h_ro, "get_hot_bundles"):
+            bundles = h_ro.get_hot_bundles(window_sec=120, days=min(7, days), limit=8)
+    except Exception:
+        bundles = []
+print(json.dumps({"status": mode, "span": span, "metrics": metrics, "doors": doors, "transitions": trans, "bundles": bundles}))
 """
 
 
@@ -639,7 +653,8 @@ def run_funnel_compass(days: int = 14, top_k: int = 5) -> int:
     air_n, air_p = _np("curl_airlock")
     exe_n, exe_p = _np("curl_exec")
     less_n, less_p = [max(0, a - e) for a, e in zip(air_n, exe_n)], [max(0, a - e) for a, e in zip(air_p, exe_p)]
-    tracks = [("archive_dl", *_np("archive_dl")), ("curl_less_inspect", less_n, less_p), ("curl_bash_exec", exe_n, exe_p), ("yt_referral_human", *_np("yt_referral_human")), ("social_in", *_np("social_in")), ("social_out", *_np("social_out")), ("md_negotiated", *_np("md_negotiated")), ("ids_pirate", *_np("ids_pirate"))]
+    cmd_np = _np("yt_chat_cmd")
+    tracks = [("yt_arrive", *_np("yt_arrive")), ("yt_chat", *_np("yt_chat")), *([("yt_chat_cmd", *cmd_np)] if sum(cmd_np[0]) > 0 else []), ("yt_referral_human", *_np("yt_referral_human")), ("archive_dl", *_np("archive_dl")), ("curl_less_inspect", less_n, less_p), ("curl_bash_exec", exe_n, exe_p), ("social_in", *_np("social_in")), ("social_out", *_np("social_out")), ("md_negotiated", *_np("md_negotiated")), ("ids_pirate", *_np("ids_pirate"))]
     print(f"# 🧭 PIPULATE DIRECTIONAL VELOCITY & RIVER FUNNEL ({n_d}d: {span[0] + '..' + span[-1] if span else n_d} | status={snap.get('status')})")
     print("\n## 1. Daily Directional Counters (Sparkline, OLS Slope, N Hits / P Daily IPs, River t+1)")
     slopes = {}
@@ -668,6 +683,15 @@ def run_funnel_compass(days: int = 14, top_k: int = 5) -> int:
         acts.append(f"Pirate 4xx/418 scanner pressure active (N={int(slopes['ids_pirate']['total'])}) -> prime HTTP 418 Rickroll Weebo show (P0.80).")
     for idx, act in enumerate(acts[:3], 1):
         print(f"  {idx}. NEXT: {act}")
+    print("\n## 4. 🔥 Hot Bundles (Cross-Surface & Multi-Step Coincidences, 7d)")
+    bundles = snap.get("bundles") or []
+    for b in bundles[:top_k]:
+        r_lbl = "->".join(f"L{r}" for r in (b.get("rings") or [1]))
+        q_lbl = f" +{b['quests']}q" if b.get("quests") else ""
+        chain = " -> ".join(f"{s['surface']}:{s['event']}" + (f"({s['dim']})" if s.get("dim") else "") + (f"@+{s['dt']}s" if s.get("dt") else "") for s in (b.get("steps") or [])[:6])
+        print(f"  • [{b.get('iso', '')} | {b.get('bits', 0):.1f}b | {r_lbl}{q_lbl}] {chain}")
+    if not bundles:
+        print("  • (0 multi-step bundles in 7d window yet — pulse_events armed for live YT + wire coincidences)")
     return 0
 
 
@@ -695,9 +719,10 @@ def main() -> int:
     parser.add_argument("--stdin", action="store_true", help="Read series observations from stdin.")
     parser.add_argument("--demo-series", action="store_true", help="Run built-in numeric time-series verification.")
     args = parser.parse_args()
-    if args.funnel:
+    src_cmd = (args.source or "").strip().lower()
+    if args.funnel or (src_cmd in ("funnel", "sparklines") and not Path(args.source).is_file()):
         return run_funnel_compass(days=14 if "--days" not in sys.argv else args.days, top_k=args.top)
-    if args.radar or args.ai or args.links or args.by_domain:
+    if args.radar or args.ai or args.links or args.by_domain or (src_cmd == "radar" and not Path(args.source).is_file()):
         return run_referral_radar(target_spec=args.target, days=args.days, top_k=max(15, args.top), links_only=args.links, ai_only=args.ai, by_domain=args.by_domain)
 
     if args.demo_series:

@@ -1003,13 +1003,17 @@ class HoneyDB:
         """Record a timestamped pulse event, prune >7d rows, chain <=600s actor edges, & optionally bump daily_metrics."""
         eff_ts = int(ts if ts is not None else time.time())
         d_str, atag, conn = day or datetime.date.fromtimestamp(eff_ts).isoformat(), str(actor_tag or "").strip()[:24], self.get_conn()
+        if surface == "yt" and atag.startswith(":"):
+            atag = f"yt{atag}"
         if getattr(self, "_pulse_prune_date", None) != d_str:
             conn.execute("DELETE FROM pulse_events WHERE ts < ?", (eff_ts - 7 * 86400,))
             self._pulse_prune_date = d_str
         if atag:
-            prev = conn.execute("SELECT event FROM pulse_events WHERE actor_tag = ? AND ts BETWEEN ? AND ? ORDER BY ts DESC, id DESC LIMIT 1", (atag, eff_ts - 600, eff_ts)).fetchone()
+            prev = conn.execute("SELECT event, dim FROM pulse_events WHERE actor_tag = ? AND ts BETWEEN ? AND ? ORDER BY ts DESC, id DESC LIMIT 1", (atag, eff_ts - 600, eff_ts)).fetchone()
             if prev and prev[0] != event:
                 self.record_daily_transition(prev[0], event, 1, d_str, commit=False)
+            elif prev and event == "visit:human" and prev[1] and dim and prev[1] != dim:
+                self.record_daily_transition("visit:human", "quest:deep_read", 1, d_str, commit=False)
         cur = conn.execute("INSERT INTO pulse_events (ts, surface, event, dim, actor_tag) VALUES (?, ?, ?, ?, ?)", (eff_ts, str(surface), str(event), str(dim or "")[:80], atag))
         if bump_metric:
             m_key, m_dim = ("yt_chat_cmd", event.split(":", 1)[1]) if event.startswith("yt_cmd:") else (event.replace(":", "_"), ("live" if surface == "yt" else (dim or "all")))
@@ -1127,10 +1131,15 @@ class HoneyDB:
         win, horizon = max(5, int(window_sec)), max(1, int(days)) * 86400
         rows = self.get_conn().execute("SELECT id, ts, surface, event, dim, actor_tag FROM pulse_events WHERE ts >= COALESCE((SELECT MAX(ts) FROM pulse_events), 0) - ? ORDER BY ts ASC, id ASC", (horizon,)).fetchall()
         ev_cnt = Counter(r[3] for r in rows)
+        def _ring(ev: str) -> int:
+            return 3 if (ev == "curl:exec" or ev.startswith("social:")) else (2 if (ev in ("curl:airlock", "md:rfc9110") or ev.startswith(("dl:", "yt_cmd:"))) else 1)
         def _pack(kind: str, grp: list, tag: str, bonus: float, scored_evs) -> dict:
             t0 = grp[0][1]
-            bits = sum(-math.log2(min(0.5, max(1e-6, ((ev_cnt.get(e, 0) + 0.5) * win) / max(win * 2, horizon)))) for e in scored_evs) + bonus
-            return {"kind": kind, "ts": t0, "iso": datetime.datetime.fromtimestamp(t0).strftime("%Y-%m-%d %H:%M:%S"), "span_s": grp[-1][1] - t0, "bits": round(bits, 1), "actor_tag": tag, "steps": [{"dt": r[1] - t0, "surface": r[2], "event": r[3], "dim": r[4]} for r in grp]}
+            rings = sorted({_ring(r[3]) for r in grp})
+            v_dims = list(dict.fromkeys(r[4] for r in grp if r[3] == "visit:human" and r[4]))
+            quests = max(0, len(v_dims) - 1) + sum(1 for r in grp if r[3].startswith("yt_cmd:"))
+            bits = sum(-math.log2(min(0.5, max(1e-6, ((ev_cnt.get(e, 0) + 0.5) * win) / max(win * 2, horizon)))) for e in scored_evs) + bonus + 0.8 * quests
+            return {"kind": kind, "ts": t0, "iso": datetime.datetime.fromtimestamp(t0).strftime("%Y-%m-%d %H:%M:%S"), "span_s": grp[-1][1] - t0, "bits": round(bits, 1), "actor_tag": tag, "rings": rings, "quests": quests, "steps": [{"dt": r[1] - t0, "surface": r[2], "event": r[3], "dim": r[4]} for r in grp]}
         bundles, used, n_r, i = [], set(), len(rows), 0
         while i < n_r:
             if rows[i][2] == "yt":
@@ -1147,15 +1156,18 @@ class HoneyDB:
                     i = k
                     continue
             i += 1
-        for tg in dict.fromkeys(r[5] for r in rows if r[5] and not r[5].startswith("yt:") and r[0] not in used):
+        for tg in dict.fromkeys(r[5] for r in rows if r[5] and r[0] not in used):
             seg: list = []
             for r in [x for x in rows if x[5] == tg and x[0] not in used] + [None]:
                 if r is not None and (not seg or (r[1] - seg[-1][1]) <= 600):
                     seg.append(r)
                 else:
                     evs = list(dict.fromkeys(x[3] for x in seg))
+                    pairs = list(dict.fromkeys((x[3], x[4]) for x in seg))
                     if len(evs) >= 2:
                         bundles.append(_pack("actor_chain", seg, tg, 2.0, evs[1:]))
+                    elif len(pairs) >= 2:
+                        bundles.append(_pack("side_quest", seg, tg, 1.5, [seg[-1][3]]))
                     seg = [r] if r is not None else []
         return sorted(bundles, key=lambda b: (b["bits"], b["ts"]), reverse=True)[: max(1, int(limit))]
 
