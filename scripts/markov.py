@@ -567,7 +567,11 @@ end_d = datetime.date.today()
 span = [(end_d - datetime.timedelta(days=days - 1 - i)).isoformat() for i in range(days)]
 d0, d1, idx_m = span[0], span[-1], {d: i for i, d in enumerate(span)}
 tbls = {r[0] for r in conn.execute("SELECT name FROM sqlite_master WHERE type='table'").fetchall()}
+_VALID_DOORS = {"mikelev.in", "pipulate.com", "pipulate.org", "npvg.org", "lpvg.org", "qamy.ai", "levinix.org", "levinix.com", "levinux.com", "sunpug.io", "guerillatech.com", "rfc9110.org", "rfc9110.com", "rfc9110.io", "rfc9111.io", "rfc9111.com", "rfc9111.org", "mike-levin.com", "mikelevinseo.com"}
 metrics, doors, trans = {}, {}, []
+def _clean_door(dom):
+    h = str(dom or "").strip().lower().split(":", 1)[0].rstrip(".").removeprefix("www.")
+    return h if h in _VALID_DOORS else ""
 def _bump(k, dy, n_v, p_v):
     if str(dy) in idx_m:
         a = metrics.setdefault(k, [[0, 0] for _ in range(days)])[idx_m[str(dy)]]
@@ -582,9 +586,13 @@ if has_dm:
     dm_cols = {r[1] for r in conn.execute("PRAGMA table_info(daily_metrics)").fetchall()}
     p_col = "unique_ips" if "unique_ips" in dm_cols else "count"
     for m, dm, dy, c, u in conn.execute(f"SELECT metric, dim, day, count, {p_col} FROM daily_metrics WHERE day BETWEEN ? AND ?", (d0, d1)):
-        _bump(m, dy, c, u)
         if m in ("curl_airlock", "curl_exec"):
-            _door(dm, "air" if m == "curl_airlock" else "exe", dy, c, u)
+            cd = _clean_door(dm)
+            if cd:
+                _bump(m, dy, c, u)
+                _door(cd, "air" if m == "curl_airlock" else "exe", dy, c, u)
+        else:
+            _bump(m, dy, c, u)
     if "daily_transitions" in tbls:
         trans = [[f, t, int(c)] for f, t, c in conn.execute("SELECT from_state, to_state, SUM(count) FROM daily_transitions WHERE day BETWEEN ? AND ? GROUP BY 1, 2 ORDER BY 3 DESC LIMIT 20", (d0, d1))]
     mode = "live_metrics"
@@ -597,8 +605,10 @@ else:
         [_bump(m, dy, c, u) for m, dy, c, u in conn.execute("SELECT CASE WHEN p.value IN ('/brain.zip', '/book.zip') THEN 'archive_dl' ELSE 'social_out' END, l.date, SUM(l.count), COUNT(DISTINCT l.ip_id) FROM daily_logs l JOIN paths p ON l.path_id = p.id JOIN ips i ON l.ip_id = i.id WHERE l.date BETWEEN ? AND ? AND ((p.value IN ('/brain.zip', '/book.zip') AND l.status BETWEEN 200 AND 299) OR ((p.value = '/discord' OR p.value LIKE '/go/%') AND l.status BETWEEN 200 AND 399)) AND i.value NOT LIKE '127.%' AND i.value NOT LIKE '10.%' AND i.value NOT LIKE '192.168.%' GROUP BY 1, 2", (d0, d1))]
     if "domain_daily_logs" in tbls:
         for knd, dom, dy, c, u in conn.execute("SELECT CASE WHEN p.value IN ('/', '/install.sh') THEN 'air' ELSE 'exe' END, d.value, ddl.date, SUM(ddl.count), COUNT(DISTINCT ddl.ua_id) FROM domain_daily_logs ddl JOIN domains d ON ddl.domain_id = d.id JOIN paths p ON ddl.path_id = p.id JOIN user_agents ua ON ddl.ua_id = ua.id WHERE ddl.date BETWEEN ? AND ? AND ddl.status BETWEEN 200 AND 299 AND ((p.value IN ('/', '/install.sh') AND (ua.value LIKE 'curl/%' OR ua.value LIKE 'Wget/%')) OR ((p.value IN ('/manifest.txt', '/key.rot') OR p.value LIKE '%src=install%') AND lower(ua.value) NOT LIKE '%bot%')) GROUP BY 1, 2, 3", (d0, d1)):
-            _bump("curl_airlock" if knd == "air" else "curl_exec", dy, c, u)
-            _door(dom, knd, dy, c, u)
+            cd = _clean_door(dom)
+            if cd:
+                _bump("curl_airlock" if knd == "air" else "curl_exec", dy, c, u)
+                _door(cd, knd, dy, c, u)
     if "referrer_daily_logs" in tbls:
         [_bump(m, dy, c, u) for m, dy, c, u in conn.execute("SELECT CASE WHEN ref_apex IN ('youtube.com', 'youtu.be') THEN 'yt_referral_human' ELSE 'social_in' END, date, SUM(human_count), SUM(unique_ips) FROM referrer_daily_logs WHERE date BETWEEN ? AND ? AND human_count > 0 AND ref_apex IN ('youtube.com', 'youtu.be', 't.co', 'x.com', 'twitter.com', 'linkedin.com', 'lnkd.in', 'reddit.com', 'facebook.com', 'bsky.app', 'news.ycombinator.com', 'lobste.rs') GROUP BY 1, 2", (d0, d1))]
     mode = "live_derived"
