@@ -3455,13 +3455,26 @@ def run_youtube_watch(
         arg_c = toks_c[1] if len(toks_c) > 1 else ""
         prefix_c = "[DRY RUN] " if dry_run else ""
         cm_s = "off" if eff_cm < 0 else str(eff_cm)
+        force_local = False
         if mode_c == "status":
             print(
                 f"🎶 Chime & Greet Routing: {_format_ytwatch_fx_summary()} | clear_max={cm_s} "
-                "(Usage: `ytwatch chime [prime|stream|both|off|up|down]` | `ytwatch quiet` | `ytwatch unmute`)"
+                "(Usage: `ytwatch chime [prime|stream|both|off|up|down]` | `ytwatch chime stream test` | `ytwatch quiet` | `ytwatch unmute`)"
             )
             return 0
-        if mode_c in ("prime", "local", "stream", "hb", "honeybot", "both", "all", "on", "off", "mute", "none"):
+        if mode_c in ("stream", "hb", "honeybot") and arg_c in ("test", "both", "up", "arrive", "+", "down", "clear", "-"):
+            steps = [("up", "ba-BING (C5->G5)")] if arg_c in ("up", "arrive", "+") else ([("down", "BING-ba (G5->C5)")] if arg_c in ("down", "clear", "-") else [("up", "ba-BING (C5->G5)"), ("down", "BING-ba (G5->C5)")])
+            ok_all = True
+            for idx_s, (d_key, _) in enumerate(steps):
+                if idx_s > 0 and not dry_run:
+                    time.sleep(0.65)
+                ok_all = _play_honeybot_stream_chime(d_key, force=True, dry_run=dry_run, wait=True) and ok_all
+            lbl_s = " -> ".join(lbl for _, lbl in steps)
+            print(f"🎶 {prefix_c}Honeybot stream chime: {lbl_s} -> {HONEYBOT_SSH_HOST}:{HONEYBOT_SOUNDS_DIR} ({_format_ytwatch_fx_summary()})")
+            return 0 if ok_all else 1
+        if mode_c in ("prime", "local") and arg_c in ("test", "both", "up", "arrive", "+", "down", "clear", "-"):
+            force_local, mode_c = True, ("test" if arg_c in ("test", "both") else arg_c)
+        elif mode_c in ("prime", "local", "stream", "hb", "honeybot", "both", "all", "on", "off", "mute", "none"):
             if mode_c in ("prime", "local"):
                 new_p, new_s = (_parse_yt_bool(arg_c, True), _resolve_yt_stream_chime()) if arg_c else (True, False)
             elif mode_c in ("stream", "hb", "honeybot"):
@@ -3473,26 +3486,34 @@ def run_youtube_watch(
             if not dry_run:
                 _save_vault_var("PIPULATE_YT_PRIME_CHIME", "1" if new_p else "0")
                 _save_vault_var("PIPULATE_YT_STREAM_CHIME", "1" if new_s else "0")
+                if new_s:
+                    _ensure_honeybot_chime_wavs()
             verb = "[DRY RUN] Would set" if dry_run else "Saved"
             print(
                 f"🎶 {verb} chime routing -> prime={'on' if new_p else 'off'}, stream={'on' if new_s else 'off'} "
                 f"(ull_greet={'on' if _resolve_yt_ull_greet() else 'off'}; live daemon adopts automatically)."
             )
             return 0
+        play_p = ding and (force_local or _resolve_yt_prime_chime() or not _resolve_yt_stream_chime())
+        play_s = ding and (not force_local) and _resolve_yt_stream_chime()
         if mode_c in ("up", "arrive", "+"):
             if not dry_run:
-                _play_local_arrive_chime(ding)
+                _play_local_arrive_chime(play_p)
+                _play_honeybot_stream_chime("up", enabled=play_s, wait=True)
             print(f"🔵 {prefix_c}Quiet-studio up-chime (C5->G5): {up_p} ({_format_ytwatch_fx_summary()})")
             return 0 if up_p else 1
         if mode_c in ("down", "clear", "-"):
             if not dry_run:
-                _play_local_clear_chime(ding)
+                _play_local_clear_chime(play_p)
+                _play_honeybot_stream_chime("down", enabled=play_s, wait=True)
             print(f"🟢 {prefix_c}Quiet-studio down-chime (G5->C5): {dn_p} ({_format_ytwatch_fx_summary()})")
             return 0 if dn_p else 1
         if not dry_run:
-            _play_local_arrive_chime(ding)
+            _play_local_arrive_chime(play_p)
+            _play_honeybot_stream_chime("up", enabled=play_s, wait=True)
             time.sleep(0.65)
-            _play_local_clear_chime(ding)
+            _play_local_clear_chime(play_p)
+            _play_honeybot_stream_chime("down", enabled=play_s, wait=True)
         print(
             f"🎶 {prefix_c}Calm-studio bounce pair: up={up_p} (C5->G5) -> down={dn_p} (G5->C5) "
             f"({_format_ytwatch_fx_summary()}, clear_max={cm_s}, dwell={_resolve_yt_dwell_secs(dwell)}s)"
@@ -3695,22 +3716,18 @@ def run_youtube_watch(
             return True
         return False
 
+    if _resolve_yt_stream_chime():
+        _ensure_honeybot_chime_wavs()
     if state["is_live"] and state["concurrent_viewers"] > prev_viewers:
-        if should_trigger_ull_arrive(prev_viewers, state["concurrent_viewers"], state["is_live"]):
-            trigger_ull_greeting(trigger="loop_init")
-        print(
-            f"[{_ytlog_ts()}] 📈 [VIEWER +{state['concurrent_viewers'] - prev_viewers}] "
-            f"{prev_viewers} -> {state['concurrent_viewers']} watching",
-            flush=True,
-        )
+        greet_res = trigger_ull_greeting(trigger="loop_init") if should_trigger_ull_arrive(prev_viewers, state["concurrent_viewers"], state["is_live"]) else {}
+        if not greet_res.get("chime"):
+            _play_honeybot_stream_chime("up", enabled=ding)
+        print(f"[{_ytlog_ts()}] 📈 [VIEWER +{state['concurrent_viewers'] - prev_viewers}] {prev_viewers} -> {state['concurrent_viewers']} watching", flush=True)
         _check_quiet_arrive(prev_viewers, state["concurrent_viewers"])
         _trigger_ytwatch_weebo()
     elif state["is_live"] and state["concurrent_viewers"] < prev_viewers:
-        print(
-            f"[{_ytlog_ts()}] 📉 [VIEWER -{prev_viewers - state['concurrent_viewers']}] "
-            f"{prev_viewers} -> {state['concurrent_viewers']} watching",
-            flush=True,
-        )
+        _play_honeybot_stream_chime("down", enabled=ding)
+        print(f"[{_ytlog_ts()}] 📉 [VIEWER -{prev_viewers - state['concurrent_viewers']}] {prev_viewers} -> {state['concurrent_viewers']} watching", flush=True)
         _check_quiet_clear(prev_viewers, state["concurrent_viewers"])
     prev_viewers = state["concurrent_viewers"]
     init_ts = time.time()
@@ -3854,20 +3871,16 @@ def run_youtube_watch(
                 changed_fast = (fast_v != prev_viewers)
                 if fast_v > prev_viewers:
                     last_activity_ts = fast_ts
-                    if should_trigger_ull_arrive(prev_viewers, fast_v, True):
-                        trigger_ull_greeting(poll_ms=poll_ms, trigger="fast_poll")
-                    print(
-                        f"[{_ytlog_ts()}] ⚡ [FAST VIEWER +{fast_v - prev_viewers}] {prev_viewers} -> {fast_v} watching ({cur_delay:g}s {cur_gear}, {poll_ms:.1f}ms keep-alive)",
-                        flush=True,
-                    )
+                    greet_res = trigger_ull_greeting(poll_ms=poll_ms, trigger="fast_poll") if should_trigger_ull_arrive(prev_viewers, fast_v, True) else {}
+                    if not greet_res.get("chime"):
+                        _play_honeybot_stream_chime("up", enabled=ding)
+                    print(f"[{_ytlog_ts()}] ⚡ [FAST VIEWER +{fast_v - prev_viewers}] {prev_viewers} -> {fast_v} watching ({cur_delay:g}s {cur_gear}, {poll_ms:.1f}ms keep-alive)", flush=True)
                     _check_quiet_arrive(prev_viewers, fast_v)
                     _trigger_ytwatch_weebo()
                 elif fast_v < prev_viewers:
                     last_activity_ts = fast_ts
-                    print(
-                        f"[{_ytlog_ts()}] 📉 [FAST VIEWER -{prev_viewers - fast_v}] {prev_viewers} -> {fast_v} watching ({cur_delay:g}s {cur_gear}, {poll_ms:.1f}ms keep-alive)",
-                        flush=True,
-                    )
+                    _play_honeybot_stream_chime("down", enabled=ding)
+                    print(f"[{_ytlog_ts()}] 📉 [FAST VIEWER -{prev_viewers - fast_v}] {prev_viewers} -> {fast_v} watching ({cur_delay:g}s {cur_gear}, {poll_ms:.1f}ms keep-alive)", flush=True)
                     _check_quiet_clear(prev_viewers, fast_v)
                 if changed_fast or reset_fired:
                     _sync_honeybot_viewers(fast_v, running=True, video_id=poll_vid, peak=peak_viewers, push_remote=True)
@@ -3921,21 +3934,18 @@ def run_youtube_watch(
             src_cmp = f"api={state.get('api_viewers')}, html={state.get('html_viewers')}"
             if viewers > prev_viewers:
                 last_activity_ts = now
-                if should_trigger_ull_arrive(prev_viewers, viewers, state["is_live"]):
-                    trigger_ull_greeting(poll_ms=rtt_ewma_ms, trigger="full_poll")
-                print(
-                    f"[{_ytlog_ts()}] 📈 [VIEWER +{viewers - prev_viewers}] {prev_viewers} -> {viewers} watching ({src_cmp})",
-                    flush=True,
-                )
+                greet_res = trigger_ull_greeting(poll_ms=rtt_ewma_ms, trigger="full_poll") if should_trigger_ull_arrive(prev_viewers, viewers, state["is_live"]) else {}
+                if state["is_live"] and not greet_res.get("chime"):
+                    _play_honeybot_stream_chime("up", enabled=ding)
+                print(f"[{_ytlog_ts()}] 📈 [VIEWER +{viewers - prev_viewers}] {prev_viewers} -> {viewers} watching ({src_cmp})", flush=True)
                 if state["is_live"]:
                     _check_quiet_arrive(prev_viewers, viewers)
                 _trigger_ytwatch_weebo()
             elif viewers < prev_viewers:
                 last_activity_ts = now
-                print(
-                    f"[{_ytlog_ts()}] 📉 [VIEWER -{prev_viewers - viewers}] {prev_viewers} -> {viewers} watching ({src_cmp})",
-                    flush=True,
-                )
+                if state["is_live"]:
+                    _play_honeybot_stream_chime("down", enabled=ding)
+                print(f"[{_ytlog_ts()}] 📉 [VIEWER -{prev_viewers - viewers}] {prev_viewers} -> {viewers} watching ({src_cmp})", flush=True)
                 if state["is_live"]:
                     _check_quiet_clear(prev_viewers, viewers)
             else:
