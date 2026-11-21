@@ -71,6 +71,10 @@ EDITORIAL_CONTEXT_PLACEHOLDER = "[INSERT EDITORIAL CONTEXT]"
 # keeps the language and the line count so the editing model knows what
 # stood there, in square brackets so it reads as nothing the article said.
 FENCE_BLOCK_RE = re.compile(r'^```([^\n]*)\n(.*?)^```[ \t]*$\n?', re.MULTILINE | re.DOTALL)
+PROMO_LINK_RE = re.compile(
+    r"\[ARTICLE_URL\]|https?://\S+|^/[a-z0-9-]+/[a-z0-9/-]*$",
+    re.MULTILINE,
+)
 LEAN_NOTE = (
     "\n\n[EDITOR'S NOTE: {n} fenced code blocks were left out of this copy so it fits "
     "the model's window; each stands in as one bracketed line. The published article "
@@ -418,8 +422,7 @@ def create_jekyll_post(article_content, instructions, output_dir, preview_port, 
     if not isinstance(promo_text, str):
         print("Refusing to write: promotional_tweet must be a string.")
         return None
-    promo_links = list(re.finditer(
-        r"\[ARTICLE_URL\]|https?://\S+|(?m)^/[a-z0-9-]+/[a-z0-9/-]*$", promo_text))
+    promo_links = list(PROMO_LINK_RE.finditer(promo_text))
     if len(promo_links) > 1:
         print("Refusing to write: promotional_tweet must contain at most "
               "one article link or [ARTICLE_URL] marker.")
