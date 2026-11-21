@@ -2043,7 +2043,7 @@ apply.py
 # ============================================================================
 # Files tracked by git but not yet mixed into the palette above.
 # Move these into the active chapters to paint them onto the context canvas.
-# Coverage: 230/300 tracked files claimed. The compiler reads this line back on the next compile and prints the delta beside the live count, so an unclaimed file rings once.
+# Coverage: 231/300 tracked files claimed. The compiler reads this line back on the next compile and prints the delta beside the live count, so an unclaimed file rings once.
 
 # AGENTS.md  # [1,039 tokens | 4,223 bytes]
 # AUDIT.md  # [2,992 tokens | 13,897 bytes]
@@ -2051,7 +2051,6 @@ apply.py
 # apps/025_aspect.py  # [1,437 tokens | 6,233 bytes]
 # apps/050_documentation.py  # [30,791 tokens | 143,127 bytes]
 # apps/130_gap_analysis.py  # [9,624 tokens | 48,289 bytes]
-# apps/220_roadmap.py  # [2,482 tokens | 10,342 bytes]
 # apps/230_dev_assistant.py  # [25,804 tokens | 124,894 bytes]
 # apps/240_simon_mcp.py  # [8,883 tokens | 44,546 bytes]
 # apps/440_browser_automation.py  # [10,795 tokens | 47,151 bytes]
