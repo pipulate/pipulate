@@ -30,6 +30,11 @@ import time
 
 from river import drift, linear_model, optim, preprocessing, stats
 
+_REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
+from imports.ascii_displays import compute_ols_velocity, render_sparkline
+
 CONFIG_DIR = Path.home() / ".config" / "pipulate"
 TARGETS_FILE = Path(
     os.environ.get("PIPULATE_BLOGS_CONFIG", CONFIG_DIR / "blogs.json")
@@ -553,6 +558,109 @@ def analyze_generic_series(lines: list[str], label: str = "stdin", top_k: int = 
     return 0
 
 
+_REMOTE_FUNNEL_PY = r"""
+import datetime, json, sqlite3, sys
+days = max(2, int(sys.argv[1]))
+db_p = sys.argv[2] if len(sys.argv) > 2 and sys.argv[2] else "/home/mike/www/mikelev.in/honeybot.db"
+conn = sqlite3.connect(f"file:{db_p}?mode=ro", uri=True)
+end_d = datetime.date.today()
+span = [(end_d - datetime.timedelta(days=days - 1 - i)).isoformat() for i in range(days)]
+d0, d1, idx_m = span[0], span[-1], {d: i for i, d in enumerate(span)}
+tbls = {r[0] for r in conn.execute("SELECT name FROM sqlite_master WHERE type='table'").fetchall()}
+metrics, doors, trans = {}, {}, []
+def _bump(k, dy, n_v, p_v):
+    if str(dy) in idx_m:
+        a = metrics.setdefault(k, [[0, 0] for _ in range(days)])[idx_m[str(dy)]]
+        a[0], a[1] = a[0] + int(n_v or 0), a[1] + int(p_v or 0)
+def _door(dom, kind, dy, n_v, p_v):
+    if dom and str(dy) in idx_m:
+        r = doors.setdefault(dom, {x: [0] * days for x in ("air_n", "air_p", "exe_n", "exe_p")})
+        r[f"{kind}_n"][idx_m[str(dy)]] += int(n_v or 0)
+        r[f"{kind}_p"][idx_m[str(dy)]] += int(p_v or 0)
+has_dm = "daily_metrics" in tbls and (conn.execute("SELECT COUNT(*) FROM daily_metrics").fetchone() or [0])[0] > 0
+if has_dm:
+    dm_cols = {r[1] for r in conn.execute("PRAGMA table_info(daily_metrics)").fetchall()}
+    p_col = "unique_ips" if "unique_ips" in dm_cols else "count"
+    for m, dm, dy, c, u in conn.execute(f"SELECT metric, dim, day, count, {p_col} FROM daily_metrics WHERE day BETWEEN ? AND ?", (d0, d1)):
+        _bump(m, dy, c, u)
+        if m in ("curl_airlock", "curl_exec"):
+            _door(dm, "air" if m == "curl_airlock" else "exe", dy, c, u)
+    if "daily_transitions" in tbls:
+        trans = [[f, t, int(c)] for f, t, c in conn.execute("SELECT from_state, to_state, SUM(count) FROM daily_transitions WHERE day BETWEEN ? AND ? GROUP BY 1, 2 ORDER BY 3 DESC LIMIT 20", (d0, d1))]
+    mode = "live_metrics"
+else:
+    if "pirate_logs" in tbls:
+        [_bump("ids_pirate", dy, c, u) for dy, c, u in conn.execute("SELECT date, SUM(count), COUNT(DISTINCT ip_id) FROM pirate_logs WHERE date BETWEEN ? AND ? GROUP BY date", (d0, d1))]
+    if "telemetry" in tbls:
+        [_bump("md_negotiated", dy, c, u) for dy, c, u in conn.execute("SELECT t.date, SUM(t.count), COUNT(DISTINCT t.ip_id) FROM telemetry t JOIN ips i ON t.ip_id = i.id WHERE t.served_md = 1 AND t.date BETWEEN ? AND ? AND i.value NOT LIKE '127.%' AND i.value NOT LIKE '10.%' AND i.value NOT LIKE '192.168.%' GROUP BY t.date", (d0, d1))]
+    if "daily_logs" in tbls:
+        [_bump(m, dy, c, u) for m, dy, c, u in conn.execute("SELECT CASE WHEN p.value IN ('/brain.zip', '/book.zip') THEN 'archive_dl' ELSE 'social_out' END, l.date, SUM(l.count), COUNT(DISTINCT l.ip_id) FROM daily_logs l JOIN paths p ON l.path_id = p.id JOIN ips i ON l.ip_id = i.id WHERE l.date BETWEEN ? AND ? AND ((p.value IN ('/brain.zip', '/book.zip') AND l.status BETWEEN 200 AND 299) OR ((p.value = '/discord' OR p.value LIKE '/go/%') AND l.status BETWEEN 200 AND 399)) AND i.value NOT LIKE '127.%' AND i.value NOT LIKE '10.%' AND i.value NOT LIKE '192.168.%' GROUP BY 1, 2", (d0, d1))]
+    if "domain_daily_logs" in tbls:
+        for knd, dom, dy, c, u in conn.execute("SELECT CASE WHEN p.value IN ('/', '/install.sh') THEN 'air' ELSE 'exe' END, d.value, ddl.date, SUM(ddl.count), COUNT(DISTINCT ddl.ua_id) FROM domain_daily_logs ddl JOIN domains d ON ddl.domain_id = d.id JOIN paths p ON ddl.path_id = p.id JOIN user_agents ua ON ddl.ua_id = ua.id WHERE ddl.date BETWEEN ? AND ? AND ddl.status BETWEEN 200 AND 299 AND ((p.value IN ('/', '/install.sh') AND (ua.value LIKE 'curl/%' OR ua.value LIKE 'Wget/%')) OR ((p.value IN ('/manifest.txt', '/key.rot') OR p.value LIKE '%src=install%') AND lower(ua.value) NOT LIKE '%bot%')) GROUP BY 1, 2, 3", (d0, d1)):
+            _bump("curl_airlock" if knd == "air" else "curl_exec", dy, c, u)
+            _door(dom, knd, dy, c, u)
+    if "referrer_daily_logs" in tbls:
+        [_bump(m, dy, c, u) for m, dy, c, u in conn.execute("SELECT CASE WHEN ref_apex IN ('youtube.com', 'youtu.be') THEN 'yt_referral_human' ELSE 'social_in' END, date, SUM(human_count), SUM(unique_ips) FROM referrer_daily_logs WHERE date BETWEEN ? AND ? AND human_count > 0 AND ref_apex IN ('youtube.com', 'youtu.be', 't.co', 'x.com', 'twitter.com', 'linkedin.com', 'lnkd.in', 'reddit.com', 'facebook.com', 'bsky.app', 'news.ycombinator.com', 'lobste.rs') GROUP BY 1, 2", (d0, d1))]
+    mode = "live_derived"
+print(json.dumps({"status": mode, "span": span, "metrics": metrics, "doors": doors, "transitions": trans}))
+"""
+
+
+def _river_next_day(vals: list[int]) -> float:
+    model = preprocessing.StandardScaler() | linear_model.LinearRegression(optimizer=optim.SGD(0.02))
+    ew = stats.EWMean(fading_factor=0.35)
+    for i, v in enumerate(vals):
+        if i > 0:
+            model.learn_one({"t": float(i), "prev": float(vals[i - 1]), "ewma": float(ew.get() or v)}, float(v))
+        ew.update(float(v))
+    return max(0.0, float(model.predict_one({"t": float(len(vals)), "prev": float(vals[-1]), "ewma": float(ew.get() or vals[-1])}))) if len(vals) >= 2 else float(vals[-1] if vals else 0.0)
+
+
+def run_funnel_compass(days: int = 14, top_k: int = 5) -> int:
+    db_ov, host = os.environ.get("PIPULATE_HONEYBOT_DB", "").strip(), os.environ.get("PIPULATE_HONEYBOT_HOST", "honeybot")
+    cmd = [sys.executable, "-", str(int(days)), db_ov] if (db_ov and Path(db_ov).is_file()) else ["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=3", host, "python3", "-", str(int(days))]
+    res = subprocess.run(cmd, input=_REMOTE_FUNNEL_PY, capture_output=True, text=True, timeout=6, check=False)
+    snap = json.loads(res.stdout.strip()) if res.returncode == 0 and (res.stdout or "").strip() else {"status": "offline", "span": [], "metrics": {}, "doors": {}, "transitions": []}
+    span = snap.get("span") or []
+    n_d, m_map = len(span) or max(2, int(days)), snap.get("metrics") or {}
+    def _np(key: str) -> tuple[list[int], list[int]]:
+        arr = m_map.get(key) or [[0, 0] for _ in range(n_d)]
+        return [int(x[0]) for x in arr], [int(x[1]) for x in arr]
+    air_n, air_p = _np("curl_airlock")
+    exe_n, exe_p = _np("curl_exec")
+    less_n, less_p = [max(0, a - e) for a, e in zip(air_n, exe_n)], [max(0, a - e) for a, e in zip(air_p, exe_p)]
+    tracks = [("archive_dl", *_np("archive_dl")), ("curl_less_inspect", less_n, less_p), ("curl_bash_exec", exe_n, exe_p), ("yt_referral_human", *_np("yt_referral_human")), ("social_in", *_np("social_in")), ("social_out", *_np("social_out")), ("md_negotiated", *_np("md_negotiated")), ("ids_pirate", *_np("ids_pirate"))]
+    print(f"# 🧭 PIPULATE DIRECTIONAL VELOCITY & RIVER FUNNEL ({n_d}d: {span[0] + '..' + span[-1] if span else n_d} | status={snap.get('status')})")
+    print("\n## 1. Daily Directional Counters (Sparkline, OLS Slope, N Hits / P Daily IPs, River t+1)")
+    slopes = {}
+    for name, nv, pv in tracks:
+        st = slopes[name] = compute_ols_velocity(nv)
+        print(f"  • {name:<18s} {(render_sparkline(nv, width=14) or '—'):<14s} {st['arrow']} {st['slope']:+6.2f}/d | N={int(st['total']):5d}, P={sum(pv):4d} IPs | river_t+1={_river_next_day(nv):5.1f}")
+    print("\n## 2. Sun Pug Per-Door Airlock Split (curl | less vs. curl | bash)")
+    doors = snap.get("doors") or {}
+    for dk in sorted(doors, key=lambda k: sum(doors[k]["air_n"]) + sum(doors[k]["exe_n"]), reverse=True)[: max(4, top_k)]:
+        dn, dp, en = doors[dk]["air_n"], doors[dk]["air_p"], doors[dk]["exe_n"]
+        st, tot_a, tot_e = compute_ols_velocity(dn), sum(dn), sum(en)
+        print(f"  • {dk:<18s} {render_sparkline(dn, width=14):<14s} {st['arrow']} {st['slope']:+6.2f}/d | less={sum(max(0, a - e) for a, e in zip(dn, en)):4d}, bash={tot_e:4d} ({(100.0 * tot_e / tot_a if tot_a else 0.0):3.0f}% exec, P={sum(dp):3d} IPs)")
+    if not doors:
+        print("  • (No curl/Wget door hits recorded in window yet)")
+    print("\n## 3. Markov Transition Odds & What To Do Next")
+    f_tot = Counter()
+    for f_s, _, cnt in (snap.get("transitions") or []):
+        f_tot[f_s] += int(cnt)
+    for f_s, t_s, cnt in (snap.get("transitions") or [])[:top_k]:
+        print(f"  • P({t_s} | {f_s}) = {(100.0 * int(cnt) / max(1, f_tot[f_s])):5.1f}% (n={cnt})")
+    acts = []
+    if sum(less_n) > sum(exe_n) and sum(less_n) >= 1:
+        acts.append("Inspect-only `curl | less` leads `curl | bash` -> wire Stage-2 `/manifest.txt` check in `install.sh` (P0.61/P0.78).")
+    acts.append(f"`brain.zip` slope is {slopes['archive_dl']['slope']:+.2f}/d -> {'keep `/book.zip` synced on publish (P0.67).' if slopes['archive_dl']['slope'] > 0 else 'spotlight `brain.zip` + WOPR hook in next Norma cone.'}")
+    if slopes["ids_pirate"]["total"] > 0:
+        acts.append(f"Pirate 4xx/418 scanner pressure active (N={int(slopes['ids_pirate']['total'])}) -> prime HTTP 418 Rickroll Weebo show (P0.80).")
+    for idx, act in enumerate(acts[:3], 1):
+        print(f"  {idx}. NEXT: {act}")
+    return 0
+
+
 def run_demo_series() -> int:
     synth_num = [
         f"t{i} {100.0 + 0.8 * i + (3.5 if i % 4 in (0, 1) else -2.0):.2f}"
@@ -572,10 +680,13 @@ def main() -> int:
     parser.add_argument("--ai", action="store_true", help="Filter --radar to Search & AI referral velocity.")
     parser.add_argument("--links", action="store_true", help="Filter --radar to clickable non-search/non-AI referring web URLs.")
     parser.add_argument("--by-domain", action="store_true", help="Aggregate --radar velocity by referring domain.")
-    parser.add_argument("--days", type=int, default=30, help="Lookback window in days for --radar (default: 30).")
+    parser.add_argument("--days", type=int, default=30, help="Lookback window in days for --radar / --funnel (default: 30).")
+    parser.add_argument("--funnel", action="store_true", help="Show daily directional sparklines (N/P), OLS slopes, & River/Markov funnel.")
     parser.add_argument("--stdin", action="store_true", help="Read series observations from stdin.")
     parser.add_argument("--demo-series", action="store_true", help="Run built-in numeric time-series verification.")
     args = parser.parse_args()
+    if args.funnel:
+        return run_funnel_compass(days=14 if "--days" not in sys.argv else args.days, top_k=args.top)
     if args.radar or args.ai or args.links or args.by_domain:
         return run_referral_radar(target_spec=args.target, days=args.days, top_k=max(15, args.top), links_only=args.links, ai_only=args.ai, by_domain=args.by_domain)
 
