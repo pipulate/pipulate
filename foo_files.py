@@ -387,6 +387,10 @@ And then we demonstrate a level of competence like so:
 # hacksaw wind-tunnel instruments) who sent Norma Centroid back in time to hand
 # Yutes a live quest before deadpanning Frank Drebin's "Nothing to see here.
 # Please disperse. Please disperse."
+# Notaplebius: Classical Greek-named Socratic straight man ("Definitely Not a
+# Plebe") and newcomer audience surrogate -- asks the grounded rational setup
+# questions (like Alice to the Mock Turtle or Achilles to Carroll's Tortoise)
+# so Mike-E and Shipmunk spike the vaudeville insight without ever punching down.
 
 # While the above serves as a good organization spine for the book, we get a bit
 # more ad hoc and loosey goosey to actually show you the articles and codebase.
@@ -1739,8 +1743,9 @@ apply.py
 # - TODO (2026-10-21, P0.13 LIVE YTVIM ON-AIR WITNESS): Field-test `ytvim` live on Honeybot `:10.0` (`script -q -f` into fullscreen Alacritty). Gate: live Neovim buffer session visible on stream with clean teardown.
 # - TODO (2026-10-23, P0.14 PFSENSE SPLIT-DNS FOR LEVINUX/LEVINIX): Add pfSense Host Overrides for `levinux.com`, `levinix.org`, and `levinix.com` pointing to Honeybot's LAN IP. Gate: `dig +short` on Prime resolves all three to LAN IP.
 
-# - TODO (2026-11-21, SOCRATIC FOIL & MUNCHHAUSEN TRILEMMA IN NORMA): Encode straight-man setup vs. wise-clown spike dynamics (Carroll's Tortoise/Achilles in GEB + Munchhausen Trilemma stopping rule) in norma_extract.py and terms.py. Gate: prompt + terms pass.
-# - TODO (2026-11-21, SHOSHIN "BAD DOBBY" WEEBO EMPATHY CUE): Add a self-deprecating "Bad Dobby" Weebo cue in weebo.py and norma_extract.py whenever dialogue catches gatekeeper slips ("newbie plebes" -> Newcomers) under Shoshin stewardship. Gate: cue renders on :10.0.
+# - TODO (2026-11-21, NIXOS "CORDYCEPS" JUNK-PILE USB SPORE ISO): Build a declarative NixOS live-boot USB image (beside P0.32 & P0.81) that turns any Windows-11-rejected junk-pile PC into an SSH-ready Sun Pug / Honeybot satellite of Pipulate Prime. Gate: USB boots & pairs headless.
+# - TODO (2026-11-21, SOCRATIC FOIL & MUNCHHAUSEN TRILEMMA IN NORMA): Encode Notaplebius straight-man setup vs. wise-clown spike dynamics (Carroll's Tortoise/Achilles in GEB + Munchhausen Trilemma stopping rule) in norma_extract.py and terms.py. Gate: prompt + terms pass.
+# - TODO (2026-11-21, SHOSHIN "BAD DOBBY" WEEBO EMPATHY CUE): Add a self-deprecating "Bad Dobby" Weebo cue in weebo.py and norma_extract.py whenever dialogue catches gatekeeper slips ("newbie plebes" -> Notaplebius/Newcomers) under Shoshin stewardship. Gate: cue renders on :10.0.
 # - TODO (2026-11-20, RAPID-FIRE WEEBO CREATOR-TRIO & BURST STRESS-TEST): Pop the 3 creators' pics via weebo.py on the active Storytime piece and stress-test continuous rapid-fire Weebo meme bursts on :10.0 for clean X11/sentinel teardown. Gate: back-to-back burst test passes.
 # - TODO (2026-11-20, ORDERED BOOK READING & MOVIE SYLLABUS): Publish a canonically ordered reading list (Carroll, Hofstadter's GEB, Ender's Game) and movie syllabus on mikelev.in and in brain.zip for Future-proofing Yourself in the Age of AI. Gate: ordered reading + film lists live.
 # - TODO (2026-11-20, QUOTE TICKER SHORT TITLES & DROP DISCORD SLUG): Audit ticker_tag short-title derivation, wrap the Currently Playing short title in double-quotes on #ticker_bar, and remove MIKELEV.IN/DISCORD from ticker rotation. Gate: quoted title & no Discord ticker on :10.0.
