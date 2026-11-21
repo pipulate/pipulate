@@ -3312,6 +3312,28 @@ def _yt_chat_actor_tag(author: str, ts: int | None = None) -> str:
     return "yt:" + hashlib.blake2s(f"{d_str}:{norm}".encode("utf-8"), key=_yt_actor_salt, digest_size=3).hexdigest()
 
 
+def _build_yt_chat_pulses(msg: dict, channel_author: str = "", parsed_cmd=None, now_ts: float | None = None) -> list[tuple[str, str, int, str]]:
+    """Build sanitized ('yt_chat', ...) and ('yt_cmd:<kind>', ...) pulse tuples for a non-self live chat item."""
+    import time
+    if not isinstance(msg, dict) or not (msg.get("text") or "").strip():
+        return []
+    author = str(msg.get("author") or "")
+    if _is_self_chat_author(author, channel_author):
+        return []
+    eff_now = int(now_ts if now_ts is not None else time.time())
+    raw_usec = str(msg.get("timestamp_usec") or "").strip()
+    msg_ts = (int(raw_usec) // 1_000_000) if raw_usec.isdigit() else eff_now
+    if msg_ts <= 0 or abs(eff_now - msg_ts) > 600:
+        msg_ts = eff_now
+    atag = _yt_chat_actor_tag(author, ts=msg_ts)
+    pulses = [("yt_chat", "", msg_ts, atag)]
+    if parsed_cmd:
+        kind, arg = parsed_cmd
+        cmd_dim = f"#{int(arg)}" if (kind == "jukebox" and arg is not None) else ("911" if kind == "optics" else "")
+        pulses.append((f"yt_cmd:{kind}", cmd_dim, msg_ts, atag))
+    return pulses
+
+
 def _ship_honeybot_yt_pulses(events, dry_run: bool = False) -> list[dict]:
     """Non-blockingly ship sanitized YouTube impulses over warm SSH into Honeybot's pulse_events."""
     import base64
@@ -3330,8 +3352,12 @@ def _ship_honeybot_yt_pulses(events, dry_run: bool = False) -> list[dict]:
         return batch
     b64 = base64.b64encode(json.dumps(batch).encode("utf-8")).decode("ascii")
     rmt_py = (
-        "import base64, json, sys; sys.path.insert(0, '/home/mike/www/mikelev.in/scripts'); "
-        "from db import db; evs = json.loads(base64.b64decode(sys.argv[1]).decode('utf-8')) if hasattr(db, 'record_external_pulse') else []; "
+        "import base64, json, os, sys; os.environ['HONEYBOT_DB_READONLY'] = '1'; "
+        "sys.path.insert(0, '/home/mike/www/mikelev.in/scripts'); from db import db; "
+        "os.environ.pop('HONEYBOT_DB_READONLY', None); "
+        "evs = json.loads(base64.b64decode(sys.argv[1]).decode('utf-8')) if hasattr(db, 'record_external_pulse') else []; "
+        "has_tbl = bool(db.get_conn().execute(\"SELECT 1 FROM sqlite_master WHERE type='table' AND name='pulse_events'\").fetchone()) if evs else True; "
+        "db.init_db() if not has_tbl else None; "
         "[db.record_external_pulse(e['surface'], e['event'], e['dim'], ts=e['ts'], actor_tag=e['actor_tag'], commit=False) for e in evs]; "
         "db.get_conn().commit() if evs else None"
     )
@@ -3786,6 +3812,7 @@ def run_youtube_watch(
     if _resolve_yt_stream_chime():
         _ensure_honeybot_chime_wavs()
     if state["is_live"] and state["concurrent_viewers"] > prev_viewers:
+        _ship_honeybot_yt_pulses([("yt_arrive", f"+{state['concurrent_viewers'] - prev_viewers}", int(time.time()), "")])
         greet_res = trigger_ull_greeting(trigger="loop_init") if should_trigger_ull_arrive(prev_viewers, state["concurrent_viewers"], state["is_live"]) else {}
         if not greet_res.get("chime"):
             _play_honeybot_stream_chime("up", enabled=ding)
@@ -3938,6 +3965,7 @@ def run_youtube_watch(
                 changed_fast = (fast_v != prev_viewers)
                 if fast_v > prev_viewers:
                     last_activity_ts = fast_ts
+                    _ship_honeybot_yt_pulses([("yt_arrive", f"+{fast_v - prev_viewers}", int(fast_ts), "")])
                     greet_res = trigger_ull_greeting(poll_ms=poll_ms, trigger="fast_poll") if should_trigger_ull_arrive(prev_viewers, fast_v, True) else {}
                     if not greet_res.get("chime"):
                         _play_honeybot_stream_chime("up", enabled=ding)
@@ -3999,8 +4027,11 @@ def run_youtube_watch(
             if state.get("title"):
                 last_live_title = str(state["title"]).strip()
             src_cmp = f"api={state.get('api_viewers')}, html={state.get('html_viewers')}"
+            yt_pulses = []
             if viewers > prev_viewers:
                 last_activity_ts = now
+                if state["is_live"]:
+                    yt_pulses.append(("yt_arrive", f"+{viewers - prev_viewers}", int(now), ""))
                 greet_res = trigger_ull_greeting(poll_ms=rtt_ewma_ms, trigger="full_poll") if should_trigger_ull_arrive(prev_viewers, viewers, state["is_live"]) else {}
                 if state["is_live"] and not greet_res.get("chime"):
                     _play_honeybot_stream_chime("up", enabled=ding)
@@ -4044,10 +4075,17 @@ def run_youtube_watch(
                 seen_ids.add(msg["id"])
                 last_activity_ts = now
                 parsed_cmd = parse_allowlisted_chat_command(msg["text"])
-                if parsed_cmd is not None:
-                    _actuate_allowlisted_chat_command(parsed_cmd)
+                cmd_fired = _actuate_allowlisted_chat_command(parsed_cmd) if parsed_cmd is not None else False
                 if _is_self_chat_author(msg["author"], state.get("author")):
                     continue
+                yt_pulses.extend(
+                    _build_yt_chat_pulses(
+                        msg,
+                        channel_author=state.get("author") or "",
+                        parsed_cmd=parsed_cmd if cmd_fired else None,
+                        now_ts=now,
+                    )
+                )
                 chat_line = f"{msg['author']}: {msg['text']}"
                 print(f"[{_ytlog_ts()}] 💬 [CHAT] {chat_line}", flush=True)
                 print(f"   ↳ Reply on-air: ytsay \"Hey {msg['author']}, thanks for tuning in!\"", flush=True)
@@ -4063,6 +4101,8 @@ def run_youtube_watch(
                         tags="speech_balloon",
                         topic=resolved_topic,
                     )
+            if yt_pulses:
+                _ship_honeybot_yt_pulses(yt_pulses)
             cur_comments = state["comment_count"]
             if prev_comments is not None and cur_comments is not None and cur_comments > prev_comments:
                 diff = cur_comments - prev_comments
