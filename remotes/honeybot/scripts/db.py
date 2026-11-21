@@ -1,4 +1,6 @@
+from collections import Counter
 import hashlib
+import math
 import re
 import secrets
 import sqlite3
@@ -1118,6 +1120,43 @@ class HoneyDB:
         s1, s2 = self.get_daily_series("curl_airlock", dim=door, days=days, end_date=end_date), self.get_daily_series("curl_exec", dim=door, days=days, end_date=end_date)
         p1, p2 = self.get_daily_series("curl_airlock", dim=door, days=days, end_date=end_date, unique_ips=True), self.get_daily_series("curl_exec", dim=door, days=days, end_date=end_date, unique_ips=True)
         return {"door": door, "airlock": s1, "exec": s2, "inspect_only": [(d, max(0, a - e)) for (d, a), (_, e) in zip(s1, s2)], "airlock_ips": p1, "exec_ips": p2}
+
+    def get_hot_bundles(self, window_sec: int = 120, days: int = 7, limit: int = 15) -> list[dict]:
+        """Detect cross-surface (YouTube <-> Honeybot) and multi-step actor bundles scored by Shannon surprisal."""
+        win, horizon = max(5, int(window_sec)), max(1, int(days)) * 86400
+        rows = self.get_conn().execute("SELECT id, ts, surface, event, dim, actor_tag FROM pulse_events WHERE ts >= COALESCE((SELECT MAX(ts) FROM pulse_events), 0) - ? ORDER BY ts ASC, id ASC", (horizon,)).fetchall()
+        ev_cnt = Counter(r[3] for r in rows)
+        def _pack(kind: str, grp: list, tag: str, bonus: float, scored_evs) -> dict:
+            t0 = grp[0][1]
+            bits = sum(-math.log2(min(0.5, max(1e-6, ((ev_cnt.get(e, 0) + 0.5) * win) / max(win * 2, horizon)))) for e in scored_evs) + bonus
+            return {"kind": kind, "ts": t0, "iso": datetime.datetime.fromtimestamp(t0).strftime("%Y-%m-%d %H:%M:%S"), "span_s": grp[-1][1] - t0, "bits": round(bits, 1), "actor_tag": tag, "steps": [{"dt": r[1] - t0, "surface": r[2], "event": r[3], "dim": r[4]} for r in grp]}
+        bundles, used, n_r, i = [], set(), len(rows), 0
+        while i < n_r:
+            if rows[i][2] == "yt":
+                t0 = rows[i][1]
+                grp = [r for r in rows[max(0, i - 8):i] if r[1] >= t0 - 10 and r[2] != "yt" and r[0] not in used] + [rows[i]]
+                k = i + 1
+                while k < n_r and rows[k][1] <= t0 + win:
+                    grp.append(rows[k])
+                    k += 1
+                if any(r[2] != "yt" for r in grp):
+                    used.update(r[0] for r in grp)
+                    tags = [r[5] for r in grp if r[5] and not r[5].startswith("yt:")]
+                    bundles.append(_pack("cross_surface", grp, tags[0] if tags else "", 2.0 if len(tags) > len(set(tags)) else 0.0, {r[3] for r in grp if r[2] != "yt"}))
+                    i = k
+                    continue
+            i += 1
+        for tg in dict.fromkeys(r[5] for r in rows if r[5] and not r[5].startswith("yt:") and r[0] not in used):
+            seg: list = []
+            for r in [x for x in rows if x[5] == tg and x[0] not in used] + [None]:
+                if r is not None and (not seg or (r[1] - seg[-1][1]) <= 600):
+                    seg.append(r)
+                else:
+                    evs = list(dict.fromkeys(x[3] for x in seg))
+                    if len(evs) >= 2:
+                        bundles.append(_pack("actor_chain", seg, tg, 2.0, evs[1:]))
+                    seg = [r] if r is not None else []
+        return sorted(bundles, key=lambda b: (b["bits"], b["ts"]), reverse=True)[: max(1, int(limit))]
 
 # Global Instance
 db = HoneyDB()
