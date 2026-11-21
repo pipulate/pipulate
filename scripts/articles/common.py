@@ -3076,6 +3076,7 @@ import base64, json, os, pathlib, re, shutil, subprocess, sys, time
 t0 = time.perf_counter()
 dur = max(1.2, min(25.0, float(sys.argv[1])))
 b64_arg = sys.argv[2] if len(sys.argv) > 2 else ""
+chime_on = (sys.argv[3] == "1") if len(sys.argv) > 3 else False
 msg = base64.b64decode(b64_arg.encode("ascii")).decode("utf-8") if b64_arg else "SHALL WE PLAY A GAME?"
 env, py_exe = os.environ.copy(), ""
 for needle in (b"stream.py", b"obs"):
@@ -3088,7 +3089,7 @@ for needle in (b"stream.py", b"obs"):
                 if b"=" in kv:
                     k, v = kv.split(b"=", 1)
                     ks, vs = k.decode("utf-8", "ignore"), v.decode("utf-8", "ignore")
-                    if ks in ("DISPLAY", "XAUTHORITY", "XDG_RUNTIME_DIR"):
+                    if ks in ("DISPLAY", "XAUTHORITY", "XDG_RUNTIME_DIR", "PULSE_SERVER", "PIPEWIRE_RUNTIME_DIR", "DBUS_SESSION_BUS_ADDRESS"):
                         env[ks] = (env.get(ks) or vs) if needle == b"obs" else vs
                     elif needle == b"stream.py" and ks in ("PATH", "PYTHONPATH", "NIX_PYTHONPATH", "PYTHONHOME"):
                         env[ks] = vs
@@ -3157,16 +3158,21 @@ if wid and shutil.which("wmctrl", path=p_env):
     subprocess.run(["wmctrl", "-i", "-a", wid], env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False)
 if wid and shutil.which("xdotool", path=p_env):
     subprocess.run(["xdotool", "windowraise", wid], env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False)
+env.setdefault("XDG_RUNTIME_DIR", f"/run/user/{os.getuid()}")
+chime_wav, aplay_exe, chime_ok = f"{hb_root}/assets/sounds/quiet_arrive.wav", shutil.which("aplay", path=p_env), False
+if chime_on and wid and proc.poll() is None and aplay_exe and os.path.isfile(chime_wav):
+    subprocess.Popen([aplay_exe, "-q", "-D", "default", chime_wav], env=env, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True, close_fds=True)
+    chime_ok = True
 time.sleep(0.08)
 alive = (proc.poll() is None) and bool(wid)
 above_ok = bool(alive and shutil.which("xprop", path=p_env) and "_NET_WM_STATE_ABOVE" in (subprocess.run(["xprop", "-id", wid, "_NET_WM_STATE"], env=env, capture_output=True, text=True, check=False).stdout or ""))
 x11_ms = round((time.perf_counter() - t0) * 1000, 1)
 err_txt = (err_p.read_text(encoding="utf-8", errors="ignore").strip().splitlines() or [""])[-1] if err_p.is_file() else ""
-pathlib.Path("/tmp/honeybot_ull_greet_last.json").write_text(json.dumps({"ok": alive, "wid": wid, "pos": [px, py], "spawn_pos": [px0, py0], "size": [win_w, win_h], "above": above_ok, "tw": use_tw, "py": py_exe, "x11_ms": x11_ms, "err": err_txt, "ts": int(time.time())}) + "\n", encoding="utf-8")
+pathlib.Path("/tmp/honeybot_ull_greet_last.json").write_text(json.dumps({"ok": alive, "wid": wid, "pos": [px, py], "spawn_pos": [px0, py0], "size": [win_w, win_h], "above": above_ok, "tw": use_tw, "chime": chime_ok, "py": py_exe, "x11_ms": x11_ms, "err": err_txt, "ts": int(time.time())}) + "\n", encoding="utf-8")
 if not alive:
     print(f"ULL_GREET_FAIL wid={wid or 'none'} rc={proc.poll()} x11_ms={x11_ms} err={err_txt!r}")
     sys.exit(1)
-print(f"ULL_GREET_OK wid={wid} pos={px},{py} above={above_ok} tw={use_tw} x11_ms={x11_ms}")
+print(f"ULL_GREET_OK wid={wid} pos={px},{py} above={above_ok} tw={use_tw} chime={chime_ok} x11_ms={x11_ms}")
 '''
 
 
@@ -3216,36 +3222,93 @@ def should_trigger_ull_arrive(prev_viewers: int, cur_viewers: int, is_live: bool
     return bool(is_live) and int(cur_viewers) > max(0, int(prev_viewers)) and int(cur_viewers) >= 1
 
 
-def trigger_ull_greeting(message=None, duration=9.5, poll_ms=0.0, trigger="manual", force=False, dry_run=False) -> dict:
+HONEYBOT_SOUNDS_DIR = "/home/mike/www/mikelev.in/assets/sounds"
+_hb_chimes_staged = False
+
+
+def _ensure_honeybot_chime_wavs(force: bool = False) -> bool:
+    """Lazily synthesize and stage quiet_arrive.wav (ba-BING) + quiet_clear.wav (BING-ba) to Honeybot."""
+    global _hb_chimes_staged
+    import subprocess
+    up_p, dn_p = _ensure_quiet_arrive_wav(), _ensure_quiet_clear_wav()
+    if not (up_p and dn_p and Path(up_p).is_file() and Path(dn_p).is_file()):
+        return False
+    if _hb_chimes_staged and not force:
+        return True
+    if not force:
+        chk = f"test -s {HONEYBOT_SOUNDS_DIR}/quiet_arrive.wav && test -s {HONEYBOT_SOUNDS_DIR}/quiet_clear.wav"
+        if subprocess.run([*_hb_ssh_args(4), chk], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=5, check=False).returncode == 0:
+            _hb_chimes_staged = True
+            return True
+    subprocess.run([*_hb_ssh_args(4), f"mkdir -p {HONEYBOT_SOUNDS_DIR}"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=5, check=False)
+    scp_base = ["scp", "-q", "-o", "BatchMode=yes", "-o", "ConnectTimeout=4", "-o", "ControlMaster=auto", "-o", f"ControlPath={HONEYBOT_SSH_MUX_SOCK}"]
+    r1 = subprocess.run([*scp_base, str(up_p), f"{HONEYBOT_SSH_HOST}:{HONEYBOT_SOUNDS_DIR}/quiet_arrive.wav"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=8, check=False)
+    r2 = subprocess.run([*scp_base, str(dn_p), f"{HONEYBOT_SSH_HOST}:{HONEYBOT_SOUNDS_DIR}/quiet_clear.wav"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=8, check=False)
+    ok = (r1.returncode == 0) and (r2.returncode == 0)
+    _hb_chimes_staged = _hb_chimes_staged or ok
+    return ok
+
+
+def _play_honeybot_stream_chime(direction: str = "up", enabled: bool = True, force: bool = False, dry_run: bool = False, wait: bool = False) -> bool:
+    """Play ba-BING (quiet_arrive.wav) or BING-ba (quiet_clear.wav) on Honeybot's audio bus over warm SSH."""
+    import subprocess
+    is_up = str(direction).strip().lower() in ("up", "arrive", "+")
+    fname = "quiet_arrive.wav" if is_up else "quiet_clear.wav"
+    if not force and (not enabled or not _resolve_yt_stream_chime()):
+        return False
+    if dry_run:
+        return True
+    if not _ensure_honeybot_chime_wavs():
+        return False
+    rmt = (
+        "export PATH=\"$PATH:/run/current-system/sw/bin\"; "
+        "export XDG_RUNTIME_DIR=\"${XDG_RUNTIME_DIR:-/run/user/$(id -u)}\"; "
+        f"nohup aplay -q -D default {HONEYBOT_SOUNDS_DIR}/{fname} </dev/null >/dev/null 2>&1 &"
+    )
+    if wait:
+        ok = subprocess.run([*_hb_ssh_args(4), rmt], stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=5, check=False).returncode == 0
+    else:
+        subprocess.Popen([*_hb_ssh_args(4), rmt], stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
+        ok = True
+    if ok:
+        print(f"[{_ytlog_ts()}] {'🔵' if is_up else '🟢'} [STREAM CHIME] Fired {'ba-BING' if is_up else 'BING-ba'} ({fname}) on Honeybot", flush=True)
+    return ok
+
+
+def trigger_ull_greeting(message=None, duration=9.5, poll_ms=0.0, trigger="manual", force=False, dry_run=False, chime=None) -> dict:
     """Pop a bare-minimum frameless greeting on Honeybot :10.0 over warm SSH without cutting audio."""
     global _last_ull_greet_ts
     import base64
     import subprocess
     import time
     auto_on = _resolve_yt_ull_greet()
+    stream_chime = _resolve_yt_stream_chime() if chime is None else bool(chime)
     if not force and not auto_on:
-        return {"fired": False, "reason": "disabled", "auto_greet": auto_on}
+        return {"fired": False, "chime": False, "reason": "disabled", "auto_greet": auto_on}
     now_ts = time.time()
     if not force and _last_ull_greet_ts > 0 and (now_ts - _last_ull_greet_ts) < YT_ULL_GREET_COOLDOWN:
-        return {"fired": False, "reason": "cooldown", "auto_greet": auto_on}
+        return {"fired": False, "chime": False, "reason": "cooldown", "auto_greet": auto_on}
     msg = (message or DEFAULT_ULL_GREET_MESSAGE).strip()
     if dry_run:
-        print(f"⚡ [DRY RUN] ULL Greeting -> {HONEYBOT_SSH_HOST} ({duration:.1f}s, auto_greet={auto_on}): {msg.replace(chr(10), ' | ')}")
-        return {"fired": False, "dry_run": True, "auto_greet": auto_on}
+        print(f"⚡ [DRY RUN] ULL Greeting -> {HONEYBOT_SSH_HOST} ({duration:.1f}s, auto_greet={auto_on}, stream_chime={stream_chime}): {msg.replace(chr(10), ' | ')}")
+        return {"fired": False, "chime": False, "dry_run": True, "auto_greet": auto_on, "stream_chime": stream_chime}
+    if stream_chime:
+        _ensure_honeybot_chime_wavs()
     msg_b64 = base64.b64encode(msg.encode("utf-8")).decode("ascii")
     t0 = time.perf_counter()
-    res = subprocess.run([*_hb_ssh_args(4), "python3", "-", f"{float(duration):.2f}", msg_b64], input=_HONEYBOT_ULL_GREET_HELPER, capture_output=True, text=True, timeout=6, check=False)
+    res = subprocess.run([*_hb_ssh_args(4), "python3", "-", f"{float(duration):.2f}", msg_b64, "1" if stream_chime else "0"], input=_HONEYBOT_ULL_GREET_HELPER, capture_output=True, text=True, timeout=6, check=False)
     prime_x11_ms = round((time.perf_counter() - t0) * 1000.0, 1)
     out_s = (res.stdout or "").strip()
     fired_ok = (res.returncode == 0) and ("ULL_GREET_OK" in out_s)
+    chime_ok = fired_ok and ("chime=True" in out_s)
     if fired_ok:
         _last_ull_greet_ts = now_ts
     m_x11, m_wid, m_pos = re.search(r"x11_ms=([\d.]+)", out_s), re.search(r"wid=(\S+)", out_s), re.search(r"pos=(\S+)", out_s)
     x11_ms, wid_s, pos_s = (float(m_x11.group(1)) if m_x11 else 0.0), (m_wid.group(1) if m_wid else "none"), (m_pos.group(1) if m_pos else "?")
     ssh_ms, chain_ms = round(max(0.0, prime_x11_ms - x11_ms), 1), round(float(poll_ms or 0.0) + prime_x11_ms, 1)
     diag_s = "" if fired_ok else f" out={out_s!r} stderr={(res.stderr or '').strip()!r}"
-    print(f"[{_ytlog_ts()}] {'⚡' if fired_ok else '❌'} [ULL GREET] ({trigger}) wid={wid_s} pos={pos_s} poll_ms={float(poll_ms or 0.0):.1f} ssh_ms={ssh_ms:.1f} x11_ms={x11_ms:.1f} total_ms={chain_ms:.1f} rc={res.returncode}{diag_s}", flush=True)
-    return {"fired": fired_ok, "wid": wid_s, "pos": pos_s, "poll_ms": float(poll_ms or 0.0), "ssh_ms": ssh_ms, "x11_ms": x11_ms, "total_ms": chain_ms, "rc": res.returncode}
+    print(f"[{_ytlog_ts()}] {'⚡' if fired_ok else '❌'} [ULL GREET] ({trigger}) wid={wid_s} pos={pos_s} chime={chime_ok} poll_ms={float(poll_ms or 0.0):.1f} ssh_ms={ssh_ms:.1f} x11_ms={x11_ms:.1f} total_ms={chain_ms:.1f} rc={res.returncode}{diag_s}", flush=True)
+    return {"fired": fired_ok, "chime": chime_ok, "wid": wid_s, "pos": pos_s, "poll_ms": float(poll_ms or 0.0), "ssh_ms": ssh_ms, "x11_ms": x11_ms, "total_ms": chain_ms, "rc": res.returncode}
 
 
 def _trigger_ytwatch_weebo(weebo_spec=None, duration=None):
@@ -4264,6 +4327,7 @@ def reboot_honeybot_stream(sync_only=False, dry_run=False):
             ["rsync", "-aq", str(bgm_asset), f"{HONEYBOT_SSH_HOST}:~/www/mikelev.in/assets/sounds/dripulate.wav"],
             check=False,
         )
+    _ensure_honeybot_chime_wavs(force=True)
     if sync_only:
         print("✅ Honeybot scripts synced (stream.py left running; new standby text will load on next .deploy_standby).")
         return 0

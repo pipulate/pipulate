@@ -60,6 +60,11 @@ rsync $RSYNC_OPTS assets/sounds/ding.wav $TARGET:~/www/mikelev.in/assets/sounds/
 if [ -f "assets/sounds/dripulate.wav" ]; then
   rsync $RSYNC_OPTS assets/sounds/dripulate.wav $TARGET:~/www/mikelev.in/assets/sounds/dripulate.wav
 fi
+for chime_wav in quiet_arrive.wav quiet_clear.wav; do
+  if [ -f "$HOME/.local/share/pipulate/$chime_wav" ]; then
+    rsync $RSYNC_OPTS "$HOME/.local/share/pipulate/$chime_wav" "$TARGET:~/www/mikelev.in/assets/sounds/$chime_wav"
+  fi
+done
 
 echo "🚀 Syncing 8 Domain Doors & Installer..."
 if [ -x ".venv/bin/python" ]; then
