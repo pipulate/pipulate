@@ -1207,11 +1207,16 @@ def _build_station_report_panel(mode="overview", panel_width=None):
         exe_p = db.get_daily_series("curl_exec", "*", days=14, unique_ips=True) if has_dm else []
         less_n = [max(0, a - e) for (_, a), (_, e) in zip(air_s, exe_s)]
         less_p = [max(0, a - e) for (_, a), (_, e) in zip(air_p, exe_p)]
+        cmd_n = [v for _, v in db.get_daily_series("yt_chat_cmd", "*", 14)] if has_dm else []
+        cmd_p = [v for _, v in db.get_daily_series("yt_chat_cmd", "*", 14, unique_ips=True)] if has_dm else []
         specs = [
+            ("🎶 YT ba-BING", [v for _, v in db.get_daily_series("yt_arrive", "*", 14)], [v for _, v in db.get_daily_series("yt_arrive", "*", 14, unique_ips=True)], "Live YouTube +1 viewer arrivals"),
+            ("💬 YT Live Chat", [v for _, v in db.get_daily_series("yt_chat", "*", 14)], [v for _, v in db.get_daily_series("yt_chat", "*", 14, unique_ips=True)], "Chat messages / 24h unique chatters"),
+            *([("🎛️ YT Jukebox", cmd_n, cmd_p, "Allowlisted MENU / 911 / Story # pulls")] if sum(cmd_n) > 0 else []),
+            ("📺 YT -> Web", [v for _, v in db.get_daily_series("yt_referral_human", "*", 14)], [v for _, v in db.get_daily_series("yt_referral_human", "*", 14, unique_ips=True)], "Human YouTube-to-site arrivals"),
             ("📦 brain.zip", [v for _, v in db.get_daily_series("archive_dl", "*", 14)], [v for _, v in db.get_daily_series("archive_dl", "*", 14, unique_ips=True)], "Zero-install AI book archive"),
             ("🔍 curl | less", less_n, less_p, "Stage-1 terminal source inspections"),
             ("⚡ curl | bash", [v for _, v in exe_s], [v for _, v in exe_p], "Stage-2 verified Sun Pug executions"),
-            ("📺 YT -> Web", [v for _, v in db.get_daily_series("yt_referral_human", "*", 14)], [v for _, v in db.get_daily_series("yt_referral_human", "*", 14, unique_ips=True)], "Human YouTube-to-site arrivals"),
             ("🔗 Social Out", [v for _, v in db.get_daily_series("social_out", "*", 14)], [v for _, v in db.get_daily_series("social_out", "*", 14, unique_ips=True)], "First-party /discord & /go/* clicks"),
             ("🧠 RFC 9110 MD", [v for _, v in db.get_daily_series("md_negotiated", "*", 14)], [v for _, v in db.get_daily_series("md_negotiated", "*", 14, unique_ips=True)], "Strict Accept: text/markdown deliveries"),
             ("🏴‍☠️ Pirate IDS", [v for _, v in db.get_daily_series("ids_pirate", "*", 14)], [v for _, v in db.get_daily_series("ids_pirate", "*", 14, unique_ips=True)], "4xx/418 exploit probes unmasked"),
@@ -1225,6 +1230,16 @@ def _build_station_report_panel(mode="overview", panel_width=None):
                 render_sparkline(nv, width=14) or "▁" * 14,
                 Text.assemble((f"{st['arrow']} {st['slope']:+6.2f}/d ", c_st), (f"(last={int(st['latest'])}, R²={st['r2']:.2f}) · {note}", "white")),
             )
+        has_pe = bool(cur.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='pulse_events'").fetchone())
+        bundles = db.get_hot_bundles(window_sec=120, days=7, limit=3) if (has_pe and hasattr(db, "get_hot_bundles")) else []
+        tbl.add_section()
+        if bundles:
+            for b in bundles:
+                r_lbl = "->".join(f"L{r}" for r in (b.get("rings") or [1])) + (f" +{b['quests']}q" if b.get("quests") else "")
+                chain = " -> ".join(f"{s['event']}" + (f"({s['dim']})" if s.get("dim") else "") + (f"@+{s['dt']}s" if s.get("dt") else "") for s in (b.get("steps") or [])[:4])
+                tbl.add_row(f"{b['bits']:.1f} bits", Text("🔥 HOT BUNDLE", style="bold #ffd700"), Text(r_lbl, style="bold bright_cyan"), Text(f"[{b['iso'][11:]}] {chain}"[:72], style="bold bright_white"))
+        else:
+            tbl.add_row("0 / 7d", Text("🔥 HOT BUNDLE", style="bold #ffd700"), Text("armed Δt<=120s", style="dim cyan"), Text("Listening for YT ba-BING + chat <-> brain.zip, curl & side-quests", style="dim white"))
     else:
         cur.execute(
             """
