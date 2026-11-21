@@ -1657,6 +1657,89 @@ def run_typewriter_card(
             sys.stdout.flush()
     return {"lines": len(lines), "chars": sum(typed), "frames": frames}
 
+SPARK_TICKS = "▁▂▃▄▅▆▇█"
+
+
+def _coerce_numeric_series(values) -> list[float]:
+    """Extract float observations from raw numbers or (day, count) tuples."""
+    out = []
+    for item in (values or ()):
+        val = item[-1] if isinstance(item, (tuple, list)) and item else item
+        out.append(float(val or 0.0))
+    return out
+
+
+def compute_ols_velocity(values) -> dict:
+    """Compute closed-form Ordinary Least Squares (y = m*x + b) daily velocity slope & R^2."""
+    ys = _coerce_numeric_series(values)
+    n = len(ys)
+    if n == 0:
+        return {"n": 0, "slope": 0.0, "intercept": 0.0, "r2": 0.0, "mean": 0.0, "total": 0.0, "latest": 0.0, "arrow": "→"}
+    tot = float(sum(ys))
+    mean_y = tot / n
+    if n < 2:
+        return {"n": 1, "slope": 0.0, "intercept": ys[0], "r2": 0.0, "mean": mean_y, "total": tot, "latest": ys[-1], "arrow": "→"}
+    mean_x = (n - 1) / 2.0
+    sxx = sum((i - mean_x) ** 2 for i in range(n))
+    sxy = sum((i - mean_x) * (ys[i] - mean_y) for i in range(n))
+    syy = sum((y - mean_y) ** 2 for y in ys)
+    slope = (sxy / sxx) if sxx > 0.0 else 0.0
+    intercept = mean_y - slope * mean_x
+    r2 = max(0.0, min(1.0, (sxy * sxy) / (sxx * syy))) if (sxx > 0.0 and syy > 0.0) else 0.0
+    rel = slope / max(1.0, abs(mean_y))
+    arrow = "↑" if rel >= 0.20 else ("↗" if rel >= 0.04 else ("↓" if rel <= -0.20 else ("↘" if rel <= -0.04 else "→")))
+    return {"n": n, "slope": slope, "intercept": intercept, "r2": r2, "mean": mean_y, "total": tot, "latest": ys[-1], "arrow": arrow}
+
+
+def render_sparkline(values, width: int = 0) -> str:
+    """Render a numeric series as an 8-level Unicode sparkline (▁▂▃▄▅▆▇█) with safe zero floor."""
+    ys = _coerce_numeric_series(values)
+    if not ys:
+        return ""
+    if width and int(width) > 0 and len(ys) > int(width):
+        w = int(width)
+        ys = [
+            sum(ys[int(i * len(ys) / w) : max(int(i * len(ys) / w) + 1, int((i + 1) * len(ys) / w))])
+            / max(1, max(int(i * len(ys) / w) + 1, int((i + 1) * len(ys) / w)) - int(i * len(ys) / w))
+            for i in range(w)
+        ]
+    lo, hi = min(ys), max(ys)
+    if hi <= 0.0 and lo >= 0.0:
+        return SPARK_TICKS[0] * len(ys)
+    if hi == lo:
+        return SPARK_TICKS[3 if hi > 0.0 else 0] * len(ys)
+    span = hi - lo
+    return "".join(SPARK_TICKS[min(7, max(0, round(((y - lo) / span) * 7)))] for y in ys)
+
+
+def format_velocity_sparkline(label: str, values, unit: str = "/d", label_w: int = 18) -> str:
+    """Format a plain-text aligned sparkline + OLS slope line safe for CLI pipes and HUDs."""
+    st = compute_ols_velocity(values)
+    spk = render_sparkline(values) or "—"
+    return f"{str(label)[:label_w]:<{label_w}s}  {spk}  {st['arrow']} {st['slope']:+.2f}{unit} (tot={int(round(st['total']))}, last={int(round(st['latest']))})"
+
+
+def render_sparkline_svg(values, width: int = 128, height: int = 28, stroke: str = "#34d399", show_ols: bool = True) -> str:
+    """Render a zero-JS inline SVG sparkline with optional dashed OLS regression trendline."""
+    ys = _coerce_numeric_series(values)
+    w, h = max(32, int(width)), max(14, int(height))
+    if not ys:
+        return f'<svg class="pipulate-sparkline" width="{w}" height="{h}" viewBox="0 0 {w} {h}" role="img" aria-label="Empty sparkline"></svg>'
+    lo, hi = min(0.0, min(ys)), max(ys)
+    span = (hi - lo) if hi > lo else 1.0
+    n = len(ys)
+    pts = [f"{(i * (w - 4) / max(1, n - 1)) + 2:.1f},{(h - 3) - (((y - lo) / span) * (h - 6)):.1f}" for i, y in enumerate(ys)]
+    ols_ln = ""
+    if show_ols and n >= 2:
+        st = compute_ols_velocity(ys)
+        y0, y1 = st["intercept"], st["intercept"] + st["slope"] * (n - 1)
+        py0 = max(2.0, min(h - 2.0, (h - 3) - (((y0 - lo) / span) * (h - 6))))
+        py1 = max(2.0, min(h - 2.0, (h - 3) - (((y1 - lo) / span) * (h - 6))))
+        ols_ln = f'<line x1="2.0" y1="{py0:.1f}" x2="{w - 2:.1f}" y2="{py1:.1f}" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3,2" />'
+    poly = f'<polyline fill="none" stroke="{stroke}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" points="{" ".join(pts)}" />'
+    return f'<svg class="pipulate-sparkline" width="{w}" height="{h}" viewBox="0 0 {w} {h}" role="img" aria-label="Sparkline trend">{ols_ln}{poly}</svg>'
+
+
 def white_rabbit(console_output=True):
     """🐰 WHITE RABBIT: Thin facade returning the unified dual-output figurate bunny."""
     art = figurate("white_rabbit", context="server startup")
