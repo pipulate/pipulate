@@ -1,5 +1,8 @@
+import hashlib
 import re
+import secrets
 import sqlite3
+import time
 import datetime
 import json
 from pathlib import Path
@@ -290,6 +293,8 @@ class HoneyDB:
         cur.execute("CREATE TABLE IF NOT EXISTS daily_metrics (metric TEXT NOT NULL, dim TEXT NOT NULL DEFAULT 'all', day TEXT NOT NULL, count INTEGER NOT NULL DEFAULT 0, unique_ips INTEGER NOT NULL DEFAULT 0, last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (metric, dim, day)) WITHOUT ROWID")
         cur.execute("CREATE TABLE IF NOT EXISTS daily_metric_ip_gate (day TEXT NOT NULL, metric TEXT NOT NULL, dim TEXT NOT NULL, ip_id INTEGER NOT NULL, PRIMARY KEY (day, metric, dim, ip_id)) WITHOUT ROWID")
         cur.execute("CREATE TABLE IF NOT EXISTS daily_transitions (day TEXT NOT NULL, from_state TEXT NOT NULL, to_state TEXT NOT NULL, count INTEGER NOT NULL DEFAULT 0, last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (day, from_state, to_state)) WITHOUT ROWID")
+        cur.execute("CREATE TABLE IF NOT EXISTS pulse_events (id INTEGER PRIMARY KEY AUTOINCREMENT, ts INTEGER NOT NULL, surface TEXT NOT NULL, event TEXT NOT NULL, dim TEXT NOT NULL DEFAULT '', actor_tag TEXT NOT NULL DEFAULT '')")
+        cur.execute("CREATE INDEX IF NOT EXISTS idx_pulse_events_ts ON pulse_events(ts)")
 
         conn.commit()
         self.backfill_rfc9421_from_access_log()
@@ -463,13 +468,13 @@ class HoneyDB:
         except:
             return None
 
-    def log_request(self, ip, ua, path, status, date_str=None, referrer=None, accept=None, served_md=None, host=None, sig_agent=None, is_pirate=False):
+    def log_request(self, ip, ua, path, status, date_str=None, referrer=None, accept=None, served_md=None, host=None, sig_agent=None, is_pirate=False, ts=None):
         """
         The Main Ingestor. 
         Takes raw log data, normalizes it, and updates the daily counter.
         """
         if not date_str:
-            date_str = datetime.date.today().isoformat()
+            date_str = (datetime.date.fromtimestamp(int(ts)) if ts is not None else datetime.date.today()).isoformat()
 
         # 1. Resolve IDs (The Normalization)
         ip_id = self._get_or_create_id('ips', ip)
@@ -550,7 +555,7 @@ class HoneyDB:
                 conn.execute("INSERT INTO referrer_radar (ref_apex, domain_id, path_id, first_referrer, last_referrer, total_count, human_count, bot_count) VALUES (?, ?, ?, ?, ?, 1, ?, ?) ON CONFLICT(ref_apex, domain_id, path_id) DO UPDATE SET last_referrer = excluded.last_referrer, last_seen = CURRENT_TIMESTAMP, total_count = total_count + 1, human_count = human_count + excluded.human_count, bot_count = bot_count + excluded.bot_count", (ref_apex, dom_id_r, r_pid, canon_ref, canon_ref, is_hum, 1 - is_hum))
                 conn.execute("INSERT INTO referrer_daily_logs (date, ref_apex, domain_id, path_id, sample_referrer, count, human_count, bot_count, unique_ips) VALUES (?, ?, ?, ?, ?, 1, ?, ?, ?) ON CONFLICT(date, ref_apex, domain_id, path_id) DO UPDATE SET sample_referrer = CASE WHEN length(excluded.sample_referrer) > length(referrer_daily_logs.sample_referrer) THEN excluded.sample_referrer ELSE referrer_daily_logs.sample_referrer END, count = count + 1, human_count = human_count + excluded.human_count, bot_count = bot_count + excluded.bot_count, unique_ips = unique_ips + excluded.unique_ips, last_updated = CURRENT_TIMESTAMP", (date_str, ref_apex, dom_id_r, r_pid, canon_ref, is_hum, 1 - is_hum, new_ip))
 
-        self._record_request_funnel_metrics(date_str, ip, ua, path, status, referrer, served_md, host, is_pirate, ip_id=ip_id)
+        self._record_request_funnel_metrics(date_str, ip, ua, path, status, referrer, served_md, host, is_pirate, ip_id=ip_id, ts=ts)
         conn.commit()
         if ua and ("Googlebot" in ua or "bingbot" in ua.lower() or "Applebot" in ua):
             self.verify_fcrdns_ip(ip, ua)
@@ -983,14 +988,45 @@ class HoneyDB:
         if commit:
             conn.commit()
 
-    def _record_request_funnel_metrics(self, date_str, ip, ua, path, status, referrer, served_md, host, is_pirate, ip_id=None) -> None:
-        """Update daily_metrics (N + P) and daily_transitions inside log_request's active transaction."""
+    def _ephemeral_actor_tag(self, ip_str: str, date_str: str | None = None) -> str:
+        """Return an 8-hex RAM-salted BLAKE2s tag that rotates at midnight (zero stored PII)."""
+        s, d_str = str(ip_str or "").strip(), date_str or datetime.date.today().isoformat()
+        if not s or s.startswith(("127.", "10.", "192.168.")):
+            return ""
+        if getattr(self, "_actor_salt_date", None) != d_str or not getattr(self, "_actor_salt", b""):
+            self._actor_salt, self._actor_salt_date = secrets.token_bytes(16), d_str
+        return hashlib.blake2s(f"{d_str}:{s}".encode("utf-8"), key=self._actor_salt, digest_size=4).hexdigest()
+
+    def record_external_pulse(self, surface: str, event: str, dim: str = "", ts: int | None = None, actor_tag: str = "", bump_metric: bool = True, day: str | None = None, commit: bool = True) -> int:
+        """Record a timestamped pulse event, prune >7d rows, chain <=600s actor edges, & optionally bump daily_metrics."""
+        eff_ts = int(ts if ts is not None else time.time())
+        d_str, atag, conn = day or datetime.date.fromtimestamp(eff_ts).isoformat(), str(actor_tag or "").strip()[:24], self.get_conn()
+        if getattr(self, "_pulse_prune_date", None) != d_str:
+            conn.execute("DELETE FROM pulse_events WHERE ts < ?", (eff_ts - 7 * 86400,))
+            self._pulse_prune_date = d_str
+        if atag:
+            prev = conn.execute("SELECT event FROM pulse_events WHERE actor_tag = ? AND ts BETWEEN ? AND ? ORDER BY ts DESC, id DESC LIMIT 1", (atag, eff_ts - 600, eff_ts)).fetchone()
+            if prev and prev[0] != event:
+                self.record_daily_transition(prev[0], event, 1, d_str, commit=False)
+        cur = conn.execute("INSERT INTO pulse_events (ts, surface, event, dim, actor_tag) VALUES (?, ?, ?, ?, ?)", (eff_ts, str(surface), str(event), str(dim or "")[:80], atag))
+        if bump_metric:
+            m_key, m_dim = ("yt_chat_cmd", event.split(":", 1)[1]) if event.startswith("yt_cmd:") else (event.replace(":", "_"), dim or "all")
+            p_ip = -(int(hashlib.blake2s(atag.encode("utf-8"), digest_size=4).hexdigest(), 16) or 1) if atag else None
+            self.record_daily_metric(m_key, m_dim, 1, day=d_str, ip_id=p_ip, commit=False)
+        if commit:
+            conn.commit()
+        return int(cur.lastrowid or 0)
+
+    def _record_request_funnel_metrics(self, date_str, ip, ua, path, status, referrer, served_md, host, is_pirate, ip_id=None, ts=None) -> None:
+        """Update daily_metrics (N + P), pulse_events, and daily_transitions inside log_request."""
         ip_s = str(ip or "")
         if ip_s.startswith(("127.", "10.", "192.168.")):
             return
-        eff_ip = ip_id if ip_id is not None else self._get_or_create_id("ips", ip_s)
+        eff_ip, atag = (ip_id if ip_id is not None else self._get_or_create_id("ips", ip_s)), self._ephemeral_actor_tag(ip_s, date_str)
         def _rm(m: str, d: str) -> None:
             self.record_daily_metric(m, d, 1, date_str, ip_id=eff_ip, commit=False)
+        def _pulse(surf: str, ev: str, dm: str) -> None:
+            self.record_external_pulse(surf, ev, dm, ts=ts, actor_tag=atag, bump_metric=False, day=date_str, commit=False)
         dom = (host or "mikelev.in").strip().lower().rstrip(".").removeprefix("www.") or "mikelev.in"
         raw_p, st, ua_s = str(path or "/"), int(status or 0), str(ua or "")
         clean_p, ua_low = raw_p.split("?", 1)[0], ua_s.lower()
@@ -1001,30 +1037,39 @@ class HoneyDB:
             slug = "discord" if clean_p == "/discord" else (clean_p[4:].strip("/") or "root")[:40]
             _rm("social_out", slug)
             self.record_daily_transition(f"visit:{dom}", f"social:{slug}", 1, date_str, commit=False)
+            _pulse("web", f"social:{slug}", dom)
             return
         if not (200 <= st < 300):
             return
+        is_scanner = any(b in ua_low for b in ("qlyzebot", "google-safety", "bot", "spider", "crawler"))
         if clean_p in ("/brain.zip", "/book.zip"):
             arch = clean_p.lstrip("/")
             _rm("archive_dl", arch)
             if self.is_likely_human_ua(ua_s):
                 self.record_daily_transition(f"visit:{dom}", f"dl:{arch}", 1, date_str, commit=False)
+            if not is_scanner:
+                _pulse("cli" if self._CLI_PIPE_UA_RE.search(ua_s) else "web", f"dl:{arch}", dom)
             return
-        is_scanner = any(b in ua_low for b in ("qlyzebot", "google-safety", "bot", "spider", "crawler"))
         if not is_scanner and (clean_p in ("/manifest.txt", "/key.rot") or "src=install" in raw_p or ua_low.startswith("sunpug-installer/")):
             _rm("curl_exec", dom)
             self.record_daily_transition(f"airlock:{dom}", f"exec:{dom}", 1, date_str, commit=False)
+            _pulse("cli", "curl:exec", dom)
             return
-        if not is_scanner and self._CLI_PIPE_UA_RE.search(ua_s) and clean_p in ("/", "/install.sh"):
+        if not is_scanner and str(served_md) != "1" and self._CLI_PIPE_UA_RE.search(ua_s) and clean_p in ("/", "/install.sh"):
             _rm("curl_airlock", dom)
             self.record_daily_transition(f"door:{dom}", f"airlock:{dom}", 1, date_str, commit=False)
+            _pulse("cli", "curl:airlock", dom)
             return
         if _STATIC_SUBRESOURCE_RE.search(raw_p):
             return
         if str(served_md) == "1":
             _rm("md_negotiated", dom)
+            if not is_scanner:
+                _pulse("rag" if "user" in ua_low else ("cli" if self._CLI_PIPE_UA_RE.search(ua_s) else "web"), "md:rfc9110", f"{dom}{clean_p}"[:60])
         if self.is_likely_human_ua(ua_s):
             _rm("human_visit", dom)
+            if str(served_md) != "1":
+                _pulse("web", "visit:human", f"{dom}{clean_p}"[:60])
             norm_ref = normalize_external_referrer(referrer, raw_p)
             if norm_ref is not None:
                 ap = extract_registered_domain(norm_ref[1])
