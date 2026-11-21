@@ -1012,9 +1012,10 @@ class HoneyDB:
                 self.record_daily_transition(prev[0], event, 1, d_str, commit=False)
         cur = conn.execute("INSERT INTO pulse_events (ts, surface, event, dim, actor_tag) VALUES (?, ?, ?, ?, ?)", (eff_ts, str(surface), str(event), str(dim or "")[:80], atag))
         if bump_metric:
-            m_key, m_dim = ("yt_chat_cmd", event.split(":", 1)[1]) if event.startswith("yt_cmd:") else (event.replace(":", "_"), dim or "all")
+            m_key, m_dim = ("yt_chat_cmd", event.split(":", 1)[1]) if event.startswith("yt_cmd:") else (event.replace(":", "_"), ("live" if surface == "yt" else (dim or "all")))
+            m_amt = int(str(dim).lstrip("+-")) if event in ("yt_arrive", "yt_depart") and str(dim).lstrip("+-").isdigit() else 1
             p_ip = -(int(hashlib.blake2s(atag.encode("utf-8"), digest_size=4).hexdigest(), 16) or 1) if atag else None
-            self.record_daily_metric(m_key, m_dim, 1, day=d_str, ip_id=p_ip, commit=False)
+            self.record_daily_metric(m_key, m_dim, m_amt, day=d_str, ip_id=p_ip, commit=False)
         if commit:
             conn.commit()
         return int(cur.lastrowid or 0)

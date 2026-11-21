@@ -3278,6 +3278,56 @@ def _play_honeybot_stream_chime(direction: str = "up", enabled: bool = True, for
     return ok
 
 
+_yt_actor_salt = b""
+_yt_actor_salt_date = ""
+
+
+def _yt_chat_actor_tag(author: str, ts: int | None = None) -> str:
+    """Return a midnight-rotating RAM-salted 'yt:<6hex>' BLAKE2s tag (raw handles never leave RAM)."""
+    global _yt_actor_salt, _yt_actor_salt_date
+    import hashlib
+    import secrets
+    import time
+    norm = re.sub(r"\s+", " ", str(author or "").strip().lower())
+    if not norm:
+        return ""
+    eff_ts = int(ts if ts is not None else time.time())
+    d_str = datetime.fromtimestamp(eff_ts).strftime("%Y-%m-%d")
+    if _yt_actor_salt_date != d_str or not _yt_actor_salt:
+        _yt_actor_salt, _yt_actor_salt_date = secrets.token_bytes(16), d_str
+    return "yt:" + hashlib.blake2s(f"{d_str}:{norm}".encode("utf-8"), key=_yt_actor_salt, digest_size=3).hexdigest()
+
+
+def _ship_honeybot_yt_pulses(events, dry_run: bool = False) -> list[dict]:
+    """Non-blockingly ship sanitized YouTube impulses over warm SSH into Honeybot's pulse_events."""
+    import base64
+    import shlex
+    import subprocess
+    import time
+    batch = []
+    for item in (events or ()):
+        ev, dm, ts_v, atag = item if len(item) == 4 else (item[1], item[2], item[3], item[4])
+        ev_s = re.sub(r"[^A-Za-z0-9_:.-]", "", str(ev or ""))[:40]
+        dm_s = re.sub(r"[^A-Za-z0-9_:+.#-]", "", str(dm or ""))[:40]
+        tg_s = re.sub(r"[^a-f0-9:]", "", str(atag or "").lower())[:16]
+        if ev_s:
+            batch.append({"surface": "yt", "event": ev_s, "dim": dm_s, "ts": int(ts_v or time.time()), "actor_tag": tg_s})
+    if not batch or dry_run:
+        return batch
+    b64 = base64.b64encode(json.dumps(batch).encode("utf-8")).decode("ascii")
+    rmt_py = (
+        "import base64, json, sys; sys.path.insert(0, '/home/mike/www/mikelev.in/scripts'); "
+        "from db import db; evs = json.loads(base64.b64decode(sys.argv[1]).decode('utf-8')) if hasattr(db, 'record_external_pulse') else []; "
+        "[db.record_external_pulse(e['surface'], e['event'], e['dim'], ts=e['ts'], actor_tag=e['actor_tag'], commit=False) for e in evs]; "
+        "db.get_conn().commit() if evs else None"
+    )
+    try:
+        subprocess.Popen([*_hb_ssh_args(4), f"python3 -c {shlex.quote(rmt_py)} {shlex.quote(b64)}"], stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
+    except Exception:
+        pass
+    return batch
+
+
 def trigger_ull_greeting(message=None, duration=9.5, poll_ms=0.0, trigger="manual", force=False, dry_run=False, chime=None) -> dict:
     """Pop a bare-minimum frameless greeting on Honeybot :10.0 over warm SSH without cutting audio."""
     global _last_ull_greet_ts
