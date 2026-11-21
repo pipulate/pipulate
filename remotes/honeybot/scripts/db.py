@@ -283,11 +283,14 @@ class HoneyDB:
         cur.execute("CREATE INDEX IF NOT EXISTS idx_pirate_logs_ip_id ON pirate_logs(ip_id)")
         cur.execute("CREATE INDEX IF NOT EXISTS idx_referrer_radar_seen ON referrer_radar(first_seen DESC)")
         cur.execute("CREATE INDEX IF NOT EXISTS idx_referrer_daily_date_path ON referrer_daily_logs(date, path_id)")
+        cur.execute("CREATE TABLE IF NOT EXISTS daily_metrics (metric TEXT NOT NULL, dim TEXT NOT NULL DEFAULT 'all', day TEXT NOT NULL, count INTEGER NOT NULL DEFAULT 0, last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (metric, dim, day)) WITHOUT ROWID")
+        cur.execute("CREATE TABLE IF NOT EXISTS daily_transitions (day TEXT NOT NULL, from_state TEXT NOT NULL, to_state TEXT NOT NULL, count INTEGER NOT NULL DEFAULT 0, last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (day, from_state, to_state)) WITHOUT ROWID")
 
         conn.commit()
         self.backfill_rfc9421_from_access_log()
         self.backfill_dns_audit()
         self.backfill_external_referrers()
+        self.rollup_daily_metrics()
 
     def backfill_external_referrers(self):
         """One-time idempotent backfill of external_referrers, referrer_radar, & referrer_daily_logs."""
@@ -542,6 +545,7 @@ class HoneyDB:
                 conn.execute("INSERT INTO referrer_radar (ref_apex, domain_id, path_id, first_referrer, last_referrer, total_count, human_count, bot_count) VALUES (?, ?, ?, ?, ?, 1, ?, ?) ON CONFLICT(ref_apex, domain_id, path_id) DO UPDATE SET last_referrer = excluded.last_referrer, last_seen = CURRENT_TIMESTAMP, total_count = total_count + 1, human_count = human_count + excluded.human_count, bot_count = bot_count + excluded.bot_count", (ref_apex, dom_id_r, r_pid, canon_ref, canon_ref, is_hum, 1 - is_hum))
                 conn.execute("INSERT INTO referrer_daily_logs (date, ref_apex, domain_id, path_id, sample_referrer, count, human_count, bot_count, unique_ips) VALUES (?, ?, ?, ?, ?, 1, ?, ?, ?) ON CONFLICT(date, ref_apex, domain_id, path_id) DO UPDATE SET sample_referrer = CASE WHEN length(excluded.sample_referrer) > length(referrer_daily_logs.sample_referrer) THEN excluded.sample_referrer ELSE referrer_daily_logs.sample_referrer END, count = count + 1, human_count = human_count + excluded.human_count, bot_count = bot_count + excluded.bot_count, unique_ips = unique_ips + excluded.unique_ips, last_updated = CURRENT_TIMESTAMP", (date_str, ref_apex, dom_id_r, r_pid, canon_ref, is_hum, 1 - is_hum, new_ip))
 
+        self._record_request_funnel_metrics(date_str, ip, ua, path, status, referrer, served_md, host, is_pirate)
         conn.commit()
         if ua and ("Googlebot" in ua or "bingbot" in ua.lower() or "Applebot" in ua):
             self.verify_fcrdns_ip(ip, ua)
@@ -947,6 +951,115 @@ class HoneyDB:
         """
         cur.execute(sql)
         return self._rollup_bot_rows(cur.fetchall(), limit=limit)
+
+    _CLI_PIPE_UA_RE = re.compile(r"^(?:curl|Wget|fetch\s+libfetch|sunpug-installer)/", re.IGNORECASE)
+    _SOCIAL_IN_APEX = frozenset({"t.co", "x.com", "twitter.com", "linkedin.com", "lnkd.in", "reddit.com", "facebook.com", "bsky.app", "news.ycombinator.com", "lobste.rs"})
+
+    def record_daily_metric(self, metric: str, dim: str = "all", amount: int = 1, day: str | None = None, commit: bool = True) -> None:
+        """Increment a compact daily directional counter (1 row per metric + dim + UTC day)."""
+        d_str = day or datetime.date.today().isoformat()
+        conn = self.get_conn()
+        conn.execute("INSERT INTO daily_metrics (metric, dim, day, count) VALUES (?, ?, ?, ?) ON CONFLICT(metric, dim, day) DO UPDATE SET count = count + excluded.count, last_updated = CURRENT_TIMESTAMP", (str(metric), str(dim or "all"), d_str, int(amount)))
+        if commit:
+            conn.commit()
+
+    def record_daily_transition(self, from_state: str, to_state: str, amount: int = 1, day: str | None = None, commit: bool = True) -> None:
+        """Increment a daily Markov funnel transition edge (from_state -> to_state)."""
+        d_str = day or datetime.date.today().isoformat()
+        conn = self.get_conn()
+        conn.execute("INSERT INTO daily_transitions (day, from_state, to_state, count) VALUES (?, ?, ?, ?) ON CONFLICT(day, from_state, to_state) DO UPDATE SET count = count + excluded.count, last_updated = CURRENT_TIMESTAMP", (d_str, str(from_state), str(to_state), int(amount)))
+        if commit:
+            conn.commit()
+
+    def _record_request_funnel_metrics(self, date_str, ip, ua, path, status, referrer, served_md, host, is_pirate) -> None:
+        """Update daily_metrics and daily_transitions inside log_request's active transaction."""
+        ip_s = str(ip or "")
+        if ip_s.startswith(("127.", "10.", "192.168.")):
+            return
+        dom = (host or "mikelev.in").strip().lower().rstrip(".").removeprefix("www.") or "mikelev.in"
+        raw_p = str(path or "/")
+        clean_p = raw_p.split("?", 1)[0]
+        st = int(status or 0)
+        ua_s = str(ua or "")
+        ua_low = ua_s.lower()
+        if is_pirate or _PIRATE_TARGET_RE.search(clean_p):
+            self.record_daily_metric("ids_pirate", "418" if st == 418 else f"{max(0, st) // 100}xx", 1, date_str, commit=False)
+            return
+        if 200 <= st < 400 and (clean_p == "/discord" or clean_p.startswith("/go/")):
+            slug = "discord" if clean_p == "/discord" else (clean_p[4:].strip("/") or "root")[:40]
+            self.record_daily_metric("social_out", slug, 1, date_str, commit=False)
+            self.record_daily_transition(f"visit:{dom}", f"social:{slug}", 1, date_str, commit=False)
+            return
+        if not (200 <= st < 300):
+            return
+        if clean_p in ("/brain.zip", "/book.zip"):
+            arch = clean_p.lstrip("/")
+            self.record_daily_metric("archive_dl", arch, 1, date_str, commit=False)
+            if self.is_likely_human_ua(ua_s):
+                self.record_daily_transition(f"visit:{dom}", f"dl:{arch}", 1, date_str, commit=False)
+            return
+        is_scanner = any(b in ua_low for b in ("qlyzebot", "google-safety", "bot", "spider", "crawler"))
+        if not is_scanner and (clean_p in ("/manifest.txt", "/key.rot") or "src=install" in raw_p or ua_low.startswith("sunpug-installer/")):
+            self.record_daily_metric("curl_exec", dom, 1, date_str, commit=False)
+            self.record_daily_transition(f"airlock:{dom}", f"exec:{dom}", 1, date_str, commit=False)
+            return
+        if not is_scanner and self._CLI_PIPE_UA_RE.search(ua_s) and clean_p in ("/", "/install.sh"):
+            self.record_daily_metric("curl_airlock", dom, 1, date_str, commit=False)
+            self.record_daily_transition(f"door:{dom}", f"airlock:{dom}", 1, date_str, commit=False)
+            return
+        if _STATIC_SUBRESOURCE_RE.search(raw_p):
+            return
+        if str(served_md) == "1":
+            self.record_daily_metric("md_negotiated", dom, 1, date_str, commit=False)
+        if self.is_likely_human_ua(ua_s):
+            self.record_daily_metric("human_visit", dom, 1, date_str, commit=False)
+            norm_ref = normalize_external_referrer(referrer, raw_p)
+            if norm_ref is not None:
+                ap = extract_registered_domain(norm_ref[1])
+                if ap in ("youtube.com", "youtu.be"):
+                    self.record_daily_metric("yt_referral_human", dom, 1, date_str, commit=False)
+                    self.record_daily_transition("ref:youtube", f"visit:{dom}", 1, date_str, commit=False)
+                elif ap in self._SOCIAL_IN_APEX:
+                    self.record_daily_metric("social_in", ap, 1, date_str, commit=False)
+                    self.record_daily_transition(f"ref:{ap}", f"visit:{dom}", 1, date_str, commit=False)
+
+    def rollup_daily_metrics(self, force: bool = False) -> int:
+        """Idempotently backfill daily_metrics from existing normalized Honeybot tables when empty."""
+        try:
+            conn = self.get_conn()
+            cur = conn.cursor()
+            if not force and (cur.execute("SELECT COUNT(*) FROM daily_metrics").fetchone() or [0])[0] > 0:
+                return 0
+            queries = (
+                "INSERT OR REPLACE INTO daily_metrics (metric, dim, day, count) SELECT 'ids_pirate', CASE WHEN status = 418 THEN '418' ELSE CAST(status / 100 AS TEXT) || 'xx' END, date, SUM(count) FROM pirate_logs GROUP BY 1, 2, 3",
+                "INSERT OR REPLACE INTO daily_metrics (metric, dim, day, count) SELECT 'md_negotiated', 'mikelev.in', t.date, SUM(t.count) FROM telemetry t JOIN ips i ON t.ip_id = i.id WHERE t.served_md = 1 AND i.value NOT LIKE '127.%' AND i.value NOT LIKE '10.%' AND i.value NOT LIKE '192.168.%' GROUP BY t.date",
+                "INSERT OR REPLACE INTO daily_metrics (metric, dim, day, count) SELECT CASE WHEN p.value IN ('/brain.zip', '/book.zip') THEN 'archive_dl' ELSE 'social_out' END, CASE WHEN p.value IN ('/brain.zip', '/book.zip') THEN ltrim(p.value, '/') WHEN p.value = '/discord' THEN 'discord' ELSE substr(p.value, 5) END, l.date, SUM(l.count) FROM daily_logs l JOIN paths p ON l.path_id = p.id JOIN ips i ON l.ip_id = i.id WHERE ((p.value IN ('/brain.zip', '/book.zip') AND l.status BETWEEN 200 AND 299) OR ((p.value = '/discord' OR p.value LIKE '/go/%') AND l.status BETWEEN 200 AND 399)) AND i.value NOT LIKE '127.%' AND i.value NOT LIKE '10.%' AND i.value NOT LIKE '192.168.%' GROUP BY 1, 2, 3",
+                "INSERT OR REPLACE INTO daily_metrics (metric, dim, day, count) SELECT 'curl_airlock', d.value, ddl.date, SUM(ddl.count) FROM domain_daily_logs ddl JOIN domains d ON ddl.domain_id = d.id JOIN paths p ON ddl.path_id = p.id JOIN user_agents ua ON ddl.ua_id = ua.id WHERE ddl.status BETWEEN 200 AND 299 AND p.value IN ('/', '/install.sh') AND (ua.value LIKE 'curl/%' OR ua.value LIKE 'Wget/%') GROUP BY d.value, ddl.date",
+                "INSERT OR REPLACE INTO daily_metrics (metric, dim, day, count) SELECT 'curl_exec', d.value, ddl.date, SUM(ddl.count) FROM domain_daily_logs ddl JOIN domains d ON ddl.domain_id = d.id JOIN paths p ON ddl.path_id = p.id JOIN user_agents ua ON ddl.ua_id = ua.id WHERE ddl.status BETWEEN 200 AND 299 AND (p.value IN ('/manifest.txt', '/key.rot') OR p.value LIKE '%src=install%') AND lower(ua.value) NOT LIKE '%bot%' GROUP BY d.value, ddl.date",
+                "INSERT OR REPLACE INTO daily_metrics (metric, dim, day, count) SELECT CASE WHEN rdl.ref_apex IN ('youtube.com', 'youtu.be') THEN 'yt_referral_human' ELSE 'social_in' END, CASE WHEN rdl.ref_apex IN ('youtube.com', 'youtu.be') THEN d.value ELSE rdl.ref_apex END, rdl.date, SUM(rdl.human_count) FROM referrer_daily_logs rdl JOIN domains d ON rdl.domain_id = d.id WHERE rdl.human_count > 0 AND rdl.ref_apex IN ('youtube.com', 'youtu.be', 't.co', 'x.com', 'twitter.com', 'linkedin.com', 'lnkd.in', 'reddit.com', 'facebook.com', 'bsky.app', 'news.ycombinator.com', 'lobste.rs') GROUP BY 1, 2, 3",
+            )
+            for q in queries:
+                cur.execute(q)
+            conn.commit()
+            return int((cur.execute("SELECT COUNT(*) FROM daily_metrics").fetchone() or [0])[0])
+        except Exception:
+            return 0
+
+    def get_daily_series(self, metric: str, dim: str = "all", days: int = 14, end_date: str | None = None) -> list[tuple[str, int]]:
+        """Return a zero-filled contiguous [(YYYY-MM-DD, count), ...] daily series for honest OLS slopes."""
+        end_d = datetime.date.fromisoformat(end_date) if end_date else datetime.date.today()
+        n_days = max(1, int(days))
+        start_d = end_d - datetime.timedelta(days=n_days - 1)
+        span = [(start_d + datetime.timedelta(days=i)).isoformat() for i in range(n_days)]
+        rows = self.get_conn().execute("SELECT day, COALESCE(SUM(count), 0) FROM daily_metrics WHERE metric = ? AND (? = '*' OR dim = ?) AND day BETWEEN ? AND ? GROUP BY day", (str(metric), str(dim), str(dim), span[0], span[-1])).fetchall()
+        by_day = {str(d): int(c or 0) for d, c in rows}
+        return [(d, by_day.get(d, 0)) for d in span]
+
+    def get_curl_airlock_split(self, door: str = "sunpug.io", days: int = 14, end_date: str | None = None) -> dict:
+        """Separate Stage-1 curl|less inspection from Stage-2 curl|bash execution for a Sun Pug door (or '*')."""
+        s1 = self.get_daily_series("curl_airlock", dim=door, days=days, end_date=end_date)
+        s2 = self.get_daily_series("curl_exec", dim=door, days=days, end_date=end_date)
+        return {"door": door, "airlock": s1, "exec": s2, "inspect_only": [(d, max(0, a - e)) for (d, a), (_, e) in zip(s1, s2)]}
 
 # Global Instance
 db = HoneyDB()
