@@ -2015,6 +2015,7 @@ _YTWATCH_RESERVED_ACTIONS = {
     "start", "stop", "status", "restart", "daemon", "kill",
     "attach", "log", "logs", "tail", "tmux", "reset", "reset-peak",
     "chime", "clear", "clear-max", "dwell", "greet",
+    "quiet", "mute", "unmute", "party",
 }
 
 
@@ -2867,7 +2868,7 @@ def _manage_ytwatch_daemon(action, interval=30, channel=None, clear_max=None):
     if action == "status":
         eff_cm = _resolve_yt_clear_max(clear_max)
         cm_lbl = "off" if eff_cm < 0 else str(eff_cm)
-        print(f"📡 ytwatch daemon: {'RUNNING (tmux session: ytwatch)' if is_running else 'STOPPED'} | clear_max={cm_lbl}")
+        print(f"📡 ytwatch daemon: {'RUNNING (tmux session: ytwatch)' if is_running else 'STOPPED'} | clear_max={cm_lbl} | {_format_ytwatch_fx_summary()}")
         if log_path.is_file():
             lines = log_path.read_text(encoding="utf-8", errors="replace").splitlines()[-8:]
             if lines:
@@ -3169,12 +3170,45 @@ print(f"ULL_GREET_OK wid={wid} pos={px},{py} above={above_ok} tw={use_tw} x11_ms
 '''
 
 
+def _parse_yt_bool(raw: str, default: bool) -> bool:
+    s = (raw or "").strip().lower()
+    if s in ("1", "true", "yes", "on", "enable", "enabled"):
+        return True
+    if s in ("0", "false", "no", "off", "mute", "quiet", "disable", "disabled"):
+        return False
+    return default
+
+
+def _resolve_yt_prime_chime(override=None) -> bool:
+    """Return True when Pipulate Prime local speaker chimes are enabled (default True)."""
+    if override is not None:
+        return bool(override)
+    raw = os.environ.get("PIPULATE_YT_PRIME_CHIME") or _load_vault_env().get("PIPULATE_YT_PRIME_CHIME") or ""
+    return _parse_yt_bool(raw, default=True)
+
+
+def _resolve_yt_stream_chime(override=None) -> bool:
+    """Return True when Honeybot broadcast ba-BING / BING-ba chimes are enabled (default True)."""
+    if override is not None:
+        return bool(override)
+    raw = os.environ.get("PIPULATE_YT_STREAM_CHIME") or _load_vault_env().get("PIPULATE_YT_STREAM_CHIME") or ""
+    return _parse_yt_bool(raw, default=True)
+
+
 def _resolve_yt_ull_greet(override=None) -> bool:
     """Return True when automatic ULL arrival greeting is enabled (PIPULATE_YT_ULL_GREET=1)."""
     if override is not None:
         return bool(override)
-    raw = (os.environ.get("PIPULATE_YT_ULL_GREET") or _load_vault_env().get("PIPULATE_YT_ULL_GREET") or "").strip().lower()
-    return raw in ("1", "true", "yes", "on", "enable", "enabled")
+    raw = os.environ.get("PIPULATE_YT_ULL_GREET") or _load_vault_env().get("PIPULATE_YT_ULL_GREET") or ""
+    return _parse_yt_bool(raw, default=False)
+
+
+def _format_ytwatch_fx_summary() -> str:
+    return (
+        f"prime_chime={'on' if _resolve_yt_prime_chime() else 'off'}, "
+        f"stream_chime={'on' if _resolve_yt_stream_chime() else 'off'}, "
+        f"ull_greet={'on' if _resolve_yt_ull_greet() else 'off'}"
+    )
 
 
 def should_trigger_ull_arrive(prev_viewers: int, cur_viewers: int, is_live: bool = True) -> bool:
@@ -3334,22 +3368,63 @@ def run_youtube_watch(
         _sync_honeybot_viewers(cur_v, running=True, video_id=cur_vid, peak=cur_v, push_remote=True)
         print(f"🔄 Reset ytwatch session peak -> {cur_v} (video={cur_vid or 'NONE'}).")
         return _manage_ytwatch_daemon("restart", interval=interval, channel=channel)
+    if daemon_action in ("quiet", "mute", "unmute", "party"):
+        turn_on = (chime_dir not in ("0", "off", "false")) if daemon_action in ("unmute", "party") else (chime_dir in ("0", "off", "false", "unmute"))
+        val = "1" if turn_on else "0"
+        if not dry_run:
+            _save_vault_var("PIPULATE_YT_PRIME_CHIME", val)
+            _save_vault_var("PIPULATE_YT_STREAM_CHIME", val)
+            _save_vault_var("PIPULATE_YT_ULL_GREET", val)
+        verb = "[DRY RUN] Would set" if dry_run else "Saved"
+        icon = "🎉" if turn_on else "🔇"
+        state_lbl = "ON" if turn_on else "OFF"
+        print(
+            f"{icon} {verb} ALL crowd triggers {state_lbl} -> prime_chime={state_lbl.lower()}, "
+            f"stream_chime={state_lbl.lower()}, ull_greet={state_lbl.lower()} (ytwatch telemetry stays live)."
+        )
+        return 0
     if daemon_action == "chime":
         eff_cm = _resolve_yt_clear_max(clear_max)
         up_p = _ensure_quiet_arrive_wav()
         dn_p = _ensure_quiet_clear_wav()
-        mode_c = (chime_dir or "both").strip().lower()
+        toks_c = (chime_dir or "").strip().lower().split()
+        mode_c = toks_c[0] if toks_c else "test"
+        arg_c = toks_c[1] if len(toks_c) > 1 else ""
         prefix_c = "[DRY RUN] " if dry_run else ""
         cm_s = "off" if eff_cm < 0 else str(eff_cm)
+        if mode_c == "status":
+            print(
+                f"🎶 Chime & Greet Routing: {_format_ytwatch_fx_summary()} | clear_max={cm_s} "
+                "(Usage: `ytwatch chime [prime|stream|both|off|up|down]` | `ytwatch quiet` | `ytwatch unmute`)"
+            )
+            return 0
+        if mode_c in ("prime", "local", "stream", "hb", "honeybot", "both", "all", "on", "off", "mute", "none"):
+            if mode_c in ("prime", "local"):
+                new_p, new_s = (_parse_yt_bool(arg_c, True), _resolve_yt_stream_chime()) if arg_c else (True, False)
+            elif mode_c in ("stream", "hb", "honeybot"):
+                new_p, new_s = (_resolve_yt_prime_chime(), _parse_yt_bool(arg_c, True)) if arg_c else (False, True)
+            elif mode_c in ("both", "all", "on"):
+                new_p, new_s = True, True
+            else:
+                new_p, new_s = False, False
+            if not dry_run:
+                _save_vault_var("PIPULATE_YT_PRIME_CHIME", "1" if new_p else "0")
+                _save_vault_var("PIPULATE_YT_STREAM_CHIME", "1" if new_s else "0")
+            verb = "[DRY RUN] Would set" if dry_run else "Saved"
+            print(
+                f"🎶 {verb} chime routing -> prime={'on' if new_p else 'off'}, stream={'on' if new_s else 'off'} "
+                f"(ull_greet={'on' if _resolve_yt_ull_greet() else 'off'}; live daemon adopts automatically)."
+            )
+            return 0
         if mode_c in ("up", "arrive", "+"):
             if not dry_run:
                 _play_local_arrive_chime(ding)
-            print(f"🔵 {prefix_c}Quiet-studio up-chime (C5->G5): {up_p} (active clear_max={cm_s})")
+            print(f"🔵 {prefix_c}Quiet-studio up-chime (C5->G5): {up_p} ({_format_ytwatch_fx_summary()})")
             return 0 if up_p else 1
         if mode_c in ("down", "clear", "-"):
             if not dry_run:
                 _play_local_clear_chime(ding)
-            print(f"🟢 {prefix_c}Quiet-studio down-chime (G5->C5): {dn_p} (active clear_max={cm_s})")
+            print(f"🟢 {prefix_c}Quiet-studio down-chime (G5->C5): {dn_p} ({_format_ytwatch_fx_summary()})")
             return 0 if dn_p else 1
         if not dry_run:
             _play_local_arrive_chime(ding)
@@ -3357,7 +3432,7 @@ def run_youtube_watch(
             _play_local_clear_chime(ding)
         print(
             f"🎶 {prefix_c}Calm-studio bounce pair: up={up_p} (C5->G5) -> down={dn_p} (G5->C5) "
-            f"(active clear_max={cm_s}, dwell={_resolve_yt_dwell_secs(dwell)}s)"
+            f"({_format_ytwatch_fx_summary()}, clear_max={cm_s}, dwell={_resolve_yt_dwell_secs(dwell)}s)"
         )
         return 0 if (up_p and dn_p) else 1
     if daemon_action == "greet":
@@ -3533,12 +3608,13 @@ def run_youtube_watch(
     def _check_quiet_clear(prev_v, cur_v):
         eff_cm = _resolve_yt_clear_max(clear_max)
         if should_ring_quiet_clear(prev_v, cur_v, eff_cm):
+            prime_on = ding and _resolve_yt_prime_chime()
             print(
                 f"[{_ytlog_ts()}] 🟢 [STUDIO CLEAR] Viewers dropped {prev_v} -> {cur_v} "
-                f"(<= clear_max={eff_cm}) — quiet window open for live stream edits!",
+                f"(<= clear_max={eff_cm}, prime_chime={'on' if prime_on else 'off'}) — quiet window open for live stream edits!",
                 flush=True,
             )
-            _play_local_clear_chime(ding)
+            _play_local_clear_chime(prime_on)
             return True
         return False
 
@@ -3546,12 +3622,13 @@ def run_youtube_watch(
         eff_cm = _resolve_yt_clear_max(clear_max)
         if should_ring_quiet_arrive(prev_v, cur_v, eff_cm):
             eff_dw = _resolve_yt_dwell_secs(dwell)
+            prime_on = ding and _resolve_yt_prime_chime()
             print(
                 f"[{_ytlog_ts()}] 🔵 [VIEWER ARRIVE] Viewers climbed {prev_v} -> {cur_v} "
-                f"(> clear_max={eff_cm}) — soft C5->G5 chime (TTS after {eff_dw}s dwell)",
+                f"(> clear_max={eff_cm}, prime_chime={'on' if prime_on else 'off'}) — soft C5->G5 chime (TTS after {eff_dw}s dwell)",
                 flush=True,
             )
-            _play_local_arrive_chime(ding)
+            _play_local_arrive_chime(prime_on)
             return True
         return False
 
@@ -3594,7 +3671,7 @@ def run_youtube_watch(
     print(
         f"[{_ytlog_ts()}] 🔭 Watching {resolved_channel} (adaptive pulse {cur_delay:g}s [{cur_gear}], "
         f"full HTML+chat sync every {full_interval}s, dwell={_resolve_yt_dwell_secs(dwell)}s, "
-        f"clear_max={_resolve_yt_clear_max(clear_max)}, ull_greet={'on' if _resolve_yt_ull_greet() else 'off'})..."
+        f"clear_max={_resolve_yt_clear_max(clear_max)}, {_format_ytwatch_fx_summary()})..."
     )
     print(f"[{_ytlog_ts()}] 💡 [HOW TO EXIT TMUX WITHOUT STOPPING]: Press 'q' OR press Ctrl+b, release, then press d")
 
@@ -3623,11 +3700,12 @@ def run_youtube_watch(
                     f"{v_now} watching now (sustained >={dwell_elapsed}s, min={eff_min}) — "
                     f"{state['title']}"
                 )
-                print(f"[{_ytlog_ts()}] 🗣️ [VIEWER DWELL MET] {alert_msg} (Piper TTS spoken; viewer_ntfy=off)", flush=True)
+                prime_tts_on = ding and _resolve_yt_prime_chime()
+                print(f"[{_ytlog_ts()}] 🗣️ [VIEWER DWELL MET] {alert_msg} (prime_tts={'on' if prime_tts_on else 'off'}; viewer_ntfy=off)", flush=True)
                 spoken_v = SPOKEN_ALERT_TABLE["viewers_dwell"].format(
                     dwell_secs=max(eff_dwell, dwell_elapsed), count=v_now
                 )
-                _speak_local_alert(spoken_v, enabled=ding, delay=0.0)
+                _speak_local_alert(spoken_v, enabled=prime_tts_on, delay=0.0)
         else:
             if dwell_window and not alerted_in_run and eff_dwell > 0:
                 dwell_elapsed = int(round(ts_now - dwell_window[0][0]))
@@ -5075,10 +5153,10 @@ if __name__ == "__main__":
                 daemon_act = "daemon"
             elif first_arg in ("reset", "reset-peak"):
                 daemon_act = "reset"
-            elif first_arg in ("chime", "greet"):
+            elif first_arg in ("chime", "greet", "quiet", "mute", "unmute", "party"):
                 daemon_act = first_arg
                 if len(cli_args.message) > 1:
-                    watch_chime_dir = " ".join(cli_args.message[1:]).strip() if first_arg == "greet" else cli_args.message[1].strip().lower()
+                    watch_chime_dir = " ".join(cli_args.message[1:]).strip() if first_arg == "greet" else " ".join(cli_args.message[1:]).strip().lower()
             elif first_arg == "dwell":
                 daemon_act = "dwell"
                 if len(cli_args.message) > 1 and watch_dwell is None:
