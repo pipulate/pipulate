@@ -304,6 +304,31 @@ class Pipulate:
         from imports import ascii_displays as aa
         return aa.patronus(name, duration=duration)
 
+    def sparkline(self, values, width: int = 128, height: int = 28, stroke: str = "#34d399", show_ols: bool = True, as_text: bool = False):
+        """Render a numeric series as a zero-JS FastHTML inline SVG sparkline (with OLS trendline) or Unicode text."""
+        from imports import ascii_displays as aa
+        return aa.render_sparkline(values) if as_text else NotStr(aa.render_sparkline_svg(values, width=width, height=height, stroke=stroke, show_ols=show_ols))
+
+    def sparkline_card(self, title: str, values, subtitle: str = "", unit: str = "/d", unique_values=None, width: int = 136, height: int = 30):
+        """Render a PicoCSS FastHTML Card pairing an inline SVG sparkline with OLS velocity slope and (N, P) totals."""
+        from imports import ascii_displays as aa
+        st = aa.compute_ols_velocity(values)
+        stroke = "#34d399" if st["slope"] > 0.02 else ("#f87171" if st["slope"] < -0.02 else "#60a5fa")
+        p_str = f" · P={int(round(sum(aa._coerce_numeric_series(unique_values))))} IPs" if unique_values is not None else ""
+        meta = subtitle or f"N={int(round(st['total']))}{p_str} · last={int(round(st['latest']))} · R²={st['r2']:.2f}"
+        return Card(
+            Div(
+                Div(Strong(title), Small(meta, style="display:block;opacity:0.78;font-family:monospace;font-size:0.78rem;"), style="min-width:0;"),
+                Div(
+                    self.sparkline(values, width=width, height=height, stroke=stroke, show_ols=True),
+                    Span(f"{st['arrow']} {st['slope']:+.2f}{unit}", style=f"font-family:monospace;font-weight:700;font-size:0.86rem;color:{stroke};white-space:nowrap;"),
+                    style="display:flex;align-items:center;gap:0.65rem;flex-shrink:0;",
+                ),
+                style="display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;",
+            ),
+            style="padding:0.7rem 0.95rem;margin-bottom:0.65rem;",
+        )
+
     def negotiate_ai_models(self, preferred_local: str = None, preferred_cloud: str = None) -> dict:
         """
         Uses the Universal Adapter (llm) to verify AI readiness using fuzzy matching
