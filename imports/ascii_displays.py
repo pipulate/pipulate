@@ -1561,7 +1561,7 @@ def format_typewriter_frame(
     lines: list[str],
     typed_counts: list[int],
     inner_w: int,
-    title: str = "WOPR // XENOPUG LEVINIX",
+    title: str = "MIKELEV.IN // LIVE SENSOR",
     cursor_line: int = -1,
     show_cursor: bool = True,
     ansi: bool = True,
@@ -1596,10 +1596,10 @@ def format_typewriter_frame(
 
 def run_typewriter_card(
     message: str,
-    hold: float = 4.5,
-    char_delay: float = 0.012,
-    line_pause: float = 0.08,
-    title: str = "WOPR // XENOPUG LEVINIX",
+    hold: float = 9.5,
+    char_delay: float = 0.014,
+    line_pause: float = 0.10,
+    title: str = "MIKELEV.IN // LIVE SENSOR",
     stop_file: str = "",
     restore_cursor: bool = True,
 ) -> dict:

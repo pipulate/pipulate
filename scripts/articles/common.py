@@ -3062,23 +3062,18 @@ def manage_ytmax_toggle(arg="status", dry_run=False) -> int:
     return 0
 
 
-YT_ULL_GREET_COOLDOWN = int(os.environ.get("PIPULATE_YT_GREET_COOLDOWN", "20"))
-_SUNPUG_PIPE_HINT = "curl -fsSL https\x3a//sunpug.io | less"
+YT_ULL_GREET_COOLDOWN = int(os.environ.get("PIPULATE_YT_GREET_COOLDOWN", "25"))
 DEFAULT_ULL_GREET_MESSAGE = (
-    "> LIVE VIEWER DETECTED // SHALL WE PLAY A GAME?\n"
-    "Hello! I'm Mike-E, the AI's Apprentice.\n"
-    "I bred Xenopug levinix—a Sun Pug (like Frank from\n"
-    "Men in Black, in portable POSIX; not Tufts Xenobots)\n"
-    "to turn builders into AI Apprentices.\n"
-    "► Chat : Say HI, type MENU, or any Story #\n"
-    f"► Doors: mikelev.in/brain.zip  |  {_SUNPUG_PIPE_HINT}"
+    "> +1 VIEWER DETECTED. SHALL WE PLAY A GAME?\n"
+    "Grab mikelev.in/brain.zip -> drop it into your AI.\n"
+    "► Or type MENU in chat to steer this live stream."
 )
 _last_ull_greet_ts = 0.0
 
 _HONEYBOT_ULL_GREET_HELPER = r'''
 import base64, json, os, pathlib, re, shutil, subprocess, sys, time
 t0 = time.perf_counter()
-dur = max(1.2, min(18.0, float(sys.argv[1])))
+dur = max(1.2, min(25.0, float(sys.argv[1])))
 b64_arg = sys.argv[2] if len(sys.argv) > 2 else ""
 msg = base64.b64decode(b64_arg.encode("ascii")).decode("utf-8") if b64_arg else "SHALL WE PLAY A GAME?"
 env, py_exe = os.environ.copy(), ""
@@ -3125,8 +3120,8 @@ if shutil.which("xdotool", path=p_env):
     subprocess.run(["xdotool", "mousemove", str(max(0, scr_w - 4)), str(scr_h // 2)], env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=False)
 lines = [ln.strip() for ln in msg.splitlines() if ln.strip()][:8] or ["SHALL WE PLAY A GAME?"]
 max_ln = max(sum(2 if ord(ch) > 0x1F000 else 1 for ch in ln) for ln in lines)
-cols, rows = max(54, min(86, max_ln + 10)), len(lines) + 4
-est_w, est_h, upper_h = cols * 10, rows * 24, int(scr_h * 0.56)
+cols, rows = max(58, min(86, max_ln + 10)), len(lines) + 4
+est_w, est_h, upper_h = round(cols * 15.4), rows * 31, int(scr_h * 0.56)
 px0, py0 = max(0, (scr_w - est_w) // 2), ((36 + max(0, (upper_h - 36 - est_h) // 2)) if (est_h + 44 <= upper_h) else max(32, (scr_h - est_h) // 2))
 hb_root, err_p = "/home/mike/www/mikelev.in", pathlib.Path("/tmp/honeybot_ull_greet.err")
 use_tw = os.path.isfile(f"{hb_root}/imports/ascii_displays.py")
@@ -3137,7 +3132,7 @@ else:
     env["ULL_BANNER"] = "\033[?25l\n" + "".join(f"  \033[1;{92 if i == 0 else 97}m{ln}\033[0m\n" for i, ln in enumerate(lines))
     exec_argv = ["sh", "-c", f'printf "%s" "$ULL_BANNER"; sleep {dur:.2f}']
 with open(err_p, "w", encoding="utf-8") as ef:
-    cmd = ["alacritty", "--title", "honeybot_ull_greet", "--class", "honeybot_ull_greet", "-o", 'window.decorations="None"', "-o", "window.opacity=0.96", "-o", 'colors.primary.background="#070d14"', "-o", f"window.dimensions={{columns={cols}, lines={rows}}}", "-o", f"window.position={{x={px0}, y={py0}}}", "-o", "font.size=16.0", "-e", *exec_argv]
+    cmd = ["alacritty", "--title", "honeybot_ull_greet", "--class", "honeybot_ull_greet", "-o", 'window.decorations="None"', "-o", "window.opacity=0.96", "-o", 'colors.primary.background="#070d14"', "-o", f"window.dimensions={{columns={cols}, lines={rows}}}", "-o", f"window.position={{x={px0}, y={py0}}}", "-o", "font.size=19.0", "-e", *exec_argv]
     proc = subprocess.Popen(cmd, env=env, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=ef, start_new_session=True, close_fds=True)
 wid, win_w, win_h = "", est_w, est_h
 for _ in range(30):
@@ -3187,7 +3182,7 @@ def should_trigger_ull_arrive(prev_viewers: int, cur_viewers: int, is_live: bool
     return bool(is_live) and int(cur_viewers) > max(0, int(prev_viewers)) and int(cur_viewers) >= 1
 
 
-def trigger_ull_greeting(message=None, duration=5.5, poll_ms=0.0, trigger="manual", force=False, dry_run=False) -> dict:
+def trigger_ull_greeting(message=None, duration=9.5, poll_ms=0.0, trigger="manual", force=False, dry_run=False) -> dict:
     """Pop a bare-minimum frameless greeting on Honeybot :10.0 over warm SSH without cutting audio."""
     global _last_ull_greet_ts
     import base64
