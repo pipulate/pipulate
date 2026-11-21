@@ -419,7 +419,7 @@ def create_jekyll_post(article_content, instructions, output_dir, preview_port, 
         print("Refusing to write: promotional_tweet must be a string.")
         return None
     promo_links = list(re.finditer(
-        r"\[ARTICLE_URL\]|https?://\S+|(?<!\S)/\S+", promo_text))
+        r"\[ARTICLE_URL\]|https?://\S+|(?m)^/[a-z0-9-]+/[a-z0-9/-]*$", promo_text))
     if len(promo_links) > 1:
         print("Refusing to write: promotional_tweet must contain at most "
               "one article link or [ARTICLE_URL] marker.")
@@ -610,10 +610,13 @@ def create_jekyll_post(article_content, instructions, output_dir, preview_port, 
     os.makedirs(output_dir, exist_ok=True)
 
     prior_aid = common.read_article_id(output_path) if os.path.isfile(output_path) else None
+    prior_sort = common.read_frontmatter_int(output_path, "sort_order") if os.path.isfile(output_path) else None
     with open(output_path, 'w', encoding='utf-8') as f:
         f.write(final_content)
     if prior_aid is not None:
         common.stamp_frontmatter_value(output_path, common.ARTICLE_ID_KEY, str(prior_aid), preserve_mtime=False)
+    if prior_sort is not None and prior_sort > 0:
+        common.stamp_frontmatter_value(output_path, "sort_order", str(prior_sort), preserve_mtime=False)
     import stamp_article_ids
     stamp_article_ids.apply_article_id_plan(Path(output_dir), preserve_mtime=False)
     minted_aid = common.read_article_id(output_path)
@@ -1027,6 +1030,7 @@ def main():
                 return
 
     if instructions:
+        prev_draft = common.get_last_published(args.target)
         if args.pick is not None or args.retitle:
             try:
                 instructions = apply_headline_override(
@@ -1037,7 +1041,6 @@ def main():
                 sys.exit(1)
             with open(INSTRUCTIONS_CACHE_FILE, 'w', encoding='utf-8') as f:
                 json.dump(instructions, f, indent=4)
-            cleanup_untracked_previous_draft(args.target, output_dir)
         base_url = target_config.get("base_url")
         if base_url is None:
             base_url = target_config.get("url", "https://mikelev.in")
@@ -1045,6 +1048,11 @@ def main():
             article_text, instructions, output_dir, preview_port, base_url,
             target_config=target_config, aside=args.aside)
         if saved_path:
+            if (args.pick is not None or args.retitle) and prev_draft and Path(prev_draft).resolve() != Path(saved_path).resolve():
+                prev_sort = common.read_frontmatter_int(prev_draft, "sort_order")
+                cleanup_untracked_previous_draft(args.target, output_dir)
+                if prev_sort is not None and prev_sort > 0 and not Path(prev_draft).exists():
+                    common.stamp_frontmatter_value(saved_path, "sort_order", str(prev_sort), preserve_mtime=False)
             common.record_last_published(args.target, saved_path, target_config.get("name"))
             print_headline_menu(instructions, args.target)
             common.print_broadcast_kit(args.target, mode="card")
