@@ -146,7 +146,7 @@ def _append_article_performance(script, article, is_latest=True):
             "say": (
                 f"That concludes {article['title']}. "
                 "Remember the two addresses: local-first A I-Readiness tools at SunPug.io, "
-                f"and you the long-form version of this story at {short_addr}. "
+                f"and experience the long-form version of this story at {short_addr}. "
                 "Type any story number or menu in live chat to take control, or join the Founding 1,000 at MikeLev.in/discord — "
                 "a human operator monitors this fishtank and can break in live."
             ),
