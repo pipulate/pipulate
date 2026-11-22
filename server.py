@@ -1068,6 +1068,7 @@ app, rt, (store, Store), (profiles, Profile), (pipeline, Pipeline) = fast_app(
     default_hdrs=False,
     hdrs=(
         Meta(charset='utf-8'),
+        Meta(name='viewport', content='width=device-width, initial-scale=1'),
         Link(rel='stylesheet', href='/assets/css/pico.css'),
         Link(rel='stylesheet', href='/assets/css/prism.css'),
         Link(rel='stylesheet', href='/assets/rich-table.css'),
@@ -2618,7 +2619,7 @@ async def create_outer_container(current_profile_id, menux, request, grayscale_e
     # Initialize splitter script with server-provided sizes
     init_splitter_script = Script(f"""
         document.addEventListener('DOMContentLoaded', function() {{
-            if (window.initializePipulateSplitter) {{
+            if (window.initializePipulateSplitter && !window.matchMedia('(max-width: 768px)').matches) {{
                 const elements = ['#grid-left-content', '#chat-interface'];
                 const options = {{
                     sizes: {saved_sizes_str},
