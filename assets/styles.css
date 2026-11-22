@@ -2592,4 +2592,108 @@ Example presets:
    END DEMO SYSTEM - CINEMATIC TRANSITIONS
    ============================================================================ */
 
+/* ============================================================================
+   MOBILE & NARROW VIEWPORT LAYOUT (<= 768px)
+   Stacks Split.js columns vertically, wraps sticky top navigation cleanly,
+   and unlocks natural touch scrolling while leaving desktop (:5001) and
+   broadcast stage (:5002 at 1920x1080) untouched.
+   ============================================================================ */
+@media only screen and (max-width: 768px) {
+    :root {
+        --web-ui-padding: 0.5rem;
+        --nav-group-actual-height: auto;
+    }
+    html, body {
+        height: auto;
+        min-height: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+    body > main:first-of-type,
+    body > main:first-of-type > main.container {
+        height: auto;
+        overflow: visible;
+        padding: 0.5rem;
+    }
+    #nav-group, fieldset#nav-group {
+        padding: 0.4rem 0.5rem;
+    }
+    .nav-breadcrumb {
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.4rem;
+        min-height: 0;
+    }
+    .nav-breadcrumb h1 {
+        font-size: 1.1rem;
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+    .nav-menu-group {
+        flex-wrap: wrap;
+        align-items: center;
+        width: 100%;
+        gap: 0.35rem;
+    }
+    .search-dropdown-container {
+        flex: 1 1 100%;
+        min-width: 0;
+        width: 100%;
+        order: 10;
+    }
+    .nav-search-input {
+        width: 100%;
+        min-width: 0;
+        max-width: none;
+        font-size: 16px;
+    }
+    details.dropdown summary + ul,
+    .profile-dropdown-menu,
+    .nav-flyout-panel {
+        max-width: calc(100vw - 1rem);
+        right: 0;
+        left: auto;
+    }
+    .main-grid {
+        flex-direction: column;
+        height: auto;
+        overflow: visible;
+        gap: 1rem;
+        padding-top: 0.5rem;
+    }
+    .gutter,
+    .gutter.gutter-horizontal {
+        display: none !important;
+    }
+    .main-grid > div,
+    #grid-left-content,
+    #chat-interface {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        height: auto !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        overflow: visible;
+    }
+    #msg-list {
+        max-height: 45vh;
+        overflow-y: auto;
+    }
+    #grid-left-content input:not([type=checkbox], [type=radio]),
+    #grid-left-content select,
+    #grid-left-content textarea,
+    #input-group textarea {
+        font-size: 16px;
+    }
+    .intro-card {
+        min-height: 0;
+        margin-bottom: 1rem;
+    }
+    .inline-button-container,
+    .button-row {
+        flex-wrap: wrap;
+    }
+}
+
 
