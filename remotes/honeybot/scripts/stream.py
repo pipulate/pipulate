@@ -2661,7 +2661,7 @@ _active_article_meta = {}
 TITTLE_BUMPER_LABEL = "SUNPUG.IO &\nMIKELEV.IN"
 MIN_TITTLE_BUMPER_GAP_SEC = 30.0
 TITTLE_BUMPER_LINES = (
-    "A I-Readiness tools at SunPug.io. Long-form articles at MikeLev.in. ",
+    "A I-Readiness tools at SunPug.io. Long-form articles and the AI-ready zip-file at MikeLev.in. ",
     "Grab the free tools at SunPug.io. Get the zip-file for AI at MikeLev.in. ",
     "Self-replicating tools at SunPug.io. Deep-dive essays at MikeLev.in. ",
 )
