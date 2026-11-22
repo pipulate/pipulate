@@ -145,8 +145,8 @@ def _append_article_performance(script, article, is_latest=True):
             "pace": "standard",
             "say": (
                 f"That concludes {article['title']}. "
-                f"Remember the two addresses: you get the full lab receipts for this story at {short_addr}, "
-                "and you get the local-first A I-Readiness tools and 911 L L M Optics free at SunPug.io. "
+                "Remember the two addresses: local-first A I-Readiness tools and 911 L L M Optics free at SunPug.io, "
+                f"and you get the you get the full lab receipts for this story at {short_addr}. "
                 "Type any story number or menu in live chat to take control, or join the Founding 1,000 at MikeLev.in/discord — "
                 "a human operator monitors this fishtank and can break in live."
             ),
