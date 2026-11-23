@@ -49,29 +49,54 @@ _DATED_STEM_RE = re.compile(r"^(\d{4}-\d{2}-\d{2})-(.+)$")
 _FLOAT_TOKEN_RE = re.compile(r"[-+]?\d+(?:\.\d+)?(?:[eE][-+]?\d+)?$")
 
 
+def _resolve_targets(target_spec: str) -> list[dict]:
+    art_dir = str(_REPO_ROOT / "scripts" / "articles")
+    if art_dir not in sys.path:
+        sys.path.append(art_dir)
+    import common as _common
+    import lsa as _lsa
+    targets = json.loads(TARGETS_FILE.read_text(encoding="utf-8")) if TARGETS_FILE.is_file() else _common.load_targets()
+    keys = _lsa.parse_target_spec(str(target_spec or "1").strip() or "1", targets)
+    out = []
+    for k in keys:
+        cfg = targets[k]
+        p, name = Path(cfg["path"]).expanduser(), str(cfg.get("name") or k)
+        if k == "1" and (not (p / "_context").is_dir()) and (BRAIN_POSTS_DIR / "_context").is_dir():
+            name, p = "MikeLev.in (2nd Brain)", BRAIN_POSTS_DIR
+        out.append({"key": k, "alias": str(cfg.get("alias") or k), "name": name, "posts_dir": p, "base_url": str(cfg.get("base_url") or "").strip()})
+    return out
+
+
 def _resolve_posts_dir(target_spec: str) -> tuple[str, Path]:
-    if TARGETS_FILE.is_file():
-        try:
-            targets = json.loads(TARGETS_FILE.read_text(encoding="utf-8"))
-            if target_spec in targets:
-                cfg = targets[target_spec]
-                p = Path(cfg["path"]).expanduser()
-                if target_spec == "1" and (not (p / "_context").is_dir()) and (BRAIN_POSTS_DIR / "_context").is_dir():
-                    return "MikeLev.in (2nd Brain)", BRAIN_POSTS_DIR
-                return cfg.get("name", target_spec), p
-            for k, cfg in targets.items():
-                if str(cfg.get("alias", "")).lower() == target_spec.lower():
-                    p = Path(cfg["path"]).expanduser()
-                    if k == "1" and (not (p / "_context").is_dir()) and (BRAIN_POSTS_DIR / "_context").is_dir():
-                        return "MikeLev.in (2nd Brain)", BRAIN_POSTS_DIR
-                    return cfg.get("name", k), p
-        except Exception:
-            pass
-    if DEFAULT_POSTS_DIR.is_dir():
-        return "MikeLev.in (Default)", DEFAULT_POSTS_DIR
-    if BRAIN_POSTS_DIR.is_dir():
-        return "MikeLev.in (2nd Brain)", BRAIN_POSTS_DIR
-    return "MikeLev.in (Default)", DEFAULT_POSTS_DIR
+    first = _resolve_targets(target_spec)[0]
+    return first["name"], first["posts_dir"]
+
+
+def _target_public_domains(targets_list: list[dict]) -> list[str]:
+    import urllib.parse
+    doms = []
+    for t in targets_list:
+        bu = str(t.get("base_url") or "").strip()
+        if bu.lower().startswith("https://"):
+            h = urllib.parse.urlparse(bu).netloc.split(":", 1)[0].lower().rstrip(".").removeprefix("www.")
+            if h and not h.endswith(".local") and h not in ("localhost", "127.0.0.1") and h not in doms:
+                doms.append(h)
+    return doms
+
+
+def _read_md_fallback_topics(md_file: Path) -> tuple[list[str], int]:
+    import yaml
+    try:
+        with open(md_file, "r", encoding="utf-8", errors="replace") as fh:
+            parts = fh.read(6144).split("---", 2)
+        fm = (yaml.safe_load(parts[1]) or {}) if len(parts) >= 3 and parts[0] == "" else {}
+    except Exception:
+        return [], 0
+    raw_kw = (fm.get("meta_keywords") or fm.get("keywords") or fm.get("tags") or []) if isinstance(fm, dict) else []
+    items = raw_kw.split(",") if isinstance(raw_kw, str) else (raw_kw if isinstance(raw_kw, (list, tuple)) else [])
+    kws = [_norm_topic(k) for k in items if _norm_topic(k)]
+    so_raw = fm.get("sort_order") if isinstance(fm, dict) else 0
+    return kws, (int(so_raw) if str(so_raw or "").lstrip("-").isdigit() else 0)
 
 
 def _shannon_entropy(counter: Counter) -> float:
@@ -203,11 +228,14 @@ def _match_path_keywords(path_str: str, slug_map: dict) -> list[str]:
 
 
 def analyze_corpus_shards(target_spec: str = "1", top_k: int = 5) -> int:
-    target_name, posts_dir = _resolve_posts_dir(target_spec)
-    context_dir = posts_dir / "_context"
-    if not context_dir.is_dir():
-        print(f"⚠️ markov: no _context shard directory at {context_dir}", file=sys.stderr)
+    try:
+        targets_list = _resolve_targets(target_spec)
+    except ValueError as exc:
+        print(f"❌ markov: {exc}", file=sys.stderr)
         return 1
+    multi = len(targets_list) > 1
+    target_name = targets_list[0]["name"] if not multi else f"{', '.join(t['alias'] for t in targets_list)} ({len(targets_list)} blogs)"
+    context_dir = ", ".join(str(t["posts_dir"]) for t in targets_list)
 
     fm_cache = {}
     fm_cache_file = CONFIG_DIR / "fm_cache.json"
@@ -226,36 +254,29 @@ def analyze_corpus_shards(target_spec: str = "1", top_k: int = 5) -> int:
             token_cache = {}
 
     records = []
-    for jf in context_dir.glob("*.json"):
-        m = _DATED_STEM_RE.match(jf.stem)
-        if not m:
-            continue
-        date_str, slug = m.group(1), m.group(2)
-        try:
-            data = json.loads(jf.read_text(encoding="utf-8"))
-        except Exception:
-            continue
-        md_path = str(posts_dir / f"{jf.stem}.md")
-        sort_order = 0
-        if md_path in fm_cache and len(fm_cache[md_path]) >= 2:
-            sort_order = int(fm_cache[md_path][1] or 0)
-        tokens = 0
-        if md_path in token_cache and len(token_cache[md_path]) >= 2:
-            tokens = int(token_cache[md_path][1] or 0)
-        kws = [_norm_topic(k) for k in (data.get("kw") or []) if _norm_topic(k)]
-        subs = [_norm_topic(s) for s in (data.get("sub") or []) if _norm_topic(s)]
+    def _push_rec(m_obj, mf: Path, alias: str, kws: list[str], subs: list[str], fb_ord: int = 0) -> None:
         if not kws and not subs:
-            continue
-        records.append({
-            "stem": jf.stem,
-            "date": date_str,
-            "slug": slug,
-            "sort_order": sort_order,
-            "tokens": tokens,
-            "kws": kws,
-            "subs": subs,
-            "lead": kws[0] if kws else subs[0],
-        })
+            return
+        mp = str(mf)
+        so = int(fm_cache[mp][1] or 0) if (mp in fm_cache and len(fm_cache[mp]) >= 2) else fb_ord
+        tok = int(token_cache[mp][1] or 0) if (mp in token_cache and len(token_cache[mp]) >= 2) else (max(1, mf.stat().st_size // 4) if mf.is_file() else 0)
+        records.append({"stem": mf.stem, "date": m_obj.group(1), "slug": m_obj.group(2), "alias": alias, "sort_order": so, "tokens": tok, "kws": kws, "subs": subs, "lead": kws[0] if kws else subs[0]})
+    for t_cfg in targets_list:
+        p_dir, c_dir, seen = t_cfg["posts_dir"], t_cfg["posts_dir"] / "_context", set()
+        for jf in (c_dir.glob("*.json") if c_dir.is_dir() else ()):
+            m = _DATED_STEM_RE.match(jf.stem)
+            if m:
+                seen.add(jf.stem)
+                try:
+                    data = json.loads(jf.read_text(encoding="utf-8"))
+                    _push_rec(m, p_dir / f"{jf.stem}.md", t_cfg["alias"], [_norm_topic(k) for k in (data.get("kw") or []) if _norm_topic(k)], [_norm_topic(s) for s in (data.get("sub") or []) if _norm_topic(s)])
+                except Exception:
+                    continue
+        for mf in (p_dir.glob("*.md") if p_dir.is_dir() else ()):
+            m = _DATED_STEM_RE.match(mf.stem)
+            if m and mf.stem not in seen:
+                kws, fm_ord = _read_md_fallback_topics(mf)
+                _push_rec(m, mf, t_cfg["alias"], kws, [], fm_ord)
 
     if not records:
         print(f"⚠️ markov: 0 valid shards in {context_dir}", file=sys.stderr)
@@ -301,9 +322,13 @@ def analyze_corpus_shards(target_spec: str = "1", top_k: int = 5) -> int:
                 if len({p2.lower(), p1.lower(), c0.lower()}) == 3:
                     trans_2[(p2, p1)][c0] += 1
 
-    # Online river EWMA momentum over the last 60 vs prior window
-    recent_window = records[-30:]
-    prior_window = records[-120:-30] if len(records) > 30 else records[:-5]
+    if len(records) > 30:
+        recent_window, prior_window, min_rcnt = records[-30:], records[-120:-30], 2
+    elif len(records) >= 4:
+        half = len(records) // 2
+        recent_window, prior_window, min_rcnt = records[half:], records[:half], (2 if len(records) - half >= 6 else 1)
+    else:
+        recent_window, prior_window, min_rcnt = records, [], 1
     recent_counts = Counter(k for r in recent_window for k in r["kws"])
     prior_counts = Counter(k for r in prior_window for k in r["kws"])
     r_len = max(1, len(recent_window))
@@ -311,7 +336,7 @@ def analyze_corpus_shards(target_spec: str = "1", top_k: int = 5) -> int:
 
     momentum = []
     for topic, r_cnt in recent_counts.items():
-        if r_cnt < 2 or _is_internal_artifact(topic):
+        if r_cnt < min_rcnt or _is_internal_artifact(topic):
             continue
         r_rate = r_cnt / r_len
         p_rate = prior_counts.get(topic, 0) / p_len
@@ -353,10 +378,14 @@ def analyze_corpus_shards(target_spec: str = "1", top_k: int = 5) -> int:
         f"# 🌊 River Token EWMA: {int(ewma_tokens.get() or 0):,} tok/post | "
         f"ADWIN Regime Shifts: {drift_events} | Unique States: {len(topic_counts):,}"
     )
+    outlines = [str(t["posts_dir"].parent / "OUTLINE.md") for t in targets_list if (t["posts_dir"].parent / "OUTLINE.md").is_file()]
+    if outlines:
+        print(f"# 🗺️  Track Outline: {', '.join(outlines)}")
     print("\n## 1. Current Trajectory (Last 3 Balls Thrown)")
     for r in last_3:
         kw_preview = ", ".join(r["kws"][:4])
-        print(f"  • [{r['date']} #{r['sort_order']}] {r['slug']} -> ({kw_preview})")
+        tag_s = f" | {r['alias']}" if multi else ""
+        print(f"  • [{r['date']} #{r['sort_order']}{tag_s}] {r['slug']} -> ({kw_preview})")
 
     print(f"\n## 2. Markov Next-State Predictions P(S_t+1 | S_t in {{{', '.join(cur_states)}}})")
     top_next = next_candidates.most_common(top_k)
@@ -379,15 +408,22 @@ def analyze_corpus_shards(target_spec: str = "1", top_k: int = 5) -> int:
     else:
         print("  • (All immediate neighbor states visited within last 8 turns)")
 
-    print("\n## 4. River Streaming Momentum Surge (Last 30 vs. Baseline)")
+    win_n = len(recent_window)
+    print(f"\n## 4. River Streaming Momentum Surge (Last {30 if len(records) > 30 else win_n} vs. Baseline)")
     for lift, r_cnt, topic in momentum[:top_k]:
-        print(f"  • [+{lift:5.1f}x surge | {r_cnt:2d}/30 recent posts] {topic}")
+        print(f"  • [+{lift:5.1f}x surge | {r_cnt:2d}/{win_n} recent posts] {topic}")
 
+    pub_doms = _target_public_domains(targets_list)
+    if not pub_doms:
+        print("\n## 5. Post-GSC HitTail External Demand & Shard Intent (local/air-gapped)")
+        print("  • (Local-only target — external Honeybot wire referrals omitted by design)")
+        return 0
     slug_map = {r["slug"].lower(): r for r in records}
-    ext = _fetch_honeybot_referrals(days=30, limit=max(10, top_k * 2), force_refresh=False)
+    ext = _fetch_honeybot_referrals(days=30, limit=max(25, top_k * 5), force_refresh=False)
+    dem_rows = [row for row in (ext.get("demand") or []) if str(row[1] or "").lower().rstrip(".").removeprefix("www.") in pub_doms]
     print(f"\n## 5. Post-GSC HitTail External Demand & Shard Intent (30d | {ext.get('status', 'offline')})")
-    if ext.get("demand"):
-        for apex, dom, path_s, hits, hum, ips, _ in ext["demand"][:top_k]:
+    if dem_rows:
+        for apex, dom, path_s, hits, hum, ips, _ in dem_rows[:top_k]:
             kws = ", ".join(_match_path_keywords(path_s, slug_map)) or "non-post surface"
             print(f"  • [{apex:<16s} | N={hits:3d}, P={ips:2d} IPs] {dom}{path_s} -> ({kws})")
     elif ext.get("status") == "sync_pending":
@@ -398,8 +434,15 @@ def analyze_corpus_shards(target_spec: str = "1", top_k: int = 5) -> int:
 
 
 def run_referral_radar(target_spec: str = "1", days: int = 30, top_k: int = 15, links_only: bool = False, ai_only: bool = False, by_domain: bool = False) -> int:
-    _, posts_dir = _resolve_posts_dir(target_spec)
-    slug_map = {}
+    try:
+        targets_list = _resolve_targets(target_spec)
+    except ValueError as exc:
+        print(f"❌ markov: {exc}", file=sys.stderr)
+        return 1
+    if not _target_public_domains(targets_list):
+        print(f"# 📡 HONEYBOT POST-GSC REFERRAL RADAR ({targets_list[0]['name']} — local/air-gapped target)")
+        return 0
+    posts_dir, slug_map = targets_list[0]["posts_dir"], {}
     ctx_dir = posts_dir / "_context"
     if ctx_dir.is_dir():
         for jf in ctx_dir.glob("*.json"):
