@@ -115,7 +115,89 @@ function new_journal_entry()
     vim.cmd('startinsert')
 end
 
+local function set_git_output_lines(text)
+    local clean = text:gsub("\r\n", "\n"):gsub("\r", "\n")
+    vim.api.nvim_buf_set_lines(0, 0, -1, false, vim.split(clean, "\n"))
+    vim.api.nvim_win_set_cursor(0, {1, 0})
+end
+
+local function run_ark_backup_cascade(git_lines, git_detail)
+    local bar = "==========================================================="
+    set_git_output_lines(table.concat({
+        bar, " ⏳ ARK 3-2-1 CASCADE IN PROGRESS (safe to step away)", bar,
+        table.concat(git_lines, "\n"),
+        " ⏳ [2/3] Running b2 (backup-home -> blog commits + internal SSD)...",
+        " ⏸️  [3/3] Queued  b1 (backup-essential -> /togo + TOGO USB drive)...",
+    }, "\n"))
+    vim.cmd('redraw')
+    local b2_out, b2_rc = "(backup-home not found on PATH)", 127
+    if vim.fn.executable('backup-home') == 1 then
+        b2_out = vim.fn.system('backup-home 2>&1')
+        b2_rc = vim.v.shell_error
+    end
+    local b2_ok = (b2_rc == 0 and b2_out:find("ARK BACKUP COMPLETE", 1, true) ~= nil)
+    local b2_line = b2_ok
+        and " ✅ b2 Internal SSD (/mnt/internal_backup): COMPLETE (rc=0)"
+        or string.format(" ❌ b2 Internal SSD (/mnt/internal_backup): FAILED (rc=%d)", b2_rc)
+    set_git_output_lines(table.concat({
+        bar, " ⏳ ARK 3-2-1 CASCADE: USB THUMB-DRIVE STEP", bar,
+        table.concat(git_lines, "\n"), b2_line,
+        " ⏳ [3/3] Running b1 (backup-essential -> /togo + TOGO USB drive)...",
+    }, "\n"))
+    vim.cmd('redraw')
+    local b1_out, b1_rc = "(backup-essential not found on PATH)", 127
+    if vim.fn.executable('backup-essential') == 1 then
+        b1_out = vim.fn.system('backup-essential 2>&1')
+        b1_rc = vim.v.shell_error
+    end
+    local alerts = {}
+    if not b2_ok then
+        vim.list_extend(alerts, {
+            bar, string.format(" ❌ INTERNAL SSD BACKUP (b2) FAILED! (exit code %d)", b2_rc),
+            " • Scroll down to [2/3 b2: backup-home] output for details.", bar, "",
+        })
+    end
+    local b1_line = ""
+    if b1_rc == 0 and b1_out:find("ARK (Essentials) COMPLETE", 1, true) ~= nil then
+        b1_line = " ✅ b1 USB Thumb Drive (TOGO): MIRRORED & COMPLETE (/mnt/essentials)"
+    elseif b1_out:find("TOGO not detected", 1, true) ~= nil then
+        b1_line = " ⚠️  b1 USB Thumb Drive (TOGO): NOT PLUGGED IN (staged to /togo only)"
+        vim.list_extend(alerts, {
+            bar, " ⚠️  USB THUMB DRIVE (TOGO) NOT PLUGGED IN — USB COPY SKIPPED!",
+            " • Internal SSD (/mnt/internal_backup + /togo) IS up to date.",
+            " • Removable TOGO USB drive (/mnt/essentials) was NOT on bus.",
+            " 👉 Plug in TOGO and press \\g (or run `b1` in shell) to mirror.", bar, "",
+        })
+        vim.notify("TOGO USB thumb drive not plugged in (staged only)", vim.log.levels.WARN)
+    else
+        b1_line = string.format(" ❌ b1 USB Thumb Drive (TOGO): FAILED (rc=%d)", b1_rc)
+        vim.list_extend(alerts, {
+            bar, string.format(" ❌ USB THUMB DRIVE (TOGO) BACKUP FAILED! (exit code %d)", b1_rc),
+            " • Scroll down to [3/3 b1: backup-essential] output for details.",
+            " 👉 Check `drives` / `/mnt/essentials` and re-run `b1` or \\g.", bar, "",
+        })
+        vim.notify("TOGO USB thumb drive backup FAILED!", vim.log.levels.ERROR)
+    end
+    local head = table.concat(alerts, "\n")
+    if head ~= "" then head = head .. "\n" end
+    local card = head .. table.concat({
+        bar, " 📋 \\g + ARK BACKUP SCORECARD (" .. os.date("%Y-%m-%d %H:%M:%S") .. ")",
+        "-----------------------------------------------------------",
+        table.concat(git_lines, "\n"), b2_line, b1_line,
+        " 💡 Press 'q' or type :q to close | j/k to scroll full logs", bar,
+    }, "\n")
+    local f = io.open("/tmp/pipulate_ark_last.txt", "w")
+    if f then f:write(card .. "\n"); f:close() end
+    return card .. "\n\n=== [1/3] GIT ===\n" .. git_detail
+        .. "\n\n=== [2/3] b2: backup-home ===\n" .. b2_out
+        .. "\n\n=== [3/3] b1: backup-essential ===\n" .. b1_out
+end
+
 function git_commit_push()
+    if vim.bo.buftype == "nofile" then
+        vim.notify("\\g: switch to a file buffer before running", vim.log.levels.WARN)
+        return
+    end
     -- Get the current buffer's file name (not full path) and remember the
     -- source window, because the split below becomes the current window.
     local file_name = vim.fn.expand('%:t')
@@ -127,7 +209,12 @@ function git_commit_push()
     -- redraw come first so a mistaken \g is seen in one frame; the
     -- rest of this function writes into this same buffer.
     -- ==========================================================
-    vim.cmd('botright 20split git_output')
+    local existing_win = vim.fn.bufwinid('git_output')
+    if existing_win ~= -1 then
+        vim.api.nvim_set_current_win(existing_win)
+    else
+        vim.cmd('botright 20split git_output')
+    end
     vim.cmd('setlocal buftype=nofile bufhidden=hide noswapfile')
     vim.api.nvim_buf_set_keymap(0, 'n', 'q', ':q<CR>', { noremap = true, silent = true })
     vim.api.nvim_buf_set_lines(0, 0, -1, false, {
@@ -148,10 +235,12 @@ function git_commit_push()
     local git_diff = vim.fn.system('git diff --cached ' .. vim.fn.shellescape(file_name))
     local git_stat = vim.fn.system('git diff --cached --stat ' .. vim.fn.shellescape(file_name))
     
-    -- Guard clause: If diff is empty, open split with warning and abort
+    -- Guard clause: If diff is empty, still run the 3-2-1 Ark backup cascade
     if git_diff == "" then
-        -- The split is already open (first frame above); just update it.
-        vim.api.nvim_buf_set_lines(0, 0, -1, false, {"⚠️  No changes detected to commit.", " 💡 Press 'q' or type :q to exit this panel."})
+        local clean_out = run_ark_backup_cascade({
+            " ℹ️  Git (" .. file_name .. "): Clean (no uncommitted buffer edits)",
+        }, "(No git diff on current buffer)")
+        set_git_output_lines(clean_out)
         return
     end
 
@@ -276,21 +365,23 @@ function git_commit_push()
 
     -- Perform git commit and push
     local git_commit = vim.fn.system('git commit -m ' .. vim.fn.shellescape(commit_message))
+    local commit_rc = vim.v.shell_error
     local git_push = vim.fn.system('git push')
+    local push_rc = vim.v.shell_error
 
     -- ==========================================================
-    -- 4. FINAL UPDATE: Replace waiting text with actual results
+    -- 4. RUN 3-2-1 ARK CASCADE (b2 -> b1) & RENDER FINAL RECEIPT
     -- ==========================================================
-    local output = "Git Add Output:\n" .. git_add ..
-                   "\nGit Commit Output:\n" .. git_commit .. 
-                   "\nGit Push Output:\n" .. git_push ..
-                   "\n\n===========================================================" ..
-                   "\n 📝 Message Used: " .. commit_message ..
-                   "\n 🤖 Model Used: " .. used_model ..
-                   "\n 💡 Press 'q' or type :q to exit this panel." ..
-                   "\n==========================================================="
+    local git_icon = (commit_rc == 0 and push_rc == 0) and "✅" or "⚠️ "
+    local git_detail = "Git Add Output:\n" .. git_add ..
+                       "\nGit Commit Output (rc=" .. commit_rc .. "):\n" .. git_commit ..
+                       "\nGit Push Output (rc=" .. push_rc .. "):\n" .. git_push
+    local output = run_ark_backup_cascade({
+        " " .. git_icon .. " Git (" .. file_name .. "): " .. commit_message,
+        " 🤖 Commit Model: " .. used_model .. string.format(" (commit rc=%d, push rc=%d)", commit_rc, push_rc),
+    }, git_detail)
     
-    vim.api.nvim_buf_set_lines(0, 0, -1, false, vim.split(output, '\n'))
+    set_git_output_lines(output)
     
     -- Set up a key mapping to easily close this split
     vim.api.nvim_buf_set_keymap(0, 'n', 'q', ':q<CR>', { noremap = true, silent = true })
@@ -1346,7 +1437,7 @@ print("init.lua loaded successfully!")
 -- <leader>x (visual) - Scrub OAuth/ephemeral secrets in selection
 
 -- Git Operations
--- <leader>g - Git commit and push changes
+-- <leader>g - Git commit, push, and 3-2-1 Ark backup cascade (b2 SSD + b1 TOGO USB check)
 
 -- Journal and Notes
 -- <leader>j - Create a new journal entry
