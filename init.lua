@@ -157,6 +157,14 @@ local function run_ark_backup_cascade(git_lines, git_detail)
             " • Scroll down to [2/3 b2: backup-home] output for details.", bar, "",
         })
     end
+    local ext_warn = b2_out:match("[^\n]*EXTERNAL DRIVE MISSING:[^\n]*")
+    if ext_warn then
+        vim.list_extend(alerts, {
+            bar, " " .. vim.fn.trim(ext_warn),
+            " • Internal SSD (/mnt/internal_backup) updated; bulk drive(s) offline.", bar, "",
+        })
+        vim.notify(vim.fn.trim(ext_warn), vim.log.levels.WARN)
+    end
     local b1_line = ""
     if b1_rc == 0 and b1_out:find("ARK (Essentials) COMPLETE", 1, true) ~= nil then
         b1_line = " ✅ b1 USB Thumb Drive (TOGO): MIRRORED & COMPLETE (/mnt/essentials)"

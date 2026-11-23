@@ -278,7 +278,13 @@ def analyze_corpus_shards(target_spec: str = "1", top_k: int = 5) -> int:
                 kws, fm_ord = _read_md_fallback_topics(mf)
                 _push_rec(m, mf, t_cfg["alias"], kws, [], fm_ord)
 
+    outlines = [str(t["posts_dir"].parent / "OUTLINE.md") for t in targets_list if (t["posts_dir"].parent / "OUTLINE.md").is_file()]
     if not records:
+        if outlines:
+            print(f"# 🎲 MARKOV & RIVER ONLINE COMPASS — {target_name} (0 shards — outline seeded)")
+            print(f"# 🗺️  Track Outline: {', '.join(outlines)}")
+            print("  • (Seeded creative track — publish post #1 to activate Markov transitions)")
+            return 0
         print(f"⚠️ markov: 0 valid shards in {context_dir}", file=sys.stderr)
         return 1
 
@@ -746,6 +752,25 @@ def run_demo_series() -> int:
     return analyze_generic_series(synth_num, label="demo-quant-series", top_k=4)
 
 
+def run_outlines_overview(target_spec: str = "all") -> int:
+    try:
+        targets_list = _resolve_targets("all" if target_spec == "1" else target_spec)
+    except ValueError as exc:
+        print(f"❌ markov: {exc}", file=sys.stderr)
+        return 1
+    print(f"# 📚 JEKYLL CREATIVE TRACKS & OUTLINE MATRIX ({len(targets_list)} declared)")
+    for t in targets_list:
+        p_dir, root = t["posts_dir"], t["posts_dir"].parent
+        md_n = sum(1 for mf in (p_dir.glob("*.md") if p_dir.is_dir() else ()) if _DATED_STEM_RE.match(mf.stem))
+        ctx_n = sum(1 for jf in ((p_dir / "_context").glob("*.json") if (p_dir / "_context").is_dir() else ()) if _DATED_STEM_RE.match(jf.stem))
+        out_p = root / "OUTLINE.md"
+        out_hdr = next((ln.lstrip("# ").strip() for ln in out_p.read_text(encoding="utf-8", errors="replace").splitlines() if ln.strip().startswith("#")), "OUTLINE.md") if out_p.is_file() else ""
+        git_lbl = "git" if (root / ".git").exists() else ("dir-only" if root.is_dir() else "unseeded")
+        out_lbl = f"🗺️ {out_hdr}" if out_hdr else "⚠️ no OUTLINE.md"
+        print(f"  • [{t['key']:>2s}={t['alias']:<8s}] posts={md_n:4d} (shards={ctx_n:4d}) | {git_lbl:<8s} | {out_lbl}")
+    return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="Markov Transition Matrix & River Online Streaming ML CLI for context.txt."
@@ -760,9 +785,12 @@ def main() -> int:
     parser.add_argument("--days", type=int, default=30, help="Lookback window in days for --radar / --funnel (default: 30).")
     parser.add_argument("--funnel", action="store_true", help="Show daily directional sparklines (N/P), OLS slopes, & River/Markov funnel.")
     parser.add_argument("--stdin", action="store_true", help="Read series observations from stdin.")
+    parser.add_argument("--outlines", action="store_true", help="Show 80/20 OUTLINE.md & shard matrix across Jekyll tracks.")
     parser.add_argument("--demo-series", action="store_true", help="Run built-in numeric time-series verification.")
     args = parser.parse_args()
     src_cmd = (args.source or "").strip().lower()
+    if args.outlines or (src_cmd in ("outlines", "outline") and not Path(args.source).is_file()):
+        return run_outlines_overview(target_spec=args.target)
     if args.funnel or (src_cmd in ("funnel", "sparklines") and not Path(args.source).is_file()):
         return run_funnel_compass(days=14 if "--days" not in sys.argv else args.days, top_k=args.top)
     if args.radar or args.ai or args.links or args.by_domain or (src_cmd == "radar" and not Path(args.source).is_file()):
