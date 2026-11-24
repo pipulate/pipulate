@@ -180,39 +180,48 @@ RETRO_CURSOR_FILE = common.CONFIG_DIR / "dots_retro_cursor.json"
 
 
 def _resolve_retro_window(args: argparse.Namespace) -> tuple[int, int, str]:
+    tkey = str(getattr(args, "target", "1") or "1")
+    def_lbl = "norma-up-next" if tkey == "1" else "outline-unindexed"
+    raw = json.loads(RETRO_CURSOR_FILE.read_text(encoding="utf-8")) if RETRO_CURSOR_FILE.is_file() else {}
+    all_cur = {"1": raw} if ("offset" in raw or "next_offset" in raw) else (raw if isinstance(raw, dict) else {})
     if getattr(args, "retro_reset", False):
-        RETRO_CURSOR_FILE.unlink(missing_ok=True)
-        return 0, args.backfill, "reset->norma-up-next"
+        all_cur.pop(tkey, None)
+        RETRO_CURSOR_FILE.write_text(json.dumps(all_cur, indent=2) + "\n", encoding="utf-8") if all_cur else RETRO_CURSOR_FILE.unlink(missing_ok=True)
+        return 0, args.backfill, f"reset->{def_lbl}"
     if getattr(args, "offset", 0) > 0:
         return int(args.offset), args.backfill, f"offset={int(args.offset)}"
-    cur = json.loads(RETRO_CURSOR_FILE.read_text(encoding="utf-8")) if RETRO_CURSOR_FILE.is_file() else {}
+    cur = all_cur.get(tkey) if isinstance(all_cur.get(tkey), dict) else {}
     if getattr(args, "retro", None) is not None:
         step = max(1, int(args.retro))
         off = int(cur.get("next_offset") or max(1, int(args.forward)))
+        all_cur[tkey] = {"offset": off, "next_offset": off + step, "step": step}
         common.CONFIG_DIR.mkdir(parents=True, exist_ok=True)
-        RETRO_CURSOR_FILE.write_text(json.dumps({"offset": off, "next_offset": off + step, "step": step}, indent=2) + "\n", encoding="utf-8")
+        RETRO_CURSOR_FILE.write_text(json.dumps(all_cur, indent=2) + "\n", encoding="utf-8")
         return off, step, f"retro-step(offset={off}, step={step})"
     if cur.get("offset"):
         return int(cur["offset"]), int(cur.get("step") or args.backfill), f"retro-parked(offset={cur['offset']})"
-    return 0, args.backfill, "norma-up-next"
+    return 0, args.backfill, def_lbl
 
 
-def harvest_dual_heads(posts_dir: Path, forward_n: int = 2, backfill_n: int = 2, retro_offset: int = 0) -> tuple[list[dict], list[dict]]:
+def harvest_dual_heads(posts_dir: Path, forward_n: int = 2, backfill_n: int = 2, retro_offset: int = 0, target_key: str = "1", outline_path: Path | None = None) -> tuple[list[dict], list[dict]]:
     pdir = Path(posts_dir).expanduser().resolve()
     ctx_dir = pdir / "_context"
-    dated = sorted([p for p in pdir.glob("*.md") if common._DATED_POST_RE.match(p.name)], key=common._post_sort_key)
+    dated = sorted([p for p in pdir.glob("*.md") if common._DATED_POST_RE.match(p.name)], key=common._post_sort_key) if pdir.is_dir() else []
     newest_first = list(reversed(dated))
     head_a_paths = newest_first[: max(0, int(forward_n))] if forward_n > 0 else []
     seen = {p.name for p in head_a_paths}
     head_a = [_extract_post_seeds(p, ctx_dir, "forward-latest") for p in head_a_paths]
     head_b: list[dict] = []
-    if retro_offset > 0:
-        for p in newest_first[retro_offset:]:
+    if retro_offset > 0 or str(target_key) != "1":
+        out_txt = outline_path.read_text(encoding="utf-8", errors="replace") if (retro_offset == 0 and outline_path and outline_path.is_file()) else ""
+        unidx = [p for p in newest_first if p.name not in seen and p.name not in out_txt and p.stem[11:] not in out_txt]
+        for p in (newest_first[retro_offset:] if retro_offset > 0 else [*unidx, *newest_first]):
             if len(head_b) >= backfill_n:
                 break
             if p.name not in seen and not common.read_frontmatter_bool(p, "aside"):
                 seen.add(p.name)
-                head_b.append(_extract_post_seeds(p, ctx_dir, "retro-archive"))
+                tag = "retro-archive" if retro_offset > 0 else ("outline-unindexed" if (out_txt and p in unidx) else "recent-backfill")
+                head_b.append(_extract_post_seeds(p, ctx_dir, tag))
         return head_a, head_b
     for cand in norma_extract.rank_candidates(pdir, limit=max(1, forward_n) + backfill_n + 8):
         if len(head_b) >= backfill_n:
@@ -224,21 +233,25 @@ def harvest_dual_heads(posts_dir: Path, forward_n: int = 2, backfill_n: int = 2,
     return head_a, head_b
 
 
-def compute_scoreboard(foo_path: Path, head_a: list[dict], head_b: list[dict], head_0: list[dict] | None = None) -> dict:
+def compute_scoreboard(foo_path: Path, head_a: list[dict], head_b: list[dict], head_0: list[dict] | None = None, is_outline: bool = False) -> dict:
     h0 = head_0 or []
     all_heads = [*h0, *head_a, *head_b]
     fl = foo_path.read_text(encoding="utf-8", errors="replace").splitlines() if foo_path.is_file() else []
-    try:
-        rs = next(i for i, ln in enumerate(fl) if ln.startswith("# --- START RECEIPTS"))
-        re_i = next(i for i, ln in enumerate(fl) if ln.startswith("# --- END RECEIPTS"))
-        top_rec = fl[rs + 1 : min(re_i, rs + 4)]
-    except StopIteration:
-        top_rec = []
-    paint_i = next((i for i, ln in enumerate(fl) if "XIX. THE PAINTBOX" in ln), len(fl))
-    claimed_files = set(re.findall(r"\b[a-z0-9_]+\.(?:py|nix|sh|js)\b", "\n".join(fl[:paint_i]).lower()))
-    axis1 = sum(ln.lower().count("discharging") + ln.count("ALL LANDED") + (1 if "pipulate commit" in ln else 0) for ln in top_rec)
-    todos = [ln for ln in fl if ln.startswith("# - TODO")]
-    p0_count = sum(1 for ln in todos if ", P0." in ln)
+    if is_outline:
+        open_q = [ln.strip() for ln in fl if re.match(r"^\s*-\s*\[\s\]\s+", ln)]
+        spine_q = [ln.strip() for ln in fl if re.match(r"^\s*(?:\d+\.|###\s+Act\b|-\s+\*\*)", ln)]
+        todos, p0_count = (open_q or spine_q), len(open_q)
+        axis1 = sum(1 for ln in fl if re.match(r"^\s*-\s*\[[xX]\]\s+", ln) or "article_id:" in ln)
+        claimed_files = {m.strip().lower() for m in re.findall(r"`([A-Za-z0-9_./:-]{3,40})`", "\n".join(fl))}
+    else:
+        rs = next((i for i, ln in enumerate(fl) if ln.startswith("# --- START RECEIPTS")), None)
+        re_i = next((i for i, ln in enumerate(fl) if ln.startswith("# --- END RECEIPTS")), None)
+        top_rec = fl[rs + 1 : min(re_i, rs + 4)] if (rs is not None and re_i is not None) else []
+        paint_i = next((i for i, ln in enumerate(fl) if "XIX. THE PAINTBOX" in ln), len(fl))
+        claimed_files = set(re.findall(r"\b[a-z0-9_]+\.(?:py|nix|sh|js)\b", "\n".join(fl[:paint_i]).lower()))
+        axis1 = sum(ln.lower().count("discharging") + ln.count("ALL LANDED") + (1 if "pipulate commit" in ln else 0) for ln in top_rec)
+        todos = [ln for ln in fl if ln.startswith("# - TODO")]
+        p0_count = sum(1 for ln in todos if ", P0." in ln)
     over_cap = sum(1 for ln in todos if len(ln) > 320)
     seed_tokens = _tokenize_topics([" ".join([*it["kws"], *it["ideas"], it["next_steps"], it.get("shard_summary", "")]) for it in all_heads])
     raw_phrases = {" ".join(re.findall(r"[a-z0-9]+", kw.lower())) for it in all_heads for kw in it["kws"]}
@@ -253,15 +266,20 @@ def compute_scoreboard(foo_path: Path, head_a: list[dict], head_b: list[dict], h
         blob = " ".join([it["title"], *it["kws"], *it["ideas"], it["next_steps"], it.get("shard_summary", "")])
         cap_ov = 8 if it.get("article_id") == 0 else 4
         t_ov = sorted(_tokenize_topics([blob]) & rare_tokens)[:cap_ov]
-        f_ov = sorted(set(re.findall(r"\b[a-z0-9_]+\.(?:py|nix|sh|js)\b", blob.lower())) & claimed_files)[:cap_ov]
-        it["foo_hint"] = f"todo_overlap=({', '.join(t_ov) or 'none'}) | claimed_files=({', '.join(f_ov) or 'none'})"
-    collisions = []
+        if is_outline:
+            f_ov = sorted(r for r in claimed_files if len(r) >= 4 and r in blob.lower())[:cap_ov]
+            it["foo_hint"] = f"outline_overlap=({', '.join(t_ov) or 'none'}) | spine_refs=({', '.join(f_ov) or 'none'})"
+        else:
+            f_ov = sorted(set(re.findall(r"\b[a-z0-9_]+\.(?:py|nix|sh|js)\b", blob.lower())) & claimed_files)[:cap_ov]
+            it["foo_hint"] = f"todo_overlap=({', '.join(t_ov) or 'none'}) | claimed_files=({', '.join(f_ov) or 'none'})"
+    collisions, min_hits = [], (2 if is_outline else 3)
     for ln, ln_w, t_set in zip(todos, todo_words, todo_toks):
         p_hits = sorted(p for p in rare_phrases if f" {p} " in ln_w)
         t_hits = sorted(t_set & rare_tokens)
-        if p_hits or len(t_hits) >= 3:
+        if p_hits or len(t_hits) >= min_hits:
             shown = [*p_hits, *(t for t in t_hits if all(t not in p.split() for p in p_hits))][:5]
-            head_lbl = ln.split(":", 1)[0].replace("# - TODO ", "").strip()
+            raw_lbl = re.sub(r"^\s*(?:-\s*\[\s\]\s*|\d+\.\s*|###\s*)", "", ln).replace("**", "") if is_outline else ln.replace("# - TODO ", "")
+            head_lbl = raw_lbl.split(":", 1)[0].strip()
             collisions.append((len(p_hits) * 2 + len(t_hits), head_lbl[:72], shown))
     collisions.sort(key=lambda x: (-x[0], x[1]))
     axis2 = len(collisions)
@@ -283,23 +301,29 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     repo_root = Path(args.repo_root).expanduser().resolve()
     targets = common.load_targets()
-    tcfg = targets.get(str(args.target), {"path": common.resolve_default_posts_dir()})
-    pdir = Path(tcfg["path"]).expanduser().resolve()
+    tkey = str(args.target)
+    tcfg = targets.get(tkey, {"path": common.resolve_default_posts_dir()})
+    pdir, is_outline = Path(tcfg["path"]).expanduser().resolve(), (tkey != "1")
+    ledger_path = (pdir.parent / "OUTLINE.md") if is_outline else (repo_root / "foo_files.py")
+    chk_lbl, t_alias = ("OUTLINE_CHECK" if is_outline else "FOO_CHECK"), str(tcfg.get("alias") or tkey)
     retro_off, eff_backfill, mode_lbl = _resolve_retro_window(args)
     head_0 = [] if args.no_draft else _extract_draft_seeds(repo_root / "prompt.md")
-    head_a, head_b = harvest_dual_heads(pdir, forward_n=args.forward, backfill_n=eff_backfill, retro_offset=retro_off)
-    sb = compute_scoreboard(repo_root / "foo_files.py", head_a, head_b, head_0=head_0)
+    head_a, head_b = harvest_dual_heads(pdir, forward_n=args.forward, backfill_n=eff_backfill, retro_offset=retro_off, target_key=tkey, outline_path=ledger_path if is_outline else None)
+    sb = compute_scoreboard(ledger_path, head_a, head_b, head_0=head_0, is_outline=is_outline)
     eff_mode = f"in-flight+{mode_lbl}" if head_0 else mode_lbl
-    print(f"# 🔵 DOTS TRI-HEAD IDEA REFINERY — Verdict: {sb['verdict']} | Mode: {eff_mode} | Over320c={sb['over_cap']}")
-    print(f"# ⚖️  Goodhart Scoreboard: Axis0(DraftSegs)={sb['axis0']} | Axis1(Discharged)={sb['axis1']} | Axis2(Collisions)={sb['axis2']} | Open_TODOs={sb['open_todos']} (P0={sb['p0_todos']})")
+    q_lbl = f"Outline_Seeds={sb['open_todos']} (OpenBox={sb['p0_todos']})" if is_outline else f"Open_TODOs={sb['open_todos']} (P0={sb['p0_todos']})"
+    print(f"# 🔵 DOTS TRI-HEAD IDEA REFINERY — Target: {tkey}={t_alias} ({ledger_path.name}) | Verdict: {sb['verdict']} | Mode: {eff_mode} | Over320c={sb['over_cap']}")
+    print(f"# ⚖️  Goodhart Scoreboard: Axis0(DraftSegs)={sb['axis0']} | Axis1({'Indexed' if is_outline else 'Discharged'})={sb['axis1']} | Axis2(Collisions)={sb['axis2']} | {q_lbl}")
     for cnt, lbl, kws in sb["collisions"]:
         print(f"  • [overlap={cnt}] {lbl} <- ({', '.join(kws)})")
     heads = ([("In-Flight Head 0 (prompt.md)", head_0)] if head_0 else []) + [("Forward Head A (! latest)", head_a), (f"Retrograde Head B ({mode_lbl})", head_b)]
     for label, items in heads:
         print(f"\n## {label}")
+        if not items:
+            print("  • (No published posts in window yet)")
         for it in items:
             print(f"- #{it['article_id']} [{it['date']} | {it['source_tag']}] {it['title']} | kw=({', '.join(it['kws'])})")
-            print(f"  [FOO_CHECK]: {it.get('foo_hint', '')}")
+            print(f"  [{chk_lbl}]: {it.get('foo_hint', '')}")
             if args.radar:
                 for s_ln in it.get("turn_summaries", []):
                     print(f"  • {s_ln}")
