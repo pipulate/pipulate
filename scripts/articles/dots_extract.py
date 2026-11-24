@@ -287,7 +287,94 @@ def compute_scoreboard(foo_path: Path, head_a: list[dict], head_b: list[dict], h
     return {"axis0": len(h0[0]["ideas"]) if h0 else 0, "axis1": axis1, "axis2": axis2, "open_todos": len(todos), "p0_todos": p0_count, "over_cap": over_cap, "verdict": verdict, "collisions": collisions[:8]}
 
 
+def _build_outline_dots_prompt(tkey: str, tcfg: dict, ledger_path: Path) -> str:
+    o3, c3 = "[" * 3, "]" * 3
+    alias = str(tcfg.get("alias") or tkey)
+    name = str(tcfg.get("name") or alias)
+    bu = str(tcfg.get("base_url") or "").strip()
+    lane = str(tcfg.get("lane") or ("public" if bu.lower().startswith("https://") else "private")).strip().lower()
+    return (
+        f"You are running THE DOTS TRI-HEAD OUTLINE-REFINERY KATA against {ledger_path}\n"
+        f"(Target: {tkey}={alias} — {name} | lane={lane}).\n"
+        "Read the Goodhart Scoreboard, optional In-Flight Head 0 (prompt.md human draft segments),\n"
+        "Forward Head A, Retrograde Head B ([OUTLINE_CHECK]), ! markov, and raw OUTLINE.md.\n"
+        "GOVERNING LAW ( <= 1 file, <= 10 blocks, <= 120 replacement lines; CAPTURE & SPINE SYNC ONLY ):\n"
+        "1. FOSSIL EXCAVATION & IDEMPOTENCE: Keep OUTLINE.md a crisp 80/20 spine, character/concept\n"
+        "   crucible, shard index, and '- [ ]' chapter/scene queue (each queue item <= 320 chars).\n"
+        "   Drop sparks already covered; fold net-new details into matching items; when every live\n"
+        "   spark is already represented, return NOTHING_ELIGIBLE so repeated runs converge in 1 pass.\n"
+        "2. TWO-SPEED HARVEST & LANE HYGIENE:\n"
+        "   - IN_FLIGHT_DRAFT_HARVEST (Head 0 present): harvest net-new chapter/scene seeds,\n"
+        "     character/concept friction rows, or structural mechanisms forged in prompt.md.\n"
+        "   - CORPUS SWEEP: index any unindexed _posts/*.md dispatches in the Shard Index and flip\n"
+        f"     discharged '- [ ]' items to '- [x]'. Enforce lane={lane}: never leak private-lane lore\n"
+        "     into public outlines, and use bare domains (sunpug.io, mikelev.in, never schemes).\n"
+        "OUTPUT CONTRACT: enclose the entire reply inside ONE fenced 'text' code block holding ONLY\n"
+        f"Target: {ledger_path} + {o3}SEARCH{c3}/{o3}DIVIDER{c3}/{o3}REPLACE{c3} blocks, or\n"
+        "NOTHING_ELIGIBLE axis0=<n> axis1=<n> axis2=<n> inside that single fence, zero prose outside.\n"
+    )
+
+
+def _run_dots_compile(args: argparse.Namespace, passthrough: list[str], repo_root: Path, targets: dict) -> int:
+    import os
+    import shutil
+    import subprocess
+    import tempfile
+    tkey = str(args.target or "1")
+    if args.retro is not None or args.retro_reset:
+        _resolve_retro_window(args)
+    tcfg = targets[tkey]
+    alias = str(tcfg.get("alias") or tkey)
+    pdir = Path(tcfg["path"]).expanduser().resolve()
+    if tkey == "1":
+        ledger_path = repo_root / "foo_files.py"
+        chop_lines = ["! markov", "! postsc 3", "! .venv/bin/python scripts/articles/dots_extract.py", "foo_files.py", "apply.py"]
+        if args.dry_compile:
+            print(f"TARGET={tkey}:{alias} MODE=foo_files LEDGER={ledger_path}\nCHOP={' ; '.join(chop_lines)}\nPASSTHROUGH={passthrough}")
+            return 0
+        cmd = [sys.executable, str(repo_root / "prompt_foo.py"), "@DOTS_PROMPT", "--chop", "DOTS_CHOP", "--no-tree", *passthrough]
+        return subprocess.run(cmd, cwd=str(repo_root)).returncode
+    ledger_path = pdir.parent / "OUTLINE.md"
+    has_posts = pdir.is_dir() and any(common._DATED_POST_RE.match(p.name) for p in pdir.glob("*.md"))
+    ext_flags = [f"-t {alias}"]
+    if args.forward != 2:
+        ext_flags.append(f"-f {args.forward}")
+    if args.backfill != 2:
+        ext_flags.append(f"-b {args.backfill}")
+    if args.offset > 0:
+        ext_flags.append(f"--offset {args.offset}")
+    if args.no_draft:
+        ext_flags.append("--no-draft")
+    chop_lines = [
+        f"! markov -t {alias}",
+        *([f"! postsc 3 -t {alias}"] if has_posts else []),
+        f"! .venv/bin/python scripts/articles/dots_extract.py {' '.join(ext_flags)}",
+        str(ledger_path),
+    ]
+    prompt_txt = _build_outline_dots_prompt(tkey, tcfg, ledger_path)
+    if args.dry_compile:
+        print(f"TARGET={tkey}:{alias} MODE=outline LEDGER={ledger_path} HAS_POSTS={has_posts}\nCHOP={' ; '.join(chop_lines)}\nPROMPT_LINE1={prompt_txt.splitlines()[0]}")
+        return 0
+    if not ledger_path.is_file():
+        print(f"❌ dots: missing outline ledger at {ledger_path}", file=sys.stderr)
+        return 1
+    tmp_dir = Path(tempfile.mkdtemp(prefix=f"dots_{alias}_"))
+    try:
+        chop_f, prompt_f = tmp_dir / f"dots_{alias}.chop.txt", tmp_dir / f"dots_{alias}.prompt.md"
+        chop_f.write_text("\n".join(chop_lines) + "\n", encoding="utf-8")
+        prompt_f.write_text(prompt_txt, encoding="utf-8")
+        env = {**os.environ, "PIPULATE_ADHOC_FILE": str(chop_f)}
+        cmd = [sys.executable, str(repo_root / "prompt_foo.py"), str(prompt_f), "--chop", "ADHOC_CHOP", "--no-tree", "-t", tkey, *passthrough]
+        rc = subprocess.run(cmd, cwd=str(repo_root), env=env).returncode
+        if rc == 0:
+            print(f"🎯 DOTS Outline Refinery compiled for {tkey}={alias} -> {ledger_path}")
+        return rc
+    finally:
+        shutil.rmtree(tmp_dir, ignore_errors=True)
+
+
 def main(argv: list[str] | None = None) -> int:
+    raw_argv = sys.argv[1:] if argv is None else list(argv)
     parser = argparse.ArgumentParser(description="Tri-Head Idea-Refinery Harvester (`dots`).")
     common.add_standard_arguments(parser)
     parser.add_argument("-f", "--forward", type=int, default=2, help="Newest _posts/*.md count for Head A (default: 2).")
@@ -297,12 +384,20 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--retro-reset", action="store_true", help="Clear persisted retrograde cursor back to norma-up-next.")
     parser.add_argument("--no-draft", action="store_true", help="Skip In-Flight Head 0 (prompt.md) and inspect published _posts/ only.")
     parser.add_argument("--radar", action="store_true", help="Compact terminal summary without full seed bodies.")
+    parser.add_argument("--compile", action="store_true", help="Compile refinery payload onto clipboard via prompt_foo.py.")
+    parser.add_argument("--dry-compile", action="store_true", help="Preview target ledger, chop lines, and prompt header without compiling.")
     parser.add_argument("--repo-root", type=str, default=str(DEFAULT_REPO_ROOT), help="Repo root containing foo_files.py and prompt.md.")
-    args = parser.parse_args(argv)
+    args, passthrough = parser.parse_known_args(raw_argv) if ("--compile" in raw_argv or "--dry-compile" in raw_argv) else (parser.parse_args(raw_argv), [])
     repo_root = Path(args.repo_root).expanduser().resolve()
     targets = common.load_targets()
-    tkey = str(args.target)
-    tcfg = targets.get(tkey, {"path": common.resolve_default_posts_dir()})
+    tkey = str(args.target or "1")
+    if tkey not in targets:
+        valid = ", ".join(f"{k}={v.get('alias', k)}" for k, v in targets.items())
+        print(f"❌ dots: unknown target {tkey!r} (expected one of: {valid})", file=sys.stderr)
+        return 1
+    if args.compile or args.dry_compile:
+        return _run_dots_compile(args, passthrough, repo_root, targets)
+    tcfg = targets[tkey]
     pdir, is_outline = Path(tcfg["path"]).expanduser().resolve(), (tkey != "1")
     ledger_path = (pdir.parent / "OUTLINE.md") if is_outline else (repo_root / "foo_files.py")
     chk_lbl, t_alias = ("OUTLINE_CHECK" if is_outline else "FOO_CHECK"), str(tcfg.get("alias") or tkey)

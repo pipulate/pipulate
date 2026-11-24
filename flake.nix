@@ -459,26 +459,31 @@
             echo "dots: missing $python_bin; enter the Pipulate Nix shell first." >&2
             exit 1
           fi
-          case "''${1:-}" in
-            radar|--radar)
-              shift
-              exec "$python_bin" "$root/scripts/articles/dots_extract.py" --radar "$@"
-              ;;
-            raw|--raw)
-              shift
-              exec "$python_bin" "$root/scripts/articles/dots_extract.py" "$@"
-              ;;
-            -h|--help|help)
-              printf "%s\n" \
-                "dots — Tri-Head Idea-Refinery Kata" \
-                "  dots              compile DOTS_PROMPT + DOTS_CHOP to clipboard (In-Flight prompt.md + corpus)" \
-                "  dots radar        print compact scoreboard + In-Flight/Forward/Retrograde heads" \
-                "  dots raw          print full harvested idea blocks & Next-Step Prompts"
-              ;;
-            *)
-              cd "$root"
-              exec "$python_bin" "$root/prompt_foo.py" @DOTS_PROMPT --chop DOTS_CHOP --no-tree "$@"
-              ;;
+          mode="compile"; fwd=()
+          while [ "$#" -gt 0 ]; do
+            case "$1" in
+              radar|--radar) mode="radar"; shift ;;
+              raw|--raw) mode="raw"; shift ;;
+              --dry-compile) mode="dry-compile"; shift ;;
+              -h|--help|help)
+                printf "%s\n" \
+                  "dots — Tri-Head Idea & Outline Refinery Kata" \
+                  "  dots [-t BLOG]              compile refinery payload to clipboard (1=foo_files.py; others=OUTLINE.md)" \
+                  "  dots [-t BLOG] radar        print compact scoreboard + In-Flight/Forward/Retrograde heads" \
+                  "  dots [-t BLOG] raw          print full harvested idea blocks & Next-Step Prompts" \
+                  "  dots [-t BLOG] --dry-compile preview target ledger, chop lines, & prompt without compiling"
+                exit 0 ;;
+              -t|--target|-o|--output|-p|--profile|--reason|--extra-prompt|--extra-prompt-file|--bumper|--arg)
+                if [ "$#" -lt 2 ]; then fwd+=("$1"); shift; else fwd+=("$1" "$2"); shift 2; fi ;;
+              --) shift; fwd+=("$@"); break ;;
+              *) fwd+=("$1"); shift ;;
+            esac
+          done
+          case "$mode" in
+            radar) exec "$python_bin" "$root/scripts/articles/dots_extract.py" --radar "''${fwd[@]}" ;;
+            raw) exec "$python_bin" "$root/scripts/articles/dots_extract.py" "''${fwd[@]}" ;;
+            dry-compile) exec "$python_bin" "$root/scripts/articles/dots_extract.py" --compile --dry-compile "''${fwd[@]}" ;;
+            *) cd "$root" && exec "$python_bin" "$root/scripts/articles/dots_extract.py" --compile "''${fwd[@]}" ;;
           esac
         '';
 
