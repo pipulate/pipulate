@@ -3084,7 +3084,7 @@ YT_ULL_GREET_COOLDOWN = int(os.environ.get("PIPULATE_YT_GREET_COOLDOWN", "25"))
 DEFAULT_ULL_GREET_MESSAGE = (
     "> +1 VIEWER DETECTED. SHALL WE PLAY A GAME?\n"
     "Grab mikelev.in/brain.zip -> drop it into your AI.\n"
-    "► Or type MENU in chat to steer this live stream."
+    "► Lead on, adventurer. Your quest awaits!"
 )
 _last_ull_greet_ts = 0.0
 
