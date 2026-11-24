@@ -170,7 +170,7 @@ for ap, dom, p_s, hits, hum, ips, h7, p_days, f_seen, f_ref, l_ref, s_ref in d_r
         continue
     if a in _AI_APEX or a.startswith(("google.", "yandex.", "yahoo.", "baidu.")) or any(x in a for x in (".google.", ".yandex.", ".yahoo.", ".baidu.", "googlequicksearchbox")):
         bkt = "ai"
-    elif a in _SOCIAL_APEX or a.startswith(("com.", "org.", "net.")):
+    elif a in _SOCIAL_APEX or (a.startswith(("com.", "org.", "net.")) and a.count(".") >= 2):
         bkt = "social"
     elif https_u and a not in _NOISE_APEX:
         bkt = "links"
@@ -780,7 +780,9 @@ _SOCIAL_SHORT_ALIASES = {
 
 _REMOTE_SOCIAL_PY = r"""
 import datetime, json, sqlite3, sys
-days, plat_f, dom_csv, lim = max(2, int(sys.argv[1])), sys.argv[2].strip().lower(), sys.argv[3].strip().lower(), max(10, int(sys.argv[4]))
+days, lim = max(2, int(sys.argv[1])), max(10, int(sys.argv[4]))
+plat_f = "" if sys.argv[2].strip().lower() in ("", "all", "-") else sys.argv[2].strip().lower()
+dom_csv = "" if sys.argv[3].strip().lower() in ("", "all", "-") else sys.argv[3].strip().lower()
 db_p = sys.argv[5] if len(sys.argv) > 5 and sys.argv[5] else "/home/mike/www/mikelev.in/honeybot.db"
 conn = sqlite3.connect(f"file:{db_p}?mode=ro", uri=True)
 end_d = datetime.date.today()
@@ -798,7 +800,8 @@ for dy, raw_ap, dom, p_s, hum, ips, s_ref in conn.execute(sql, (d0, d1)):
     ap, d_clean = _FOLD.get((raw_ap or "").lower(), (raw_ap or "").lower()), (dom or "").lower().rstrip(".").removeprefix("www.")
     if ap not in _SOC or (plat_f and ap != plat_f) or (dom_set and d_clean not in dom_set) or str(dy) not in idx_m:
         continue
-    i, h_i, ip_i = idx_m[str(dy)], int(hum or 0), int(ips or 0)
+    h_i = int(hum or 0)
+    i, ip_i = idx_m[str(dy)], min(h_i, int(ips or 0))
     pr = plats.setdefault(ap, {"n": [0] * days, "p": [0] * days, "paths": set()})
     pr["n"][i] += h_i; pr["p"][i] += ip_i; pr["paths"].add((d_clean, p_s))
     er = edges.setdefault((ap, d_clean, p_s), {"n": [0] * days, "p": [0] * days, "ref": s_ref or ap})
@@ -835,8 +838,9 @@ def run_social_article_velocity(target_spec: str = "1", days: int = 14, top_k: i
                     pass
     raw_p = (platform or "").strip().lower().removeprefix("www.")
     plat_f, dom_csv, lim = _SOCIAL_SHORT_ALIASES.get(raw_p, raw_p), (",".join(pub_doms) if target_explicit else ""), max(60, int(top_k) * 4)
+    plat_arg, dom_arg = re.sub(r"[^a-z0-9._-]", "", plat_f) or "all", re.sub(r"[^a-z0-9.,_-]", "", dom_csv) or "all"
     db_ov, host = os.environ.get("PIPULATE_HONEYBOT_DB", "").strip(), os.environ.get("PIPULATE_HONEYBOT_HOST", "honeybot")
-    cmd = [sys.executable, "-", str(int(days)), plat_f, dom_csv, str(lim), db_ov] if (db_ov and Path(db_ov).is_file()) else ["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=3", host, "python3", "-", str(int(days)), plat_f, dom_csv, str(lim)]
+    cmd = [sys.executable, "-", str(int(days)), plat_arg, dom_arg, str(lim), db_ov] if (db_ov and Path(db_ov).is_file()) else ["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=3", host, "python3", "-", str(int(days)), plat_arg, dom_arg, str(lim)]
     res = subprocess.run(cmd, input=_REMOTE_SOCIAL_PY, capture_output=True, text=True, timeout=6, check=False)
     snap = json.loads(res.stdout.strip()) if res.returncode == 0 and (res.stdout or "").strip() else {"status": "offline", "span": [], "platforms": {}, "edges": []}
     span, plats, edges = snap.get("span") or [], snap.get("platforms") or {}, snap.get("edges") or []

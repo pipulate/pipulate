@@ -331,6 +331,7 @@ class HoneyDB:
         """One-time idempotent fold of social shorteners & dark-social ?src= dyes into referrer_daily_logs."""
         try:
             if self.get_counter("social_compound_v1") >= 1:
+                self._refresh_social_daily_metrics_v2()
                 return
             conn, cur = self.get_conn(), self.get_conn().cursor()
             for old_ap, new_ap in {**SOCIAL_APEX_ALIASES, "ycombinator.com": "news.ycombinator.com"}.items():
@@ -358,11 +359,23 @@ class HoneyDB:
                 agg[(d_str, r_ap, dom_id, r_pid)] = (c_ref, (prev[1] if prev else 0) + c, (prev[2] if prev else 0) + hum, (prev[3] if prev else 0) + (c - hum), (prev[4] if prev else set()) | {int(ip_id)})
             for (d_str, r_ap, dm, pid), (sr, tot, hum, bot, ips) in agg.items():
                 cur.execute("INSERT INTO referrer_daily_logs (date, ref_apex, domain_id, path_id, sample_referrer, count, human_count, bot_count, unique_ips) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(date, ref_apex, domain_id, path_id) DO UPDATE SET count = count + excluded.count, human_count = human_count + excluded.human_count, bot_count = bot_count + excluded.bot_count, unique_ips = unique_ips + excluded.unique_ips", (d_str, r_ap, dm, pid, sr, tot, hum, bot, len(ips)))
-            cur.execute("DELETE FROM daily_metrics WHERE metric IN ('social_in', 'yt_referral_human')")
-            ph = ",".join("?" for _ in SOCIAL_PLATFORMS)
-            cur.execute(f"INSERT OR REPLACE INTO daily_metrics (metric, dim, day, count, unique_ips) SELECT CASE WHEN rdl.ref_apex = 'youtube.com' THEN 'yt_referral_human' ELSE 'social_in' END, CASE WHEN rdl.ref_apex = 'youtube.com' THEN d.value ELSE rdl.ref_apex END, rdl.date, SUM(rdl.human_count), SUM(rdl.unique_ips) FROM referrer_daily_logs rdl JOIN domains d ON rdl.domain_id = d.id WHERE rdl.human_count > 0 AND rdl.ref_apex IN ({ph}) GROUP BY 1, 2, 3", tuple(SOCIAL_PLATFORMS))
             conn.commit()
             self.increment_counter("social_compound_v1", 1)
+        except Exception:
+            return
+        self._refresh_social_daily_metrics_v2()
+
+    def _refresh_social_daily_metrics_v2(self) -> None:
+        """One-time human-IP-bounded refresh of social_in & yt_referral_human in daily_metrics."""
+        try:
+            if self.get_counter("social_compound_v2") >= 1:
+                return
+            conn, cur = self.get_conn(), self.get_conn().cursor()
+            cur.execute("DELETE FROM daily_metrics WHERE metric IN ('social_in', 'yt_referral_human')")
+            ph = ",".join("?" for _ in SOCIAL_PLATFORMS)
+            cur.execute(f"INSERT OR REPLACE INTO daily_metrics (metric, dim, day, count, unique_ips) SELECT CASE WHEN rdl.ref_apex = 'youtube.com' THEN 'yt_referral_human' ELSE 'social_in' END, CASE WHEN rdl.ref_apex = 'youtube.com' THEN d.value ELSE rdl.ref_apex END, rdl.date, SUM(rdl.human_count), SUM(MIN(rdl.human_count, rdl.unique_ips)) FROM referrer_daily_logs rdl JOIN domains d ON rdl.domain_id = d.id WHERE rdl.human_count > 0 AND rdl.ref_apex IN ({ph}) GROUP BY 1, 2, 3", tuple(SOCIAL_PLATFORMS))
+            conn.commit()
+            self.increment_counter("social_compound_v2", 1)
         except Exception:
             pass
 
@@ -1160,7 +1173,7 @@ class HoneyDB:
                 "INSERT OR REPLACE INTO daily_metrics (metric, dim, day, count, unique_ips) SELECT CASE WHEN p.value IN ('/brain.zip', '/book.zip') THEN 'archive_dl' ELSE 'social_out' END, CASE WHEN p.value IN ('/brain.zip', '/book.zip') THEN ltrim(p.value, '/') WHEN p.value = '/discord' THEN 'discord' ELSE substr(p.value, 5) END, l.date, SUM(l.count), COUNT(DISTINCT l.ip_id) FROM daily_logs l JOIN paths p ON l.path_id = p.id JOIN ips i ON l.ip_id = i.id WHERE ((p.value IN ('/brain.zip', '/book.zip') AND l.status BETWEEN 200 AND 299) OR ((p.value = '/discord' OR p.value LIKE '/go/%') AND l.status BETWEEN 200 AND 399)) AND i.value NOT LIKE '127.%' AND i.value NOT LIKE '10.%' AND i.value NOT LIKE '192.168.%' GROUP BY 1, 2, 3",
                 "INSERT OR REPLACE INTO daily_metrics (metric, dim, day, count, unique_ips) SELECT 'curl_airlock', d.value, ddl.date, SUM(ddl.count), COUNT(DISTINCT ddl.ua_id) FROM domain_daily_logs ddl JOIN domains d ON ddl.domain_id = d.id JOIN paths p ON ddl.path_id = p.id JOIN user_agents ua ON ddl.ua_id = ua.id WHERE ddl.status BETWEEN 200 AND 299 AND p.value IN ('/', '/install.sh') AND (ua.value LIKE 'curl/%' OR ua.value LIKE 'Wget/%') GROUP BY d.value, ddl.date",
                 "INSERT OR REPLACE INTO daily_metrics (metric, dim, day, count, unique_ips) SELECT 'curl_exec', d.value, ddl.date, SUM(ddl.count), COUNT(DISTINCT ddl.ua_id) FROM domain_daily_logs ddl JOIN domains d ON ddl.domain_id = d.id JOIN paths p ON ddl.path_id = p.id JOIN user_agents ua ON ddl.ua_id = ua.id WHERE ddl.status BETWEEN 200 AND 299 AND (p.value IN ('/manifest.txt', '/key.rot') OR p.value LIKE '%src=install%') AND lower(ua.value) NOT LIKE '%bot%' GROUP BY d.value, ddl.date",
-                f"INSERT OR REPLACE INTO daily_metrics (metric, dim, day, count, unique_ips) SELECT CASE WHEN rdl.ref_apex = 'youtube.com' THEN 'yt_referral_human' ELSE 'social_in' END, CASE WHEN rdl.ref_apex = 'youtube.com' THEN d.value ELSE rdl.ref_apex END, rdl.date, SUM(rdl.human_count), SUM(rdl.unique_ips) FROM referrer_daily_logs rdl JOIN domains d ON rdl.domain_id = d.id WHERE rdl.human_count > 0 AND rdl.ref_apex IN ({','.join(repr(s) for s in sorted(SOCIAL_PLATFORMS))}) GROUP BY 1, 2, 3",
+                f"INSERT OR REPLACE INTO daily_metrics (metric, dim, day, count, unique_ips) SELECT CASE WHEN rdl.ref_apex = 'youtube.com' THEN 'yt_referral_human' ELSE 'social_in' END, CASE WHEN rdl.ref_apex = 'youtube.com' THEN d.value ELSE rdl.ref_apex END, rdl.date, SUM(rdl.human_count), SUM(MIN(rdl.human_count, rdl.unique_ips)) FROM referrer_daily_logs rdl JOIN domains d ON rdl.domain_id = d.id WHERE rdl.human_count > 0 AND rdl.ref_apex IN ({','.join(repr(s) for s in sorted(SOCIAL_PLATFORMS))}) GROUP BY 1, 2, 3",
             )
             for q in queries:
                 cur.execute(q)
