@@ -255,6 +255,29 @@ def _needs_git_add(filename: str) -> bool:
     except (OSError, subprocess.SubprocessError, ValueError):
         return False
 
+
+def _git_toplevel(path: str) -> str | None:
+    """Return the canonical git worktree root containing path, else None."""
+    real = os.path.realpath(path)
+    folder = real if os.path.isdir(real) else os.path.dirname(real)
+    if not os.path.isdir(folder):
+        return None
+    try:
+        top = subprocess.run(
+            ['git', '-C', folder, 'rev-parse', '--show-toplevel'],
+            capture_output=True, text=True, timeout=5,
+        )
+        return os.path.realpath(top.stdout.strip()) if top.returncode == 0 and top.stdout.strip() else None
+    except (OSError, subprocess.SubprocessError, ValueError):
+        return None
+
+
+def _external_git_roots(touched_files, cwd_path: str | None = None) -> list[str]:
+    """Sorted git roots among touched_files that differ from cwd's git root."""
+    here_root = _git_toplevel(cwd_path or os.getcwd())
+    ext = {r for f in touched_files for r in (_git_toplevel(f),) if r and r != here_root}
+    return sorted(ext)
+
 _SEARCH_SPAN_RE = re.compile(
     r'[\[{]{3,5}SEARCH[\]}]{3,5}\n.*?\n[\[{]{3,5}DIVIDER[\]}]{3,5}\n(?:.*?\n)??[\[{]{3,5}REPLACE[\]}]{3,5}',
     re.DOTALL | re.IGNORECASE,
@@ -820,6 +843,8 @@ def apply_search_replace_patch(payload: str) -> bool:
             print(f"✅ DETERMINISTIC PATCH APPLIED: Successfully mutated '{filename}'.")
     if touched_files:
         print(f"📏 Car meter: {_format_car_meter(len(planned_files), total_blocks, total_patch_lines)}")
+        for ext_root in _external_git_roots(touched_files):
+            print(f"🧭 EXTERNAL GIT WORKTREE: '{ext_root}' mutated — run d & m inside: cd {ext_root}")
 
     return True
 
@@ -1001,4 +1026,5 @@ __all__ = [
     "CHISEL_STRIKE_MAX_BLOCKS",
     "CHISEL_STRIKE_MAX_PATCH_LINES",
     "_needs_git_add",
+    "_external_git_roots",
 ]
