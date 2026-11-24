@@ -753,7 +753,7 @@ def run_funnel_compass(days: int = 14, top_k: int = 5) -> int:
         print(f"  • P({t_s} | {f_s}) = {(100.0 * int(cnt) / max(1, f_tot[f_s])):5.1f}% (n={cnt})")
     acts = []
     if sum(less_n) > sum(exe_n) and sum(less_n) >= 1:
-        acts.append("Inspect-only `curl | less` leads `curl | bash` -> wire Stage-2 `/manifest.txt` check in `install.sh` (P0.61/P0.78).")
+        acts.append(f"Inspect-only `curl | less` leads `curl | bash` ({sum(less_n)} vs {sum(exe_n)}) -> run `markov --quests` to inspect door -> L3 trails.")
     acts.append(f"`brain.zip` slope is {slopes['archive_dl']['slope']:+.2f}/d -> {'keep `/book.zip` synced on publish (P0.67).' if slopes['archive_dl']['slope'] > 0 else 'spotlight `brain.zip` + WOPR hook in next Norma cone.'}")
     if slopes["ids_pirate"]["total"] > 0:
         acts.append(f"Pirate 4xx/418 scanner pressure active (N={int(slopes['ids_pirate']['total'])}) -> prime HTTP 418 Rickroll Weebo show (P0.80).")
@@ -875,6 +875,108 @@ def run_social_article_velocity(target_spec: str = "1", days: int = 14, top_k: i
     return 0
 
 
+_REMOTE_QUESTS_PY = r"""
+import datetime, json, sqlite3, sys
+days, lim = max(2, int(sys.argv[1])), max(5, int(sys.argv[2]))
+db_p = sys.argv[3] if len(sys.argv) > 3 and sys.argv[3] not in ("", "all", "-") else "/home/mike/www/mikelev.in/honeybot.db"
+conn = sqlite3.connect(f"file:{db_p}?mode=ro", uri=True)
+end_d = datetime.date.today()
+span = [(end_d - datetime.timedelta(days=days - 1 - i)).isoformat() for i in range(days)]
+d0, d1, idx_m = span[0], span[-1], {d: i for i, d in enumerate(span)}
+tbls = {r[0] for r in conn.execute("SELECT name FROM sqlite_master WHERE type='table'").fetchall()}
+if "daily_quests" not in tbls:
+    print(json.dumps({"status": "sync_pending", "span": span, "series": {}, "doors": [], "party": []}))
+    raise SystemExit(0)
+ser = {k: [0] * days for k in ("l1_all", "deep_2p", "l2_plus", "l3_unlock")}
+doors = {}
+rows = conn.execute("SELECT day, actor_tag, entry_ref, first_dim, last_dim, max_ring, steps, pages, flags, first_ts, last_ts FROM daily_quests WHERE day BETWEEN ? AND ?", (d0, d1)).fetchall()
+for dy, tg, eref, f_dm, l_dm, mr, stp, pgs, flg, f_ts, l_ts in rows:
+    if str(dy) not in idx_m:
+        continue
+    i, mr_i, pg_i = idx_m[str(dy)], int(mr or 1), int(pgs or 0)
+    ser["l1_all"][i] += 1
+    ser["deep_2p"][i] += 1 if pg_i >= 2 else 0
+    ser["l2_plus"][i] += 1 if mr_i >= 2 else 0
+    ser["l3_unlock"][i] += 1 if mr_i >= 3 else 0
+    dk = eref or "(direct/internal)"
+    dr = doors.setdefault(dk, [0, 0, 0, 0, 0])
+    dr[0] += 1; dr[1] += (1 if pg_i >= 2 else 0); dr[2] += (1 if mr_i >= 2 else 0); dr[3] += (1 if mr_i >= 3 else 0); dr[4] += pg_i
+d_out = [[k, *v] for k, v in sorted(doors.items(), key=lambda kv: (kv[1][2], kv[1][3], kv[1][0]), reverse=True)[:10]]
+cand = [r for r in rows if int(r[5] or 1) >= 2 or int(r[7] or 0) >= 2 or int(r[6] or 0) >= 2] or list(rows)
+cand.sort(key=lambda r: (str(r[0]), int(r[5] or 1), int(r[7] or 0), int(r[6] or 0), int(r[10] or 0)), reverse=True)
+party, has_pe = [], "pulse_events" in tbls
+for dy, tg, eref, f_dm, l_dm, mr, stp, pgs, flg, f_ts, l_ts in cand[:lim]:
+    trail = []
+    if has_pe and int(f_ts or 0) > 0:
+        for _, sf, ev, dm in conn.execute("SELECT ts, surface, event, dim FROM pulse_events WHERE actor_tag = ? AND ts BETWEEN ? AND ? ORDER BY ts ASC, id ASC", (tg, int(f_ts) - 5, int(l_ts) + 5)):
+            if ev.startswith("ref:"):
+                continue
+            tok = (dm.removeprefix("mikelev.in") or "/") if ev == "visit:human" else (f"{ev}({dm})" if dm else ev)
+            if not trail or trail[-1] != tok:
+                trail.append(tok)
+    if not trail:
+        trail = list(dict.fromkeys((x.removeprefix("mikelev.in") or "/") for x in (f_dm, l_dm) if x))
+    party.append([dy, tg, eref or "direct", int(mr or 1), int(pgs or 0), int(stp or 0), max(0, int(l_ts or 0) - int(f_ts or 0)), flg or "visit", trail[:5], len(trail)])
+print(json.dumps({"status": "live", "span": span, "series": ser, "doors": d_out, "party": party}))
+"""
+
+
+def _fmt_dwell(sec: int) -> str:
+    return f"{sec / 3600:.1f}h" if sec >= 3600 else (f"{sec // 60}m" if sec >= 60 else f"{sec}s")
+
+
+def run_quest_party_roster(target_spec: str = "1", days: int = 14, top_k: int = 10) -> int:
+    try:
+        targets_list = _resolve_targets(target_spec)
+    except ValueError as exc:
+        print(f"❌ markov: {exc}", file=sys.stderr)
+        return 1
+    slug_map = {}
+    for t_cfg in targets_list:
+        c_dir = t_cfg["posts_dir"] / "_context"
+        for jf in (c_dir.glob("*.json") if c_dir.is_dir() else ()):
+            m = _DATED_STEM_RE.match(jf.stem)
+            if m:
+                try:
+                    d = json.loads(jf.read_text(encoding="utf-8"))
+                    slug_map[m.group(2).lower()] = [_norm_topic(k) for k in (d.get("kw") or []) if _norm_topic(k) and not _is_internal_artifact(k)]
+                except Exception:
+                    pass
+    db_ov, host = os.environ.get("PIPULATE_HONEYBOT_DB", "").strip(), os.environ.get("PIPULATE_HONEYBOT_HOST", "honeybot")
+    cmd = [sys.executable, "-", str(int(days)), str(max(5, int(top_k))), db_ov] if (db_ov and Path(db_ov).is_file()) else ["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=3", host, "python3", "-", str(int(days)), str(max(5, int(top_k))), "all"]
+    res = subprocess.run(cmd, input=_REMOTE_QUESTS_PY, capture_output=True, text=True, timeout=6, check=False)
+    snap = json.loads(res.stdout.strip()) if res.returncode == 0 and (res.stdout or "").strip() else {"status": "offline", "span": [], "series": {}, "doors": [], "party": []}
+    span, ser, doors, party = snap.get("span") or [], snap.get("series") or {}, snap.get("doors") or [], snap.get("party") or []
+    n_d = len(span) or max(2, int(days))
+    print(f"# 🗡️ DAILY ADVENTURER QUEST LOG & COHORT SURFER ({n_d}d: {span[0] + '..' + span[-1] if span else n_d} | status={snap.get('status')})")
+    print("\n## 1. Daily Quest Ring Velocity (Sparkline, OLS Slope, Adventurers, River t+1)")
+    for key, lbl in (("l1_all", "L1_all_visitors"), ("deep_2p", "L2_deep_readers"), ("l2_plus", "L2_quest_explorers"), ("l3_unlock", "L3_sanctum_unlocks")):
+        vals = ser.get(key) or [0] * n_d
+        st = compute_ols_velocity(vals)
+        print(f"  • {lbl:<20s} {(render_sparkline(vals, width=14) or '—'):<14s} {st['arrow']} {st['slope']:+6.2f}/d | P={int(st['total']):5d} actors | river_t+1={_river_next_day(vals):5.1f}")
+    print("\n## 2. Entry-Door -> Quest Conversion Odds (L2+ Explorer & 2+ Page Rates)")
+    for dk, tot_a, deep_a, l2_a, l3_a, tot_pg in doors:
+        print(f"  • {dk:<20s} | P={int(tot_a):4d} | L2+={int(l2_a):3d} ({100.0 * int(l2_a) / max(1, int(tot_a)):4.1f}%) | 2+pg={int(deep_a):3d} ({100.0 * int(deep_a) / max(1, int(tot_a)):4.1f}%) | L3={int(l3_a):2d} | avg_pg={int(tot_pg) / max(1, int(tot_a)):.2f}")
+    if not doors:
+        print("  • (No daily_quests rows recorded in window yet)")
+    print(f"\n## 3. Recent Adventurer Party Roster (Top {top_k} Zero-PII (day, actor_tag) Trails)")
+    for dy, tg, eref, mr, pgs, stp, dw_s, flg, trail, t_len in party[:top_k]:
+        kws = []
+        for step_s in trail:
+            leaf = step_s.strip("/").rsplit("/", 1)[-1].lower()
+            hit = slug_map.get(leaf) or next((v for sl, v in slug_map.items() if len(leaf) >= 12 and sl.startswith(leaf)), [])
+            for k in hit[:2]:
+                if k not in kws:
+                    kws.append(k)
+        short_steps = [s if len(s) <= 34 else (s[:31] + "...") for s in trail]
+        more_s = f" (+{int(t_len) - len(short_steps)} more)" if int(t_len) > len(short_steps) else ""
+        kw_s = f" | topics=({', '.join(kws[:3])})" if kws else ""
+        print(f"  • [{dy} | {tg:<9s} | L{mr} {flg:<12s} | {pgs:2d}p/{_fmt_dwell(int(dw_s)):>5s} | in:{eref}] {' -> '.join(short_steps)}{more_s}{kw_s}")
+    if not party:
+        print("  • (No adventurer trails recorded in window yet)")
+    return 0
+
+
 def run_demo_series() -> int:
     synth_num = [
         f"t{i} {100.0 + 0.8 * i + (3.5 if i % 4 in (0, 1) else -2.0):.2f}"
@@ -920,6 +1022,7 @@ def main() -> int:
     parser.add_argument("--by-domain", action="store_true", help="Aggregate --radar velocity by referring domain.")
     parser.add_argument("--days", type=int, default=30, help="Lookback window in days for --radar / --funnel (default: 30).")
     parser.add_argument("--funnel", action="store_true", help="Show daily directional sparklines (N/P), OLS slopes, & River/Markov funnel.")
+    parser.add_argument("--quests", action="store_true", help="Show daily (day, actor_tag) Adventurer cohorts, door conversions, & party trails.")
     parser.add_argument("--stdin", action="store_true", help="Read series observations from stdin.")
     parser.add_argument("--outlines", action="store_true", help="Show 80/20 OUTLINE.md & shard matrix across Jekyll tracks.")
     parser.add_argument("--demo-series", action="store_true", help="Run built-in numeric time-series verification.")
@@ -928,6 +1031,10 @@ def main() -> int:
     src_cmd = (args.source or "").strip().lower()
     if args.outlines or (src_cmd in ("outlines", "outline") and not Path(args.source).is_file()):
         return run_outlines_overview(target_spec=target_spec)
+    if args.quests or (src_cmd in ("quests", "quest") and not Path(args.source).is_file()):
+        q_days = 14 if "--days" not in sys.argv else args.days
+        q_top = 10 if ("-k" not in sys.argv and "--top" not in sys.argv) else args.top
+        return run_quest_party_roster(target_spec=target_spec, days=q_days, top_k=q_top)
     if args.funnel or (src_cmd in ("funnel", "sparklines") and not Path(args.source).is_file()):
         return run_funnel_compass(days=14 if "--days" not in sys.argv else args.days, top_k=args.top)
     if (args.social or args.platform or (src_cmd == "social" and not Path(args.source).is_file())) and not (args.radar or args.by_domain):
