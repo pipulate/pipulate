@@ -34,6 +34,9 @@ _PIRATE_TARGET_RE = re.compile(
     r"(?:/wp-(?:admin|login|content|includes)|/xmlrpc\.php|/\.(?:env|git|aws)|/phpmyadmin|\.(?:php[0-9]?|asp|aspx|jsp|cgi|env|sql|bak)(?:$|\?|/))",
     re.IGNORECASE,
 )
+DOOR_STAMP_TO_DOMAIN = {"pipulate": "pipulate.com", "npvg": "npvg.org", "qamy": "qamy.ai", "sunpug": "sunpug.io", "levinix": "levinix.org", "guerillatech": "guerillatech.com", "rfc9110": "rfc9110.org", "rfc9111": "rfc9111.io"}
+_INSTALLER_UA_RE = re.compile(r"^sunpug-installer/[\d.]+\s*(?:\(([a-z0-9_.-]+)\))?", re.IGNORECASE)
+_NON_PAGE_PULSE_RE = re.compile(r"(?:^/(?:feed\.xml|robots\.txt|llms\.txt|manifest\.txt|key\.rot)(?:$|\?)|\.(?:xml|json|txt|zip|sh|rot)(?:$|\?))", re.IGNORECASE)
 
 
 def _is_internal_or_invalid_host(host: str) -> bool:
@@ -319,6 +322,7 @@ class HoneyDB:
         cur.execute("CREATE TABLE IF NOT EXISTS daily_transitions (day TEXT NOT NULL, from_state TEXT NOT NULL, to_state TEXT NOT NULL, count INTEGER NOT NULL DEFAULT 0, last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (day, from_state, to_state)) WITHOUT ROWID")
         cur.execute("CREATE TABLE IF NOT EXISTS pulse_events (id INTEGER PRIMARY KEY AUTOINCREMENT, ts INTEGER NOT NULL, surface TEXT NOT NULL, event TEXT NOT NULL, dim TEXT NOT NULL DEFAULT '', actor_tag TEXT NOT NULL DEFAULT '')")
         cur.execute("CREATE INDEX IF NOT EXISTS idx_pulse_events_ts ON pulse_events(ts)")
+        cur.execute("CREATE TABLE IF NOT EXISTS daily_quests (day TEXT NOT NULL, actor_tag TEXT NOT NULL, entry_ref TEXT NOT NULL DEFAULT '', first_dim TEXT NOT NULL DEFAULT '', last_dim TEXT NOT NULL DEFAULT '', max_ring INTEGER NOT NULL DEFAULT 1, steps INTEGER NOT NULL DEFAULT 0, pages INTEGER NOT NULL DEFAULT 0, flags TEXT NOT NULL DEFAULT '', first_ts INTEGER NOT NULL DEFAULT 0, last_ts INTEGER NOT NULL DEFAULT 0, PRIMARY KEY (day, actor_tag)) WITHOUT ROWID")
 
         conn.commit()
         self.backfill_rfc9421_from_access_log()
@@ -326,6 +330,35 @@ class HoneyDB:
         self.backfill_external_referrers()
         self.rollup_daily_metrics(force=need_dm_rebackfill)
         self.migrate_social_referrers()
+        self.migrate_quest_and_installer_v1()
+
+    def migrate_quest_and_installer_v1(self) -> None:
+        """One-time idempotent P0.61 installer gate cleanup + 7d daily_quests backfill."""
+        try:
+            if self.get_counter("quest_compound_v1") >= 1:
+                return
+            conn, cur = self.get_conn(), self.get_conn().cursor()
+            for d_row in cur.execute("SELECT DISTINCT day, from_state, to_state FROM daily_transitions WHERE from_state LIKE 'door:%' OR from_state LIKE 'airlock:%' OR to_state LIKE 'exec:%'").fetchall():
+                if any(s.split(":", 1)[1] not in INTERNAL_DOMAINS for s in d_row[1:] if ":" in s and s.split(":", 1)[0] in ("door", "airlock", "exec")):
+                    cur.execute("DELETE FROM daily_transitions WHERE day = ? AND from_state = ? AND to_state = ?", d_row)
+            ph = ",".join("?" for _ in INTERNAL_DOMAINS)
+            cur.execute(f"DELETE FROM daily_metrics WHERE metric IN ('curl_airlock', 'curl_exec') AND dim NOT IN ({ph})", tuple(INTERNAL_DOMAINS))
+            cur.execute("DELETE FROM daily_metrics WHERE metric = 'curl_exec'")
+            cur.execute(f"INSERT OR REPLACE INTO daily_metrics (metric, dim, day, count, unique_ips) SELECT 'curl_exec', d.value, ddl.date, SUM(ddl.count), COUNT(DISTINCT ddl.ua_id) FROM domain_daily_logs ddl JOIN domains d ON ddl.domain_id = d.id JOIN paths p ON ddl.path_id = p.id JOIN user_agents ua ON ddl.ua_id = ua.id WHERE ddl.status BETWEEN 200 AND 299 AND d.value IN ({ph}) AND (ua.value LIKE 'sunpug-installer/%' OR (p.value = '/key.rot' AND (ua.value LIKE 'curl/%' OR ua.value LIKE 'Wget/%'))) GROUP BY d.value, ddl.date", tuple(INTERNAL_DOMAINS))
+            bad_ids = [r[0] for r in cur.execute("SELECT id, event, dim FROM pulse_events").fetchall() if (r[1] == "visit:human" and re.search(r"(?:/(?:feed\.xml|robots\.txt|llms\.txt|manifest\.txt|key\.rot)$|\.(?:xml|json|txt|zip|sh|rot)$)", r[2] or "", re.I)) or (r[1] in ("curl:airlock", "curl:exec") and (r[2] or "") not in INTERNAL_DOMAINS)]
+            if bad_ids:
+                cur.executemany("DELETE FROM pulse_events WHERE id = ?", [(i,) for i in bad_ids])
+            seen_pg: set[tuple[str, str, str]] = set()
+            for ts_v, ev_v, dm_v, tg_v in cur.execute("SELECT ts, event, dim, actor_tag FROM pulse_events WHERE actor_tag != '' ORDER BY ts ASC, id ASC").fetchall():
+                dy_s = datetime.date.fromtimestamp(int(ts_v)).isoformat()
+                new_p = 1 if (ev_v == "visit:human" and dm_v and (dy_s, tg_v, dm_v) not in seen_pg) else 0
+                if new_p:
+                    seen_pg.add((dy_s, tg_v, dm_v))
+                self._upsert_daily_quest(dy_s, tg_v, ev_v, dm_v, int(ts_v), new_p)
+            conn.commit()
+            self.increment_counter("quest_compound_v1", 1)
+        except Exception:
+            pass
 
     def migrate_social_referrers(self) -> None:
         """One-time idempotent fold of social shorteners & dark-social ?src= dyes into referrer_daily_logs."""
@@ -1074,25 +1107,47 @@ class HoneyDB:
             self._actor_salt, self._actor_salt_date = secrets.token_bytes(16), d_str
         return hashlib.blake2s(f"{d_str}:{s}".encode("utf-8"), key=self._actor_salt, digest_size=4).hexdigest()
 
+    def _upsert_daily_quest(self, d_str: str, atag: str, event: str, dim: str, eff_ts: int, new_page: int) -> None:
+        conn, is_ref = self.get_conn(), event.startswith("ref:")
+        ref_ap = event[4:] if is_ref else ""
+        ring = 3 if (event == "curl:exec" or event.startswith("social:")) else (2 if (event in ("curl:airlock", "md:rfc9110") or event.startswith(("dl:", "yt_cmd:"))) else 1)
+        badge = "exec" if event == "curl:exec" else ("discord" if event == "social:discord" else ("out" if event.startswith("social:") else ("zip" if event.startswith("dl:") else ("airlock" if event == "curl:airlock" else ("md" if event == "md:rfc9110" else ("steer" if event.startswith("yt_cmd:") else ("chat" if event == "yt_chat" else "")))))))
+        row = conn.execute("SELECT entry_ref, first_dim, max_ring, steps, pages, flags FROM daily_quests WHERE day = ? AND actor_tag = ?", (d_str, atag)).fetchone()
+        if row is None:
+            conn.execute("INSERT INTO daily_quests (day, actor_tag, entry_ref, first_dim, last_dim, max_ring, steps, pages, flags, first_ts, last_ts) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (d_str, atag, ref_ap, dim, dim, ring, 0 if is_ref else 1, new_page, badge, eff_ts, eff_ts))
+            return
+        e_ref, f_dim, m_ring, stp, pgs, flg_s = row
+        n_pgs, n_stp, f_list = int(pgs) + int(new_page), int(stp) + (0 if is_ref else 1), [x for x in (flg_s or "").split(",") if x]
+        if n_pgs >= 2 and "deep" not in f_list:
+            f_list.append("deep")
+        if badge and badge not in f_list:
+            f_list.append(badge)
+        conn.execute("UPDATE daily_quests SET entry_ref = ?, first_dim = ?, last_dim = ?, max_ring = ?, steps = ?, pages = ?, flags = ?, first_ts = MIN(first_ts, ?), last_ts = MAX(last_ts, ?) WHERE day = ? AND actor_tag = ?", (e_ref or ref_ap, f_dim or dim, dim or f_dim, max(int(m_ring), ring, 2 if n_pgs >= 2 else 1), n_stp, n_pgs, ",".join(f_list), eff_ts, eff_ts, d_str, atag))
+
     def record_external_pulse(self, surface: str, event: str, dim: str = "", ts: int | None = None, actor_tag: str = "", bump_metric: bool = True, day: str | None = None, commit: bool = True) -> int:
-        """Record a timestamped pulse event, prune >7d rows, chain <=600s actor edges, & optionally bump daily_metrics."""
-        eff_ts = int(ts if ts is not None else time.time())
+        """Record a timestamped pulse event, prune >7d rows, update daily_quests, & optionally bump daily_metrics."""
+        eff_ts, dim_s = int(ts if ts is not None else time.time()), str(dim or "")[:120]
         d_str, atag, conn = day or datetime.date.fromtimestamp(eff_ts).isoformat(), str(actor_tag or "").strip()[:24], self.get_conn()
         if surface == "yt" and atag.startswith(":"):
             atag = f"yt{atag}"
         if getattr(self, "_pulse_prune_date", None) != d_str:
             conn.execute("DELETE FROM pulse_events WHERE ts < ?", (eff_ts - 7 * 86400,))
             self._pulse_prune_date = d_str
+        new_pg = 0
         if atag:
-            prev = conn.execute("SELECT event, dim FROM pulse_events WHERE actor_tag = ? AND ts BETWEEN ? AND ? ORDER BY ts DESC, id DESC LIMIT 1", (atag, eff_ts - 600, eff_ts)).fetchone()
+            if event == "visit:human" and dim_s:
+                new_pg = 0 if conn.execute("SELECT 1 FROM pulse_events WHERE actor_tag = ? AND ts BETWEEN ? AND ? AND event = 'visit:human' AND dim = ? LIMIT 1", (atag, eff_ts - 86400, eff_ts, dim_s)).fetchone() else 1
+            prev = conn.execute("SELECT event, dim FROM pulse_events WHERE actor_tag = ? AND ts BETWEEN ? AND ? ORDER BY ts DESC, id DESC LIMIT 1", (atag, eff_ts - 86400, eff_ts)).fetchone()
             if prev and prev[0] != event and not (prev[0].startswith("ref:") and event == "visit:human"):
                 self.record_daily_transition(prev[0], event, 1, d_str, commit=False)
-            elif prev and event == "visit:human" and prev[1] and dim and prev[1] != dim:
+            elif prev and event == "visit:human" and new_pg:
                 self.record_daily_transition("visit:human", "quest:deep_read", 1, d_str, commit=False)
-        cur = conn.execute("INSERT INTO pulse_events (ts, surface, event, dim, actor_tag) VALUES (?, ?, ?, ?, ?)", (eff_ts, str(surface), str(event), str(dim or "")[:80], atag))
+        cur = conn.execute("INSERT INTO pulse_events (ts, surface, event, dim, actor_tag) VALUES (?, ?, ?, ?, ?)", (eff_ts, str(surface), str(event), dim_s, atag))
+        if atag:
+            self._upsert_daily_quest(d_str, atag, str(event), dim_s, eff_ts, new_pg)
         if bump_metric:
-            m_key, m_dim = ("yt_chat_cmd", event.split(":", 1)[1]) if event.startswith("yt_cmd:") else (event.replace(":", "_"), ("live" if surface == "yt" else (dim or "all")))
-            m_amt = int(str(dim).lstrip("+-")) if event in ("yt_arrive", "yt_depart") and str(dim).lstrip("+-").isdigit() else 1
+            m_key, m_dim = ("yt_chat_cmd", event.split(":", 1)[1]) if event.startswith("yt_cmd:") else (event.replace(":", "_"), ("live" if surface == "yt" else (dim_s or "all")))
+            m_amt = int(str(dim_s).lstrip("+-")) if event in ("yt_arrive", "yt_depart") and str(dim_s).lstrip("+-").isdigit() else 1
             p_ip = -(int(hashlib.blake2s(atag.encode("utf-8"), digest_size=4).hexdigest(), 16) or 1) if atag else None
             self.record_daily_metric(m_key, m_dim, m_amt, day=d_str, ip_id=p_ip, commit=False)
         if commit:
@@ -1123,7 +1178,7 @@ class HoneyDB:
             return
         if not (200 <= st < 300):
             return
-        is_scanner = any(b in ua_low for b in ("qlyzebot", "google-safety", "bot", "spider", "crawler"))
+        dom, is_scanner = dom.split(":", 1)[0], any(b in ua_low for b in ("qlyzebot", "oszironman", "google-safety", "censys", "zgrab", "nuclei", "masscan", "bot", "spider", "crawler"))
         if clean_p in ("/brain.zip", "/book.zip"):
             arch = clean_p.lstrip("/")
             _rm("archive_dl", arch)
@@ -1132,12 +1187,14 @@ class HoneyDB:
             if not is_scanner:
                 _pulse("cli" if self._CLI_PIPE_UA_RE.search(ua_s) else "web", f"dl:{arch}", dom)
             return
-        if not is_scanner and (clean_p in ("/manifest.txt", "/key.rot") or "src=install" in raw_p or ua_low.startswith("sunpug-installer/")):
-            _rm("curl_exec", dom)
-            self.record_daily_transition(f"airlock:{dom}", f"exec:{dom}", 1, date_str, commit=False)
-            _pulse("cli", "curl:exec", dom)
+        m_inst = _INSTALLER_UA_RE.match(ua_s)
+        if not is_scanner and dom in INTERNAL_DOMAINS and (m_inst or (clean_p == "/key.rot" and self._CLI_PIPE_UA_RE.search(ua_s))):
+            i_dom = DOOR_STAMP_TO_DOMAIN.get((m_inst.group(1) or "").lower(), dom) if m_inst else dom
+            _rm("curl_exec", i_dom)
+            self.record_daily_transition(f"airlock:{i_dom}", f"exec:{i_dom}", 1, date_str, commit=False)
+            _pulse("cli", "curl:exec", i_dom)
             return
-        if not is_scanner and str(served_md) != "1" and self._CLI_PIPE_UA_RE.search(ua_s) and clean_p in ("/", "/install.sh"):
+        if not is_scanner and dom in INTERNAL_DOMAINS and str(served_md) != "1" and not m_inst and self._CLI_PIPE_UA_RE.search(ua_s) and clean_p in ("/", "/install.sh"):
             _rm("curl_airlock", dom)
             self.record_daily_transition(f"door:{dom}", f"airlock:{dom}", 1, date_str, commit=False)
             _pulse("cli", "curl:airlock", dom)
@@ -1147,15 +1204,16 @@ class HoneyDB:
         if str(served_md) == "1":
             _rm("md_negotiated", dom)
             if not is_scanner:
-                _pulse("rag" if "user" in ua_low else ("cli" if self._CLI_PIPE_UA_RE.search(ua_s) else "web"), "md:rfc9110", f"{dom}{clean_p}"[:60])
+                _pulse("rag" if "user" in ua_low else ("cli" if self._CLI_PIPE_UA_RE.search(ua_s) else "web"), "md:rfc9110", f"{dom}{clean_p}"[:110])
         if self.is_likely_human_ua(ua_s):
             _rm("human_visit", dom)
             norm_ref = normalize_external_referrer(referrer, raw_p)
             ap = extract_registered_domain(norm_ref[1]) if norm_ref is not None else ""
-            if ap in SOCIAL_PLATFORMS and str(served_md) != "1":
-                _pulse("social", f"ref:{ap}", f"{dom}{clean_p}"[:60])
-            if str(served_md) != "1":
-                _pulse("web", "visit:human", f"{dom}{clean_p}"[:60])
+            is_page = str(served_md) != "1" and not _NON_PAGE_PULSE_RE.search(raw_p)
+            if ap and is_page:
+                _pulse("social" if ap in SOCIAL_PLATFORMS else "ref", f"ref:{ap}", f"{dom}{clean_p}"[:110])
+            if is_page:
+                _pulse("web", "visit:human", f"{dom}{clean_p}"[:110])
             if ap in SOCIAL_PLATFORMS:
                 _rm("yt_referral_human" if ap == "youtube.com" else "social_in", dom if ap == "youtube.com" else ap)
                 self.record_daily_transition(f"ref:{ap}", f"visit:{dom}", 1, date_str, commit=False)
@@ -1171,8 +1229,8 @@ class HoneyDB:
                 "INSERT OR REPLACE INTO daily_metrics (metric, dim, day, count, unique_ips) SELECT 'ids_pirate', CASE WHEN status = 418 THEN '418' ELSE CAST(status / 100 AS TEXT) || 'xx' END, date, SUM(count), COUNT(DISTINCT ip_id) FROM pirate_logs GROUP BY 1, 2, 3",
                 "INSERT OR REPLACE INTO daily_metrics (metric, dim, day, count, unique_ips) SELECT 'md_negotiated', 'mikelev.in', t.date, SUM(t.count), COUNT(DISTINCT t.ip_id) FROM telemetry t JOIN ips i ON t.ip_id = i.id WHERE t.served_md = 1 AND i.value NOT LIKE '127.%' AND i.value NOT LIKE '10.%' AND i.value NOT LIKE '192.168.%' GROUP BY t.date",
                 "INSERT OR REPLACE INTO daily_metrics (metric, dim, day, count, unique_ips) SELECT CASE WHEN p.value IN ('/brain.zip', '/book.zip') THEN 'archive_dl' ELSE 'social_out' END, CASE WHEN p.value IN ('/brain.zip', '/book.zip') THEN ltrim(p.value, '/') WHEN p.value = '/discord' THEN 'discord' ELSE substr(p.value, 5) END, l.date, SUM(l.count), COUNT(DISTINCT l.ip_id) FROM daily_logs l JOIN paths p ON l.path_id = p.id JOIN ips i ON l.ip_id = i.id WHERE ((p.value IN ('/brain.zip', '/book.zip') AND l.status BETWEEN 200 AND 299) OR ((p.value = '/discord' OR p.value LIKE '/go/%') AND l.status BETWEEN 200 AND 399)) AND i.value NOT LIKE '127.%' AND i.value NOT LIKE '10.%' AND i.value NOT LIKE '192.168.%' GROUP BY 1, 2, 3",
-                "INSERT OR REPLACE INTO daily_metrics (metric, dim, day, count, unique_ips) SELECT 'curl_airlock', d.value, ddl.date, SUM(ddl.count), COUNT(DISTINCT ddl.ua_id) FROM domain_daily_logs ddl JOIN domains d ON ddl.domain_id = d.id JOIN paths p ON ddl.path_id = p.id JOIN user_agents ua ON ddl.ua_id = ua.id WHERE ddl.status BETWEEN 200 AND 299 AND p.value IN ('/', '/install.sh') AND (ua.value LIKE 'curl/%' OR ua.value LIKE 'Wget/%') GROUP BY d.value, ddl.date",
-                "INSERT OR REPLACE INTO daily_metrics (metric, dim, day, count, unique_ips) SELECT 'curl_exec', d.value, ddl.date, SUM(ddl.count), COUNT(DISTINCT ddl.ua_id) FROM domain_daily_logs ddl JOIN domains d ON ddl.domain_id = d.id JOIN paths p ON ddl.path_id = p.id JOIN user_agents ua ON ddl.ua_id = ua.id WHERE ddl.status BETWEEN 200 AND 299 AND (p.value IN ('/manifest.txt', '/key.rot') OR p.value LIKE '%src=install%') AND lower(ua.value) NOT LIKE '%bot%' GROUP BY d.value, ddl.date",
+                f"INSERT OR REPLACE INTO daily_metrics (metric, dim, day, count, unique_ips) SELECT 'curl_airlock', d.value, ddl.date, SUM(ddl.count), COUNT(DISTINCT ddl.ua_id) FROM domain_daily_logs ddl JOIN domains d ON ddl.domain_id = d.id JOIN paths p ON ddl.path_id = p.id JOIN user_agents ua ON ddl.ua_id = ua.id WHERE ddl.status BETWEEN 200 AND 299 AND d.value IN ({','.join(repr(s) for s in sorted(INTERNAL_DOMAINS))}) AND p.value IN ('/', '/install.sh') AND (ua.value LIKE 'curl/%' OR ua.value LIKE 'Wget/%') GROUP BY d.value, ddl.date",
+                f"INSERT OR REPLACE INTO daily_metrics (metric, dim, day, count, unique_ips) SELECT 'curl_exec', d.value, ddl.date, SUM(ddl.count), COUNT(DISTINCT ddl.ua_id) FROM domain_daily_logs ddl JOIN domains d ON ddl.domain_id = d.id JOIN paths p ON ddl.path_id = p.id JOIN user_agents ua ON ddl.ua_id = ua.id WHERE ddl.status BETWEEN 200 AND 299 AND d.value IN ({','.join(repr(s) for s in sorted(INTERNAL_DOMAINS))}) AND (ua.value LIKE 'sunpug-installer/%' OR (p.value = '/key.rot' AND (ua.value LIKE 'curl/%' OR ua.value LIKE 'Wget/%'))) GROUP BY d.value, ddl.date",
                 f"INSERT OR REPLACE INTO daily_metrics (metric, dim, day, count, unique_ips) SELECT CASE WHEN rdl.ref_apex = 'youtube.com' THEN 'yt_referral_human' ELSE 'social_in' END, CASE WHEN rdl.ref_apex = 'youtube.com' THEN d.value ELSE rdl.ref_apex END, rdl.date, SUM(rdl.human_count), SUM(MIN(rdl.human_count, rdl.unique_ips)) FROM referrer_daily_logs rdl JOIN domains d ON rdl.domain_id = d.id WHERE rdl.human_count > 0 AND rdl.ref_apex IN ({','.join(repr(s) for s in sorted(SOCIAL_PLATFORMS))}) GROUP BY 1, 2, 3",
             )
             for q in queries:

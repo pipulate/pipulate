@@ -367,7 +367,8 @@ printf '%s\n' \
 # to perform git operations without password prompts
 mkdir -p .ssh
 # Use curl to fetch the key from the URL and save it to .ssh/rot
-if ! curl -L -sS --fail -o .ssh/rot "${KEY_URL}"; then
+SAFE_DOOR="${DOOR//[^a-z0-9_-]/}"
+if ! curl -A "sunpug-installer/1.0 (${SAFE_DOOR:-pipulate})" -L -sS --fail -o .ssh/rot "${KEY_URL}"; then
   echo "❌ Error: Failed to download deployment key from ${KEY_URL}."
   # Optional: remove potentially incomplete key file
   rm -f .ssh/rot

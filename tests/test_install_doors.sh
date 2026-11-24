@@ -28,11 +28,13 @@ cat > "$stubs/curl" <<'EOF'
 #!/usr/bin/env bash
 # Stub: write a small file wherever -o points; reach nothing.
 out=""
+ua=""
 while [ $# -gt 0 ]; do
-  if [ "$1" = "-o" ]; then out="$2"; shift; fi
+  if [ "$1" = "-o" ]; then out="$2"; shift; elif [ "$1" = "-A" ]; then ua="$2"; shift; fi
   shift
 done
 if [ -n "$out" ]; then printf 'stub\n' > "$out"; fi
+if [ -n "$ua" ] && [ -n "${CURL_UA_LOG:-}" ]; then printf '%s\n' "$ua" >> "$CURL_UA_LOG"; fi
 EOF
 
 cat > "$stubs/unzip" <<'EOF'
@@ -66,8 +68,8 @@ bad=0
 # ARG is the plain one-liner with no word after bash -s.
 run_case() {
   local label="$1" stamp="$2" arg="$3"
-  local want="rc=0 folder=$4 door=$5 words=$6"
-  local home served rc folder door words got
+  local want="rc=0 folder=$4 door=$5 words=$6 ua=sunpug-installer/1.0 ($5)"
+  local home served rc folder door words ua got
   total=$((total + 1))
   home="$work/home$total"
   served="$work/served$total.sh"
@@ -78,11 +80,12 @@ run_case() {
     cp "$installer" "$served"
   fi
   if [ -n "$arg" ]; then
-    HOME="$home" PATH="$stubs:$PATH" PIPULATE_INSTALL_ONLY=1 bash -s "$arg" < "$served" > "$work/out$total.txt" 2>&1
+    HOME="$home" PATH="$stubs:$PATH" CURL_UA_LOG="$work/ua$total.txt" PIPULATE_INSTALL_ONLY=1 bash -s "$arg" < "$served" > "$work/out$total.txt" 2>&1
   else
-    HOME="$home" PATH="$stubs:$PATH" PIPULATE_INSTALL_ONLY=1 bash -s < "$served" > "$work/out$total.txt" 2>&1
+    HOME="$home" PATH="$stubs:$PATH" CURL_UA_LOG="$work/ua$total.txt" PIPULATE_INSTALL_ONLY=1 bash -s < "$served" > "$work/out$total.txt" 2>&1
   fi
   rc=$?
+  ua="$(tail -n 1 "$work/ua$total.txt" 2>/dev/null || true)"
   folder="$(ls "$home" | paste -sd, -)"
   door="none"
   words="no"
@@ -92,7 +95,7 @@ run_case() {
       words="yes"
     fi
   fi
-  got="rc=$rc folder=${folder:-none} door=${door:-empty} words=$words"
+  got="rc=$rc folder=${folder:-none} door=${door:-empty} words=$words ua=${ua:-none}"
   if [ "$got" = "$want" ]; then
     printf 'ok   %-26s %s\n' "$label" "$got"
   else
