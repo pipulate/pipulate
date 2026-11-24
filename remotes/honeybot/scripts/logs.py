@@ -2045,7 +2045,7 @@ class SonarApp(App):
                 break
         if not is_pirate:
             ext_ref = normalize_external_referrer(data.get('referrer'), path)
-            if ext_ref:
+            if ext_ref and not ext_ref[0].startswith("src:"):
                 text.append(f"[EXT:{ext_ref[1]}] ", style="bold black on bright_cyan")
         text.append(f"{method:4} ", style="bold")
         text.append(f"{path} ", style=path_style)

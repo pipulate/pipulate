@@ -50,30 +50,52 @@ _MULTI_PART_SUFFIXES = frozenset({
 })
 
 
+SOCIAL_APEX_ALIASES = {
+    "t.co": "x.com", "twitter.com": "x.com", "lnkd.in": "linkedin.com",
+    "youtu.be": "youtube.com", "fb.com": "facebook.com", "fb.me": "facebook.com", "redd.it": "reddit.com",
+}
+SRC_DYE_TO_HOST = {
+    "x": "x.com", "twitter": "x.com", "linkedin": "linkedin.com", "li": "linkedin.com",
+    "youtube": "youtube.com", "yt": "youtube.com", "fb": "facebook.com", "facebook": "facebook.com",
+    "discord": "discord.com", "reddit": "reddit.com", "bsky": "bsky.app", "bluesky": "bsky.app",
+    "hn": "news.ycombinator.com", "hackernews": "news.ycombinator.com",
+}
+SOCIAL_PLATFORMS = frozenset({"x.com", "linkedin.com", "youtube.com", "reddit.com", "facebook.com", "discord.com", "bsky.app", "news.ycombinator.com", "lobste.rs", "threads.net", "instagram.com", "tiktok.com"})
+
+
 def extract_registered_domain(host: str) -> str:
-    """Collapse subdomains/packages to registered apex (e.g. old.reddit.com -> reddit.com)."""
+    """Collapse subdomains, packages, & shorteners to canonical apex (e.g. t.co -> x.com)."""
     h = (host or "").strip().lower().rstrip(".").removeprefix("www.")
+    if h == "news.ycombinator.com" or h in SOCIAL_APEX_ALIASES:
+        return SOCIAL_APEX_ALIASES.get(h, h)
     parts = [p for p in h.split(".") if p]
     if len(parts) <= 2:
-        return h
-    if parts[0] in ("com", "org", "net") and (len(parts[-1]) > 3 or "android" in parts):
-        return f"{parts[1]}.{parts[0]}"
-    return ".".join(parts[-3:] if f"{parts[-2]}.{parts[-1]}" in _MULTI_PART_SUFFIXES else parts[-2:])
+        return SOCIAL_APEX_ALIASES.get(h, h)
+    ap = f"{parts[1]}.{parts[0]}" if (parts[0] in ("com", "org", "net") and (len(parts[-1]) > 3 or "android" in parts)) else ".".join(parts[-3:] if f"{parts[-2]}.{parts[-1]}" in _MULTI_PART_SUFFIXES else parts[-2:])
+    return SOCIAL_APEX_ALIASES.get(ap, ap)
 
 
 def normalize_external_referrer(referrer: str | None, raw_path: str = "") -> tuple[str, str] | None:
     """Return (canonical_referrer, ref_host) for external referrals, or None for internal/noise."""
     raw = (referrer or "").replace(r"\x22", "").strip().strip('"').strip()
+    if raw.lower().startswith("src:"):
+        src = raw[4:].strip().lower()
+        return (f"src:{src}", SRC_DYE_TO_HOST[src]) if src in SRC_DYE_TO_HOST else None
     if raw.lower().startswith("utm:"):
         src = raw[4:].strip().lower().rstrip(".").removeprefix("www.")
+        if src in SRC_DYE_TO_HOST:
+            return f"utm:{src}", SRC_DYE_TO_HOST[src]
         if re.match(r"^[a-z0-9._-]{2,80}$", src) and not ("." in src and _is_internal_or_invalid_host(src)):
-            return f"utm:{src}", src
+            return f"utm:{src}", (extract_registered_domain(src) if "." in src else src)
         return None
     if not raw or raw == "-":
         if "?" in (raw_path or ""):
             for k, v in parse_qsl(raw_path.split("?", 1)[1], keep_blank_values=False):
-                if k.lower() == "utm_source":
-                    return normalize_external_referrer(f"utm:{v}", "")
+                kl, vl = k.lower(), v.strip().lower()
+                if kl == "utm_source":
+                    return normalize_external_referrer(f"utm:{vl}", "")
+                if kl == "src" and vl in SRC_DYE_TO_HOST:
+                    return f"src:{vl}", SRC_DYE_TO_HOST[vl]
         return None
     if raw.lower().startswith("android-app://"):
         pkg = raw[14:].split("/", 1)[0].strip().lower()
@@ -303,6 +325,46 @@ class HoneyDB:
         self.backfill_dns_audit()
         self.backfill_external_referrers()
         self.rollup_daily_metrics(force=need_dm_rebackfill)
+        self.migrate_social_referrers()
+
+    def migrate_social_referrers(self) -> None:
+        """One-time idempotent fold of social shorteners & dark-social ?src= dyes into referrer_daily_logs."""
+        try:
+            if self.get_counter("social_compound_v1") >= 1:
+                return
+            conn, cur = self.get_conn(), self.get_conn().cursor()
+            for old_ap, new_ap in {**SOCIAL_APEX_ALIASES, "ycombinator.com": "news.ycombinator.com"}.items():
+                cur.execute("UPDATE external_referrers SET ref_apex = ? WHERE ref_apex = ?", (new_ap, old_ap))
+                for _, dm, pid, fr, lr, fs, ls, tot, hum, bot in cur.execute("SELECT ref_apex, domain_id, path_id, first_referrer, last_referrer, first_seen, last_seen, total_count, human_count, bot_count FROM referrer_radar WHERE ref_apex = ?", (old_ap,)).fetchall():
+                    cur.execute("INSERT INTO referrer_radar (ref_apex, domain_id, path_id, first_referrer, last_referrer, first_seen, last_seen, total_count, human_count, bot_count) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(ref_apex, domain_id, path_id) DO UPDATE SET first_seen = MIN(referrer_radar.first_seen, excluded.first_seen), last_seen = MAX(referrer_radar.last_seen, excluded.last_seen), last_referrer = excluded.last_referrer, total_count = referrer_radar.total_count + excluded.total_count, human_count = referrer_radar.human_count + excluded.human_count, bot_count = referrer_radar.bot_count + excluded.bot_count", (new_ap, dm, pid, fr, lr, fs, ls, tot, hum, bot))
+                cur.execute("DELETE FROM referrer_radar WHERE ref_apex = ?", (old_ap,))
+                for dt, _, dm, pid, sr, cnt, hum, bot, uips in cur.execute("SELECT date, ref_apex, domain_id, path_id, sample_referrer, count, human_count, bot_count, unique_ips FROM referrer_daily_logs WHERE ref_apex = ?", (old_ap,)).fetchall():
+                    cur.execute("INSERT INTO referrer_daily_logs (date, ref_apex, domain_id, path_id, sample_referrer, count, human_count, bot_count, unique_ips) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(date, ref_apex, domain_id, path_id) DO UPDATE SET count = referrer_daily_logs.count + excluded.count, human_count = referrer_daily_logs.human_count + excluded.human_count, bot_count = referrer_daily_logs.bot_count + excluded.bot_count, unique_ips = referrer_daily_logs.unique_ips + excluded.unique_ips", (dt, new_ap, dm, pid, sr, cnt, hum, bot, uips))
+                cur.execute("DELETE FROM referrer_daily_logs WHERE ref_apex = ?", (old_ap,))
+                cur.execute("INSERT INTO daily_transitions (day, from_state, to_state, count) SELECT day, ?, to_state, count FROM daily_transitions WHERE from_state = ? ON CONFLICT(day, from_state, to_state) DO UPDATE SET count = daily_transitions.count + excluded.count", (f"ref:{new_ap}", f"ref:{old_ap}"))
+                cur.execute("DELETE FROM daily_transitions WHERE from_state = ?", (f"ref:{old_ap}",))
+            cur.execute("INSERT INTO daily_transitions (day, from_state, to_state, count) SELECT day, 'ref:youtube.com', to_state, count FROM daily_transitions WHERE from_state = 'ref:youtube' ON CONFLICT(day, from_state, to_state) DO UPDATE SET count = daily_transitions.count + excluded.count")
+            cur.execute("DELETE FROM daily_transitions WHERE from_state = 'ref:youtube'")
+            dom_id, agg = self._get_or_create_id("domains", "mikelev.in"), {}
+            for d_str, p_val, ua_val, ip_id, cnt in cur.execute("SELECT t.date, p.value, ua.value, t.ip_id, SUM(t.count) FROM telemetry t JOIN paths p ON t.path_id = p.id JOIN user_agents ua ON t.ua_id = ua.id JOIN ips i ON t.ip_id = i.id LEFT JOIN referrers r ON t.referrer_id = r.id WHERE instr(p.value, '?src=') > 0 AND (r.value IS NULL OR r.value = '-' OR r.value = '') AND i.value NOT LIKE '127.%' AND i.value NOT LIKE '10.%' AND i.value NOT LIKE '192.168.%' AND t.path_id IN (SELECT DISTINCT path_id FROM daily_logs WHERE status BETWEEN 200 AND 299) GROUP BY t.date, p.value, ua.id, t.ip_id").fetchall():
+                norm = normalize_external_referrer("-", p_val or "")
+                if norm is None or _STATIC_SUBRESOURCE_RE.search(p_val or "") or _PIRATE_TARGET_RE.search(p_val or ""):
+                    continue
+                c_ref, r_ap, r_pid = norm[0], extract_registered_domain(norm[1]), self._get_or_create_id("paths", (p_val or "/").split("?", 1)[0] or "/")
+                c, hum = int(cnt or 0), (int(cnt or 0) if self.is_likely_human_ua(ua_val) else 0)
+                cur.execute("INSERT OR IGNORE INTO external_referrers (referrer, ref_host, ref_apex, first_seen, last_seen) VALUES (?, ?, ?, ?, ?)", (c_ref, r_ap, r_ap, d_str, d_str))
+                cur.execute("INSERT INTO referrer_radar (ref_apex, domain_id, path_id, first_referrer, last_referrer, first_seen, last_seen, total_count, human_count, bot_count) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(ref_apex, domain_id, path_id) DO UPDATE SET total_count = total_count + excluded.total_count, human_count = human_count + excluded.human_count, bot_count = bot_count + excluded.bot_count", (r_ap, dom_id, r_pid, c_ref, c_ref, d_str, d_str, c, hum, c - hum))
+                prev = agg.get((d_str, r_ap, dom_id, r_pid))
+                agg[(d_str, r_ap, dom_id, r_pid)] = (c_ref, (prev[1] if prev else 0) + c, (prev[2] if prev else 0) + hum, (prev[3] if prev else 0) + (c - hum), (prev[4] if prev else set()) | {int(ip_id)})
+            for (d_str, r_ap, dm, pid), (sr, tot, hum, bot, ips) in agg.items():
+                cur.execute("INSERT INTO referrer_daily_logs (date, ref_apex, domain_id, path_id, sample_referrer, count, human_count, bot_count, unique_ips) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(date, ref_apex, domain_id, path_id) DO UPDATE SET count = count + excluded.count, human_count = human_count + excluded.human_count, bot_count = bot_count + excluded.bot_count, unique_ips = unique_ips + excluded.unique_ips", (d_str, r_ap, dm, pid, sr, tot, hum, bot, len(ips)))
+            cur.execute("DELETE FROM daily_metrics WHERE metric IN ('social_in', 'yt_referral_human')")
+            ph = ",".join("?" for _ in SOCIAL_PLATFORMS)
+            cur.execute(f"INSERT OR REPLACE INTO daily_metrics (metric, dim, day, count, unique_ips) SELECT CASE WHEN rdl.ref_apex = 'youtube.com' THEN 'yt_referral_human' ELSE 'social_in' END, CASE WHEN rdl.ref_apex = 'youtube.com' THEN d.value ELSE rdl.ref_apex END, rdl.date, SUM(rdl.human_count), SUM(rdl.unique_ips) FROM referrer_daily_logs rdl JOIN domains d ON rdl.domain_id = d.id WHERE rdl.human_count > 0 AND rdl.ref_apex IN ({ph}) GROUP BY 1, 2, 3", tuple(SOCIAL_PLATFORMS))
+            conn.commit()
+            self.increment_counter("social_compound_v1", 1)
+        except Exception:
+            pass
 
     def backfill_external_referrers(self):
         """One-time idempotent backfill of external_referrers, referrer_radar, & referrer_daily_logs."""
@@ -965,7 +1027,7 @@ class HoneyDB:
         return self._rollup_bot_rows(cur.fetchall(), limit=limit)
 
     _CLI_PIPE_UA_RE = re.compile(r"^(?:curl|Wget|fetch\s+libfetch|sunpug-installer)/", re.IGNORECASE)
-    _SOCIAL_IN_APEX = frozenset({"t.co", "x.com", "twitter.com", "linkedin.com", "lnkd.in", "reddit.com", "facebook.com", "bsky.app", "news.ycombinator.com", "lobste.rs"})
+    _SOCIAL_IN_APEX = SOCIAL_PLATFORMS
 
     def record_daily_metric(self, metric: str, dim: str = "all", amount: int = 1, day: str | None = None, ip_id: int | None = None, commit: bool = True) -> None:
         """Increment a compact daily directional counter (N hits + P self-erasing 24h unique IPs)."""
@@ -1010,7 +1072,7 @@ class HoneyDB:
             self._pulse_prune_date = d_str
         if atag:
             prev = conn.execute("SELECT event, dim FROM pulse_events WHERE actor_tag = ? AND ts BETWEEN ? AND ? ORDER BY ts DESC, id DESC LIMIT 1", (atag, eff_ts - 600, eff_ts)).fetchone()
-            if prev and prev[0] != event:
+            if prev and prev[0] != event and not (prev[0].startswith("ref:") and event == "visit:human"):
                 self.record_daily_transition(prev[0], event, 1, d_str, commit=False)
             elif prev and event == "visit:human" and prev[1] and dim and prev[1] != dim:
                 self.record_daily_transition("visit:human", "quest:deep_read", 1, d_str, commit=False)
@@ -1075,17 +1137,15 @@ class HoneyDB:
                 _pulse("rag" if "user" in ua_low else ("cli" if self._CLI_PIPE_UA_RE.search(ua_s) else "web"), "md:rfc9110", f"{dom}{clean_p}"[:60])
         if self.is_likely_human_ua(ua_s):
             _rm("human_visit", dom)
+            norm_ref = normalize_external_referrer(referrer, raw_p)
+            ap = extract_registered_domain(norm_ref[1]) if norm_ref is not None else ""
+            if ap in SOCIAL_PLATFORMS and str(served_md) != "1":
+                _pulse("social", f"ref:{ap}", f"{dom}{clean_p}"[:60])
             if str(served_md) != "1":
                 _pulse("web", "visit:human", f"{dom}{clean_p}"[:60])
-            norm_ref = normalize_external_referrer(referrer, raw_p)
-            if norm_ref is not None:
-                ap = extract_registered_domain(norm_ref[1])
-                if ap in ("youtube.com", "youtu.be"):
-                    _rm("yt_referral_human", dom)
-                    self.record_daily_transition("ref:youtube", f"visit:{dom}", 1, date_str, commit=False)
-                elif ap in self._SOCIAL_IN_APEX:
-                    _rm("social_in", ap)
-                    self.record_daily_transition(f"ref:{ap}", f"visit:{dom}", 1, date_str, commit=False)
+            if ap in SOCIAL_PLATFORMS:
+                _rm("yt_referral_human" if ap == "youtube.com" else "social_in", dom if ap == "youtube.com" else ap)
+                self.record_daily_transition(f"ref:{ap}", f"visit:{dom}", 1, date_str, commit=False)
 
     def rollup_daily_metrics(self, force: bool = False) -> int:
         """Idempotently backfill daily_metrics from existing normalized Honeybot tables when empty."""
@@ -1100,7 +1160,7 @@ class HoneyDB:
                 "INSERT OR REPLACE INTO daily_metrics (metric, dim, day, count, unique_ips) SELECT CASE WHEN p.value IN ('/brain.zip', '/book.zip') THEN 'archive_dl' ELSE 'social_out' END, CASE WHEN p.value IN ('/brain.zip', '/book.zip') THEN ltrim(p.value, '/') WHEN p.value = '/discord' THEN 'discord' ELSE substr(p.value, 5) END, l.date, SUM(l.count), COUNT(DISTINCT l.ip_id) FROM daily_logs l JOIN paths p ON l.path_id = p.id JOIN ips i ON l.ip_id = i.id WHERE ((p.value IN ('/brain.zip', '/book.zip') AND l.status BETWEEN 200 AND 299) OR ((p.value = '/discord' OR p.value LIKE '/go/%') AND l.status BETWEEN 200 AND 399)) AND i.value NOT LIKE '127.%' AND i.value NOT LIKE '10.%' AND i.value NOT LIKE '192.168.%' GROUP BY 1, 2, 3",
                 "INSERT OR REPLACE INTO daily_metrics (metric, dim, day, count, unique_ips) SELECT 'curl_airlock', d.value, ddl.date, SUM(ddl.count), COUNT(DISTINCT ddl.ua_id) FROM domain_daily_logs ddl JOIN domains d ON ddl.domain_id = d.id JOIN paths p ON ddl.path_id = p.id JOIN user_agents ua ON ddl.ua_id = ua.id WHERE ddl.status BETWEEN 200 AND 299 AND p.value IN ('/', '/install.sh') AND (ua.value LIKE 'curl/%' OR ua.value LIKE 'Wget/%') GROUP BY d.value, ddl.date",
                 "INSERT OR REPLACE INTO daily_metrics (metric, dim, day, count, unique_ips) SELECT 'curl_exec', d.value, ddl.date, SUM(ddl.count), COUNT(DISTINCT ddl.ua_id) FROM domain_daily_logs ddl JOIN domains d ON ddl.domain_id = d.id JOIN paths p ON ddl.path_id = p.id JOIN user_agents ua ON ddl.ua_id = ua.id WHERE ddl.status BETWEEN 200 AND 299 AND (p.value IN ('/manifest.txt', '/key.rot') OR p.value LIKE '%src=install%') AND lower(ua.value) NOT LIKE '%bot%' GROUP BY d.value, ddl.date",
-                "INSERT OR REPLACE INTO daily_metrics (metric, dim, day, count, unique_ips) SELECT CASE WHEN rdl.ref_apex IN ('youtube.com', 'youtu.be') THEN 'yt_referral_human' ELSE 'social_in' END, CASE WHEN rdl.ref_apex IN ('youtube.com', 'youtu.be') THEN d.value ELSE rdl.ref_apex END, rdl.date, SUM(rdl.human_count), SUM(rdl.unique_ips) FROM referrer_daily_logs rdl JOIN domains d ON rdl.domain_id = d.id WHERE rdl.human_count > 0 AND rdl.ref_apex IN ('youtube.com', 'youtu.be', 't.co', 'x.com', 'twitter.com', 'linkedin.com', 'lnkd.in', 'reddit.com', 'facebook.com', 'bsky.app', 'news.ycombinator.com', 'lobste.rs') GROUP BY 1, 2, 3",
+                f"INSERT OR REPLACE INTO daily_metrics (metric, dim, day, count, unique_ips) SELECT CASE WHEN rdl.ref_apex = 'youtube.com' THEN 'yt_referral_human' ELSE 'social_in' END, CASE WHEN rdl.ref_apex = 'youtube.com' THEN d.value ELSE rdl.ref_apex END, rdl.date, SUM(rdl.human_count), SUM(rdl.unique_ips) FROM referrer_daily_logs rdl JOIN domains d ON rdl.domain_id = d.id WHERE rdl.human_count > 0 AND rdl.ref_apex IN ({','.join(repr(s) for s in sorted(SOCIAL_PLATFORMS))}) GROUP BY 1, 2, 3",
             )
             for q in queries:
                 cur.execute(q)
@@ -1162,12 +1222,13 @@ class HoneyDB:
                 if r is not None and (not seg or (r[1] - seg[-1][1]) <= 600):
                     seg.append(r)
                 else:
-                    evs = list(dict.fromkeys(x[3] for x in seg))
-                    pairs = list(dict.fromkeys((x[3], x[4]) for x in seg))
+                    act_seg = [x for x in seg if not x[3].startswith("ref:")]
+                    evs = list(dict.fromkeys(x[3] for x in act_seg))
+                    pairs = list(dict.fromkeys((x[3], x[4]) for x in act_seg))
                     if len(evs) >= 2:
                         bundles.append(_pack("actor_chain", seg, tg, 2.0, evs[1:]))
                     elif len(pairs) >= 2:
-                        bundles.append(_pack("side_quest", seg, tg, 1.5, [seg[-1][3]]))
+                        bundles.append(_pack("side_quest", seg, tg, 1.5, [act_seg[-1][3]]))
                     seg = [r] if r is not None else []
         return sorted(bundles, key=lambda b: (b["bits"], b["ts"]), reverse=True)[: max(1, int(limit))]
 
