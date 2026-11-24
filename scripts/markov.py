@@ -63,7 +63,9 @@ def _resolve_targets(target_spec: str) -> list[dict]:
         p, name = Path(cfg["path"]).expanduser(), str(cfg.get("name") or k)
         if k == "1" and (not (p / "_context").is_dir()) and (BRAIN_POSTS_DIR / "_context").is_dir():
             name, p = "MikeLev.in (2nd Brain)", BRAIN_POSTS_DIR
-        out.append({"key": k, "alias": str(cfg.get("alias") or k), "name": name, "posts_dir": p, "base_url": str(cfg.get("base_url") or "").strip()})
+        bu = str(cfg.get("base_url") or "").strip()
+        lane = str(cfg.get("lane") or ("public" if bu.lower().startswith("https://") else "private")).strip().lower()
+        out.append({"key": k, "alias": str(cfg.get("alias") or k), "name": name, "posts_dir": p, "base_url": bu, "lane": lane})
     return out
 
 
@@ -225,6 +227,30 @@ def _match_path_keywords(path_str: str, slug_map: dict) -> list[str]:
         return ["Home Observatory", "SunPug.io", "RFC 9110"]
     rec = slug_map.get(clean.rsplit("/", 1)[-1].lower())
     return rec["kws"][:4] if rec else []
+
+
+def _print_cross_lane_diff(records: list[dict], targets_list: list[dict], top_k: int = 5) -> None:
+    lanes = {t["alias"]: t.get("lane", "public") for t in targets_list}
+    if len(set(lanes.values())) < 2:
+        return
+    pub_c, priv_c, labels = Counter(), Counter(), {}
+    for r in records:
+        bucket = priv_c if lanes.get(r["alias"]) == "private" else pub_c
+        for k in dict.fromkeys(r["kws"]):
+            if not _is_internal_artifact(k):
+                low = k.lower()
+                labels.setdefault(low, k)
+                bucket[low] += 1
+    shared = sorted(
+        ((min(priv_c[k], pub_c[k]), priv_c[k] + pub_c[k], priv_c[k], pub_c[k], labels[k]) for k in priv_c if pub_c[k] > 0),
+        reverse=True,
+    )
+    priv_only = sorted(((cnt, labels[k]) for k, cnt in priv_c.items() if cnt >= 2 and pub_c[k] == 0), reverse=True)
+    print("\n## 6. Cross-Lane Topic Differential (Private <-> Public)")
+    for _, _, pr_n, pu_n, lbl in shared[:top_k]:
+        print(f"  • [bridge     | priv={pr_n:3d}, pub={pu_n:4d}] {lbl}")
+    for pr_n, lbl in priv_only[:top_k]:
+        print(f"  • [air-gapped | priv={pr_n:3d}, pub=   0] {lbl}")
 
 
 def analyze_corpus_shards(target_spec: str = "1", top_k: int = 5) -> int:
@@ -423,19 +449,20 @@ def analyze_corpus_shards(target_spec: str = "1", top_k: int = 5) -> int:
     if not pub_doms:
         print("\n## 5. Post-GSC HitTail External Demand & Shard Intent (local/air-gapped)")
         print("  • (Local-only target — external Honeybot wire referrals omitted by design)")
-        return 0
-    slug_map = {r["slug"].lower(): r for r in records}
-    ext = _fetch_honeybot_referrals(days=30, limit=max(25, top_k * 5), force_refresh=False)
-    dem_rows = [row for row in (ext.get("demand") or []) if str(row[1] or "").lower().rstrip(".").removeprefix("www.") in pub_doms]
-    print(f"\n## 5. Post-GSC HitTail External Demand & Shard Intent (30d | {ext.get('status', 'offline')})")
-    if dem_rows:
-        for apex, dom, path_s, hits, hum, ips, _ in dem_rows[:top_k]:
-            kws = ", ".join(_match_path_keywords(path_s, slug_map)) or "non-post surface"
-            print(f"  • [{apex:<16s} | N={hits:3d}, P={ips:2d} IPs] {dom}{path_s} -> ({kws})")
-    elif ext.get("status") == "sync_pending":
-        print("  • (Honeybot referrer_radar sync pending — run ytreboot to backfill honeybot.db)")
     else:
-        print(f"  • (No external human referrals in window; source={ext.get('status', 'offline')})")
+        slug_map = {r["slug"].lower(): r for r in records}
+        ext = _fetch_honeybot_referrals(days=30, limit=max(25, top_k * 5), force_refresh=False)
+        dem_rows = [row for row in (ext.get("demand") or []) if str(row[1] or "").lower().rstrip(".").removeprefix("www.") in pub_doms]
+        print(f"\n## 5. Post-GSC HitTail External Demand & Shard Intent (30d | {ext.get('status', 'offline')})")
+        if dem_rows:
+            for apex, dom, path_s, hits, hum, ips, _ in dem_rows[:top_k]:
+                kws = ", ".join(_match_path_keywords(path_s, slug_map)) or "non-post surface"
+                print(f"  • [{apex:<16s} | N={hits:3d}, P={ips:2d} IPs] {dom}{path_s} -> ({kws})")
+        elif ext.get("status") == "sync_pending":
+            print("  • (Honeybot referrer_radar sync pending — run ytreboot to backfill honeybot.db)")
+        else:
+            print(f"  • (No external human referrals in window; source={ext.get('status', 'offline')})")
+    _print_cross_lane_diff(records, targets_list, top_k=top_k)
     return 0
 
 
@@ -776,7 +803,10 @@ def main() -> int:
         description="Markov Transition Matrix & River Online Streaming ML CLI for context.txt."
     )
     parser.add_argument("source", nargs="?", default=None, help="Optional file path of series data.")
-    parser.add_argument("-t", "--target", type=str, default="1", help="Target blog key/alias (default: 1).")
+    parser.add_argument(
+        "-t", "--target", action="append", default=None, metavar="SPEC",
+        help="Target spec from blogs.json: key/alias, comma list, range, or all (repeatable; default: 1).",
+    )
     parser.add_argument("-k", "--top", type=int, default=5, help="Top K transitions to show (default: 5).")
     parser.add_argument("--radar", action="store_true", help="Show newest Compound-Key (ref_apex, domain, path) discoveries.")
     parser.add_argument("--ai", action="store_true", help="Filter --radar to Search & AI referral velocity.")
@@ -788,13 +818,14 @@ def main() -> int:
     parser.add_argument("--outlines", action="store_true", help="Show 80/20 OUTLINE.md & shard matrix across Jekyll tracks.")
     parser.add_argument("--demo-series", action="store_true", help="Run built-in numeric time-series verification.")
     args = parser.parse_args()
+    target_spec = ",".join(args.target) if args.target else "1"
     src_cmd = (args.source or "").strip().lower()
     if args.outlines or (src_cmd in ("outlines", "outline") and not Path(args.source).is_file()):
-        return run_outlines_overview(target_spec=args.target)
+        return run_outlines_overview(target_spec=target_spec)
     if args.funnel or (src_cmd in ("funnel", "sparklines") and not Path(args.source).is_file()):
         return run_funnel_compass(days=14 if "--days" not in sys.argv else args.days, top_k=args.top)
     if args.radar or args.ai or args.links or args.by_domain or (src_cmd == "radar" and not Path(args.source).is_file()):
-        return run_referral_radar(target_spec=args.target, days=args.days, top_k=max(15, args.top), links_only=args.links, ai_only=args.ai, by_domain=args.by_domain)
+        return run_referral_radar(target_spec=target_spec, days=args.days, top_k=max(15, args.top), links_only=args.links, ai_only=args.ai, by_domain=args.by_domain)
 
     if args.demo_series:
         return run_demo_series()
@@ -806,7 +837,7 @@ def main() -> int:
             print(f"❌ markov: file not found: {p}", file=sys.stderr)
             return 1
         return analyze_generic_series(p.read_text(encoding="utf-8").splitlines(), label=p.name, top_k=args.top)
-    return analyze_corpus_shards(target_spec=args.target, top_k=args.top)
+    return analyze_corpus_shards(target_spec=target_spec, top_k=args.top)
 
 
 if __name__ == "__main__":
