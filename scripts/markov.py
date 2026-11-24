@@ -144,7 +144,7 @@ if not conn.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='re
     print(json.dumps({"status": "sync_pending", "obs_days": max(1, days), "total_edges": 0, "bucket_edges": 0, "bucket_domains": 0, "bucket_hits": 0, "demand": [], "radar": [], "edges": [], "domains": []}))
     raise SystemExit(0)
 _AI_APEX = {"bing.com", "duckduckgo.com", "ddg.gg", "kagi.com", "baidu.com", "yahoo.com", "brave.com", "ecosia.org", "qwant.com", "sogou.com", "so.com", "naver.com", "seznam.cz", "mojeek.com", "startpage.com", "yep.com", "marginalia-search.com", "chatgpt.com", "openai.com", "claude.ai", "anthropic.com", "perplexity.ai", "you.com", "phind.com", "poe.com", "grok.com", "x.ai", "mistral.ai", "deepseek.com", "meta.ai", "genspark.ai", "exa.ai", "copilot.microsoft.com"}
-_SOCIAL_APEX = {"t.co", "x.com", "twitter.com", "lnkd.in", "linkedin.com", "facebook.com", "fb.com", "instagram.com", "threads.net", "youtube.com", "youtu.be", "pinterest.com", "tiktok.com", "msn.com", "live.com"}
+_SOCIAL_APEX = {"t.co", "x.com", "twitter.com", "lnkd.in", "linkedin.com", "facebook.com", "fb.com", "fb.me", "reddit.com", "redd.it", "bsky.app", "news.ycombinator.com", "ycombinator.com", "lobste.rs", "discord.com", "discord.gg", "instagram.com", "threads.net", "youtube.com", "youtu.be", "pinterest.com", "tiktok.com", "msn.com", "live.com"}
 _NOISE_APEX = {"nip.io", "sslip.io", "verizon.net", "netcraft.com"}
 _BAD_REF_SUB = ("/wp-admin", "/wp-login", "xmlrpc.php", "/.env")
 today = datetime.date.today()
@@ -176,7 +176,7 @@ for ap, dom, p_s, hits, hum, ips, h7, p_days, f_seen, f_ref, l_ref, s_ref in d_r
         bkt = "links"
     else:
         bkt = "other"
-    if bkt_req in ("ai", "links") and bkt != bkt_req:
+    if bkt_req in ("ai", "links", "social") and bkt != bkt_req:
         continue
     best_u = max(https_u, key=len) if https_u else (refs[0] if refs else a)
     src = best_u if bkt_req == "links" else a
@@ -466,7 +466,7 @@ def analyze_corpus_shards(target_spec: str = "1", top_k: int = 5) -> int:
     return 0
 
 
-def run_referral_radar(target_spec: str = "1", days: int = 30, top_k: int = 15, links_only: bool = False, ai_only: bool = False, by_domain: bool = False) -> int:
+def run_referral_radar(target_spec: str = "1", days: int = 30, top_k: int = 15, links_only: bool = False, ai_only: bool = False, social_only: bool = False, by_domain: bool = False) -> int:
     try:
         targets_list = _resolve_targets(target_spec)
     except ValueError as exc:
@@ -486,11 +486,11 @@ def run_referral_radar(target_spec: str = "1", days: int = 30, top_k: int = 15, 
                     slug_map[m.group(2).lower()] = {"kws": [_norm_topic(k) for k in (d.get("kw") or []) if _norm_topic(k)]}
                 except Exception:
                     pass
-    bkt = "ai" if ai_only else ("links" if links_only else "all")
+    bkt = "ai" if ai_only else ("social" if social_only else ("links" if links_only else "all"))
     snap = _fetch_honeybot_referrals(days=days, limit=top_k, force_refresh=True, bucket=bkt)
     obs = snap.get("obs_days", days)
-    if bkt in ("ai", "links") or by_domain:
-        tag = "🤖 HONEYBOT SEARCH & AI" if bkt == "ai" else ("🔗 HONEYBOT CLICKABLE WEB" if bkt == "links" else "📡 HONEYBOT EXTERNAL")
+    if bkt in ("ai", "links", "social") or by_domain:
+        tag = "🤖 HONEYBOT SEARCH & AI" if bkt == "ai" else ("📱 HONEYBOT SOCIAL PLATFORMS" if bkt == "social" else ("🔗 HONEYBOT CLICKABLE WEB" if bkt == "links" else "📡 HONEYBOT EXTERNAL"))
         if by_domain:
             doms = snap.get("domains") or []
             print(f"# {tag} DOMAIN ROLLUP ({days}d, obs={obs}d | status={snap.get('status')} | domains={snap.get('bucket_domains', 0)} | edges={snap.get('bucket_edges', 0)} | hits={snap.get('bucket_hits', 0)})")
@@ -771,6 +771,106 @@ def run_funnel_compass(days: int = 14, top_k: int = 5) -> int:
     return 0
 
 
+_SOCIAL_SHORT_ALIASES = {
+    "x": "x.com", "twitter": "x.com", "t.co": "x.com", "li": "linkedin.com", "linkedin": "linkedin.com", "lnkd.in": "linkedin.com",
+    "yt": "youtube.com", "youtube": "youtube.com", "youtu.be": "youtube.com", "fb": "facebook.com", "facebook": "facebook.com",
+    "hn": "news.ycombinator.com", "hackernews": "news.ycombinator.com", "bsky": "bsky.app", "bluesky": "bsky.app",
+    "reddit": "reddit.com", "discord": "discord.com", "lobsters": "lobste.rs",
+}
+
+_REMOTE_SOCIAL_PY = r"""
+import datetime, json, sqlite3, sys
+days, plat_f, dom_csv, lim = max(2, int(sys.argv[1])), sys.argv[2].strip().lower(), sys.argv[3].strip().lower(), max(10, int(sys.argv[4]))
+db_p = sys.argv[5] if len(sys.argv) > 5 and sys.argv[5] else "/home/mike/www/mikelev.in/honeybot.db"
+conn = sqlite3.connect(f"file:{db_p}?mode=ro", uri=True)
+end_d = datetime.date.today()
+span = [(end_d - datetime.timedelta(days=days - 1 - i)).isoformat() for i in range(days)]
+d0, d1, idx_m = span[0], span[-1], {d: i for i, d in enumerate(span)}
+if not conn.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='referrer_daily_logs'").fetchone():
+    print(json.dumps({"status": "sync_pending", "span": span, "platforms": {}, "edges": []}))
+    raise SystemExit(0)
+_FOLD = {"t.co": "x.com", "twitter.com": "x.com", "lnkd.in": "linkedin.com", "youtu.be": "youtube.com", "fb.com": "facebook.com", "fb.me": "facebook.com", "redd.it": "reddit.com", "ycombinator.com": "news.ycombinator.com"}
+_SOC = {"x.com", "linkedin.com", "youtube.com", "reddit.com", "facebook.com", "discord.com", "bsky.app", "news.ycombinator.com", "lobste.rs", "threads.net", "instagram.com", "tiktok.com"}
+dom_set = {x for x in dom_csv.split(",") if x}
+plats, edges = {}, {}
+sql = "SELECT rdl.date, rdl.ref_apex, d.value, p.value, rdl.human_count, rdl.unique_ips, rdl.sample_referrer FROM referrer_daily_logs rdl JOIN domains d ON rdl.domain_id = d.id JOIN paths p ON rdl.path_id = p.id WHERE rdl.date BETWEEN ? AND ? AND rdl.human_count > 0"
+for dy, raw_ap, dom, p_s, hum, ips, s_ref in conn.execute(sql, (d0, d1)):
+    ap, d_clean = _FOLD.get((raw_ap or "").lower(), (raw_ap or "").lower()), (dom or "").lower().rstrip(".").removeprefix("www.")
+    if ap not in _SOC or (plat_f and ap != plat_f) or (dom_set and d_clean not in dom_set) or str(dy) not in idx_m:
+        continue
+    i, h_i, ip_i = idx_m[str(dy)], int(hum or 0), int(ips or 0)
+    pr = plats.setdefault(ap, {"n": [0] * days, "p": [0] * days, "paths": set()})
+    pr["n"][i] += h_i; pr["p"][i] += ip_i; pr["paths"].add((d_clean, p_s))
+    er = edges.setdefault((ap, d_clean, p_s), {"n": [0] * days, "p": [0] * days, "ref": s_ref or ap})
+    er["n"][i] += h_i; er["p"][i] += ip_i
+    if s_ref and len(s_ref) > len(er["ref"]):
+        er["ref"] = s_ref
+p_out = {k: {"n": v["n"], "p": v["p"], "paths": len(v["paths"])} for k, v in plats.items()}
+e_out = [[ap, dm, p_s, v["n"], v["p"], v["ref"]] for (ap, dm, p_s), v in edges.items()]
+e_out.sort(key=lambda x: (sum(x[3]), sum(x[4]), x[3][-1]), reverse=True)
+print(json.dumps({"status": "live", "span": span, "platforms": p_out, "edges": e_out[:lim]}))
+"""
+
+
+def run_social_article_velocity(target_spec: str = "1", days: int = 14, top_k: int = 12, platform: str = "", target_explicit: bool = False) -> int:
+    try:
+        targets_list = _resolve_targets(target_spec)
+    except ValueError as exc:
+        print(f"❌ markov: {exc}", file=sys.stderr)
+        return 1
+    pub_doms = _target_public_domains(targets_list)
+    if not pub_doms:
+        print(f"# 📱 SOCIAL -> ARTICLE COMPOUND-KEY VELOCITY ({targets_list[0]['name']} — local/air-gapped target)")
+        return 0
+    slug_map = {}
+    for t_cfg in targets_list:
+        c_dir = t_cfg["posts_dir"] / "_context"
+        for jf in (c_dir.glob("*.json") if c_dir.is_dir() else ()):
+            m = _DATED_STEM_RE.match(jf.stem)
+            if m:
+                try:
+                    d = json.loads(jf.read_text(encoding="utf-8"))
+                    slug_map[m.group(2).lower()] = {"kws": [_norm_topic(k) for k in (d.get("kw") or []) if _norm_topic(k)]}
+                except Exception:
+                    pass
+    raw_p = (platform or "").strip().lower().removeprefix("www.")
+    plat_f, dom_csv, lim = _SOCIAL_SHORT_ALIASES.get(raw_p, raw_p), (",".join(pub_doms) if target_explicit else ""), max(60, int(top_k) * 4)
+    db_ov, host = os.environ.get("PIPULATE_HONEYBOT_DB", "").strip(), os.environ.get("PIPULATE_HONEYBOT_HOST", "honeybot")
+    cmd = [sys.executable, "-", str(int(days)), plat_f, dom_csv, str(lim), db_ov] if (db_ov and Path(db_ov).is_file()) else ["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=3", host, "python3", "-", str(int(days)), plat_f, dom_csv, str(lim)]
+    res = subprocess.run(cmd, input=_REMOTE_SOCIAL_PY, capture_output=True, text=True, timeout=6, check=False)
+    snap = json.loads(res.stdout.strip()) if res.returncode == 0 and (res.stdout or "").strip() else {"status": "offline", "span": [], "platforms": {}, "edges": []}
+    span, plats, edges = snap.get("span") or [], snap.get("platforms") or {}, snap.get("edges") or []
+    n_d, p_lbl = len(span) or max(2, int(days)), (f" | platform={plat_f}" if plat_f else "")
+    print(f"# 📱 SOCIAL -> ARTICLE COMPOUND-KEY VELOCITY ({n_d}d: {span[0] + '..' + span[-1] if span else n_d}{p_lbl} | status={snap.get('status')})")
+    print("\n## 1. Platform Cohort Sparklines (OLS Slope, N Human Clicks / P Daily IPs, Articles, River t+1)")
+    for ap in sorted(plats, key=lambda k: (sum(plats[k]["n"]), sum(plats[k]["p"])), reverse=True):
+        nv, pv, st = plats[ap]["n"], plats[ap]["p"], compute_ols_velocity(plats[ap]["n"])
+        print(f"  • {ap:<20s} {(render_sparkline(nv, width=14) or '—'):<14s} {st['arrow']} {st['slope']:+6.2f}/d | N={int(st['total']):4d}, P={sum(pv):4d} IPs, arts={plats[ap]['paths']:3d} | river_t+1={_river_next_day(nv):5.1f}")
+    if not plats:
+        print("  • (No human social referrals recorded in window)")
+    print(f"\n## 2. Top (Platform, Article) Compound-Key Trajectories (Top {top_k})")
+    kw_daily: dict[str, list[int]] = {}
+    for _, _, path_s, nv, _, _ in edges:
+        for k in (kw for kw in _match_path_keywords(path_s, slug_map) if not _is_internal_artifact(kw)):
+            arr = kw_daily.setdefault(k, [0] * len(nv))
+            for i, val in enumerate(nv):
+                arr[i] += int(val)
+    for ap, dom, path_s, nv, pv, _ in edges[:top_k]:
+        st, kws = compute_ols_velocity(nv), (", ".join(_match_path_keywords(path_s, slug_map)[:3]) or "surface")
+        short_t = f"{dom}{path_s}" if len(f"{dom}{path_s}") <= 54 else f"{dom}{path_s[:51]}..."
+        print(f"  • {ap:<14s} {(render_sparkline(nv, width=14) or '—'):<14s} {st['arrow']} {st['slope']:+5.2f}/d | N={int(st['total']):3d}, P={sum(pv):3d} | t+1={_river_next_day(nv):4.1f} | {short_t} -> ({kws})")
+    if not edges:
+        print("  • (No per-article social trajectories in window)")
+    print("\n## 3. Social-Weighted Shard Topic Velocity (River Forecast)")
+    kw_ranked = sorted(kw_daily.items(), key=lambda kv: (sum(kv[1]), compute_ols_velocity(kv[1])["slope"]), reverse=True)[: min(8, top_k)]
+    for k, kv in kw_ranked:
+        st = compute_ols_velocity(kv)
+        print(f"  • {k:<24s} {(render_sparkline(kv, width=14) or '—'):<14s} {st['arrow']} {st['slope']:+5.2f}/d | social_N={int(st['total']):4d} | river_t+1={_river_next_day(kv):4.1f}")
+    if not kw_ranked:
+        print("  • (No shard-matched social topics in window)")
+    return 0
+
+
 def run_demo_series() -> int:
     synth_num = [
         f"t{i} {100.0 + 0.8 * i + (3.5 if i % 4 in (0, 1) else -2.0):.2f}"
@@ -811,6 +911,8 @@ def main() -> int:
     parser.add_argument("--radar", action="store_true", help="Show newest Compound-Key (ref_apex, domain, path) discoveries.")
     parser.add_argument("--ai", action="store_true", help="Filter --radar to Search & AI referral velocity.")
     parser.add_argument("--links", action="store_true", help="Filter --radar to clickable non-search/non-AI referring web URLs.")
+    parser.add_argument("--social", action="store_true", help="Show per-(platform, article) social sparklines, OLS slopes, & River velocity (or filter --radar).")
+    parser.add_argument("--platform", type=str, default="", help="Filter --social to one platform (e.g. x, linkedin, youtube, reddit, hn, fb).")
     parser.add_argument("--by-domain", action="store_true", help="Aggregate --radar velocity by referring domain.")
     parser.add_argument("--days", type=int, default=30, help="Lookback window in days for --radar / --funnel (default: 30).")
     parser.add_argument("--funnel", action="store_true", help="Show daily directional sparklines (N/P), OLS slopes, & River/Markov funnel.")
@@ -824,8 +926,12 @@ def main() -> int:
         return run_outlines_overview(target_spec=target_spec)
     if args.funnel or (src_cmd in ("funnel", "sparklines") and not Path(args.source).is_file()):
         return run_funnel_compass(days=14 if "--days" not in sys.argv else args.days, top_k=args.top)
-    if args.radar or args.ai or args.links or args.by_domain or (src_cmd == "radar" and not Path(args.source).is_file()):
-        return run_referral_radar(target_spec=target_spec, days=args.days, top_k=max(15, args.top), links_only=args.links, ai_only=args.ai, by_domain=args.by_domain)
+    if (args.social or args.platform or (src_cmd == "social" and not Path(args.source).is_file())) and not (args.radar or args.by_domain):
+        soc_days = 14 if "--days" not in sys.argv else args.days
+        soc_top = 12 if ("-k" not in sys.argv and "--top" not in sys.argv) else args.top
+        return run_social_article_velocity(target_spec=target_spec, days=soc_days, top_k=soc_top, platform=args.platform, target_explicit=bool(args.target))
+    if args.radar or args.ai or args.links or args.social or args.by_domain or (src_cmd == "radar" and not Path(args.source).is_file()):
+        return run_referral_radar(target_spec=target_spec, days=args.days, top_k=max(15, args.top), links_only=args.links, ai_only=args.ai, social_only=args.social, by_domain=args.by_domain)
 
     if args.demo_series:
         return run_demo_series()
