@@ -478,7 +478,7 @@ def print_hit_regions(filepath: str, terms, around: int, max_regions: int = 5, p
 
 def main():
     parser = argparse.ArgumentParser(description="Unified Article Lister & Analyzer")
-    parser.add_argument('-t', '--target', type=str, help="Target ID from blogs.json (e.g., '1', '4')")
+    parser.add_argument('-t', '--target', action='append', default=None, metavar='SPEC', help="Target spec from blogs.json: key/alias, comma list, range, or all (e.g., grim, article,grim, 1-3, all; repeatable)")
     parser.add_argument('-g', '--gaps', action='store_true', help="Run and display the sort_order contiguity gap report")
     parser.add_argument('-r', '--reverse', action='store_true', help="Reverse the sorting order")
     parser.add_argument('-a', '--article', type=str, help="Generate a prompt_foo.py command for a slice of articles (e.g., '[-5:]')")
@@ -496,7 +496,13 @@ def main():
     parser.add_argument('--shards', action='store_true', help="Interleave each article's holographic shard (keywords + summary) from _context/ beneath its listing line (full format only)")
     parser.add_argument('--around', type=int, default=None, metavar='N', help="With --terms, print ±N lines of context around each case-insensitive hit (full format only)")
     parser.add_argument('--terms', nargs='+', default=None, metavar='TERM', help="Search terms for --around hit-region extraction (case-insensitive fixed strings)")
-    args = parser.parse_args(_normalize_slice_argv(sys.argv[1:]))
+    args, extras = parser.parse_known_args(_normalize_slice_argv(sys.argv[1:]))
+    if extras:
+        if args.target and all(not x.startswith('-') for x in extras):
+            joined = ",".join([*args.target, *extras])
+            print(f"❌ Unrecognized arguments: {' '.join(extras)}\n💡 Combine multiple -t targets with commas (or repeat -t) so posts and rgx match: -t {joined}", file=sys.stderr)
+            sys.exit(2)
+        parser.error(f"unrecognized arguments: {' '.join(extras)}")
 
     if args.bare_last is not None:
         raw_bare = args.bare_last.strip()
@@ -509,13 +515,17 @@ def main():
     if args.slice is not None:
         slice_spec = parse_slice_arg(args.slice)
         if slice_spec is None:
-            print(f"❌ Invalid slice or index: {args.slice}. Use N (e.g. 10) or Python slice/index (e.g. -6:-2, -5:, -2).", file=sys.stderr)
+            if args.target and args.bare_last and args.slice == args.bare_last.strip():
+                joined = ",".join([*args.target, args.slice])
+                print(f"❌ Invalid slice or index: {args.slice}.\n💡 Combine multiple -t targets with commas (or repeat -t) so posts and rgx match: -t {joined}", file=sys.stderr)
+            else:
+                print(f"❌ Invalid slice or index: {args.slice}. Use N (e.g. 10) or Python slice/index (e.g. -6:-2, -5:, -2).", file=sys.stderr)
             sys.exit(1)
     if args.fmt == 'body' and args.last is None and args.top is None and slice_spec is None and not args.slugs and not args.match:
         args.last = 1
 
     targets = load_targets()
-    target_key = args.target
+    target_key = ",".join(args.target) if args.target else os.environ.get("PIPULATE_DEFAULT_TARGET")
 
     if not target_key:
         print("\nSelect Target Repo for Listing:")

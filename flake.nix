@@ -198,12 +198,9 @@
             exit 1
           fi
           cd "$root/scripts/articles"
-          # Default to target 1 ONLY when the caller supplies no -t of its
-          # own, so rgx/rgxc can retarget without lsa.py seeing two -t flags.
-          case " $* " in
-            *" -t "*|*" --target"*) exec "$python_bin" lsa.py "$@" ;;
-            *) exec "$python_bin" lsa.py -t 1 "$@" ;;
-          esac
+          # Non-interactive default target 1 when no -t/--target is supplied;
+          # direct `python lsa.py` keeps its interactive selector.
+          PIPULATE_DEFAULT_TARGET=1 exec "$python_bin" lsa.py "$@"
         '';
 
         # THE `c`-TWIN OF `posts` (mirrors rgx -> rgxc, same suffix grammar).
@@ -737,60 +734,44 @@
         rgxCommand = pkgs.writeShellScriptBin "rgx" ''
           set -euo pipefail
 
-          # Target selection: -t SPEC (first args only), in every spelling
-          # posts reads -- 4, grim, 1,3, grim,vault, 2-4, all -- resolved
-          # from blogs.json at RUNTIME by posts itself, never baked into the
-          # Nix store, so a blog added or renumbered in blogs.nix needs no
-          # rebuild of this command, and a name follows its blog across a
-          # renumber where a number does not.
-          target="1"
-          if [ "''${1:-}" = "-t" ] && [ "$#" -ge 2 ]; then
-            target="$2"
-            shift 2
-          fi
-
-          # -v: THE ART WALK. Open the matches in the editor instead of
-          # printing them. Newest article lands in buffer 1 so :bn walks
-          # backward in time through each article's ASCII art.
-          vim_mode=0
-          if [ "''${1:-}" = "-v" ]; then
-            vim_mode=1
-            shift
-          fi
-
-          last_args=()
-          clip_args=()
-          capn=8
-          lastn=""
-          if [[ "''${1:-}" =~ ^[0-9]+$ ]]; then
-            last_args=(--last "$1")
-            lastn="$1"
-            if [ "$1" -lt "$capn" ]; then
-              capn="$1"
-            fi
-            clip_args=(--last "$capn")
-            shift
-          elif [[ "''${1:-}" =~ ^\[?(-?[0-9]*:-?[0-9]*(:?-?[0-9]*)?|-[0-9]+)\]?$ ]]; then
-            last_args=("--slice=$1")
-            clip_args=("--slice=$1")
-            lastn="$1"
-            shift
-          else
-            clip_args=(--last "$capn")
-          fi
+          # Target selection: -t SPEC (anywhere before --, repeatable), in every
+          # spelling posts reads (4, grim, 1,3, grim,vault, 2-4, all).
+          usage="Usage: rgx [-t SPEC] [-v] [N|SLICE] [TERM...]   (SPEC = 4, grim, 1,3, grim,vault, 2-4 or all; N or SLICE alone lists matching recent posts; -v opens in vim, newest first)"
+          target=""; vim_mode=0; last_args=(); clip_args=(--last 8); capn=8; lastn=""; terms=()
+          while [ "$#" -gt 0 ]; do
+            case "$1" in
+              -h|--help) echo "$usage"; exit 0 ;;
+              -t|--target)
+                if [ "$#" -lt 2 ] || [ -z "''${2:-}" ]; then echo "rgx: $1 requires a target spec (e.g. -t article,grim or -t all)" >&2; exit 1; fi
+                target="''${target:+$target,}$2"; shift 2 ;;
+              -t=*|--target=*)
+                if [ -z "''${1#*=}" ]; then echo "rgx: -t requires a target spec (e.g. -t article,grim or -t all)" >&2; exit 1; fi
+                target="''${target:+$target,}''${1#*=}"; shift ;;
+              -v|--vim) vim_mode=1; shift ;;
+              --) shift; terms+=("$@"); break ;;
+              *)
+                if [ -z "$lastn" ] && [ "''${#terms[@]}" -eq 0 ] && [[ "$1" =~ ^[0-9]+$ ]] && [ "$1" -gt 0 ]; then
+                  last_args=(--last "$1"); lastn="$1"
+                  if [ "$1" -lt "$capn" ]; then capn="$1"; fi
+                  clip_args=(--last "$capn")
+                elif [ -z "$lastn" ] && [ "''${#terms[@]}" -eq 0 ] && [[ "$1" =~ ^\[?(-?[0-9]*:-?[0-9]*(:?-?[0-9]*)?|-[0-9]+)\]?$ ]]; then
+                  last_args=("--slice=$1"); clip_args=("--slice=$1"); lastn="$1"
+                else
+                  terms+=("$1")
+                fi
+                shift ;;
+            esac
+          done
+          target="''${target:-1}"
           # THE ZERO-TERM FALLBACK (2026-10-18, deed 51): rgx N or rgx SLICE
-          # with no search terms delegates straight to posts so muscle memory
-          # never hits a usage wall when asking for recent or sliced articles.
-          if [ "$#" -eq 0 ]; then
+          # with no search terms delegates straight to posts.
+          if [ "''${#terms[@]}" -eq 0 ]; then
             if [ -n "$lastn" ] || [ "$vim_mode" -eq 1 ]; then
               if [ "$vim_mode" -eq 1 ]; then last_args+=(-v); fi
               exec ${postsCommand}/bin/posts -t "$target" "''${last_args[@]}"
             fi
-            echo "Usage: rgx [-t SPEC] [-v] [N|SLICE] [TERM...]   (SPEC = 4, grim, 1,3, grim,vault, 2-4 or all; N or SLICE alone lists matching recent posts; -v opens in vim, newest first)" >&2
-            exit 1
+            echo "$usage" >&2; exit 1
           fi
-
-          terms=("$@")
           # THE ROSTER IS THE SEARCH SPACE (2026-09-26, the night the Vault
           # became target 5). posts resolves the -t spec against blogs.json
           # in every spelling it reads (4, 1,3, 2-4, all) and prints the path
@@ -864,57 +845,44 @@
         rgxcCommand = pkgs.writeShellScriptBin "rgxc" ''
           set -euo pipefail
 
-          # Same runtime target resolution as rgx: -t SPEC (first args only),
-          # 4 or grim or 1,3 or grim,vault or 2-4 or all, read by posts from
-          # blogs.json when the command RUNS, so the Nix store carries the
-          # mechanism, never the data.
-          target="1"
-          if [ "''${1:-}" = "-t" ] && [ "$#" -ge 2 ]; then
-            target="$2"
-            shift 2
-          fi
-
-          # -v: THE ART WALK (mirrored from rgx). Open the matches in the
-          # editor instead of printing shards. Newest article lands in
-          # buffer 1 so :bn walks backward in time through the ASCII art.
-          vim_mode=0
-          if [ "''${1:-}" = "-v" ]; then
-            vim_mode=1
-            shift
-          fi
-
-          last_args=()
-          clip_args=()
-          capn=8
-          lastn=""
-          if [[ "''${1:-}" =~ ^[0-9]+$ ]]; then
-            last_args=(--last "$1")
-            lastn="$1"
-            if [ "$1" -lt "$capn" ]; then
-              capn="$1"
-            fi
-            clip_args=(--last "$capn")
-            shift
-          elif [[ "''${1:-}" =~ ^\[?(-?[0-9]*:-?[0-9]*(:?-?[0-9]*)?|-[0-9]+)\]?$ ]]; then
-            last_args=("--slice=$1")
-            clip_args=("--slice=$1")
-            lastn="$1"
-            shift
-          else
-            clip_args=(--last "$capn")
-          fi
+          # Same runtime target resolution as rgx: -t SPEC (anywhere before --,
+          # repeatable), resolved from blogs.json by posts at call time.
+          usage="Usage: rgxc [-t SPEC] [-v] [N|SLICE] [TERM...]   (SPEC = 4, grim, 1,3, grim,vault, 2-4 or all; N or SLICE alone lists matching recent posts with shards; -v opens in vim, newest first)"
+          target=""; vim_mode=0; last_args=(); clip_args=(--last 8); capn=8; lastn=""; terms=()
+          while [ "$#" -gt 0 ]; do
+            case "$1" in
+              -h|--help) echo "$usage"; exit 0 ;;
+              -t|--target)
+                if [ "$#" -lt 2 ] || [ -z "''${2:-}" ]; then echo "rgxc: $1 requires a target spec (e.g. -t article,grim or -t all)" >&2; exit 1; fi
+                target="''${target:+$target,}$2"; shift 2 ;;
+              -t=*|--target=*)
+                if [ -z "''${1#*=}" ]; then echo "rgxc: -t requires a target spec (e.g. -t article,grim or -t all)" >&2; exit 1; fi
+                target="''${target:+$target,}''${1#*=}"; shift ;;
+              -v|--vim) vim_mode=1; shift ;;
+              --) shift; terms+=("$@"); break ;;
+              *)
+                if [ -z "$lastn" ] && [ "''${#terms[@]}" -eq 0 ] && [[ "$1" =~ ^[0-9]+$ ]] && [ "$1" -gt 0 ]; then
+                  last_args=(--last "$1"); lastn="$1"
+                  if [ "$1" -lt "$capn" ]; then capn="$1"; fi
+                  clip_args=(--last "$capn")
+                elif [ -z "$lastn" ] && [ "''${#terms[@]}" -eq 0 ] && [[ "$1" =~ ^\[?(-?[0-9]*:-?[0-9]*(:?-?[0-9]*)?|-[0-9]+)\]?$ ]]; then
+                  last_args=("--slice=$1"); clip_args=("--slice=$1"); lastn="$1"
+                else
+                  terms+=("$1")
+                fi
+                shift ;;
+            esac
+          done
+          target="''${target:-1}"
           # THE ZERO-TERM FALLBACK (2026-10-18, deed 51): rgxc N or rgxc SLICE
           # with no search terms delegates straight to posts --shards (postsc).
-          if [ "$#" -eq 0 ]; then
+          if [ "''${#terms[@]}" -eq 0 ]; then
             if [ -n "$lastn" ] || [ "$vim_mode" -eq 1 ]; then
               if [ "$vim_mode" -eq 1 ]; then last_args+=(-v); fi
               exec ${postsCommand}/bin/posts -t "$target" --shards "''${last_args[@]}"
             fi
-            echo "Usage: rgxc [-t SPEC] [-v] [N|SLICE] [TERM...]   (SPEC = 4, grim, 1,3, grim,vault, 2-4 or all; N or SLICE alone lists matching recent posts with shards; -v opens in vim, newest first)" >&2
-            exit 1
+            echo "$usage" >&2; exit 1
           fi
-
-          terms=("$@")
           # THE ROSTER IS THE SEARCH SPACE (mirrored from rgx, 2026-09-26):
           # posts resolves the -t spec and prints every post those blogs
           # hold; rg searches exactly those files. No jq twin, no fallback
