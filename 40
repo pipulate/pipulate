@@ -78,6 +78,7 @@ remotes/honeybot/scripts/db.py
 # THE JEKYLL BLOG LIKE A HACKER (INVENTED SKILL.md & AGENTS.md FORMAT) PUBLISHING PIPELINE
 ~/repos/nixos/blogs.nix
 ~/.config/pipulate/blogs.json
+scripts/articles/dots_extract.py
 scripts/articles/publishizer.py
 scripts/articles/common.py
 scripts/articles/articleizer.py
