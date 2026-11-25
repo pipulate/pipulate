@@ -74,7 +74,7 @@ def _make_station_bead(card_label, card_say, capstone_cue, forest_story_lines, p
     """Assemble a brisk station showcase bead: Title Card -> Report/Art Overlay -> Top-Level Findings."""
     cues = [("CARD", {"label": card_label, "say": card_say}), capstone_cue, ("WAIT", 1)]
     is_win = isinstance(capstone_cue, tuple) and capstone_cue[:1] == ("WINDOW",)
-    is_art = isinstance(capstone_cue, tuple) and capstone_cue[:1] == ("PATRONUS",)
+    is_art = isinstance(capstone_cue, tuple) and capstone_cue[:1] in (("PATRONUS",), ("MEDIA",))
     for line in forest_story_lines:
         cues.append(("SAY", line))
     if post_linger is None:
@@ -145,7 +145,7 @@ ARCHIVED_STATION_BEADS = {
     "odd_couple": _make_station_bead(
         "SHANNON &\nWIENER 1948",
         "Meet the two 1948 patron saints of cybernetic steering and lossless digital bits.",
-        ("MEDIA", {"path": "shannon-wiener", "duration": 16.0}),
+        ("MEDIA", {"path": "shannon-wiener", "duration": 28.0, "overlay": True}),
         [
             "In 1948, James Gleick's odd couple — Claude Shannon juggling on a unicycle at Bell Labs, and Norbert Wiener pacing in a three-piece suit at MIT — mapped both halves of this machine.",
             "Wiener proved steady steering requires damped, full-day feedback rather than twitchy overshoot, while Shannon proved digital bits copy forever with zero generation loss — exposing Cloud subscriptions as 1965 mainframe rent.",

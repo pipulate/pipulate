@@ -2311,6 +2311,28 @@ def _resume_honeybot_stage_after_weebo(paused_pids):
             continue
 
 
+def _is_nonblocking_media_overlay(media_spec) -> bool:
+    """True for silent visual Weebo overlays (images, GIFs, muted clips, or overlay=True) that float over speech."""
+    if isinstance(media_spec, dict):
+        if media_spec.get("blocking") is True:
+            return False
+        if media_spec.get("overlay") is True or media_spec.get("mute") is True:
+            return True
+        raw_s = str(media_spec.get("path") or media_spec.get("url") or media_spec.get("key") or "").strip()
+    else:
+        raw_s = str(media_spec or "").strip()
+        if ":" in raw_s and not raw_s.startswith(("http://", "https://", "file://")):
+            head, tail = raw_s.rsplit(":", 1)
+            try:
+                float(tail.strip())
+                raw_s = head.strip()
+            except ValueError:
+                pass
+    resolved = _resolve_honeybot_media_target(raw_s) if raw_s else ""
+    ext = os.path.splitext((resolved or raw_s).split("?", 1)[0])[1].lower()
+    return ext not in (".mp4", ".webm", ".mkv", ".mov")
+
+
 def conjure_media(media_spec, duration=15.0, mute=False, _direct=False):
     """Pop up an image or video over the Honeybot :10.0 stream using mpv, feh, or Firefox fallback."""
     if _is_max_popup_suppressed(media_spec):
@@ -2356,8 +2378,8 @@ def conjure_media(media_spec, duration=15.0, mute=False, _direct=False):
             pass
     env = _hydrate_honeybot_x11_env()
     scr_w, scr_h, scr_ox, scr_oy = _get_honeybot_screen_dimensions(env)
-    eff_max_w = min(1440, max(256, int(scr_w * 0.85)))
-    eff_max_h = min(840, max(256, int(scr_h * 0.85)))
+    eff_max_w = min(1360, max(256, int(scr_w * 0.85)))
+    eff_max_h = min(816, max(256, int(scr_h * 0.85)))
     img_w, img_h = _read_image_dimensions(target) if os.path.isfile(target) else (int(scr_w * 0.75), int(scr_h * 0.75))
     scale = min(1.0, eff_max_w / max(1, img_w), eff_max_h / max(1, img_h))
     win_w = max(16, int(round(img_w * scale)))
@@ -2367,7 +2389,13 @@ def conjure_media(media_spec, duration=15.0, mute=False, _direct=False):
         win_h = max(16, win_h - (win_h % 2))
     pos_x = max(0, (scr_ox + (scr_w // 2)) - (win_w // 2))
     pos_y = max(0, (scr_oy + (scr_h // 2)) - (win_h // 2))
-    err_dest = None if _direct else subprocess.DEVNULL
+    err_path = Path("/tmp/honeybot_weebo.err")
+    try:
+        err_f = open(err_path, "w", encoding="utf-8")
+    except OSError:
+        err_f = None
+    err_dest = err_f if err_f is not None else subprocess.DEVNULL
+    wid = ""
 
     proc = None
     tmp_profile = None
@@ -2429,14 +2457,14 @@ def conjure_media(media_spec, duration=15.0, mute=False, _direct=False):
                 f"--image-display-duration={duration:.1f}",
                 "--no-audio",
                 "--keep-open=no",
-                "--really-quiet",
+                "--msg-level=all=error",
             ]
             mask_bytes = _build_1bit_alpha_mask_stdlib(target, win_w, win_h) if target.lower().endswith(".png") else None
             t0 = time.time()
-            proc = subprocess.Popen([*base_cmd, "--vo=x11", target], env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            proc = subprocess.Popen([*base_cmd, "--vo=x11", target], env=env, stdout=subprocess.DEVNULL, stderr=err_dest)
             wid = _shape_honeybot_overlay_window(mask_bytes, win_w, win_h, env, pos_x=pos_x, pos_y=pos_y)
             if proc.poll() is not None and (time.time() - t0) < 0.8:
-                proc = subprocess.Popen([*base_cmd, target], env=env, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                proc = subprocess.Popen([*base_cmd, target], env=env, stdout=subprocess.DEVNULL, stderr=err_dest)
                 wid = _shape_honeybot_overlay_window(mask_bytes, win_w, win_h, env, pos_x=pos_x, pos_y=pos_y)
             paused_pids = _pause_honeybot_stage_for_weebo(pause_audio=should_pause_audio)
             _enforce_overlay_z_order(wid, pos_x, pos_y, win_w, win_h, env)
@@ -2496,6 +2524,31 @@ def conjure_media(media_spec, duration=15.0, mute=False, _direct=False):
                     pass
         try:
             Path(WEEBO_STAGE_PAUSE_FILE).unlink(missing_ok=True)
+        except Exception:
+            pass
+        if err_f is not None:
+            try:
+                err_f.close()
+            except OSError:
+                pass
+        try:
+            import json as _mjson
+            err_txt = err_path.read_text(encoding="utf-8", errors="replace").strip()[-400:] if err_path.is_file() else ""
+            rc_val = proc.returncode if proc is not None else None
+            Path("/tmp/honeybot_media_last.json").write_text(
+                _mjson.dumps({
+                    "ok": bool(wid or rc_val in (0, -15, None)),
+                    "target": str(target),
+                    "size": [int(win_w), int(win_h)],
+                    "pos": [int(pos_x), int(pos_y)],
+                    "wid": str(wid or ""),
+                    "duration": round(float(duration), 1),
+                    "rc": rc_val,
+                    "stderr": err_txt,
+                    "ts": int(time.time()),
+                }) + "\n",
+                encoding="utf-8",
+            )
         except Exception:
             pass
         if paused_pids:
@@ -3205,7 +3258,7 @@ def dispatch_cue(command, content, env, profile_dir, pace_say=True):
         narrator.patronus(content)
 
     elif command in ("MEDIA", "IMAGE", "VIDEO"):
-        if not pace_say:
+        if (not pace_say) or _is_nonblocking_media_overlay(content):
             narrator.media(content)
         else:
             wait_for_voice_or_live_interrupt(env, profile_dir)
@@ -3979,6 +4032,7 @@ def trigger_station_bead_live(target_spec="pirates", out_path="/home/mike/www/mi
     card_say = ""
     window_spec = None
     patronus_key = None
+    media_spec = None
     story_lines = []
     for idx, (cmd, val) in enumerate(chosen_bead):
         if idx == 0 and cmd == "CARD" and isinstance(val, dict):
@@ -3988,6 +4042,13 @@ def trigger_station_bead_live(target_spec="pirates", out_path="/home/mike/www/mi
             window_spec = str(val)
         elif cmd == "PATRONUS":
             patronus_key = val.get("key") if isinstance(val, dict) else str(val)
+        elif cmd in ("MEDIA", "IMAGE", "VIDEO"):
+            if isinstance(val, dict):
+                m_p = str(val.get("path") or val.get("url") or val.get("key") or "").strip()
+                m_d = val.get("duration")
+                media_spec = f"{m_p}:{float(m_d):g}" if (m_p and m_d is not None) else m_p
+            else:
+                media_spec = str(val).strip()
         elif idx >= 1 and cmd == "SAY":
             line_str = str(val)
             if "{LIVE_REPORT:" in line_str:
@@ -4008,6 +4069,8 @@ def trigger_station_bead_live(target_spec="pirates", out_path="/home/mike/www/mi
         payload["window"] = window_spec
     elif patronus_key:
         payload["patronus"] = patronus_key
+    elif media_spec:
+        payload["media"] = media_spec
     if out_path:
         p = Path(out_path)
         tmp = p.with_suffix(".tmp")

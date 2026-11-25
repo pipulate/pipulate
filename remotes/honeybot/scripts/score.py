@@ -79,7 +79,7 @@ def _find_intermission_split(cues):
 
 HERO_IMAGE_DURATION = 8.0
 GLOBAL_WEEBO_STEM = "shannon-wiener"
-GLOBAL_WEEBO_DURATION = 14.0
+GLOBAL_WEEBO_DURATION = 32.0
 GLOBAL_WEEBO_HEADING = "The 1948 Cybernetic Coda"
 GLOBAL_WEEBO_SAY = (
     "Gemini: In 1948, James Gleick's odd couple — Claude Shannon juggling on a unicycle at Bell Labs, "
@@ -151,7 +151,7 @@ def _append_article_performance(script, article, is_latest=True):
         if GLOBAL_WEEBO_HEADING:
             script.append(("SAY", f"[[HEADING]] {GLOBAL_WEEBO_HEADING}"))
         if GLOBAL_WEEBO_STEM:
-            script.append(("MEDIA", {"path": GLOBAL_WEEBO_STEM, "duration": GLOBAL_WEEBO_DURATION}))
+            script.append(("MEDIA", {"path": GLOBAL_WEEBO_STEM, "duration": GLOBAL_WEEBO_DURATION, "overlay": True}))
         script.append(("SAY", GLOBAL_WEEBO_SAY))
     script.append((
         "CARD",
