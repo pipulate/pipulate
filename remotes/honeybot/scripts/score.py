@@ -78,6 +78,19 @@ def _find_intermission_split(cues):
 
 
 HERO_IMAGE_DURATION = 8.0
+GLOBAL_WEEBO_STEM = "shannon-wiener"
+GLOBAL_WEEBO_DURATION = 14.0
+GLOBAL_WEEBO_HEADING = "The 1948 Cybernetic Coda"
+GLOBAL_WEEBO_SAY = (
+    "Gemini: In 1948, James Gleick's odd couple — Claude Shannon juggling on a unicycle at Bell Labs, "
+    "and Norbert Wiener pacing in a three-piece suit at MIT — mapped both halves of that puzzle. "
+    "Building wartime anti-aircraft predictors, Wiener proved that yanking controls on delayed signals "
+    "causes wild overshoot; steady steering requires damped, full-day feedback rather than twitchy triggers. "
+    "Meanwhile, Shannon proved digital bits copy forever with zero generation loss. "
+    "Terrified by free infinite copies, corporate middlemen dragged computing back to 1965 mainframe "
+    "time-sharing and called it the Cloud: scrape the public commons for free, freeze it into locked "
+    "weights, and charge rent per click."
+)
 
 
 def _append_article_performance(script, article, is_latest=True):
@@ -134,6 +147,12 @@ def _append_article_performance(script, article, is_latest=True):
         script.extend(body_cues[split_idx:])
     else:
         script.extend(body_cues)
+    if GLOBAL_WEEBO_SAY:
+        if GLOBAL_WEEBO_HEADING:
+            script.append(("SAY", f"[[HEADING]] {GLOBAL_WEEBO_HEADING}"))
+        if GLOBAL_WEEBO_STEM:
+            script.append(("MEDIA", {"path": GLOBAL_WEEBO_STEM, "duration": GLOBAL_WEEBO_DURATION}))
+        script.append(("SAY", GLOBAL_WEEBO_SAY))
     script.append((
         "CARD",
         {

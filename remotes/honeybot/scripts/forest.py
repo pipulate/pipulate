@@ -142,6 +142,15 @@ ARCHIVED_STATION_BEADS = {
         ("PATRONUS", {"key": "white_rabbit", "duration": 30.0}),
         ["Bimodal content negotiation and Vary Accept edge caching let one U R L serve visual H T M L to browsers and clean Markdown to A I agents."],
     ),
+    "odd_couple": _make_station_bead(
+        "SHANNON &\nWIENER 1948",
+        "Meet the two 1948 patron saints of cybernetic steering and lossless digital bits.",
+        ("MEDIA", {"path": "shannon-wiener", "duration": 16.0}),
+        [
+            "In 1948, James Gleick's odd couple — Claude Shannon juggling on a unicycle at Bell Labs, and Norbert Wiener pacing in a three-piece suit at MIT — mapped both halves of this machine.",
+            "Wiener proved steady steering requires damped, full-day feedback rather than twitchy overshoot, while Shannon proved digital bits copy forever with zero generation loss — exposing Cloud subscriptions as 1965 mainframe rent.",
+        ],
+    ),
     "ai_pachinko": _make_station_bead(
         "AI PACHINKO",
         (
