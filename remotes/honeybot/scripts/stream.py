@@ -2934,7 +2934,7 @@ def build_hud_circle_specs(mode: str = "OVERTURE", title: str = "") -> list:
     return [
         narrator._make_spec(
             "norma",
-            "Welcome inside A.I. Fishtank Story-Time. Swimming across the top glass is our live, unfiltered Engine X origin wire where A I retrieval agents outpace human browsers — the exact first-party edge telemetry enterprises unlock with chained D N S and Orange-to-Orange C D N streams. Orange marks A I agents, cyan tags external referrals, blue diamonds mark R F C 94 21 cryptographic signatures, and red unmasks exploit scanners.",
+            "Welcome inside A.I. Fishtank Story-Time. Swimming across the top glass is our live, unfiltered Engine X webserver where A I retrieval agents outpace human browsers and we take readings off the wire — the exact first-party edge telemetry enterprises unlock with chained D N S and Orange two Orange C D N streams. Orange marks A I agents, cyan tags external referrals, blue diamonds mark R F C 94 21 cryptographic signatures, and red unmasks exploit scanners.",
             "narrator",
             "inactive",
             "inactive",
@@ -2942,7 +2942,7 @@ def build_hud_circle_specs(mode: str = "OVERTURE", title: str = "") -> list:
         ),
         narrator._make_spec(
             "norma",
-            "In the lower-left H U D is the JavaScript D O M Hydration Trapdoor, catching crawlers like G P T Bot, O A I SearchBot, and Meta executing client-side JavaScript.",
+            "In the lower-left heads-up display is the JavaScript D O M Hydration Trapdoor, catching crawlers like G P T Bot, O A I SearchBot, and Meta executing client-side JavaScript.",
             "narrator",
             "inactive",
             "inactive",
@@ -2950,7 +2950,7 @@ def build_hud_circle_specs(mode: str = "OVERTURE", title: str = "") -> list:
         ),
         narrator._make_spec(
             "norma",
-            "In the lower-right H U D is Who Accepts Markdown, tracking R F C 91 10 Accept text slash markdown negotiations paired with R F C 91 11 Vary Accept edge caching.",
+            "In the lower-right heads-up display is Who Accepts Markdown, tracking R F C 91 10 Accept text slash markdown negotiations paired with R F C 91 11 Vary Accept edge caching.",
             "narrator",
             "inactive",
             "inactive",
