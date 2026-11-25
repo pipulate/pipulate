@@ -433,7 +433,51 @@ def ensure_cast_voice_models(model_dir: Path = MODEL_DIR) -> dict:
 
 STAGE_STATE_PATH = "/tmp/honeybot_stage.json"
 OPTICS_SLOT_PATH = "/tmp/honeybot_optics_slot.json"
+RESTART_REQUEST_PATH = os.environ.get("HONEYBOT_RESTART_FILE", "/home/mike/www/mikelev.in/.restart_request")
 STAGE_CURTAIN_SECONDS = 1.8
+
+
+def has_restart_pending(req_path: str = None) -> bool:
+    """Non-consuming check so active Piper speech yields within 150ms on a chat RESTART."""
+    return Path(req_path or RESTART_REQUEST_PATH).is_file()
+
+
+def check_restart_request(req_path: str = None, max_age: float = 300.0) -> bool:
+    """Atomically consume .restart_request and return True when fresh."""
+    import json as _rjson
+    p = Path(req_path or RESTART_REQUEST_PATH)
+    if not p.is_file():
+        return False
+    raw = p.read_text(encoding="utf-8", errors="ignore").strip()
+    p.unlink(missing_ok=True)
+    if not raw:
+        return True
+    try:
+        obj = _rjson.loads(raw)
+        ts = float(obj.get("ts") or 0.0) if isinstance(obj, dict) else float(obj)
+        return ts <= 0.0 or abs(time.time() - ts) <= float(max_age)
+    except Exception:
+        return True
+
+
+def _strip_restart_overture(cues: list) -> list:
+    """Drop OVERTURE and post_overture BUMPER on a chat RESTART so story speech begins immediately."""
+    return [
+        (cmd, val) for cmd, val in (cues or [])
+        if cmd != "OVERTURE" and not (cmd == "BUMPER" and isinstance(val, dict) and val.get("slot") == "post_overture")
+    ]
+
+
+def _handle_restart_interrupt():
+    """Stop BGM/overlays, announce rewind, and return ('RESTART', active_jukebox_index_or_None)."""
+    stop_storytime_bgm()
+    narrator.interrupt()
+    for pat in ("conjure_window_overlay", "patronus_visual_shield", "[f]alling_alice_overlay", MEDIA_OVERLAY_MARKER, "firefox"):
+        subprocess.run(["pkill", "-f", pat], check=False)
+    cur_jb = _active_article_meta.get("jukebox_index") if isinstance(_active_article_meta, dict) else None
+    jb_int = int(cur_jb) if str(cur_jb or "").isdigit() else None
+    narrator.say(f"Chat rewind! Restarting {f'story number {jb_int}' if jb_int else 'this story'} from the beginning.")
+    return ("RESTART", jb_int)
 _STAGE_CURTAIN_INTRO_RE = (
     "now i read", "reading entry", "reading article", "greetings",
 )
@@ -2860,7 +2904,7 @@ def resolve_current_article_info():
         pass
     spoken_line = (
         f"The story currently playing in the fishtank is titled: {title}. "
-        "Type any story number on the bottom bar in live chat to take control and switch stories, "
+        "Type restart in live chat to hear it from the beginning, type any story number on the bottom bar to switch stories, "
         "or inspect the full source at Mike L E V dot eye N slash latest."
     )
     return spoken_line, image_path
@@ -2879,11 +2923,11 @@ def build_hud_circle_specs(mode: str = "OVERTURE", title: str = "") -> list:
     clean_mode = (mode or "OVERTURE").strip().upper()
     clean_title = (title or "our latest technical journal entry").strip()
     closing_line = (
-        f"You can take control of this fishtank anytime: type a story number from the bottom bar in live chat to switch stories, or type nine eleven for a live Optics check. Curtain up on Act One of: {clean_title}."
+        f"You can take control of this fishtank anytime: type restart in live chat to rewind from the top, type a story number from the bottom bar to switch stories, or type nine eleven for a live Optics check. Curtain up on Act One of: {clean_title}."
         if clean_mode == "OVERTURE"
         else (
             f"That concludes our midpoint intermission for: {clean_title}. "
-            "Type any story number from the bottom bar in live chat to take control and switch stories, "
+            "Type restart in live chat to hear this story from the beginning, type any story number from the bottom bar to switch stories, "
             "grab your free Sun Pug at Sun Pug dot eye oh, and join us on Discord at Mike L E V dot eye N slash discord."
         )
     )
@@ -2976,12 +3020,12 @@ def run_hud_circle_tour(mode: str, content, env, profile_dir) -> None:
         specs = build_hud_circle_specs(mode=clean_mode, title=title)
         _record_non_bumper_cue(len(specs))
         for spec in specs:
-            if has_pending_update():
+            if has_pending_update() or has_restart_pending():
                 break
             raw_batch = narrator.prep_specs_raw([spec])
             if raw_batch is not None:
                 wait_for_voice_or_live_interrupt(env, profile_dir)
-                if has_pending_update():
+                if has_pending_update() or has_restart_pending():
                     for r_path, _, _ in raw_batch:
                         narrator._cleanup_item(("RAW", r_path))
                     break
@@ -3127,12 +3171,12 @@ def dispatch_cue(command, content, env, profile_dir, pace_say=True):
                 _polish_tts_text(SHIPMUNK_TURN_CUE_TEXT),
             }
             for idx, spec in enumerate(specs):
-                if has_pending_update() or _shutting_down.is_set():
+                if has_pending_update() or has_restart_pending() or _shutting_down.is_set():
                     return
                 raw_batch = narrator.prep_specs_raw([spec])
                 if raw_batch is not None:
                     wait_for_voice_or_live_interrupt(env, profile_dir)
-                    if has_pending_update() or _shutting_down.is_set():
+                    if has_pending_update() or has_restart_pending() or _shutting_down.is_set():
                         for r_path, _, _ in raw_batch:
                             narrator._cleanup_item(("RAW", r_path))
                         return
@@ -3458,7 +3502,7 @@ def wait_for_voice_or_live_interrupt(env, profile_dir):
             live_msg = check_live_message()
             if live_msg:
                 run_live_message(live_msg, env, profile_dir)
-            if has_pending_update():
+            if has_pending_update() or has_restart_pending():
                 narrator.interrupt()
                 return
         with narrator.queue.all_tasks_done:
@@ -3505,13 +3549,13 @@ def run_station_break(env, profile_dir, is_end_of_loop: bool = False) -> bool:
     try:
         maybe_play_tittle_bumper(env, profile_dir, slot="pre_report")
         for cue_command, cue_content in bead:
-            if has_pending_update() or _shutting_down.is_set():
+            if has_pending_update() or has_restart_pending() or _shutting_down.is_set():
                 break
             dispatch_cue(cue_command, cue_content, env, profile_dir, pace_say=False)
         wait_for_voice_or_live_interrupt(env, profile_dir)
         for pat in ("patronus_visual_shield", "conjure_window_overlay", MEDIA_OVERLAY_MARKER):
             subprocess.run(["pkill", "-f", pat], check=False)
-        if _bgm_desired and not is_end_of_loop and not has_pending_update() and not _shutting_down.is_set():
+        if _bgm_desired and not is_end_of_loop and not has_pending_update() and not has_restart_pending() and not _shutting_down.is_set():
             time.sleep(0.5)
             narrator.say("Returning to storytime.")
             wait_for_voice_or_live_interrupt(env, profile_dir)
@@ -3751,6 +3795,8 @@ def perform_show(script):
             # We check before every command.
             # A fresh push rang the bell; return "BREAKING" (not False) so the director
             # leads the NEXT cycle straight with the newest article, no station-ID spiel.
+            if check_restart_request():
+                return _handle_restart_interrupt()
             jb_req = check_jukebox_request()
             if jb_req:
                 stop_storytime_bgm()
@@ -3805,7 +3851,9 @@ def perform_show(script):
                 next_pitch_time = next_slot(start_time, PITCH_INTERVAL, time.time() + 180.0)
             elif command in ("MEDIA", "IMAGE", "VIDEO"):
                 next_pitch_time = max(next_pitch_time, time.time() + 30.0)
-        if script and not _shutting_down.is_set() and not has_pending_update():
+        if check_restart_request():
+            return _handle_restart_interrupt()
+        if script and not _shutting_down.is_set() and not has_pending_update() and not has_restart_pending():
             used_optics = run_station_break(env, profile_dir, is_end_of_loop=True)
             if not used_optics and not _shutting_down.is_set() and not has_pending_update():
                 _conjure_detached_alice(passes=60, duration=45.0)
@@ -3851,6 +3899,9 @@ def start_director_track():
             except Exception:
                 pass
             current_script = score.get_script(breaking=breaking, jukebox_index=jukebox_idx)
+            if globals().get("_restart_skip_overture"):
+                current_script = _strip_restart_overture(current_script)
+                globals()["_restart_skip_overture"] = False
             if first_cycle:
                 first_cycle = False
                 if reboot_cover_active:
@@ -3860,6 +3911,10 @@ def start_director_track():
             if isinstance(result, tuple) and len(result) == 2 and result[0] == "JUKEBOX":
                 jukebox_idx = int(result[1])
                 breaking = True
+            elif isinstance(result, tuple) and len(result) == 2 and result[0] == "RESTART":
+                jukebox_idx = int(result[1]) if result[1] is not None else jukebox_idx
+                breaking = True
+                globals()["_restart_skip_overture"] = True
             else:
                 jukebox_idx = None
                 breaking = (result == "BREAKING")
