@@ -236,7 +236,7 @@ PITCH_TEXT = (
     "Welcome to A.I. Fishtank Story-Time — the live, unfiltered Engine X origin fishtank for Mike L E V dot eye N. "
     "Every HTTP arrival hits this screen the millisecond it touches the socket: orange marks A I retrieval agents, "
     "cyan tags external search and web referrals, blue diamonds verify R F C 94 21 cryptographic bot signatures, and red unmasks exploit scanners. "
-    "Enterprises unlock this exact first-party telemetry upstream with Authoritative D N S and Orange-to-Orange C D N log streams, "
+    "Enterprises unlock this exact first-party telemetry upstream with Authoritative D N S and Orange two Orange C D N log streams, "
     "pairing R F C 91 10 Markdown negotiation with R F C 91 11 Vary Accept edge caching to retire delayed search consoles and brittle scrapers. "
     "Spin up the local-first toolkit yourself in sixty seconds at Sun Pug dot eye oh, or connect on Discord at Mike L E V dot eye N slash discord."
 )
