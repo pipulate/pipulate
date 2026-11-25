@@ -1164,7 +1164,7 @@ def run_tittle_drop_card(label: str, hold: float = 4.0, stop_file: str = "", res
         return True
     term_sz = _live_terminal_size((84, 24))
     term_w, term_h = max(spec["canvas_w"] + 8, term_sz.columns), max(spec["canvas_h"] + 3, term_sz.lines)
-    pad = (0, 3, 1, 3) if term_h <= 21 else (1, 3, 2, 3)
+    pad = (0, 3, 1, 3) if term_h <= 21 else (0, 3, 2, 3)
     panel_h = spec["canvas_h"] + pad[0] + pad[2] + 2
     top_pad = "\n" * max(0, (term_h - panel_h) // 2)
     frame_cache: dict = {}
@@ -1533,7 +1533,7 @@ def render_titled_card_hold(label: str, subtitle: str = "", max_hold: float = 60
     import time
     from rich.console import Group
     def _paint(sz) -> None:
-        term_w, term_h = max(60, sz.columns), max(16, sz.lines)
+        term_w, term_h = max(60, sz.columns), max(14, sz.lines)
         clean_fig = render_centered_figlet(str(label), font="standard", width=max(48, term_w - 10)) or str(label)
         fig_rows = len(clean_fig.splitlines()) or 1
         parts = [Align.center(Text(clean_fig, style="bold bright_cyan", no_wrap=True))]
@@ -1541,7 +1541,7 @@ def render_titled_card_hold(label: str, subtitle: str = "", max_hold: float = 60
             parts.append(Text(""))
             parts.append(Align.center(Text(str(subtitle).strip(), style="bold bright_white", justify="center")))
         panel = Panel(Group(*parts), border_style="bright_cyan", box=HEAVY, padding=(1, 4), expand=False)
-        est_h = fig_rows + (len(str(subtitle).strip().splitlines()) + 2 if subtitle else 0) + 4
+        est_h = fig_rows + (len(str(subtitle).strip().splitlines()) + 1 if subtitle else 0) + 4
         card_console = Console(width=term_w, force_terminal=True, color_system="truecolor")
         sys.stdout.write("\033[?25l\033[2J\033[H" + ("\n" * max(0, (term_h - est_h) // 2)))
         card_console.print(Align.center(panel, width=term_w, pad=False), end="")

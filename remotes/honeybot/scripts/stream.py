@@ -2739,7 +2739,7 @@ def show_card(label, max_hold=60.0, subtitle="", pace="standard"):
                 sub_lns = wrapped_sub.splitlines()
                 content_w = max(fig_w, max((len(s) for s in sub_lns), default=0))
                 cols = min(168, max(116, content_w + 28))
-                lns = max(18, fig_h + len(sub_lns) + 10)
+                lns = max(15, fig_h + len(sub_lns) + 9)
                 py_code = (
                     f"import sys; sys.path.insert(0, {str(site_root)!r}); "
                     "from imports.ascii_displays import render_titled_card_hold; "
