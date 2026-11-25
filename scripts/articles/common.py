@@ -355,6 +355,7 @@ YT_TITLE_LIMIT = 100
 CONTACT_EMAIL = "miklevin@gmail.com"
 
 
+DISCORD_MSG_LIMIT = 1950
 X_TWEET_LIMIT = 280
 X_URL_WEIGHT = 23
 _HASHTAG_RE = re.compile(r"(?<!\S)(#(?=[A-Za-z0-9_]*[A-Za-z])[A-Za-z0-9_]+)")
@@ -720,11 +721,42 @@ def get_broadcast_kit(target_key="1", slug_match=None):
     if tags:
         fb_parts.extend(["", tags])
     fb_post = "\n".join(fb_parts).strip()
+    art_id = read_article_id(post_path)
+    playable_ids = _get_playable_story_ids(target_key) if art_id else []
+    jb_cue = f"`{art_id}`, `MENU`, or `911`" if (art_id and art_id in playable_ids) else "`MENU`, any `Story #`, or `911`"
+    disc_head = f"## 📖 {clean_title}" + (f" (`#{art_id}`)" if art_id else "")
+    disc_lead = yt_meta or yt_imprint
+    disc_tail_lines = [
+        f"🔗 **Read full article & receipts:** {canonical_url}?src=discord",
+        f"🔴 **24/7 Live Fishtank (type {jb_cue} in chat):** <{yt_live_vanity}>",
+        "📦 **2nd Brain AI Archive:** <https://mikelev.in/brain.zip>",
+        "🚲 **60s Nix Flake Workbench (`curl -fsSL https://sunpug.io | less`):** <https://sunpug.io>",
+        f"🧪 **Test RFC 9110 Markdown:** `curl -sI -H \"Accept: text/markdown\" {canonical_url}?src=rfc9110`",
+    ]
+    if tags:
+        disc_tail_lines.append(tags)
+    disc_tail = "\n".join(disc_tail_lines)
+    disc_quote_raw = f"**Notes from the Wire:** {yt_take}" if yt_take else (yt_imprint if (yt_imprint and yt_imprint != disc_lead) else "")
+    def _assemble_discord(q_txt):
+        chunks = [disc_head]
+        if disc_lead:
+            chunks.append(disc_lead)
+        if q_txt:
+            chunks.append("> " + q_txt.replace("\n", "\n> "))
+        chunks.append(disc_tail)
+        return "\n\n".join(chunks).strip()
+    discord_post = _assemble_discord(disc_quote_raw)
+    if len(discord_post) > DISCORD_MSG_LIMIT and disc_quote_raw:
+        budget_q = max(120, DISCORD_MSG_LIMIT - len(_assemble_discord("")) - 16)
+        trimmed_q = disc_quote_raw[:budget_q].rsplit(" ", 1)[0].rstrip(".,;:!?-") + "..."
+        discord_post = _assemble_discord(trimmed_q)
+    if len(discord_post) > DISCORD_MSG_LIMIT:
+        discord_post = discord_post[: DISCORD_MSG_LIMIT - 3].rsplit(" ", 1)[0] + "..."
     preview_port = tcfg.get("preview_port", 4001)
     preview_url = f"http://localhost:{preview_port}{permalink}"
     return {
         "path": str(post_path),
-        "article_id": read_article_id(post_path),
+        "article_id": art_id,
         "slug": slug,
         "title": title,
         "base_url": base_url,
@@ -735,6 +767,7 @@ def get_broadcast_kit(target_key="1", slug_match=None):
         "tweet_x_len": tweet_x_len,
         "linkedin": linkedin_post,
         "fb": fb_post,
+        "discord": discord_post,
         "has_fm_image": bool(fm_img_rel),
         "has_hero_file": Path(hero_img_dest).is_file(),
         "hero_prompt": hero_prompt,
@@ -1111,7 +1144,7 @@ def print_broadcast_kit(target_key="1", mode="card", slug_match=None):
         print("  4. preview           Run knowledge graph, hubs, llms.txt & post_nav (+ yt_thumb)")
         print("  5. norma next        🎭 Copy 3-Voice Storytime prompt -> web chat -> `norma save`")
         print("  6. publish \"msg\"     Commit + push trimnoir (+ _abstracts), GDocs & wire pings")
-        print("  7. tweet / linkedin  📋 Copy X.com (`tweet`), LinkedIn (`linkedin`), & FB (`fb`) posts")
+        print("  7. tweet / discord   📋 Copy X (`tweet`), LinkedIn (`linkedin`), FB (`fb`), & Discord (`discord`)")
         print("  8. ytpebble          🪨 Re-run Wayback + IndexNow wire pings (`ytpebble verify`)")
         print(thin)
         print("PHASE 3: YOUTUBE LIVE CUT-AND-ROLL (Slice VOD Episode on Honeybot)")
@@ -1189,6 +1222,11 @@ def print_broadcast_kit(target_key="1", mode="card", slug_match=None):
                 "Run `ythero` -> save JPEG -> `ytyaml` -> `publish` so Facebook scrapes the article hero card!"
             )
         return 0
+    if mode == "discord":
+        copied = _copy_to_clipboard(kit["discord"])
+        print(kit["discord"])
+        print(f"\n{'📋 Copied Discord Promo Post to clipboard!' if copied else 'ℹ️  (Non-TTY: printed only)'} ({len(kit['discord'])}/{DISCORD_MSG_LIMIT} chars)")
+        return 0
     if mode == "title":
         copied = _copy_to_clipboard(kit["yt_title"])
         print(kit["yt_title"])
@@ -1208,7 +1246,7 @@ def print_broadcast_kit(target_key="1", mode="card", slug_match=None):
             print(f"   • Google Doc : {kit['gdoc_url']}")
         if yt_thumb:
             print(f"   • YT Thumb   : {yt_thumb} (1280x720 16:9)")
-        print("   • Quick Copy : tweet | linkedin | fb | yttitle | ytdesc | ytcard (full kit)")
+        print("   • Quick Copy : tweet | linkedin | fb | discord | yttitle | ytdesc | ytcard (full kit)")
         return 0
     print(f"\n{bar}")
     print(f"📡 GO-GO-GADGET BROADCAST KIT ({Path(kit['path']).name})")
@@ -1229,6 +1267,9 @@ def print_broadcast_kit(target_key="1", mode="card", slug_match=None):
     print("📘 FACEBOOK MIKELEVINUX POST (type `fb` to copy):")
     print(kit["fb"])
     print(thin)
+    print(f"🟣 DISCORD FOUNDING 1,000 POST [{len(kit['discord'])}/{DISCORD_MSG_LIMIT} chars] (type `discord` to copy):")
+    print(kit["discord"])
+    print(thin)
     print(f"📺 YOUTUBE LIVE TITLE [{len(kit['yt_title'])}/{YT_TITLE_LIMIT} chars] (type `yttitle` to copy):")
     print(kit["yt_title"])
     print(thin)
@@ -1238,7 +1279,7 @@ def print_broadcast_kit(target_key="1", mode="card", slug_match=None):
     if yt_thumb:
         print(f"📺 YT STUDIO THUMBNAIL (1280x720 16:9): {yt_thumb} (Checklist: Upload thumb + Enable DVR)")
         print(thin)
-    print("🎛️  Quick Words:  yt (help) | norma | ythero | ytyaml | tweet | linkedin | fb | ytpebble | yttitle | ytdesc | ytfeature | ytcard | yttop | markov | radar | ytoutro | ytbgm | ytreboot | ytsay | ytticker | ytapp | ytvim | ytbreaks | weeboh | stage | ytwatch | ytlog | ytmax | ytping | ytroll | ytbell | ytstatus")
+    print("🎛️  Quick Words:  yt (help) | norma | ythero | ytyaml | tweet | linkedin | fb | discord | ytpebble | yttitle | ytdesc | ytfeature | ytcard | yttop | markov | radar | ytoutro | ytbgm | ytreboot | ytsay | ytticker | ytapp | ytvim | ytbreaks | weeboh | stage | ytwatch | ytlog | ytmax | ytping | ytroll | ytbell | ytstatus")
     print(thin)
     print(f"🔗 Preview URL:   {kit['preview_url']}")
     print(f"✏️  Edit Command:  vim {kit['path']}")
@@ -5062,9 +5103,9 @@ if __name__ == "__main__":
     add_standard_arguments(parser)
     parser.add_argument(
         "--broadcast",
-        choices=("help", "card", "summary", "hero", "yaml", "tweet", "linkedin", "fb", "facebook", "pebble", "title", "desc", "top", "outro", "bgm", "max", "reboot", "feature", "status", "bell", "stop", "start", "roll", "enable-ws", "say", "ticker", "ping", "watch"),
+        choices=("help", "card", "summary", "hero", "yaml", "tweet", "linkedin", "fb", "facebook", "discord", "pebble", "title", "desc", "top", "outro", "bgm", "max", "reboot", "feature", "status", "bell", "stop", "start", "roll", "enable-ws", "say", "ticker", "ping", "watch"),
         default="card",
-        help="Print/copy broadcast kit or control Honeybot (help|card|summary|hero|yaml|tweet|linkedin|fb|facebook|pebble|title|desc|top|outro|bgm|max|reboot|feature|status|bell|stop|start|roll|enable-ws|say|ticker|ping|watch).",
+        help="Print/copy broadcast kit or control Honeybot (help|card|summary|hero|yaml|tweet|linkedin|fb|facebook|discord|pebble|title|desc|top|outro|bgm|max|reboot|feature|status|bell|stop|start|roll|enable-ws|say|ticker|ping|watch).",
     )
     parser.add_argument(
         "--vod",
