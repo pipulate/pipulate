@@ -2813,8 +2813,8 @@ def resolve_current_article_info():
     return spoken_line, image_path
 
 
-def resolve_current_article_line(enqueue_media=True):
-    """Return the spoken Beat 3 announcement and queue the article's hero image non-blockingly."""
+def resolve_current_article_line(enqueue_media=False):
+    """Return the spoken Beat 3 announcement without popping hero art by default."""
     spoken_line, image_path = resolve_current_article_info()
     if enqueue_media and image_path:
         narrator.media({"path": image_path, "duration": STATION_HERO_IMAGE_DURATION})

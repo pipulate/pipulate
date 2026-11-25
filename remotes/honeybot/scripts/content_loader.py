@@ -658,7 +658,7 @@ def get_playlist(recent_n=10, include_archive=True):
         main_mod = sys.modules.get("__main__")
         if main_mod is not None and hasattr(main_mod, "narrator") and hasattr(main_mod, "resolve_current_article_line"):
             try:
-                def _live_resolve_current_article_line(enqueue_media=True, _arts=recent_articles, _m=main_mod):
+                def _live_resolve_current_article_line(enqueue_media=False, _arts=recent_articles, _m=main_mod):
                     meta = getattr(_m, "_active_article_meta", None) or (_arts[0] if _arts else {})
                     title = str(meta.get("title") or "our latest technical journal entry")
                     jb_n = meta.get("jukebox_index")

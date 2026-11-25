@@ -123,9 +123,6 @@ def _append_article_performance(script, article, is_latest=True):
     script.append(("OVERTURE", {"title": title_str, "raw_title": raw_title, "jukebox_index": jb_idx, "ticker_tag": ticker_tag, "article": art_id}))
     script.append(("BGM", "START"))
     script.append(("BUMPER", {"slot": "post_overture"}))
-    image_path = str(article.get("image") or "").strip()
-    if image_path:
-        script.append(("MEDIA", {"path": image_path, "duration": HERO_IMAGE_DURATION}))
     script.append(("SAY", "Reading entry..."))
     body_cues = _extract_article_cues(article)
     split_idx = _find_intermission_split(body_cues)
