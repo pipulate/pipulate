@@ -49,7 +49,7 @@ REPORT_V_MARGIN = 2
 WHATS_HAPPENING_BEAT = (
     "You are watching an unmasked HTTP origin wire — no vendor dashboard, no sampling, and no proxy hiding the bots. "
     "First, let's nix — and nip in the bud right up front — the myth that you have to self-host in a closet to get this Matrix-rain visibility: "
-    "Authoritative DNS and Cloudflare Orange two Orange CDN log streams unlock this exact first-party wire truth on any enterprise stack, "
+    "chained DNS and Cloudflare Orange two Orange CDN log streams unlock this exact first-party wire truth on any enterprise stack, "
     "restoring the strategic intelligence lost to not-provided keyword blindness and browser-only JavaScript beacons. "
     "Test this instrument live right now: open ChatGPT or Claude and ask a question about mikelev.in — "
     "the second its retrieval agent hits this server, a yellow RAG badge lights up on screen and rings the physical bell in this studio. "
@@ -99,7 +99,7 @@ STATION_SEGMENTS = [
         ("WINDOW", f"forest.py:{REPORT_WINDOW_CAP_SECONDS}:overview"),
         [
             "{LIVE_REPORT:overview}",
-            "Serving clean Markdown from the same canonical U R L via R F C 9111 Vary Accept gives A I agents primary signal without duplicate pages — unlocked on any enterprise edge via Authoritative D N S and Orange two Orange streams.",
+            "Serving clean Markdown from the same canonical U R L via R F C 9111 Vary Accept gives A I agents primary signal without duplicate pages — unlocked on any enterprise edge via chained D N S and Orange two Orange streams.",
         ],
     ),
     [
