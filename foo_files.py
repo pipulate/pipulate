@@ -1699,6 +1699,7 @@ apply.py
 # ============================================================================
 # 🚨 PRIORITY 0: BOOT THE CONSULTANCY (REVENUE, LEAD-GEN, & PROOF SURFACES)
 # ============================================================================
+# - TODO (2026-11-25, P0.84 AI-EDIT METHOD & RAW-WIRE AUDIT SPEC): Codify the 5-step AI-Edit Method (p/x/c -> 5-Car Train, falsifiable straddles, raw wire receipts before smoothing; raw logs in P0.63 vaults) on sunpug.io, qamy.ai, & GLOSSARY.md. Gate: live spec + index.md.
 # - TODO (2026-11-24, P0.83 LAN FASTHTML MOBILE QUEST & SPARKLINE DECK): Wire enum-routed mobile cards (/lens/quests, /lens/social, /lens/funnel) with 15s cache, portrait sparklines, & 1-tap ytticker/ytsay presets for active (day, actor_tag) explorers. Gate: mobile renders <50ms.
 # - TODO (2026-11-24, P0.82 CYBERNETIC INTAKE MANIFOLD IN ARTICLEIZER & EDITING_PROMPT): Feed live markov (--social, --radar, & shard velocity) into scripts/articles/{articleizer.py,editing_prompt.txt} for high-signal naming on sacrificial-anode mikelev.in feeding sunpug.io, pipulate.com, rfc9110.org, & rfc9111.io. Gate: live velocity injected pre-title.
 # - TODO (2026-11-21, P0.81 SUN PUG PLUGS DUAL-PI CROWDFUNDING KIT): Spec the "Sun Pug Plug" dual-Raspberry-Pi DIY enclosure (2-NIC "tunic" router Pi + in-the-DMZ Nginx Honeybot Pi) and Kickstarter/Indiegogo launch page beside P0.35. Gate: BOM, dual-Pi flake, & campaign draft.
@@ -1750,6 +1751,8 @@ apply.py
 # - TODO (2026-10-21, P0.13 LIVE YTVIM ON-AIR WITNESS): Field-test `ytvim` live on Honeybot `:10.0` (`script -q -f` into fullscreen Alacritty). Gate: live Neovim buffer session visible on stream with clean teardown.
 # - TODO (2026-10-23, P0.14 PFSENSE SPLIT-DNS FOR LEVINUX/LEVINIX): Add pfSense Host Overrides for `levinux.com`, `levinix.org`, and `levinix.com` pointing to Honeybot's LAN IP. Gate: `dig +short` on Prime resolves all three to LAN IP.
 
+# - TODO (2026-11-25, PREVIOUS LEON, RHETT CAAN, & 5-SENTENCE ACRONYM LINT): Add Previous Leon / Rhett Caan to CHARACTER DEVELOPMENT + terms.py and wire a 5-sentence unexplained-acronym gatekeeper check in norma_extract.py. Gate: unexpanded acronym flagged & terms pass.
+# - TODO (2026-11-25, DISPOSABLE MULTI-LABEL TAG INDEX IN LSA.PY): Build an ephemeral, regenerated multi-label tag filter & co-tag count lens (--tags) over _context/*.json shards in scripts/articles/lsa.py without scalar scores. Gate: lsa.py --tags ranks co-tags <1s.
 # - TODO (2026-11-24, "WHERE'S THE WIZARD" UNCOMPRESSIBLE OG HERO PIPELINE): Seed Jekyll article Open Graph hero images in scripts/articles/common.py with un-scraped real photos of Mike humorously hidden Where's-Waldo-style so social cards carry non-compressible Shannon surprisal. Gate: seeded OG card ships.
 # - TODO (2026-11-24, DUAL-VOICE WOPR & DUNGEON-MASTER ARRIVAL CONTRAST): Pair a dry WOPR robot voice ("Shall we play a game?") with a booming Michael Rye dungeon-master baritone ("Lead on, adventurer. Your quest awaits!") in ytoutro / arrival audio. Gate: dual-voice cue plays cleanly.
 # - TODO (2026-11-21, FIVE-RUNG DEEP-DIVE BOOK SYLLABUS): Walk the 5-rung series (1. Feudal English vs. Kaizen, 2. Ringer Expert-from-Afar, 3. McGilchrist/Minsky Prompt Fu, 4. B-Tree vs. O(1) Funnel Hashing, 5. Landauer 24h Gates) plus Ida Noddack Row #13. Gate: 5 dispatches published.
