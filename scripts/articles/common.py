@@ -655,7 +655,7 @@ def get_broadcast_kit(target_key="1", slug_match=None):
         f"🔭 Enterprise AI-Readiness & Edge Telemetry (RFC 9110 / ADNS / O2O): {base_url}/?src=youtube#consulting | Inspect workshop: curl -fsSL https://sunpug.io | less (Email: {CONTACT_EMAIL})",
         f"🧪 Test RFC 9110 in your terminal: curl -sI -H \"Accept: text/markdown\" {canonical_url}?src=rfc9110",
         "",
-        f"🐠 Now playing on A.I. Fishtank Story-Time: \"{clean_title}\" — Type MENU, any Story # from the bottom bar, or 911 in live chat to take control!",
+        f"🐠 Now playing on A.I. Fishtank Story-Time: \"{clean_title}\" — Type RESTART, MENU, any Story # from the bottom bar, or 911 in live chat to take control!",
     ]
     if yt_meta:
         desc_parts.extend(["", yt_meta])
@@ -668,7 +668,7 @@ def get_broadcast_kit(target_key="1", slug_match=None):
         "---",
         "🐠 About A.I. Fishtank Story-Time (24/7 Interactive NixOS Broadcast):",
         "You are watching live Nginx origin wire traffic and AI crawler behavior while 3-voice Story-Time plays.",
-        "• Take Control from Chat: Type MENU to pop up playable episodes, type any Story # to switch stories, or type 911 for a live 16-lens Optics check.",
+        "• Take Control from Chat: Type RESTART to rewind the current story to the top, MENU for playable episodes, any Story # to switch stories, or 911 for a live 16-lens Optics check.",
         "• Agents sending 'Accept: text/markdown' (RFC 9110) receive clean raw Markdown.",
         "• Agents executing JavaScript trigger the DOM trapdoor sensor.",
         "• Zero-Agent Airlock: Reproducible NixOS + Piper TTS player piano (chat reaches a human, never an LLM shell).",
@@ -723,7 +723,7 @@ def get_broadcast_kit(target_key="1", slug_match=None):
     fb_post = "\n".join(fb_parts).strip()
     art_id = read_article_id(post_path)
     playable_ids = _get_playable_story_ids(target_key) if art_id else []
-    jb_cue = f"`{art_id}`, `MENU`, or `911`" if (art_id and art_id in playable_ids) else "`MENU`, any `Story #`, or `911`"
+    jb_cue = f"`{art_id}`, `RESTART`, `MENU`, or `911`" if (art_id and art_id in playable_ids) else "`RESTART`, `MENU`, any `Story #`, or `911`"
     disc_head = f"## 📖 {clean_title}" + (f" (`#{art_id}`)" if art_id else "")
     disc_lead = yt_meta or yt_imprint
     disc_tail_lines = [
@@ -2078,8 +2078,10 @@ _YTWATCH_RESERVED_ACTIONS = {
 
 
 YT_CHAT_CMD_COOLDOWN = int(os.environ.get("PIPULATE_YT_CHAT_COOLDOWN", "45"))
+YT_CHAT_RESTART_COOLDOWN = int(os.environ.get("PIPULATE_YT_RESTART_COOLDOWN", "90"))
 _CHAT_OPTICS_RE = re.compile(r"^[!/]?#?911$", re.IGNORECASE)
 _CHAT_MENU_RE = re.compile(r"^[!/]?(?:type\s*:?\s*)?menu[!?.\s]*$", re.IGNORECASE)
+_CHAT_RESTART_RE = re.compile(r"^[!/]?(?:type\s*:?\s*)?(?:restart|rewind|replay|beginning)[!?.\s]*$", re.IGNORECASE)
 _CHAT_STORY_NUM_RE = re.compile(r"^[!/]?(?:(?:story|play|jukebox)\s+)?#?([1-9]\d{0,4})$", re.IGNORECASE)
 _last_chat_cmd_ts = 0.0
 _last_chat_cmd_by_kind: dict[str, float] = {}
@@ -2094,6 +2096,8 @@ def parse_allowlisted_chat_command(raw_text: str, playable_ids=None):
         return ("optics", None)
     if _CHAT_MENU_RE.match(s):
         return ("menu", None)
+    if _CHAT_RESTART_RE.match(s):
+        return ("restart", None)
     m_num = _CHAT_STORY_NUM_RE.match(s)
     if m_num:
         story_id = int(m_num.group(1))
@@ -2119,15 +2123,22 @@ def _actuate_allowlisted_chat_command(parsed_cmd, dry_run: bool = False) -> bool
             print(f"[{_ytlog_ts()}] ⚠️ [CHAT STORY] Story #{int(arg)} is not in playable _abstracts ({sorted(playable, reverse=True)[:8]})", flush=True)
             return False
     now_ts = time.time()
+    cooldown_s = YT_CHAT_RESTART_COOLDOWN if kind == "restart" else YT_CHAT_CMD_COOLDOWN
     last_kind_ts = float(_last_chat_cmd_by_kind.get(kind) or 0.0)
-    if not dry_run and last_kind_ts > 0 and (now_ts - last_kind_ts) < YT_CHAT_CMD_COOLDOWN:
-        rem = int(YT_CHAT_CMD_COOLDOWN - (now_ts - last_kind_ts))
+    if not dry_run and last_kind_ts > 0 and (now_ts - last_kind_ts) < cooldown_s:
+        rem = int(cooldown_s - (now_ts - last_kind_ts))
         print(f"[{_ytlog_ts()}] 🛡️ [CHAT TRIGGER COOLDOWN] Holding {kind} ({rem}s remaining)", flush=True)
         return False
     if kind == "optics":
         remote_cmd = "python3 ~/www/mikelev.in/scripts/stream.py --bead optics >/dev/null 2>&1"
     elif kind == "menu":
         remote_cmd = "python3 ~/www/mikelev.in/scripts/stream.py --bead menu >/dev/null 2>&1"
+    elif kind == "restart":
+        rs_json = json.dumps({"action": "restart", "ts": int(now_ts)})
+        remote_cmd = (
+            f"printf '%s\\n' {rs_json!r} > ~/www/mikelev.in/.restart_request.tmp && "
+            "mv ~/www/mikelev.in/.restart_request.tmp ~/www/mikelev.in/.restart_request"
+        )
     elif kind == "jukebox":
         jb_json = json.dumps({"index": int(arg), "ts": int(now_ts)})
         remote_cmd = (
@@ -3370,7 +3381,7 @@ def _build_yt_chat_pulses(msg: dict, channel_author: str = "", parsed_cmd=None, 
     pulses = [("yt_chat", "", msg_ts, atag)]
     if parsed_cmd:
         kind, arg = parsed_cmd
-        cmd_dim = f"#{int(arg)}" if (kind == "jukebox" and arg is not None) else ("911" if kind == "optics" else "")
+        cmd_dim = f"#{int(arg)}" if (kind == "jukebox" and arg is not None) else ("911" if kind == "optics" else ("rewind" if kind == "restart" else ""))
         pulses.append((f"yt_cmd:{kind}", cmd_dim, msg_ts, atag))
     return pulses
 

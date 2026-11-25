@@ -107,7 +107,7 @@ STATION_SEGMENTS = [
             "CARD",
             {
                 "label": "911 LLM\nOPTICS",
-                "say": "Live fishtank showcase: 911 L L M Optics, our local-first sixteen-lens wire-truth spectrometer. Type nine eleven in live chat anytime to trigger an audit, or type any story number on the bottom bar to switch stories.",
+                "say": "Live fishtank showcase: 911 L L M Optics, our local-first sixteen-lens wire-truth spectrometer. Type nine eleven in live chat anytime to trigger an audit, type restart to rewind from the top, or type any story number on the bottom bar to switch stories.",
             },
         ),
         ("OPTICS_SLOT", {"handshake_wait": 12.0, "claim_grace": 40.0, "timeout": 180.0}),
@@ -133,7 +133,7 @@ ARCHIVED_STATION_BEADS = {
         ("WINDOW", f"forest.py:{REPORT_WINDOW_CAP_SECONDS}:menu"),
         [
             "{LIVE_REPORT:menu}",
-            "Type any story number from the left column into live chat to take control immediately, or type nine eleven for a live Optics check.",
+            "Type restart in live chat to rewind the current story from the beginning, type any story number from the left column to switch stories, or type nine eleven for a live Optics check.",
         ],
     ),
     "white_rabbit": _make_station_bead(
@@ -1185,6 +1185,12 @@ def _build_station_report_panel(mode="overview", panel_width=None):
             Text("Run a live 911 LLM Optics wire-truth spectrometer check on stream", style="bold bright_yellow"),
             "SunPug.io",
         )
+        tbl.add_row(
+            "RESTART",
+            Text("⏪ REWIND TO TOP", style="bold bright_cyan"),
+            Text("Restart the current Story-Time episode from the very beginning", style="bold bright_white"),
+            "Live Chat",
+        )
         tbl.add_section()
         title_budget = max(32, int((panel_width or 124) - 58))
         for e in entries:
@@ -1320,7 +1326,7 @@ def _build_station_report_panel(mode="overview", panel_width=None):
 
     footer = Text.from_markup(
         "[bold bright_white]🐠 Fishtank:[/bold bright_white] [bold #ffd700]MikeLev.in[/bold #ffd700] "
-        "[dim]│[/dim] [bold #38bdf8]💬 Chat:[/bold #38bdf8] [bold bright_white]Type Story # or 911[/bold bright_white] "
+        "[dim]│[/dim] [bold #38bdf8]💬 Chat:[/bold #38bdf8] [bold bright_white]Type RESTART, Story # or 911[/bold bright_white] "
         "[dim]│[/dim] [bold bright_green]Tools:[/bold bright_green] [bold bright_cyan]SunPug.io[/bold bright_cyan] "
         "[dim]│[/dim] [bold bright_magenta]Discord:[/bold bright_magenta] [bold bright_white]MikeLev.in/discord[/bold bright_white]"
     )
