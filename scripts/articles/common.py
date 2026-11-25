@@ -2588,7 +2588,7 @@ SPOKEN_ALERT_TABLE = {
     "src=x": "Web Bot Observatory alert. A link was followed from X dot com.",
     "src=twitter": "Web Bot Observatory alert. A link was followed from X dot com.",
     "src=rfc9110": "Web Bot Observatory alert. An engineer just ran the R F C 9110 terminal verification test.",
-    "src=install": "Web Bot Observatory alert. An engineer just fetched the Nix Flake installer from a domain door.",
+    "src=install": "Web Bot Observatory alert. An engineer just ran the Sun Pug Nix Flake installer.",
     "rag=openai": "Web Bot Observatory alert. A live Chat G P T user search just fetched a page from your site.",
     "rag=anthropic": "Web Bot Observatory alert. A live Claude user session just fetched a page from your site.",
     "default": "Web Bot Observatory notification. {message}",
@@ -4171,6 +4171,7 @@ def run_youtube_watch(
                 )
                 max_ref_ts = last_ref_ts
                 hb_reset_reason = ""
+                seen_ref_batch = set()
                 for rline in (ref_res.stdout or "").splitlines():
                     if rline.startswith("HB_TRIG:"):
                         new_trig = rline[8:].strip()
@@ -4199,7 +4200,8 @@ def run_youtube_watch(
                     rts = int(robj.get("ts") or 0)
                     rsrc = str(robj.get("src") or "")
                     rpath = str(robj.get("path") or "/")
-                    if rts > last_ref_ts and rsrc in SPOKEN_ALERT_TABLE:
+                    if rts > last_ref_ts and rsrc in SPOKEN_ALERT_TABLE and (rsrc, rpath) not in seen_ref_batch:
+                        seen_ref_batch.add((rsrc, rpath))
                         max_ref_ts = max(max_ref_ts, rts)
                         is_rag = rsrc.startswith("rag=")
                         ref_msg = f"Live AI RAG fetch ({rsrc}) -> {rpath}" if is_rag else f"Inbound click ({rsrc}) -> {rpath}"

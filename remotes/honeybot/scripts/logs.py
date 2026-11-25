@@ -21,7 +21,14 @@ from textual import work
 from rich.text import Text
 from rich.console import Console
 
-from db import db, KNOWN_BOTS, normalize_external_referrer  # Import the list
+from db import (  # Import shared bot/domain/installer gates
+    db,
+    KNOWN_BOTS,
+    INTERNAL_DOMAINS,
+    _INSTALLER_UA_RE,
+    _STATIC_SUBRESOURCE_RE,
+    normalize_external_referrer,
+)
 
 # --- Configuration ---
 STRIP_MOZILLA_PREFIX = False  # Set to True to save space in bottom panels
@@ -699,6 +706,11 @@ _PIRATE_UA_RE = re.compile(
 _INSTALL_DOOR_HOSTS = (
     "sunpug", "npvg", "qamy", "levinix", "pipulate", "guerillatech", "rfc9110", "rfc9111",
 )
+_CLI_PIPE_UA_RE = re.compile(r"^(?:curl|Wget|fetch\s+libfetch|sunpug-installer)/", re.IGNORECASE)
+_SOCIAL_REF_DYES = frozenset({
+    "src=youtube", "src=linkedin", "src=fb", "src=facebook",
+    "src=x", "src=twitter", "src=discord",
+})
 
 try:
     from db import db  # Import our new database singleton
@@ -1423,22 +1435,60 @@ class SonarApp(App):
             return True
         return False
 
-    def detect_terminal_action(self, path_str, ua_str="", host_str="", md_flag=""):
-        """Return (ref_src, badge_label) when a user runs an RFC 9110 terminal verification or curls a domain door."""
+    def detect_terminal_action(self, path_str, ua_str="", host_str="", md_flag="", status_code=200, is_pirate=False):
+        """Return (ref_src, badge_label) for Stage-2 installs, Stage-1 airlock curls, or verified RFC 9110 MD tests."""
+        if is_pirate or not (200 <= int(status_code or 0) < 300):
+            return None, None
         p = (path_str or "").strip()
-        u = (ua_str or "").strip().lower()
-        h = (host_str or "").strip().lower()
+        ua_raw = (ua_str or "").strip()
+        ua_low = ua_raw.lower()
+        dom = (host_str or "mikelev.in").strip().lower().split(":", 1)[0].rstrip(".").removeprefix("www.") or "mikelev.in"
+        if dom not in INTERNAL_DOMAINS:
+            return None, None
+        if any(b in ua_low for b in ("qlyzebot", "oszironman", "google-safety", "censys", "zgrab", "nuclei", "masscan", "bot", "spider", "crawler")):
+            return None, None
         base_p = p.split("?", 1)[0]
-        is_cli = u.startswith(("curl/", "wget/", "fetch/"))
-        if "src=rfc9110" in p:
-            return "src=rfc9110", "🧪 VERIFY:RFC9110"
-        if is_cli and str(md_flag) == "1":
-            return "src=rfc9110", "🧪 CURL:MARKDOWN"
-        if base_p in ("/install.sh", "/mck.sh") or (
-            is_cli and base_p == "/" and any(d in h for d in _INSTALL_DOOR_HOSTS)
-        ):
+        m_inst = _INSTALLER_UA_RE.match(ua_raw)
+        is_cli = bool(_CLI_PIPE_UA_RE.search(ua_raw))
+        if m_inst or (base_p == "/key.rot" and is_cli):
             return "src=install", "🚲 DOOR:INSTALL"
+        if not m_inst and str(md_flag) != "1" and is_cli and (
+            base_p in ("/install.sh", "/mck.sh")
+            or (base_p == "/" and any(d in dom for d in _INSTALL_DOOR_HOSTS))
+        ):
+            return None, "🔍 CURL:AIRLOCK"
+        if str(md_flag) == "1":
+            if is_cli and "src=rfc9110" in p:
+                return "src=rfc9110", "🧪 VERIFY:RFC9110"
+            if is_cli:
+                return "src=rfc9110", "🧪 CURL:MARKDOWN"
+            if "src=rfc9110" in p and db and db.is_likely_human_ua(ua_raw):
+                return "src=rfc9110", "🧪 VERIFY:RFC9110"
         return None, None
+
+    def evaluate_live_alert(self, clean_path, status_int, ua_str="", host_str="mikelev.in", md_flag="0", is_pirate=False):
+        """Return (ref_src, bell_src) for verified human social clicks, live RAG fetches, and Stage-2 CLI actions."""
+        if is_pirate or _STATIC_SUBRESOURCE_RE.search(clean_path or ""):
+            return None, None
+        st = int(status_int or 0)
+        base_p = (clean_path or "").split("?", 1)[0]
+        ref_src = None
+        if db and db.is_likely_human_ua(ua_str):
+            if base_p in ("/discord", "/discord/") and (st == 302 or 200 <= st < 300):
+                ref_src = "discord_invite"
+            elif "?" in (clean_path or "") and 200 <= st < 300 and str(md_flag) != "1":
+                qs_part = clean_path.split("?", 1)[1].split("&", 1)[0]
+                if qs_part in _SOCIAL_REF_DYES:
+                    ref_src = qs_part
+        rag_src, _ = self.detect_live_rag_agent(ua_str)
+        valid_rag = rag_src if (rag_src and 200 <= st < 300 and base_p not in ("/robots.txt", "/favicon.ico")) else None
+        term_src, _ = self.detect_terminal_action(
+            clean_path, ua_str, host_str, md_flag, status_code=st, is_pirate=is_pirate
+        )
+        bell_src = valid_rag or term_src
+        if bell_src and not ref_src:
+            ref_src = bell_src
+        return ref_src, bell_src
 
     def ring_rag_bell(self):
         """Play ding.wav non-blockingly on Honeybot's default ALSA audio bus for live stream listeners."""
@@ -1913,36 +1963,38 @@ class SonarApp(App):
                         db.increment_counter("global_hits")
                         if not str(data['ip']).startswith(('127.', '10.', '192.168.')):
                             now_ts = time.time()
-                            ref_src = None
-                            if clean_path == '/discord' or clean_path.startswith(('/discord?', '/discord/')):
-                                ref_src = 'discord_invite'
-                            elif '?' in clean_path:
-                                _, qs_part = clean_path.split('?', 1)
-                                if qs_part in (
-                                    'src=youtube', 'src=linkedin', 'src=fb', 'src=facebook',
-                                    'src=x', 'src=twitter', 'src=discord', 'src=rfc9110',
-                                ):
-                                    ref_src = qs_part
-                            rag_src, _ = self.detect_live_rag_agent(data.get('ua'))
-                            term_src, _ = self.detect_terminal_action(
-                                clean_path, data.get('ua'), data.get('host'), data.get('md')
+                            ref_src, bell_src = self.evaluate_live_alert(
+                                clean_path=clean_path,
+                                status_int=int(data['status']),
+                                ua_str=data.get('ua'),
+                                host_str=data.get('host') or 'mikelev.in',
+                                md_flag=data.get('md'),
+                                is_pirate=is_pirate_req,
                             )
-                            bell_src = rag_src if (rag_src and not clean_path.endswith('/robots.txt')) else term_src
                             if bell_src:
                                 last_ding = getattr(self, '_last_rag_ding_ts', 0.0)
                                 if (now_ts - last_ding) >= 15.0:
                                     self._last_rag_ding_ts = now_ts
                                     self.ring_rag_bell()
-                                if not ref_src:
-                                    ref_src = bell_src
                             if ref_src:
-                                import json as _json
-                                with open('/tmp/honeybot_referrals.jsonl', 'a', encoding='utf-8') as rf:
-                                    rf.write(_json.dumps({
-                                        'ts': int(now_ts),
-                                        'src': ref_src,
-                                        'path': clean_path,
-                                    }) + '\n')
+                                dedupe_cache = getattr(self, '_ref_alert_dedupe', None)
+                                if dedupe_cache is None:
+                                    dedupe_cache = {}
+                                    self._ref_alert_dedupe = dedupe_cache
+                                dkey = (str(data['ip']), ref_src, clean_path.split('?', 1)[0])
+                                if (now_ts - dedupe_cache.get(dkey, 0.0)) >= 60.0:
+                                    if len(dedupe_cache) > 256:
+                                        cutoff_d = now_ts - 120.0
+                                        self._ref_alert_dedupe = {k: v for k, v in dedupe_cache.items() if v >= cutoff_d}
+                                        dedupe_cache = self._ref_alert_dedupe
+                                    dedupe_cache[dkey] = now_ts
+                                    import json as _json
+                                    with open('/tmp/honeybot_referrals.jsonl', 'a', encoding='utf-8') as rf:
+                                        rf.write(_json.dumps({
+                                            'ts': int(now_ts),
+                                            'src': ref_src,
+                                            'path': clean_path,
+                                        }) + '\n')
                     except: pass
 
                 # Update Logs UI
@@ -1973,7 +2025,9 @@ class SonarApp(App):
         method, path = self.parse_request(data['request'])
         ua = data['ua']
         is_pirate = self.detect_pirate_probe(path, status, ua)
-        _, term_badge = self.detect_terminal_action(path, ua, data.get('host'), data.get('md'))
+        _, term_badge = self.detect_terminal_action(
+            path, ua, data.get('host'), data.get('md'), status_code=status, is_pirate=is_pirate
+        )
         if is_pirate:
             ip_display = Text(f"🏴‍☠️ {data['ip']} [UNMASKED]", style="bold bright_white on #8b0000")
         else:
