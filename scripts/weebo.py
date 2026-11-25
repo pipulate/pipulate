@@ -27,9 +27,12 @@ SUPPORTED_EXTS = (".png", ".jpg", ".jpeg", ".gif", ".webp", ".mp4", ".webm", ".m
 VIDEO_EXTS = (".mp4", ".webm", ".mkv", ".mov")
 DEFAULT_SEAL_ALIASES = frozenset({"", "seal", "wax", "ambigram", "ambigram-209", "default"})
 
+STUDIO_MAX_W = 1360
+STUDIO_MAX_H = 816
 LOCAL_WEEBO_DIR = Path(
     os.environ.get("PIPULATE_WEEBO_DIR", Path.home() / ".local" / "share" / "pipulate" / "weebo")
 ).expanduser()
+LOCAL_WEEBO_MASTERS_DIR = LOCAL_WEEBO_DIR / "masters"
 HONEYBOT_WEEBO_DIR = Path("/home/mike/www/mikelev.in/assets/weebo")
 
 
@@ -159,27 +162,57 @@ def candidate_search_dirs():
     return dirs
 
 
-def enroll_in_local_library(src_path):
-    """Copy an explicit local file path into ~/.local/share/pipulate/weebo/ if not already there."""
+def compute_studio_fit(img_w, img_h, max_w=STUDIO_MAX_W, max_h=STUDIO_MAX_H):
+    """Return aspect-preserving (fit_w, fit_h) capped at max_w x max_h without upscaling."""
+    w, h = max(1, int(img_w)), max(1, int(img_h))
+    scale = min(1.0, max_w / w, max_h / h)
+    return max(16, int(round(w * scale))), max(16, int(round(h * scale)))
+
+
+def enroll_in_local_library(src_path, max_w=STUDIO_MAX_W, max_h=STUDIO_MAX_H):
+    """Enroll asset into ~/.local/share/pipulate/weebo/, archiving oversized IMAGE masters in masters/."""
     src = Path(src_path).resolve()
     if not src.is_file() or src.suffix.lower() not in SUPPORTED_EXTS:
         return src
     repo_root = Path(__file__).resolve().parents[1].resolve()
     seal = default_wax_seal_path()
-    if seal and src == seal:
+    if (seal and src == seal) or str(src).startswith(str(repo_root / "assets")):
         return src
-    if str(src).startswith(str(repo_root / "assets")):
-        return src
+    masters_dir = LOCAL_WEEBO_DIR / "masters"
+    src_is_master = src.parent.resolve() == masters_dir.resolve()
     try:
         LOCAL_WEEBO_DIR.mkdir(parents=True, exist_ok=True)
+        if _classify_ext(str(src)) == "IMAGE":
+            img_w, img_h = read_image_dimensions(src)
+            fit_w, fit_h = compute_studio_fit(img_w, img_h, max_w=max_w, max_h=max_h)
+            if (fit_w, fit_h) != (img_w, img_h):
+                masters_dir.mkdir(parents=True, exist_ok=True)
+                master_dest = masters_dir / src.name
+                alpha = has_alpha_channel(src)
+                out_ext = ".png" if (alpha or src.suffix.lower() == ".png") else src.suffix.lower()
+                dest = LOCAL_WEEBO_DIR / f"{src.stem}{out_ext}"
+                st = src.stat()
+                if not src_is_master and dest.is_file() and master_dest.is_file() and master_dest.stat().st_size == st.st_size and int(master_dest.stat().st_mtime) == int(st.st_mtime) and read_image_dimensions(dest) == (fit_w, fit_h):
+                    return dest.resolve()
+                if master_dest.resolve() != src:
+                    shutil.copy2(src, master_dest)
+                from PIL import Image
+                with Image.open(master_dest) as raw_im:
+                    mode = "RGBA" if (out_ext == ".png" or alpha) else "RGB"
+                    tmp_dest = dest.with_name(f".{dest.name}.{os.getpid()}.tmp")
+                    raw_im.convert(mode).resize((fit_w, fit_h), Image.Resampling.LANCZOS).save(tmp_dest, "PNG" if mode == "RGBA" else ("WEBP" if out_ext == ".webp" else "JPEG"))
+                    os.replace(tmp_dest, dest)
+                if dest.resolve() != src and src.parent.resolve() == LOCAL_WEEBO_DIR.resolve():
+                    src.unlink(missing_ok=True)
+                print(f"📦 Archived master [{img_w}x{img_h}] -> {master_dest} & studio-fitted [{fit_w}x{fit_h}] -> {dest} (shorthand: `weebo {dest.stem}`)", file=sys.stderr)
+                return dest.resolve()
         dest = LOCAL_WEEBO_DIR / src.name
-        if dest.resolve() != src:
-            if not dest.is_file() or src.stat().st_mtime > dest.stat().st_mtime:
-                shutil.copy2(src, dest)
-                print(f"📦 Rolled into local Weebo library: {dest} (shorthand: `weebo {dest.stem}`)", file=sys.stderr)
+        if dest.resolve() != src and (not dest.is_file() or src.stat().st_mtime > dest.stat().st_mtime):
+            shutil.copy2(src, dest)
+            print(f"📦 Rolled into local Weebo library: {dest} (shorthand: `weebo {dest.stem}`)", file=sys.stderr)
+        return dest.resolve()
     except Exception:
-        pass
-    return src
+        return src
 
 
 def list_shorthand_assets(limit=50):
@@ -277,7 +310,7 @@ def resolve_media_target(raw_spec, default_duration=None, enroll=False):
                 if not p.is_file() or p.suffix.lower() not in SUPPORTED_EXTS:
                     continue
                 if p.name.lower() == needle or p.stem.lower() == needle_stem:
-                    resolved = str(p.resolve())
+                    resolved = str(enroll_in_local_library(p) if enroll else p.resolve())
                     kind = _classify_ext(resolved)
                     return resolved, _finalize_media_duration(resolved, kind, explicit_dur), kind
 
@@ -290,7 +323,7 @@ def resolve_media_target(raw_spec, default_duration=None, enroll=False):
                     prefix_matches.append((-p.stat().st_mtime, p))
         if prefix_matches:
             prefix_matches.sort(key=lambda item: item[0])
-            best = str(prefix_matches[0][1].resolve())
+            best = str(enroll_in_local_library(prefix_matches[0][1]) if enroll else prefix_matches[0][1].resolve())
             kind = _classify_ext(best)
             return best, _finalize_media_duration(best, kind, explicit_dur), kind
 
@@ -394,7 +427,7 @@ def get_screen_dimensions(env=None):
     return 1920, 1080, 0, 0
 
 
-def compute_centered_geometry(img_w, img_h, max_w=1440, max_h=840, screen_w=None, screen_h=None, env=None):
+def compute_centered_geometry(img_w, img_h, max_w=STUDIO_MAX_W, max_h=STUDIO_MAX_H, screen_w=None, screen_h=None, env=None):
     """Align the center of the image (win_w/2, win_h/2) with the center of the XFCE desktop (screen_w/2, screen_h/2)."""
     ox, oy = 0, 0
     if screen_w is None or screen_h is None:
@@ -409,7 +442,7 @@ def compute_centered_geometry(img_w, img_h, max_w=1440, max_h=840, screen_w=None
     return win_w, win_h, pos_x, pos_y
 
 
-def prepare_backbuffer(src_path, max_w=1440, max_h=840, matte=False, out_path=None, env=None):
+def prepare_backbuffer(src_path, max_w=STUDIO_MAX_W, max_h=STUDIO_MAX_H, matte=False, out_path=None, env=None):
     """Prepare image at native 1:1 resolution (or downscaled if oversized), preserving RGBA alpha by default."""
     if not src_path or src_path.startswith(("http://", "https://", "file://")) or not os.path.isfile(src_path):
         w, h, x, y = compute_centered_geometry(512, 512, max_w=max_w, max_h=max_h, env=env)
@@ -880,6 +913,51 @@ def print_weebo_cheatsheet():
     return 0
 
 
+_REMOTE_WEEBO_LAUNCHER = r"""
+import os, pathlib, subprocess, sys, time
+target, dur = sys.argv[1], sys.argv[2]
+sys.path.insert(0, "/home/mike/www/mikelev.in/scripts")
+import stream
+env = stream._hydrate_honeybot_x11_env()
+py_exe = sys.executable
+for p in sorted(pathlib.Path("/proc").glob("[0-9]*/cmdline")):
+    try:
+        raw_b = p.read_bytes()
+        raw = raw_b.replace(b"\x00", b" ").decode("utf-8", errors="ignore")
+        if "stream.py" in raw and "--conjure-media" not in raw:
+            pts = [x.decode("utf-8", "ignore") for x in raw_b.split(b"\x00") if x]
+            cand = next((x for x in pts if "python" in os.path.basename(x)), "")
+            if cand and os.path.isfile(cand):
+                py_exe = cand
+            for kv in (p.parent / "environ").read_bytes().split(b"\x00"):
+                if b"=" in kv:
+                    k, v = kv.split(b"=", 1)
+                    ks = k.decode("utf-8", "ignore")
+                    if ks in ("PATH", "PYTHONPATH", "NIX_PYTHONPATH", "PYTHONHOME") and v:
+                        env[ks] = v.decode("utf-8", "ignore")
+            break
+    except Exception:
+        pass
+log_f = open("/tmp/honeybot_weebo.log", "w", encoding="utf-8")
+proc = subprocess.Popen([py_exe, "/home/mike/www/mikelev.in/scripts/stream.py", "--conjure-media", target, dur], env=env, stdin=subprocess.DEVNULL, stdout=log_f, stderr=subprocess.STDOUT, start_new_session=True)
+win_line = ""
+for _ in range(70):
+    time.sleep(0.04)
+    r = subprocess.run(["wmctrl", "-lG"], env=env, capture_output=True, text=True, check=False)
+    win_line = next((ln.strip() for ln in (r.stdout or "").splitlines() if "honeybot_media_overlay" in ln), "")
+    if win_line or proc.poll() is not None:
+        break
+if win_line:
+    print(f"LIVE_X11_WINDOW: {win_line}")
+    sys.exit(0)
+if proc.poll() is None:
+    proc.terminate()
+log_f.flush()
+print(f"WEEBO_LAUNCH_ERR: poll={proc.poll()} log={pathlib.Path('/tmp/honeybot_weebo.log').read_text(encoding='utf-8', errors='replace').strip()!r}")
+sys.exit(1)
+"""
+
+
 def main():
     if len(sys.argv) == 1:
         return print_weebo_cheatsheet()
@@ -915,11 +993,14 @@ def main():
 
     if args.list or spec_arg.lower() == "list":
         assets = list_shorthand_assets()
+        m_dir = LOCAL_WEEBO_DIR / "masters"
         print(f"🤖 Operation Weebo Library ({len(assets)} asset(s) — local dir: {LOCAL_WEEBO_DIR}):")
         for label, path in assets[:30]:
             w, h = read_image_dimensions(path)
             a_tag = "alpha" if has_alpha_channel(path) else "opaque"
-            print(f"   • {label:<30} [{w}x{h} {a_tag}] -> {path}")
+            m_cand = next((mp for mp in (m_dir.glob(f"{path.stem}.*") if m_dir.is_dir() else ()) if mp.is_file()), None)
+            m_note = f", master {read_image_dimensions(m_cand)[0]}x{read_image_dimensions(m_cand)[1]}" if m_cand else ""
+            print(f"   • {label:<30} [{w}x{h} {a_tag}{m_note}] -> {path}")
         return 0
 
     if args.remote:
@@ -974,58 +1055,9 @@ def main():
             stage_cache_file.write_text(_json.dumps(stage_cache), encoding="utf-8")
         except Exception:
             pass
-        remote_launcher = r'''
-import os, pathlib, subprocess, sys, time
-target, dur = sys.argv[1], sys.argv[2]
-sys.path.insert(0, "/home/mike/www/mikelev.in/scripts")
-import stream
-env = stream._hydrate_honeybot_x11_env()
-py_exe = sys.executable
-for p in sorted(pathlib.Path("/proc").glob("[0-9]*/cmdline")):
-    try:
-        raw = p.read_bytes().replace(b"\x00", b" ").decode("utf-8", errors="ignore")
-        if "stream.py" in raw and "--conjure-media" not in raw:
-            exe_cand = os.path.realpath(str(p.parent / "exe"))
-            if os.path.isfile(exe_cand):
-                py_exe = exe_cand
-                break
-    except Exception:
-        pass
-log_f = open("/tmp/honeybot_weebo.log", "w", encoding="utf-8")
-proc = subprocess.Popen(
-    [py_exe, "/home/mike/www/mikelev.in/scripts/stream.py", "--conjure-media", target, dur],
-    env=env,
-    stdin=subprocess.DEVNULL,
-    stdout=log_f,
-    stderr=subprocess.STDOUT,
-    start_new_session=True,
-)
-win_line = ""
-for _ in range(70):
-    time.sleep(0.04)
-    r = subprocess.run(["wmctrl", "-lG"], env=env, capture_output=True, text=True, check=False)
-    for ln in (r.stdout or "").splitlines():
-        if "honeybot_media_overlay" in ln:
-            win_line = ln.strip()
-            break
-    if win_line or proc.poll() is not None:
-        break
-if win_line:
-    print(f"LIVE_X11_WINDOW: {win_line}")
-    sys.exit(0)
-if proc.poll() is None:
-    try:
-        proc.terminate()
-    except Exception:
-        pass
-log_f.flush()
-err = pathlib.Path("/tmp/honeybot_weebo.log").read_text(encoding="utf-8", errors="replace").strip()
-print(f"WEEBO_LAUNCH_ERR: poll={proc.poll()} log={err!r}")
-sys.exit(1)
-'''
         res = subprocess.run(
             ["ssh", HONEYBOT_SSH_HOST, "python3", "-", remote_target, f"{dur:.1f}"],
-            input=remote_launcher,
+            input=_REMOTE_WEEBO_LAUNCHER,
             capture_output=True,
             text=True,
             check=False,
