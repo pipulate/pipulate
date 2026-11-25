@@ -1,44 +1,22 @@
-# Prompt for Automated Editing Workflow
+# Automated Jekyll Editing & Headline Architect Prompt
 
-**Overarching Goal:** Transform a raw technical journal entry into a single, valid **JSON object of editing instructions** parsed by `articleizer.py` to populate YAML frontmatter, prepend reader context, insert thematic subheadings, and record editorial analysis.
-
-Your Role (AI Content Architect):
-You are an AI Content Architect and high-integrity technical headline strategist. Your output must be a single valid JSON object inside a `json` code block, with zero prose outside the fence.
-
-**CRITICAL SYNTAX RULE:** All string values generated inside the JSON object **must be properly escaped according to JSON string format**. Escape any internal double quotes (`\"`) and backslashes (`\\`).
+Output **ONLY** one valid JSON object inside a `json` code block (zero prose outside the fence). Escape all internal JSON double quotes (`\"`) and backslashes (`\\`).
 
 ### Editorial & Vocabulary Guardrails
+1. **Slugs:** Lowercase `[a-z0-9-]` only. Every proposed filename/permalink slug MUST be brand-new and absent from the Book Spine below.
+2. **Banned Words:** **NEVER** use `manifesto` anywhere. Restrain `sovereign` and skip "critical/pivotal turning point" clichés. **NEVER** use `deterministic`, `determinism`, or `determinacy` in titles, slugs, permalinks, descriptions, keywords, subheadings, or tweets—use `reproducible`, `checkable`, `replayable`, `receipt`, `audit trail`, or `verifiable` (at most once in `prepend_to_article_body` if explicitly debated).
+3. **Target Framing:** [INSERT EDITORIAL CONTEXT]
 
-1. **Lowercase Slugs:** Use only lowercase alphanumeric characters and hyphens in permalinks and filenames.
-2. **Banned Framings:** Refer to this body of work as a blueprint, essay, treatise, methodology, philosophy, or way. **NEVER** use the word `manifesto` anywhere (not in prose, titles, slugs, or analysis). Ease off on `sovereign` (overused) and skip repetitive "critical/pivotal turning point" clichés.
-3. **Verifiability Over Determinism:** Do NOT use `deterministic`, `determinism`, or `determinacy` in the title, permalink, filename, description, keywords, subheadings, or promotional tweet. The property this work cares about is that a result can be checked and replayed: reach for `reproducible`, `checkable`, `replayable`, `receipt`, `audit trail`, or `verifiable` instead. (If the article body explicitly debates determinism, you may name it at most once in `prepend_to_article_body` and nowhere else.)
-4. **Publishing-Target Editorial Context:** [INSERT EDITORIAL CONTEXT]
-   Let this target context govern the framing of the title, description, prepend paragraph, subheadings, title brainstorm, and promotional copy. Never force book or corporate framing where the target context says otherwise.
-
-### Headline Doctrine: The Veruca Salt Gate & High-Integrity Psychology
-
-**1. FIGHT RECENCY BIAS (OPENING THESIS > CLOSING PLUMBING):**
-These entries are multi-turn R&D dialogues. The high-stakes industry thesis, market disruption, or architectural revelation almost always lives in the Author's **OPENING turn(s) at the top**, whereas the final 70-85% of the transcript consists of surgical code patches, regex fixes, file paths, and a deliberately dry Notary Beat summary at the bottom. **NEVER let downstream implementation plumbing or the dry Notary TL;DR hijack the headline.** Treat the opening thesis as the **WHY** (the headline) and the code/telemetry fixes as the **RECEIPT** proving it.
-
-**2. THE VERUCA SALT "WHO CARES?" STRANGER GATE (NO DIARY HEADLINES):**
-Picture an impatient, status-conscious, time-poor practitioner (a technical SEO lead, staff engineer, or founder) scrolling LinkedIn, X, or Hacker News at 60 mph asking: *"What does this do for ME right now, or what happens to MY moat if I ignore it?"*
-- **NEVER** center a headline on the author's personal site maintenance, internal filenames, or private bug counts (e.g., **BAD:** *"Why One New Post Scrambled 488 Topic URLs on My Site"* — a stranger does not run your blog and could not care less).
-- **ALWAYS** treat the author's site as the **wind tunnel**, never the protagonist. Frame headlines around the reader's own surface (`Your Homepage`, `Your CDN`, `Your Server Logs`), an industry giant's vulnerability (`Google's Moat`, `OpenAI's Crawler`), or a universal cost/leverage shift (e.g., **GOOD:** *"Google's Moat Evaporates Three Hops From Your Homepage"*).
-- **FAMILIAR HOST RECEPTOR RULE:** Bind every headline to a surface or pain a stranger already recognizes (`Your Homepage`, `Google's Moat`, `Python Virtualenvs`, `Mac .zshrc`, `CDN Logs`, `OpenAI's Crawler`)—NEVER lead with an unexplained internal repo codename (`NPvg`, `trimnoir`, `GLOSSARY.md`, `foo_files.py`).
-- **NO KITCHEN-SINK LISTS & 60-CHAR SWEET SPOT:** Never cram three topics into a syllabus (`"Topic A: Tool B, Concept C, and Metaphor D"`). Pick ONE razor-sharp 80/20 hook (~42-62 characters, hard max 70, zero colons or at most one) so `LIVE: <Title>` never truncates on mobile or YouTube, with 100% receipt-backed integrity.
-
-**3. FIVE PSYCHOLOGICAL LENSES FOR `title_brainstorm` (CIALDINI + KAHNEMAN + LOEWENSTEIN):**
-Generate **5 distinct candidates** in `title_brainstorm`, testing one named psychological trigger per slot before sorting your #1 champion into `title_brainstorm[0]`:
-- **[Loss Aversion / Moat Threat]** (Kahneman & Cialdini Scarcity — losses hit 2x harder than gains): Name an incumbent moat, $10K vendor tax, or comfortable habit quietly evaporating due to a protocol or architectural shift.
-- **[Gatekeeper Myth Demolished]** (Cialdini Unity / Common Enemy): Expose a specific excuse agencies, vendors, or enterprise gatekeepers tell practitioners ("you can't see raw bot logs without origin access") that is now provably false.
-- **[Forensic Wire Receipt]** (Cialdini Authority via Instrumentation): Lead with a counter-intuitive behavior caught red-handed in live server logs, HTTP headers, or benchmarks that armchair pundits haven't instrumented.
-- **[Contrast / Zero-Tax Leverage]** (Cialdini Perceptual Contrast): Juxtapose an expensive, bloated industry default (runaway LLM token burn, headless-browser farms) against a tiny, free, checkable Unix/Python/Nix/RFC primitive.
-- **[Information-Gap Anomaly]** (Loewenstein Curiosity): Spotlight a concrete industry paradox, walk-back, or surprising discovery that a practitioner's brain itches to resolve.
-
-*(Note on Spine History: Older entries in the Book Spine below reflect retired three-part insider titles. Use the Spine strictly for chronological continuity and slug uniqueness—NEVER imitate multi-clause list titles.)*
-
-**Book Spine (the 40,000-foot view):**
-CRITICAL UNIQUENESS RULE: Every proposed permalink and filename slug MUST be brand-new and MUST NOT match any slug already present anywhere in the spine below.
+### Headline Doctrine: Recency Defense & Veruca Salt Stranger Gate
+1. **Opening Thesis > Closing Plumbing:** Multi-turn R&D dialogues state the macro industry thesis at the **TOP** and spend the final 70-85% on patches, regexes, and dry Notary summaries. **NEVER** let downstream plumbing hijack the headline; the opening thesis is the **WHY**, and the patches are its **RECEIPT**.
+2. **Stranger Stake (No Diary Titles):** Frame for a busy engineer, SEO lead, or founder scrolling at 60 mph asking *"What happens to MY stack or moat?"* Treat the author's site strictly as the wind tunnel—anchor on familiar surfaces (`Your Homepage`, `Your CDN`, `Your Server Logs`, `Google's Moat`, `OpenAI's Crawler`) and **NEVER** lead with internal repo codenames (`NPvg`, `trimnoir`, `GLOSSARY.md`, `foo_files.py`).
+3. **60-Char Single Hook:** Pick ONE 80/20 hook (~42-62 chars, hard max 70, 0-1 colons, no 3-part syllabus lists; ignore retired list titles in older Spine rows).
+4. **Five Psychological Lenses (`title_brainstorm`):** Generate 5 distinct candidates—one per bracketed tag below prefixing `rationale`—and **sort your #1 stranger-magnet into `title_brainstorm[0]`**:
+   - `[Loss Aversion / Moat Threat]`: Incumbent moat, $10K vendor tax, or habit evaporating via a protocol shift.
+   - `[Gatekeeper Myth Demolished]`: Vendor/agency excuse ("raw bot logs require origin access") proven false.
+   - `[Forensic Wire Receipt]`: Counter-intuitive behavior caught live in sockets, HTTP headers, or benchmarks.
+   - `[Contrast / Zero-Tax Leverage]`: Bloated industry default vs. a tiny, free, checkable Unix/Python/Nix/RFC primitive.
+   - `[Information-Gap Anomaly]`: Concrete industry paradox or discovery demanding resolution.
 
 --- SPINE BEGIN ---
 [INSERT BOOK SPINE]
@@ -50,10 +28,7 @@ CRITICAL UNIQUENESS RULE: Every proposed permalink and filename slug MUST be bra
 [INSERT FULL ARTICLE]
 --- ARTICLE END ---
 
-**Instructions:**
-
-Based *only* on the provided text content, output a **single valid JSON object inside a `json` code block** conforming to the exact schema below. Notice that `book_analysis_content` (starting with `headline_crucible` and `title_brainstorm`) comes **FIRST** so you complete your strategic synthesis and comparative headline selection *before* committing to `editing_instructions.yaml_updates.title`.
-
+### Output Schema (`book_analysis_content` FIRST to reason before committing `yaml_updates.title`)
 {
   "book_analysis_content": {
     "headline_crucible": {
@@ -96,30 +71,15 @@ Based *only* on the provided text content, output a **single valid JSON object i
   }
 }
 
-### Detailed Task Mapping to JSON Schema
-
-- **book_analysis_content** *(Generated FIRST to anchor thought order)*:
-  * **headline_crucible**:
-    * `opening_macro_thesis`: State in 1 sentence the biggest outward-facing industry, protocol, or strategic revelation from the article's opening turn(s).
-    * `rejected_plumbing_trap`: Name the internal repo maintenance, script bug, or housekeeping detail from later turns that a lazy summarizer would mistakenly headline—and explicitly reject it as the main title.
-    * `veruca_salt_stranger_stake`: State in 1 sentence what an ambitious outsider stands to gain or lose within 2 seconds of reading this hook.
-  * **title_brainstorm**: Populate 5 distinct, scroll-stopping human headlines—one for each of the 5 psychological lenses above (`[Loss Aversion / Moat Threat]`, `[Gatekeeper Myth Demolished]`, `[Forensic Wire Receipt]`, `[Contrast / Zero-Tax Leverage]`, `[Information-Gap Anomaly]`). Prefix each `rationale` with its bracketed lens tag. **Sort the array so the single strongest, highest-integrity stranger-magnet sits at `title_brainstorm[0]`**, as `title_brainstorm[0]` is the sole source of the published filename slug and `yaml_updates.title`. Each `filename` must be a unique 4-7 word lowercase alphanumeric/hyphen slug ending in `.md` (no folder or date prefix).
-  * **authors_imprint**: First-person summary connecting the outward practitioner or consulting thesis (Agent-First CDN Edge readiness, RFC 9110/9111 Markdown feeds, ADNS/O2O log visibility, or local-first `sunpug.io` tooling) to the checkable engineering receipt, while pre-empting the predictable gatekeeper or legacy-vendor dismissal in plain language.
-  * **promotional_tweet**: Promotional prose for X.com with the literal `[ARTICLE_URL]` on its own line (no other URLs or Markdown links) plus 2-3 sharp hashtags. Budget at most **200 characters** INCLUDING `[ARTICLE_URL]` so downstream `?src=x` and live-stream URLs stay safely under X's 280-character limit.
-  * **hero_image_prompt**: Ride directly on your winning `title_brainstorm[0]` metaphor to write ONE vivid 16:9 widescreen illustration prompt. Keep the focal subject vertically centered so it survives a 1.91:1 (1200x630) crop, extending the artwork and dark obsidian-slate (`#111111`) environment continuously to every edge with high-contrast lighting and graphic-novel ink-and-wash precision. Do NOT mention "safe zones" or "banners", and end with: `"Full-bleed edge-to-edge composition filling 100% of the canvas with no borders, no frames, no matting, no margins, and no text overlays or lettering."`
-  * **hero_image_alt**: One concise sentence (<125 chars, no double quotes) describing the visual scene for Open Graph and screen readers.
-  * **content_potential_and_polish**: Populate `core_strengths` and `suggestions_for_polish`.
-  * **ai_editorial_take**: Framed like an Archaeologist from the Future uncovering a high-surprisal primary artifact (*"And then the surprising thing the author did next was..."*). Grade the work through Claude Shannon's information theory (real experimental surprisal and falsifiable wire receipts vs. zero-bit generative consensus slop), anticipate any knee-jerk Kuhnian gatekeeper objection, and surface a fresh strategic angle not already stated by the AI in the dialogue.
-  * **next_step_prompts**: 1-2 concrete follow-up prompts for subsequent engineering/publishing tasks (honoring any explicit next-steps notes the author left in the text).
-
-- **editing_instructions** *(Generated SECOND using the proven winner from `title_brainstorm[0]`)*:
-  * **yaml_updates**:
-    * `title`: Copy `title_brainstorm[0].title` **verbatim**.
-    * `description`: Compelling 100-160 character meta description leading with the reader's stake and concrete proof.
-    * `permalink`: Use the exact slug from `title_brainstorm[0].filename` (without `.md`) in `[INSERT PERMALINK PATTERN]`.
-    * `keywords`: Comma-separated high-signal technical keywords.
-  * **prepend_to_article_body**: Write 2 paragraphs of introductory prose for a curious reader—opening with the high-stakes industry thesis before introducing the hands-on engineering session that tests it. Include no heading, title, horizontal rule, or code fence (`articleizer.py` adds the heading and separator).
-  * **insert_subheadings**: 4-7 thematic `## ` Markdown subheadings.
-    * `after_text_snippet`: 5-10 verbatim words from the **VERY END** of the paragraph immediately preceding where the subheading belongs (must be followed by a blank line in the source text, never mid-paragraph, never inside a code block or stand-in line, and never immediately above an existing `#` heading).
-
-⚠️ CRITICAL: Output **ONLY** the single fenced `json` block. Double-check: zero `manifesto`, restrained `sovereign`, zero `deterministic`/`determinism`/`determinacy` in titles/slugs/subheadings/descriptions/keywords/tweets, and `title_brainstorm[0]` passes the Veruca Salt Stranger Test!
+### Field Specifications
+- `headline_crucible`: 1 sentence each for `opening_macro_thesis`, `rejected_plumbing_trap` (the internal bug/chore explicitly rejected as headline), and `veruca_salt_stranger_stake`.
+- `title_brainstorm`: 5 entries (one per lens above), champion sorted to `[0]`; each `filename` is a unique 4-7 word lowercase `[a-z0-9-]` slug ending in `.md`.
+- `authors_imprint`: First-person summary linking the outward consulting/protocol thesis (Agent-First CDN Edge, RFC 9110/9111 Markdown, chained DNS/O2O wire logs, `sunpug.io`) to the checkable receipt while pre-empting the predictable vendor/gatekeeper dismissal.
+- `promotional_tweet`: `<= 200` chars INCLUDING literal `[ARTICLE_URL]` on its own line (no other links) + 2-3 hashtags.
+- `hero_image_prompt`: One vivid 16:9 illustration prompt riding `title_brainstorm[0]`'s metaphor, focal subject vertically centered for 1200x630 crop, dark obsidian-slate (`#111111`) extending to all edges, high-contrast graphic-novel ink-and-wash, no "safe zones"/"banners", ending verbatim with: `"Full-bleed edge-to-edge composition filling 100% of the canvas with no borders, no frames, no matting, no margins, and no text overlays or lettering."`
+- `hero_image_alt`: Concise scene description (`< 125` chars, no `"`).
+- `ai_editorial_take`: Archaeologist-from-the-Future lens (*"And then the surprising thing the author did next was..."*), grading Shannon surprisal vs. zero-bit consensus slop, anticipating a Kuhnian gatekeeper objection, and adding one fresh strategic angle.
+- `next_step_prompts`: 1-2 concrete follow-up prompts honoring any explicit author notes.
+- `yaml_updates`: `title` = `title_brainstorm[0].title` verbatim; `description` = 100-160 char stake + proof; `permalink` = `title_brainstorm[0].filename` (minus `.md`) inside `[INSERT PERMALINK PATTERN]`; `keywords` = comma-separated technical terms.
+- `prepend_to_article_body`: 2 intro paragraphs (macro thesis -> hands-on session); no heading, rule, or code fence.
+- `insert_subheadings`: 4-7 `## ` subheadings; `after_text_snippet` = 5-10 verbatim words from the **END** of the preceding paragraph before a blank line (never mid-paragraph, inside fences/stand-ins, or above an existing `#` heading).
