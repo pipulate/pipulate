@@ -32,4 +32,8 @@ Cloud chat tabs are ephemeral silos that lose institutional context the moment a
 - `p` (`prompt`) — capture your question from the clipboard.
 - `c` (`compile`) — bundle your files, live receipts, and discussion history into your clipboard while sealing a verifiable SHA-256 archive deed on disk.
 
-Paste that compiled payload into any model—Claude, Gemini, ChatGPT, or a local LLM—and own your transcript for life. Want to explore at zero install first? Drop the living book archive at `https://mikelev.in/brain.zip` straight into your favorite AI.
+Paste that compiled payload into any model—Claude, Gemini, ChatGPT, or a local LLM—and own your transcript for life. Want to explore at zero install first? Drop the portable AI archive at `https://qamy.ai/brain.zip` straight into your favorite AI.
+
+## Good-Read Parables & Executive Briefs
+
+Browse plain-English Socratic parables and buttoned-up architectural briefs distilled from live wire experiments at [Sun Pug Good-Reads](/stories/).

@@ -32,6 +32,19 @@ sync_installer() {
     rsync $RSYNC_OPTS assets/installer/install.sh "$TARGET:~/www/$door/install.sh" || return 1
   done
 }
+sync_good_reads_sieve() {
+  if [ -x ".venv/bin/python" ]; then
+    .venv/bin/python scripts/articles/good_reads_sieve.py -t 1
+  fi
+  SIEVE_WWW="$HOME/.cache/pipulate/good_reads_www"
+  if [ -d "$SIEVE_WWW/sunpug.io/stories" ]; then
+    echo "📚 Syncing 3-2-1 Good-Reads Sieve (sunpug.io [2], rfc9110.org [1], rfc9111.io [1])..."
+    ssh $TARGET "mkdir -p ~/www/sunpug.io/stories ~/www/rfc9110.org/briefs ~/www/rfc9111.io/briefs"
+    rsync --delete $RSYNC_OPTS "$SIEVE_WWW/sunpug.io/stories/" "$TARGET:~/www/sunpug.io/stories/"
+    rsync --delete $RSYNC_OPTS "$SIEVE_WWW/rfc9110.org/briefs/" "$TARGET:~/www/rfc9110.org/briefs/"
+    rsync --delete $RSYNC_OPTS "$SIEVE_WWW/rfc9111.io/briefs/" "$TARGET:~/www/rfc9111.io/briefs/"
+  fi
+}
 if [ "${1:-}" = "--installer" ]; then
   if sync_installer; then
     echo "✅ Installer synced to $INSTALLER_DOORS (body only; no rebuild)."
@@ -46,6 +59,7 @@ if [ "${1:-}" = "--doors" ]; then
     rsync $RSYNC_OPTS "remotes/honeybot/www/$door/" "$TARGET:~/www/$door/"
   done
   sync_installer
+  sync_good_reads_sieve
   echo "✅ Doors + installer synced to $INSTALLER_DOORS (body only; no rebuild)."
   exit 0
 fi
@@ -85,6 +99,7 @@ if [ -f "$HOME/repos/Pipulate.com/AI_CONTEXT.md" ]; then
   rsync $RSYNC_OPTS "$HOME/repos/Pipulate.com/AI_CONTEXT.md" "$TARGET:~/www/pipulate.com/AI_CONTEXT.md"
 fi
 sync_installer
+sync_good_reads_sieve
 
 if [ -x ".venv/bin/python" ]; then
   .venv/bin/python -c "import sys, pathlib; sys.path.insert(0, 'scripts/articles'); import common, publishizer; t = common.load_targets().get('1', {}); p = pathlib.Path(t.get('path', '~/repos/trimnoir/_posts')).expanduser(); publishizer.build_brain_archive('1', p)" || true

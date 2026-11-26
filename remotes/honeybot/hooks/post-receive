@@ -45,7 +45,7 @@ nix develop .#quiet --command bash << 'EOF'
   # _posts/, so the loop above never publishes their markdown. Without this,
   # a negotiated Accept: text/markdown request to "/" rewrites to /index.md
   # and 404s. index.md with no permalink frontmatter defaults to "/".
-  for page in *.md pages/*.md; do
+  for page in *.md pages/*.md editions/norma/*.md editions/brief/*.md; do
     [ -f "$page" ] || continue
     PERMALINK=$(grep -m 1 '^permalink:' "$page" | sed -e 's/^permalink:[[:space:]]*//' -e 's/["'\''[:space:]]//g')
     if [ -z "$PERMALINK" ] && [ "$page" = "index.md" ]; then
