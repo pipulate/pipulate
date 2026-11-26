@@ -2627,6 +2627,8 @@ SPOKEN_ALERT_TABLE = {
     "live_comment": "Web Bot Observatory alert. A new comment was posted on the live stream by {author}.",
     "discord_member": "Web Bot Observatory alert. A new founding member joined the Discord server, now at {count} of {goal}.",
     "discord_invite": "Web Bot Observatory alert. A visitor just clicked the Discord invite link.",
+    "live_invite": "Web Bot Observatory alert. A visitor just clicked the YouTube live stream link.",
+    "paid_visit": "Web Bot Observatory alert. A visitor just arrived from a paid campaign link.",
     "src=discord": "Web Bot Observatory alert. A link was followed from Discord.",
     "src=youtube": "Web Bot Observatory alert. A link was followed from YouTube.",
     "src=linkedin": "Web Bot Observatory alert. A link was followed from LinkedIn.",
@@ -2640,6 +2642,48 @@ SPOKEN_ALERT_TABLE = {
     "rag=anthropic": "Web Bot Observatory alert. A live Claude user session just fetched a page from your site.",
     "default": "Web Bot Observatory notification. {message}",
 }
+_REFERRAL_SPOKEN_SOURCES = {
+    "src=discord": "Discord",
+    "src=youtube": "YouTube",
+    "src=linkedin": "LinkedIn",
+    "src=fb": "the Mike Levinux Facebook community",
+    "src=facebook": "the Mike Levinux Facebook community",
+    "src=x": "X dot com",
+    "src=twitter": "X dot com",
+}
+
+
+def format_referral_alert(robj: dict) -> dict:
+    """Format spoken Piper TTS copy and ntfy metadata for a Honeybot referral JSONL event."""
+    rsrc = str((robj or {}).get("src") or "")
+    rpath = str((robj or {}).get("path") or "/")
+    base_p = rpath.split("?", 1)[0].rstrip("/")
+    is_paid = bool((robj or {}).get("paid")) or ("paid=1" in rpath) or (rsrc == "paid_visit")
+    is_live = bool((robj or {}).get("live_door")) or (base_p == "/live") or (rsrc == "live_invite")
+    if rsrc.startswith("rag="):
+        return {
+            "spoken": SPOKEN_ALERT_TABLE[rsrc],
+            "msg": f"Live AI RAG fetch ({rsrc}) -> {rpath}",
+            "badge": "🔔 [LIVE-RAG]",
+            "title": "🔔 Live AI User RAG Fetch",
+            "tags": "bell",
+        }
+    src_voice = _REFERRAL_SPOKEN_SOURCES.get(rsrc)
+    if src_voice:
+        kind_voice = f"{'paid ' if is_paid else ''}{'live stream ' if is_live else ''}link"
+        spoken = f"Web Bot Observatory alert. A {kind_voice} was followed from {src_voice}."
+    elif rsrc == "live_invite":
+        spoken = "Web Bot Observatory alert. A visitor just clicked a paid YouTube live stream link." if is_paid else SPOKEN_ALERT_TABLE["live_invite"]
+    elif rsrc == "discord_invite" and is_paid:
+        spoken = "Web Bot Observatory alert. A visitor just clicked a paid Discord invite link."
+    else:
+        spoken = SPOKEN_ALERT_TABLE.get(rsrc, SPOKEN_ALERT_TABLE["paid_visit"])
+    paid_pfx = "[PAID] " if is_paid else ""
+    target_lbl = "Live-stream click" if is_live else "Inbound click"
+    badge = "💰 [PAID-LIVE]" if (is_paid and is_live) else ("💰 [PAID-REF]" if is_paid else ("🔴 [LIVE-DOOR]" if is_live else "🔗 [REFERRAL]"))
+    title = "💰 Paid Live-Stream Click" if (is_paid and is_live) else ("💰 Paid Social Referral" if is_paid else ("🔴 Inbound Live-Stream Click" if is_live else "🔗 Inbound Social Referral"))
+    ntfy_tags = "moneybag,tv" if (is_paid and is_live) else ("moneybag,link" if is_paid else ("tv,link" if is_live else "link"))
+    return {"spoken": spoken, "msg": f"{paid_pfx}{target_lbl} ({rsrc}) -> {rpath}", "badge": badge, "title": title, "tags": ntfy_tags}
 
 
 def _ensure_local_piper_model():
@@ -4247,21 +4291,19 @@ def run_youtube_watch(
                     rts = int(robj.get("ts") or 0)
                     rsrc = str(robj.get("src") or "")
                     rpath = str(robj.get("path") or "/")
-                    if rts > last_ref_ts and rsrc in SPOKEN_ALERT_TABLE and (rsrc, rpath) not in seen_ref_batch:
-                        seen_ref_batch.add((rsrc, rpath))
+                    rpaid = bool(robj.get("paid")) or ("paid=1" in rpath)
+                    if rts > last_ref_ts and rsrc in SPOKEN_ALERT_TABLE and (rsrc, rpath, rpaid) not in seen_ref_batch:
+                        seen_ref_batch.add((rsrc, rpath, rpaid))
                         max_ref_ts = max(max_ref_ts, rts)
-                        is_rag = rsrc.startswith("rag=")
-                        ref_msg = f"Live AI RAG fetch ({rsrc}) -> {rpath}" if is_rag else f"Inbound click ({rsrc}) -> {rpath}"
-                        ref_badge = "🔔 [LIVE-RAG]" if is_rag else "🔗 [REFERRAL]"
-                        ntfy_title = "🔔 Live AI User RAG Fetch" if is_rag else "🔗 Inbound Social Referral"
-                        print(f"[{_ytlog_ts()}] {ref_badge} {ref_msg}", flush=True)
-                        _play_local_ding(ding, spoken_text=SPOKEN_ALERT_TABLE[rsrc])
+                        alert_spec = format_referral_alert(robj)
+                        print(f"[{_ytlog_ts()}] {alert_spec['badge']} {alert_spec['msg']}", flush=True)
+                        _play_local_ding(ding, spoken_text=alert_spec["spoken"])
                         if resolved_topic:
                             send_ntfy_notification(
-                                ref_msg,
-                                title=ntfy_title,
+                                alert_spec["msg"],
+                                title=alert_spec["title"],
                                 priority="high",
-                                tags="bell" if is_rag else "link",
+                                tags=alert_spec["tags"],
                                 topic=resolved_topic,
                             )
                 if hb_reset_reason:
