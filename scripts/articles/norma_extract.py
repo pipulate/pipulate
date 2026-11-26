@@ -29,6 +29,7 @@ import common
 
 STORYTIME_MIN_WORDS = 900
 STORYTIME_MAX_WORDS = 1200
+CSUITE_MIN_WORDS, CSUITE_MAX_WORDS = 250, 650
 
 PILLAR_TERMS = {
     "RFC_9110": (
@@ -65,6 +66,8 @@ _KV_RE = re.compile(r"^([A-Za-z0-9_]+)\s*:\s*(.*?)\s*$")
 _RAW_LIQUID_RE = re.compile(r"^\s*\{%\s*(?:raw|endraw)\s*%\}\s*$", re.MULTILINE)
 _WEEBO_CUE_RE = re.compile(r"\[\[\[weebo:([^\]]+)\]\]\]", re.IGNORECASE)
 ABSTRACTS_SUBDIR = "_abstracts"
+BRIEFS_SUBDIR = "_briefs"
+_CSUITE_FORBIDDEN_RE = re.compile(r"(?:\*\*Me\*\*\s*:|\*\*MikeLev\.in\*\*\s*:|\*\*Gemini[^*]*\*\*\s*:|\[\[\[weebo:|shipmunk|norma centroid|foo_files\.py|trimnoir|mikelev\.in)", re.IGNORECASE)
 _TICKER_STOPWORDS = frozenset({
     "THE", "A", "AN", "AND", "OR", "BUT", "FOR", "NOR", "ON", "AT", "TO", "FROM",
     "BY", "WITH", "IN", "OF", "INTO", "OVER", "AFTER", "UNDER", "HOW", "WHY", "WHAT",
@@ -164,6 +167,12 @@ def abstract_path_for_post(md_path: Path) -> Path:
     return p.parent / ABSTRACTS_SUBDIR / p.name
 
 
+def brief_path_for_post(md_path: Path) -> Path:
+    """Return the 1-to-1 `_posts/_briefs/<YYYY-MM-DD-slug>.md` executive brief path."""
+    p = Path(md_path).expanduser().resolve()
+    return p.parent / BRIEFS_SUBDIR / p.name
+
+
 def _read_header_and_preview(md_path: Path) -> dict:
     """Stream YAML frontmatter + a 2 KB body preview without parsing full posts."""
     meta = {}
@@ -205,8 +214,8 @@ def score_pillars(title_text: str, meta_text: str) -> tuple[int, list[str]]:
     return score, matched
 
 
-def rank_candidates(posts_dir: Path, limit: int = 10, pillars_only: bool = False) -> list[dict]:
-    """Return un-minted Storytime backfill candidates (newest-first by default, or 3-Pillar ranked)."""
+def rank_candidates(posts_dir: Path, limit: int = 10, pillars_only: bool = False, csuite: bool = False) -> list[dict]:
+    """Return un-minted Storytime or C-Suite backfill candidates (newest-first or 3-Pillar ranked)."""
     pdir = Path(posts_dir).expanduser().resolve()
     if not pdir.is_dir():
         return []
@@ -220,14 +229,18 @@ def rank_candidates(posts_dir: Path, limit: int = 10, pillars_only: bool = False
         if not info["has_fm"]:
             continue
         meta = info["meta"]
-        if meta.get("jukebox_coin", "").lower() in ("true", "yes", "1"):
-            continue
         if meta.get("aside", "").lower() in ("true", "yes", "1"):
             continue
-        if meta.get("storytime", "").lower() in ("false", "no", "0", "off", "aside"):
-            continue
-        if abstract_path_for_post(md_path).is_file():
-            continue
+        if csuite:
+            if meta.get("csuite_brief", "").lower() in ("true", "yes", "1") or brief_path_for_post(md_path).is_file():
+                continue
+        else:
+            if meta.get("jukebox_coin", "").lower() in ("true", "yes", "1"):
+                continue
+            if meta.get("storytime", "").lower() in ("false", "no", "0", "off", "aside"):
+                continue
+            if abstract_path_for_post(md_path).is_file():
+                continue
         raw_aid = meta.get(common.ARTICLE_ID_KEY, "").split("#", 1)[0].strip()
         aid = int(raw_aid) if raw_aid.isdigit() and int(raw_aid) > 0 else 0
         if aid == 911:
@@ -401,6 +414,65 @@ def save_abstract_for_post(md_path: Path, raw_text: str) -> dict:
     return {"ok": True, "abstract_path": str(dest), "coin_status": coin_st, "words": words, "article_id": aid, "ticker_tag": t_tag, "weebo_cues": w_cues, "weebo_brief": w_brief}
 
 
+def build_csuite_prompt(md_path: Path) -> dict:
+    """Strip code fences and build the Buttoned-Up C-Suite / IETF Specification prompt."""
+    path = Path(md_path).expanduser().resolve()
+    raw = path.read_text(encoding="utf-8", errors="replace")
+    parts = raw.split("---", 2) if raw.startswith("---") else []
+    fm_block, body = (parts[1], parts[2]) if len(parts) >= 3 else ("", raw)
+    aid = common.read_article_id(path) or 0
+    title = _read_header_and_preview(path)["meta"].get("title") or path.stem
+    lean_body, fences_stripped = articleizer.strip_fences(_RAW_LIQUID_RE.sub("", body).strip())
+    _, pillars = score_pillars(title, f"{fm_block}\n{lean_body[:4000]}")
+    pillar_csv = ", ".join(pillars) if pillars else "GENERAL"
+    prompt = (
+        "You are writing a BUTTONED-UP EXECUTIVE & ARCHITECTURAL BRIEF ('Just the facts, ma'am')\n"
+        "for C-Suite decision-makers, staff engineers, and standards-focused domain projections\n"
+        "(MikeLev.in [View 3], SunPug.io [View 2], and RFC9110.org / RFC9111.io [View 1]).\n\n"
+        f"SOURCE ARTICLE: #{aid} — {title}\nDETECTED PILLARS: {pillar_csv}\n\n"
+        "STRICT C-SUITE SPECIFICATION CONTRACT (ENCLOSE ENTIRE REPLY IN ONE ```markdown FENCE):\n"
+        f"- Length: strictly {CSUITE_MIN_WORDS}–{CSUITE_MAX_WORDS} words of crisp prose and compact bullets.\n"
+        "- ZERO persona theater or insider leakage: NO Socratic dialogue (`**Me**:`, `**Gemini**:`),\n"
+        "  NO `Norma Centroid` or `Shipmunk`, NO `[[[weebo:...]]]` cues, NO internal filenames\n"
+        "  (`foo_files.py`, `trimnoir`, `apply.py`), and ZERO `mikelev.in` links in body prose\n"
+        "  (this brief projects standalone onto RFC9110.org, RFC9111.io, and SunPug.io).\n"
+        f"- Start with YAML frontmatter: `title: \"<Sharp Executive Title>\"`, `article_id: {aid}`,\n"
+        f"  `edition: csuite`, `pillars: [{pillar_csv}]`, `summary: \"<1-sentence stake & proof>\"`, `layout: post`.\n"
+        "- Use ONLY these four `## ` sections in order:\n"
+        "  1. `## Executive Summary` (market/protocol stakes and cost or risk delta in 2–3 sentences)\n"
+        "  2. `## Architecture & Protocol Mechanics` (how the HTTP/CDN/Nix/SQLite mechanism works)\n"
+        "  3. `## Verifiable Wire Audit` (concrete `curl` header check or empirical measurement from the seed)\n"
+        "  4. `## Decision Criteria` (3–4 bullet action items for engineering and budget leaders)\n\n"
+        f"--- SOURCE ARTICLE (CODE FENCES CONDENSED) ---\n{lean_body}\n--- END SOURCE ARTICLE ---\n"
+    )
+    return {"article_id": aid, "title": title, "edition": "csuite", "pillars": pillars, "fences_stripped": fences_stripped, "brief_path": str(brief_path_for_post(path)), "prompt": prompt}
+
+
+def save_brief_for_post(md_path: Path, raw_text: str) -> dict:
+    """Validate Buttoned-Up C-Suite brief, write `_posts/_briefs/<name>`, and stamp `csuite_brief: true`."""
+    path = Path(md_path).expanduser().resolve()
+    text = (raw_text or "").replace("\r\n", "\n").strip()
+    m_fence = re.match(r"^(`{3,})[a-zA-Z0-9_-]*\n([\s\S]*?)\n\1\s*$", text) or re.search(r"(`{3,})[a-zA-Z0-9_-]*\n(---\n[\s\S]*?)\n\1", text)
+    if m_fence:
+        text = m_fence.group(2).strip()
+    has_fm = text.startswith("---\n") and "\n---\n" in text[4:]
+    body_only = text.split("\n---\n", 1)[1] if has_fm else text
+    words = len(re.findall(r"\b\w+\b", body_only))
+    leak = _CSUITE_FORBIDDEN_RE.search(body_only)
+    errs = [m for m, bad in (("missing YAML frontmatter", not has_fm), ("missing `## Executive Summary`", "## Executive Summary" not in body_only), (f"word count {words} outside {CSUITE_MIN_WORDS}–{CSUITE_MAX_WORDS}", not (CSUITE_MIN_WORDS <= words <= CSUITE_MAX_WORDS)), (f"forbidden persona/upstream token {leak.group(0)!r}" if leak else "", leak is not None)) if bad]
+    if errs:
+        return {"ok": False, "error": "; ".join(errs)}
+    dest = brief_path_for_post(path)
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    dest.write_text(text.rstrip("\n") + "\n", encoding="utf-8")
+    aid = common.read_article_id(path)
+    if aid:
+        common.stamp_frontmatter_value(dest, common.ARTICLE_ID_KEY, str(aid), preserve_mtime=False)
+    common.stamp_frontmatter_value(dest, "edition", "csuite", preserve_mtime=False)
+    st = common.stamp_frontmatter_value(path, "csuite_brief", "true", preserve_mtime=True)
+    return {"ok": True, "brief_path": str(dest), "brief_status": st, "words": words, "article_id": aid}
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Norma Centroid Newest-First Storytime Backfill & Plunger.")
     common.add_standard_arguments(parser)
@@ -411,12 +483,19 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--copy", action="store_true", help="Copy the assembled extraction prompt to the clipboard.")
     parser.add_argument("--save-clipboard", action="store_true", help="Validate & save Socratic abstract from clipboard into `_posts/_abstracts/` + stamp coin.")
     parser.add_argument("--weebo", action="store_true", help="Inspect Weebo cues, search brief, & local enrollment for a saved Storytime abstract.")
+    parser.add_argument("--csuite", action="store_true", help="Build or list Buttoned-Up C-Suite Executive Briefs (`_posts/_briefs/`).")
     parser.add_argument("--stamp-coin", action="store_true", help="Stamp `jukebox_coin: true` on -s <post>.")
-    parser.add_argument("extra", nargs="*", help="Optional subcommand (`weebo [#ID]`).")
+    parser.add_argument("extra", nargs="*", help="Optional subcommand (`weebo [#ID]` or `csuite [#ID|next]`).")
     args = parser.parse_args(argv)
     if args.extra and args.extra[0].lower() in ("weebo", "brief"):
         args.weebo = True
         if len(args.extra) > 1 and not args.slug:
+            args.slug = args.extra[1]
+    elif args.extra and args.extra[0].lower() == "csuite":
+        args.csuite = True
+        if len(args.extra) > 1 and args.extra[1].lower() in ("next", "best"):
+            args.best = True
+        elif len(args.extra) > 1 and not args.slug:
             args.slug = args.extra[1]
 
     posts_dir = common.get_target_path(args)
