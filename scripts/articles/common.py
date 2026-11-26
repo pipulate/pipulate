@@ -577,33 +577,32 @@ def get_broadcast_kit(target_key="1", slug_match=None):
         for idx_u, orig_u in enumerate(urls):
             defanged = defanged.replace(f"__URL_MASK_{idx_u}__", orig_u)
         return defanged
-    if tweet_match:
-        raw_tweet = tweet_match.group(1).strip()
-    else:
-        raw_tweet = f"{title}\n\n{canonical_url}"
-    yt_live_vanity = "https://www.youtube.com/MikeLevin/live"
-    url_token = "__CANONICAL_ARTICLE_URL__"
-    tweet_masked = raw_tweet.replace(canonical_url, url_token) if canonical_url else raw_tweet
-    tweet = _defang_prose_domains(tweet_masked).replace(url_token, canonical_url)
-    if canonical_url in tweet and f"{canonical_url}?" not in tweet:
-        tweet = tweet.replace(canonical_url, f"{canonical_url}?src=x")
-    if "youtube.com/MikeLevin/live" not in tweet and "youtube.com/@MikeLevin/live" not in tweet:
-        tagged_art_url = f"{canonical_url}?src=x" if f"{canonical_url}?src=x" in tweet else canonical_url
-        if tagged_art_url and tagged_art_url in tweet:
-            if f"Article: {tagged_art_url}" not in tweet and f"📖 {tagged_art_url}" not in tweet:
-                tweet = tweet.replace(
-                    tagged_art_url,
-                    f"📖 Article: {tagged_art_url}\n🔴 Live 24/7: {yt_live_vanity}",
-                    1,
-                )
-            else:
-                tweet = tweet.replace(
-                    tagged_art_url,
-                    f"{tagged_art_url}\n🔴 Live 24/7: {yt_live_vanity}",
-                    1,
-                )
-        else:
-            tweet = f"{tweet}\n📖 Article: {canonical_url}?src=x\n🔴 Live 24/7: {yt_live_vanity}"
+    art_id = read_article_id(post_path)
+    playable_ids = _get_playable_story_ids(target_key) if art_id else []
+    live_door_base = f"{base_url}/live"
+    live_x_cue = f"chat {art_id}, MENU, or 911" if (art_id and art_id in playable_ids) else "chat MENU or 911"
+    raw_tweet = tweet_match.group(1).strip() if tweet_match else (meta_desc or imprint or title)
+    raw_tweet_tags = " ".join(dict.fromkeys(_HASHTAG_RE.findall(raw_tweet)))
+    hook_lines = []
+    for raw_ln in raw_tweet.splitlines():
+        s_ln = raw_ln.strip()
+        if not s_ln or s_ln.startswith(("📖", "🔴", "Article:", "Live 24/7:")):
+            continue
+        no_tags = re.sub(r"(?:^|\s)#(?=[A-Za-z0-9_]*[A-Za-z])[A-Za-z0-9_]+", "", s_ln)
+        no_urls = re.sub(r"https?://\S+", "", no_tags).strip()
+        cleaned_ln = re.sub(
+            r"\s*(?:📖\s*)?(?:Full\s+)?(?:Article|Post|Read\s+more)\s*:?\s*$",
+            "",
+            no_urls,
+            flags=re.IGNORECASE,
+        ).strip()
+        if cleaned_ln:
+            hook_lines.append(cleaned_ln)
+    tweet_hook = _defang_prose_domains(" ".join(hook_lines).strip() or _strip_inline_markdown(title))
+    tweet_parts = [tweet_hook, f"🔴 Live 24/7 ({live_x_cue}): {live_door_base}?src=x"]
+    if raw_tweet_tags:
+        tweet_parts.append(raw_tweet_tags)
+    tweet = "\n".join(tweet_parts)
     slug = re.sub(r"^\d{4}-\d{2}-\d{2}-", "", post_path.stem)
     hero_match = re.search(
         r"###\s*🎨\s*Hero Banner Image Prompt\s*\n```[a-zA-Z0-9]*\n(.*?)\n```",
@@ -688,12 +687,11 @@ def get_broadcast_kit(target_key="1", slug_match=None):
         li_parts.extend(["", li_lead])
     if li_imprint and li_meta and li_imprint != li_meta:
         li_parts.extend(["", li_imprint])
+    li_chat_cue = f"type {art_id}, MENU, RESTART, or 911 in chat" if (art_id and art_id in playable_ids) else "type MENU, RESTART, or 911 in chat"
     li_parts.extend([
         "",
-        f"📖 Full article & code receipts: {canonical_url}?src=linkedin",
+        f"🔴 Watch/Listen 24/7 on Honeybot Storytime ({li_chat_cue}): {live_door_base}?src=linkedin",
         "🚲 Inspect the self-replicating Nix Flake workbench: curl -fsSL https://sunpug.io | less",
-        f"🧪 Test RFC 9110 in your terminal: curl -sI -H \"Accept: text/markdown\" {canonical_url}?src=rfc9110",
-        f"🔴 Watch/Listen 24/7 on Honeybot Storytime: {yt_live_vanity}",
         f"🟣 Join the Founding 1,000 on Discord: {DEFAULT_DISCORD_INVITE_URL}",
         f"🔭 Enterprise AI-Readiness & Edge Telemetry (RFC 9110 / ADNS / O2O): {base_url}/?src=linkedin#consulting",
     ])
@@ -704,7 +702,6 @@ def get_broadcast_kit(target_key="1", slug_match=None):
     fb_imprint = li_imprint
     fb_meta = li_meta
     fb_lead = fb_meta or fb_imprint
-    yt_live_fb = "youtube\x2e\u2060com/MikeLevin/live"
     discord_fb = f"discord\x2e\u2060gg/{DISCORD_INVITE_CODE}"
     fb_parts = [f"{fb_title}"]
     if fb_lead:
@@ -714,21 +711,19 @@ def get_broadcast_kit(target_key="1", slug_match=None):
     fb_parts.extend([
         "",
         f"📖 Full article & code receipts: {canonical_url}?src=fb",
+        f"🔴 Watch/Listen 24/7 on Honeybot Storytime: {live_door_base}?src=fb",
         "🚲 Inspect the 60-second Nix Flake workbench: curl -fsSL https://sunpug.io | less",
-        f"🔴 Watch/Listen 24/7 on Honeybot Storytime: {yt_live_fb}",
         f"🟣 Join the Founding 1,000 on Discord: {discord_fb}",
     ])
     if tags:
         fb_parts.extend(["", tags])
     fb_post = "\n".join(fb_parts).strip()
-    art_id = read_article_id(post_path)
-    playable_ids = _get_playable_story_ids(target_key) if art_id else []
     jb_cue = f"`{art_id}`, `RESTART`, `MENU`, or `911`" if (art_id and art_id in playable_ids) else "`RESTART`, `MENU`, any `Story #`, or `911`"
     disc_head = f"## 📖 {clean_title}" + (f" (`#{art_id}`)" if art_id else "")
     disc_lead = yt_meta or yt_imprint
     disc_tail_lines = [
         f"🔗 **Read full article & receipts:** {canonical_url}?src=discord",
-        f"🔴 **24/7 Live Fishtank (type {jb_cue} in chat):** <{yt_live_vanity}>",
+        f"🔴 **24/7 Live Fishtank (type {jb_cue} in chat):** <{live_door_base}?src=discord>",
         "📦 **2nd Brain AI Archive:** <https://mikelev.in/brain.zip>",
         "🚲 **60s Nix Flake Workbench (`curl -fsSL https://sunpug.io | less`):** <https://sunpug.io>",
         f"🧪 **Test RFC 9110 Markdown:** `curl -sI -H \"Accept: text/markdown\" {canonical_url}?src=rfc9110`",
