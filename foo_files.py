@@ -2102,7 +2102,7 @@ apply.py
 # scripts/articles/execute_massive_prompt.py  # [491 tokens | 2,209 bytes]
 # scripts/articles/find_duplicates.py  # [1,879 tokens | 7,993 bytes]
 # scripts/articles/generate_semrush_candidates.py  # [658 tokens | 2,747 bytes]
-# scripts/articles/good_reads_sieve.py  # [1,688 tokens | 6,238 bytes]
+# scripts/articles/good_reads_sieve.py  # [5,719 tokens | 18,823 bytes]
 # scripts/articles/list_models.py  # [102 tokens | 391 bytes]
 # scripts/articles/other/make_article.py  # [1,518 tokens | 6,587 bytes]
 # scripts/articles/scrub_tags.py  # [1,055 tokens | 4,082 bytes]
