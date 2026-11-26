@@ -46,7 +46,7 @@ def article_url(item: dict) -> str:
     return f"/{slug}/"
 
 
-def build_nav(metadata: list, per_page: int = 10) -> dict:
+def build_nav(metadata: list, per_page: int = 10, posts_dir: Path | None = None) -> dict:
     """metadata is newest-first; neighbours are taken from that single ordering."""
     nav = {}
     total = len(metadata)
@@ -67,12 +67,23 @@ def build_nav(metadata: list, per_page: int = 10) -> dict:
         if jb_coin is None and item.get("path"):
             jb_coin = common.read_frontmatter_bool(item["path"], "jukebox_coin")
         entry["jukebox_coin"] = bool(jb_coin)
+        url_key = article_url(item)
+        fname = Path(item["filename"]).name if item.get("filename") else ""
+        base_posts = Path(posts_dir) if posts_dir else (Path(item["path"]).parent if item.get("path") else None)
+        has_norma = bool(fname and base_posts and (base_posts / "_abstracts" / fname).is_file())
+        has_csuite = bool(fname and base_posts and (base_posts / "_briefs" / fname).is_file())
+        entry["has_norma"] = has_norma
+        entry["has_csuite"] = has_csuite
+        if has_norma:
+            entry["norma_url"] = f"{url_key}norma/"
+        if has_csuite:
+            entry["csuite_url"] = f"{url_key}brief/"
         cur_pg = (i // per_page) + 1
         entry["rank"] = i + 1
         entry["archive_page"] = cur_pg
         entry["older10_url"] = f"/page/{cur_pg + 1}/" if cur_pg < total_pages else ""
         entry["newer10_url"] = ("/" if cur_pg <= 2 else f"/page/{cur_pg - 1}/") if i > 0 else ""
-        nav[article_url(item)] = entry
+        nav[url_key] = entry
     return nav
 
 
@@ -112,7 +123,7 @@ def main():
             print(f"   - {name}")
         if len(unlinked) > 5:
             print(f"   ... and {len(unlinked) - 5} more")
-    nav = build_nav(metadata)
+    nav = build_nav(metadata, posts_dir=posts_dir)
     if len(nav) != len(metadata):
         print(f"⚠️ URL collision: {len(metadata)} posts collapsed to {len(nav)} nav keys.")
 
@@ -122,6 +133,8 @@ def main():
         "total": len(metadata),
         "per_page": per_page,
         "total_pages": total_pages,
+        "norma_count": sum(1 for v in nav.values() if v.get("has_norma")),
+        "csuite_count": sum(1 for v in nav.values() if v.get("has_csuite")),
         "newest_url": article_url(metadata[0]),
         "newest_title": metadata[0].get("title", ""),
         "newest_id": metadata[0].get("article_id") or len(metadata),

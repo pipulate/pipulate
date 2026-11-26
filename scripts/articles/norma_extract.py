@@ -541,30 +541,35 @@ def main(argv: list[str] | None = None) -> int:
         if not post_p or not post_p.is_file():
             print(f"❌ No post matched {slug_q!r}.")
             return 1
-        res = save_abstract_for_post(post_p, clip_raw)
+        is_cs = args.csuite or bool(re.search(r"(?m)^edition\s*:\s*['\"]?csuite['\"]?\s*$", clip_raw or ""))
+        res = save_brief_for_post(post_p, clip_raw) if is_cs else save_abstract_for_post(post_p, clip_raw)
         if not res["ok"]:
-            print(f"❌ Refused abstract for {post_p.name}: {res['error']}")
+            print(f"❌ Refused {'C-Suite brief' if is_cs else 'abstract'} for {post_p.name}: {res['error']}")
             return 1
-        print(f"🎭 Saved 3-voice Socratic abstract ({res['words']} words, ticker_tag={res.get('ticker_tag')!r}, weebo_cues={len(res.get('weebo_cues', []))}) -> {res['abstract_path']} & [{res['coin_status']}] jukebox_coin on #{res['article_id']}!")
-        if res.get("weebo_brief"):
-            print(format_weebo_brief_report(res["weebo_brief"], res["article_id"]))
-        nxt = rank_candidates(posts_dir, limit=1, pillars_only=args.pillars)
+        if is_cs:
+            print(f"💼 Saved C-Suite Executive Brief ({res['words']} words) -> {res['brief_path']} & [{res['brief_status']}] csuite_brief on #{res['article_id']}!")
+        else:
+            print(f"🎭 Saved 3-voice Socratic abstract ({res['words']} words, ticker_tag={res.get('ticker_tag')!r}, weebo_cues={len(res.get('weebo_cues', []))}) -> {res['abstract_path']} & [{res['coin_status']}] jukebox_coin on #{res['article_id']}!")
+            if res.get("weebo_brief"):
+                print(format_weebo_brief_report(res["weebo_brief"], res["article_id"]))
+        nxt = rank_candidates(posts_dir, limit=1, pillars_only=args.pillars, csuite=is_cs)
         if nxt:
             print(f"⏭️  Next un-minted in queue: #{nxt[0]['article_id']} ({nxt[0]['date']}) — {nxt[0]['title']}")
         return 0
 
     if not args.slug and not args.best:
-        rows = rank_candidates(posts_dir, limit=args.limit, pillars_only=args.pillars)
+        rows = rank_candidates(posts_dir, limit=args.limit, pillars_only=args.pillars, csuite=args.csuite)
         mode_lbl = "3-Pillar Radar" if args.pillars else "Newest-First Backfill Queue"
-        print(f"🎯 Norma Centroid {mode_lbl} (Top {len(rows)} un-minted in {posts_dir}):")
+        ed_lbl, cs_flag = ("C-Suite Executive Brief", " --csuite") if args.csuite else ("Norma Centroid", "")
+        print(f"🎯 {ed_lbl} {mode_lbl} (Top {len(rows)} un-minted in {posts_dir}):")
         for idx, r in enumerate(rows, 1):
             p_tag = "+".join(r["pillars"]) or "GOOD_READ"
             print(f"  {idx:2d}. #{r['article_id']:<4d} [{r['date']} | {p_tag:<24s}] {r['title']}")
-            print(f"       ↳ Plunger: .venv/bin/python scripts/articles/norma_extract.py -s #{r['article_id']} --copy")
+            print(f"       ↳ Plunger: .venv/bin/python scripts/articles/norma_extract.py{cs_flag} -s #{r['article_id']} --copy")
         return 0
 
     if args.best and not args.slug:
-        top = rank_candidates(posts_dir, limit=1, pillars_only=args.pillars)
+        top = rank_candidates(posts_dir, limit=1, pillars_only=args.pillars, csuite=args.csuite)
         if not top:
             print("⚠️ No un-minted Storytime candidates found.")
             return 1
@@ -575,16 +580,17 @@ def main(argv: list[str] | None = None) -> int:
         print(f"❌ No post matched {args.slug!r}.")
         return 1
 
-    pkt = build_extraction_prompt(post_p)
+    pkt = build_csuite_prompt(post_p) if args.csuite else build_extraction_prompt(post_p)
     est_tok = int(len(pkt["prompt"]) / 3.5)
+    ed_name = "C-Suite Executive Brief" if args.csuite else "Norma Centroid"
     print(
-        f"🎰 Pinball Plunger Pulled: #{pkt['article_id']} {pkt['title']!r} | "
+        f"🎰 Pinball Plunger Pulled ({ed_name}): #{pkt['article_id']} {pkt['title']!r} | "
         f"pillars={pkt['pillars']} | fences_stripped={pkt['fences_stripped']} | "
         f"prompt={len(pkt['prompt']):,} chars (~{est_tok:,} tok)"
     )
     if args.copy:
         articleizer.clipboard_copy(pkt["prompt"])
-        print("📋 Norma Centroid extraction prompt copied to clipboard! Paste into Gemini in your browser.")
+        print(f"📋 {ed_name} extraction prompt copied to clipboard! Paste into Gemini in your browser.")
     else:
         print("💡 Add `--copy` to put this extraction prompt straight onto your clipboard.")
     return 0
