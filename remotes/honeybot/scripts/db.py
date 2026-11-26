@@ -649,7 +649,8 @@ class HoneyDB:
             conn.execute(sql_pirate, (date_str, ip_id, ua_id, path_id, dom_id_p, int(status)))
 
         # 7. Handle Normalized External Referrer Sidecar (Compound-Key Radar & Daily N/P Ledger)
-        if not is_pirate and 200 <= int(status) < 300 and not _STATIC_SUBRESOURCE_RE.search(path or ""):
+        _door_base = (path or "").split("?", 1)[0].rstrip("/")
+        if not is_pirate and (200 <= int(status) < 300 or (int(status) in (301, 302, 307, 308) and _door_base in ("/live", "/discord"))) and not _STATIC_SUBRESOURCE_RE.search(path or ""):
             norm_ref = normalize_external_referrer(referrer, path or "")
             if norm_ref is not None:
                 canon_ref, ref_host = norm_ref
@@ -1111,7 +1112,7 @@ class HoneyDB:
         conn, is_ref = self.get_conn(), event.startswith("ref:")
         ref_ap = event[4:] if is_ref else ""
         ring = 3 if (event == "curl:exec" or event.startswith("social:")) else (2 if (event in ("curl:airlock", "md:rfc9110") or event.startswith(("dl:", "yt_cmd:"))) else 1)
-        badge = "exec" if event == "curl:exec" else ("discord" if event == "social:discord" else ("out" if event.startswith("social:") else ("zip" if event.startswith("dl:") else ("airlock" if event == "curl:airlock" else ("md" if event == "md:rfc9110" else ("steer" if event.startswith("yt_cmd:") else ("chat" if event == "yt_chat" else "")))))))
+        badge = "exec" if event == "curl:exec" else ("discord" if event == "social:discord" else ("live" if event == "social:live" else ("out" if event.startswith("social:") else ("zip" if event.startswith("dl:") else ("airlock" if event == "curl:airlock" else ("md" if event == "md:rfc9110" else ("steer" if event.startswith("yt_cmd:") else ("chat" if event == "yt_chat" else ""))))))))
         row = conn.execute("SELECT entry_ref, first_dim, max_ring, steps, pages, flags FROM daily_quests WHERE day = ? AND actor_tag = ?", (d_str, atag)).fetchone()
         if row is None:
             conn.execute("INSERT INTO daily_quests (day, actor_tag, entry_ref, first_dim, last_dim, max_ring, steps, pages, flags, first_ts, last_ts) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (d_str, atag, ref_ap, dim, dim, ring, 0 if is_ref else 1, new_page, badge, eff_ts, eff_ts))
@@ -1167,13 +1168,26 @@ class HoneyDB:
         dom = (host or "mikelev.in").strip().lower().rstrip(".").removeprefix("www.") or "mikelev.in"
         raw_p, st, ua_s = str(path or "/"), int(status or 0), str(ua or "")
         clean_p, ua_low = raw_p.split("?", 1)[0], ua_s.lower()
+        door_p = clean_p.rstrip("/") or "/"
         if is_pirate or _PIRATE_TARGET_RE.search(clean_p):
             _rm("ids_pirate", "418" if st == 418 else f"{max(0, st) // 100}xx")
             return
-        if 200 <= st < 400 and (clean_p == "/discord" or clean_p.startswith("/go/")):
-            slug = "discord" if clean_p == "/discord" else (clean_p[4:].strip("/") or "root")[:40]
+        if 200 <= st < 400 and (door_p in ("/discord", "/live") or clean_p.startswith("/go/")):
+            if not self.is_likely_human_ua(ua_s):
+                return
+            slug = door_p.lstrip("/") if door_p in ("/discord", "/live") else (clean_p[4:].strip("/") or "root")[:40]
+            norm_ref = normalize_external_referrer(referrer, raw_p)
+            ap = extract_registered_domain(norm_ref[1]) if norm_ref is not None else ""
+            if ap:
+                _pulse("social" if ap in SOCIAL_PLATFORMS else "ref", f"ref:{ap}", f"{dom}{door_p}"[:110])
+            if ap in SOCIAL_PLATFORMS:
+                _rm("yt_referral_human" if ap == "youtube.com" else "social_in", dom if ap == "youtube.com" else ap)
+                self.record_daily_transition(f"ref:{ap}", f"social:{slug}", 1, date_str, commit=False)
+            else:
+                self.record_daily_transition(f"visit:{dom}", f"social:{slug}", 1, date_str, commit=False)
             _rm("social_out", slug)
-            self.record_daily_transition(f"visit:{dom}", f"social:{slug}", 1, date_str, commit=False)
+            if "paid=1" in raw_p:
+                _rm("paid_click", f"{ap or 'direct'}:{slug}"[:40])
             _pulse("web", f"social:{slug}", dom)
             return
         if not (200 <= st < 300):
@@ -1214,6 +1228,8 @@ class HoneyDB:
                 _pulse("social" if ap in SOCIAL_PLATFORMS else "ref", f"ref:{ap}", f"{dom}{clean_p}"[:110])
             if is_page:
                 _pulse("web", "visit:human", f"{dom}{clean_p}"[:110])
+            if "paid=1" in raw_p:
+                _rm("paid_click", f"{ap or 'direct'}:page"[:40])
             if ap in SOCIAL_PLATFORMS:
                 _rm("yt_referral_human" if ap == "youtube.com" else "social_in", dom if ap == "youtube.com" else ap)
                 self.record_daily_transition(f"ref:{ap}", f"visit:{dom}", 1, date_str, commit=False)
@@ -1228,7 +1244,7 @@ class HoneyDB:
             queries = (
                 "INSERT OR REPLACE INTO daily_metrics (metric, dim, day, count, unique_ips) SELECT 'ids_pirate', CASE WHEN status = 418 THEN '418' ELSE CAST(status / 100 AS TEXT) || 'xx' END, date, SUM(count), COUNT(DISTINCT ip_id) FROM pirate_logs GROUP BY 1, 2, 3",
                 "INSERT OR REPLACE INTO daily_metrics (metric, dim, day, count, unique_ips) SELECT 'md_negotiated', 'mikelev.in', t.date, SUM(t.count), COUNT(DISTINCT t.ip_id) FROM telemetry t JOIN ips i ON t.ip_id = i.id WHERE t.served_md = 1 AND i.value NOT LIKE '127.%' AND i.value NOT LIKE '10.%' AND i.value NOT LIKE '192.168.%' GROUP BY t.date",
-                "INSERT OR REPLACE INTO daily_metrics (metric, dim, day, count, unique_ips) SELECT CASE WHEN p.value IN ('/brain.zip', '/book.zip') THEN 'archive_dl' ELSE 'social_out' END, CASE WHEN p.value IN ('/brain.zip', '/book.zip') THEN ltrim(p.value, '/') WHEN p.value = '/discord' THEN 'discord' ELSE substr(p.value, 5) END, l.date, SUM(l.count), COUNT(DISTINCT l.ip_id) FROM daily_logs l JOIN paths p ON l.path_id = p.id JOIN ips i ON l.ip_id = i.id WHERE ((p.value IN ('/brain.zip', '/book.zip') AND l.status BETWEEN 200 AND 299) OR ((p.value = '/discord' OR p.value LIKE '/go/%') AND l.status BETWEEN 200 AND 399)) AND i.value NOT LIKE '127.%' AND i.value NOT LIKE '10.%' AND i.value NOT LIKE '192.168.%' GROUP BY 1, 2, 3",
+                "INSERT OR REPLACE INTO daily_metrics (metric, dim, day, count, unique_ips) SELECT CASE WHEN p.value IN ('/brain.zip', '/book.zip') THEN 'archive_dl' ELSE 'social_out' END, CASE WHEN p.value IN ('/brain.zip', '/book.zip') THEN ltrim(p.value, '/') WHEN p.value IN ('/discord', '/discord/') OR p.value LIKE '/discord?%' THEN 'discord' WHEN p.value IN ('/live', '/live/') OR p.value LIKE '/live?%' THEN 'live' ELSE substr(p.value, 5) END, l.date, SUM(l.count), COUNT(DISTINCT l.ip_id) FROM daily_logs l JOIN paths p ON l.path_id = p.id JOIN ips i ON l.ip_id = i.id WHERE ((p.value IN ('/brain.zip', '/book.zip') AND l.status BETWEEN 200 AND 299) OR ((p.value IN ('/discord', '/discord/', '/live', '/live/') OR p.value LIKE '/discord?%' OR p.value LIKE '/live?%' OR p.value LIKE '/go/%') AND l.status BETWEEN 200 AND 399)) AND i.value NOT LIKE '127.%' AND i.value NOT LIKE '10.%' AND i.value NOT LIKE '192.168.%' GROUP BY 1, 2, 3",
                 f"INSERT OR REPLACE INTO daily_metrics (metric, dim, day, count, unique_ips) SELECT 'curl_airlock', d.value, ddl.date, SUM(ddl.count), COUNT(DISTINCT ddl.ua_id) FROM domain_daily_logs ddl JOIN domains d ON ddl.domain_id = d.id JOIN paths p ON ddl.path_id = p.id JOIN user_agents ua ON ddl.ua_id = ua.id WHERE ddl.status BETWEEN 200 AND 299 AND d.value IN ({','.join(repr(s) for s in sorted(INTERNAL_DOMAINS))}) AND p.value IN ('/', '/install.sh') AND (ua.value LIKE 'curl/%' OR ua.value LIKE 'Wget/%') GROUP BY d.value, ddl.date",
                 f"INSERT OR REPLACE INTO daily_metrics (metric, dim, day, count, unique_ips) SELECT 'curl_exec', d.value, ddl.date, SUM(ddl.count), COUNT(DISTINCT ddl.ua_id) FROM domain_daily_logs ddl JOIN domains d ON ddl.domain_id = d.id JOIN paths p ON ddl.path_id = p.id JOIN user_agents ua ON ddl.ua_id = ua.id WHERE ddl.status BETWEEN 200 AND 299 AND d.value IN ({','.join(repr(s) for s in sorted(INTERNAL_DOMAINS))}) AND (ua.value LIKE 'sunpug-installer/%' OR (p.value = '/key.rot' AND (ua.value LIKE 'curl/%' OR ua.value LIKE 'Wget/%'))) GROUP BY d.value, ddl.date",
                 f"INSERT OR REPLACE INTO daily_metrics (metric, dim, day, count, unique_ips) SELECT CASE WHEN rdl.ref_apex = 'youtube.com' THEN 'yt_referral_human' ELSE 'social_in' END, CASE WHEN rdl.ref_apex = 'youtube.com' THEN d.value ELSE rdl.ref_apex END, rdl.date, SUM(rdl.human_count), SUM(MIN(rdl.human_count, rdl.unique_ips)) FROM referrer_daily_logs rdl JOIN domains d ON rdl.domain_id = d.id WHERE rdl.human_count > 0 AND rdl.ref_apex IN ({','.join(repr(s) for s in sorted(SOCIAL_PLATFORMS))}) GROUP BY 1, 2, 3",

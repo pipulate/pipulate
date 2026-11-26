@@ -889,6 +889,19 @@
       locations."= /discord/" = {
         return = "302 https://" + "discord" + ".gg/YVsBnxuHBt";
       };
+      # THE YOUTUBE LIVE DOOR: non-cached 302 wire sensor (preserves ?src= & paid= in access.log)
+      locations."= /live" = {
+        extraConfig = ''
+          add_header Cache-Control "no-store, no-cache, must-revalidate" always;
+          return 302 https://www.youtube.com/MikeLevin/live;
+        '';
+      };
+      locations."= /live/" = {
+        extraConfig = ''
+          add_header Cache-Control "no-store, no-cache, must-revalidate" always;
+          return 302 https://www.youtube.com/MikeLevin/live;
+        '';
+      };
     };
   };
 
