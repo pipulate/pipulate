@@ -230,7 +230,83 @@ def sync_good_read_editions(target_key: str, target_path: Path, verbose: bool = 
         subprocess.run(["git", "-C", str(repo_root), "add", "--", "editions"], capture_output=True, text=True, check=False)
     if verbose or counts["written"] or counts["removed"]:
         print(f"📚 Good-Read Editions synced ({repo_root.name}): {counts['norma']} Norma, {counts['csuite']} C-Suite ({counts['written']} written, {counts['removed']} pruned).")
+    counts["downstream"] = project_downstream_doors(posts_dir, verbose=verbose)
     return counts
+
+
+def _write_bimodal(out_dir: Path, title: str, desc: str, date_s: str, canon: str, crumb: str, sw_html: str, sw_md: str, md_body: str) -> None:
+    out_dir.mkdir(parents=True, exist_ok=True)
+    md_doc = f"# {title}\n\n*{date_s}*" + (f" · {sw_md}" if sw_md else "") + f"\n\n{md_body}\n"
+    (out_dir / "index.md").write_text(md_doc, encoding="utf-8")
+    body_h = f"<p style=\"color:#475569;font-size:0.9em;\">{html.escape(date_s)}</p>\n" + _md_to_html(md_body)
+    (out_dir / "index.html").write_text(_wrap_door_html(title, desc, canon, crumb, sw_html, body_h), encoding="utf-8")
+
+
+def _resolve_brief_pillars(p_meta: dict, e_meta: dict, title: str, body: str) -> set[str]:
+    import norma_extract
+    raw_p = e_meta.get("pillars") if "pillars" in (e_meta or {}) else (p_meta or {}).get("pillars")
+    if raw_p is not None:
+        items = raw_p if isinstance(raw_p, list) else re.split(r"[,|\s]+", str(raw_p).strip("[]"))
+        return {str(x).strip().upper() for x in items if str(x).strip()} & {"RFC_9110", "RFC_9111", "SUNPUG"}
+    _, matched = norma_extract.score_pillars(title, body)
+    return set(matched)
+
+
+def project_downstream_doors(posts_dir: Path, stage_root: Path = SIEVE_STAGE_DIR, verbose: bool = False) -> dict:
+    pdir, sroot = Path(posts_dir).expanduser().resolve(), Path(stage_root).expanduser().resolve()
+    for sub in (sroot / "sunpug.io" / "stories", sroot / "rfc9110.org" / "briefs", sroot / "rfc9111.io" / "briefs"):
+        if sub.exists():
+            shutil.rmtree(sub)
+    sp_rows, rfc_rows = [], {"rfc9110.org": [], "rfc9111.io": []}
+    candidates = []
+    for md_p in pdir.glob("*.md"):
+        if common._DATED_POST_RE.match(md_p.name) and ((pdir / "_abstracts" / md_p.name).is_file() or (pdir / "_briefs" / md_p.name).is_file()):
+            pm, _ = _split_frontmatter(md_p.read_text(encoding="utf-8", errors="replace"))
+            candidates.append(((md_p.name[:10], int(pm.get("sort_order") or 0), md_p.stem), md_p, pm))
+    for _, md_p, p_meta in sorted(candidates, key=lambda r: r[0], reverse=True):
+        slug, date_s = md_p.stem[11:], md_p.name[:10]
+        abs_p, brf_p = pdir / "_abstracts" / md_p.name, pdir / "_briefs" / md_p.name
+        has_n, has_b = abs_p.is_file(), brf_p.is_file()
+        n_meta, n_raw = _split_frontmatter(abs_p.read_text(encoding="utf-8", errors="replace")) if has_n else ({}, "")
+        b_meta, b_raw = _split_frontmatter(brf_p.read_text(encoding="utf-8", errors="replace")) if has_b else ({}, "")
+        if str(p_meta.get("sunpug", "true")).lower() not in ("false", "0", "no"):
+            sp_base = f"https://sunpug.io/stories/{slug}/"
+            crumb = '<a href="/">← Sun Pug</a> &middot; <a href="/stories/">Good-Reads</a> &middot; <a href="index.md">Raw Markdown (RFC 9110)</a>'
+            sw_n = f'<div class="sieve-bar"><span>Choose Depth:</span><span class="pill-on">🎭 Socratic Good-Read</span><a class="pill-off" href="/stories/{slug}/brief/">💼 Executive Brief</a></div>' if (has_n and has_b) else ""
+            sw_b = f'<div class="sieve-bar"><span>Choose Depth:</span><a class="pill-off" href="/stories/{slug}/">🎭 Socratic Good-Read</a><span class="pill-on">💼 Executive Brief</span></div>' if (has_n and has_b) else ""
+            if has_n:
+                nt = _scrub_upstream(str(n_meta.get("title") or p_meta.get("title") or slug), sp_base, "SunPug.io")
+                nd = _scrub_upstream(str(p_meta.get("meta_description") or p_meta.get("description") or ""), sp_base, "SunPug.io")
+                _write_bimodal(sroot / "sunpug.io" / "stories" / slug, nt, nd, date_s, sp_base, crumb, sw_n, f"[Executive Brief](/stories/{slug}/brief/)" if has_b else "", _scrub_upstream(n_raw, sp_base, "SunPug.io"))
+            if has_b:
+                bt = _scrub_upstream(str(b_meta.get("title") or p_meta.get("title") or slug), sp_base, "SunPug.io")
+                bd = _scrub_upstream(str(b_meta.get("summary") or p_meta.get("meta_description") or ""), sp_base, "SunPug.io")
+                b_dest = (sroot / "sunpug.io" / "stories" / slug / "brief") if has_n else (sroot / "sunpug.io" / "stories" / slug)
+                _write_bimodal(b_dest, bt, bd, date_s, f"{sp_base}brief/" if has_n else sp_base, crumb, sw_b, f"[Socratic Good-Read](/stories/{slug}/)" if has_n else "", _scrub_upstream(b_raw, sp_base, "SunPug.io"))
+            lead_t = _scrub_upstream(str((n_meta if has_n else b_meta).get("title") or p_meta.get("title") or slug), sp_base, "SunPug.io")
+            badges = " · ".join(x for x, ok in (("🎭 Socratic", has_n), ("💼 Brief", has_b)) if ok)
+            sp_rows.append(f"- **{date_s}** — [{lead_t}](/stories/{slug}/) ({badges})")
+        if has_b:
+            bt_raw = str(b_meta.get("title") or p_meta.get("title") or slug).strip()
+            bd_raw = str(b_meta.get("summary") or p_meta.get("meta_description") or "").strip()
+            pillars = _resolve_brief_pillars(p_meta, b_meta, bt_raw, b_raw)
+            for pk, dom, lbl in (("RFC_9110", "rfc9110.org", "RFC 9110"), ("RFC_9111", "rfc9111.io", "RFC 9111")):
+                if pk in pillars:
+                    rc_url = f"https://{dom}/briefs/{slug}/"
+                    bt, bd = _scrub_upstream(bt_raw, rc_url, lbl), _scrub_upstream(bd_raw, rc_url, lbl)
+                    rc_crumb = f'<a href="/">← {lbl}</a> &middot; <a href="/briefs/">Executive Briefs</a> &middot; <a href="index.md">Raw Markdown (RFC 9110)</a>'
+                    _write_bimodal(sroot / dom / "briefs" / slug, bt, bd, date_s, rc_url, rc_crumb, "", "", _scrub_upstream(b_raw, rc_url, lbl))
+                    rfc_rows[dom].append(f"- **{date_s}** — [{bt}](/briefs/{slug}/)" + (f" — {bd}" if bd else ""))
+    sp_idx = "\n".join(sp_rows) or "- *Good-Read episodes populate automatically from `_posts/_abstracts/`.*"
+    _write_bimodal(sroot / "sunpug.io" / "stories", "Sun Pug Good-Reads: Socratic & Executive Editions", "Plain-English Socratic parables and architectural briefs on reproducible AI workflows.", "Updated Live", "https://sunpug.io/stories/", '<a href="/">← Sun Pug Home</a> &middot; <a href="index.md">Raw Markdown (RFC 9110)</a>', "", "", sp_idx)
+    for dom, lbl in (("rfc9110.org", "RFC 9110 Executive Briefs"), ("rfc9111.io", "RFC 9111 Executive Briefs")):
+        r_idx = "\n".join(rfc_rows[dom]) or "- *Executive briefs populate automatically when `_posts/_briefs/` entries match this RFC pillar.*"
+        _write_bimodal(sroot / dom / "briefs", lbl, f"Buttoned-up architectural specifications and wire audits for {dom}.", "Updated Live", f"https://{dom}/briefs/", f'<a href="/">← {dom} Home</a> &middot; <a href="index.md">Raw Markdown (RFC 9110)</a>', "", "", r_idx)
+    leaks = sum(1 for f in sroot.rglob("*") if f.is_file() and re.search(r"mikelev\.in", f.read_text(encoding="utf-8"), re.IGNORECASE))
+    res = {"sunpug": len(sp_rows), "rfc9110": len(rfc_rows["rfc9110.org"]), "rfc9111": len(rfc_rows["rfc9111.io"]), "upstream_leaks": leaks, "stage_root": str(sroot)}
+    if verbose:
+        print(f"🌐 Downstream Sieve staged ({sroot}): SunPug={res['sunpug']} [2], RFC9110={res['rfc9110']} [1], RFC9111={res['rfc9111']} [1], upstream_leaks={leaks}.")
+    return res
 
 
 def main() -> int:
