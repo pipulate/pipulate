@@ -711,6 +711,42 @@ _SOCIAL_REF_DYES = frozenset({
     "src=youtube", "src=linkedin", "src=fb", "src=facebook",
     "src=x", "src=twitter", "src=discord",
 })
+_ALLOWED_TRACKING_DYES = _SOCIAL_REF_DYES | frozenset({"src=a+href", "src=llms.txt", "src=link+rel", "src=rfc9110"})
+_PAID_PARAM_KEYS = frozenset({"paid", "boost", "boosted", "ad", "ads", "promoted"})
+_PAID_SRC_SUFFIXES = ("_paid", "-paid", "_boost", "-boost", "_ad", "-ad", "_ads", "-ads", "_promoted", "-promoted")
+_SRC_DYE_ALIASES = {"li": "linkedin", "yt": "youtube"}
+
+
+def parse_tracking_dyes(raw_path: str) -> tuple[str, str, bool]:
+    """Return (clean_path, src_dye, is_paid) preserving allowlisted ?src= & paid=1 while stripping ad click IDs."""
+    p = str(raw_path or "")
+    if "?" not in p:
+        return p, "", False
+    base_path, qs = p.split("?", 1)
+    src_dye, is_paid = "", False
+    for part in qs.split("&"):
+        if not part:
+            continue
+        k, eq, v = part.partition("=")
+        kl, vl = k.strip().lower(), v.strip().lower()
+        if kl == "src" and vl:
+            for sfx in _PAID_SRC_SUFFIXES:
+                if vl.endswith(sfx) and len(vl) > len(sfx):
+                    vl, is_paid = vl[: -len(sfx)], True
+                    break
+            cand = f"src={_SRC_DYE_ALIASES.get(vl, vl)}"
+            if cand in _ALLOWED_TRACKING_DYES:
+                src_dye = cand
+        elif kl in _PAID_PARAM_KEYS and (not eq or vl not in ("0", "false", "no", "off")):
+            is_paid = True
+        elif kl == "utm_medium" and vl in ("paid", "cpc", "ppc", "paid_social", "paidsocial", "boost", "ad", "ads"):
+            is_paid = True
+        elif kl == "utm_source" and vl and not src_dye:
+            cand = f"src={_SRC_DYE_ALIASES.get(vl, vl)}"
+            if cand in _ALLOWED_TRACKING_DYES:
+                src_dye = cand
+    kept = ([src_dye] if src_dye else []) + (["paid=1"] if is_paid and (src_dye or base_path.rstrip("/") in ("/live", "/discord")) else [])
+    return (f"{base_path}?{'&'.join(kept)}" if kept else base_path), src_dye, is_paid
 
 try:
     from db import db  # Import our new database singleton
@@ -1471,15 +1507,20 @@ class SonarApp(App):
         if is_pirate or _STATIC_SUBRESOURCE_RE.search(clean_path or ""):
             return None, None
         st = int(status_int or 0)
+        _, src_dye, is_paid = parse_tracking_dyes(clean_path or "")
         base_p = (clean_path or "").split("?", 1)[0]
+        door_p = base_p.rstrip("/") or "/"
         ref_src = None
         if db and db.is_likely_human_ua(ua_str):
-            if base_p in ("/discord", "/discord/") and (st == 302 or 200 <= st < 300):
-                ref_src = "discord_invite"
-            elif "?" in (clean_path or "") and 200 <= st < 300 and str(md_flag) != "1":
-                qs_part = clean_path.split("?", 1)[1].split("&", 1)[0]
-                if qs_part in _SOCIAL_REF_DYES:
-                    ref_src = qs_part
+            if door_p == "/live" and (st == 302 or 200 <= st < 400):
+                ref_src = src_dye if src_dye in _SOCIAL_REF_DYES else "live_invite"
+            elif door_p == "/discord" and (st == 302 or 200 <= st < 400):
+                ref_src = src_dye if src_dye in _SOCIAL_REF_DYES else "discord_invite"
+            elif 200 <= st < 300 and str(md_flag) != "1":
+                if src_dye in _SOCIAL_REF_DYES:
+                    ref_src = src_dye
+                elif is_paid:
+                    ref_src = "paid_visit"
         rag_src, _ = self.detect_live_rag_agent(ua_str)
         valid_rag = rag_src if (rag_src and 200 <= st < 300 and base_p not in ("/robots.txt", "/favicon.ico")) else None
         term_src, _ = self.detect_terminal_action(
@@ -1912,19 +1953,7 @@ class SonarApp(App):
                         
                         # SELECTIVE QUERY STRING PRESERVATION
                         # We keep the ?src= tracking dyes (including social campaign referrals) for attribution
-                        if '?' in raw_path:
-                            base_path, qs = raw_path.split('?', 1)
-                            qs_first = qs.split('&', 1)[0]
-                            if qs_first in (
-                                'src=a+href', 'src=llms.txt', 'src=link+rel',
-                                'src=youtube', 'src=linkedin', 'src=fb', 'src=facebook',
-                                'src=x', 'src=twitter', 'src=discord', 'src=rfc9110',
-                            ):
-                                clean_path = f"{base_path}?{qs_first}"
-                            else:
-                                clean_path = base_path
-                        else:
-                            clean_path = raw_path
+                        clean_path, _, req_is_paid = parse_tracking_dyes(raw_path)
 
                         # THE PATH GOVERNOR (Dimension Hygiene)
                         # Vitals showed a 6,513-char probe URL embalmed forever in
@@ -1981,7 +2010,8 @@ class SonarApp(App):
                                 if dedupe_cache is None:
                                     dedupe_cache = {}
                                     self._ref_alert_dedupe = dedupe_cache
-                                dkey = (str(data['ip']), ref_src, clean_path.split('?', 1)[0])
+                                base_alert_p = clean_path.split('?', 1)[0]
+                                dkey = (str(data['ip']), ref_src, base_alert_p, bool(req_is_paid))
                                 if (now_ts - dedupe_cache.get(dkey, 0.0)) >= 60.0:
                                     if len(dedupe_cache) > 256:
                                         cutoff_d = now_ts - 120.0
@@ -1994,6 +2024,8 @@ class SonarApp(App):
                                             'ts': int(now_ts),
                                             'src': ref_src,
                                             'path': clean_path,
+                                            'paid': bool(req_is_paid),
+                                            'live_door': (base_alert_p.rstrip('/') == '/live'),
                                         }) + '\n')
                     except: pass
 
@@ -2083,6 +2115,12 @@ class SonarApp(App):
         _, rag_label = self.detect_live_rag_agent(ua)
         if rag_label:
             text.append(f"[🔔 RAG:{rag_label}] ", style="bold black on bright_yellow")
+        _, norm_dye, path_is_paid = parse_tracking_dyes(path)
+        if not is_pirate and path.split("?", 1)[0].rstrip("/") == "/live":
+            text.append("[🔴 LIVE] ", style="bold bright_white on #b91c1c")
+        if not is_pirate and path_is_paid:
+            text.append("[💰 PAID] ", style="bold black on #fbbf24")
+        probe_ref_path = f"{path} {norm_dye}" if norm_dye else path
         for ref_tag, ref_label in (
             ("src=youtube", "YOUTUBE"),
             ("src=linkedin", "LINKEDIN"),
@@ -2094,7 +2132,7 @@ class SonarApp(App):
             ("/discord", "DISCORD"),
             ("src=rfc9110", "RFC9110"),
         ):
-            if ref_tag in path:
+            if ref_tag in probe_ref_path:
                 text.append(f"[REF:{ref_label}] ", style="bold white on magenta")
                 break
         if not is_pirate:
