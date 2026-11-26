@@ -19,3 +19,7 @@ When you are ready to run the local RFC 9110 verification lab in `~/rfc9110`:
 - **Browsers (`Accept: text/html`)** — receive the visual HTML document.
 - **AI Crawlers & Agents (`Accept: text/markdown`)** — receive this clean Markdown representation with `Vary: Accept, User-Agent` and zero DOM boilerplate.
 - **Terminal Operators (`curl` / `wget`)** — receive the self-documenting Nix flake bootstrap script stamped to `rfc9110`.
+
+## Executive & Architectural Briefs
+
+Read concise, zero-jargon specifications and verifiable HTTP header audits at [RFC 9110 Executive Briefs](/briefs/).

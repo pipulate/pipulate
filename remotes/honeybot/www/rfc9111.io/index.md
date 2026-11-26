@@ -15,3 +15,7 @@ When you are ready to launch the local edge-caching audit workbench in `~/rfc911
 - **Zero Headless-Browser Compute Tax** — static HTML and static Markdown sit side-by-side in edge RAM, partitioned cleanly by `Vary: Accept, User-Agent`.
 - **Zero Cloaking Liability** — every representation is declared openly in standard HTTP response headers rather than hiding behind brittle user-agent sniffing middleware.
 - **Instant Time-to-First-Byte for AI Grounding** — RAG and search agents receive compact Markdown in milliseconds instead of waiting for a headless browser spin-up.
+
+## Executive & Architectural Briefs
+
+Read concise CDN edge-caching specifications and `Vary: Accept` partition audits at [RFC 9111 Executive Briefs](/briefs/).
