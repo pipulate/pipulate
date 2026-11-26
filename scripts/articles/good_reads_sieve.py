@@ -2,6 +2,8 @@
 """Materialize 3-2-1 Progressive Good-Read Editions from _posts/{_abstracts,_briefs}."""
 
 import argparse
+import html
+import shutil
 import json
 import re
 import subprocess
@@ -14,6 +16,115 @@ import common
 
 _RAW_TAG_RE = re.compile(r"^\s*\{%\s*(?:raw|endraw)\s*%\}\s*$", re.MULTILINE)
 _WEEBO_LINE_RE = re.compile(r"^[ \t]*\[\[\[weebo:([^\]]+)\]\]\][ \t]*$", re.IGNORECASE | re.MULTILINE)
+_WEEBO_ANY_RE = re.compile(r"\[\[\[weebo:[^\]]+\]\]\]", re.IGNORECASE)
+SIEVE_STAGE_DIR = Path.home() / ".cache" / "pipulate" / "good_reads_www"
+_UPSTREAM_MD_LINK_RE = re.compile(r"\[([^\]]+)\]\(https?://(?:w{3}\.)?mikelev\.in[^)]*\)", re.IGNORECASE)
+_UPSTREAM_PAREN_URL_RE = re.compile(r"\s*\(\s*https?://(?:w{3}\.)?mikelev\.in[^)]*\)", re.IGNORECASE)
+_UPSTREAM_BARE_URL_RE = re.compile(r"https?://(?:w{3}\.)?mikelev\.in[^\s)>]*", re.IGNORECASE)
+_UPSTREAM_DOMAIN_RE = re.compile(r"\bmikelev\.in(?:/[^\s.,;:!?)>'\"]*)?", re.IGNORECASE)
+
+
+def _scrub_upstream(body: str, fallback_url: str, brand_label: str) -> str:
+    s = _RAW_TAG_RE.sub("", body or "").strip()
+    s = _WEEBO_ANY_RE.sub("", _WEEBO_LINE_RE.sub("", s))
+    s = re.sub(r"(?m)^\*\*(?:Me|MikeLev\.in)\*\*:", "**Mike**:", s)
+    s = _UPSTREAM_MD_LINK_RE.sub(lambda m: fallback_url if "mikelev.in" in m.group(1).lower() else m.group(1), s)
+    s = _UPSTREAM_PAREN_URL_RE.sub("", s)
+    s = _UPSTREAM_BARE_URL_RE.sub(fallback_url, s)
+    s = _UPSTREAM_DOMAIN_RE.sub(brand_label, s)
+    return re.sub(r"\n{3,}", "\n\n", s).strip()
+
+
+def _inline_md(text: str) -> str:
+    codes: list[str] = []
+    def _stash(m):
+        codes.append(f"<code>{html.escape(m.group(1))}</code>")
+        return f"\x00C{len(codes) - 1}\x00"
+    s = re.sub(r"`([^`]+)`", _stash, text)
+    s = html.escape(s, quote=False)
+    s = re.sub(
+        r"\[([^\]]+)\]\((https?://[^)\s]+|/[^)\s]*)\)",
+        lambda m: f'<a href="{html.escape(m.group(2), quote=True)}">{m.group(1)}</a>',
+        s,
+    )
+    s = re.sub(r"\*\*\*([^*]+)\*\*\*", r"<strong><em>\1</em></strong>", s)
+    s = re.sub(r"\*\*([^*]+)\*\*", r"<strong>\1</strong>", s)
+    s = re.sub(r"(?<!\*)\*([^*]+)\*(?!\*)", r"<em>\1</em>", s)
+    for i, c in enumerate(codes):
+        s = s.replace(f"\x00C{i}\x00", c)
+    return s
+
+
+def _md_to_html(md_body: str) -> str:
+    out, para, list_tag = [], [], None
+    def _flush():
+        if para:
+            out.append(f"<p>{_inline_md(' '.join(para))}</p>")
+            para.clear()
+    def _close():
+        nonlocal list_tag
+        if list_tag:
+            out.append(f"</{list_tag}>")
+            list_tag = None
+    for raw_ln in (md_body or "").splitlines():
+        ln = raw_ln.strip()
+        if not ln or ln.startswith("<!--"):
+            _flush()
+            _close()
+            continue
+        if ln in ("---", "***"):
+            _flush()
+            _close()
+            out.append("<hr>")
+            continue
+        m_h = re.match(r"^(#{1,4})\s+(.*)$", ln)
+        if m_h:
+            _flush()
+            _close()
+            lvl = min(4, max(2, len(m_h.group(1))))
+            out.append(f"<h{lvl}>{_inline_md(m_h.group(2).strip())}</h{lvl}>")
+            continue
+        m_ul, m_ol = re.match(r"^[-*]\s+(.*)$", ln), re.match(r"^\d+\.\s+(.*)$", ln)
+        if m_ul or m_ol:
+            _flush()
+            want = "ul" if m_ul else "ol"
+            if list_tag != want:
+                _close()
+                out.append(f"<{want}>")
+                list_tag = want
+            out.append(f"  <li>{_inline_md((m_ul or m_ol).group(1).strip())}</li>")
+            continue
+        if ln.startswith(">"):
+            _flush()
+            _close()
+            out.append(f"<blockquote>{_inline_md(ln.lstrip('> ').strip())}</blockquote>")
+            continue
+        _close()
+        para.append(ln)
+    _flush()
+    _close()
+    return "\n".join(out)
+
+
+def _wrap_door_html(title: str, desc: str, canon_url: str, crumb_html: str, switcher_html: str, body_html: str) -> str:
+    esc_t, esc_d = html.escape(title), html.escape(desc, quote=True)
+    return (
+        f"<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n"
+        f"<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n"
+        f"<title>{esc_t}</title>\n"
+        + (f"<meta name=\"description\" content=\"{esc_d}\">\n" if desc else "")
+        + f"<link rel=\"canonical\" href=\"{html.escape(canon_url, quote=True)}\">\n"
+        f"<link rel=\"alternate\" type=\"text/markdown\" href=\"index.md\">\n"
+        "<style>\n  body { max-width: 42rem; margin: 3rem auto; padding: 0 1rem; font: 18px/1.55 Georgia, serif; color: #111; }\n"
+        "  pre, code { background: #f4f4f4; border-radius: 4px; font-family: ui-monospace, monospace; font-size: 0.9em; }\n"
+        "  code { padding: 0.12rem 0.32rem; }\n  blockquote { margin: 1.5rem 0; padding: 0.2rem 1rem; border-left: 3px solid #ccc; color: #444; }\n"
+        "  .sieve-bar { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin: 1rem 0 1.5rem; padding: 0.65rem 0.85rem; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; font: 14px/1.3 system-ui, sans-serif; }\n"
+        "  .pill-on { padding: 0.28rem 0.7rem; border-radius: 999px; background: #0f172a; color: #fff; font-weight: 700; }\n"
+        "  .pill-off { padding: 0.28rem 0.7rem; border-radius: 999px; border: 1px solid #94a3b8; color: #0f172a; text-decoration: none; font-weight: 600; }\n"
+        "  .crumb { font: 14px/1.4 system-ui, sans-serif; color: #475569; margin-bottom: 0.75rem; }\n  .crumb a { color: #0f172a; }\n</style>\n"
+        f"</head>\n<body>\n<div class=\"crumb\">{crumb_html}</div>\n<h1>{esc_t}</h1>\n"
+        f"{switcher_html}\n{body_html}\n</body>\n</html>\n"
+    )
 
 
 def _split_frontmatter(raw_text: str) -> tuple[dict, str]:
