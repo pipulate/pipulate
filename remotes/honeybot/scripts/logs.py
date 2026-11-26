@@ -757,7 +757,7 @@ except ImportError:
 ANSI_ESCAPE = re.compile(r'(?:\x1B[@-_]|[\x80-\x9F])[0-?]*[ -/]*[@-~]')
 # Updated to optionally capture the new custom fields at the end of the line
 LOG_PATTERN = re.compile(
-    r'(?P<ip>[\d\.]+) - - \[(?P<time>.*?)\] "(?P<request>.*?)" (?P<status>\d+) (?P<bytes>\d+) '
+    r'(?P<ip>[0-9a-fA-F:\.]+) - - \[(?P<time>.*?)\] "(?P<request>.*?)" (?P<status>\d+) (?P<bytes>\d+) '
     r'"(?P<referrer>.*?)" "(?P<ua>.*?)"(?: Accept:"(?P<accept>.*?)" MarkdownServed:(?P<md>\d))?'
     r'(?: Host:"(?P<host>.*?)")?(?: Sig:"(?P<sig>.*?)")?'
 )
@@ -1931,10 +1931,6 @@ class SonarApp(App):
     def stream_logs(self) -> None:
         hits = 0
         for line in sys.stdin:
-            wait_ticks = 0
-            while (self._is_stage_frozen() or self._is_hud_scrolling()) and wait_ticks < 120:
-                time.sleep(0.08)
-                wait_ticks += 1
             clean_line = ANSI_ESCAPE.sub('', line).strip()
             if not clean_line or " - - [" not in clean_line: continue
 
@@ -2021,15 +2017,20 @@ class SonarApp(App):
                                     import json as _json
                                     with open('/tmp/honeybot_referrals.jsonl', 'a', encoding='utf-8') as rf:
                                         rf.write(_json.dumps({
-                                            'ts': int(now_ts),
+                                            'ts': round(now_ts, 3),
                                             'src': ref_src,
                                             'path': clean_path,
                                             'paid': bool(req_is_paid),
                                             'live_door': (base_alert_p.rstrip('/') == '/live'),
                                         }) + '\n')
+                                        rf.flush()
                     except: pass
 
-                # Update Logs UI
+                # Update Logs UI (defer TUI formatting during DOOM fire/scroll after DB + JSONL flush)
+                wait_ticks = 0
+                while (self._is_stage_frozen() or self._is_hud_scrolling()) and wait_ticks < 120:
+                    time.sleep(0.08)
+                    wait_ticks += 1
                 self.ua_counter[data['ua'].split('/')[0]] += 1
                 rich_text = self.format_log_line(data)
                 if hits > 1: rich_text = Text("\n") + rich_text

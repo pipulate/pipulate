@@ -2496,13 +2496,15 @@ def _load_ytwatch_state():
 
 
 def _save_ytwatch_state(state_obj):
-    """Persist ytwatch state to ~/.config/pipulate/ytwatch_state.json."""
+    """Persist ytwatch state to ~/.config/pipulate/ytwatch_state.json, preserving daemon watermarks."""
     try:
+        merged = _load_ytwatch_state()
+        merged.update(state_obj or {})
         last_w = globals().get("_last_weebo_trigger_ts", 0.0)
-        if last_w > 0 and "last_weebo_trigger" not in state_obj:
-            state_obj["last_weebo_trigger"] = last_w
+        if last_w > 0 and "last_weebo_trigger" not in (state_obj or {}):
+            merged["last_weebo_trigger"] = last_w
         CONFIG_DIR.mkdir(parents=True, exist_ok=True)
-        YTWATCH_STATE_FILE.write_text(json.dumps(state_obj, indent=2) + "\n", encoding="utf-8")
+        YTWATCH_STATE_FILE.write_text(json.dumps(merged, indent=2) + "\n", encoding="utf-8")
     except OSError:
         pass
 
@@ -2686,6 +2688,30 @@ def format_referral_alert(robj: dict) -> dict:
     return {"spoken": spoken, "msg": f"{paid_pfx}{target_lbl} ({rsrc}) -> {rpath}", "badge": badge, "title": title, "tags": ntfy_tags}
 
 
+def process_referral_jsonl_lines(lines, last_ref_ts: float, ding: bool = True, resolved_topic: str = "") -> float:
+    """Emit Piper TTS + ntfy alerts for referral JSONL lines newer than last_ref_ts; return max ts."""
+    max_ts, seen_batch = float(last_ref_ts or 0.0), set()
+    audio_on = bool(ding and _resolve_yt_prime_chime())
+    for rline in (lines or ()):
+        if not rline or not rline.lstrip().startswith("{"):
+            continue
+        try:
+            robj = json.loads(rline)
+        except Exception:
+            continue
+        rts, rsrc, rpath = float(robj.get("ts") or 0.0), str(robj.get("src") or ""), str(robj.get("path") or "/")
+        rpaid = bool(robj.get("paid")) or ("paid=1" in rpath)
+        if rts > float(last_ref_ts or 0.0) and rsrc in SPOKEN_ALERT_TABLE and (rsrc, rpath, rpaid) not in seen_batch:
+            seen_batch.add((rsrc, rpath, rpaid))
+            max_ts = max(max_ts, rts)
+            spec = format_referral_alert(robj)
+            print(f"[{_ytlog_ts()}] {spec['badge']} {spec['msg']}", flush=True)
+            _play_local_ding(audio_on, spoken_text=spec["spoken"])
+            if resolved_topic:
+                send_ntfy_notification(spec["msg"], title=spec["title"], priority="high", tags=spec["tags"], topic=resolved_topic)
+    return max_ts
+
+
 def _ensure_local_piper_model():
     """Locate or pull en_US-amy-low.onnx across Pipulate Prime's voice caches."""
     import subprocess
@@ -2741,6 +2767,7 @@ def _speak_local_alert(text, enabled=True, delay=0.45):
     delay_s = max(0.0, float(delay))
     worker_code = (
         "import os, shutil, subprocess, sys, time; "
+        "os.environ.setdefault('XDG_RUNTIME_DIR', f'/run/user/{os.getuid()}'); "
         f"time.sleep({delay_s:.2f}); "
         "wav = f'/tmp/pipulate_alert_{os.getpid()}.wav'; "
         "subprocess.run([sys.argv[2], '--model', sys.argv[3], '--output_file', wav], "
@@ -3916,6 +3943,8 @@ def run_youtube_watch(
         _check_quiet_clear(prev_viewers, state["concurrent_viewers"])
     prev_viewers = state["concurrent_viewers"]
     init_ts = time.time()
+    last_ref_mono = 0.0
+    persisted["last_referral_ts"] = float(persisted.get("last_referral_ts") or round(init_ts - 5.0, 3))
     init_min_v = _resolve_yt_alert_min(_resolve_yt_clear_max(clear_max))
     dwell_window = [(init_ts, state["concurrent_viewers"])] if state["concurrent_viewers"] >= init_min_v else []
     _save_ytwatch_state({
@@ -3923,6 +3952,7 @@ def run_youtube_watch(
         "title": state.get("title") or "",
         "concurrent_viewers": state["concurrent_viewers"],
         "peak_viewers": peak_viewers,
+        "last_referral_ts": persisted["last_referral_ts"],
         "alerted_in_run": alerted_in_run,
         "comment_count": state["comment_count"],
         "last_viewer_alert": last_viewer_alert,
@@ -4072,7 +4102,19 @@ def run_youtube_watch(
                     _sync_honeybot_viewers(fast_v, running=True, video_id=poll_vid, peak=peak_viewers, push_remote=True)
                 prev_viewers = fast_v
                 _check_dwell(fast_v, fast_ts)
-                if changed_fast:
+                ref_advanced = False
+                if changed_fast or (time.monotonic() - last_ref_mono) >= 3.0:
+                    last_ref_mono = time.monotonic()
+                    try:
+                        f_ref = subprocess.run([*_hb_ssh_args(3), "tail -n 12 /tmp/honeybot_referrals.jsonl 2>/dev/null"], capture_output=True, text=True, timeout=4)
+                        cur_rts = float(persisted.get("last_referral_ts") or 0.0)
+                        new_rts = process_referral_jsonl_lines((f_ref.stdout or "").splitlines(), cur_rts, ding=ding, resolved_topic=resolved_topic)
+                        if new_rts > cur_rts:
+                            persisted["last_referral_ts"] = new_rts
+                            ref_advanced = True
+                    except Exception:
+                        pass
+                if changed_fast or ref_advanced:
                     _save_ytwatch_state({
                         "video_id": state.get("video_id") or last_live_vid,
                         "title": state.get("title") or last_live_title,
@@ -4081,7 +4123,7 @@ def run_youtube_watch(
                         "peak_reset_at": active_peak_reset_at,
                         "hb_reading_trigger": hb_reading_trigger,
                         "hb_stage_article": hb_stage_article,
-                        "last_referral_ts": persisted.get("last_referral_ts", int(fast_ts)),
+                        "last_referral_ts": persisted.get("last_referral_ts", round(fast_ts, 3)),
                         "alerted_in_run": alerted_in_run,
                         "comment_count": prev_comments,
                         "discord_members": prev_discord_members,
@@ -4247,7 +4289,7 @@ def run_youtube_watch(
             peak_viewers = max(peak_viewers, int(viewers or 0))
             _sync_honeybot_viewers(viewers, running=True, video_id=state["video_id"], peak=peak_viewers, push_remote=False)
             try:
-                last_ref_ts = int(persisted.get("last_referral_ts") or int(now))
+                last_ref_ts = float(persisted.get("last_referral_ts") or round(now - 5.0, 3))
                 hb_sync_and_tail = (
                     f"{_viewer_payload_shell_cmd(viewers, video_id=state['video_id'], peak=peak_viewers)}; "
                     "printf 'HB_TRIG:%s\\n' \"$(cat ~/www/mikelev.in/.reading_trigger 2>/dev/null)\"; "
@@ -4260,9 +4302,7 @@ def run_youtube_watch(
                     text=True,
                     timeout=6,
                 )
-                max_ref_ts = last_ref_ts
                 hb_reset_reason = ""
-                seen_ref_batch = set()
                 for rline in (ref_res.stdout or "").splitlines():
                     if rline.startswith("HB_TRIG:"):
                         new_trig = rline[8:].strip()
@@ -4284,28 +4324,7 @@ def run_youtube_watch(
                             except Exception:
                                 pass
                         continue
-                    try:
-                        robj = json.loads(rline)
-                    except Exception:
-                        continue
-                    rts = int(robj.get("ts") or 0)
-                    rsrc = str(robj.get("src") or "")
-                    rpath = str(robj.get("path") or "/")
-                    rpaid = bool(robj.get("paid")) or ("paid=1" in rpath)
-                    if rts > last_ref_ts and rsrc in SPOKEN_ALERT_TABLE and (rsrc, rpath, rpaid) not in seen_ref_batch:
-                        seen_ref_batch.add((rsrc, rpath, rpaid))
-                        max_ref_ts = max(max_ref_ts, rts)
-                        alert_spec = format_referral_alert(robj)
-                        print(f"[{_ytlog_ts()}] {alert_spec['badge']} {alert_spec['msg']}", flush=True)
-                        _play_local_ding(ding, spoken_text=alert_spec["spoken"])
-                        if resolved_topic:
-                            send_ntfy_notification(
-                                alert_spec["msg"],
-                                title=alert_spec["title"],
-                                priority="high",
-                                tags=alert_spec["tags"],
-                                topic=resolved_topic,
-                            )
+                max_ref_ts = process_referral_jsonl_lines((ref_res.stdout or "").splitlines(), last_ref_ts, ding=ding, resolved_topic=resolved_topic)
                 if hb_reset_reason:
                     peak_viewers = int(viewers or 0)
                     active_peak_reset_at = int(now)
