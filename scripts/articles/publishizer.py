@@ -532,6 +532,8 @@ def main():
     if yt_thumb:
         print(f"📺 Ready 1280x720 (16:9) YouTube Studio Thumbnail: {yt_thumb}")
     sync_observatory_metrics(target_key, target_path, verbose=args.verbose)
+    import good_reads_sieve
+    good_reads_sieve.sync_good_read_editions(target_key, target_path, verbose=args.verbose)
 
     # 2. Run the sequence
     total_start = time.time()

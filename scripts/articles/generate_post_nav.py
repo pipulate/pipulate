@@ -69,11 +69,17 @@ def build_nav(metadata: list, per_page: int = 10, posts_dir: Path | None = None)
         entry["jukebox_coin"] = bool(jb_coin)
         url_key = article_url(item)
         fname = Path(item["filename"]).name if item.get("filename") else ""
+        slug = fname[11:-3] if len(fname) > 14 and fname.endswith(".md") else Path(fname).stem
         base_posts = Path(posts_dir) if posts_dir else (Path(item["path"]).parent if item.get("path") else None)
+        ed_root = base_posts.parent / "editions" if base_posts else None
         has_norma = bool(fname and base_posts and (base_posts / "_abstracts" / fname).is_file())
         has_csuite = bool(fname and base_posts and (base_posts / "_briefs" / fname).is_file())
+        norma_ready = bool(has_norma and slug and ed_root and (ed_root / "norma" / f"{slug}.md").is_file())
+        csuite_ready = bool(has_csuite and slug and ed_root and (ed_root / "brief" / f"{slug}.md").is_file())
         entry["has_norma"] = has_norma
         entry["has_csuite"] = has_csuite
+        entry["norma_ready"] = norma_ready
+        entry["csuite_ready"] = csuite_ready
         if has_norma:
             entry["norma_url"] = f"{url_key}norma/"
         if has_csuite:
@@ -135,6 +141,8 @@ def main():
         "total_pages": total_pages,
         "norma_count": sum(1 for v in nav.values() if v.get("has_norma")),
         "csuite_count": sum(1 for v in nav.values() if v.get("has_csuite")),
+        "norma_ready_count": sum(1 for v in nav.values() if v.get("norma_ready")),
+        "csuite_ready_count": sum(1 for v in nav.values() if v.get("csuite_ready")),
         "newest_url": article_url(metadata[0]),
         "newest_title": metadata[0].get("title", ""),
         "newest_id": metadata[0].get("article_id") or len(metadata),
