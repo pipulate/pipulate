@@ -71,7 +71,7 @@ CONSULTING_CTA_BEAT = (
 NOTES_FROM_THE_WIRE_CARD = "NOTES FROM\nTHE WIRE"
 
 NOTES_FROM_THE_WIRE_BEAT = (
-    "Mike-E: Many of you will find this Socratic Dialogue between me, Mike E, and my always-improving "
+    "Mike-E: Many of you will find this Socratic Dialogue between me Mike E and my always-improving "
     "Superintelligent Subcontractor, Shipmunk O'Theseus, difficult to follow — and that is understandable. "
     "What to do is grab the C D rom that comes with the book at MikeLev.in slash brain dot zip — "
     "a portable zip archive you download and drop into your favorite Web ChatBot A I, "
