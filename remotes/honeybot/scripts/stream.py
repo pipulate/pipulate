@@ -564,7 +564,8 @@ _HOST_TRANSIENT_RE = (
     "field note from the wire", "end of wire field note", "the story currently",
     "chat takeover", "switching now to story", "you can take control",
     "receiving updates", "minor maintenance", "signal check", "the article currently",
-    "now i read", "resuming storytime", "breaking news", "to hear the next article",
+    "now i read", "resuming storytime", "returning to storytime", "notes from the wire",
+    "breaking news", "to hear the next article",
     "if you are actually here", "none of this is trained", "this live-broadcast",
     "this is the signal",
 )
@@ -806,7 +807,11 @@ class Narrator(threading.Thread):
             return out
         if low.startswith("signal check"):
             return [self._make_spec("norma", raw, "transient", "inactive", "inactive")]
-        if self.exclusive_mode.is_set() or any(low.startswith(p) for p in _HOST_TRANSIENT_RE):
+        if any(low.startswith(p) for p in _HOST_TRANSIENT_RE) or (
+            self.exclusive_mode.is_set()
+            and not _HUMAN_TURN_PREFIX_RE.match(raw)
+            and not _AI_TURN_PREFIX_RE.match(raw)
+        ):
             return [self._make_spec("norma", raw, "narrator", "inactive", "inactive")]
         if low.startswith(("reading entry", "reading article", "setting the stage")):
             self._stage_dialogue_role = "prologue"
@@ -3555,6 +3560,14 @@ def run_station_break(env, profile_dir, is_end_of_loop: bool = False) -> bool:
         wait_for_voice_or_live_interrupt(env, profile_dir)
         for pat in ("patronus_visual_shield", "conjure_window_overlay", MEDIA_OVERLAY_MARKER):
             subprocess.run(["pkill", "-f", pat], check=False)
+        notes_beat = getattr(_forest_mod, "NOTES_FROM_THE_WIRE_BEAT", "")
+        notes_card = getattr(_forest_mod, "NOTES_FROM_THE_WIRE_CARD", "NOTES FROM\nTHE WIRE")
+        if notes_beat and not has_pending_update() and not has_restart_pending() and not _shutting_down.is_set():
+            narrator._stage_dialogue_role = "narrator"
+            dispatch_cue("CARD", {"label": notes_card, "say": "Notes from the wire.", "duration": 8.0, "linger": 0.2}, env, profile_dir, pace_say=True)
+            if not has_pending_update() and not has_restart_pending() and not _shutting_down.is_set():
+                dispatch_cue("SAY", notes_beat, env, profile_dir, pace_say=True)
+                wait_for_voice_or_live_interrupt(env, profile_dir)
         if _bgm_desired and not is_end_of_loop and not has_pending_update() and not has_restart_pending() and not _shutting_down.is_set():
             time.sleep(0.5)
             narrator.say("Returning to storytime.")
@@ -4113,12 +4126,21 @@ def trigger_station_bead_live(target_spec="pirates", out_path="/home/mike/www/mi
                 except Exception:
                     pass
             story_lines.append(line_str)
+    if not window_spec and not patronus_key and not media_spec:
+        payload = {"cues": chosen_bead, "pre_pause": 1.2, "card": card_label}
+        if out_path:
+            p = Path(out_path)
+            tmp = p.with_suffix(".tmp")
+            tmp.write_text(_json.dumps(payload), encoding="utf-8")
+            tmp.replace(p)
+        return payload
     full_say = " ".join(s.strip() for s in [card_say, *story_lines] if s and s.strip())
+    rep_linger = float(getattr(_forest_mod, "REPORT_POST_LINGER_SECONDS", 2)) if window_spec else 6.0
     payload = {
         "card": card_label,
         "say": full_say,
-        "duration": 90.0,
-        "linger": 20.0,
+        "duration": 55.0,
+        "linger": rep_linger,
     }
     if window_spec:
         payload["window"] = window_spec

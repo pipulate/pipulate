@@ -33,14 +33,13 @@ must not itself contain a colon. Bare labels like "THE ITCH" are fine.
 #   5. The ASCII Art Developing the Running "Forest Through the Trees" Story (PATRONUS + SAY)
 
 # --- Station-Break Report Timing Constants ---
-# REPORT_POST_LINGER_SECONDS: How long (in seconds) a Rich telemetry report stays
-# on screen AFTER its spoken commentary finishes (~20s speech + 25s linger = ~45s
-# total on-screen time, 3x the original 15s preview without excessive dead air).
+# REPORT_POST_LINGER_SECONDS: Snappy 2s beat after the "Bam!" punchline before
+# run_station_break() closes the Rich chart overlay (~2/3 compressed duration).
 # REPORT_WINDOW_CAP_SECONDS: Safety ceiling for the Alacritty overlay window;
 # run_station_break() closes the window deterministically once post_linger ends.
-REPORT_POST_LINGER_SECONDS = 10
+REPORT_POST_LINGER_SECONDS = 2
 PATRONUS_POST_LINGER_SECONDS = 6
-REPORT_WINDOW_CAP_SECONDS = 55
+REPORT_WINDOW_CAP_SECONDS = 40
 REPORT_WINDOW_COLUMNS = 138
 REPORT_WINDOW_LINES = 38
 REPORT_H_MARGIN = 3
@@ -69,6 +68,20 @@ CONSULTING_CTA_BEAT = (
     "or connect for enterprise ADNS and edge architecture at mikelev.in/discord."
 )
 
+NOTES_FROM_THE_WIRE_CARD = "NOTES FROM\nTHE WIRE"
+
+NOTES_FROM_THE_WIRE_BEAT = (
+    "Mike-E: Many of you will find this Socratic Dialogue between me, Mike E, and my always-improving "
+    "Superintelligent Subcontractor, Shipmunk O'Theseus, difficult to follow — and that is understandable. "
+    "What to do is grab the C D rom that comes with the book at MikeLev.in slash brain dot zip — "
+    "a portable zip archive you download and drop into your favorite Web ChatBot A I, "
+    "be it Claude, Chat G P T, Google Gemini, or Grok — it doesn't matter. "
+    "All will be made clear to you whichever one you choose. "
+    "In the mysterious caverns below the Cloud castle, your odyssey continues against the awesome forces "
+    "and Infanto-Rays that oppose your digital sovereignty — so be valiant, space warrior! "
+    "Lead on, adventurer. Your quest awaits!"
+)
+
 
 def _make_station_bead(card_label, card_say, capstone_cue, forest_story_lines, post_linger=None):
     """Assemble a brisk station showcase bead: Title Card -> Report/Art Overlay -> Top-Level Findings."""
@@ -95,11 +108,10 @@ def _make_station_bead(card_label, card_say, capstone_cue, forest_story_lines, p
 STATION_SEGMENTS = [
     _make_station_bead(
         "RFC 9110\nMARKDOWN",
-        "Live fishtank report: who actually negotiates R F C 9110 Markdown on this origin.",
+        "Live wire report: who actually asks for R F C 9110 Markdown?",
         ("WINDOW", f"forest.py:{REPORT_WINDOW_CAP_SECONDS}:overview"),
         [
-            "{LIVE_REPORT:overview}",
-            "Serving clean Markdown from the same canonical U R L via R F C 9111 Vary Accept gives A I agents primary signal without duplicate pages — unlocked on any enterprise edge via chained D N S and Orange two Orange streams.",
+            "{LIVE_REPORT:overview} That busts the doorway-page myth: one canonical U R L serves H T M L and R F C 9110 Markdown from the C D N edge — Bam!",
         ],
     ),
     [
@@ -114,11 +126,10 @@ STATION_SEGMENTS = [
     ],
     _make_station_bead(
         "DOM TRAPDOOR\nJS EXECS",
-        "Live fishtank report: testing the conventional assumption that A I crawlers skip client-side JavaScript.",
+        "Live wire report: do A I bots execute JavaScript?",
         ("WINDOW", f"forest.py:{REPORT_WINDOW_CAP_SECONDS}:bimodal"),
         [
-            "{LIVE_REPORT:bimodal}",
-            "An eight-hundred-millisecond image beacon inside client-side JavaScript separates true headless browser renderers from raw H T M L scrapers right in the origin log.",
+            "{LIVE_REPORT:bimodal} This contradicts the common wisdom that A I bots don't execute JavaScript. Open A I's and Facebook Meta's do — Bam!",
         ],
     ),
 ]
@@ -127,6 +138,10 @@ STATION_SEGMENTS = [
 # Preserved intact so no Patronus or Rich telemetry piece is ever buried in git history.
 # Summon any archived bead live with: `ytapp tiktok`, `ytapp pachinko`, `ytapp pirates`, etc.
 ARCHIVED_STATION_BEADS = {
+    "notes": [
+        ("CARD", {"label": NOTES_FROM_THE_WIRE_CARD, "say": "Notes from the wire.", "duration": 8.0, "linger": 0.2}),
+        ("SAY", NOTES_FROM_THE_WIRE_BEAT),
+    ],
     "menu": _make_station_bead(
         "STORY\nMENU",
         "Here is the live A.I. Fishtank Story-Time menu.",
@@ -531,21 +546,13 @@ def _read_report_speech_snapshot(mode: str, max_age: float = _REPORT_META_TTL_SE
 
 
 def _format_overview_speech(total_hits: int, md_reads: int, total_cneg: int, md_pct: float, top_bots: list) -> str:
-    names = [bname for bname, _, _ in top_bots[:3] if bname]
-    lead = f", led by {', '.join(names[:-1])}, and {names[-1]}" if len(names) > 2 else (f", led by {' and '.join(names)}" if names else "")
-    return (
-        f"Top-level finding: Markdown accounts for {_approx_pct_words(md_pct)} of {_approx_count_words(total_hits)} origin responses — "
-        f"{_approx_count_words(md_reads)} Markdown deliveries and {_approx_count_words(total_cneg)} strict R F C 9110 negotiations{lead}."
-    )
+    names = [bname for bname, _, _ in top_bots[:2] if bname]
+    lead = f", led by {' and '.join(names)}" if names else ""
+    return f"The gist: {_approx_count_words(md_reads)} native Markdown deliveries — {_approx_pct_words(md_pct)} of all traffic{lead}."
 
 
 def _format_bimodal_speech(eligible_html: int, js_horizon_hits: int, js_pct: float, top_bots: list) -> str:
-    names = [bname for bname, _, _ in top_bots[:3] if bname]
-    lead = f", led by {', '.join(names[:-1])}, and {names[-1]}" if len(names) > 2 else (f", led by {' and '.join(names)}" if names else "")
-    return (
-        f"Top-level finding: {_approx_pct_words(js_pct)} of {_approx_count_words(eligible_html)} eligible H T M L responses executed JavaScript — "
-        f"{_approx_count_words(js_horizon_hits)} live trapdoor D O M hydrations{lead}."
-    )
+    return f"The gist: {_approx_count_words(js_horizon_hits)} live D O M hydrations — {_approx_pct_words(js_pct)} of eligible H T M L."
 
 
 def _format_menu_speech(total_count: int, entries: list) -> str:
@@ -718,7 +725,7 @@ def resolve_dynamic_report_speech(text: str) -> str:
                 else:
                     raise ValueError("empty bimodal db")
         except Exception:
-            live_bi = "Top-level finding: live JavaScript trapdoor hydrations are led by Meta's External Agent, Open A I's SearchBot, and Google Cloud headless renderers."
+            live_bi = "The gist: over fifteen thousand live D O M trapdoor hydrations logged on the wire."
         s = s.replace("{LIVE_REPORT:bimodal}", live_bi)
 
     return s
