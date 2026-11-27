@@ -118,20 +118,47 @@ VOICE_CARD = (
 )
 
 
-def voice_consent() -> str:
-    """'yes', 'no' or 'unset': the environment first, then the recorded answer."""
+DEFAULT_WORKSHOP_PORT = 5001
+DEFAULT_STAGE_PORT = 5002
+
+
+def active_server_port(port: Optional[int] = None) -> int:
+    """Resolve active Pipulate port (explicit arg, dynamic PIPULATE_PORT env, or config.SERVER_PORT)."""
+    if port is not None:
+        return int(port)
+    raw = os.environ.get("PIPULATE_PORT", "").strip()
+    return int(raw) if raw.isdigit() else int(SERVER_PORT)
+
+
+def voice_consent_file_for_port(port: Optional[int] = None) -> Path:
+    """Return ~/.config/pipulate/voice for :5001, or ~/.config/pipulate/voice_<port> for sibling ports."""
+    eff_port = active_server_port(port)
+    return VOICE_CONSENT_FILE if eff_port == DEFAULT_WORKSHOP_PORT else (VOICE_CONSENT_FILE.parent / f"voice_{eff_port}")
+
+
+def is_local_audio_silenced(port: Optional[int] = None) -> bool:
+    """True when local Prime speaker playback is hard-muted (always True on stage port :5002)."""
+    if os.environ.get("PIPULATE_LOCAL_AUDIO_MUTE", "").strip().lower() in ("1", "true", "yes", "on"):
+        return True
+    raw_stg = os.environ.get("PIPULATE_STAGE_PORT", "").strip()
+    stg_port = int(raw_stg) if raw_stg.isdigit() else DEFAULT_STAGE_PORT
+    return active_server_port(port) == stg_port and stg_port != DEFAULT_WORKSHOP_PORT
+
+
+def voice_consent(port: Optional[int] = None) -> str:
+    """'yes', 'no' or 'unset': stage :5002 is always 'no' locally; else env, then port-scoped sentinel."""
+    if is_local_audio_silenced(port):
+        return "no"
     env = os.environ.get("PIPULATE_VOICE", "").strip().lower()
     if env in ("0", "no", "off", "false"):
         return "no"
     if env in ("1", "yes", "on", "true"):
         return "yes"
     try:
-        recorded = VOICE_CONSENT_FILE.read_text(encoding="utf-8").strip().lower()
+        recorded = voice_consent_file_for_port(port).read_text(encoding="utf-8").strip().lower()
     except OSError:
         return "unset"
-    if recorded in ("yes", "no"):
-        return recorded
-    return "unset"
+    return recorded if recorded in ("yes", "no") else "unset"
 
 
 def ask_voice_consent(later_hint: str = "talk", force: bool = False) -> str:
@@ -175,15 +202,16 @@ TALK_ON_WORDS = ("on", "yes", "y", "1", "true")
 TALK_OFF_WORDS = ("off", "no", "n", "0", "false")
 
 
-def _record_voice_answer(decision: str):
+def _record_voice_answer(decision: str, port: Optional[int] = None):
     """Write 'yes' or 'no' as the recorded answer. Returns None, or the OSError.
 
     THE ONE WRITER (2026-09-30): the card and `talk` both record here, so the
     format voice_consent() reads has one spelling, the word and a newline.
     """
+    target_file = voice_consent_file_for_port(port)
     try:
-        VOICE_CONSENT_FILE.parent.mkdir(parents=True, exist_ok=True)
-        VOICE_CONSENT_FILE.write_text(decision + "\n", encoding="utf-8")
+        target_file.parent.mkdir(parents=True, exist_ok=True)
+        target_file.write_text(decision + "\n", encoding="utf-8")
     except OSError as exc:
         return exc
     return None
@@ -205,41 +233,49 @@ def talk_command(args) -> int:
     printed, 1 when nothing could be recorded, 2 for a word talk does not
     know.
     """
-    words = [arg.strip().lower() for arg in args]
-    if len(words) > 1 or (words and words[0] not in TALK_ON_WORDS + TALK_OFF_WORDS):
-        print("usage: talk [on|off]   (bare talk flips narration)")
+    raw_tokens, target_port, cleaned, idx = list(args), None, [], 0
+    while idx < len(raw_tokens):
+        tok = str(raw_tokens[idx]).strip().lower()
+        if tok in ("-p", "--port") and idx + 1 < len(raw_tokens) and str(raw_tokens[idx + 1]).strip().isdigit():
+            target_port, idx = int(str(raw_tokens[idx + 1]).strip()), idx + 2
+        else:
+            cleaned.append(tok)
+            idx += 1
+    eff_port = active_server_port(target_port)
+    sentinel = voice_consent_file_for_port(eff_port)
+    if len(cleaned) > 1 or (cleaned and cleaned[0] not in TALK_ON_WORDS + TALK_OFF_WORDS + ("status",)):
+        print("usage: talk [on|off|status] [--port PORT]   (bare talk flips narration)")
         return 2
-    want = None
-    if words:
-        want = "yes" if words[0] in TALK_ON_WORDS else "no"
+    if is_local_audio_silenced(eff_port):
+        print(f"narration: off  (port {eff_port} stage copy is permanently locally silenced on Prime)")
+        return 0
+    if cleaned == ["status"]:
+        print(f"narration: {'on' if voice_consent(eff_port) == 'yes' else 'off'}  (port {eff_port} sentinel: {sentinel})")
+        return 0
+    want = ("yes" if cleaned[0] in TALK_ON_WORDS else "no") if cleaned else None
     raw = os.environ.get("PIPULATE_VOICE", "").strip()
     if raw.lower() in ("0", "no", "off", "false", "1", "yes", "on", "true"):
-        state = "on" if voice_consent() == "yes" else "off"
-        print(f"narration: {state}  (PIPULATE_VOICE={raw!r} decides in this shell, so the "
-              "recorded answer was not read or changed; unset it to use talk)")
+        print(f"narration: {'on' if voice_consent(eff_port) == 'yes' else 'off'}  (PIPULATE_VOICE={raw!r} decides in this shell; unset it to use talk)")
         return 0
     if raw:
         print(f"(PIPULATE_VOICE={raw!r} is not a word the speaker reads; the recorded answer decides)")
-    error = None
-    recorded = voice_consent()
-    if recorded == "unset":
+    error, recorded = None, voice_consent(eff_port)
+    if recorded == "unset" and eff_port == DEFAULT_WORKSHOP_PORT:
         if ask_voice_consent(later_hint="talk") == "unavailable":
             print("talk: nothing is recorded yet and there is no keyboard to ask on; type talk at the command line.")
             return 1
     else:
         decision = want or ("no" if recorded == "yes" else "yes")
         if decision != recorded:
-            error = _record_voice_answer(decision)
+            error = _record_voice_answer(decision, port=eff_port)
             if error is not None:
                 print(f"talk: could not record the answer: {error}")
-    after = voice_consent()
+    after = voice_consent(eff_port)
     if after == "unset":
         print("talk: no answer is recorded, so narration stays off.")
         return 1
-    state = "on" if after == "yes" else "off"
-    note = ", unchanged" if after == recorded else ""
-    print(f"narration: {state}{note}  (recorded in {VOICE_CONSENT_FILE})")
-    if after == "yes" and chip_voice_system is not None:
+    print(f"narration: {'on' if after == 'yes' else 'off'}{', unchanged' if after == recorded else ''}  (port {eff_port}, recorded in {sentinel})")
+    if after == "yes" and eff_port == active_server_port() and chip_voice_system is not None:
         result = chip_voice_system.speak_text("This is Piper, reading a script. Narration is on.")
         if not result.get("success"):
             print(f"talk: nothing was heard: {result.get('error')}")
@@ -586,7 +622,7 @@ class ChipVoiceSystem:
         then the load, which downloads only after a yes. A status read that
         must never download keeps reading voice_ready, which now means loaded.
         """
-        return (voice_consent() == "yes" or bool(self._active_ytstage_host())) and self.ensure_voice()
+        return ((not is_local_audio_silenced() and voice_consent() == "yes") or bool(self._active_ytstage_host())) and self.ensure_voice()
 
     def stop_speaking(self):
         """
@@ -623,7 +659,7 @@ class ChipVoiceSystem:
             return None
         host = str(data.get("host") or "").strip()
         rport = int(data.get("remote_port") or 15001)
-        lport = int(data.get("local_port") or SERVER_PORT)
+        lport = int(data.get("local_port") or active_server_port())
         if not host:
             return None
         res = subprocess.run(
@@ -638,7 +674,7 @@ class ChipVoiceSystem:
             except OSError:
                 pass
             return None
-        if lport != SERVER_PORT:
+        if lport != active_server_port():
             return None
         return host
 
@@ -777,6 +813,9 @@ class ChipVoiceSystem:
             self.stop_speaking()
             if stage_host:
                 return self._play_wav_on_honeybot(output_path, stage_host, text=text)
+            if is_local_audio_silenced():
+                self.last_error = f"local audio silenced on port {active_server_port()}"
+                return False
             system = platform.system()
             play_cmd = self._resolve_play_cmd(output_path, system)
             try:
@@ -841,6 +880,9 @@ class ChipVoiceSystem:
             bool: True if successful, False otherwise
         """
         stage_host = self._active_ytstage_host()
+        if is_local_audio_silenced() and not stage_host:
+            self.last_error = f"local audio silenced on port {active_server_port()}"
+            return False
         if voice_consent() != "yes" and not ceremony and not stage_host:
             # THE BARRIER. Every path to sound passes here, and the answer is
             # read fresh each time, so a no recorded mid-session holds at once.
@@ -927,6 +969,9 @@ class ChipVoiceSystem:
             
             if stage_host:
                 return self._play_wav_on_honeybot(output_path, stage_host, text=text)
+            if is_local_audio_silenced():
+                self.last_error = f"local audio silenced on port {active_server_port()}"
+                return False
             # Play audio using platform-specific command
             import platform
             system = platform.system()
