@@ -526,6 +526,16 @@
           fi
           exec "$python_bin" "$root/scripts/weebo.py" --list "$@"
         '';
+        chimeCommand = pkgs.writeShellScriptBin "chime" ''
+          set -euo pipefail
+          root="''${PIPULATE_ROOT:-$PWD}"
+          python_bin="$root/.venv/bin/python"
+          if [ ! -x "$python_bin" ]; then
+            echo "chime: missing $python_bin; enter the Pipulate Nix shell first." >&2
+            exit 1
+          fi
+          exec "$python_bin" "$root/scripts/articles/common.py" --broadcast watch chime "$@"
+        '';
         # PORT-SCOPED SERVER REAPER: stops only the Pipulate server matching $1
         # (and optional tmux session $2), leaving sibling ports such as :5002 untouched.
         stopPortScript = pkgs.writeShellScript "pipulate-stop-port" ''
@@ -659,7 +669,8 @@
             if [ -f "$stage_dir/scripts/link_tiers.sh" ]; then
               ${pkgs.bash}/bin/bash "$stage_dir/scripts/link_tiers.sh" >/dev/null 2>&1 || true
             fi
-            mkdir -p "$stage_dir/Workshop/corporate" "$stage_dir/Workshop/personal" "$stage_dir/Workshop/shared"
+            mkdir -p "$stage_dir/Workshop/corporate" "$stage_dir/Workshop/personal" "$stage_dir/Workshop/shared" "$HOME/.config/pipulate"
+            printf 'no\n' > "$HOME/.config/pipulate/voice_$stage_port"
           }
           start_stage() {
             ensure_worktree
@@ -672,7 +683,7 @@
             ${stopPortScript} "$stage_port" "$stage_tmux" >/dev/null 2>&1 || true
             local saved_ld="''${LD_LIBRARY_PATH:-}"
             ${pkgs.tmux}/bin/tmux new-session -d -s "$stage_tmux" -c "$stage_dir" \
-              "export LD_LIBRARY_PATH=\"$saved_ld\" PIPULATE_ROOT=\"$stage_dir\" PIPULATE_PORT=\"$stage_port\" PIPULATE_NO_WATCHDOG=1 PIPULATE_QUIET_START=1 && source \"$stage_dir/.venv/bin/activate\" && exec python server.py --quiet-start"
+              "export LD_LIBRARY_PATH=\"$saved_ld\" PIPULATE_ROOT=\"$stage_dir\" PIPULATE_PORT=\"$stage_port\" PIPULATE_NO_WATCHDOG=1 PIPULATE_QUIET_START=1 PIPULATE_LOCAL_AUDIO_MUTE=1 && source \"$stage_dir/.venv/bin/activate\" && exec python server.py --quiet-start"
             local i=0
             while [ "$i" -lt 40 ]; do
               if ${pkgs.curl}/bin/curl -fsS "http://127.0.0.1:$stage_port/" >/dev/null 2>&1; then
@@ -1310,6 +1321,7 @@
           weeboCommand               # Local Operation Weebo native-pixel alpha overlay on Prime
           weebohCommand              # Deliberate remote Operation Weebo overlay on Honeybot :10.0
           weebolCommand              # List enrolled Operation Weebo shorthand assets
+          chimeCommand               # 1-word Prime marimba/alert audio toggle (Honeybot untouched)
           stageCommand               # Watchdog-free :5002 stage server in isolated git worktree
           rgxCommand                 # Bounded AND-search over article files
           rgxcCommand                  # rgx plus holographic shards and hit context
@@ -2952,6 +2964,7 @@ print('AI:\n', r.ai)
           ytdesc()   { "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/articles/common.py" --broadcast desc   "$@"; }
           ytstatus() { "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/articles/common.py" --broadcast status "$@"; }
           ytbell()   { "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/articles/common.py" --broadcast bell   "$@"; }
+          ytchime()  { chime "$@"; }
           ytroll()   { "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/articles/common.py" --broadcast "''${1:-roll}" "''${@:2}"; }
           ytsay()    { "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/articles/common.py" --broadcast say    "$@"; }
           ytping()   { "$PIPULATE_ROOT/.venv/bin/python" "$PIPULATE_ROOT/scripts/articles/common.py" --broadcast ping   "$@"; }

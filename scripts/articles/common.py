@@ -1151,7 +1151,7 @@ def print_broadcast_kit(target_key="1", mode="card", slug_match=None):
         print(" 12. ytstatus          📡 Check Honeybot OBS PID, port 4455 & timecode")
         print(" 13. ytwatch           👀 Viewer/chat daemon (`ytwatch start|status|reset|clear 1|dwell 60|stop`)")
         print("     ytwatch greet     ⚡ WOPR Typewriter + ba-BING on :10.0 (`greet [on|off|status|\"msg\"]`)")
-        print("     ytwatch chime     🎶 Route chimes (`chime [prime|stream|both|off|status]` | `chime stream test`)")
+        print("     chime             🎶 Flip Prime marimba/alert audio on<->off (`chime [on|off|status|test|stream]`)")
         print("     ytwatch quiet     🔇 Master ALL-OFF circuit breaker (`ytwatch unmute` restores all)")
         print("     ytlog             📺 Attach read-only to live ytwatch monitor (`q` or `Ctrl+b d` to detach)")
         print("     ytmax             🎰 Toggle Max Headroom (`off` [default] | `on` | `12` Skinner VR-12)")
@@ -1274,7 +1274,7 @@ def print_broadcast_kit(target_key="1", mode="card", slug_match=None):
     if yt_thumb:
         print(f"📺 YT STUDIO THUMBNAIL (1280x720 16:9): {yt_thumb} (Checklist: Upload thumb + Enable DVR)")
         print(thin)
-    print("🎛️  Quick Words:  yt (help) | norma | ythero | ytyaml | tweet | linkedin | fb | discord | ytpebble | yttitle | ytdesc | ytfeature | ytcard | yttop | markov | radar | ytoutro | ytbgm | ytreboot | ytsay | ytticker | ytapp | ytvim | ytbreaks | weeboh | stage | ytwatch | ytlog | ytmax | ytping | ytroll | ytbell | ytstatus")
+    print("🎛️  Quick Words:  yt (help) | norma | ythero | ytyaml | tweet | linkedin | fb | discord | ytpebble | yttitle | ytdesc | ytfeature | ytcard | yttop | markov | radar | ytoutro | ytbgm | ytreboot | ytsay | ytticker | ytapp | ytvim | ytbreaks | weeboh | stage | ytwatch | ytlog | chime | ytmax | ytping | ytroll | ytbell | ytstatus")
     print(thin)
     print(f"🔗 Preview URL:   {kit['preview_url']}")
     print(f"✏️  Edit Command:  vim {kit['path']}")
@@ -2795,9 +2795,9 @@ def _speak_local_alert(text, enabled=True, delay=0.45):
         pass
 
 
-def _play_local_ding(enabled=True, spoken_text=None):
+def _play_local_ding(enabled=True, spoken_text=None, force_local=False):
     """Play assets/sounds/ding.wav locally on Prime and optionally speak an alert via Piper TTS."""
-    if not enabled:
+    if not enabled or (not force_local and not _resolve_yt_prime_chime()):
         return
     import shutil
     import subprocess
@@ -3320,20 +3320,26 @@ def _parse_yt_bool(raw: str, default: bool) -> bool:
     return default
 
 
+def _vault_or_env_yt_var(name: str) -> str:
+    """Read live ~/.config/pipulate/.env value first so CLI toggles apply immediately in running tmux daemons."""
+    vault_val = _load_vault_env().get(name)
+    if vault_val is not None and str(vault_val).strip() != "":
+        return str(vault_val).strip()
+    return str(os.environ.get(name) or "").strip()
+
+
 def _resolve_yt_prime_chime(override=None) -> bool:
     """Return True when Pipulate Prime local speaker chimes are enabled (default True)."""
     if override is not None:
         return bool(override)
-    raw = os.environ.get("PIPULATE_YT_PRIME_CHIME") or _load_vault_env().get("PIPULATE_YT_PRIME_CHIME") or ""
-    return _parse_yt_bool(raw, default=True)
+    return _parse_yt_bool(_vault_or_env_yt_var("PIPULATE_YT_PRIME_CHIME"), default=True)
 
 
 def _resolve_yt_stream_chime(override=None) -> bool:
     """Return True when Honeybot broadcast ba-BING / BING-ba chimes are enabled (default True)."""
     if override is not None:
         return bool(override)
-    raw = os.environ.get("PIPULATE_YT_STREAM_CHIME") or _load_vault_env().get("PIPULATE_YT_STREAM_CHIME") or ""
-    return _parse_yt_bool(raw, default=True)
+    return _parse_yt_bool(_vault_or_env_yt_var("PIPULATE_YT_STREAM_CHIME"), default=True)
 
 
 def _resolve_yt_ull_greet(override=None) -> bool:
@@ -3662,7 +3668,7 @@ def run_youtube_watch(
         up_p = _ensure_quiet_arrive_wav()
         dn_p = _ensure_quiet_clear_wav()
         toks_c = (chime_dir or "").strip().lower().split()
-        mode_c = toks_c[0] if toks_c else "test"
+        mode_c = toks_c[0] if toks_c else "toggle"
         arg_c = toks_c[1] if len(toks_c) > 1 else ""
         prefix_c = "[DRY RUN] " if dry_run else ""
         cm_s = "off" if eff_cm < 0 else str(eff_cm)
@@ -3670,7 +3676,7 @@ def run_youtube_watch(
         if mode_c == "status":
             print(
                 f"🎶 Chime & Greet Routing: {_format_ytwatch_fx_summary()} | clear_max={cm_s} "
-                "(Usage: `ytwatch chime [prime|stream|both|off|up|down]` | `ytwatch chime stream test` | `ytwatch quiet` | `ytwatch unmute`)"
+                "(Usage: `chime` flip Prime | `chime [on|off|status|test|up|down]` | `chime stream [on|off|test]`)"
             )
             return 0
         if mode_c in ("stream", "hb", "honeybot") and arg_c in ("test", "both", "up", "arrive", "+", "down", "clear", "-"):
@@ -3685,12 +3691,29 @@ def run_youtube_watch(
             return 0 if ok_all else 1
         if mode_c in ("prime", "local") and arg_c in ("test", "both", "up", "arrive", "+", "down", "clear", "-"):
             force_local, mode_c = True, ("test" if arg_c in ("test", "both") else arg_c)
-        elif mode_c in ("prime", "local", "stream", "hb", "honeybot", "both", "all", "on", "off", "mute", "none"):
-            if mode_c in ("prime", "local"):
-                new_p, new_s = (_parse_yt_bool(arg_c, True), _resolve_yt_stream_chime()) if arg_c else (True, False)
-            elif mode_c in ("stream", "hb", "honeybot"):
-                new_p, new_s = (_resolve_yt_prime_chime(), _parse_yt_bool(arg_c, True)) if arg_c else (False, True)
-            elif mode_c in ("both", "all", "on"):
+        elif mode_c in ("toggle", "flip", "on", "1", "unmute", "off", "0", "mute", "quiet", "prime", "local"):
+            cur_p, cur_s = _resolve_yt_prime_chime(), _resolve_yt_stream_chime()
+            if mode_c in ("toggle", "flip") or (mode_c in ("prime", "local") and not arg_c):
+                new_p = not cur_p
+            elif mode_c in ("prime", "local"):
+                new_p = _parse_yt_bool(arg_c, not cur_p)
+            else:
+                new_p = mode_c in ("on", "1", "unmute")
+            if not dry_run:
+                _save_vault_var("PIPULATE_YT_PRIME_CHIME", "1" if new_p else "0")
+                if new_p and not cur_p and ding:
+                    _play_local_arrive_chime(True)
+            verb = "[DRY RUN] Would set" if dry_run else "Saved"
+            print(
+                f"{'🔊' if new_p else '🔇'} {verb} Pipulate Prime local audio -> {'ON' if new_p else 'OFF'} "
+                f"(stream_chime={'on' if cur_s else 'off'} & ntfy untouched; type `chime` to flip)."
+            )
+            return 0
+        elif mode_c in ("stream", "hb", "honeybot", "both", "all", "none"):
+            cur_p, cur_s = _resolve_yt_prime_chime(), _resolve_yt_stream_chime()
+            if mode_c in ("stream", "hb", "honeybot"):
+                new_p, new_s = cur_p, ((not cur_s) if not arg_c else _parse_yt_bool(arg_c, True))
+            elif mode_c in ("both", "all"):
                 new_p, new_s = True, True
             else:
                 new_p, new_s = False, False
@@ -3705,7 +3728,7 @@ def run_youtube_watch(
                 f"(ull_greet={'on' if _resolve_yt_ull_greet() else 'off'}; live daemon adopts automatically)."
             )
             return 0
-        play_p = ding and (force_local or _resolve_yt_prime_chime() or not _resolve_yt_stream_chime())
+        play_p = ding and (force_local or mode_c in ("test", "up", "arrive", "+", "down", "clear", "-") or _resolve_yt_prime_chime())
         play_s = ding and (not force_local) and _resolve_yt_stream_chime()
         if mode_c in ("up", "arrive", "+"):
             if not dry_run:
